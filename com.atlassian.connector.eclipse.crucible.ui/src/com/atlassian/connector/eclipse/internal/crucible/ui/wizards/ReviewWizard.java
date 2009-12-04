@@ -226,17 +226,15 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 								.getTeamConnector(root);
 						if (teamConnector != null) {
 							List<IResource> validResources = teamConnector.getResourcesByFilterRecursive(
-									new IResource[] { root }, ITeamUiResourceConnector.State.SF_ALL);
+									new IResource[] { root }, ITeamUiResourceConnector.State.SF_VERSIONED);
 
 							if (validResources != null && validResources.size() > 0) {
 
 								// for all children of root SCM and Crucible repository is the same
-								ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(validResources.get(0));
+								ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(root);
 
-								// TODO jj add repository name retrieval (multiple) when mapping page is fixed
-								String crucibleRepositoryName = "connector-eclipse";
-//								String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
-//									repositoryInfo.getScmPath());
+								String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
+										repositoryInfo.getScmPath());
 
 								// TODO add support for repos other than SVN 
 								SvnRepository crucibleRepository = server.getRepository(serverCfg,
@@ -292,6 +290,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 								}
 
 								reviewInput.put(crucibleRepositoryName, pathAndRevisions);
+							} else {
+								StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+										"Cannot retrieve resource info and childs for  " + root.getName()));
 							}
 						} else {
 							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
@@ -441,6 +442,22 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		if (types.contains(Type.ADD_SCM_FILE)) {
 			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(),
 					Arrays.asList(scmRepositoryInfo));
+			addPage(defineMappingPage);
+		}
+		if (types.contains(Type.ADD_SCM_RESOURCES)) {
+			List<ScmRepository> repos = new ArrayList<ScmRepository>();
+
+			for (IResource root : selectedWorkspaceResources) {
+				ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(root);
+				if (repositoryInfo != null) {
+					repos.add(repositoryInfo);
+				} else {
+					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+							"Cannot get repository info for resource " + root.getName()));
+				}
+			}
+
+			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(), repos);
 			addPage(defineMappingPage);
 		}
 

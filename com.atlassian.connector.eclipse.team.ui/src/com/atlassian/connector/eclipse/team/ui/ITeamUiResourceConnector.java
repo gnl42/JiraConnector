@@ -39,7 +39,7 @@ public interface ITeamUiResourceConnector {
 
 	enum State {
 		// resources modified from SCM base state
-		SF_ANY_CHANGE, SF_UNVERSIONED, SF_IGNORED, SF_ALL
+		SF_ANY_CHANGE, SF_UNVERSIONED, SF_IGNORED, SF_ALL, SF_VERSIONED
 	};
 
 	boolean isEnabled();

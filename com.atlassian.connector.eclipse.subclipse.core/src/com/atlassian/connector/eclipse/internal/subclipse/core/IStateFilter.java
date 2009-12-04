@@ -45,7 +45,7 @@ public interface IStateFilter {
 				&& this.acceptImpl(resource, resource.getResource(), resource.getStatus());
 		}
 		public boolean accept(IResource resource, LocalResourceStatus state) {
-			return state != null && SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject()) && this.acceptImpl(null, resource, state);
+			return state != null && SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject()) && this.acceptImpl(SVNWorkspaceRoot.getSVNResourceFor(resource), resource, state);
 		}
 		public boolean allowsRecursion(ISVNLocalResource resource) throws SVNException {
 			return resource.getStatus() != null 

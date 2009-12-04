@@ -18,8 +18,10 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -37,7 +39,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("restriction")
 public class CreatePostCommitReviewFileAction extends TeamAction {
@@ -49,14 +53,38 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 
 		final IResource[] resources = getSelectedResources();
 
-		if (resources != null && resources.length > 0) {
-			Job createReview = new LocalProceedWithReviewCreationJob(resources);
-			createReview.setUser(true);
-			createReview.schedule();
-		} else {
+		if (resources == null || resources.length == 0) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 					"Nothing selected. Cannot create review."));
+			return;
 		}
+
+		// svn support only
+		for (IResource resource : resources) {
+			ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
+					.getTeamResourceManager()
+					.getTeamConnector(resource);
+
+			String message = null;
+
+			if (connector == null) {
+				message = "Cannot find connector for " + resource.getName();
+			} else if (connector.getType() != TeamConnectorType.SVN) {
+				message = "Cannot create review from non Subversion resource. Only Subversion is supported.";
+			}
+
+			if (message != null) {
+				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
+				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
+				mb.setMessage(message);
+				mb.open();
+				return;
+			}
+		}
+
+		Job createReview = new LocalProceedWithReviewCreationJob(resources);
+		createReview.setUser(true);
+		createReview.schedule();
 	}
 
 	private void showDirtyFilesMessage() {
@@ -95,18 +123,24 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			monitor.beginTask("Checking workspace changes", resources.length);
-			try {
 
-				// TODO jj empty directories should not proceed
+			int totalResourcesCount = 0;
+
+			try {
 
 				for (IResource root : resources) {
 					final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 							.getTeamResourceManager()
 							.getTeamConnector(resources[0]);
-					// TODO jj test it against different connectors (subersion and CVS at once)
+					// TODO jj test it against different connectors (subversion and CVS at once)
 					if (teamConnector != null) {
-						if (teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
-								ITeamUiResourceConnector.State.SF_ANY_CHANGE).size() > 0) {
+						// TODO jj check state of the file SF_ANY_CHANGE
+						int countChangedFiles = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
+								ITeamUiResourceConnector.State.SF_ANY_CHANGE).size();
+						int countIgnoredFiles = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
+								ITeamUiResourceConnector.State.SF_IGNORED).size();
+						// there is relation "{changed} contains {ignored}"
+						if (countChangedFiles - countIgnoredFiles > 0) {
 							// uncommitted change detected, show message box and return
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
@@ -115,6 +149,21 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 							});
 							return Status.OK_STATUS;
 						}
+
+						List<IResource> allResources = teamConnector.getResourcesByFilterRecursive(
+								new IResource[] { root }, ITeamUiResourceConnector.State.SF_VERSIONED);
+
+						List<IResource> fileResources = new ArrayList<IResource>();
+
+						// do not count directories (prevent creation of review without files)
+						for (IResource r : allResources) {
+							if (r instanceof IFile) {
+								fileResources.add(r);
+							}
+						}
+
+						totalResourcesCount += fileResources.size();
+
 					} else {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Cannot find team connector for selected resources."));
@@ -129,10 +178,20 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 				monitor.done();
 			}
 
+			final int fileCount = totalResourcesCount;
+
 			// there are no dirty files, proceed with processing
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					openReviewWizard(resources);
+					if (fileCount > 0) {
+						openReviewWizard(resources);
+					} else {
+						MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
+						mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
+						mb.setMessage("Your selection does not contain any versioned file.");
+						mb.open();
+						return;
+					}
 				}
 			});
 			return Status.OK_STATUS;

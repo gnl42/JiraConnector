@@ -360,6 +360,8 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 			return IStateFilter.SF_IGNORED;
 		case SF_ALL:
 			return IStateFilter.SF_ALL;
+		case SF_VERSIONED:
+			return IStateFilter.SF_VERSIONED;
 		default:
 			throw new IllegalStateException("Unhandled IStateFilter");
 		}
