@@ -34,7 +34,8 @@ public final class TaskRepositoryUtil {
 	}
 
 	/**
-	 * Returns a mapping between SCM urls and Crucible project keys. It's is persitent as a TaskRepository property.
+	 * Returns a mapping between SCM urls and Crucible/FishEye source repositories. It's is persisted as a
+	 * TaskRepository property.
 	 * 
 	 * @param taskRepository
 	 * @return

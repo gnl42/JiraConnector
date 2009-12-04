@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
-import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -86,11 +85,11 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			final FishEyePreferenceContextData initialData = (FishEyePreferenceContextData) data;
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-							new FishEyeMappingConfiguration(initialData.getScmPath(), null, null),
-							FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager(), true);
+					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), null,
+							initialData.getScmPath(), null);
 					if (dialog.open() == Window.OK) {
-						final FishEyeMappingConfiguration cfg = dialog.getCfg();
+						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
+								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
 							mapping.add(cfg);
 							tableViewer.refresh();
@@ -186,10 +185,10 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), null);
 				if (dialog.open() == Window.OK) {
-					final FishEyeMappingConfiguration cfg = dialog.getCfg();
+					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
+							dialog.getScmPath(), dialog.getSourceRepository());
 					if (cfg != null) {
 						mapping.add(cfg);
 						tableViewer.refresh();
@@ -231,10 +230,11 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			Object selection = ((IStructuredSelection) aSelection).getFirstElement();
 			if (selection instanceof FishEyeMappingConfiguration) {
 				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), mappingCfg,
-						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
+						mappingCfg.getTaskRepository(), mappingCfg.getScmPath(), mappingCfg.getFishEyeRepo());
 				if (dialog.open() == Window.OK) {
-					final FishEyeMappingConfiguration cfg = dialog.getCfg();
+					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
+							dialog.getScmPath(), dialog.getSourceRepository());
 					if (cfg != null) {
 						int index = mapping.indexOf(mappingCfg);
 						assert index >= 0;

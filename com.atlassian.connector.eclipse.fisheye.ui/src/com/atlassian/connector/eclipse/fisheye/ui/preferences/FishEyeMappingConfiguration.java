@@ -11,25 +11,27 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
-public class FishEyeMappingConfiguration {
-	private final String scmPath;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-	private final String fishEyeServer;
+public class FishEyeMappingConfiguration {
+	private final TaskRepository taskRepository;
+
+	private final String scmPath;
 
 	private final String fishEyeRepo;
 
-	public FishEyeMappingConfiguration(String scmPath, String fishEyeServer, String fishEyeRepo) {
+	public FishEyeMappingConfiguration(TaskRepository taskRepository, String scmPath, String fishEyeRepo) {
 		this.scmPath = scmPath;
-		this.fishEyeServer = fishEyeServer;
 		this.fishEyeRepo = fishEyeRepo;
+		this.taskRepository = taskRepository;
 	}
 
 	public String getScmPath() {
 		return scmPath;
 	}
 
-	public String getFishEyeServer() {
-		return fishEyeServer;
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
 	}
 
 	public String getFishEyeRepo() {
@@ -37,7 +39,7 @@ public class FishEyeMappingConfiguration {
 	}
 
 	public FishEyeMappingConfiguration getClone() {
-		return new FishEyeMappingConfiguration(scmPath, fishEyeServer, fishEyeRepo);
+		return new FishEyeMappingConfiguration(taskRepository, scmPath, fishEyeRepo);
 	}
 
 }

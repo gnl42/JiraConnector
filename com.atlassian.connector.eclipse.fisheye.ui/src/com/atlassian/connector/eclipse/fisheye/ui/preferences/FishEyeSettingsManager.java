@@ -11,8 +11,9 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
-import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -21,22 +22,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.LineRange;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class uses somewhat crazy approach for persisting preferences - XML is serialized to a string and then such
@@ -46,24 +42,10 @@ import java.util.List;
  * @author Wojciech Seliga
  */
 public class FishEyeSettingsManager {
-	private static final String MAPPING_ELEMENT = "mapping";
-
-	private static final String ROOT_ELEMENT = "mappings";
-
-	private static final String SCM_PATH = "scmPath";
-
-	private static final String FISHEYE_SERVER = "fishEyeServer";
-
-	private static final String FISHEYE_REPO = "fishEyeRepo";
 
 	private final List<FishEyeMappingConfiguration> mappings = MiscUtil.buildArrayList();
 
-	private final IPreferenceStore preferenceStore;
-
-	private static final String PREFERENCE_MAPPINGS = ROOT_ELEMENT;
-
 	public FishEyeSettingsManager(IPreferenceStore preferenceStore) {
-		this.preferenceStore = preferenceStore;
 		load();
 	}
 
@@ -84,44 +66,28 @@ public class FishEyeSettingsManager {
 	}
 
 	private void load() {
-		final String mappingsStr = preferenceStore.getString(PREFERENCE_MAPPINGS);
-		if (mappingsStr == null || mappingsStr.length() == 0) {
-			return;
-		}
-		try {
-			final Document document = new SAXBuilder().build(new StringReader(mappingsStr));
-			@SuppressWarnings("unchecked")
-			final List<Element> mappingElements = document.getRootElement().getChildren();
-			for (Element element : mappingElements) {
-				if (element.getName().equals(MAPPING_ELEMENT)) {
-					mappings.add(new FishEyeMappingConfiguration(element.getAttributeValue(SCM_PATH),
-							element.getAttributeValue(FISHEYE_SERVER), element.getAttributeValue(FISHEYE_REPO)));
-				}
+		Set<TaskRepository> fishEyeRepositories = FishEyeUiUtil.getFishEyeServers();
+		for (TaskRepository tr : fishEyeRepositories) {
+			Map<String, String> scmRepositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(tr);
+			for (String scmPath : scmRepositoryMappings.keySet()) {
+				mappings.add(new FishEyeMappingConfiguration(tr, scmPath, scmRepositoryMappings.get(scmPath)));
 			}
-		} catch (JDOMException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, FishEyeUiPlugin.PLUGIN_ID,
-					"Error while loading FishEye preferences", e));
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, FishEyeUiPlugin.PLUGIN_ID,
-					"Error while loading FishEye preferences", e));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void save() throws IOException {
-		final Element root = new Element(ROOT_ELEMENT);
+		Map<TaskRepository, Map<String, String>> scmRepositoryMappings = MiscUtil.buildHashMap();
 		for (FishEyeMappingConfiguration mapping : mappings) {
-			final Element mappingElem = new Element(MAPPING_ELEMENT);
-			mappingElem.setAttribute(SCM_PATH, mapping.getScmPath());
-			mappingElem.setAttribute(FISHEYE_SERVER, mapping.getFishEyeServer());
-			mappingElem.setAttribute(FISHEYE_REPO, mapping.getFishEyeRepo());
-			root.getChildren().add(mappingElem);
+			if (!scmRepositoryMappings.containsKey(mapping.getTaskRepository())) {
+				scmRepositoryMappings.put(mapping.getTaskRepository(), new HashMap<String, String>());
+			}
+
+			scmRepositoryMappings.get(mapping.getTaskRepository()).put(mapping.getScmPath(), mapping.getFishEyeRepo());
 		}
-		final StringWriter sw = new StringWriter();
-		new XMLOutputter().output(root, sw);
-		preferenceStore.setValue(PREFERENCE_MAPPINGS, sw.toString());
-		if (preferenceStore instanceof IPersistentPreferenceStore) {
-			((IPersistentPreferenceStore) preferenceStore).save();
+
+		for (TaskRepository taskRepository : scmRepositoryMappings.keySet()) {
+			TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, scmRepositoryMappings.get(taskRepository));
 		}
 	}
 
@@ -157,7 +123,7 @@ public class FishEyeSettingsManager {
 
 		final String path = scmPath.substring(cfgScmPath.length());
 		final String repo = cfg.getFishEyeRepo();
-		final String fishEyeUrl = cfg.getFishEyeServer();
+		final String fishEyeUrl = cfg.getTaskRepository().getRepositoryUrl();
 		final StringBuilder res = new StringBuilder(fishEyeUrl);
 		if (res.length() > 0 && res.charAt(res.length() - 1) != '/') {
 			res.append('/');

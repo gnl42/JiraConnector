@@ -26,7 +26,7 @@ final class TableLabelProvider extends LabelProvider implements ITableLabelProvi
 		case 0:
 			return row.getScmPath();
 		case 1:
-			return row.getFishEyeServer();
+			return row.getTaskRepository().getRepositoryUrl();
 		case 2:
 			return row.getFishEyeRepo();
 		default:

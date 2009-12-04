@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
@@ -60,11 +61,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
@@ -143,15 +144,13 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		}
 	}
 
-	private ComboViewer fishEyeServerCombo;
+	private ComboViewer taskRepositoryCombo;
 
-	private ComboViewer fishEyeRepoCombo;
+	private ComboViewer repositoryCombo;
 
 	private Button okButton;
 
 	private Button scmButton;
-
-	private FishEyeMappingConfiguration cfg;
 
 	private Text scmPathEdit;
 
@@ -163,41 +162,36 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private Button updateServerDataButton;
 
-	private TaskRepository currentTaskRepository;
-
 	private final boolean isAddMode;
 
-	/**
-	 * Creates dialog in "edit" mode - with initial selections
-	 */
-	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
-			FishEyeClientManager fishEyeClientManager) {
-		this(parentShell, initialConfiguration, fishEyeClientManager, false);
-	}
+	private String scmPath;
+
+	private String sourceRepository;
+
+	private TaskRepository taskRepository;
 
 	/**
 	 * Creates dialog in "add" mode
 	 */
-	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeClientManager fishEyeClientManager) {
-		this(parentShell, null, fishEyeClientManager, true);
+	public AddOrEditFishEyeMappingDialog(Shell parentShell, String scmPath) {
+		this(parentShell, null, scmPath, null);
 	}
 
 	/**
 	 * Creates dialog in "add" or "edit" mode with initial selection
 	 */
-	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
-			FishEyeClientManager fishEyeClientManager, boolean isAddMode) {
+	public AddOrEditFishEyeMappingDialog(Shell parentShell, TaskRepository taskRepository, String scmPath,
+			String sourceRepository) {
 		super(parentShell);
 		setTitleImage(FishEyeImages.getImage(FishEyeImages.FISHEYE_WIZ_BAN_ICON));
-		this.fishEyeClientManager = fishEyeClientManager;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
-		cfg = initialConfiguration;
-		this.isAddMode = isAddMode;
-		this.taskRepositories = FishEyeUiUtil.getFishEyeServers();
-	}
 
-	public FishEyeMappingConfiguration getCfg() {
-		return cfg;
+		this.isAddMode = sourceRepository == null || taskRepository == null;
+		this.taskRepositories = FishEyeUiUtil.getFishEyeServers();
+		this.scmPath = scmPath;
+		this.sourceRepository = sourceRepository;
+		this.taskRepository = taskRepository;
+		this.fishEyeClientManager = FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager();
 	}
 
 	private Label createLabel(Composite parent, String text) {
@@ -208,30 +202,26 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	@Override
 	protected void okPressed() {
-		final TaskRepository server = getSelectedServer();
-		final String repo = getSelectedRepo();
+		final TaskRepository server = getTaskRepository();
+		final String repo = getSourceRepository();
 		if (server == null || repo == null) {
 			return;
 		}
-		cfg = new FishEyeMappingConfiguration(scmPathEdit.getText(), server.getUrl(), repo);
 		super.okPressed();
 	}
 
-	private TaskRepository getSelectedServer() {
-		final Object server = ((IStructuredSelection) fishEyeServerCombo.getSelection()).getFirstElement();
-		if (server instanceof TaskRepository) {
-			return (TaskRepository) server;
-		}
-		return null;
+	@Nullable
+	public String getScmPath() {
+		return scmPath;
 	}
 
-	private String getSelectedRepo() {
-		final Object repo = ((IStructuredSelection) fishEyeRepoCombo.getSelection()).getFirstElement();
-		if (repo instanceof String) {
-			return (String) repo;
-		}
-		return null;
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
+	}
 
+	@Nullable
+	public String getSourceRepository() {
+		return sourceRepository;
 	}
 
 	@Override
@@ -253,21 +243,21 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		scmButton.addSelectionListener(new ScmButtonSelectionListener());
 
 		createLabel(parent, "FishEye Server:");
-		fishEyeServerCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(fishEyeServerCombo.getControl());
+		taskRepositoryCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(taskRepositoryCombo.getControl());
 
 		createLabel(parent, "FishEye Repository:");
-		fishEyeRepoCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(fishEyeRepoCombo.getControl());
-		fishEyeRepoCombo.setContentProvider(new ArrayContentProvider());
-		fishEyeRepoCombo.setLabelProvider(new LabelProvider());
+		repositoryCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(repositoryCombo.getControl());
+		repositoryCombo.setContentProvider(new ArrayContentProvider());
+		repositoryCombo.setLabelProvider(new LabelProvider());
 
 		updateServerDataButton = new Button(parent, SWT.PUSH);
 		updateServerDataButton.setText("Refresh");
 		GridDataFactory.fillDefaults().grab(false, false).span(3, 1).align(SWT.RIGHT, SWT.FILL).applyTo(
 				updateServerDataButton);
 
-		fishEyeServerCombo.setLabelProvider(new LabelProvider() {
+		taskRepositoryCombo.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof TaskRepository) {
@@ -283,52 +273,44 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			}
 
 		});
-		fishEyeServerCombo.setContentProvider(new ArrayContentProvider());
-		fishEyeServerCombo.setInput(taskRepositories.toArray());
+		taskRepositoryCombo.setContentProvider(new ArrayContentProvider());
+		taskRepositoryCombo.setInput(taskRepositories.toArray());
 
-		if (cfg != null) {
-			scmPathEdit.setText(cfg.getScmPath());
-			if (cfg.getFishEyeServer() != null) {
-				final TaskRepository repository = findByUrl(cfg.getFishEyeServer());
-				if (repository != null) {
-					currentTaskRepository = repository;
-					fishEyeServerCombo.setSelection(new StructuredSelection(repository));
-					Set<String> cachedRepositories = fishEyeClientManager.getClient(repository)
-							.getClientData()
-							.getCachedRepositories();
-					// handling the case where the repository could have been deleted or hasn't been yet fetched by the client
-					if (cfg != null && cfg.getFishEyeRepo() != null) {
-						if (!cachedRepositories.contains(cfg.getFishEyeRepo())) {
-							cachedRepositories = new HashSet<String>(cachedRepositories);
-							cachedRepositories.add(cfg.getFishEyeRepo());
-						}
-					}
-					fishEyeRepoCombo.setInput(getSortedRepositories(cachedRepositories));
-				}
-			}
+		if (scmPath != null) {
+			scmPathEdit.setText(scmPath);
+		}
+
+		if (taskRepository != null) {
+			taskRepositoryCombo.setSelection(new StructuredSelection(taskRepository));
+			Set<String> cachedRepositories = fishEyeClientManager.getClient(taskRepository)
+					.getClientData()
+					.getCachedRepositories();
+
+			repositoryCombo.setInput(getSortedRepositories(cachedRepositories));
 		}
 
 		// Listeners at the end - after we restored settings (in edit mode)
 		// Otherwise they would be called during fields initialization and that could break - as they depend on each other.
 		scmPathEdit.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
+				scmPath = scmPathEdit.getText();
 				updateOkButtonState();
 			}
 		});
 
-		fishEyeServerCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+		taskRepositoryCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					if (selection.getFirstElement() instanceof TaskRepository) {
-						final TaskRepository taskRepository = (TaskRepository) selection.getFirstElement();
-						if (!taskRepository.equals(currentTaskRepository)) {
-							currentTaskRepository = taskRepository;
-							final FishEyeClient client = fishEyeClientManager.getClient(taskRepository);
+						final TaskRepository newTaskRepository = (TaskRepository) selection.getFirstElement();
+						if (!newTaskRepository.equals(taskRepository)) {
+							taskRepository = newTaskRepository;
+							final FishEyeClient client = fishEyeClientManager.getClient(newTaskRepository);
 							if (!client.hasRepositoryData()) {
-								updateServerData(taskRepository);
+								updateServerData(newTaskRepository);
 							} else {
-								fishEyeRepoCombo.setInput(getSortedRepositories(client.getClientData()
+								repositoryCombo.setInput(getSortedRepositories(client.getClientData()
 										.getCachedRepositories()));
 							}
 						}
@@ -339,12 +321,18 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			}
 		});
 
-		if (cfg != null && cfg.getFishEyeRepo() != null) {
-			fishEyeRepoCombo.setSelection(new StructuredSelection(cfg.getFishEyeRepo()));
+		if (sourceRepository != null) {
+			repositoryCombo.setSelection(new StructuredSelection(sourceRepository));
 		}
 
-		fishEyeRepoCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+		repositoryCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
+				if (repositoryCombo.getSelection() instanceof IStructuredSelection) {
+					Object first = ((IStructuredSelection) repositoryCombo.getSelection()).getFirstElement();
+					if (first != null && first instanceof String) {
+						sourceRepository = (String) first;
+					}
+				}
 				updateOkButtonState();
 			}
 		});
@@ -352,8 +340,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		updateServerDataButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				if (fishEyeServerCombo.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) fishEyeServerCombo.getSelection();
+				if (taskRepositoryCombo.getSelection() instanceof IStructuredSelection) {
+					IStructuredSelection selection = (IStructuredSelection) taskRepositoryCombo.getSelection();
 					if (selection.getFirstElement() instanceof TaskRepository) {
 						final TaskRepository taskRepository = (TaskRepository) selection.getFirstElement();
 						updateServerData(taskRepository);
@@ -366,7 +354,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		getShell().addShellListener(new OnShowHandler());
 
 		if (taskRepositories == null || taskRepositories.size() == 0) {
-			fishEyeServerCombo.getControl().setEnabled(taskRepositories.size() > 0);
+			taskRepositoryCombo.getControl().setEnabled(taskRepositories.size() > 0);
 			setMessage("Mapping cannot be defined. FishEye server must be defined first.", IMessageProvider.WARNING);
 		}
 
@@ -374,29 +362,21 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		return parent;
 	}
 
-	private TaskRepository findByUrl(String url) {
-		for (TaskRepository taskRepository : taskRepositories) {
-			if (taskRepository.getUrl().equals(url)) {
-				return taskRepository;
-			}
-		}
-		return null;
-	}
-
 	private void updateOkButtonState() {
-		boolean isEnabled = (getSelectedRepo() != null && getSelectedServer() != null && scmPathEdit.getText().length() > 0);
+		boolean isEnabled = (getSourceRepository() != null && getTaskRepository() != null && scmPathEdit.getText()
+				.length() > 0);
 		okButton.setEnabled(isEnabled);
 	}
 
 	private void updateServerRelatedControls() {
-		updateServerDataButton.setEnabled(getSelectedServer() != null);
-		fishEyeRepoCombo.getControl().setEnabled(getSelectedServer() != null);
+		updateServerDataButton.setEnabled(getTaskRepository() != null);
+		repositoryCombo.getControl().setEnabled(getTaskRepository() != null);
 	}
 
 	private void updateServerData(final TaskRepository taskRepository) {
 		try {
-			fishEyeRepoCombo.getControl().setEnabled(false);
-			fishEyeServerCombo.getControl().setEnabled(false);
+			repositoryCombo.getControl().setEnabled(false);
+			taskRepositoryCombo.getControl().setEnabled(false);
 			final Button button = getButton(IDialogConstants.OK_ID);
 			if (button != null) {
 				button.setEnabled(false);
@@ -423,9 +403,9 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (!monitor.isCanceled()) {
-								final ISelection oldSelection = fishEyeRepoCombo.getSelection();
-								fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
-								fishEyeRepoCombo.setSelection(oldSelection);
+								final ISelection oldSelection = repositoryCombo.getSelection();
+								repositoryCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
+								repositoryCombo.setSelection(oldSelection);
 								setErrorMessage(null);
 							}
 						}
@@ -443,8 +423,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			setErrorMessage(e.getMessage() != null ? e.getMessage() : "Exception:  " + e.getClass().getName());
 			StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		} finally {
-			fishEyeRepoCombo.getControl().setEnabled(true);
-			fishEyeServerCombo.getControl().setEnabled(true);
+			repositoryCombo.getControl().setEnabled(true);
+			taskRepositoryCombo.getControl().setEnabled(true);
 		}
 
 	}
