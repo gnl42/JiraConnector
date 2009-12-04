@@ -45,9 +45,6 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class CreatePostCommitReviewFileAction extends TeamAction {
 
-	// TODO jj change action label (needs merge with single file post-commit review creation?)
-	// TODO jj add subversive support
-
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 
@@ -127,7 +124,6 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 					final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 							.getTeamResourceManager()
 							.getTeamConnector(root);
-					// TODO jj test it against different connectors (subversion and CVS at once)
 					if (teamConnector != null) {
 						int countChangedFiles = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE).size();

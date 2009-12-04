@@ -128,7 +128,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 	}
 
-	// TODO jj merge with add single file job
 	private class AddResourcesToReviewJob extends CrucibleReviewChangeJob {
 
 		private final List<IResource> resources;
