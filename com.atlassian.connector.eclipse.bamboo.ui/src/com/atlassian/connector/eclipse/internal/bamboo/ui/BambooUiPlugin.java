@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.IRepositoryListener;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryAdapter;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -39,6 +39,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Shawn Minto
  */
+@SuppressWarnings("restriction")
 public class BambooUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -49,7 +50,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 
 	private BambooNotificationProvider bambooNotificationProvider;
 
-	private MyRepositoryListener repositoryListener;
+	private ActivateBambooViewIfNeededRepositoryListener repositoryListener;
 
 	/**
 	 * The constructor
@@ -86,7 +87,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 				return Status.OK_STATUS;
 			}
 		};
-		repositoryListener = new MyRepositoryListener();
+		repositoryListener = new ActivateBambooViewIfNeededRepositoryListener();
 		repositoryManager.addListener(repositoryListener);
 		job.schedule();
 	}
@@ -118,15 +119,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	private final class MyRepositoryListener implements IRepositoryListener {
-		public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
-		}
-
-		public void repositorySettingsChanged(TaskRepository repository) {
-		}
-
-		public void repositoryRemoved(TaskRepository repository) {
-		}
+	private final class ActivateBambooViewIfNeededRepositoryListener extends TaskRepositoryAdapter {
 
 		public void repositoryAdded(TaskRepository repository) {
 			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)) {
