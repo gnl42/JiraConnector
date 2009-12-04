@@ -11,15 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.AddOrEditFishEyeMappingDialog;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.ui.dialogs.ComboSelectionDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -168,25 +167,16 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
 
-			Repository preselectRepository = null;
-			String repositoryName = repositoryMappings.get(scmPath);
-			if (repositoryName != null) {
-				for (Repository repo : cachedRepositories) {
-					if (repositoryName.equals(repo.getName())) {
-						preselectRepository = repo;
-						break;
-					}
-				}
-			}
+			String sourceRepository = repositoryMappings.get(scmPath);
 
-			ComboSelectionDialog<Repository> dialog = new ComboSelectionDialog<Repository>(
-					repositoriesMappingViewer.getTable().getShell(), "Map Local to Crucible Repository", String.format(
-							"Map \"%s\" to: ", scmPath), new CrucibleRepositoriesLabelProvider(), cachedRepositories,
-					preselectRepository);
-			int returnCode = dialog.open();
-			if (returnCode == IDialogConstants.OK_ID) {
-				Repository crucibleRepository = dialog.getSelection();
-				repositoryMappings.put(scmPath, crucibleRepository.getName());
+			AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(
+					repositoriesMappingViewer.getTable().getShell(), taskRepository, scmPath, sourceRepository);
+
+			dialog.setTaskRepositoryEnabled(false);
+
+			if (dialog.open() == Window.OK) {
+				repositoryMappings.remove(scmPath); // remove old mapping
+				repositoryMappings.put(dialog.getScmPath(), dialog.getSourceRepository());
 				repositoriesMappingViewer.setInput(getMappingViewerInput());
 
 				final Map<String, String> repositoryMappingsCopy = new HashMap<String, String>(
