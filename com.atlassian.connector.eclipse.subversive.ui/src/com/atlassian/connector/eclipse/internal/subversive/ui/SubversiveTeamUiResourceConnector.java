@@ -668,6 +668,8 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			return IStateFilter.SF_IGNORED;
 		case SF_UNVERSIONED:
 			return IStateFilter.SF_UNVERSIONED;
+		case SF_VERSIONED:
+			return IStateFilter.SF_VERSIONED;
 		default:
 			throw new IllegalStateException("Unhandled IStateFilter");
 		}
