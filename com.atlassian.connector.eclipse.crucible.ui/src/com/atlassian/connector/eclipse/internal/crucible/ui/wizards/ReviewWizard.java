@@ -589,8 +589,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		// TODO jj fix/merge with single file review creation
-		if (/*defineMappingPage != null &&*/types.contains(Type.ADD_SCM_RESOURCES)
-				&& !types.contains(Type.ADD_SCM_FILE)) {
+		if (defineMappingPage != null && types.contains(Type.ADD_SCM_RESOURCES) && !types.contains(Type.ADD_SCM_FILE)) {
 			if (selectedWorkspaceResources != null) {
 				final CrucibleReviewChangeJob job = new AddResourcesToReviewJob("Add resorces to review",
 						getTaskRepository(), selectedWorkspaceResources);

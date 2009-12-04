@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucib
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
@@ -28,14 +29,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +47,7 @@ import java.util.List;
 public class CreatePostCommitReviewFileAction extends TeamAction {
 
 	// TODO jj change action label (needs merge with single file post-commit review creation?)
+	// TODO jj add subversive support
 
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
@@ -54,8 +55,8 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 		final IResource[] resources = getSelectedResources();
 
 		if (resources == null || resources.length == 0) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-					"Nothing selected. Cannot create review."));
+			MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PLUGIN_ID,
+					"Nothing selected. Cannot create review.");
 			return;
 		}
 
@@ -68,16 +69,13 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 			String message = null;
 
 			if (connector == null) {
-				message = "Cannot find connector for " + resource.getName();
+				message = "Cannot find Atlassian SCM Integration for " + resource.getName();
 			} else if (connector.getType() != TeamConnectorType.SVN) {
 				message = "Cannot create review from non Subversion resource. Only Subversion is supported.";
 			}
 
 			if (message != null) {
-				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-				mb.setMessage(message);
-				mb.open();
+				MessageDialog.openError(getShell(), CrucibleUiPlugin.PLUGIN_ID, message);
 				return;
 			}
 		}
@@ -88,10 +86,8 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 	}
 
 	private void showDirtyFilesMessage() {
-		MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-		mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-		mb.setMessage("Your selection contains at least one uncommitted change.\nPlease commit your changes first.");
-		mb.open();
+		MessageDialog.openInformation(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
+				"Your selection contains at least one uncommitted change.\nPlease commit your changes first.");
 	}
 
 	private void openReviewWizard(final IResource[] resources) {
@@ -110,6 +106,43 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}
+
+	@Override
+	protected void setActionEnablement(IAction action) {
+		if (TeamUiUtils.hasNoTeamConnectors()) {
+			action.setEnabled(true);
+			return;
+		}
+
+//		action.setEnabled(enabledFor(getSelectedResources()[0]));
+		action.setEnabled(true);
+	}
+
+//	private boolean enabledFor(IResource selected) {
+//		LocalStatus localRevision = null;
+//		try {
+//			localRevision = TeamUiUtils.getLocalRevision(selected);
+//		} catch (CoreException e) {
+//			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+//					"Cannot enable action (cannot determine local revision).", e));
+//			return false;
+//		}
+//
+//		if (localRevision != null) {
+//			String stringRevision = localRevision.getRevision();
+//			if (stringRevision != null) {
+//				try {
+//					return Double.valueOf(stringRevision).doubleValue() > 0;
+//				} catch (NumberFormatException e) {
+//					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+//							"Cannot enable action. Unrecognized revison number [" + stringRevision + "]", e));
+//					return false;
+//				}
+//			}
+//		}
+//
+//		return false;
+//	}
 
 	public class LocalProceedWithReviewCreationJob extends Job {
 
@@ -131,10 +164,9 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 				for (IResource root : resources) {
 					final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 							.getTeamResourceManager()
-							.getTeamConnector(resources[0]);
+							.getTeamConnector(root);
 					// TODO jj test it against different connectors (subversion and CVS at once)
 					if (teamConnector != null) {
-						// TODO jj check state of the file SF_ANY_CHANGE
 						int countChangedFiles = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE).size();
 						int countIgnoredFiles = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
@@ -186,10 +218,8 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 					if (fileCount > 0) {
 						openReviewWizard(resources);
 					} else {
-						MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-						mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-						mb.setMessage("Your selection does not contain any versioned file.");
-						mb.open();
+						MessageDialog.openInformation(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
+								"Your selection does not contain any versioned file.");
 						return;
 					}
 				}
