@@ -81,7 +81,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_FILE, ADD_SCM_RESOURCES;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
