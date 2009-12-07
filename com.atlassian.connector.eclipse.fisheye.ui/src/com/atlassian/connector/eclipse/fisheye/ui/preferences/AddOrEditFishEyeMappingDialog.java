@@ -262,7 +262,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		sourceRepositoryCombo.setLabelProvider(new LabelProvider());
 
 		updateServerDataButton = new Button(parent, SWT.PUSH);
-		updateServerDataButton.setText("Refresh");
+		updateServerDataButton.setText("Update Repository Data");
 		GridDataFactory.fillDefaults().grab(false, false).span(3, 1).align(SWT.RIGHT, SWT.FILL).applyTo(
 				updateServerDataButton);
 

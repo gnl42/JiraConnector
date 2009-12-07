@@ -11,11 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -31,19 +32,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class AddResourcesToReviewJob extends JobWithStatus {
 
@@ -68,15 +69,13 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 			return;
 		}
 
-		Map<String, String> repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
-
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
 
 		List<RevisionData> revisions = MiscUtil.buildArrayList();
-		final Set<String> pathsWithoutMapping = MiscUtil.buildHashSet();
 
 		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
+
 		for (IResource resource : resources) {
 			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 			if (teamConnector == null) {
@@ -84,7 +83,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			LocalStatus revision;
+			final LocalStatus revision;
 			try {
 				revision = teamConnector.getLocalRevision(resource);
 			} catch (CoreException e) {
@@ -97,32 +96,24 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			Map.Entry<String, String> matchingSourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
-					repositoryMappings, revision.getScmPath());
-			if (matchingSourceRepository == null) {
-				pathsWithoutMapping.add(revision.getScmPath());
-			}
-		}
-
-		// if there are some repositories missing mapping ask user to define them
-		if (pathsWithoutMapping.size() > 0) {
-			final boolean[] abort = { false };
-
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				public void run() {
-					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new DefineRepositoryMappingsWizard(
-							getTaskRepository(), pathsWithoutMapping));
-					wd.setBlockOnOpen(true);
-					if (wd.open() == Window.CANCEL) {
-						abort[0] = true;
+			final boolean abort[] = { false };
+			while (TaskRepositoryUtil.getMatchingSourceRepository(
+					TaskRepositoryUtil.getScmRepositoryMappings(repository), revision.getScmPath()) == null) {
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+					public void run() {
+						final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(
+								WorkbenchUtil.getShell(), SourceRepositoryMappingPreferencePage.ID, null,
+								new FishEyePreferenceContextData(revision.getScmPath(), getTaskRepository()));
+						if (prefDialog != null) {
+							if (prefDialog.open() != Window.OK) {
+								abort[0] = true;
+							}
+						}
 					}
+				});
+				if (abort[0]) {
+					return;
 				}
-			});
-
-			if (abort[0]) {
-				return;
-			} else {
-				repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 			}
 		}
 
@@ -156,7 +147,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				}
 
 				Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
-						repositoryMappings, revision.getScmPath());
+						TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath());
 
 				if (sourceRepository == null) {
 					tellUserToCommitFirst(); // that's probably external data, we should have a mapping here already
@@ -181,13 +172,14 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		}
 
 		// hack to trigger task list synchronization
+		/* FIXME: crashes e3.6
 		try {
 			client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId()), true,
 					monitor);
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 			return;
-		}
+		}*/
 	}
 
 	protected TaskRepository getTaskRepository() {

@@ -37,7 +37,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 
@@ -171,22 +170,9 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		validatePage();
 	}
 
-	protected Control createUpdateRepositoryDataButton(Composite composite) {
-		Button updateData = new Button(composite, SWT.PUSH);
-		updateData.setText("Update Repository Data");
-		final WizardPage mainPage = this;
-		updateData.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), mainPage);
-				clearCachedCrucibleRepositories();
-			}
-		});
-
-		return updateData;
-	}
-
 	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+
 		validatePage();
 
 		if (visible && !CrucibleUiUtil.hasCachedData(getTaskRepository())) {
@@ -242,7 +228,6 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 	}
 
 	public void createControl(Composite parent) {
-		// TODO maybe the control should be smaller
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).margins(5, 5).create());
 
@@ -250,9 +235,6 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
 				repositoryMappingViewer);
 		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-
-		Control button = createUpdateRepositoryDataButton(composite);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
