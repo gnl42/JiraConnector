@@ -196,7 +196,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 
 		this.isAddMode = sourceRepository == null || taskRepository == null;
-		this.taskRepositories = FishEyeUiUtil.getFishEyeServers();
+		this.taskRepositories = FishEyeUiUtil.getFishEyeAndCrucibleServers();
 		this.scmPath = scmPath;
 		this.sourceRepository = sourceRepository;
 		this.taskRepository = taskRepository;
@@ -364,7 +364,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 		if (taskRepositories == null || taskRepositories.size() == 0) {
 			taskRepositoryCombo.getControl().setEnabled(taskRepositories.size() > 0 && taskRepositoryEnabled);
-			setMessage("Mapping cannot be defined. FishEye server must be defined first.", IMessageProvider.WARNING);
+			setMessage("Mapping cannot be defined. FishEye or Crucible server must be defined first.", IMessageProvider.WARNING);
 		}
 
 		updateServerRelatedControls();
