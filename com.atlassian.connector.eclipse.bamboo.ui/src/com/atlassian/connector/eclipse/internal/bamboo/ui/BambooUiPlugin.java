@@ -122,7 +122,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	private final class ActivateBambooViewIfNeededRepositoryListener extends TaskRepositoryAdapter {
 
 		public void repositoryAdded(TaskRepository repository) {
-			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)) {
+			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)
+					&& AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
 				Display.getDefault().asyncExec(new Runnable() {
 
 					public void run() {

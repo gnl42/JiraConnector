@@ -11,11 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage;
 
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
-import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -23,7 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -32,7 +33,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
@@ -64,14 +64,11 @@ import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.BundleContext;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
+import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
 /**
  * @author Mik Kersten
@@ -249,7 +246,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 						startMonitoring();
 					}
 
-					if (isFirstTime() && !suppressConfigurationWizards() && !CoreUtil.TEST_MODE) {
+					if (isFirstTime() && !AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
 						informUserThatMonitoringIsEnabled();
 					}
 				} catch (Throwable t) {
@@ -258,14 +255,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				}
 			}
 		});
-	}
-
-	protected boolean suppressConfigurationWizards() {
-		if (MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
-			return true;
-		}
-		final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
-		return commandLineArgs.contains("-testPluginName");
 	}
 
 	public void startMonitoring() {

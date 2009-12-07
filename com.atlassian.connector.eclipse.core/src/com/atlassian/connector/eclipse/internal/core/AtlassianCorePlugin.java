@@ -15,8 +15,12 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -78,4 +82,10 @@ public class AtlassianCorePlugin extends Plugin {
 	public static AtlassianCorePlugin getDefault() {
 		return plugin;
 	}
+
+	public boolean suppressConfigurationWizards() {
+		final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
+		return commandLineArgs.contains("-testPluginName") || CoreUtil.TEST_MODE;
+	}
+
 }
