@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucib
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
@@ -56,6 +57,10 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 			return;
 		}
 
+		if (!TeamUiUtils.checkTeamConnectors()) {
+			return;
+		}
+
 		// svn support only
 		for (IResource resource : resources) {
 			ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
@@ -65,13 +70,13 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 			String message = null;
 
 			if (connector == null) {
-				message = "Cannot find Atlassian SCM Integration for " + resource.getName();
+				message = "Cannot find Atlassian SCM Integration for '" + resource.getName() + "'.";
 			} else if (connector.getType() != TeamConnectorType.SVN) {
 				message = "Cannot create review from non Subversion resource. Only Subversion is supported.";
 			}
 
 			if (message != null) {
-				MessageDialog.openError(getShell(), CrucibleUiPlugin.PLUGIN_ID, message);
+				MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PLUGIN_ID, message);
 				return;
 			}
 		}
@@ -184,5 +189,27 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 			});
 			return Status.OK_STATUS;
 		}
+	}
+
+	@Override
+	protected void setActionEnablement(IAction action) {
+		boolean enabled = false;
+		for (IResource resource : getSelectedResources()) {
+			if (enabledFor(resource)) {
+				enabled = true;
+			}
+		}
+		action.setEnabled(enabled);
+	}
+
+	private boolean enabledFor(IResource selected) {
+		if (TeamUiUtils.hasNoTeamConnectors()) {
+			return true;
+		}
+		ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
+				.getTeamResourceManager()
+				.getTeamConnector(selected);
+
+		return (connector != null);
 	}
 }
