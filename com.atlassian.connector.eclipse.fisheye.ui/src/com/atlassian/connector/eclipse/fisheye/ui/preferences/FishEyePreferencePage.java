@@ -74,7 +74,6 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
-
 							mappingEditor.addMapping(cfg);
 							tableViewer.refresh();
 						}

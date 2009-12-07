@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -33,6 +34,19 @@ public final class FishEyeUiUtil {
 		for (TaskRepository taskRepository : allRepositories) {
 			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)
 					|| CrucibleRepositoryConnector.isFishEye(taskRepository)) {
+				fishEyeLikeRepos.add(taskRepository);
+			}
+		}
+		return fishEyeLikeRepos;
+	}
+
+	@NotNull
+	public static Set<TaskRepository> getFishEyeAndCrucibleServers() {
+		final Set<TaskRepository> fishEyeLikeRepos = MiscUtil.buildHashSet();
+		final List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+		for (TaskRepository taskRepository : allRepositories) {
+			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)
+					|| taskRepository.getConnectorKind().equals(CrucibleCorePlugin.CONNECTOR_KIND)) {
 				fishEyeLikeRepos.add(taskRepository);
 			}
 		}

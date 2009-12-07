@@ -91,7 +91,6 @@ public class FishEyeSettingsManager {
 		return matching;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void save() throws IOException {
 		Map<TaskRepository, Map<String, String>> scmRepositoryMappings = MiscUtil.buildHashMap();
 		for (FishEyeMappingConfiguration mapping : mappings) {
@@ -102,8 +101,12 @@ public class FishEyeSettingsManager {
 			scmRepositoryMappings.get(mapping.getTaskRepository()).put(mapping.getScmPath(), mapping.getFishEyeRepo());
 		}
 
-		for (TaskRepository taskRepository : scmRepositoryMappings.keySet()) {
-			TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, scmRepositoryMappings.get(taskRepository));
+		for (TaskRepository taskRepository : FishEyeUiUtil.getFishEyeAndCrucibleServers()) {
+			if (scmRepositoryMappings.containsKey(taskRepository)) {
+				TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, scmRepositoryMappings.get(taskRepository));
+			} else {
+				TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, new HashMap<String, String>());
+			}
 		}
 	}
 
