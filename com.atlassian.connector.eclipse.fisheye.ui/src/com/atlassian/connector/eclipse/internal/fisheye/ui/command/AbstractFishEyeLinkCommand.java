@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.command;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
@@ -89,7 +89,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 					+ e.getMessage(), "<a>Configure FishEye Settings</a>", new Runnable() {
 				public void run() {
 					final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
-							FishEyePreferencePage.ID, null, null);
+							SourceRepositoryMappingPreferencePage.ID, null, null);
 					if (prefDialog != null) {
 						prefDialog.open();
 					}

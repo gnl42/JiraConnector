@@ -49,7 +49,7 @@ public class SourceRepostioryMappingEditor {
 		this(parent, SWT.NONE);
 	}
 
-	public void setMapping(Collection<FishEyeMappingConfiguration> mapping) {
+	public void setRepositoryMappings(Collection<FishEyeMappingConfiguration> mapping) {
 		this.urlToRepositories.clear();
 		this.urlToRepositories.addAll(mapping);
 		tableViewer.setInput(this.urlToRepositories);
@@ -120,8 +120,7 @@ public class SourceRepostioryMappingEditor {
 					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
 							dialog.getScmPath(), dialog.getSourceRepository());
 					if (cfg != null) {
-						urlToRepositories.add(cfg);
-						tableViewer.refresh();
+						addOrEditMapping(cfg);
 					}
 				}
 			}
@@ -162,10 +161,7 @@ public class SourceRepostioryMappingEditor {
 					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
 							dialog.getScmPath(), dialog.getSourceRepository());
 					if (cfg != null) {
-						int index = urlToRepositories.indexOf(mappingCfg);
-						assert index >= 0;
-						urlToRepositories.set(index, cfg);
-						tableViewer.refresh();
+						addOrEditMapping(cfg);
 					}
 				}
 			}
@@ -180,7 +176,15 @@ public class SourceRepostioryMappingEditor {
 		return urlToRepositories;
 	}
 
-	public void addMapping(FishEyeMappingConfiguration mapping) {
+	public void addOrEditMapping(FishEyeMappingConfiguration mapping) {
+		for (int i=0, s=urlToRepositories.size(); i<s; ++i) {
+			FishEyeMappingConfiguration m = urlToRepositories.get(i);
+			if (m.getTaskRepository().equals(mapping.getTaskRepository())
+					&& m.getScmPath().equals(mapping.getScmPath())) {
+				urlToRepositories.set(i, mapping);
+				return;
+			}
+		}
 		this.urlToRepositories.add(mapping);
 		this.tableViewer.refresh();
 	}

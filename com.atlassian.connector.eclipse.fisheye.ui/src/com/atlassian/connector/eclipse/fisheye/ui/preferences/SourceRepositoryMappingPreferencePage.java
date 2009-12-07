@@ -39,17 +39,17 @@ import java.io.IOException;
  * plug-in class. That way, preferences can be accessed directly via the preference store.
  */
 
-public class FishEyePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class SourceRepositoryMappingPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	public static final String ID = "com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage";
 
 	private SourceRepostioryMappingEditor mappingEditor;
 
-	public FishEyePreferencePage() {
+	public SourceRepositoryMappingPreferencePage() {
 		super("FishEye Preferences");
-		setDescription("Add, remove or edit FishEye mapping configuration.\n"
-				+ "Mapping your local SCM repositories to a Fisheye Server Repository "
-				+ "is necessary for looking up files in Fisheye correctly.");
+		setDescription("Add, remove or edit FishEye/Crucible mapping configuration.\n"
+				+ "Mapping your local SCM repositories to a Fisheye/Crucible Source Repository "
+				+ "is necessary for looking up files correctly.");
 		noDefaultAndApplyButton();
 	}
 
@@ -71,7 +71,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
-							mappingEditor.addMapping(cfg);
+							mappingEditor.addOrEditMapping(cfg);
 						}
 					}
 				}
@@ -94,7 +94,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
 
 		mappingEditor = new SourceRepostioryMappingEditor(parent);
-		mappingEditor.setMapping(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
+		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
 
 		return ancestor;
 	}

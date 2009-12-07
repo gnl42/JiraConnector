@@ -110,9 +110,9 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-            class="com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage"
+            class="com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage"
             id="com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage"
-            name="FishEye">
+            name="Repository Mappings">
       </page>
    </extension>
 

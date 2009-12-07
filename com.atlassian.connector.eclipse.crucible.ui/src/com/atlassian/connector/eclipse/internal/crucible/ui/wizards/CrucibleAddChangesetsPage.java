@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -275,7 +275,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
-						FishEyePreferencePage.ID, null, new FishEyePreferenceContextData(
+						SourceRepositoryMappingPreferencePage.ID, null, new FishEyePreferenceContextData(
 								firstMissingMapping == null ? "" : firstMissingMapping, getTaskRepository()));
 				if (prefDialog != null) {
 					if (prefDialog.open() == Window.OK) {
@@ -308,7 +308,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 									+ '/' + file);
 					if (sourceRepository == null) {
 						firstMissingMapping = entry.getRepository().getScmPath();
-						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define missing repository mappings.");
+						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define repository mappings.");
 						allFine = false;
 						break;
 					}

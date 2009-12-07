@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
 import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
@@ -183,7 +183,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 				+ resource.getName() + ": " + message, "<a>Configure FishEye Settings</a>", new Runnable() {
 			public void run() {
 				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
-						FishEyePreferencePage.ID, null, contextData);
+						SourceRepositoryMappingPreferencePage.ID, null, contextData);
 				if (prefDialog != null) {
 					prefDialog.open();
 				}
