@@ -11,14 +11,30 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class FishEyePreferenceContextData {
 	private final String scmPath;
+	private final TaskRepository taskRepository;
 
-	public FishEyePreferenceContextData(String scmPath) {
-		this.scmPath = scmPath;
+	public FishEyePreferenceContextData(@NotNull String scmPath) {
+		this(scmPath, null);
 	}
 
+	public FishEyePreferenceContextData(@NotNull String scmPath, @Nullable TaskRepository repository) {
+		this.scmPath = scmPath;
+		this.taskRepository = repository;
+	}
+
+	@NotNull
 	public String getScmPath() {
 		return scmPath;
+	}
+
+	@Nullable
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
 	}
 }

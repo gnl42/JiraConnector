@@ -235,8 +235,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	@Override
 	protected Control createPageControls(Composite parent) {
-		getShell().setText((isAddMode ? "Add" : "Edit") + " FishEye Mapping");
-		setTitle("SCM to FishEye Mapping");
+		getShell().setText((isAddMode ? "Add" : "Edit") + " Mapping");
+		setTitle("SCM to FishEye/Crucible Mapping");
 		setMessage("Define how locally checked-out projects map to FishEye server and repository");
 		GridLayout layout = new GridLayout(3, false);
 		layout.makeColumnsEqualWidth = false;
@@ -251,11 +251,11 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		GridDataFactory.fillDefaults().grab(false, false).span(1, 1).applyTo(scmButton);
 		scmButton.addSelectionListener(new ScmButtonSelectionListener());
 
-		createLabel(parent, "FishEye Server:");
+		createLabel(parent, "Server:");
 		taskRepositoryCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(taskRepositoryCombo.getControl());
 
-		createLabel(parent, "FishEye Repository:");
+		createLabel(parent, "Source Repository:");
 		sourceRepositoryCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(sourceRepositoryCombo.getControl());
 		sourceRepositoryCombo.setContentProvider(new ArrayContentProvider());

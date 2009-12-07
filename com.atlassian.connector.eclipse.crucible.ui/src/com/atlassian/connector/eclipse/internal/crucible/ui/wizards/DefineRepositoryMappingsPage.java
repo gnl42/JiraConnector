@@ -16,8 +16,11 @@ import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -39,26 +42,34 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class CrucibleRepositoryMappingPage extends WizardPage {
+public class DefineRepositoryMappingsPage extends WizardPage {
 
 	private final Map<String, String> repositoryMappings;
 
 	private final TaskRepository taskRepository;
 
+	private final Set<String> scmRepositories;
+
 	private TableViewer repositoriesMappingViewer;
 
 	private Set<Repository> cachedRepositories;
 
-	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository) {
-		super(pageName);
+	public DefineRepositoryMappingsPage(TaskRepository repository, Collection<String> scmPaths) {
+		super("crucibleRepoMapping");
 
 		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 		this.taskRepository = repository;
 
+		this.scmRepositories = MiscUtil.buildHashSet();
+		this.scmRepositories.addAll(scmPaths);
+
+		setTitle("Define Repository Mapping");
+		setDescription("Define repository mapping used to create review.");
 	}
 
 	public Composite createRepositoryMappingComposite(Composite composite, int hSizeHint) {
@@ -176,7 +187,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 	}
 
 	public void setVisible(boolean visible) {
-		super.setVisible(visible);
+		validatePage();
 
 		if (visible && !CrucibleUiUtil.hasCachedData(getTaskRepository())) {
 			final WizardPage page = this;
@@ -202,12 +213,48 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		cachedRepositories = null;
 	}
 
-	protected abstract void validatePage();
-
-	protected abstract Collection<String> getMappingViewerInput();
-
 	protected void refreshRepositoriesMappingViewer() {
 		repositoriesMappingViewer.setInput(getMappingViewerInput());
 	}
 
+	protected Collection<String> getMappingViewerInput() {
+		return Collections.unmodifiableCollection(this.scmRepositories);
+	}
+
+	protected void validatePage() {
+		setErrorMessage(null);
+
+		//check if all custom repositories are mapped to Crucible repositories
+		boolean allFine = true;
+		for (String ri : getScmRepositories()) {
+			if (getRepositoryMappings().get(ri) == null) {
+				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
+				allFine = false;
+				break;
+			}
+		}
+		setPageComplete(allFine);
+		getContainer().updateButtons();
+	}
+
+	private Collection<String> getScmRepositories() {
+		return scmRepositories;
+	}
+
+	public void createControl(Composite parent) {
+		// TODO maybe the control should be smaller
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).margins(5, 5).create());
+
+		Composite repositoryMappingViewer = createRepositoryMappingComposite(composite, 700);
+		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
+				repositoryMappingViewer);
+		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+
+		Control button = createUpdateRepositoryDataButton(composite);
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
+
+		Dialog.applyDialogFont(composite);
+		setControl(composite);
+	}
 }

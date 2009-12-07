@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeSettingsManager;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
@@ -98,7 +97,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			Map.Entry<String, String> matchingSourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
+			Map.Entry<String, String> matchingSourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
 					repositoryMappings, revision.getScmPath());
 			if (matchingSourceRepository == null) {
 				pathsWithoutMapping.add(revision.getScmPath());
@@ -156,7 +155,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 					return;
 				}
 
-				Map.Entry<String, String> sourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
+				Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
 						repositoryMappings, revision.getScmPath());
 
 				if (sourceRepository == null) {

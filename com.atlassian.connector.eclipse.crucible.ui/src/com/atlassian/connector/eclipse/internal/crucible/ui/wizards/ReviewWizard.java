@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -111,7 +112,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 						//add changeset to review
 						review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
-								addChangeSetsPage.getRepositoryMappings().get(repository.getScmPath()), revisions);
+								TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()).get(
+										repository.getScmPath()), revisions);
 					}
 					return review;
 				}
@@ -195,7 +197,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private IResource[] previousWorkspaceSelection;
 
-	private CrucibleRepositoryMappingPageImpl defineMappingPage;
+	private DefineRepositoryMappingsPage defineMappingPage;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -256,7 +258,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				}
 			}
 
-			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(), repos);
+			defineMappingPage = new DefineRepositoryMappingsPage(getTaskRepository(), repos);
 			addPage(defineMappingPage);
 		}
 

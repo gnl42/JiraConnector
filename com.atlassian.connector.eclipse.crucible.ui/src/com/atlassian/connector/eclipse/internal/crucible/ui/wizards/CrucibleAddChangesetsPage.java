@@ -11,7 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeSettingsManager;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -19,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +32,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
@@ -40,6 +42,8 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -55,6 +59,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +80,7 @@ import java.util.TreeSet;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
+public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private static final int LIMIT = 25;
 
@@ -217,22 +222,26 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 
 	private MenuItem addChangesetMenuItem;
 
+	private final TaskRepository taskRepository;
+
+	private String firstMissingMapping;
+
 	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>());
 	}
 
 	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository,
 			@Nullable SortedSet<ICustomChangesetLogEntry> logEntries) {
-		super("crucibleChangesets", repository); //$NON-NLS-1$
+		super("crucibleChangesets"); //$NON-NLS-1$
 		setTitle("Select Changesets");
 		setDescription("Select the changesets that should be included in the review.");
 
+		this.taskRepository = repository;
 		this.availableLogEntries = new HashMap<ScmRepository, SortedSet<ICustomChangesetLogEntry>>();
 		this.selectedLogEntries = new HashMap<ScmRepository, SortedSet<ICustomChangesetLogEntry>>();
 
 		if (logEntries != null && logEntries.size() > 0) {
 			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
-			getRepositoryMappings().put(logEntries.first().getRepository().getScmPath(), null);
 		}
 	}
 
@@ -252,16 +261,30 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 
 		createRightViewer(composite);
 
-		Composite repositoryMappingViewer = createRepositoryMappingComposite(composite, 1000);
-		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-				repositoryMappingViewer);
-		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-
-		Control button = createUpdateRepositoryDataButton(composite);
+		Control button = createDefineRepositoryMappingsButton(composite);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
+	}
+
+	protected Control createDefineRepositoryMappingsButton(Composite composite) {
+		Button updateData = new Button(composite, SWT.PUSH);
+		updateData.setText("Define Repository Mappings");
+		updateData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
+						FishEyePreferencePage.ID, null, new FishEyePreferenceContextData(
+								firstMissingMapping == null ? "" : firstMissingMapping, getTaskRepository()));
+				if (prefDialog != null) {
+					if (prefDialog.open() == Window.OK) {
+						validatePage();
+					}
+				}
+			}
+		});
+		return updateData;
 	}
 
 	/*
@@ -279,10 +302,13 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 					continue;
 				}
 				for (String file : files) {
-					Map.Entry<String, String> sourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
-							getRepositoryMappings(), file);
+					Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
+							TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), entry.getRepository()
+									.getScmPath()
+									+ '/' + file);
 					if (sourceRepository == null) {
-						setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
+						firstMissingMapping = entry.getRepository().getScmPath();
+						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define missing repository mappings.");
 						allFine = false;
 						break;
 					}
@@ -578,12 +604,13 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 						selectedTreeViewer.setInput(selectedLogEntries);
 						validatePage();
 					}
-//					if (!CrucibleUiUtil.hasCachedData(getTaskRepository())) {
-//						wizard.updateCache(CrucibleAddChangesetsPage.this);
-//					}
 				}
 			});
 		}
+	}
+
+	private TaskRepository getTaskRepository() {
+		return taskRepository;
 	}
 
 	private void addChangesets() {
@@ -616,25 +643,13 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 					}
 					if (changesets.size() > 0) {
 						selectedLogEntries.put(repository, changesets);
-						if (!getRepositoryMappings().containsKey(repository.getScmPath())) {
-							getRepositoryMappings().put(repository.getScmPath(), null);
-						}
 					} else {
 						selectedLogEntries.remove(repository);
-						//if its the last of that repo, remove it from mapping
-						// looks like mappingCombos is not used any more
-//						if (!selectedLogEntries.containsKey(repository)) {
-//							ComboViewer viewer = mappingCombos.remove(repository);
-//							if (viewer != null) {
-//								viewer.getCombo().dispose();
-//							}
-//						}
 					}
 					expandedRepositories.add(repository);
 				}
 			}
 			selectedTreeViewer.setInput(selectedLogEntries);
-			refreshRepositoriesMappingViewer();
 			selectedTreeViewer.setExpandedElements(expandedRepositories.toArray());
 		}
 		validatePage();
@@ -674,16 +689,6 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 
 	public Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> getSelectedChangesets() {
 		return selectedLogEntries;
-	}
-
-	@Override
-	protected Collection<String> getMappingViewerInput() {
-		Set<ScmRepository> scmRepositories = selectedLogEntries.keySet();
-		Set<String> scmPaths = MiscUtil.buildHashSet();
-		for (ScmRepository scmRepository : scmRepositories) {
-			scmPaths.add(scmRepository.getScmPath());
-		}
-		return scmPaths;
 	}
 
 }

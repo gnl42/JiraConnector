@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -68,4 +69,20 @@ public final class TaskRepositoryUtil {
 					e));
 		}
 	}
+
+	@Nullable
+	public static Map.Entry<String, String> getMatchingSourceRepository(@NotNull Map<String, String> repositories,
+			@NotNull String scmPath) {
+
+		Map.Entry<String, String> matching = null;
+		for (Map.Entry<String, String> prefix : repositories.entrySet()) {
+			if (scmPath.startsWith(prefix.getKey())) {
+				if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
+					matching = prefix;
+				}
+			}
+		}
+		return matching;
+	}
+
 }

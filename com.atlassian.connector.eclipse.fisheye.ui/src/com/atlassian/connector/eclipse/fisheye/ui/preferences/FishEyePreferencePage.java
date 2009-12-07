@@ -20,7 +20,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -44,8 +43,6 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 	public static final String ID = "com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage";
 
-	private TableViewer tableViewer;
-
 	private SourceRepostioryMappingEditor mappingEditor;
 
 	public FishEyePreferencePage() {
@@ -68,14 +65,13 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			final FishEyePreferenceContextData initialData = (FishEyePreferenceContextData) data;
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), null,
+					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), initialData.getTaskRepository(),
 							initialData.getScmPath(), null);
 					if (dialog.open() == Window.OK) {
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
 							mappingEditor.addMapping(cfg);
-							tableViewer.refresh();
 						}
 					}
 				}

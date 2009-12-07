@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -40,6 +41,7 @@ import java.util.Iterator;
 
 public class SourceRepostioryMappingEditor {
 
+	private final Composite parent;
 	private final TableViewer tableViewer;
 	private final ArrayList<FishEyeMappingConfiguration> urlToRepositories = MiscUtil.buildArrayList();
 
@@ -53,7 +55,11 @@ public class SourceRepostioryMappingEditor {
 		tableViewer.setInput(this.urlToRepositories);
 	}
 
-	public SourceRepostioryMappingEditor(Composite parent, int style) {
+	public SourceRepostioryMappingEditor(Composite ancestor, int style) {
+		parent = new Composite(ancestor, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(parent);
+		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
+
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getControl());
 		Composite panel = new Composite(parent, SWT.NONE);
@@ -69,7 +75,7 @@ public class SourceRepostioryMappingEditor {
 		final Button removeButton = new Button(panel, SWT.PUSH);
 		removeButton.setText("Remove");
 
-		final String[] titles = { "SCM Path", "FishEye Server", "FishEye Repository" };
+		final String[] titles = { "SCM Path", "Server", "Repository" };
 		int[] bounds = { 100, 200, 100 };
 		for (int i = 0; i < titles.length; i++) {
 			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -80,7 +86,6 @@ public class SourceRepostioryMappingEditor {
 		}
 
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
-
 			public Object[] getElements(Object inputElement) {
 				return urlToRepositories.toArray();
 			}
@@ -90,31 +95,25 @@ public class SourceRepostioryMappingEditor {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			}
-
 		});
-
 		tableViewer.setLabelProvider(new TableLabelProvider());
 
 		Table tableControl = tableViewer.getTable();
 		tableControl.setHeaderVisible(true);
 		tableControl.setLinesVisible(true);
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
 					editButton.setEnabled(ssel.size() == 1);
 					removeButton.setEnabled(ssel.size() > 0);
 				}
-
 			}
-
 		});
 		tableViewer.setInput(urlToRepositories);
 		tableViewer.setSelection(null);
 		addButton.setFocus();
 		addButton.addSelectionListener(new SelectionAdapter() {
-
 			public void widgetSelected(SelectionEvent e) {
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(), null);
 				if (dialog.open() == Window.OK) {
@@ -129,11 +128,9 @@ public class SourceRepostioryMappingEditor {
 
 		});
 		editButton.addSelectionListener(new SelectionAdapter() {
-
 			public void widgetSelected(SelectionEvent e) {
 				handleEditMapping(tableViewer.getSelection());
 			}
-
 		});
 
 		removeButton.addSelectionListener(new SelectionAdapter() {
@@ -176,7 +173,7 @@ public class SourceRepostioryMappingEditor {
 	}
 
 	public Control getControl() {
-		return tableViewer.getControl();
+		return parent;
 	}
 
 	public Collection<FishEyeMappingConfiguration> getMapping() {
@@ -185,5 +182,7 @@ public class SourceRepostioryMappingEditor {
 
 	public void addMapping(FishEyeMappingConfiguration mapping) {
 		this.urlToRepositories.add(mapping);
+		this.tableViewer.refresh();
 	}
+
 }

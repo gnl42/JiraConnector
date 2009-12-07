@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositoryMappingPageImpl;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.DefineRepositoryMappingsPage;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.wizard.Wizard;
@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class DefineRepositoryMappingsWizard extends Wizard {
 
-	private CrucibleRepositoryMappingPageImpl repositoryMappings;
+	private DefineRepositoryMappingsPage repositoryMappings;
 
 	private final TaskRepository taskRepository;
 
@@ -40,7 +40,7 @@ public class DefineRepositoryMappingsWizard extends Wizard {
 
 	public void addPages() {
 		if (repositoryMappings == null) {
-			repositoryMappings = new CrucibleRepositoryMappingPageImpl(taskRepository, scmRepositories);
+			repositoryMappings = new DefineRepositoryMappingsPage(taskRepository, scmRepositories);
 		}
 		addPage(repositoryMappings);
 	}

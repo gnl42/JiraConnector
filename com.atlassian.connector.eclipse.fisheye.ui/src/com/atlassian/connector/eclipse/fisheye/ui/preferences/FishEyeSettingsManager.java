@@ -76,21 +76,6 @@ public class FishEyeSettingsManager {
 		}
 	}
 
-	@Nullable
-	public static Map.Entry<String, String> getMatchingSourceRepository(@NotNull Map<String, String> repositories,
-			@NotNull String scmPath) {
-
-		Map.Entry<String, String> matching = null;
-		for (Map.Entry<String, String> prefix : repositories.entrySet()) {
-			if (scmPath.startsWith(prefix.getKey())) {
-				if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
-					matching = prefix;
-				}
-			}
-		}
-		return matching;
-	}
-
 	public void save() throws IOException {
 		Map<TaskRepository, Map<String, String>> scmRepositoryMappings = MiscUtil.buildHashMap();
 		for (FishEyeMappingConfiguration mapping : mappings) {
