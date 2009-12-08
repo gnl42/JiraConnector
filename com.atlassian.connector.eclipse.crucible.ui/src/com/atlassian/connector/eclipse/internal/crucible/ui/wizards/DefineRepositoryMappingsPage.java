@@ -125,16 +125,15 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 				return;
 			}
 
-			if (revision == null) {
-				setErrorMessage(NLS.bind("Unable to get SCM status for {0}.", resource.getFullPath().toString()));
-				allFine = false;
-				break;
-			} else if (TaskRepositoryUtil.getMatchingSourceRepository(
-					TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
-				setErrorMessage(NLS.bind("Unable to map SCM path {0} to Crucible repository. Please define a mapping.",
-						revision.getScmPath()));
-				allFine = false;
-				break;
+			if (revision != null) {
+				if (TaskRepositoryUtil.getMatchingSourceRepository(
+						TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
+					setErrorMessage(NLS.bind(
+							"Unable to map SCM path {0} to Crucible repository. Please define a mapping.",
+							revision.getScmPath()));
+					allFine = false;
+					break;
+				}
 			}
 		}
 

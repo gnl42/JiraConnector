@@ -187,7 +187,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 	}
 
 	protected void tellUserToCommitFirst() {
-		WorkbenchUtil.getShell().getDisplay().asyncExec(new Runnable() {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
