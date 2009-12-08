@@ -26,7 +26,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
@@ -34,7 +33,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -246,19 +244,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			addPage(addWorkspacePatchPage);
 		}
 		if (types.contains(Type.ADD_SCM_RESOURCES)) {
-			Set<String> repos = MiscUtil.buildHashSet();
-
-			for (IResource root : selectedWorkspaceResources) {
-				ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(root);
-				if (repositoryInfo != null) {
-					repos.add(repositoryInfo.getScmPath());
-				} else {
-					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-							"Cannot get repository info for resource " + root.getName()));
-				}
-			}
-
-			defineMappingPage = new DefineRepositoryMappingsPage(getTaskRepository(), repos);
+			defineMappingPage = new DefineRepositoryMappingsPage(getTaskRepository(), selectedWorkspaceResources);
 			addPage(defineMappingPage);
 		}
 

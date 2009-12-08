@@ -11,163 +11,78 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.AddOrEditFishEyeMappingDialog;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepostioryMappingEditor;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
-import com.atlassian.theplugin.commons.crucible.api.model.Repository;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
 
+import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class DefineRepositoryMappingsPage extends WizardPage {
 
-	private final Map<String, String> repositoryMappings;
-
 	private final TaskRepository taskRepository;
 
-	private final Set<String> scmRepositories;
+	private SourceRepostioryMappingEditor mappingEditor;
 
-	private TableViewer repositoriesMappingViewer;
+	private final Set<IResource> resources;
 
-	private Set<Repository> cachedRepositories;
-
-	public DefineRepositoryMappingsPage(TaskRepository repository, Collection<String> scmPaths) {
+	public DefineRepositoryMappingsPage(TaskRepository repository, Collection<IResource> resources) {
 		super("crucibleRepoMapping");
 
-		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 		this.taskRepository = repository;
-
-		this.scmRepositories = MiscUtil.buildHashSet();
-		this.scmRepositories.addAll(scmPaths);
+		this.resources = MiscUtil.buildHashSet();
+		this.resources.addAll(resources);
 
 		setTitle("Define Repository Mapping");
 		setDescription("Define repository mapping used to create review.");
 	}
 
-	public Composite createRepositoryMappingComposite(Composite composite, int hSizeHint) {
-		final Composite mappingComposite = new Composite(composite, SWT.NONE);
+	public Composite createRepositoryMappingComposite(Composite ancestor, int hSizeHint) {
+		final Composite parent = new Composite(ancestor, SWT.NONE);
 
-		final Table table = new Table(mappingComposite, SWT.BORDER);
-		table.setHeaderVisible(true);
-
-		GridDataFactory.fillDefaults().hint(hSizeHint, 100).grab(true, true).applyTo(table);
-		repositoriesMappingViewer = new TableViewer(table);
-		repositoriesMappingViewer.setContentProvider(new ArrayContentProvider());
-
-		final TableViewerColumn column1 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
-		column1.getColumn().setText("SCM Path");
-		column1.getColumn().setWidth(500);
-		column1.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public Image getImage(Object element) {
-				return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
-			}
-		});
-
-		final TableViewerColumn column2 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
-		column2.getColumn().setText("Crucible Repository");
-		column2.getColumn().setWidth(200);
-		column2.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String mapping = repositoryMappings.get(element);
-				if (mapping != null) {
-					return mapping;
+		mappingEditor = new SourceRepostioryMappingEditor(parent);
+		mappingEditor.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				try {
+					FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mappingEditor.getMapping());
+					FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
+				} catch (IOException e) {
+					ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
+							"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
+									CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
-				return "";
+				validatePage();
 			}
 		});
+		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
 
-		final Button editButton = new Button(mappingComposite, SWT.PUSH);
-		editButton.setText("Edit...");
-		editButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				editRepositoryMapping();
-			}
-		});
-		editButton.setEnabled(false);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(editButton);
-
-		table.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				editRepositoryMapping();
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				ISelection selection = repositoriesMappingViewer.getSelection();
-				if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-					editButton.setEnabled(true);
-				} else {
-					editButton.setEnabled(false);
-				}
-			}
-
-		});
-
-		repositoriesMappingViewer.setInput(getMappingViewerInput());
-		return mappingComposite;
-	}
-
-	private void editRepositoryMapping() {
-		ISelection selection = repositoriesMappingViewer.getSelection();
-		if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-			String scmPath = ((IStructuredSelection) selection).getFirstElement().toString();
-			if (cachedRepositories == null) {
-				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
-			}
-
-			String sourceRepository = repositoryMappings.get(scmPath);
-
-			AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(
-					repositoriesMappingViewer.getTable().getShell(), taskRepository, scmPath, sourceRepository);
-
-			dialog.setTaskRepositoryEnabled(false);
-
-			if (dialog.open() == Window.OK) {
-				repositoryMappings.remove(scmPath); // remove old mapping
-				repositoryMappings.put(dialog.getScmPath(), dialog.getSourceRepository());
-				repositoriesMappingViewer.setInput(getMappingViewerInput());
-
-				final Map<String, String> repositoryMappingsCopy = new HashMap<String, String>(
-						repositoryMappings.size());
-				for (Map.Entry<String, String> entry : repositoryMappings.entrySet()) {
-					if (entry.getValue() != null) {
-						repositoryMappingsCopy.put(entry.getKey(), entry.getValue());
-					}
-				}
-				TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, repositoryMappingsCopy);
-			}
-		}
-		validatePage();
+		return parent;
 	}
 
 	public void setVisible(boolean visible) {
@@ -191,40 +106,40 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		return taskRepository;
 	}
 
-	public Map<String, String> getRepositoryMappings() {
-		return repositoryMappings;
-	}
-
-	protected void clearCachedCrucibleRepositories() {
-		cachedRepositories = null;
-	}
-
-	protected void refreshRepositoriesMappingViewer() {
-		repositoriesMappingViewer.setInput(getMappingViewerInput());
-	}
-
-	protected Collection<String> getMappingViewerInput() {
-		return Collections.unmodifiableCollection(this.scmRepositories);
-	}
-
 	protected void validatePage() {
 		setErrorMessage(null);
 
 		//check if all custom repositories are mapped to Crucible repositories
 		boolean allFine = true;
-		for (String ri : getScmRepositories()) {
-			if (getRepositoryMappings().get(ri) == null) {
-				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
+
+		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
+
+		for (IResource resource : resources) {
+			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+
+			final LocalStatus revision;
+			try {
+				revision = teamConnector.getLocalRevision(resource);
+			} catch (CoreException e) {
+				setErrorMessage(e.getMessage());
+				return;
+			}
+
+			if (revision == null) {
+				setErrorMessage(NLS.bind("Unable to get SCM status for {0}.", resource.getFullPath().toString()));
+				allFine = false;
+				break;
+			} else if (TaskRepositoryUtil.getMatchingSourceRepository(
+					TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
+				setErrorMessage(NLS.bind("Unable to map SCM path {0} to Crucible repository. Please define a mapping.",
+						revision.getScmPath()));
 				allFine = false;
 				break;
 			}
 		}
+
 		setPageComplete(allFine);
 		getContainer().updateButtons();
-	}
-
-	private Collection<String> getScmRepositories() {
-		return scmRepositories;
 	}
 
 	public void createControl(Composite parent) {

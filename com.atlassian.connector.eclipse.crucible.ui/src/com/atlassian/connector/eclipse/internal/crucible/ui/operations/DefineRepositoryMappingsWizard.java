@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.DefineRepositoryMappingsPage;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -26,13 +27,13 @@ public class DefineRepositoryMappingsWizard extends Wizard {
 
 	private final TaskRepository taskRepository;
 
-	private final Set<String> scmRepositories;
+	private final Set<IResource> resources;
 
-	public DefineRepositoryMappingsWizard(TaskRepository repository, Collection<String> scmRepositories) {
+	public DefineRepositoryMappingsWizard(TaskRepository repository, Collection<IResource> resources) {
 		super();
 		this.taskRepository = repository;
-		this.scmRepositories = MiscUtil.buildHashSet();
-		this.scmRepositories.addAll(scmRepositories);
+		this.resources = MiscUtil.buildHashSet();
+		this.resources.addAll(resources);
 
 		setWindowTitle("Define Repository Mapping");
 		setNeedsProgressMonitor(true);
@@ -40,7 +41,7 @@ public class DefineRepositoryMappingsWizard extends Wizard {
 
 	public void addPages() {
 		if (repositoryMappings == null) {
-			repositoryMappings = new DefineRepositoryMappingsPage(taskRepository, scmRepositories);
+			repositoryMappings = new DefineRepositoryMappingsPage(taskRepository, resources);
 		}
 		addPage(repositoryMappings);
 	}

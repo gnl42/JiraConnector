@@ -71,7 +71,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
-							mappingEditor.addOrEditMapping(cfg);
+							mappingEditor.addOrEditMapping(cfg, null);
 						}
 					}
 				}

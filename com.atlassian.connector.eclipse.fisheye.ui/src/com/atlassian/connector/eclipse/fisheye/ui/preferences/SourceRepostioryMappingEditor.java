@@ -27,23 +27,29 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class SourceRepostioryMappingEditor {
 
 	private final Composite parent;
 	private final TableViewer tableViewer;
 	private final ArrayList<FishEyeMappingConfiguration> urlToRepositories = MiscUtil.buildArrayList();
+	private final List<ModifyListener> modifyListeners = MiscUtil.buildArrayList();
 
 	public SourceRepostioryMappingEditor(Composite parent) {
 		this(parent, SWT.NONE);
@@ -120,7 +126,7 @@ public class SourceRepostioryMappingEditor {
 					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
 							dialog.getScmPath(), dialog.getSourceRepository());
 					if (cfg != null) {
-						addOrEditMapping(cfg);
+						addOrEditMapping(cfg, null);
 					}
 				}
 			}
@@ -139,6 +145,7 @@ public class SourceRepostioryMappingEditor {
 					urlToRepositories.remove(it.next());
 				}
 				tableViewer.refresh();
+				fireChangeListeners();
 			}
 		});
 
@@ -154,14 +161,14 @@ public class SourceRepostioryMappingEditor {
 		if (aSelection instanceof IStructuredSelection) {
 			Object selection = ((IStructuredSelection) aSelection).getFirstElement();
 			if (selection instanceof FishEyeMappingConfiguration) {
-				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
+				FishEyeMappingConfiguration oldMapping = (FishEyeMappingConfiguration) selection;
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(),
-						mappingCfg.getTaskRepository(), mappingCfg.getScmPath(), mappingCfg.getFishEyeRepo());
+						oldMapping.getTaskRepository(), oldMapping.getScmPath(), oldMapping.getFishEyeRepo());
 				if (dialog.open() == Window.OK) {
-					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
+					final FishEyeMappingConfiguration newMapping = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
 							dialog.getScmPath(), dialog.getSourceRepository());
-					if (cfg != null) {
-						addOrEditMapping(cfg);
+					if (newMapping != null) {
+						addOrEditMapping(newMapping, oldMapping);
 					}
 				}
 			}
@@ -176,7 +183,10 @@ public class SourceRepostioryMappingEditor {
 		return urlToRepositories;
 	}
 
-	public void addOrEditMapping(FishEyeMappingConfiguration mapping) {
+	public void addOrEditMapping(FishEyeMappingConfiguration mapping, FishEyeMappingConfiguration oldMapping) {
+		if (oldMapping != null) {
+			urlToRepositories.remove(oldMapping);
+		}
 		for (int i=0, s=urlToRepositories.size(); i<s; ++i) {
 			FishEyeMappingConfiguration m = urlToRepositories.get(i);
 			if (m.getTaskRepository().equals(mapping.getTaskRepository())
@@ -187,6 +197,25 @@ public class SourceRepostioryMappingEditor {
 		}
 		this.urlToRepositories.add(mapping);
 		this.tableViewer.refresh();
+		fireChangeListeners();
 	}
 
+	public synchronized void addModifyListener(@NotNull ModifyListener iChangeListener) {
+		modifyListeners.add(iChangeListener);
+	}
+
+	public synchronized void removeModifyListener(@NotNull ModifyListener iChangeListener) {
+		int idx = modifyListeners.indexOf(iChangeListener);
+		if (idx != -1) {
+			modifyListeners.remove(idx);
+		}
+	}
+
+	protected synchronized void fireChangeListeners() {
+		for(ModifyListener l : modifyListeners) {
+			Event event = new Event();
+			event.widget = tableViewer.getControl();
+			l.modifyText(new ModifyEvent(event));
+		}
+	}
 }
