@@ -121,8 +121,8 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 			try {
 				revision = teamConnector.getLocalRevision(resource);
 			} catch (CoreException e) {
-				setErrorMessage(e.getMessage());
-				return;
+				// probably unversioned file, don't care
+				continue;
 			}
 
 			if (revision != null) {
