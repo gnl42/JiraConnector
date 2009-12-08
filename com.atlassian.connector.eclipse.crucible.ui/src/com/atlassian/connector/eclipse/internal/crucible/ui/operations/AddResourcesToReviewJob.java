@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -172,14 +173,13 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		}
 
 		// hack to trigger task list synchronization
-		/* FIXME: crashes e3.6
 		try {
 			client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId()), true,
 					monitor);
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 			return;
-		}*/
+		}
 	}
 
 	protected TaskRepository getTaskRepository() {
