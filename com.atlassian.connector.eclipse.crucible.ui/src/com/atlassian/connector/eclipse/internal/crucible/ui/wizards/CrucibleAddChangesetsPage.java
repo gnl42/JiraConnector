@@ -38,7 +38,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
@@ -404,34 +403,35 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				// first time of expanding: retrieve first 10 changesets
 				final Object object = event.getElement();
 				if (object instanceof ScmRepository) {
-					SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(object);
-					if (logEntries == null) {
-						updateChangesets((ScmRepository) object, LIMIT);
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								// expand tree after filling
-								availableTreeViewer.expandToLevel(object, 1);
-							}
-						});
-					}
+					refreshRepository((ScmRepository) object);
 				}
+
 			}
 		});
 		availableTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				Object element = selection.getFirstElement();
-				if (availableTreeViewer.isExpandable(element)) {
-					if (selection instanceof ITreeSelection) {
-						TreePath[] paths = ((ITreeSelection) selection).getPathsFor(element);
-						for (int i = 0; i < paths.length; i++) {
-							availableTreeViewer.setExpandedState(paths[i],
-									!availableTreeViewer.getExpandedState(paths[i]));
-						}
-					} else {
-						availableTreeViewer.setExpandedState(element, !availableTreeViewer.getExpandedState(element));
+				Object object = selection.getFirstElement();
+				if (availableTreeViewer.isExpandable(object)) {
+					if (!availableTreeViewer.getExpandedState(object) && object instanceof ScmRepository) {
+						refreshRepository((ScmRepository) object);
+						return;
 					}
+					availableTreeViewer.setExpandedState(object, !availableTreeViewer.getExpandedState(object));
 				}
+			}
+		});
+	}
+
+	private void refreshRepository(final ScmRepository object) {
+		SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(object);
+		if (logEntries == null) {
+			updateChangesets(object, LIMIT);
+		}
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				// expand tree after filling
+				availableTreeViewer.expandToLevel(object, 1);
 			}
 		});
 	}
