@@ -33,8 +33,12 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
@@ -409,6 +413,23 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 								availableTreeViewer.expandToLevel(object, 1);
 							}
 						});
+					}
+				}
+			}
+		});
+		availableTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				Object element = selection.getFirstElement();
+				if (availableTreeViewer.isExpandable(element)) {
+					if (selection instanceof ITreeSelection) {
+						TreePath[] paths = ((ITreeSelection) selection).getPathsFor(element);
+						for (int i = 0; i < paths.length; i++) {
+							availableTreeViewer.setExpandedState(paths[i],
+									!availableTreeViewer.getExpandedState(paths[i]));
+						}
+					} else {
+						availableTreeViewer.setExpandedState(element, !availableTreeViewer.getExpandedState(element));
 					}
 				}
 			}
