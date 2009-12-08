@@ -73,9 +73,13 @@ public class AddResourceToActiveReviewAction extends TeamAction {
 						public void run() {
 							MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
 							mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-							mb.setMessage(NLS.bind(
+							String message = NLS.bind(
 									"Failed to add selected resources to active review. Error message was: \n\n{0}",
-									status.getMessage()));
+									status.getMessage());
+							if (status.getMessage().contains("does not exist")) {
+								message += "\n\nCheck if your mappings are correct in preferences Atlassian->Repository Mappings.";
+							}
+							mb.setMessage(message);
 							mb.open();
 						}
 					});
