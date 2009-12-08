@@ -123,7 +123,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 
 		public void repositoryAdded(TaskRepository repository) {
 			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)
-					&& AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
+					&& !AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
 				Display.getDefault().asyncExec(new Runnable() {
 
 					public void run() {
