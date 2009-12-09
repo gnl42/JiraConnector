@@ -172,9 +172,9 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 					uriStr = uriStr.substring(0, index);
 				}
 
-				return new LocalStatus(uriStr, localFileRevision.getContentIdentifier(), false, false, false);
+				return LocalStatus.makeVersioned(uriStr, localFileRevision.getContentIdentifier());
 			}
-			return new LocalStatus(localFileRevision.getContentIdentifier(), null, false, false, false);
+			return LocalStatus.makeAdded(localFileRevision.getContentIdentifier(), false);
 //
 //			boolean inSync = isRemoteFileInSync(file, rp);
 //

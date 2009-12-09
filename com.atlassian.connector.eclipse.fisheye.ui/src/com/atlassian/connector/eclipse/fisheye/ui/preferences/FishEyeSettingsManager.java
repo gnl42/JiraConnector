@@ -109,7 +109,7 @@ public class FishEyeSettingsManager {
 	public String buildFishEyeUrl(@NotNull IResource resource, @Nullable LineRange lineRange) throws CoreException,
 			NoMatchingFishEyeConfigurationException {
 		final LocalStatus revisionInfo = TeamUiUtils.getLocalRevision(resource);
-		if (revisionInfo == null) {
+		if (revisionInfo == null || !revisionInfo.isVersioned()) {
 			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
 					"Cannot determine locally checked-out revision for resource " + resource.getFullPath()));
 		}

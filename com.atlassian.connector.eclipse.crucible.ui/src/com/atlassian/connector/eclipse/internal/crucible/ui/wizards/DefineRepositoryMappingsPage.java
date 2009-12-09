@@ -121,11 +121,11 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 			try {
 				revision = teamConnector.getLocalRevision(resource);
 			} catch (CoreException e) {
-				// probably unversioned file, don't care
-				continue;
+				setErrorMessage(e.getMessage());
+				return;
 			}
 
-			if (revision != null) {
+			if (revision != null && revision.isVersioned()) {
 				if (TaskRepositoryUtil.getMatchingSourceRepository(
 						TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
 					setErrorMessage(NLS.bind(

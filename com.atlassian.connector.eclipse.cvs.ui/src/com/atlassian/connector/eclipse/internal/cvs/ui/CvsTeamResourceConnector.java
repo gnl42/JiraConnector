@@ -154,8 +154,9 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
 			final String revision = syncInfo != null ? "".equals(syncInfo.getRevision()) ? null
 					: syncInfo.getRevision() : null;
+
 			return new LocalStatus(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
-					syncInfo == null || syncInfo.isAdded(), false, isBinary);
+					syncInfo == null || syncInfo.isAdded(), false, isBinary, false);
 		}
 		return null;
 	}

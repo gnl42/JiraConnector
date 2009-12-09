@@ -92,7 +92,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			if (revision.isDirty() || revision.isAdded()) {
+			if (!revision.isVersioned() || revision.isDirty() || revision.isAdded()) {
 				tellUserToCommitFirst();
 				return;
 			}

@@ -13,10 +13,11 @@ package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
 import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
@@ -112,10 +113,18 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (action.isEnabled()) {
 			selectionData = getData(selection);
-			boolean isEnabled;
+			boolean isEnabled = false;
 			try {
-				isEnabled = selectionData.resource != null
-						&& (TeamUiUtils.hasNoTeamConnectors() || TeamUiUtils.getLocalRevision(selectionData.resource) != null);
+				if (selectionData.resource != null) {
+					if (TeamUiUtils.hasNoTeamConnectors()) {
+						isEnabled = true;
+					} else {
+						LocalStatus status = TeamUiUtils.getLocalRevision(selectionData.resource);
+						if (status != null && status.isVersioned()) {
+							isEnabled = true;
+						}
+					}
+				}
 			} catch (CoreException e) {
 				isEnabled = false;
 			}

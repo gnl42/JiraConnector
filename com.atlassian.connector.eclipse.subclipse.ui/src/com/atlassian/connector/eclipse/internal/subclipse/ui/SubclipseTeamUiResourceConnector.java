@@ -230,23 +230,29 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		}
 		if (isResourceManagedBy(project)) {
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+			final LocalResourceStatus svnStatus = svnResource.getStatus();
+
+			if (svnStatus.isUnversioned()) {
+				return LocalStatus.makeUnversioned();
+			}
+
 			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
 			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
+
+			if (svnStatus.isAdded() || svnResource.getStatus().getLastChangedRevision() == null) {
+				return LocalStatus.makeAdded(svnResource.getUrl().toString(), isBinary);
+			}
+
 			try {
-				if (svnResource.getStatus().getLastChangedRevision() == null) {
-					// new file not committed yet
-					return null;
-				}
-				return new LocalStatus(svnResource.getUrl().toString(), svnResource.getStatus()
+				return LocalStatus.makeVersioned(svnResource.getUrl().toString(), svnResource.getStatus()
 						.getLastChangedRevision()
-						.toString(), svnResource.isAdded(), svnResource.isDirty(), isBinary);
+						.toString(), svnResource.isDirty(), isBinary);
 			} catch (SVNException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID,
-						"Cannot determine SVN information for resource [" + resource + "]", e));
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind(
+						"Cannot determine SVN information for resource {0}", resource), e));
 			}
 		}
 		return null;
-
 	}
 
 	public ScmRepository getApplicableRepository(IResource resource) {

@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
+import org.jetbrains.annotations.Nullable;
+
 public class LocalStatus {
 	private final String scmPath;
 
@@ -22,18 +24,24 @@ public class LocalStatus {
 
 	private final boolean added;
 
-	public LocalStatus(String scmPath, String revision, boolean added, boolean dirty, boolean binary) {
+	private final boolean versioned;
+
+	public LocalStatus(@Nullable String scmPath, @Nullable String revision, boolean added, boolean dirty,
+			boolean binary, boolean versioned) {
 		this.scmPath = scmPath;
 		this.revision = revision;
 		this.binary = binary;
 		this.dirty = dirty;
 		this.added = added;
+		this.versioned = versioned;
 	}
 
+	@Nullable
 	public String getScmPath() {
 		return scmPath;
 	}
 
+	@Nullable
 	public String getRevision() {
 		return revision;
 	}
@@ -50,8 +58,29 @@ public class LocalStatus {
 		return added;
 	}
 
+	public boolean isVersioned() {
+		return versioned;
+	}
+
 	@Override
 	public String toString() {
 		return scmPath + "@" + revision;
+	}
+
+	public static LocalStatus makeUnversioned() {
+		return new LocalStatus(null, null, false, false, false, true);
+	}
+
+	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision, boolean dirty,
+			boolean binary) {
+		return new LocalStatus(scmPath, revision, false, dirty, binary, false);
+	}
+
+	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision) {
+		return makeVersioned(scmPath, revision, false, false);
+	}
+
+	public static LocalStatus makeAdded(@Nullable String scmPath, boolean binary) {
+		return new LocalStatus(scmPath, null, true, true, binary, false);
 	}
 }
