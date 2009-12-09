@@ -68,7 +68,7 @@ public class LocalStatus {
 	}
 
 	public static LocalStatus makeUnversioned() {
-		return new LocalStatus(null, null, false, false, false, true);
+		return new LocalStatus(null, null, false, false, false, false);
 	}
 
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision, boolean dirty,

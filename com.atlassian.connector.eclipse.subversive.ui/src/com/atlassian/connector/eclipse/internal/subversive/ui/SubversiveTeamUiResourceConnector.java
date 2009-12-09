@@ -245,33 +245,37 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		if (project == null) {
 			return null;
 		}
+		if (isResourceManagedBy(resource)) {
+			// we use both local and repository resource as I don't know how to fetch SVN URL from local resource
+			// with current Subversive implementation svnResource.getUrl() is immediate - i.e. it does not do anything
+			// remote
+			try {
+				final IRepositoryResource svnResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
+				final ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
+				if (svnResource == null || localResource == null) {
+					return null;
+				}
 
-		// check if project is associated with Subversive Team provider, 
-		// if we don't test it asRepositoryResource will throw RuntimeException
-		RepositoryProvider provider = RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID);
-		if (provider == null) {
-			return null;
-		}
+				if (IStateFilter.SF_UNVERSIONED.accept(localResource)) {
+					return LocalStatus.makeUnversioned();
+				}
 
-		// we use both local and repository resource as I don't know how to fetch SVN URL from local resource
-		// with current Subversive implementation svnResource.getUrl() is immediate - i.e. it does not do anything
-		// remote
-		try {
-			final IRepositoryResource svnResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
-			final ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
-			if (svnResource == null || localResource == null) {
-				return null;
+				final String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource,
+						SVNProperty.BuiltIn.MIME_TYPE);
+				boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
+
+				if (IStateFilter.SF_ADDED.accept(localResource)) {
+					return LocalStatus.makeAdded(svnResource.getUrl(), isBinary);
+				}
+
+				return LocalStatus.makeVersioned(svnResource.getUrl(), Long.toString(localResource.getRevision()),
+						localResource.getChangeMask() == ILocalResource.NO_MODIFICATION, isBinary);
+			} catch (RuntimeException e) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+						"Cannot determine local revision for [" + resource.getName() + "]", e));
 			}
-
-			final String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource, SVNProperty.BuiltIn.MIME_TYPE);
-			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
-			return new LocalStatus(svnResource.getUrl(), Long.toString(localResource.getRevision()),
-					IStateFilter.SF_ADDED.accept(localResource),
-					localResource.getChangeMask() == ILocalResource.NO_MODIFICATION, isBinary);
-		} catch (RuntimeException e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"Cannot determine local revision for [" + resource.getName() + "]", e));
 		}
+		return null;
 	}
 
 	public ScmRepository getApplicableRepository(IResource resource) {
@@ -339,7 +343,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		if (!isEnabled()) {
 			return false;
 		}
-
 		// check if project is associated with Subversive Team provider, 
 		// if we don't test it asRepositoryResource will throw RuntimeException
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), SVNTeamPlugin.NATURE_ID);
