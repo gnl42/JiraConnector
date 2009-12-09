@@ -36,6 +36,9 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
@@ -43,6 +46,8 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -76,12 +81,14 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
@@ -102,6 +109,10 @@ public class BambooView extends ViewPart {
 	private static final String CREATE_A_NEW_REPOSITORY_LINK = "create a new repository";
 
 	private static final String OPEN_REPOSITORY_VIEW_LINK = "Open the Task Repositories view";
+
+	private static final String REFRESH_BAMBOO_VIEW_LINK = "Refresh Bamboo View manually";
+
+	private static final String ENABLE_AUTOMATIC_REFRESH = "Enable";
 
 	private class OpenInBrowserAction extends BaseSelectionListenerAction {
 		public OpenInBrowserAction() {
@@ -229,6 +240,29 @@ public class BambooView extends ViewPart {
 	public BambooView() {
 		builds = MiscUtil.buildArrayList();
 	}
+
+//	@Override
+//	public void init(IViewSite site) throws PartInitException {
+//		// ignore
+//		super.init(site);
+//		new DefaultScope().getNode(BambooCorePlugin.PLUGIN_ID).addPreferenceChangeListener(
+//				new IPreferenceChangeListener() {
+//
+//					public void preferenceChange(PreferenceChangeEvent event) {
+//						System.out.println("xxxxxx");
+//
+//					}
+//				});
+////		Platform.getPreferencesService().getRootNode().
+//		BambooUiPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+//
+//			public void propertyChange(PropertyChangeEvent event) {
+//				// ignore
+//				System.out.println("changed");
+//			}
+//		});
+//
+//	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -439,11 +473,20 @@ public class BambooView extends ViewPart {
 		gridData.verticalIndent = 5;
 		link.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		link.setLayoutData(gridData);
-		link.setText("Initializing view...");
+
+		link.setText(NLS.bind("Automatic refresh is disabled. <a>{0}</a> it or <a>{1}</a>.", ENABLE_AUTOMATIC_REFRESH,
+				REFRESH_BAMBOO_VIEW_LINK));
+
 		link.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				String link = event.text;
-				if (link.equals(CREATE_A_NEW_REPOSITORY_LINK)) {
+				if (link.equals(REFRESH_BAMBOO_VIEW_LINK)) {
+					refreshBuilds();
+				} else if (link.equals(ENABLE_AUTOMATIC_REFRESH)) {
+					PreferencesUtil.createPreferenceDialogOn(getSite().getShell(),
+							"com.atlassian.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage", null, null)
+							.open();
+				} else if (link.equals(CREATE_A_NEW_REPOSITORY_LINK)) {
 					new RepositoryConfigurationAction().run();
 				} else if (linkedRepositories != null) {
 					TaskRepository repository = linkedRepositories.get(link);
