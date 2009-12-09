@@ -73,7 +73,7 @@ public class LocalStatus {
 
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision, boolean dirty,
 			boolean binary) {
-		return new LocalStatus(scmPath, revision, false, dirty, binary, false);
+		return new LocalStatus(scmPath, revision, false, dirty, binary, true);
 	}
 
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision) {
