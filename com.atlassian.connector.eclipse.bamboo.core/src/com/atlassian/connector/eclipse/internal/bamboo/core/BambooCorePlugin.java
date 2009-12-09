@@ -65,8 +65,14 @@ public class BambooCorePlugin extends Plugin {
 		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
 
 		buildPlanManager = new BuildPlanManager();
+
+		preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
 		preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
 			public void preferenceChange(PreferenceChangeEvent event) {
+				if (event.getKey().equals(BambooConstants.PREFERENCE_AUTO_REFRESH) && BambooCorePlugin.isAutoRefresh()) {
+					buildPlanManager.refreshAllBuilds();
+				}
+
 				buildPlanManager.reInitializeScheduler();
 			}
 		});
