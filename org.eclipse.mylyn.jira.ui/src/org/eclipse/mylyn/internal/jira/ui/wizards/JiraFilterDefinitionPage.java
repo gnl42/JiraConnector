@@ -320,7 +320,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		setPageComplete(false);
 	}
 
-	@SuppressWarnings("unchecked")
 	void applyChanges() {
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
 				|| this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
@@ -339,7 +338,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			boolean selectionContainsAll = false;
 			boolean selectionContainsNone = false;
 			List<Project> selectedProjects = new ArrayList<Project>();
-			for (Iterator i = projectSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = projectSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ALL_PROJECTS.equals(selection)) {
 					selectionContainsAll = true;
@@ -372,7 +371,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<Version> selectedVersions = new ArrayList<Version>();
 
-			for (Iterator i = reportedInSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = reportedInSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_REPORTED_VERSION.equals(selection)) {
 					selectionContainsAll = true;
@@ -413,7 +412,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<Version> selectedVersions = new ArrayList<Version>();
 
-			for (Iterator i = fixForSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = fixForSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_FIX_VERSION.equals(selection)) {
 					selectionContainsAll = true;
@@ -452,7 +451,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			boolean selectionContainsNone = false;
 			List<Component> selectedComponents = new ArrayList<Component>();
 
-			for (Iterator i = componentsSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = componentsSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_COMPONENT.equals(selection)) {
 					selectionContainsAll = true;
@@ -486,7 +485,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<IssueType> selectedIssueTypes = new ArrayList<IssueType>();
 
-			for (Iterator i = issueTypeSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = issueTypeSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_ISSUE_TYPE.equals(selection)) {
 					isAnyIssueTypeSelected = true;
@@ -549,7 +548,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<JiraStatus> selectedStatuses = new ArrayList<JiraStatus>();
 
-			for (Iterator i = statusSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = statusSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_STATUS.equals(selection)) {
 					isAnyStatusSelected = true;
@@ -574,7 +573,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<Resolution> selectedResolutions = new ArrayList<Resolution>();
 
-			for (Iterator i = resolutionSelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = resolutionSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_RESOLUTION.equals(selection)) {
 					isAnyResolutionSelected = true;
@@ -599,7 +598,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			List<Priority> selectedPriorities = new ArrayList<Priority>();
 
-			for (Iterator i = prioritySelection.iterator(); i.hasNext();) {
+			for (Iterator<?> i = prioritySelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_PRIORITY.equals(selection)) {
 					isAnyPrioritiesSelected = true;

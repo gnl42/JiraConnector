@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * COPY OF: org.eclipse.jface.internal.text.html.HTML2TextReader
  */
-@SuppressWarnings( { "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class HTML2TextReader extends SubstitutionTextReader {
 
 	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
