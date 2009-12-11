@@ -542,7 +542,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(file);
 		if (localFile != null && localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
 			String fileUrl = SVNRemoteStorage.instance().asRepositoryResource(file).getUrl();
-			String revision = Long.toString(localFile.getBaseRevision());
+			String revision = Long.toString(localFile.getRevision());
 			if (fileUrl != null && revision != null) {
 				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
 			}
