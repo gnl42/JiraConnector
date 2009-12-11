@@ -14,6 +14,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IResource;
@@ -49,9 +51,19 @@ public class AddResourceToActiveReviewAction extends TeamAction {
 		IResource[] resources = getSelectedResources();
 		action.setEnabled(true);
 
-		if (resources == null || resources.length == 0 || getActiveReview() == null) {
+		Review review = getActiveReview();
+		if (resources == null || resources.length == 0 || review == null) {
 			action.setEnabled(false);
 			return;
+		}
+
+		try {
+			if (!getActiveReview().getActions().contains(CrucibleAction.MODIFY_FILES)) {
+				action.setEnabled(false);
+				return;
+			}
+		} catch (ValueNotYetInitialized e) {
+			// don't care, just enable
 		}
 	}
 
