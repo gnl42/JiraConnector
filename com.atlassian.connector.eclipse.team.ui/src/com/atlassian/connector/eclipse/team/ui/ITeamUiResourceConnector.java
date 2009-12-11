@@ -169,7 +169,14 @@ public interface ITeamUiResourceConnector {
 	 * @return null if operations is not supported/handled, otherwise crucible file
 	 */
 	@Nullable
-	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
+	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull IEditorInput editorInput);
+
+	@Nullable
+	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
+			@NotNull String revision);
+
+	@Nullable
+	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull IFile file);
 
 	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor)

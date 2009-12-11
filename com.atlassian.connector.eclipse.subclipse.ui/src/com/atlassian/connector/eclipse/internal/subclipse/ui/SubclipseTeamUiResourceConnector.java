@@ -63,6 +63,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
@@ -483,62 +484,79 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		return false;
 	}
 
-	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+	@Nullable
+	public CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
+			@NotNull String revision) {
+		try {
+			for (CrucibleFileInfo file : activeReview.getFiles()) {
+				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+				String newFileUrl = null;
+				String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
+				if (newAbsoluteUrl != null) {
+					newFileUrl = new SVNUrl(newAbsoluteUrl).toString();
+				}
+
+				String oldFileUrl = null;
+				String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
+				if (oldAbsoluteUrl != null) {
+					oldFileUrl = new SVNUrl(oldAbsoluteUrl).toString();
+				}
+				if ((newFileUrl != null && newFileUrl.equals(fileUrl))
+						|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
+					if (revision.equals(fileDescriptor.getRevision())) {
+						return new CrucibleFile(file, false);
+					}
+					if (revision.equals(oldFileDescriptor.getRevision())) {
+						return new CrucibleFile(file, true);
+					}
+					return null;
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"Review is not fully initialized.  Unable to get file from review.", e));
+		} catch (MalformedURLException e) {
+			// ignore
+		}
+		return null;
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
 		SVNUrl fileUrl = null;
 		String revision = null;
+
+		// this is a local file that we know how to deal with
+		try {
+			ISVNLocalFile localFile = getLocalFile(file);
+			if (localFile != null && !localFile.isDirty()) {
+				fileUrl = localFile.getUrl();
+				revision = localFile.getStatus().getLastChangedRevision().toString();
+			}
+		} catch (SVNException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"Unable to get svn information for local file.", e));
+		}
+
+		if (fileUrl != null && revision != null) {
+			return getCrucibleFileFromReview(activeReview, fileUrl.toString(), revision);
+		} else {
+			return null;
+		}
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
 			// this is a local file that we know how to deal with
-			try {
-				IFile file = ((FileEditorInput) editorInput).getFile();
-				ISVNLocalFile localFile = getLocalFile(file);
-				if (localFile != null && !localFile.isDirty()) {
-					fileUrl = localFile.getUrl();
-					revision = localFile.getStatus().getLastChangedRevision().toString();
-				}
-			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-						"Unable to get svn information for local file.", e));
-			}
+			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
 		} else if (editorInput instanceof RemoteFileEditorInput) {
 			// this is a remote file that we know how to deal with
 			RemoteFileEditorInput input = (RemoteFileEditorInput) editorInput;
 			ISVNRemoteFile remoteFile = input.getSVNRemoteFile();
-			fileUrl = remoteFile.getUrl();
-			revision = remoteFile.getRevision().toString();
-		}
-
-		if (fileUrl != null && revision != null) {
-			try {
-				for (CrucibleFileInfo file : activeReview.getFiles()) {
-					VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
-					VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-					SVNUrl newFileUrl = null;
-					String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
-					if (newAbsoluteUrl != null) {
-						newFileUrl = new SVNUrl(newAbsoluteUrl);
-					}
-
-					SVNUrl oldFileUrl = null;
-					String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
-					if (oldAbsoluteUrl != null) {
-						oldFileUrl = new SVNUrl(oldAbsoluteUrl);
-					}
-					if ((newFileUrl != null && newFileUrl.equals(fileUrl))
-							|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
-						if (revision.equals(fileDescriptor.getRevision())) {
-							return new CrucibleFile(file, false);
-						}
-						if (revision.equals(oldFileDescriptor.getRevision())) {
-							return new CrucibleFile(file, true);
-						}
-						return null;
-					}
-				}
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-						"Review is not fully initialized.  Unable to get file from review.", e));
-			} catch (MalformedURLException e) {
-				// ignore
+			String fileUrl = remoteFile.getUrl() != null ? remoteFile.getUrl().toString() : null;
+			String revision = remoteFile.getRevision() != null ? remoteFile.getRevision().toString() : null;
+			if (fileUrl != null && revision != null) {
+				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
 			}
 		}
 		return null;

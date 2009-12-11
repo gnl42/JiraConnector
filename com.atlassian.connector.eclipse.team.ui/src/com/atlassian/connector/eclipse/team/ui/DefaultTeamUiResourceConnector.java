@@ -51,6 +51,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.Bundle;
 
 import java.net.URI;
@@ -58,7 +59,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 
 /**
@@ -334,75 +334,75 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	@SuppressWarnings("restriction")
-	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
-		Set<CrucibleFileInfo> activeReviewFiles;
-		try {
-			activeReviewFiles = activeReview.getFiles();
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID,
-					"Review is not fully initialized.  Unable to get file from review.", e));
-			return null;
-		}
-
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
 		if (editorInput instanceof FileRevisionEditorInput) {
-
 			IFileRevision fileRevision = ((FileRevisionEditorInput) editorInput).getFileRevision();
 
 			String path = fileRevision.getURI().getPath();
+			String revision = fileRevision.getContentIdentifier();
 
-			if (fileRevision.getContentIdentifier() != null) {
-
-				for (CrucibleFileInfo fileInfo : activeReviewFiles) {
-					VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
-					VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
-
-					String oldUrl = oldFileDescriptor.getUrl();
-					String newUrl = fileDescriptor.getUrl();
-
-					if ((newUrl != null && newUrl.length() > 0 && path.endsWith(newUrl))
-							|| (oldUrl != null && oldUrl.length() > 0 && path.endsWith(oldUrl))) {
-
-						String revision = fileRevision.getContentIdentifier();
-
-						if (revision.equals(fileDescriptor.getRevision())) {
-							return new CrucibleFile(fileInfo, false);
-						}
-						if (revision.equals(oldFileDescriptor.getRevision())) {
-							return new CrucibleFile(fileInfo, true);
-						}
-					}
-				}
-
-				return null;
+			if (path != null && revision != null) {
+				return getCrucibleFileFromReview(activeReview, path, revision);
 			}
-
 		} else if (editorInput instanceof FileEditorInput) {
 			// this will only work on local files since they remote files are team provider specific
+			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
+		}
+		return null;
+	}
 
-			IFile file = ((FileEditorInput) editorInput).getFile();
+	@Nullable
+	public CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
+			@NotNull String revision) {
 
-			IProject project = file.getProject();
+		try {
+			for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+				VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
+				VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 
-			if (project == null) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID,
-						"Unable to get project for resource"));
-				return null;
+				String oldUrl = oldFileDescriptor.getUrl();
+				String newUrl = fileDescriptor.getUrl();
+
+				if ((newUrl != null && newUrl.length() > 0 && fileUrl.endsWith(newUrl))
+						|| (oldUrl != null && oldUrl.length() > 0 && fileUrl.endsWith(oldUrl))) {
+
+					if (revision.equals(fileDescriptor.getRevision())) {
+						return new CrucibleFile(fileInfo, false);
+					}
+					if (revision.equals(oldFileDescriptor.getRevision())) {
+						return new CrucibleFile(fileInfo, true);
+					}
+				}
 			}
+		} catch (ValueNotYetInitialized e) {
+			return null;
+		}
+		return null;
+	}
 
-			RepositoryProvider rp = RepositoryProvider.getProvider(project);
-			checkIfSupportedTeamProvider(rp);
-			if (rp != null && rp.getFileHistoryProvider() != null) {
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
+		IProject project = file.getProject();
 
-				// this project has a team nature associated with it in the workspace
-				final IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
+		if (project == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID,
+					"Unable to get project for resource"));
+			return null;
+		}
 
-				IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(file);
+		RepositoryProvider rp = RepositoryProvider.getProvider(project);
+		checkIfSupportedTeamProvider(rp);
+		if (rp != null && rp.getFileHistoryProvider() != null) {
+			// this project has a team nature associated with it in the workspace
+			final IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
 
-				boolean inSync = isRemoteFileInSync(file, rp);
+			IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(file);
 
-				if (inSync && localFileRevision.getContentIdentifier() != null) {
+			boolean inSync = isRemoteFileInSync(file, rp);
 
-					for (CrucibleFileInfo fileInfo : activeReviewFiles) {
+			if (inSync && localFileRevision.getContentIdentifier() != null) {
+
+				try {
+					for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
 						VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
 						VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 
@@ -425,15 +425,13 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 							}
 						}
 					}
-
+				} catch (ValueNotYetInitialized e) {
 					return null;
 				}
+				return null;
 			}
 		}
-//		else if (editorInput instanceof FileRevisionEditorInput){
-//			FileRevisionEditorInput fileRevisionEditorInput = (FileRevisionEditorInput)editorInput;
-//			IFileRevision fileRevision = fileRevisionEditorInput.getFileRevision()
-//		}
+		// ignore
 		return null;
 	}
 
