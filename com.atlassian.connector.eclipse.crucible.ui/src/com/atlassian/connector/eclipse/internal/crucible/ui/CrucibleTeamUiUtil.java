@@ -39,7 +39,7 @@ public class CrucibleTeamUiUtil {
 			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
 				CrucibleFile fileInfo;
 				try {
-					fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+					fileInfo = connector.getCrucibleFileFromReview(activeReview, editorInput);
 				} catch (UnsupportedTeamProviderException e) {
 					return null;
 				}
@@ -50,8 +50,7 @@ public class CrucibleTeamUiUtil {
 		}
 
 		try {
-			CrucibleFile file = TeamUiUtils.getDefaultConnector().getCorrespondingCrucibleFileFromEditorInput(
-					editorInput, activeReview);
+			CrucibleFile file = TeamUiUtils.getDefaultConnector().getCrucibleFileFromReview(activeReview, editorInput);
 			if (file != null) {
 				return file;
 			}

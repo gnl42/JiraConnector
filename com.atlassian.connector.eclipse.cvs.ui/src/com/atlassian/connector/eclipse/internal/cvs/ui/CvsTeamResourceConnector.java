@@ -133,7 +133,7 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		return false;
 	}
 
-	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
 		// @todo implement it
 		return null;
 	}
@@ -209,6 +209,16 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		} catch (CVSException e) {
 			return false;
 		}
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, String fileUrl, String revision) {
+		// ignore
+		return null;
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
+		// ignore
+		return null;
 	}
 
 }
