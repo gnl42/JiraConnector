@@ -29,6 +29,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -64,7 +65,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 	@Override
 	protected void runImpl(IProgressMonitor monitor) {
-		SubMonitor submonitor = SubMonitor.convert(monitor);
+		SubMonitor submonitor = SubMonitor.convert(monitor, resources.length * 2 + 100);
 
 		if (resources.length == 0) {
 			return;
@@ -116,6 +117,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 					return;
 				}
 			}
+			submonitor.worked(1);
 		}
 
 		// 
@@ -131,6 +133,11 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 			for (IResource resource : recursiveResources) {
 				if (resource.getType() != IResource.FILE) {
+					continue;
+				}
+
+				if (teamConnector.getCrucibleFileFromReview(review, (IFile) resource) != null) {
+					// resource's already in the review
 					continue;
 				}
 
@@ -160,10 +167,16 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 				revisions.add(rd);
 			}
+			submonitor.worked(1);
+		}
+
+		if (revisions.size() == 0) {
+			noResourcesToAdd();
+			return;
 		}
 
 		AddFilesToReviewRemoteOperation operation = new AddFilesToReviewRemoteOperation(getTaskRepository(), review,
-				revisions, submonitor.newChild(1));
+				revisions, submonitor.newChild(100));
 
 		try {
 			client.execute(operation);
@@ -180,6 +193,18 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 			setStatus(e.getStatus());
 			return;
 		}
+	}
+
+	private void noResourcesToAdd() {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
+				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
+				mb.setMessage("No resources to add to the review. Either you selected only directories or resources are already in the review.");
+				mb.open();
+				return;
+			}
+		});
 	}
 
 	protected TaskRepository getTaskRepository() {
