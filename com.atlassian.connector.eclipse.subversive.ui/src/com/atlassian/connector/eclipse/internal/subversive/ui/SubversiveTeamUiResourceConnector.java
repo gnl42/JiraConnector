@@ -538,62 +538,73 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return false;
 	}
 
-	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
-		String fileUrl = null;
-		String revision = null;
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
+		ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(file);
+		if (localFile != null && localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
+			String fileUrl = SVNRemoteStorage.instance().asRepositoryResource(file).getUrl();
+			String revision = Long.toString(localFile.getBaseRevision());
+			if (fileUrl != null && revision != null) {
+				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
+			}
+		}
+		return null;
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, String fileUrl, String revision) {
+		try {
+			for (CrucibleFileInfo file : activeReview.getFiles()) {
+				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+				String newFileUrl = null;
+				String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
+				if (newAbsoluteUrl != null) {
+					newFileUrl = newAbsoluteUrl;
+				}
+
+				String oldFileUrl = null;
+				String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
+				if (oldAbsoluteUrl != null) {
+					oldFileUrl = oldAbsoluteUrl;
+				}
+				if ((newFileUrl != null && newFileUrl.equals(fileUrl))
+						|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
+					if (revision.equals(fileDescriptor.getRevision())) {
+						return new CrucibleFile(file, false);
+					}
+					if (revision.equals(oldFileDescriptor.getRevision())) {
+						return new CrucibleFile(file, true);
+					}
+					return null;
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					"Review is not fully initialized.  Unable to get file from review.", e));
+		}
+		return null;
+	}
+
+	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
 			// this is a local file that we know how to deal with
-			IFile file = ((FileEditorInput) editorInput).getFile();
-			ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(file);
-			if (localFile != null && localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
-				fileUrl = SVNRemoteStorage.instance().asRepositoryResource(file).getUrl();
-				revision = Long.toString(localFile.getBaseRevision());
-			}
+			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
 		} else if (editorInput instanceof RepositoryFileEditorInput) {
 			// this is a remote file that we know how to deal with
 			RepositoryFileEditorInput input = (RepositoryFileEditorInput) editorInput;
 			IRepositoryResource remoteFile = input.getRepositoryResource();
-			fileUrl = remoteFile.getUrl();
+			String revision = null;
+			String fileUrl = remoteFile.getUrl();
 			try {
 				revision = Long.toString(remoteFile.getRevision());
 			} catch (SVNConnectorException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
-		}
-
-		if (fileUrl != null && revision != null) {
-			try {
-				for (CrucibleFileInfo file : activeReview.getFiles()) {
-					VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
-					VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-					String newFileUrl = null;
-					String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
-					if (newAbsoluteUrl != null) {
-						newFileUrl = newAbsoluteUrl;
-					}
-
-					String oldFileUrl = null;
-					String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
-					if (oldAbsoluteUrl != null) {
-						oldFileUrl = oldAbsoluteUrl;
-					}
-					if ((newFileUrl != null && newFileUrl.equals(fileUrl))
-							|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
-						if (revision.equals(fileDescriptor.getRevision())) {
-							return new CrucibleFile(file, false);
-						}
-						if (revision.equals(oldFileDescriptor.getRevision())) {
-							return new CrucibleFile(file, true);
-						}
-						return null;
-					}
-				}
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-						"Review is not fully initialized.  Unable to get file from review.", e));
+			if (revision != null && fileUrl != null) {
+				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
 			}
 		}
+
 		return null;
 	}
 
