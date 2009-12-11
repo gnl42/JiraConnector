@@ -117,10 +117,16 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		toolBarManager.add(expandAllAction);
 	}
 
+	private ToolBarManager toolBarManager;
+
+	protected ToolBarManager getToolBarManager() {
+		return toolBarManager;
+	}
+
 	protected void setSection(FormToolkit toolkit, Section section) {
 		this.expandableSection = section;
 		if (section.getTextClient() == null) {
-			ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+			toolBarManager = new ToolBarManager(SWT.FLAT);
 			fillToolBar(toolBarManager);
 
 			// TODO toolBarManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

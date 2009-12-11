@@ -221,6 +221,12 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	public void updateControl(Review review, Composite parent, FormToolkit toolkit, boolean shouldHighlight) {
 		this.crucibleReview = review;
 		filesSection.setText(getSectionTitle());
+		// updating toolbar if present (some actions may be now inapplicable)
+		if (getToolBarManager() != null) {
+			getToolBarManager().removeAll();
+			fillToolBar(getToolBarManager());
+			getToolBarManager().update(true);
+		}
 
 		if (parentComposite == null) {
 			if (filesSection.getClient() == null) {
