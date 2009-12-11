@@ -89,7 +89,8 @@ public class AddResourceToActiveReviewAction extends TeamAction {
 									"Failed to add selected resources to active review. Error message was: \n\n{0}",
 									status.getMessage());
 							if (status.getMessage().contains("does not exist")) {
-								message += "\n\nCheck if your mappings are correct in preferences Atlassian->Repository Mappings.";
+								message += "\n\nCheck if your mappings are correct in:\n"
+										+ "Preferences -> Atlassian -> Repository Mappings.";
 							}
 							mb.setMessage(message);
 							mb.open();

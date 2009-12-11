@@ -136,11 +136,6 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 					continue;
 				}
 
-				if (teamConnector.getCrucibleFileFromReview(review, (IFile) resource) != null) {
-					// resource's already in the review
-					continue;
-				}
-
 				LocalStatus revision;
 				try {
 					revision = teamConnector.getLocalRevision(resource);
@@ -152,6 +147,11 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				if (revision.isDirty() || revision.isAdded()) {
 					tellUserToCommitFirst();
 					return;
+				}
+
+				if (teamConnector.getCrucibleFileFromReview(review, (IFile) resource) != null) {
+					// resource's already in the review
+					continue;
 				}
 
 				Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
