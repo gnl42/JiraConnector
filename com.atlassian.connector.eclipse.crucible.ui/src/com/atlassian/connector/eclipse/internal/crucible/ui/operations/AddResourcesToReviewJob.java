@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
@@ -33,9 +34,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -78,8 +82,8 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 
-		for (IResource resource : resources) {
-			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+		for (final IResource resource : resources) {
+			final ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 			if (teamConnector == null) {
 				tellUserToCommitFirst();
 				return;
@@ -103,9 +107,17 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 					TaskRepositoryUtil.getScmRepositoryMappings(repository), revision.getScmPath()) == null) {
 				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 					public void run() {
+						LocalStatus projectStatus;
+						try {
+							projectStatus = teamConnector.getLocalRevision(resource.getProject());
+						} catch (CoreException e) {
+							StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+									"Failed to get project's status", e));
+							return;
+						}
 						final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(
 								WorkbenchUtil.getShell(), SourceRepositoryMappingPreferencePage.ID, null,
-								new FishEyePreferenceContextData(revision.getScmPath(), getTaskRepository()));
+								new FishEyePreferenceContextData(projectStatus.getScmPath(), getTaskRepository()));
 						if (prefDialog != null) {
 							if (prefDialog.open() != Window.OK) {
 								abort[0] = true;
