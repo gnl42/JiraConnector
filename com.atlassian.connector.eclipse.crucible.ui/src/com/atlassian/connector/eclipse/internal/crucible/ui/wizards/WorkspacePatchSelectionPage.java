@@ -68,6 +68,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -157,7 +158,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 				CrucibleRepositoryConnector.updateLastSelectedTeamResourceConnectorName(taskRepository,
 						selectedTeamConnector.getName());
 
-				final List<IResource> modifiedResources = MiscUtil.buildArrayList();
+				final Collection<IResource> modifiedResources = MiscUtil.buildLinkedHashSet();
 
 				IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -187,7 +188,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 				changeViewer.setInput(modifiedResources.toArray(new IResource[modifiedResources.size()]));
 
 				changeViewer.expandAll();
-				changeViewer.setAllChecked(true);
+				setAllChecked(true);
 				realSelection = initialSelection = changeViewer.getCheckedElements();
 
 				validatePage();
@@ -314,8 +315,11 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		}
 	}
 
-	void setAllChecked(boolean state) {
-		changeViewer.setAllChecked(state);
+	private void setAllChecked(boolean newState) {
+		for (Object element : (Object[]) changeViewer.getInput()) {
+			changeViewer.setSubtreeChecked(element, newState);
+		}
+
 	}
 
 	protected void fillTreeMenu(IMenuManager menuMgr) {
