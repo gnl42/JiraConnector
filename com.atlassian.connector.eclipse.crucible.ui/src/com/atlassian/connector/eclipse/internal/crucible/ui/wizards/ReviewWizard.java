@@ -80,7 +80,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -196,6 +196,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private IResource[] previousWorkspaceSelection;
 
 	private DefineRepositoryMappingsPage defineMappingPage;
+
+	private List<UploadItem> uploadItems;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -372,6 +374,20 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				if (!result.isOK()) {
 					creationProcessStatus.add(result);
 				}
+			}
+		}
+
+		if (types.contains(Type.ADD_UPLOAD_ITEMS)) {
+			if (uploadItems.size() > 0) {
+				JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(), uploadItems);
+
+				IStatus result = runJobInContainer(job);
+				if (!result.isOK()) {
+					creationProcessStatus.add(result);
+				}
+			} else {
+				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Cannot add selection items to review. List of items is empty."));
 			}
 		}
 
@@ -558,6 +574,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		// Update review after every change because otherwise some data will be missing (in this case we miss actions)
 		crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview), true,
 				monitor);
+	}
+
+	public void setUploadItems(List<UploadItem> uploadItems) {
+		this.uploadItems = uploadItems;
 	}
 
 }

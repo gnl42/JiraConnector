@@ -46,7 +46,7 @@
 				icon="icons/obj16/crucible.png"
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction"
 				label="Create Pre-commit Review"
-				menubarPath="team.main/group10"
+				menubarPath="team.main/group11"
 				tooltip="Create Pre-commit Review in Crucible">
 			</action>
 		</objectContribution>
@@ -58,12 +58,34 @@
        		<action
 	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction"
 	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
-	             menubarPath="team.main/group10"
+	             menubarPath="team.main/group11"
 	             icon="icons/obj16/crucible.png"
 	             label="Create Post-commit Review" 
 	             tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
        		</action>
        	</objectContribution>
+		<viewerContribution
+        	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
+        	targetID="#CompilationUnitEditorContext">
+     	<action
+           class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
+           icon="icons/obj16/crucible.png"
+           id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction1"
+           label="Create Review from Editor Selection"
+           menubarPath="team.main/group11">
+     	</action>
+     	</viewerContribution>
+     	<viewerContribution
+        	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
+        	targetID="#TextEditorContext">
+     	<action
+           class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
+           icon="icons/obj16/crucible.png"
+           id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction2"
+           label="Create Review from Editor Selection"
+           menubarPath="team.main/group11">
+     	</action>
+  </viewerContribution>
 	</extension>
 	
 	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup"
@@ -118,7 +140,7 @@
 			<action
 				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
 				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
-				label="Add Files to Active Review" menubarPath="team.main/group10"
+				label="Add Files to Active Review" menubarPath="team.main/group11"
 				tooltip="Add Files to Active Review">
 			</action>
 			<visibility>
