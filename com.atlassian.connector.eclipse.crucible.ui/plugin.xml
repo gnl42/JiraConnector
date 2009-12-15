@@ -46,7 +46,7 @@
 				icon="icons/obj16/crucible.png"
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction"
 				label="Create Pre-commit Review"
-				menubarPath="team.main/group11"
+				menubarPath="team.main/group10"
 				tooltip="Create Pre-commit Review in Crucible">
 			</action>
 		</objectContribution>
@@ -58,7 +58,7 @@
        		<action
 	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction"
 	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
-	             menubarPath="team.main/group11"
+	             menubarPath="team.main/group10"
 	             icon="icons/obj16/crucible.png"
 	             label="Create Post-commit Review" 
 	             tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
@@ -72,7 +72,7 @@
            icon="icons/obj16/crucible.png"
            id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction1"
            label="Create Review from Editor Selection"
-           menubarPath="team.main/group11">
+           menubarPath="team.main/group10">
      	</action>
      	</viewerContribution>
      	<viewerContribution
@@ -83,7 +83,7 @@
            icon="icons/obj16/crucible.png"
            id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction2"
            label="Create Review from Editor Selection"
-           menubarPath="team.main/group11">
+           menubarPath="team.main/group10">
      	</action>
   </viewerContribution>
 	</extension>
@@ -140,7 +140,7 @@
 			<action
 				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
 				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
-				label="Add Files to Active Review" menubarPath="team.main/group11"
+				label="Add Files to Active Review" menubarPath="team.main/group10"
 				tooltip="Add Files to Active Review">
 			</action>
 			<visibility>

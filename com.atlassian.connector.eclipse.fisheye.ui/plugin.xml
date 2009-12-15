@@ -31,7 +31,7 @@
                label="Copy FishEye Link to Clipboard"
                tooltip="Copy FishEye Link to Clipboard"
                class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.CopyFishEyeLinkAction"
-               menubarPath="team.main/group10"
+               menubarPath="team.main/group9"
                enablesFor="1"
                id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkFromEditorObjectAction">
          </action>
@@ -46,7 +46,7 @@
                label="Open in FishEye"
                tooltip="Open in FishEye"
                class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.OpenInFishEyeLinkAction"
-               menubarPath="team.main/group10"
+               menubarPath="team.main/group9"
                enablesFor="1"
                icon="icons/obj16/fisheye-16.png"
                id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeFromEditorObjectAction">
