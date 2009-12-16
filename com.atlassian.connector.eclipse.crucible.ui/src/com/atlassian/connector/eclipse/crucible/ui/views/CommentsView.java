@@ -66,6 +66,18 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 					String headerText = comment.getAuthor().getDisplayName() + "   ";
 					headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
 							comment.getCreateDate());
+
+					if (comment.isDefectApproved()) {
+						headerText += "Approved Defect";
+					} else if (comment.isDefectRaised()) {
+						headerText += "Defect";
+					}
+
+					if (comment.isDraft()) {
+						headerText += "Draft";
+					}
+					headerText += "\n\n";
+					headerText += comment.getMessage();
 					return headerText;
 				}
 				return super.getText(element);
