@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryAdapter;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
@@ -141,16 +140,10 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 								return;
 							}
 						}
-						// there is no Bamboo view, so we can now try open one, if user wants
-						if (MessageDialog.openQuestion(activeWorkbenchWindow.getShell(),
-								AtlassianCorePlugin.PRODUCT_NAME,
-								"Would you like to open Bamboo View in this perspective?")) {
-							try {
-								activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_CREATE);
-							} catch (PartInitException e) {
-								StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
-										"Could not initialize Bamboo view."));
-							}
+						try {
+							activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_ACTIVATE);
+						} catch (PartInitException e) {
+							StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID, "Could not initialize Bamboo view."));
 						}
 					}
 				});
