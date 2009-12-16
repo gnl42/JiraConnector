@@ -26,7 +26,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeRev
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleGeneralCommentsPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewFilesPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.connector.eclipse.ui.forms.IReflowRespectingPart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -412,7 +411,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				for (Control child : editorComposite.getChildren()) {
 					child.setMenu(null);
 					if (child instanceof Composite) {
-						setMenu((Composite) child, null);
+						CommonUiUtil.setMenu((Composite) child, null);
 					}
 				}
 
@@ -422,7 +421,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					part.updateControl(review, editorComposite, toolkit);
 				}
 
-				setMenu(editorComposite, editorComposite.getMenu());
+				CommonUiUtil.setMenu(editorComposite, editorComposite.getMenu());
 
 				if (selectedComment != null && selectedCrucibleFile != null) {
 					selectAndReveal(selectedCrucibleFile, selectedComment, false);
@@ -454,7 +453,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				part.createControl(editorComposite, toolkit);
 			}
 
-			setMenu(editorComposite, editorComposite.getMenu());
+			CommonUiUtil.setMenu(editorComposite, editorComposite.getMenu());
 
 			if (selectedComment != null && selectedCrucibleFile != null) {
 				selectAndReveal(selectedCrucibleFile, selectedComment, true);
@@ -474,23 +473,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		return null;
 	}
 
-	public void setMenu(Composite composite, Menu menu) {
-		if (!composite.isDisposed()) {
-			composite.setMenu(menu);
-			for (Control child : composite.getChildren()) {
-				child.setMenu(menu);
-				if (child instanceof Composite) {
-					setMenu((Composite) child, menu);
-				}
-			}
-		}
-	}
-
 	private void createFormParts() {
 		focusablePart = new CrucibleDetailsPart();
 		parts.add(focusablePart);
 		parts.add(new CrucibleGeneralCommentsPart());
-		parts.add(new CrucibleReviewFilesPart());
 	}
 
 	private void clearFormContent() {
@@ -868,12 +854,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			this.selectedCrucibleFile = null;
 			this.selectedComment = null;
 			setHighlightedPart(null);
-		} else {
-			for (AbstractCrucibleEditorFormPart part : parts) {
-				if (part instanceof CrucibleReviewFilesPart) {
-					((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment, reveal);
-				}
-			}
 		}
 	}
 

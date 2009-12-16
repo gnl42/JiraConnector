@@ -14,9 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CommentPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.GeneralCommentPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.VersionedCommentPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
@@ -25,9 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,7 +40,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -111,8 +105,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private final Review review;
 
-	private final Comment replyToComment;
-
 	private final String shellTitle;
 
 	private final TaskRepository taskRepository;
@@ -123,11 +115,11 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private final CrucibleClient client;
 
-	private final LineRange commentLines;
+	private LineRange commentLines;
 
-	private final Comment parentComment;
+	private Comment parentComment;
 
-	private final CrucibleFile crucibleFile;
+	private CrucibleFile crucibleFile;
 
 	private static final String SAVE_LABEL = "&Post";
 
@@ -140,8 +132,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 	private final HashMap<CustomFieldDef, ComboViewer> customCombos;
 
 	private final HashMap<String, CustomField> customFieldSelections;
-
-	private CommentPart<?, ?> commentPart;
 
 	private FormToolkit toolkit;
 
@@ -159,16 +149,11 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private Button saveDraftButton;
 
-	public CrucibleAddCommentDialog(Shell parentShell, String shellTitle, Review review, CrucibleFile file,
-			Comment replyToComment, LineRange lineRange, String taskKey, String taskId, TaskRepository taskRepository,
-			CrucibleClient client) {
+	public CrucibleAddCommentDialog(Shell parentShell, String shellTitle, Review review, String taskKey, String taskId,
+			TaskRepository taskRepository, CrucibleClient client) {
 		super(parentShell);
-		this.crucibleFile = file;
-		this.parentComment = replyToComment;
-		this.commentLines = lineRange;
 		this.shellTitle = shellTitle;
 		this.review = review;
-		this.replyToComment = replyToComment;
 		this.taskKey = taskKey;
 		this.taskId = taskId;
 		this.taskRepository = taskRepository;
@@ -183,10 +168,10 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		getShell().setText(shellTitle);
 		setTitle(shellTitle);
 
-		if (replyToComment == null) {
+		if (parentComment == null) {
 			setMessage("Create a new comment");
 		} else {
-			setMessage("Reply to a comment from: " + replyToComment.getAuthor().getDisplayName());
+			setMessage("Reply to a comment from: " + parentComment.getAuthor().getDisplayName());
 		}
 
 		//CHECKSTYLE:MAGIC:OFF
@@ -203,34 +188,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 				}
 			}
 		});
-
-		if (replyToComment != null) {
-
-			if (replyToComment instanceof GeneralComment) {
-				commentPart = new GeneralCommentPart((GeneralComment) replyToComment, review, null);
-			} else {
-				commentPart = new VersionedCommentPart((VersionedComment) replyToComment, review,
-						crucibleFile.getCrucibleFileInfo(), null);
-			}
-
-			if (commentPart != null) {
-				commentPart.disableToolbar();
-
-				ScrolledComposite scrolledComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.BORDER);
-				scrolledComposite.setExpandHorizontal(true);
-
-				scrolledComposite.setBackground(toolkit.getColors().getBackground());
-				GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 100).applyTo(scrolledComposite);
-
-				Composite commentComposite = toolkit.createComposite(scrolledComposite, SWT.NONE);
-				commentComposite.setLayout(new GridLayout());
-				scrolledComposite.setContent(commentComposite);
-
-				Control commentControl = commentPart.createControl(commentComposite, toolkit);
-				commentComposite.setSize(commentControl.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-			}
-		}
 
 		commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
@@ -261,7 +218,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		// create buttons according to (implicit) reply type
 		int nrOfCustomFields = 0;
-		if (replyToComment == null) { //"defect button" needed if new comment
+		if (parentComment == null) { //"defect button" needed if new comment
 			Composite compositeCustomFields = new Composite(composite, SWT.NONE);
 			compositeCustomFields.setLayout(new GridLayout(1, false));
 			createDefectButton(compositeCustomFields);
@@ -433,5 +390,17 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	public TaskRepository getTaskRepository() {
 		return taskRepository;
+	}
+
+	public void setReviewItem(CrucibleFile reviewItem) {
+		this.crucibleFile = reviewItem;
+	}
+
+	public void setParentComment(Comment comment) {
+		this.parentComment = comment;
+	}
+
+	public void setCommentLines(LineRange commentLines2) {
+		this.commentLines = commentLines2;
 	}
 }

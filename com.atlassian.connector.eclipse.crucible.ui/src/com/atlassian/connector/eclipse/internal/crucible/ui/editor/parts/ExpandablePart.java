@@ -23,6 +23,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -157,7 +158,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 							Composite composite = createSectionContents(commentSection, toolkit);
 
 							if (crucibleEditor != null && crucibleEditor.getMenu() != null) {
-								crucibleEditor.setMenu(composite, crucibleEditor.getMenu());
+								CommonUiUtil.setMenu(composite, crucibleEditor.getMenu());
 							}
 							commentSection.setClient(composite);
 						} finally {

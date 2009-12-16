@@ -14,25 +14,80 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractBackgroundJobReviewAction.RemoteCrucibleOperation;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-public class PostDraftCommentAction extends AbstractBackgroundJobReviewAction {
+public class PostDraftCommentAction extends BaseSelectionListenerAction implements IReviewAction {
 
-	public PostDraftCommentAction(final Review review, final Comment comment, Shell shell) {
-		super("Publish Comment", review, comment, shell, "Publishing selected comment for review "
-				+ review.getPermId().getId(), CrucibleImages.COMMENT_POST, new RemoteCrucibleOperation() {
+	private static String PUBLISH_COMMENT = "Publish Comment";
 
-			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg) throws CrucibleLoginException,
-					RemoteApiException, ServerPasswordNotProvidedException {
-				server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
-			}
-		}, true);
+	private Review review;
+
+	private IReviewActionListener actionListener;
+
+	public PostDraftCommentAction() {
+		super(PUBLISH_COMMENT);
 	}
 
+	public void run() {
+		final Comment comment = (Comment) getStructuredSelection().getFirstElement();
+		IAction action = new AbstractBackgroundJobReviewAction("Publish Comment", review, comment,
+				WorkbenchUtil.getShell(), "Publishing selected comment for review " + review.getPermId().getId(),
+				CrucibleImages.COMMENT_POST, new RemoteCrucibleOperation() {
+					public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
+							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+						server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
+					}
+				}, true) {
+			// nothing needed here
+		};
+		action.run();
+
+		if (actionListener != null) {
+			actionListener.actionRan(this);
+		}
+	}
+
+	@Override
+	protected boolean updateSelection(IStructuredSelection selection) {
+		this.review = null;
+
+		Object element = selection.getFirstElement();
+		if (element instanceof Comment) {
+			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)
+					&& ((Comment) element).isDraft()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
+	}
+
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return CrucibleImages.COMMENT_POST;
+	}
+
+	@Override
+	public String getToolTipText() {
+		return PUBLISH_COMMENT;
+	}
 }

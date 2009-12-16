@@ -11,39 +11,46 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
-import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 /**
  * Action to reply to a comment
  * 
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
+ * @author Pawel Niewiadomski
  */
-public class ReplyToCommentAction extends AbstractAddCommentAction implements IReviewAction {
-	private final Comment comment;
+public class ReplyToCommentAction extends BaseSelectionListenerAction implements IReviewAction {
 
-	private final CrucibleFile crucibleFile;
+	private static final String REPLY_TO_COMMENT = "Reply to Comment";
+
+	private Review review;
 
 	private IReviewActionListener actionListener;
 
-	public ReplyToCommentAction(Comment comment, Review review, CrucibleFile crucibleFile) {
-		super("Reply to Comment");
-		this.comment = comment;
-		super.review = review;
-		this.crucibleFile = crucibleFile;
-	}
-
-	@Override
-	protected String getDialogTitle() {
-		return getText();
+	public ReplyToCommentAction() {
+		super(REPLY_TO_COMMENT);
 	}
 
 	@Override
@@ -52,40 +59,47 @@ public class ReplyToCommentAction extends AbstractAddCommentAction implements IR
 	}
 
 	@Override
-	public final void run() {
-		super.run();
+	public void run() {
+		TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(review);
+		ITask task = CrucibleUiUtil.getCrucibleTask(review);
+		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
+		if (client == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Unable to get client, please try to refresh"));
+			return;
+		}
+
+		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(),
+				REPLY_TO_COMMENT, review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
+		commentDialog.setParentComment((Comment) getStructuredSelection().getFirstElement());
+		commentDialog.open();
 
 		if (actionListener != null) {
 			actionListener.actionRan(this);
 		}
 	}
 
-	public void setActionListener(IReviewActionListener listener) {
-		this.actionListener = listener;
-	}
-
 	@Override
 	public String getToolTipText() {
-		return "Reply";
+		return REPLY_TO_COMMENT;
 	}
 
 	@Override
-	protected CrucibleFile getCrucibleFile() {
-		return crucibleFile;
+	protected boolean updateSelection(IStructuredSelection selection) {
+		this.review = null;
+
+		Object element = selection.getFirstElement();
+		if (element instanceof Comment) {
+			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			if (this.review != null && CrucibleUtil.canAddCommentToReview(review)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	@Override
-	protected Review getReview() {
-		return review;
-	}
-
-	@Override
-	protected LineRange getSelectedRange() {
-		return null;
-	}
-
-	@Override
-	protected Comment getParentComment() {
-		return comment;
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
 	}
 }

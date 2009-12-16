@@ -59,8 +59,16 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 		}
 
 		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(),
-				getDialogTitle(), review, reviewItem, parentComment, commentLines, getTaskKey(), getTaskId(),
-				getTaskRepository(), client);
+				getDialogTitle(), review, getTaskKey(), getTaskId(), getTaskRepository(), client);
+		if (reviewItem != null) {
+			commentDialog.setReviewItem(reviewItem);
+		}
+		if (parentComment != null) {
+			commentDialog.setParentComment(parentComment);
+		}
+		if (commentLines != null) {
+			commentDialog.setCommentLines(commentLines);
+		}
 		commentDialog.open();
 	}
 

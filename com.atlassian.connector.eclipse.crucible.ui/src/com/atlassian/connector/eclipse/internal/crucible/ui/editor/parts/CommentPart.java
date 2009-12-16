@@ -33,12 +33,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -206,21 +206,28 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		if (isExpanded) {
 			if (!comment.isReply() && CrucibleUtil.canAddCommentToReview(crucibleReview)) {
-				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));
+				ReplyToCommentAction action = new ReplyToCommentAction();
+				action.selectionChanged(new StructuredSelection(comment));
+				actions.add(action);
 			}
 
 			if (CrucibleUiUtil.canModifyComment(crucibleReview, comment)) {
-				final Shell shell = getSection().getShell();
-				actions.add(new EditCommentAction(crucibleReview, comment, shell));
+				EditCommentAction action = new EditCommentAction();
+				action.selectionChanged(new StructuredSelection(comment));
+				actions.add(action);
 
 				if (!comment.isReply() && comment.getReplies().size() > 0) {
 					actions.add(new CannotRemoveCommentAction("Remove Comment", CrucibleImages.COMMENT_DELETE));
 				} else {
-					actions.add(new RemoveCommentAction(crucibleReview, comment, shell));
+					RemoveCommentAction action1 = new RemoveCommentAction();
+					action.selectionChanged(new StructuredSelection(comment));
+					actions.add(action1);
 				}
 
 				if (comment.isDraft()) {
-					actions.add(new PostDraftCommentAction(crucibleReview, comment, shell));
+					PostDraftCommentAction action1 = new PostDraftCommentAction();
+					action.selectionChanged(new StructuredSelection(comment));
+					actions.add(action1);
 				}
 			}
 		}

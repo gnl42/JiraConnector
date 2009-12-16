@@ -95,8 +95,17 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	public Comment run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 
-		if (reviewItem != null) {
-			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
+		String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
+
+		if (parentComment != null) {
+			// replies are always general comments
+			GeneralCommentBean newComment = createNewGeneralComment();
+			newComment.setDefectRaised(isDefect);
+			newComment.setDraft(isDraft);
+			newComment.getCustomFields().putAll(customFields);
+
+			return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(), newComment);
+		} else if (reviewItem != null) {
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
 			VersionedCommentBean newComment = createNewVersionedComment();
 			newComment.setDefectRaised(isDefect);
@@ -114,7 +123,6 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setDefectRaised(isDefect);
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
-			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
 
 			if (parentComment != null && newComment.isReply()) {
 				return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),

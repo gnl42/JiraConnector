@@ -21,6 +21,6 @@ import org.eclipse.jface.action.IAction;
  */
 public interface IReviewAction extends IAction {
 
-	void setActionListener(IReviewActionListener listner);
+	void setActionListener(IReviewActionListener listener);
 
 }

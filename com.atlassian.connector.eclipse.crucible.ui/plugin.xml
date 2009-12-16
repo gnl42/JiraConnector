@@ -1,69 +1,30 @@
 <plugin>
 	<extension point="org.eclipse.mylyn.tasks.ui.repositories">
-		<connectorCore
-			class="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector"
-			id="crucible" name="Crucible">
+		<connectorCore class="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector" id="crucible" name="Crucible">
 		</connectorCore>
-		<connectorUi brandingIcon="icons/obj16/crucible.png"
-			class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryConnectorUi"
-			id="crucible" name="Crucible" overlayIcon="icons/obj16/crucible-overlay.png">
+		<connectorUi brandingIcon="icons/obj16/crucible.png" class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryConnectorUi" id="crucible" name="Crucible" overlayIcon="icons/obj16/crucible-overlay.png">
 		</connectorUi>
 	</extension>
 	<extension point="org.eclipse.mylyn.tasks.ui.editors">
-		<pageFactory
-			class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleEditorPageFactory"
-			id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
+		<pageFactory class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleEditorPageFactory" id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
 		</pageFactory>
 	</extension>
 	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
-		<specification
-			annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation"
-			colorPreferenceKey="comment_color" colorPreferenceValue="255,231,198"
-			contributesToHeader="true" highlightPreferenceKey="comment_highlight"
-			highlightPreferenceValue="true" icon="/icons/obj16/crucible.png"
-			includeOnPreferencePage="true" isGoToNextNavigationTarget="true"
-			isGoToNextNavigationTargetKey="comment_isGoToNextNavigationTargetKey"
-			isGoToPreviousNavigationTarget="true"
-			isGoToPreviousNavigationTargetKey="commet_isGoToPreviousNavigationTargetKey"
-			label="Active Review Comments" overviewRulerPreferenceKey="comment_overviewRuler"
-			overviewRulerPreferenceValue="true" presentationLayer="0"
-			showInNextPrevDropdownToolbarAction="true"
-			showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction"
-			textPreferenceKey="comment_text" textPreferenceValue="true"
-			textStylePreferenceKey="comment_stylePreferences"
-			textStylePreferenceValue="BOX" verticalRulerPreferenceKey="comment_verticalRuler"
-			verticalRulerPreferenceValue="true" />
+		<specification annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation" colorPreferenceKey="comment_color" colorPreferenceValue="255,231,198" contributesToHeader="true" highlightPreferenceKey="comment_highlight" highlightPreferenceValue="true" icon="/icons/obj16/crucible.png" includeOnPreferencePage="true" isGoToNextNavigationTarget="true" isGoToNextNavigationTargetKey="comment_isGoToNextNavigationTargetKey" isGoToPreviousNavigationTarget="true" isGoToPreviousNavigationTargetKey="commet_isGoToPreviousNavigationTargetKey" label="Active Review Comments" overviewRulerPreferenceKey="comment_overviewRuler" overviewRulerPreferenceValue="true" presentationLayer="0" showInNextPrevDropdownToolbarAction="true" showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction" textPreferenceKey="comment_text" textPreferenceValue="true" textStylePreferenceKey="comment_stylePreferences" textStylePreferenceValue="BOX" verticalRulerPreferenceKey="comment_verticalRuler" verticalRulerPreferenceValue="true" />
 	</extension>
-	
+
 	<!-- Menus -->
 	<extension point="org.eclipse.ui.popupMenus">
-		<objectContribution
-			objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
-			adaptable="true"
-			id="com.atlassian.connector.eclipse.crucible.ui.ResourceContributions">
+		<objectContribution objectClass="org.eclipse.core.resources.mapping.ResourceMapping" adaptable="true" id="com.atlassian.connector.eclipse.crucible.ui.ResourceContributions">
 
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction"
-				icon="icons/obj16/crucible.png"
-				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction"
-				label="Create Pre-commit Review"
-				menubarPath="team.main/group10"
-				tooltip="Create Pre-commit Review in Crucible">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction" icon="icons/obj16/crucible.png" id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction" label="Create Pre-commit Review" menubarPath="team.main/group10" tooltip="Create Pre-commit Review in Crucible">
 			</action>
 		</objectContribution>
-		<objectContribution
-		    objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
-		    adaptable="true"
-		    id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions">
-       	
-       		<action
-	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction"
-	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
-	             menubarPath="team.main/group10"
-	             icon="icons/obj16/crucible.png"
-	             label="Create Post-commit Review" 
-	             tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
-       		</action>
-       	</objectContribution>
+		<objectContribution objectClass="org.eclipse.core.resources.mapping.ResourceMapping" adaptable="true" id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions">
+
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction" id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction" menubarPath="team.main/group10" icon="icons/obj16/crucible.png" label="Create Post-commit Review" tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
+			</action>
+		</objectContribution>
 		<viewerContribution
         	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
         	targetID="#CompilationUnitEditorContext">
@@ -87,94 +48,62 @@
      	</action>
   </viewerContribution>
 	</extension>
-	
-	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup"
-		name="Crucible Review Actions" point="org.eclipse.ui.popupMenus">
-		<objectContribution adaptable="true"
-			id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution"
-			objectClass="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry">
 
-			<action
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction"
-				enablesFor="+"
-				id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewAction"
-				label="Create Review..." menubarPath="mylyn" style="push"
-				tooltip="Create a review from the selected Revision">
+	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup" name="Crucible Review Actions" point="org.eclipse.ui.popupMenus">
+		<objectContribution adaptable="true" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution" objectClass="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry">
+
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction" enablesFor="+" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewAction" label="Create Review..." menubarPath="mylyn" style="push" tooltip="Create a review from the selected Revision">
 			</action>
 
 		</objectContribution>
-		<objectContribution
-			id="com.atlassian.connector.eclipse.crucible.ui.objectContribution1"
-			objectClass="org.eclipse.ui.IEditorInput">
-			<action
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction"
-				enablesFor="1" icon="icons/obj16/pin_addcomment.png"
-				id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment"
-				label="Comment on Selected Lines..." menubarPath="group.undo"
-				tooltip="Add Line Comment to Active Review">
+		<objectContribution id="com.atlassian.connector.eclipse.crucible.ui.objectContribution1" objectClass="org.eclipse.ui.IEditorInput">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction" enablesFor="1" icon="icons/obj16/pin_addcomment.png" id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment" label="Comment on Selected Lines..." menubarPath="group.undo" tooltip="Add Line Comment to Active Review">
 			</action>
-			<action
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction"
-				enablesFor="1"
-				id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment"
-				label="Add General File Comment..." menubarPath="group.undo"
-				tooltip="Add Comment to Active Review">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction" enablesFor="1" id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment" label="Add General File Comment..." menubarPath="group.undo" tooltip="Add Comment to Active Review">
 			</action>
-			<action
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
-				enablesFor="1"
-				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
-				label="Add File to Active Review" menubarPath="group.undo"
-				tooltip="Add File to Active Review">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" enablesFor="1" id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" label="Add File to Active Review" menubarPath="group.undo" tooltip="Add File to Active Review">
 			</action>
 			<visibility>
-				<systemProperty
-					name="com.atlassian.connector.eclipse.crucible.ui.review.active"
-					value="true">
+				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true">
 				</systemProperty>
 			</visibility>
 		</objectContribution>
-		<objectContribution
-			id="com.atlassian.connector.eclipse.crucible.ui.objectContribution2"
-			objectClass="org.eclipse.core.resources.IResource" adaptable="true">
-			<action
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
-				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
-				label="Add Files to Active Review" menubarPath="team.main/group10"
-				tooltip="Add Files to Active Review">
+		<objectContribution id="com.atlassian.connector.eclipse.crucible.ui.objectContribution2" objectClass="org.eclipse.core.resources.IResource" adaptable="true">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" label="Add Files to Active Review" menubarPath="team.main/group10" tooltip="Add Files to Active Review">
 			</action>
 			<visibility>
-				<systemProperty
-					name="com.atlassian.connector.eclipse.crucible.ui.review.active"
-					value="true">
+				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true">
 				</systemProperty>
 			</visibility>
 		</objectContribution>
 	</extension>
 	<extension point="org.eclipse.ui.editors.annotationTypes">
-		<type
-			markerType="com.atlassian.connector.eclipse.crucible.ui.com.atlassian.connector.eclipse.cruicible.ui.comment.marker"
-			name="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation">
+		<type markerType="com.atlassian.connector.eclipse.crucible.ui.com.atlassian.connector.eclipse.cruicible.ui.comment.marker" name="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation">
 		</type>
 	</extension>
-	<extension
-		id="com.atlassian.connector.eclipse.cruicible.ui.comment.marker"
-		point="org.eclipse.core.resources.markers">
+	<extension id="com.atlassian.connector.eclipse.cruicible.ui.comment.marker" point="org.eclipse.core.resources.markers">
 	</extension>
 
- <extension
-       point="org.eclipse.ui.preferencePages">
-    <page
-          category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-          class="com.atlassian.connector.eclipse.crucible.ui.preferences.CruciblePreferencePage"
-          id="com.atlassian.connector.eclipse.crucible.ui.CruciblePreferencePage"
-          name="Crucible">
-    </page>
- </extension>
- <extension 
-       point="org.eclipse.core.runtime.preferences">
-       <initializer
-               class="com.atlassian.connector.eclipse.crucible.ui.preferences.PreferenceInitializer">
-         </initializer>
- </extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage" class="com.atlassian.connector.eclipse.crucible.ui.preferences.CruciblePreferencePage" id="com.atlassian.connector.eclipse.crucible.ui.CruciblePreferencePage" name="Crucible">
+		</page>
+	</extension>
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="com.atlassian.connector.eclipse.crucible.ui.preferences.PreferenceInitializer">
+		</initializer>
+	</extension>
+	
+	<extension point="org.eclipse.ui.views">
+		<category
+			id="com.atlassian.connector.eclipse.ui.category" name="Atlassian">
+		</category>
+		
+		<view id="com.atlassian.connector.eclipse.crucible.ui.views.explorer" 
+			name="Crucible Review Explorer" class="com.atlassian.connector.eclipse.crucible.ui.views.ExplorerView" icon="icons/obj16/crucible.png" 
+			category="com.atlassian.connector.eclipse.ui.category"/>
+			
+		<view id="com.atlassian.connector.eclipse.crucible.ui.views.comments" 
+			name="Crucible Review Comments" class="com.atlassian.connector.eclipse.crucible.ui.views.CommentsView" icon="icons/obj16/crucible.png" 
+			category="com.atlassian.connector.eclipse.ui.category"/>
+	</extension>
 </plugin>

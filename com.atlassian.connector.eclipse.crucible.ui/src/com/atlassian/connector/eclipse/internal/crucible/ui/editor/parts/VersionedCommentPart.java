@@ -185,7 +185,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 		if (getCrucibleEditor() != null && !comment.isReply()) {
 
-			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
+			// if both revisions are available (--> commitType neither added nor deleted), use compareAction
 			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
 					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
 				IReviewChangeListenerAction compareAction;
