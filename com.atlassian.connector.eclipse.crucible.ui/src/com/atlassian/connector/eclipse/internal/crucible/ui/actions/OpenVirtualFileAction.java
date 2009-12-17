@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -21,12 +22,15 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.team.internal.ui.ITeamUIImages;
+import org.eclipse.team.ui.TeamImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
@@ -110,6 +114,16 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 			break;
 		default:
 			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Invalid Repository Type"));
+		}
+	}
+
+	@SuppressWarnings("restriction")
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		if (oldFile) {
+			return FishEyeImages.REPOSITORY;
+		} else {
+			return TeamImages.getImageDescriptor(ITeamUIImages.IMG_SYNC_MODE_CATCHUP);
 		}
 	}
 };

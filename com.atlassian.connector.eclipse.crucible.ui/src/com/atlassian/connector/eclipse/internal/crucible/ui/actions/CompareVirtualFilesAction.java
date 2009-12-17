@@ -20,10 +20,13 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.team.internal.ui.ITeamUIImages;
+import org.eclipse.team.ui.TeamImages;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
@@ -89,4 +92,9 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
+	@SuppressWarnings("restriction")
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return TeamImages.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);
+	}
 };
