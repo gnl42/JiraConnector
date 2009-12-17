@@ -72,13 +72,13 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 							comment.getCreateDate());
 
 					if (comment.isDefectApproved()) {
-						headerText += "Approved Defect";
+						headerText += " Approved Defect";
 					} else if (comment.isDefectRaised()) {
-						headerText += "Defect";
+						headerText += " Defect";
 					}
 
 					if (comment.isDraft()) {
-						headerText += "Draft";
+						headerText += " Draft";
 					}
 					headerText += "\n\n";
 					headerText += comment.getMessage();

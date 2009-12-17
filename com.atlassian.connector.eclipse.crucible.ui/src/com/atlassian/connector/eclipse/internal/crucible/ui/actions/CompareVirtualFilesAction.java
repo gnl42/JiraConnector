@@ -50,31 +50,36 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
+		fileInfo = null;
+		review = null;
+
 		if (selection instanceof ITreeSelection) {
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
 			if (paths == null || paths.length != 1) {
 				return false;
 			}
 
-			fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-			review = getReview(fileInfo);
+			if (paths[0].getFirstSegment() instanceof CrucibleFileInfo) {
+				fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
+				review = getReview(fileInfo);
 
-			comment = null;
-			if (paths[0].getLastSegment() instanceof VersionedComment) {
-				comment = (VersionedComment) paths[0].getLastSegment();
+				comment = null;
+				if (paths[0].getLastSegment() instanceof VersionedComment) {
+					comment = (VersionedComment) paths[0].getLastSegment();
+				}
+
+				VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+				VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
+
+				boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
+						&& oldFileDescriptor.getRevision().length() > 0;
+
+				boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
+						&& newFileDescriptor.getRevision().length() > 0;
+
+				return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
+						&& fileInfo.getFileType() == FileType.File && oldFileHasRevision && newFileHasRevision;
 			}
-
-			VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
-			VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
-
-			boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
-					&& oldFileDescriptor.getRevision().length() > 0;
-
-			boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
-					&& newFileDescriptor.getRevision().length() > 0;
-
-			return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
-					&& fileInfo.getFileType() == FileType.File && oldFileHasRevision && newFileHasRevision;
 		}
 		return false;
 	}
