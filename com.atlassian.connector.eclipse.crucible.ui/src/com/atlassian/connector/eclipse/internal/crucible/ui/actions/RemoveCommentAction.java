@@ -67,7 +67,7 @@ public class RemoveCommentAction extends BaseSelectionListenerAction implements 
 		this.review = null;
 
 		Object element = selection.getFirstElement();
-		if (element instanceof Comment) {
+		if (element instanceof Comment && selection.size() == 1) {
 			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)) {
 				if (element instanceof VersionedComment) {

@@ -97,7 +97,7 @@ public class AddGeneralCommentAction extends BaseSelectionListenerAction impleme
 		this.fileInfo = null;
 
 		Object element = selection.getFirstElement();
-		if (element instanceof CrucibleFileInfo) {
+		if (element instanceof CrucibleFileInfo && selection.size() == 1) {
 			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 			if (this.review != null && CrucibleUtil.canAddCommentToReview(review)) {
 				this.fileInfo = (CrucibleFileInfo) element;
@@ -108,7 +108,7 @@ public class AddGeneralCommentAction extends BaseSelectionListenerAction impleme
 		if (selection instanceof ITreeSelection) {
 			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths != null) {
+			if (paths != null && paths.length == 1) {
 				for (TreePath path : paths) {
 					for (int i = 0, s = path.getSegmentCount(); i < s; ++i) {
 						if (path.getSegment(i) instanceof CrucibleFileInfo) {

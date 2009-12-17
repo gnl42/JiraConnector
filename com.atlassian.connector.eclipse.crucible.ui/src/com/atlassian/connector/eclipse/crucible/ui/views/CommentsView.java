@@ -19,12 +19,16 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
@@ -86,10 +90,33 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 		createActions();
 		createToolbar();
+		createContextMenu();
 
 		viewer.setInput(NO_COMMENT_SELECTED);
 
 		getViewSite().getPage().addSelectionListener(this);
+	}
+
+	private void createContextMenu() {
+		final MenuManager mgr = new MenuManager();
+		mgr.setRemoveAllWhenShown(true);
+		mgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(mgr);
+			}
+		});
+
+		Menu menu = mgr.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+
+		getSite().registerContextMenu(mgr, viewer);
+	}
+
+	private void fillContextMenu(MenuManager mgr) {
+		mgr.add(replyToCommentAction);
+		mgr.add(editCommentAction);
+		mgr.add(removeCommentAction);
+		mgr.add(postDraftCommentAction);
 	}
 
 	private void createToolbar() {

@@ -50,7 +50,7 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (selection instanceof ITreeSelection) {
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths == null || paths.length == 0) {
+			if (paths == null || paths.length != 1) {
 				return false;
 			}
 
