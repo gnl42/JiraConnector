@@ -11,7 +11,9 @@
 
 package com.atlassian.connector.eclipse.crucible.ui.views;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
@@ -41,8 +43,6 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewSite;
@@ -54,7 +54,7 @@ import java.text.DateFormat;
 /**
  * @author Pawel Niewiadomski
  */
-public class ExplorerView extends ViewPart implements ITaskActivationListener {
+public class ExplorerView extends ViewPart implements IReviewActivationListener {
 
 	private Action openOldAction;
 
@@ -203,16 +203,19 @@ public class ExplorerView extends ViewPart implements ITaskActivationListener {
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
-		TasksUi.getTaskActivityManager().addActivationListener(this);
-		ITask activeTask = TasksUi.getTaskActivityManager().getActiveTask();
-		if (activeTask != null) {
-			taskActivated(activeTask);
+
+		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+
+		mgr.addReviewActivationListener(this);
+
+		if (mgr.isReviewActive()) {
+			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
 		}
 	}
 
 	@Override
 	public void dispose() {
-		TasksUi.getTaskActivityManager().removeActivationListener(this);
+		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
 		super.dispose();
 	}
 
@@ -340,19 +343,7 @@ public class ExplorerView extends ViewPart implements ITaskActivationListener {
 		//mgr.add(selectAllAction);
 	}
 
-	public void preTaskActivated(ITask task) {
-		// not interested in this event
-	}
-
-	public void preTaskDeactivated(ITask task) {
-		// not interested in this event
-	}
-
-	public void taskActivated(ITask task) {
-		Review review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-		if (review == null) {
-			return;
-		}
+	public void reviewActivated(ITask task, Review review) {
 		this.review = review;
 		this.task = task;
 		if (review != null) {
@@ -378,8 +369,14 @@ public class ExplorerView extends ViewPart implements ITaskActivationListener {
 		}
 	}
 
-	public void taskDeactivated(ITask task) {
+	public void reviewDeactivated(ITask task, Review review) {
+		this.review = null;
+		this.task = null;
 		setContentDescription(null);
 		viewer.setInput(NO_ACTIVE_REVIEW);
+	}
+
+	public void reviewUpdated(ITask task, Review review) {
+		reviewActivated(task, review);
 	}
 }

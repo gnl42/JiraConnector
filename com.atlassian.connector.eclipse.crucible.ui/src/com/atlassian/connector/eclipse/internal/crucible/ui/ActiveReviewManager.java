@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IRevi
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -33,6 +34,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
+import org.eclipse.swt.widgets.Display;
 
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +47,14 @@ import java.util.Set;
  */
 public class ActiveReviewManager implements ITaskActivationListener, IReviewCacheListener {
 
+	public interface IReviewActivationListener {
+		void reviewActivated(ITask task, Review review);
+
+		void reviewDeactivated(ITask task, Review review);
+
+		void reviewUpdated(ITask task, Review review);
+	};
+
 	private static final long ACTIVE_REVIEW_POLLING_INTERVAL = 120000L;
 
 	private final JobChangeAdapter refreshJobRescheduler = new JobChangeAdapter() {
@@ -55,6 +65,8 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		}
 	};
 
+	private final List<IReviewActivationListener> activationListeners;
+
 	private Review activeReview;
 
 	private ITask activeTask;
@@ -64,8 +76,43 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	private final boolean increasedRefresh;
 
 	public ActiveReviewManager(boolean increasedRefresh) {
+		this.activationListeners = MiscUtil.buildArrayList();
 		this.increasedRefresh = increasedRefresh;
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(this);
+	}
+
+	public synchronized void addReviewActivationListener(IReviewActivationListener l) {
+		activationListeners.add(l);
+	}
+
+	public synchronized void removeReviewActivationListener(IReviewActivationListener l) {
+		activationListeners.remove(l);
+	}
+
+	private synchronized void fireReviewActivated(final ITask task, final Review review) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				for (IReviewActivationListener l : activationListeners) {
+					l.reviewActivated(task, review);
+				}
+			}
+		});
+	}
+
+	private synchronized void fireReviewDectivated(final ITask task, final Review review) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				for (IReviewActivationListener l : activationListeners) {
+					l.reviewDeactivated(task, review);
+				}
+			}
+		});
+	}
+
+	private synchronized void fireReviewUpdated(ITask task, Review review) {
+		for (IReviewActivationListener l : activationListeners) {
+			l.reviewUpdated(task, review);
+		}
 	}
 
 	public void dispose() {
@@ -94,11 +141,16 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	}
 
 	public synchronized void taskDeactivated(ITask task) {
+		Review oldReview = this.activeReview;
+		ITask oldTask = this.activeTask;
+
 		this.activeTask = null;
 		this.activeReview = null;
 		System.setProperty(CrucibleConstants.REVIEW_ACTIVE_SYSTEM_PROPERTY, "false");
 		CrucibleAnnotationModelManager.dettachAllOpenEditors();
 		stopIncreasedChangePolling();
+
+		fireReviewDectivated(oldTask, oldReview);
 	}
 
 	public void preTaskActivated(ITask task) {
@@ -114,9 +166,11 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			if (activeReview == null) {
 				this.activeReview = cachedReview;
 				CrucibleAnnotationModelManager.attachAllOpenEditors();
+				fireReviewActivated(activeTask, activeReview);
 			} else {
 				this.activeReview = cachedReview;
 				CrucibleAnnotationModelManager.updateAllOpenEditors(activeReview);
+				fireReviewUpdated(activeTask, activeReview);
 			}
 		}
 	}
