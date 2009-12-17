@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.crucible.ui.views;
+package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;

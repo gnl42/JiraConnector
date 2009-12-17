@@ -37,6 +37,12 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.ui";
 
+	public static final String REVIEW_PERSPECTIVE_ID = PLUGIN_ID + ".reviewPerspective";
+
+	public static final String COMMENTS_VIEW_ID = PLUGIN_ID + ".commentsView";
+
+	public static final String EXPLORER_VIEW_ID = PLUGIN_ID + ".explorerView";
+
 	public static final String PRODUCT_NAME = "Atlassian Crucible Connector";
 
 	// The shared instance
