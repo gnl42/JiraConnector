@@ -277,9 +277,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				final FishEyePreferenceContextData data = isPageComplete() ? null : new FishEyePreferenceContextData(
+						firstMissingMapping == null ? "" : firstMissingMapping, getTaskRepository());
 				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
-						SourceRepositoryMappingPreferencePage.ID, null, new FishEyePreferenceContextData(
-								firstMissingMapping == null ? "" : firstMissingMapping, getTaskRepository()));
+						SourceRepositoryMappingPreferencePage.ID, null, data);
 				if (prefDialog != null) {
 					if (prefDialog.open() == Window.OK) {
 						validatePage();
