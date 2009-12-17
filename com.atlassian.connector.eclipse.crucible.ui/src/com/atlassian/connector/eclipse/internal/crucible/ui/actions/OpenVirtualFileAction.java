@@ -44,6 +44,7 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	public OpenVirtualFileAction(boolean oldFile) {
 		super(oldFile ? "Open Revision Before Changes" : "Open Revision After Changes");
 		this.oldFile = oldFile;
+		setEnabled(false);
 	}
 
 	@Override

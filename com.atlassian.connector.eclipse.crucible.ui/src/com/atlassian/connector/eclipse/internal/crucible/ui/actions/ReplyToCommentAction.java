@@ -51,6 +51,7 @@ public class ReplyToCommentAction extends BaseSelectionListenerAction implements
 
 	public ReplyToCommentAction() {
 		super(REPLY_TO_COMMENT);
+		setEnabled(false);
 	}
 
 	@Override

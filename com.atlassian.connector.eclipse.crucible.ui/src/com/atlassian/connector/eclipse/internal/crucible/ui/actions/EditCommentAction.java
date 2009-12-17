@@ -45,6 +45,7 @@ public class EditCommentAction extends BaseSelectionListenerAction implements IR
 
 	public EditCommentAction() {
 		super("Edit Comment");
+		setEnabled(false);
 	}
 
 	@Override

@@ -35,6 +35,7 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 
 	public CompareVirtualFilesAction() {
 		super("Compare Revisions");
+		setEnabled(false);
 	}
 
 	@Override

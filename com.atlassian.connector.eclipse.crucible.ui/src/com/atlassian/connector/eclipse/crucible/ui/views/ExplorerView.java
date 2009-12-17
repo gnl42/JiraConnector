@@ -63,10 +63,6 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 	private TreeViewer viewer;
 
-	private Review review;
-
-	private ITask task;
-
 	private AddGeneralCommentAction addGeneralCommentAction;
 
 	private Object initilizeWith = NO_ACTIVE_REVIEW;
@@ -265,8 +261,6 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	}
 
 	public void reviewActivated(ITask task, Review review) {
-		this.review = review;
-		this.task = task;
 		if (review != null) {
 			try {
 				setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
@@ -291,8 +285,6 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {
-		this.review = null;
-		this.task = null;
 		setContentDescription("");
 		viewer.setInput(NO_ACTIVE_REVIEW);
 	}

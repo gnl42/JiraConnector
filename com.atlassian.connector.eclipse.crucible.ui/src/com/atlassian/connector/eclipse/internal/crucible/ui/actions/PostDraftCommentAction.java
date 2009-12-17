@@ -41,6 +41,7 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 
 	public PostDraftCommentAction() {
 		super(PUBLISH_COMMENT);
+		setEnabled(false);
 	}
 
 	public void run() {

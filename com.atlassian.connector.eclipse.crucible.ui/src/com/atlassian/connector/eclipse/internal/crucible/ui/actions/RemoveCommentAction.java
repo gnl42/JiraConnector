@@ -41,6 +41,7 @@ public class RemoveCommentAction extends BaseSelectionListenerAction implements 
 
 	public RemoveCommentAction() {
 		super(REMOVE_COMMENT);
+		setEnabled(false);
 	}
 
 	public void run() {

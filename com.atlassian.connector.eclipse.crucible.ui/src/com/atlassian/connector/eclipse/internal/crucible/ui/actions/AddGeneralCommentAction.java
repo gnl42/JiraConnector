@@ -79,6 +79,7 @@ public class AddGeneralCommentAction extends BaseSelectionListenerAction impleme
 
 	public AddGeneralCommentAction() {
 		super(ADD_COMMENT);
+		setEnabled(false);
 	}
 
 	@Override
