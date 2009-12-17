@@ -15,11 +15,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenUploadedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
-import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVirtualFileAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -28,23 +29,21 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
@@ -56,11 +55,11 @@ import java.text.DateFormat;
  */
 public class ExplorerView extends ViewPart implements IReviewActivationListener {
 
-	private Action openOldAction;
+	private OpenVirtualFileAction openOldAction;
 
-	private Action openNewAction;
+	private OpenVirtualFileAction openNewAction;
 
-	private Action compareAction;
+	private CompareVirtualFilesAction compareAction;
 
 	private TreeViewer viewer;
 
@@ -71,6 +70,14 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private AddGeneralCommentAction addGeneralCommentAction;
 
 	private Object initilizeWith = NO_ACTIVE_REVIEW;
+
+	private ReplyToCommentAction replyToCommentAction;
+
+	private EditCommentAction editCommentAction;
+
+	private RemoveCommentAction removeCommentAction;
+
+	private PostDraftCommentAction postDraftCommentAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review. This view contents are rendered only if there's an active review." };
 
@@ -158,54 +165,12 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 			}
 		});
 
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				openNewAction.setEnabled(false);
-				openOldAction.setEnabled(false);
-				compareAction.setEnabled(false);
-
-				if (event.getSelection() instanceof ITreeSelection) {
-					TreePath[] paths = ((ITreeSelection) event.getSelection()).getPaths();
-
-					if (paths.length == 1 && paths[0].getFirstSegment() instanceof CrucibleFileInfo) {
-						// one item
-						CrucibleFileInfo crucibleFileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-
-						VersionedVirtualFile oldFileDescriptor = crucibleFileInfo.getOldFileDescriptor();
-						VersionedVirtualFile newFileDescriptor = crucibleFileInfo.getFileDescriptor();
-
-						boolean oldFileHasRevision = oldFileDescriptor != null
-								&& oldFileDescriptor.getRevision() != null
-								&& oldFileDescriptor.getRevision().length() > 0;
-						boolean oldFileHasUrl = oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
-								&& oldFileDescriptor.getUrl().length() > 0;
-
-						boolean newFileHasRevision = newFileDescriptor != null
-								&& newFileDescriptor.getRevision() != null
-								&& newFileDescriptor.getRevision().length() > 0;
-						boolean newFileHasUrl = newFileDescriptor != null && newFileDescriptor.getUrl() != null
-								&& newFileDescriptor.getUrl().length() > 0;
-
-						if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD
-								|| crucibleFileInfo.getRepositoryType() == RepositoryType.SCM) {
-							openOldAction.setEnabled(oldFileHasRevision && oldFileHasUrl);
-							openNewAction.setEnabled(newFileHasRevision && newFileHasUrl);
-
-							if (crucibleFileInfo.getFileType() == FileType.File) {
-								compareAction.setEnabled(oldFileHasRevision && newFileHasRevision);
-							}
-						}
-					}
-				}
-			}
-		});
-
-		getSite().setSelectionProvider(viewer);
-
 		createActions();
 		createToolbar();
 		createMenu();
+		createContextMenu();
 
+		getSite().setSelectionProvider(viewer);
 		viewer.setInput(initilizeWith);
 	}
 
@@ -237,106 +202,26 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		addGeneralCommentAction = new AddGeneralCommentAction();
 		viewer.addSelectionChangedListener(addGeneralCommentAction);
 
-		openOldAction = new Action() {
-			@Override
-			public void run() {
-				ITreeSelection selection = (ITreeSelection) viewer.getSelection();
-				TreePath[] paths = selection.getPaths();
-				if (paths == null || paths.length == 0) {
-					return;
-				}
+		openOldAction = new OpenVirtualFileAction(true);
+		viewer.addSelectionChangedListener(openOldAction);
 
-				CrucibleFileInfo fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-				VersionedComment comment = null;
-				if (paths[0].getLastSegment() instanceof VersionedComment) {
-					comment = (VersionedComment) paths[0].getLastSegment();
-				}
+		openNewAction = new OpenVirtualFileAction(false);
+		viewer.addSelectionChangedListener(openNewAction);
 
-				switch (fileInfo.getRepositoryType()) {
-				case UPLOAD:
-					OpenUploadedVirtualFileAction action = new OpenUploadedVirtualFileAction(task, new CrucibleFile(
-							fileInfo, true), fileInfo.getOldFileDescriptor(), review, comment, viewer.getControl()
-							.getShell(), getViewSite().getWorkbenchWindow().getActivePage());
-					action.run();
-					break;
-				case SCM:
-					OpenVersionedVirtualFileAction action1 = new OpenVersionedVirtualFileAction(task, new CrucibleFile(
-							fileInfo, true), comment, review);
-					action1.run();
-					break;
-				default:
-					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Invalid Repository Type"));
-				}
-			}
-		};
-		openOldAction.setText("old");
-		openOldAction.setToolTipText("Open Base Version");
-		openOldAction.setEnabled(false);
+		compareAction = new CompareVirtualFilesAction();
+		viewer.addSelectionChangedListener(compareAction);
 
-		openNewAction = new Action() {
-			@Override
-			public void run() {
-				ITreeSelection selection = (ITreeSelection) viewer.getSelection();
-				TreePath[] paths = selection.getPaths();
-				if (paths == null || paths.length == 0) {
-					return;
-				}
+		replyToCommentAction = new ReplyToCommentAction();
+		viewer.addSelectionChangedListener(replyToCommentAction);
 
-				CrucibleFileInfo fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-				VersionedComment comment = null;
-				if (paths[0].getLastSegment() instanceof VersionedComment) {
-					comment = (VersionedComment) paths[0].getLastSegment();
-				}
+		editCommentAction = new EditCommentAction();
+		viewer.addSelectionChangedListener(editCommentAction);
 
-				switch (fileInfo.getRepositoryType()) {
-				case UPLOAD:
-					OpenUploadedVirtualFileAction action = new OpenUploadedVirtualFileAction(task, new CrucibleFile(
-							fileInfo, false), fileInfo.getFileDescriptor(), review, comment, viewer.getControl()
-							.getShell(), getViewSite().getWorkbenchWindow().getActivePage());
-					action.run();
-					break;
-				case SCM:
-					OpenVersionedVirtualFileAction action1 = new OpenVersionedVirtualFileAction(task, new CrucibleFile(
-							fileInfo, false), comment, review);
-					action1.run();
-					break;
-				default:
-					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Invalid Repository Type"));
-				}
-			}
-		};
-		openNewAction.setText("new");
-		openNewAction.setToolTipText("Open New Version");
-		openNewAction.setEnabled(false);
+		removeCommentAction = new RemoveCommentAction();
+		viewer.addSelectionChangedListener(removeCommentAction);
 
-		compareAction = new Action() {
-			@Override
-			public void run() {
-				ITreeSelection selection = (ITreeSelection) viewer.getSelection();
-				TreePath[] paths = selection.getPaths();
-				if (paths == null || paths.length == 0) {
-					return;
-				}
-
-				CrucibleFileInfo fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-				VersionedComment comment = null;
-				if (paths[0].getLastSegment() instanceof VersionedComment) {
-					comment = (VersionedComment) paths[0].getLastSegment();
-				}
-
-				IAction action;
-				if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
-					action = new CompareVersionedVirtualFileAction(fileInfo, comment, review);
-				} else {
-					action = new CompareUploadedVirtualFileAction(fileInfo, comment, review, viewer.getControl()
-							.getShell());
-				}
-				action.run();
-			}
-		};
-		compareAction.setText("compare");
-		compareAction.setToolTipText("Open Compare Editor");
-		compareAction.setEnabled(false);
+		postDraftCommentAction = new PostDraftCommentAction();
+		viewer.addSelectionChangedListener(postDraftCommentAction);
 	}
 
 	public void createToolbar() {
@@ -350,6 +235,33 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private void createMenu() {
 		//IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
 		//mgr.add(selectAllAction);
+	}
+
+	private void createContextMenu() {
+		final MenuManager mgr = new MenuManager();
+		mgr.setRemoveAllWhenShown(true);
+		mgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(mgr);
+			}
+		});
+
+		Menu menu = mgr.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+
+		getSite().registerContextMenu(mgr, viewer);
+	}
+
+	private void fillContextMenu(MenuManager mgr) {
+		mgr.add(addGeneralCommentAction);
+		mgr.add(replyToCommentAction);
+		mgr.add(editCommentAction);
+		mgr.add(removeCommentAction);
+		mgr.add(postDraftCommentAction);
+		mgr.add(new Separator());
+		mgr.add(openOldAction);
+		mgr.add(openNewAction);
+		mgr.add(compareAction);
 	}
 
 	public void reviewActivated(ITask task, Review review) {
