@@ -74,6 +74,8 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review. This view contents are rendered only if there's an active review." };
 
+	protected static final int COMMENT_PREVIEW_LENGTH = 50;
+
 	/**
 	 * 
 	 */
@@ -94,6 +96,13 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 					String headerText = comment.getAuthor().getDisplayName() + "   ";
 					headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
 							comment.getCreateDate());
+
+					String msg = comment.getMessage();
+					if (msg.length() > COMMENT_PREVIEW_LENGTH) {
+						headerText += " " + msg.substring(0, COMMENT_PREVIEW_LENGTH) + "...";
+					} else {
+						headerText += " " + msg;
+					}
 					return headerText;
 				}
 				if (element instanceof CrucibleFileInfo) {
@@ -364,7 +373,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Review not initialized", e));
 			}
 		} else {
-			setContentDescription(null);
+			setContentDescription("");
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
 	}
@@ -372,7 +381,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	public void reviewDeactivated(ITask task, Review review) {
 		this.review = null;
 		this.task = null;
-		setContentDescription(null);
+		setContentDescription("");
 		viewer.setInput(NO_ACTIVE_REVIEW);
 	}
 

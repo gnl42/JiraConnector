@@ -83,12 +83,13 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 				return super.getText(element);
 			}
 		});
-		getViewSite().getPage().addSelectionListener(this);
 
 		createActions();
 		createToolbar();
 
 		viewer.setInput(NO_COMMENT_SELECTED);
+
+		getViewSite().getPage().addSelectionListener(this);
 	}
 
 	private void createToolbar() {
@@ -122,6 +123,10 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 	 * Here we listen to changes in {@link ExplorerView}
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (!(part instanceof ExplorerView)) {
+			return;
+		}
+
 		viewer.setInput(NO_COMMENT_SELECTED);
 
 		if (selection instanceof IStructuredSelection) {
