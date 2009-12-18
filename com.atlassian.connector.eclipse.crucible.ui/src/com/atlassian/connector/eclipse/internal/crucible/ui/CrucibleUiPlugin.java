@@ -56,6 +56,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	private EditorLinkWithReviewSelectionListener editorLinkWithReviewSelectionListener;
 
+	private SwitchingPerspectiveReviewActivationListener switchingPerspectivesListener;
+
 	/**
 	 * The constructor
 	 */
@@ -75,7 +77,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		crucibleEditorTracker = new CrucibleEditorTracker();
 
+		switchingPerspectivesListener = new SwitchingPerspectiveReviewActivationListener();
 		activeReviewManager = new ActiveReviewManager(true);
+		activeReviewManager.addReviewActivationListener(switchingPerspectivesListener);
 
 		enableActiveReviewManager();
 
