@@ -109,9 +109,13 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		}
 	}
 
-	private synchronized void fireReviewUpdated(ITask task, Review review) {
-		for (IReviewActivationListener l : activationListeners) {
-			l.reviewUpdated(task, review);
+	private synchronized void fireReviewUpdated(final ITask task, final Review review) {
+		for (final IReviewActivationListener l : activationListeners) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					l.reviewUpdated(task, review);
+				};
+			});
 		}
 	}
 

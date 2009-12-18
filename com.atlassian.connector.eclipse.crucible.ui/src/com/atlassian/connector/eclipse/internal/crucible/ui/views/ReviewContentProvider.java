@@ -18,7 +18,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import java.util.List;
 
-final class ReviewContentProvider extends ArrayTreeContentProvider {
+public final class ReviewContentProvider extends ArrayTreeContentProvider {
 	@Override
 	public Object[] getChildren(Object inputElement) {
 		if (inputElement instanceof CrucibleFileInfo) {
