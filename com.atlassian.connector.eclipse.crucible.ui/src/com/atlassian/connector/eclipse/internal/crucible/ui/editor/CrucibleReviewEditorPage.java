@@ -27,6 +27,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Abstrac
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleGeneralCommentsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
 import com.atlassian.connector.eclipse.ui.forms.IReflowRespectingPart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -477,6 +478,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		focusablePart = new CrucibleDetailsPart();
 		parts.add(focusablePart);
 		parts.add(new CrucibleGeneralCommentsPart());
+		parts.add(new EmptyReviewFilesPart());
 	}
 
 	private void clearFormContent() {

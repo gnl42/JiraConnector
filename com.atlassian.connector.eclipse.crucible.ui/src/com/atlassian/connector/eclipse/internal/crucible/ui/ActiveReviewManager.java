@@ -90,23 +90,23 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	}
 
 	private synchronized void fireReviewActivated(final ITask task, final Review review) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				for (IReviewActivationListener l : activationListeners) {
+		for (final IReviewActivationListener l : activationListeners) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
 					l.reviewActivated(task, review);
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private synchronized void fireReviewDectivated(final ITask task, final Review review) {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				for (IReviewActivationListener l : activationListeners) {
+		for (final IReviewActivationListener l : activationListeners) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
 					l.reviewDeactivated(task, review);
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private synchronized void fireReviewUpdated(ITask task, Review review) {
@@ -248,6 +248,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			}
 		};
 		downloadJob.setUser(true);
+		downloadJob.setPriority(Job.INTERACTIVE);
 		downloadJob.schedule();
 	}
 
