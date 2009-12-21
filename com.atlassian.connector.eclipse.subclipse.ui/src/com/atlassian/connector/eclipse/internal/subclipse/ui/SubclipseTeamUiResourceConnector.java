@@ -237,6 +237,10 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 				return LocalStatus.makeUnversioned();
 			}
 
+			if (svnStatus.isIgnored()) {
+				return LocalStatus.makeIngored();
+			}
+
 			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
 			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
 

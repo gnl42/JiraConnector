@@ -26,14 +26,17 @@ public class LocalStatus {
 
 	private final boolean versioned;
 
+	private final boolean ignored;
+
 	public LocalStatus(@Nullable String scmPath, @Nullable String revision, boolean added, boolean dirty,
-			boolean binary, boolean versioned) {
+			boolean binary, boolean versioned, boolean ignored) {
 		this.scmPath = scmPath;
 		this.revision = revision;
 		this.binary = binary;
 		this.dirty = dirty;
 		this.added = added;
 		this.versioned = versioned;
+		this.ignored = ignored;
 	}
 
 	@Nullable
@@ -68,12 +71,12 @@ public class LocalStatus {
 	}
 
 	public static LocalStatus makeUnversioned() {
-		return new LocalStatus(null, null, false, false, false, false);
+		return new LocalStatus(null, null, false, false, false, false, false);
 	}
 
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision, boolean dirty,
 			boolean binary) {
-		return new LocalStatus(scmPath, revision, false, dirty, binary, true);
+		return new LocalStatus(scmPath, revision, false, dirty, binary, true, false);
 	}
 
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision) {
@@ -81,6 +84,10 @@ public class LocalStatus {
 	}
 
 	public static LocalStatus makeAdded(@Nullable String scmPath, boolean binary) {
-		return new LocalStatus(scmPath, null, true, true, binary, false);
+		return new LocalStatus(scmPath, null, true, true, binary, false, false);
+	}
+
+	public static LocalStatus makeIngored() {
+		return new LocalStatus(null, null, false, false, false, false, true);
 	}
 }
