@@ -18,6 +18,8 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+import java.lang.reflect.Field;
+
 public class ReviewPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
@@ -30,7 +32,26 @@ public class ReviewPerspective implements IPerspectiveFactory {
 
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.20f, editorArea);
 		left.addView(CrucibleUiPlugin.EXPLORER_VIEW_ID);
-		left.addView(IPageLayout.ID_PROJECT_EXPLORER);
+
+		boolean hasProjectExplorer = false;
+		try {
+			// this field is on e3.5 and following
+			Field id = IPageLayout.class.getField("ID_PROJECT_EXPLORER");
+			left.addView((String) id.get(null));
+			hasProjectExplorer = true;
+		} catch (Exception e) {
+			// ignore
+		}
+
+		if (!hasProjectExplorer) {
+			try {
+				Class<?> javaUiClz = Class.forName("org.eclipse.jdt.ui.JavaUI");
+				Field id = javaUiClz.getField("ID_PACKAGES");
+				left.addView((String) id.get(null));
+			} catch (Exception e) {
+				// ignore
+			}
+		}
 
 		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, 0.6f, editorArea);
 		right.addView(CrucibleUiPlugin.COMMENTS_VIEW_ID);
