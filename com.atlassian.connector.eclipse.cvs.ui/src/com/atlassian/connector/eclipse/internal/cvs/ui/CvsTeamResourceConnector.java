@@ -156,7 +156,7 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 					: syncInfo.getRevision() : null;
 
 			return new LocalStatus(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
-					syncInfo == null || syncInfo.isAdded(), false, isBinary, false);
+					syncInfo == null || syncInfo.isAdded(), false, isBinary, false, false);
 		}
 		return null;
 	}

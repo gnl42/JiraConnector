@@ -260,6 +260,10 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 					return LocalStatus.makeUnversioned();
 				}
 
+				if (IStateFilter.SF_IGNORED.accept(localResource)) {
+					return LocalStatus.makeIngored();
+				}
+
 				final String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource,
 						SVNProperty.BuiltIn.MIME_TYPE);
 				boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
