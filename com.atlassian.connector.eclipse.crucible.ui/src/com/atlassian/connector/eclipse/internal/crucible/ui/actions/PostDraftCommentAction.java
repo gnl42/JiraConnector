@@ -69,13 +69,17 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 
 		Object element = selection.getFirstElement();
 		if (element instanceof Comment && selection.size() == 1) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			this.review = getActiveReview();
 			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)
 					&& ((Comment) element).isDraft()) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	protected Review getActiveReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
 	public void setActionListener(IReviewActionListener listener) {

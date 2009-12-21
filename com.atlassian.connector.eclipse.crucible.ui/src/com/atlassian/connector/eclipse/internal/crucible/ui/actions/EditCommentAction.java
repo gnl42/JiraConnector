@@ -86,7 +86,7 @@ public class EditCommentAction extends BaseSelectionListenerAction implements IR
 
 		Object element = selection.getFirstElement();
 		if (element instanceof Comment && selection.size() == 1) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			this.review = getActiveReview();
 			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)) {
 				return true;
 			}
@@ -96,5 +96,15 @@ public class EditCommentAction extends BaseSelectionListenerAction implements IR
 
 	public void setActionListener(IReviewActionListener listener) {
 		this.actionListener = listener;
+	}
+
+	/**
+	 * Return active review this action should be run against to. Review is associated during
+	 * {@link #updateSelection(IStructuredSelection)}
+	 * 
+	 * @return
+	 */
+	protected Review getActiveReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 }

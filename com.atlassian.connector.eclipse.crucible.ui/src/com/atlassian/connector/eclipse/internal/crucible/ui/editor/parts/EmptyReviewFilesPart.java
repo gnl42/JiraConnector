@@ -124,7 +124,6 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	protected void fillToolBar(ToolBarManager barManager) {
-		super.fillToolBar(barManager);
 	}
 
 	@Override

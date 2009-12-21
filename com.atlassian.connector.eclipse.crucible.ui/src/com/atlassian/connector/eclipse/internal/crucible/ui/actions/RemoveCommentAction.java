@@ -22,7 +22,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractBack
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
@@ -69,17 +68,16 @@ public class RemoveCommentAction extends BaseSelectionListenerAction implements 
 
 		Object element = selection.getFirstElement();
 		if (element instanceof Comment && selection.size() == 1) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			this.review = getActiveReview();
 			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)) {
-				if (element instanceof VersionedComment) {
-					// only allow to remove a comment if it doesn't have replies
-					return ((VersionedComment) element).getReplies().size() == 0;
-				} else {
-					return true;
-				}
+				return ((Comment) element).getReplies().size() == 0;
 			}
 		}
 		return false;
+	}
+
+	protected Review getActiveReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
 	public void setActionListener(IReviewActionListener listener) {

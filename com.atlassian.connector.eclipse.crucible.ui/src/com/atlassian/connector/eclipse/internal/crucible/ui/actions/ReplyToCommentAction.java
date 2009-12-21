@@ -92,12 +92,16 @@ public class ReplyToCommentAction extends BaseSelectionListenerAction implements
 
 		Object element = selection.getFirstElement();
 		if (element instanceof Comment && selection.size() == 1) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			this.review = getActiveReview();
 			if (this.review != null && CrucibleUtil.canAddCommentToReview(review)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	protected Review getActiveReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
 	public void setActionListener(IReviewActionListener listener) {

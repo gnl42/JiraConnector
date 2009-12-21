@@ -11,9 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralReviewCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewContentProvider;
 import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
@@ -60,6 +62,14 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 	private TreeViewer viewer;
 
+	private ReplyToCommentAction replyToCommentAction;
+
+	private EditCommentAction editCommentAction;
+
+	private RemoveCommentAction removeCommentAction;
+
+	private PostDraftCommentAction postDraftCommentAction;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleEditor = editor;
@@ -77,8 +87,21 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	}
 
 	@Override
+	protected void collapseAll() {
+		if (viewer != null) {
+			viewer.collapseAll();
+		}
+	}
+
+	protected void expandAll() {
+		if (viewer != null) {
+			viewer.expandAll();
+		}
+	}
+
+	@Override
 	public Control createControl(final Composite parent, final FormToolkit toolkit) {
-		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
+		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED;
 		commentsSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
 		commentsSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentsSection);
@@ -151,6 +174,12 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 				return super.getText(element);
 			}
 		});
+
+		viewer.addSelectionChangedListener(replyToCommentAction);
+		viewer.addSelectionChangedListener(editCommentAction);
+		viewer.addSelectionChangedListener(removeCommentAction);
+		viewer.addSelectionChangedListener(postDraftCommentAction);
+
 		try {
 			viewer.setInput(crucibleReview.getGeneralComments());
 		} catch (ValueNotYetInitialized e) {
@@ -158,13 +187,46 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		return parentComposite;
 	}
 
+	private void createActions() {
+		replyToCommentAction = new ReplyToCommentAction() {
+			@Override
+			protected Review getActiveReview() {
+				return crucibleReview;
+			}
+		};
+
+		editCommentAction = new EditCommentAction() {
+			@Override
+			protected Review getActiveReview() {
+				return crucibleReview;
+			};
+		};
+
+		removeCommentAction = new RemoveCommentAction() {
+			@Override
+			public Review getActiveReview() {
+				return crucibleReview;
+			}
+		};
+
+		postDraftCommentAction = new PostDraftCommentAction() {
+			@Override
+			public Review getActiveReview() {
+				return crucibleReview;
+			}
+		};
+	}
+
 	@Override
-	protected void fillToolBar(ToolBarManager barManager) {
-		if (CrucibleUtil.canAddCommentToReview(crucibleReview)) {
-			AddGeneralReviewCommentAction action = new AddGeneralReviewCommentAction(crucibleReview);
-			barManager.add(action);
-		}
-		super.fillToolBar(barManager);
+	protected void fillToolBar(ToolBarManager mgr) {
+		createActions();
+
+		mgr.add(replyToCommentAction);
+		mgr.add(editCommentAction);
+		mgr.add(removeCommentAction);
+		mgr.add(postDraftCommentAction);
+
+		super.fillToolBar(mgr);
 	}
 
 	@Override
