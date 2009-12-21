@@ -67,7 +67,7 @@ public class FishEyeSettingsManager {
 	}
 
 	private void load() {
-		Set<TaskRepository> fishEyeRepositories = FishEyeUiUtil.getFishEyeServers();
+		Set<TaskRepository> fishEyeRepositories = FishEyeUiUtil.getFishEyeAndCrucibleServers();
 		for (TaskRepository tr : fishEyeRepositories) {
 			Map<String, String> scmRepositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(tr);
 			for (String scmPath : scmRepositoryMappings.keySet()) {
