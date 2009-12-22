@@ -82,7 +82,7 @@ public class SourceRepostioryMappingEditor {
 		removeButton.setText("Remove");
 
 		final String[] titles = { "SCM Path", "Server", "Repository" };
-		int[] bounds = { 100, 200, 100 };
+		int[] bounds = { 300, 150, 100 };
 		for (int i = 0; i < titles.length; i++) {
 			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
 			column.getColumn().setText(titles[i]);
@@ -187,7 +187,7 @@ public class SourceRepostioryMappingEditor {
 		if (oldMapping != null) {
 			urlToRepositories.remove(oldMapping);
 		}
-		for (int i=0, s=urlToRepositories.size(); i<s; ++i) {
+		for (int i = 0, s = urlToRepositories.size(); i < s; ++i) {
 			FishEyeMappingConfiguration m = urlToRepositories.get(i);
 			if (m.getTaskRepository().equals(mapping.getTaskRepository())
 					&& m.getScmPath().equals(mapping.getScmPath())) {
@@ -212,7 +212,7 @@ public class SourceRepostioryMappingEditor {
 	}
 
 	protected synchronized void fireChangeListeners() {
-		for(ModifyListener l : modifyListeners) {
+		for (ModifyListener l : modifyListeners) {
 			Event event = new Event();
 			event.widget = tableViewer.getControl();
 			l.modifyText(new ModifyEvent(event));

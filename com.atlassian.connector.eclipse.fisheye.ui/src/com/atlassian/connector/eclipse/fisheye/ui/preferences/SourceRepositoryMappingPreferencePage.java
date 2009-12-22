@@ -21,10 +21,14 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -47,9 +51,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 
 	public SourceRepositoryMappingPreferencePage() {
 		super("FishEye Preferences");
-		setDescription("Add, remove or edit FishEye/Crucible mapping configuration.\n"
-				+ "Mapping your local SCM repositories to a Fisheye/Crucible Source Repository "
-				+ "is necessary for looking up files correctly.");
+		setDescription("Map your local repositories to FishEye/Crucible repositories.");
 		noDefaultAndApplyButton();
 	}
 
@@ -65,8 +67,8 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 			final FishEyePreferenceContextData initialData = (FishEyePreferenceContextData) data;
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), initialData.getTaskRepository(),
-							initialData.getScmPath(), null);
+					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
+							initialData.getTaskRepository(), initialData.getScmPath(), null);
 					if (dialog.open() == Window.OK) {
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
@@ -80,24 +82,36 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-	}
-
-	@Override
 	protected Control createContents(Composite ancestor) {
 		initializeDialogUnits(ancestor);
 		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(ancestor);
 
 		Composite parent = new Composite(ancestor, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(parent);
+		GridDataFactory.fillDefaults().grab(true, true)/*.hint(500, SWT.DEFAULT)*/.applyTo(parent);
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
+		Link instructionsLabel = new Link(parent, SWT.LEFT | SWT.WRAP);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).hint(600, SWT.DEFAULT).applyTo(instructionsLabel);
 
+		instructionsLabel.setText("The connector needs a mapping from the local SCM path used by your project(s), "
+				+ "to a FishEye/Crucible server and repository. This allows you to create code reviews from files "
+				+ "in your workspace, conduct code reviews in your IDE and link workspace files to FishEye. "
+				+ "See the <a>instructions</a> and <a>more details</a>.");
+		instructionsLabel.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if ("instructions".equals(event.text)) {
+					TasksUiUtil.openUrl(DOC_URL_PREFIX + "Configuring+your+FishEye+Options+in+Eclipse");
+				} else if ("more details".equals(event.text)) {
+					TasksUiUtil.openUrl(DOC_URL_PREFIX + "More+about+Configuring+FishEye+Repositories+in+Eclipse");
+				}
+			}
+		});
 		mappingEditor = new SourceRepostioryMappingEditor(parent);
 		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
 
 		return ancestor;
 	}
+
+	private static final String DOC_URL_PREFIX = "http://confluence.atlassian.com/display/IDEPLUGIN/";
 
 	@Override
 	public boolean performOk() {
