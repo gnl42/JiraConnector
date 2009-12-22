@@ -189,6 +189,7 @@ public interface ITeamUiResourceConnector {
 	@NotNull
 	Collection<ScmRepository> getRepositories(IProgressMonitor monitor);
 
+	// TODO jj add subversive implementation
 	boolean isResourceAcceptedByFilter(IResource resource, State state);
 
 }

@@ -717,4 +717,9 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		}
 	}
 
+	public boolean isResourceAcceptedByFilter(IResource resource, State state) {
+		// TODO implement
+		return false;
+	}
+
 }
