@@ -300,6 +300,15 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		return FileUtility.getResourcesByFilterRecursive(roots, getStateFilter(filter));
 	}
 
+	public boolean isResourceAcceptedByFilter(IResource resource, State filter) {
+		ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+		try {
+			return getStateFilter(filter).accept(svnResource);
+		} catch (SVNException e) {
+			return false;
+		}
+	}
+
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		return SubclipseUtil.getLocalResourceFromFilePath(filePath) != null;
 	}
@@ -321,7 +330,7 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 			final String fileName = getResourcePathWithProjectName(resource);
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
-			if (status.isUnversioned() || status.isAdded()) {
+			if (status.isUnversioned() || status.isAdded() || status.isIgnored()) {
 				byte[] newContent = getResourceContent((IFile) resource);
 				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (status.isDeleted()) {

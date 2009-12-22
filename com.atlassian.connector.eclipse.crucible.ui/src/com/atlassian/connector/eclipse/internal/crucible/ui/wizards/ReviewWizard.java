@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceEntry;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -80,7 +81,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS, ADD_RESOURCES;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -183,6 +184,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private WorkspacePatchSelectionPage addWorkspacePatchPage;
 
+	private DefineRepositoryMappingsPage defineMappingPage;
+
+	private ResourceSelectionPage resourceSelectionPage;
+
 	private final Set<Type> types;
 
 	private SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
@@ -194,8 +199,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private final List<IResource> selectedWorkspaceResources = new ArrayList<IResource>();
 
 	private IResource[] previousWorkspaceSelection;
-
-	private DefineRepositoryMappingsPage defineMappingPage;
 
 	private List<UploadItem> uploadItems;
 
@@ -249,6 +252,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			defineMappingPage = new DefineRepositoryMappingsPage(getTaskRepository(), selectedWorkspaceResources);
 			addPage(defineMappingPage);
 		}
+		if (types.contains(Type.ADD_RESOURCES)) {
+			resourceSelectionPage = new ResourceSelectionPage(getTaskRepository(), selectedWorkspaceResources);
+			addPage(resourceSelectionPage);
+		}
 
 		//only add details page if review is not already existing
 		if (crucibleReview == null) {
@@ -295,6 +302,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		final MultiStatus creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
 				"Error during review creation. See Error Log for details.", null);
 
+		// create patch review
 		if (addPatchPage != null) {
 			String patchToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatch() : null;
 			String patchRepositoryToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatchRepository() : null;
@@ -314,6 +322,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		// create pre-commit review
 		if (addWorkspacePatchPage != null) {
 			final IResource[] selection = addWorkspacePatchPage.getSelection();
 
@@ -351,6 +360,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		// create review from changeset
 		if (addChangeSetsPage != null) {
 			final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
 
@@ -365,6 +375,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		// create post-commit review
 		if (defineMappingPage != null && types.contains(Type.ADD_SCM_RESOURCES)) {
 			if (selectedWorkspaceResources != null) {
 				final JobWithStatus job = new AddResourcesToReviewJob(crucibleReview,
@@ -377,6 +388,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		// create review from editor selection
 		if (types.contains(Type.ADD_UPLOAD_ITEMS)) {
 			if (uploadItems.size() > 0) {
 				JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(), uploadItems);
@@ -388,6 +400,70 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			} else {
 				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 						"Cannot add selection items to review. List of items is empty."));
+			}
+		}
+
+		// create review from workbench selection (post- and pre-commit)
+		if (resourceSelectionPage != null && types.contains(Type.ADD_RESOURCES)) {
+			final ResourceEntry[] resources = resourceSelectionPage.getSelection();
+			if (resources != null && resources.length > 0) {
+
+				final Collection<IResource> postCommitResources = new ArrayList<IResource>();
+				final Collection<UploadItem> preCommitResources = new ArrayList<UploadItem>();
+
+				JobWithStatus getItemsJob = new JobWithStatus("Preparing data for review") {
+					@Override
+					public void runImpl(IProgressMonitor monitor) {
+						Collection<IResource> preCommitTmp = new ArrayList<IResource>();
+						for (ResourceEntry resource : resources) {
+							if (resource.isUpdated()) {
+								postCommitResources.add(resource.getResource());
+							} else {
+								preCommitTmp.add(resource.getResource());
+							}
+						}
+
+						try {
+							// TODO jj for pre-commit files thre is no team connector
+							preCommitResources.addAll(resourceSelectionPage.getTeamResourceConnector()
+									.getUploadItemsForResources(
+											preCommitTmp.toArray(new IResource[preCommitTmp.size()]), monitor));
+						} catch (CoreException e) {
+							setStatus(e.getStatus());
+							creationProcessStatus.add(e.getStatus());
+						}
+					}
+				};
+
+				IStatus result = runJobInContainer(getItemsJob);
+				if (result.isOK()) {
+					// add post-commit resources
+					if (postCommitResources.size() > 0) {
+						final JobWithStatus job = new AddResourcesToReviewJob(crucibleReview,
+								postCommitResources.toArray(new IResource[postCommitResources.size()]));
+
+						result = runJobInContainer(job);
+						if (!result.isOK()) {
+							creationProcessStatus.add(result);
+						}
+					}
+
+					// add pre-commit items
+					if (preCommitResources.size() > 0) {
+						JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(),
+								preCommitResources);
+
+						result = runJobInContainer(job);
+						if (!result.isOK()) {
+							creationProcessStatus.add(result);
+						}
+					}
+
+				}
+
+			} else {
+				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Cannot add items to review. List of items is empty."));
 			}
 		}
 

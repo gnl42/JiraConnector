@@ -221,4 +221,9 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		return null;
 	}
 
+	public boolean isResourceAcceptedByFilter(IResource resource, State state) {
+		// ignore
+		return false;
+	}
+
 }

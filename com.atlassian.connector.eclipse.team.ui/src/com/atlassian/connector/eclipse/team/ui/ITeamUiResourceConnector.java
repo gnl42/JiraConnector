@@ -189,4 +189,6 @@ public interface ITeamUiResourceConnector {
 	@NotNull
 	Collection<ScmRepository> getRepositories(IProgressMonitor monitor);
 
+	boolean isResourceAcceptedByFilter(IResource resource, State state);
+
 }

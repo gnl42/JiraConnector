@@ -25,6 +25,19 @@
 			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction" id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction" menubarPath="team.main/group10" icon="icons/obj16/crucible.png" label="Create Post-commit Review" tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
 			</action>
 		</objectContribution>
+		<objectContribution 
+			objectClass="org.eclipse.core.resources.mapping.ResourceMapping" 
+			adaptable="true" 
+			id="com.atlassian.connector.eclipse.crucible.ui.ReviewResource">
+
+			<action 
+				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromResourcesAction" 
+				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateReviewAction" 
+				menubarPath="team.main/group10" 
+				icon="icons/obj16/crucible.png" 
+				label="Create Review" tooltip="Create Review in Crucible for Selected Resource(s)">
+			</action>
+		</objectContribution>
 		<viewerContribution
         	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
         	targetID="#CompilationUnitEditorContext">

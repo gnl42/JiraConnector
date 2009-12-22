@@ -586,4 +586,9 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return inSync;
 	}
 
+	public boolean isResourceAcceptedByFilter(IResource resource, State state) {
+		// ignore
+		return false;
+	}
+
 }
