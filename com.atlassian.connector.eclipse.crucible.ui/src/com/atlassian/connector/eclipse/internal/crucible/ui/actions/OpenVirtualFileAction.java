@@ -103,8 +103,10 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 		switch (fileInfo.getRepositoryType()) {
 		case UPLOAD:
 			OpenUploadedVirtualFileAction action = new OpenUploadedVirtualFileAction(task, new CrucibleFile(fileInfo,
-					oldFile), fileInfo.getOldFileDescriptor(), review, comment, WorkbenchUtil.getShell(),
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage());
+					oldFile), oldFile ? fileInfo.getOldFileDescriptor() : fileInfo.getFileDescriptor(), review,
+					comment, WorkbenchUtil.getShell(), PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage());
 			action.run();
 			break;
 		case SCM:
