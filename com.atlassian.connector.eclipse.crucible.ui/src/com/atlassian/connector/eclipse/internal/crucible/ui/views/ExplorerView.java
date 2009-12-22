@@ -90,6 +90,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	public void createPartControl(Composite parent) {
 
 		viewer = new TreeViewer(parent);
+		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new ReviewContentProvider());
 		viewer.setLabelProvider(new LabelProvider() {
 			@Override

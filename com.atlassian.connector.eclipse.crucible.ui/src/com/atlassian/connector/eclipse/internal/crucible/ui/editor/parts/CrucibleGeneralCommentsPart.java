@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewContentP
 import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -43,6 +44,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * The form part that displays the general comments for the review
@@ -51,6 +53,8 @@ import java.util.Collection;
  * @author Pawel Niewiadomski
  */
 public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart {
+
+	private static final String[] NO_GENERAL_COMMENTS = new String[] { "There are no general comments." };
 
 	private CrucibleReviewEditorPage crucibleEditor;
 
@@ -181,7 +185,8 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		viewer.addSelectionChangedListener(postDraftCommentAction);
 
 		try {
-			viewer.setInput(crucibleReview.getGeneralComments());
+			List<GeneralComment> comments = crucibleReview.getGeneralComments();
+			viewer.setInput(comments.size() == 0 ? NO_GENERAL_COMMENTS : comments);
 		} catch (ValueNotYetInitialized e) {
 		}
 		return parentComposite;
@@ -236,7 +241,8 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		commentsSection.setText(getSectionTitle());
 
 		try {
-			viewer.setInput(crucibleReview.getGeneralComments());
+			List<GeneralComment> comments = crucibleReview.getGeneralComments();
+			viewer.setInput(comments.size() == 0 ? NO_GENERAL_COMMENTS : comments);
 		} catch (ValueNotYetInitialized e) {
 		}
 	}
