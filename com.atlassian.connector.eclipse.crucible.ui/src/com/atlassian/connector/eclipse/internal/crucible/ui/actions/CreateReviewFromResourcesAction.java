@@ -42,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("restriction")
@@ -90,12 +91,13 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 			return;
 		}
 
-		final boolean[] isCrucible21Required = { false };
-
 		Job analyzeResource = new Job("Analyzing selected resources") {
 
 			public IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Analyzing selected resources", IProgressMonitor.UNKNOWN);
+				monitor.beginTask("Analyzing selected resources for Crucible compatibility", IProgressMonitor.UNKNOWN);
+
+				final boolean[] isCrucible21Required = { false };
+
 				try {
 					ITeamUiResourceConnector teamConnector = connectors.iterator().next();
 					Collection<IResource> allResources = teamConnector.getResourcesByFilterRecursive(resources,
@@ -130,8 +132,6 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 
 	private void openReviewWizard(final IResource[] resources, boolean isCrucible21Required) {
 
-		// TODO jj no wizard if there is single repository
-
 		if (isCrucible21Required) {
 			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
 				@Override
@@ -149,6 +149,7 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 			wd.open();
 
 		} else {
+
 			SelectCrucibleRepositoryPage selectRepositoryPage = new SelectCrucibleRepositoryPage(
 					SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
 				@Override
@@ -160,8 +161,16 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 				}
 			};
 
-			WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(
-					selectRepositoryPage));
+			List<TaskRepository> taskRepositories = selectRepositoryPage.getTaskRepositories();
+			WizardDialog wd = null;
+			if (taskRepositories.size() != 1) {
+				wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(selectRepositoryPage));
+			} else {
+				ReviewWizard reviewWizard = new ReviewWizard(taskRepositories.get(0),
+						MiscUtil.buildHashSet(ReviewWizard.Type.ADD_RESOURCES));
+				reviewWizard.setRoots(Arrays.asList(getSelectedResources()));
+				wd = new WizardDialog(WorkbenchUtil.getShell(), reviewWizard);
+			}
 			wd.setBlockOnOpen(true);
 			wd.open();
 		}

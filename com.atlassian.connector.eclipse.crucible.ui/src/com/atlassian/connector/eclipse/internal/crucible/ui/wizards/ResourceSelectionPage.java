@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector.State;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -305,28 +306,24 @@ public class ResourceSelectionPage extends WizardPage {
 				final Collection<IResource> validResources = new ArrayList<IResource>();
 
 				try {
-					// TODO jj do we need the for loop???
-					for (IResource root : roots) {
-						resources.addAll(teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
-								ITeamUiResourceConnector.State.SF_ALL));
 
-						try {
-							LocalStatus status = teamConnector.getLocalRevision(root);
-							String revision = status.getRevision();
+					resources.addAll(teamConnector.getResourcesByFilterRecursive(
+							roots.toArray(new IResource[roots.size()]), ITeamUiResourceConnector.State.SF_ALL));
+
+					for (IResource root : roots) {
+						if (teamConnector.isResourceAcceptedByFilter(root, State.SF_VERSIONED)
+								&& !teamConnector.isResourceAcceptedByFilter(root, State.SF_ANY_CHANGE)) {
 							try {
-								if (revision != null && Double.parseDouble(revision) > 0) {
-									// we need to collect that to check if necessary mapping for committed files is defined in validatePage()
-									// for post-commit reasons
+								LocalStatus status = teamConnector.getLocalRevision(root);
+								if (status.getScmPath() != null && status.getScmPath().length() > 0) {
 									scmPaths.add(status.getScmPath());
 								}
-							} catch (NumberFormatException e) {
+							} catch (CoreException e) {
 								// resource is probably not under version control
 								// skip
 							}
-						} catch (CoreException e) {
-							// resource is probably not under version control
-							// skip
 						}
+
 						monitor.worked(1);
 					}
 
