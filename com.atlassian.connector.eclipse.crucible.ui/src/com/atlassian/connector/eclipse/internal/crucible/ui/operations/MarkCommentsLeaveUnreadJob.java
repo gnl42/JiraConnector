@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
@@ -33,17 +34,20 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.util.Collection;
 
-public class MarkCommentsAsReadJob extends JobWithStatus {
+public class MarkCommentsLeaveUnreadJob extends JobWithStatus {
 
 	private final Review review;
 
 	private final Collection<Comment> comments;
 
-	public MarkCommentsAsReadJob(Review review, Collection<Comment> comments) {
-		super("Mark Comments As Read");
+	private final boolean refreshReview;
+
+	public MarkCommentsLeaveUnreadJob(Review review, Collection<Comment> comments, boolean refresh) {
+		super("Mark Comments As Leave Unread");
 		this.review = review;
 		this.comments = MiscUtil.buildArrayList();
 		this.comments.addAll(comments);
+		this.refreshReview = refresh;
 	}
 
 	@Override
@@ -63,7 +67,7 @@ public class MarkCommentsAsReadJob extends JobWithStatus {
 					CrucibleSession session = server.getSession(serverCfg);
 
 					for (Comment comment : comments) {
-						session.markCommentRead(review.getPermId(), comment.getPermId());
+						session.markCommentLeaveRead(review.getPermId(), comment.getPermId());
 						submonitor.worked(1);
 					}
 
@@ -73,6 +77,18 @@ public class MarkCommentsAsReadJob extends JobWithStatus {
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 		}
+
+		if (refreshReview) {
+			// hack to trigger task list synchronization
+			try {
+				client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId()),
+						true, monitor);
+			} catch (CoreException e) {
+				setStatus(e.getStatus());
+				return;
+			}
+		}
+
 	}
 
 	private TaskRepository getTaskRepository() {

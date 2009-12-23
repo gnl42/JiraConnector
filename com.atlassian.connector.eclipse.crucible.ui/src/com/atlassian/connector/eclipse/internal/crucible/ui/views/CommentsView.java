@@ -11,44 +11,36 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.operations.MarkCommentsAsReadJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class CommentsView extends ViewPart implements ISelectionListener {
@@ -69,6 +61,10 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 	private PostDraftCommentAction postDraftCommentAction;
 
+	private TreePath commentPath;
+
+	private ToggleCommentsLeaveUnreadAction leaveUnreadCommentsAction;
+
 	public CommentsView() {
 		// ignore
 	}
@@ -78,38 +74,7 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 		viewer = new TreeViewer(parent);
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new ReviewContentProvider());
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				Iterator<?> it = selection.iterator();
-				final Collection<Comment> markAsRead = MiscUtil.buildArrayList();
-
-				while (it.hasNext()) {
-					Object element = it.next();
-					if (element instanceof Comment) {
-						if (((Comment) element).getReadState().equals(ReadState.UNREAD)) {
-							markAsRead.add((Comment) element);
-						}
-					}
-				}
-
-				if (markAsRead.size() > 0) {
-					Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-					MarkCommentsAsReadJob job = new MarkCommentsAsReadJob(activeReview, markAsRead);
-					job.addJobChangeListener(new JobChangeAdapter() {
-						@Override
-						public void done(IJobChangeEvent event) {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									viewer.update(markAsRead.toArray(), null);
-								}
-							});
-						}
-					});
-					job.schedule();
-				}
-			}
-		});
+		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
 
 		TreeViewerColumn commentColumn = new TreeViewerColumn(viewer, SWT.NONE);
 		commentColumn.getColumn().setText("Comment");
@@ -118,7 +83,8 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 			@Override
 			public Font getFont(Object element) {
 				if (element instanceof Comment) {
-					if (((Comment) element).getReadState().equals(ReadState.UNREAD)) {
+					if (((Comment) element).getReadState().equals(ReadState.UNREAD)
+							|| ((Comment) element).getReadState().equals(ReadState.LEAVE_UNREAD)) {
 						return CommonFonts.BOLD;
 					}
 				}
@@ -152,6 +118,7 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 		createActions();
 		createToolbar();
+		createMenu();
 		createContextMenu();
 
 		viewer.setInput(NO_COMMENT_SELECTED);
@@ -179,6 +146,7 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);
 		mgr.add(postDraftCommentAction);
+		mgr.add(leaveUnreadCommentsAction);
 	}
 
 	private void createToolbar() {
@@ -187,6 +155,11 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);
 		mgr.add(postDraftCommentAction);
+	}
+
+	private void createMenu() {
+		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
+		mgr.add(leaveUnreadCommentsAction);
 	}
 
 	private void createActions() {
@@ -201,6 +174,9 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 		postDraftCommentAction = new PostDraftCommentAction();
 		viewer.addSelectionChangedListener(postDraftCommentAction);
+
+		leaveUnreadCommentsAction = new ToggleCommentsLeaveUnreadAction();
+		viewer.addSelectionChangedListener(leaveUnreadCommentsAction);
 	}
 
 	@Override
@@ -216,24 +192,33 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 			return;
 		}
 
-		viewer.setInput(NO_COMMENT_SELECTED);
+		commentPath = null;
+		if (selection instanceof ITreeSelection) {
+			TreePath[] paths = ((ITreeSelection) selection).getPaths();
 
-		if (selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection).getFirstElement();
-			if (element instanceof Comment) {
-				comments.clear();
-				comments.add((Comment) element);
-				viewer.setInput(comments);
-			}
-			if (element instanceof CrucibleFileInfo) {
-				comments.clear();
-				comments.addAll(((CrucibleFileInfo) element).getVersionedComments());
-				if (comments.size() == 0) {
-					viewer.setInput(REVIEW_ITEM_HAS_NO_COMMENTS);
-				} else {
+			if (paths != null && paths.length == 1) {
+				commentPath = paths[0];
+				Object lastSegment = commentPath.getLastSegment();
+				if (lastSegment instanceof Comment) {
+					comments.clear();
+					comments.add((Comment) lastSegment);
 					viewer.setInput(comments);
+					viewer.expandAll();
+					return;
+				} else if (lastSegment instanceof CrucibleFileInfo) {
+					comments.clear();
+					comments.addAll(((CrucibleFileInfo) lastSegment).getVersionedComments());
+					if (comments.size() == 0) {
+						viewer.setInput(REVIEW_ITEM_HAS_NO_COMMENTS);
+					} else {
+						viewer.setInput(comments);
+						viewer.expandAll();
+					}
+					return;
 				}
 			}
 		}
+
+		viewer.setInput(NO_COMMENT_SELECTED);
 	}
 }
