@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -100,7 +101,9 @@ public class ResourceSelectionPage extends WizardPage {
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
-	private Object[] realSelection;
+	private final Collection<String> scmPaths = new ArrayList<String>();
+
+//	private Object[] realSelection;
 
 	private ITeamUiResourceConnector teamConnector;
 
@@ -122,10 +125,6 @@ public class ResourceSelectionPage extends WizardPage {
 					.getTeamConnector(roots.get(0));
 			if (teamConnector != null) {
 				this.teamConnector = teamConnector;
-			}
-
-			for (IResource resource : roots) {
-
 			}
 		}
 	}
@@ -306,9 +305,28 @@ public class ResourceSelectionPage extends WizardPage {
 				final Collection<IResource> validResources = new ArrayList<IResource>();
 
 				try {
+					// TODO jj do we need the for loop???
 					for (IResource root : roots) {
 						resources.addAll(teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
 								ITeamUiResourceConnector.State.SF_ALL));
+
+						try {
+							LocalStatus status = teamConnector.getLocalRevision(root);
+							String revision = status.getRevision();
+							try {
+								if (revision != null && Double.parseDouble(revision) > 0) {
+									// we need to collect that to check if necessary mapping for committed files is defined in validatePage()
+									// for post-commit reasons
+									scmPaths.add(status.getScmPath());
+								}
+							} catch (NumberFormatException e) {
+								// resource is probably not under version control
+								// skip
+							}
+						} catch (CoreException e) {
+							// resource is probably not under version control
+							// skip
+						}
 						monitor.worked(1);
 					}
 
@@ -415,23 +433,20 @@ public class ResourceSelectionPage extends WizardPage {
 			errorMessage = "Nothing selected.";
 		}
 
-		// check repository mapping
-		// TODO jj for pre-commit files we do not need mapping
-		// find commited file and check mapping or skip if there is no commited file (commited file has revision)
-		Map.Entry<String, String> sourceRepository = null;
-		try {
+		// check repository mapping for committed root resources
+		for (String scmPath : scmPaths) {
+			Map.Entry<String, String> sourceRepository = null;
 			sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
-					TaskRepositoryUtil.getScmRepositoryMappings(taskRepository), teamConnector.getLocalRevision(
-							roots.get(0)).getScmPath());
-		} catch (CoreException e) {
-			errorMessage = "Cannot get local revision for " + roots.get(0).getName();
+					TaskRepositoryUtil.getScmRepositoryMappings(taskRepository), scmPath);
+
+			if (sourceRepository == null || sourceRepository.getValue() == null
+					|| sourceRepository.getValue().length() == 0) {
+				setPageComplete(false);
+				setErrorMessage("SCM Repository Mapping is not defined");
+			}
 		}
 
-		if (sourceRepository == null || sourceRepository.getValue() == null
-				|| sourceRepository.getValue().length() == 0) {
-			setPageComplete(false);
-			setErrorMessage("SCM Repository Mapping is not defined");
-		}
+		// TODO jj should show which mapping is missing
 
 		// validate page
 		if (errorMessage == null) {

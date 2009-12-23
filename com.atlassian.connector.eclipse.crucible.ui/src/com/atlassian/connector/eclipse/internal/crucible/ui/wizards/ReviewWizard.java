@@ -424,7 +424,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 						}
 
 						try {
-							// TODO jj for pre-commit files thre is no team connector
 							preCommitResources.addAll(resourceSelectionPage.getTeamResourceConnector()
 									.getUploadItemsForResources(
 											preCommitTmp.toArray(new IResource[preCommitTmp.size()]), monitor));
