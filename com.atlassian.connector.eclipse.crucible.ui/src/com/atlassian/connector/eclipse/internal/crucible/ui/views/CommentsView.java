@@ -11,13 +11,19 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.PermId;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -25,25 +31,30 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
 import java.util.List;
 
-public class CommentsView extends ViewPart implements ISelectionListener {
+public class CommentsView extends ViewPart implements ISelectionListener, IReviewActivationListener {
 
 	private static final String[] NO_COMMENT_SELECTED = new String[] { "No comment was selected in Crucible Review Explorer." };
 
@@ -61,12 +72,23 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 	private PostDraftCommentAction postDraftCommentAction;
 
-	private TreePath commentPath;
+	private TreePath currentPath;
 
-	private ToggleCommentsLeaveUnreadAction leaveUnreadCommentsAction;
+	private Review activeReview;
 
-	public CommentsView() {
-		// ignore
+	@Override
+	public void init(IViewSite site) throws PartInitException {
+		super.init(site);
+
+		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+
+		mgr.addReviewActivationListener(this);
+	}
+
+	@Override
+	public void dispose() {
+		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
+		super.dispose();
 	}
 
 	@Override
@@ -131,7 +153,7 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 		mgr.setRemoveAllWhenShown(true);
 		mgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				fillContextMenu(mgr);
+				fillContextMenu(manager);
 			}
 		});
 
@@ -141,12 +163,14 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 		getSite().registerContextMenu(mgr, viewer);
 	}
 
-	private void fillContextMenu(MenuManager mgr) {
+	private void fillContextMenu(IMenuManager mgr) {
 		mgr.add(replyToCommentAction);
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);
 		mgr.add(postDraftCommentAction);
-		mgr.add(leaveUnreadCommentsAction);
+		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
+		action.selectionChanged((IStructuredSelection) viewer.getSelection());
+		mgr.add(action);
 	}
 
 	private void createToolbar() {
@@ -159,7 +183,19 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 	private void createMenu() {
 		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
-		mgr.add(leaveUnreadCommentsAction);
+		mgr.setRemoveAllWhenShown(true);
+		mgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillMenu(manager);
+			}
+		});
+		mgr.add(new Separator());
+	}
+
+	private void fillMenu(IMenuManager manager) {
+		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
+		action.selectionChanged((IStructuredSelection) viewer.getSelection());
+		manager.add(action);
 	}
 
 	private void createActions() {
@@ -174,9 +210,6 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 
 		postDraftCommentAction = new PostDraftCommentAction();
 		viewer.addSelectionChangedListener(postDraftCommentAction);
-
-		leaveUnreadCommentsAction = new ToggleCommentsLeaveUnreadAction();
-		viewer.addSelectionChangedListener(leaveUnreadCommentsAction);
 	}
 
 	@Override
@@ -192,33 +225,96 @@ public class CommentsView extends ViewPart implements ISelectionListener {
 			return;
 		}
 
-		commentPath = null;
+		currentPath = null;
 		if (selection instanceof ITreeSelection) {
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
 
 			if (paths != null && paths.length == 1) {
-				commentPath = paths[0];
-				Object lastSegment = commentPath.getLastSegment();
-				if (lastSegment instanceof Comment) {
-					comments.clear();
-					comments.add((Comment) lastSegment);
-					viewer.setInput(comments);
-					viewer.expandAll();
-					return;
-				} else if (lastSegment instanceof CrucibleFileInfo) {
-					comments.clear();
-					comments.addAll(((CrucibleFileInfo) lastSegment).getVersionedComments());
-					if (comments.size() == 0) {
-						viewer.setInput(REVIEW_ITEM_HAS_NO_COMMENTS);
-					} else {
-						viewer.setInput(comments);
-						viewer.expandAll();
-					}
-					return;
-				}
+				currentPath = paths[0];
+				updateViewer();
+				return;
 			}
 		}
 
 		viewer.setInput(NO_COMMENT_SELECTED);
+	}
+
+	private void updateViewer() {
+		Object lastSegment = currentPath.getLastSegment();
+
+		if (lastSegment instanceof Comment) {
+			Comment activeComment = findActiveComment((Comment) lastSegment);
+
+			comments.clear();
+			if (activeComment != null) {
+				comments.add(activeComment);
+			}
+			viewer.setInput(comments);
+			viewer.expandAll();
+			return;
+		} else if (lastSegment instanceof CrucibleFileInfo) {
+			CrucibleFileInfo activeFileInfo;
+			try {
+				activeFileInfo = activeReview.getFileByPermId(((CrucibleFileInfo) currentPath.getFirstSegment()).getPermId());
+			} catch (ValueNotYetInitialized e) {
+				activeFileInfo = null;
+			}
+
+			comments.clear();
+			if (activeFileInfo != null) {
+				comments.addAll(activeFileInfo.getVersionedComments());
+			}
+
+			if (comments.size() == 0) {
+				viewer.setInput(REVIEW_ITEM_HAS_NO_COMMENTS);
+			} else {
+				viewer.setInput(comments);
+				viewer.expandAll();
+			}
+			return;
+		}
+		viewer.setInput(NO_COMMENT_SELECTED);
+	}
+
+	private Comment findActiveComment(Comment comment) {
+		CrucibleFileInfo activeFileInfo;
+		try {
+			activeFileInfo = activeReview.getFileByPermId(((CrucibleFileInfo) currentPath.getFirstSegment()).getPermId());
+		} catch (ValueNotYetInitialized e) {
+			return null;
+		}
+
+		return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
+	}
+
+	private Comment findComment(PermId commentId, List<? extends Comment> comments) {
+		if (comments != null) {
+			for (Comment comment : comments) {
+				if (comment.getPermId().equals(commentId)) {
+					return comment;
+				}
+
+				if (comment.getReplies() != null) {
+					Comment found = findComment(commentId, comment.getReplies());
+					if (found != null) {
+						return found;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public void reviewActivated(ITask task, Review review) {
+		reviewUpdated(task, review);
+	}
+
+	public void reviewDeactivated(ITask task, Review review) {
+		viewer.setInput(NO_COMMENT_SELECTED);
+	}
+
+	public void reviewUpdated(ITask task, Review review) {
+		activeReview = review;
+		updateViewer();
 	}
 }
