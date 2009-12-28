@@ -11,15 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
-import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector.State;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -35,29 +32,22 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +58,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class ResourceSelectionPage extends WizardPage {
+public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	public class ResourceEntry {
 		private final IResource resource;
@@ -109,6 +99,8 @@ public class ResourceSelectionPage extends WizardPage {
 	private ITeamUiResourceConnector teamConnector;
 
 	private final TaskRepository taskRepository;
+
+	private DefineRepositoryMappingButton mappingButtonFactory;
 
 	public ResourceSelectionPage(@NotNull TaskRepository taskRepository, @NotNull List<IResource> roots) {
 		super("Add Resources to Review");
@@ -285,13 +277,13 @@ public class ResourceSelectionPage extends WizardPage {
 		menuMgr.setRemoveAllWhenShown(true);
 		changeViewer.getTree().setMenu(menu);
 
-		Control button = createDefineRepositoryMappingsButton(composite);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
+		mappingButtonFactory = new DefineRepositoryMappingButton(this, composite, taskRepository);
+		Control buttonControl = mappingButtonFactory.getControl();
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonControl);
 
 		populateResourcesTree();
 
 		validatePage();
-
 	}
 
 	private void populateResourcesTree() {
@@ -300,7 +292,7 @@ public class ResourceSelectionPage extends WizardPage {
 
 		IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				monitor.beginTask("Getting workspace resources data", roots.size());
+				monitor.beginTask("Getting workspace resources data", IProgressMonitor.UNKNOWN);
 
 				final Collection<IResource> resources = new ArrayList<IResource>();
 				final Collection<IResource> validResources = new ArrayList<IResource>();
@@ -310,25 +302,25 @@ public class ResourceSelectionPage extends WizardPage {
 					resources.addAll(teamConnector.getResourcesByFilterRecursive(
 							roots.toArray(new IResource[roots.size()]), ITeamUiResourceConnector.State.SF_ALL));
 
-					for (IResource root : roots) {
-						if (teamConnector.isResourceAcceptedByFilter(root, State.SF_VERSIONED)
-								&& !teamConnector.isResourceAcceptedByFilter(root, State.SF_ANY_CHANGE)) {
-							try {
-								LocalStatus status = teamConnector.getLocalRevision(root);
-								if (status.getScmPath() != null && status.getScmPath().length() > 0) {
-									scmPaths.add(status.getScmPath());
-								}
-							} catch (CoreException e) {
-								// resource is probably not under version control
-								// skip
-							}
-						}
-
-						monitor.worked(1);
-					}
-
 					for (IResource resource : resources) {
 						if (resource instanceof IFile) {
+
+							// collect all scmPaths in order to find missing mappings
+							if (teamConnector.isResourceAcceptedByFilter(resource,
+									ITeamUiResourceConnector.State.SF_VERSIONED)
+									&& !teamConnector.isResourceAcceptedByFilter(resource,
+											ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
+								try {
+									LocalStatus status = teamConnector.getLocalRevision(resource);
+									if (status.getScmPath() != null && status.getScmPath().length() > 0) {
+										scmPaths.add(teamConnector.getLocalRevision(resource.getProject()).getScmPath());
+									}
+								} catch (CoreException e) {
+									// resource is probably not under version control
+									// skip
+								}
+							}
+
 							if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
 								resourceEntries.add(new ResourceEntry(resource, false, "unversioned"));
@@ -376,26 +368,6 @@ public class ResourceSelectionPage extends WizardPage {
 
 	}
 
-	// TODO jj code duplication with CrucibleAddChagesetsPage
-	protected Control createDefineRepositoryMappingsButton(Composite composite) {
-		Button updateData = new Button(composite, SWT.PUSH);
-		updateData.setText("Define Repository Mappings");
-		updateData.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
-						SourceRepositoryMappingPreferencePage.ID, null, new FishEyePreferenceContextData("",
-								taskRepository));
-				if (prefDialog != null) {
-					if (prefDialog.open() == Window.OK) {
-						validatePage();
-					}
-				}
-			}
-		});
-		return updateData;
-	}
-
 	private void setAllChecked(boolean newState) {
 		for (Object element : (Object[]) changeViewer.getInput()) {
 			changeViewer.setSubtreeChecked(element, newState);
@@ -420,7 +392,7 @@ public class ResourceSelectionPage extends WizardPage {
 		menuMgr.add(deselectAllAction);
 	}
 
-	private void validatePage() {
+	public void validatePage() {
 		setErrorMessage(null);
 
 		String errorMessage = null;
@@ -438,12 +410,11 @@ public class ResourceSelectionPage extends WizardPage {
 
 			if (sourceRepository == null || sourceRepository.getValue() == null
 					|| sourceRepository.getValue().length() == 0) {
-				setPageComplete(false);
-				setErrorMessage("SCM Repository Mapping is not defined");
+				errorMessage = "SCM Repository Mapping is not defined";
+				// TODO PLE-841 (do not suggest mapping to user)
+//				mappingButtonFactory.setMissingMapping(scmPath);
 			}
 		}
-
-		// TODO jj should show which mapping is missing
 
 		// validate page
 		if (errorMessage == null) {

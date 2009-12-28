@@ -11,8 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -32,7 +30,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -45,8 +42,6 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -62,7 +57,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,7 +77,7 @@ import java.util.TreeSet;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleAddChangesetsPage extends WizardPage {
+public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 
 	private static final int LIMIT = 25;
 
@@ -229,6 +223,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private String firstMissingMapping;
 
+	private DefineRepositoryMappingButton mappingButton;
+
 	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>());
 	}
@@ -264,37 +260,19 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		createRightViewer(composite);
 
-		Control button = createDefineRepositoryMappingsButton(composite);
+		mappingButton = new DefineRepositoryMappingButton(this, composite, getTaskRepository());
+
+		Control button = mappingButton.getControl();
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
 	}
 
-	protected Control createDefineRepositoryMappingsButton(Composite composite) {
-		Button updateData = new Button(composite, SWT.PUSH);
-		updateData.setText("Define Repository Mappings");
-		updateData.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				final FishEyePreferenceContextData data = isPageComplete() ? null : new FishEyePreferenceContextData(
-						firstMissingMapping == null ? "" : firstMissingMapping, getTaskRepository());
-				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
-						SourceRepositoryMappingPreferencePage.ID, null, data);
-				if (prefDialog != null) {
-					if (prefDialog.open() == Window.OK) {
-						validatePage();
-					}
-				}
-			}
-		});
-		return updateData;
-	}
-
 	/*
 	 * checks if page is complete updates the buttons
 	 */
-	protected void validatePage() {
+	public void validatePage() {
 		setErrorMessage(null);
 
 		// Check if all custom repositories are mapped to Crucible source repositories
@@ -311,7 +289,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 									.getScmPath()
 									+ '/' + file);
 					if (sourceRepository == null) {
-						firstMissingMapping = entry.getRepository().getScmPath();
+						mappingButton.setMissingMapping(entry.getRepository().getScmPath());
 						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define repository mappings.");
 						allFine = false;
 						break;
