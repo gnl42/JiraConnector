@@ -170,8 +170,13 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 				return;
 			}
 			final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null) {
+				// entry point for e3.6
+				public boolean rerunTest(String testId, String className, String testName, String launchMode,
+						boolean buildBeforeLaunch) throws CoreException {
+					return rerunTest(testId, className, testName, launchMode);
+				}
 
-				@Override
+				// entry point for e<3.6
 				public boolean rerunTest(String testId, String className, String testName, String launchMode)
 						throws CoreException {
 					String name = className;
