@@ -240,6 +240,10 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	}
 
 	private void updateViewer() {
+		if (currentPath == null) {
+			return;
+		}
+
 		Object lastSegment = currentPath.getLastSegment();
 
 		if (lastSegment instanceof Comment) {

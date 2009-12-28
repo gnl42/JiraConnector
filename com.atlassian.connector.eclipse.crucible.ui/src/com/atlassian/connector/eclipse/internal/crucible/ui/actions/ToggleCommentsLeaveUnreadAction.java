@@ -82,8 +82,15 @@ public class ToggleCommentsLeaveUnreadAction extends BaseSelectionListenerAction
 					if (!(comment instanceof Comment)) {
 						return false;
 					}
-					if (((Comment) comment).getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
+					switch (((Comment) comment).getReadState()) {
+					case LEAVE_UNREAD:
 						markCommentsAsRead = true;
+						break;
+					case UNKNOWN:
+						// server doesn't support it
+						return false;
+					default:
+						// nothing here
 					}
 				}
 				return true;
