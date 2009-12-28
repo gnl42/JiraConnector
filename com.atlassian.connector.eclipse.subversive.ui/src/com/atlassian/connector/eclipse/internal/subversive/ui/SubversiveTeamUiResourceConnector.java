@@ -343,6 +343,11 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return result == null ? new ArrayList<IResource>() : MiscUtil.buildArrayList(result);
 	}
 
+	public boolean isResourceAcceptedByFilter(IResource resource, State state) {
+		ILocalResource local = SVNRemoteStorage.instance().asLocalResource(resource);
+		return getStateFilter(state).accept(local);
+	}
+
 	public boolean isResourceManagedBy(IResource resource) {
 		if (!isEnabled()) {
 			return false;
@@ -715,11 +720,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(out);
 		}
-	}
-
-	public boolean isResourceAcceptedByFilter(IResource resource, State state) {
-		// TODO implement
-		return false;
 	}
 
 }
