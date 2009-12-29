@@ -53,9 +53,18 @@ public class ReviewPerspective implements IPerspectiveFactory {
 			}
 		}
 
-		IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, 0.6f, editorArea);
-		right.addView(CrucibleUiPlugin.COMMENTS_VIEW_ID);
-		right.addView(ITasksUiConstants.ID_VIEW_TASKS);
+		left.addView(ITasksUiConstants.ID_VIEW_TASKS);
+
+		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
+		bottom.addView(CrucibleUiPlugin.COMMENTS_VIEW_ID);
+		bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
+
+		try {
+			Class.forName("org.eclipse.ui.internal.views.log.LogView");
+			bottom.addView("org.eclipse.pde.runtime.LogView");
+		} catch (ClassNotFoundException e) {
+			// ignore
+		}
 	}
 
 	private void defineActions(IPageLayout layout) {
