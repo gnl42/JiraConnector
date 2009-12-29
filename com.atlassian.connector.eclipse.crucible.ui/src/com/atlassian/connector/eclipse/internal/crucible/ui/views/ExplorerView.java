@@ -177,11 +177,10 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 
-		mgr.addReviewActivationListener(this);
-
 		if (mgr.isReviewActive()) {
 			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
 		}
+		mgr.addReviewActivationListener(this);
 	}
 
 	@Override

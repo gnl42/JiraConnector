@@ -80,7 +80,10 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
 
-		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+		if (mgr.isReviewActive()) {
+			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
+		}
 
 		mgr.addReviewActivationListener(this);
 	}
