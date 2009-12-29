@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
@@ -57,7 +58,7 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  */
-public class VersionedCommentPart extends CommentPart<VersionedComment, VersionedCommentPart> {
+public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentPart> {
 
 	private VersionedComment versionedComment;
 
@@ -89,7 +90,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		composite = super.createSectionContents(section, toolkit);
 
-		updateChildren(composite, toolkit, false, versionedComment.getReplies2());
+		updateChildren(composite, toolkit, false, versionedComment.getReplies());
 		return composite;
 	}
 
@@ -261,8 +262,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	}
 
 	@Override
-	protected Control update(Composite parentComposite, FormToolkit toolkit, VersionedComment newComment,
-			Review newReview) {
+	protected Control update(Composite parentComposite, FormToolkit toolkit, Comment newComment, Review newReview) {
 		this.crucibleReview = newReview;
 		if (reviewActions != null) {
 
@@ -284,14 +284,14 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 			}
 
 			for (IReviewChangeListenerAction reviewAction : reviewActions) {
-				reviewAction.updateReview(newReview, crucibleFileInfo, newComment);
+				reviewAction.updateReview(newReview, crucibleFileInfo, (VersionedComment) newComment);
 			}
 		}
 		// TODO update the text 
 		if (newComment instanceof VersionedComment
-				&& !CrucibleUtil.areVersionedCommentsDeepEquals(newComment, versionedComment)) {
+				&& !CrucibleUtil.areVersionedCommentsDeepEquals((VersionedComment) newComment, versionedComment)) {
 			if (newComment instanceof VersionedComment) {
-				this.versionedComment = newComment;
+				this.versionedComment = (VersionedComment) newComment;
 			}
 			this.comment = newComment;
 
@@ -326,7 +326,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 				}
 
 			}
-			updateChildren(composite, toolkit, true, versionedComment.getReplies2());
+			updateChildren(composite, toolkit, true, versionedComment.getReplies());
 
 			createdControl = getSection();
 		}
@@ -343,16 +343,16 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	}
 
 	@Override
-	protected VersionedCommentPart createChildPart(VersionedComment comment, Review crucibleReview2,
+	protected VersionedCommentPart createChildPart(Comment comment, Review crucibleReview2,
 			CrucibleReviewEditorPage crucibleEditor2) {
-		return new VersionedCommentPart(comment, crucibleReview2, crucibleFileInfo, crucibleEditor2);
+		return new VersionedCommentPart((VersionedComment) comment, crucibleReview2, crucibleFileInfo, crucibleEditor2);
 	}
 
 	@Override
-	protected Comparator<VersionedComment> getComparator() {
-		return new Comparator<VersionedComment>() {
+	protected Comparator<Comment> getComparator() {
+		return new Comparator<Comment>() {
 
-			public int compare(VersionedComment o1, VersionedComment o2) {
+			public int compare(Comment o1, Comment o2) {
 				if (o1 != null && o2 != null) {
 					return o1.getCreateDate().compareTo(o2.getCreateDate());
 				}
@@ -363,12 +363,12 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	}
 
 	@Override
-	protected boolean represents(VersionedComment comment) {
+	protected boolean represents(Comment comment) {
 		return versionedComment.getPermId().equals(comment.getPermId());
 	}
 
 	@Override
-	protected boolean shouldHighlight(VersionedComment comment, CrucibleReviewEditorPage crucibleEditor2) {
+	protected boolean shouldHighlight(Comment comment, CrucibleReviewEditorPage crucibleEditor2) {
 		return !comment.getAuthor().getUsername().equals(crucibleEditor.getUsername());
 	}
 }

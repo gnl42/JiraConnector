@@ -22,7 +22,6 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -245,7 +244,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	private Set<Reviewer> getOthersDrafts() {
 		Set<Reviewer> othersDrafts = new LinkedHashSet<Reviewer>();
 		try {
-			for (GeneralComment comment : review.getGeneralComments()) {
+			for (Comment comment : review.getGeneralComments()) {
 				checkCommentForDraft(comment, othersDrafts);
 			}
 		} catch (ValueNotYetInitialized e) {

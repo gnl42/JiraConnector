@@ -22,7 +22,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -170,8 +169,8 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		final CommentBean commentBean;
 		if (oldComment instanceof VersionedComment) {
 			commentBean = new VersionedCommentBean((VersionedComment) oldComment);
-		} else if (oldComment instanceof GeneralComment) {
-			commentBean = new GeneralCommentBean((GeneralComment) oldComment);
+		} else if (oldComment instanceof Comment) {
+			commentBean = new GeneralCommentBean(oldComment);
 		} else {
 			throw new IllegalArgumentException("Unhandled type of comment class "
 					+ oldComment.getClass().getSimpleName());

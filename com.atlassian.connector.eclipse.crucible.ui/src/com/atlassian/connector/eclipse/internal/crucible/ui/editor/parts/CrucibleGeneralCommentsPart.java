@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewContentP
 import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -185,7 +184,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		viewer.addSelectionChangedListener(postDraftCommentAction);
 
 		try {
-			List<GeneralComment> comments = crucibleReview.getGeneralComments();
+			List<Comment> comments = crucibleReview.getGeneralComments();
 			viewer.setInput(comments.size() == 0 ? NO_GENERAL_COMMENTS : comments);
 		} catch (ValueNotYetInitialized e) {
 		}
@@ -241,7 +240,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		commentsSection.setText(getSectionTitle());
 
 		try {
-			List<GeneralComment> comments = crucibleReview.getGeneralComments();
+			List<Comment> comments = crucibleReview.getGeneralComments();
 			viewer.setInput(comments.size() == 0 ? NO_GENERAL_COMMENTS : comments);
 		} catch (ValueNotYetInitialized e) {
 		}

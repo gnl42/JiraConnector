@@ -175,8 +175,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
 
-		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
-
+		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		if (mgr.isReviewActive()) {
 			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
 		}

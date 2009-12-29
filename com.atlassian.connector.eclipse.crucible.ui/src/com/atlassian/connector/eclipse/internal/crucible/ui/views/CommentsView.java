@@ -84,7 +84,6 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 		if (mgr.isReviewActive()) {
 			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
 		}
-
 		mgr.addReviewActivationListener(this);
 	}
 

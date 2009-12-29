@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -136,7 +135,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	private GeneralCommentBean createNewGeneralComment() {
 		GeneralCommentBean newComment = new GeneralCommentBean();
 		newComment.setMessage(message);
-		if (parentComment != null && parentComment instanceof GeneralComment) {
+		if (parentComment != null && parentComment instanceof Comment) {
 			newComment.setReply(true);
 		} else {
 			newComment.setReply(false);
