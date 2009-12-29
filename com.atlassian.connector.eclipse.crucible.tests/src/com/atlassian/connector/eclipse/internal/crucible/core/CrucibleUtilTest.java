@@ -13,12 +13,12 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.commons.misc.IntRange;
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
@@ -485,13 +485,13 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(-1 == CrucibleUtil.createHash(review));
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
-		List<GeneralComment> genC = new ArrayList<GeneralComment>();
+		List<Comment> genC = MiscUtil.buildArrayList();
 		GeneralCommentBean genCBean = new GeneralCommentBean();
 		genCBean.setCreateDate(new Date(2L));
 		genC.add(genCBean);
 		review1.setGeneralComments(genC);
 
-		genC = new ArrayList<GeneralComment>();
+		genC = MiscUtil.buildArrayList();
 		genCBean = new GeneralCommentBean();
 		genCBean.setCreateDate(new Date(2L));
 		genC.add(genCBean);

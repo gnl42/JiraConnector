@@ -13,9 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -302,7 +302,7 @@ public class ActiveReviewManagerTest extends TestCase {
 		review.setDescription("des");
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
-		List<GeneralComment> genC = new ArrayList<GeneralComment>();
+		List<Comment> genC = new ArrayList<Comment>();
 		review.setGeneralComments(genC);
 		review.setMetricsVersion(5);
 		review.setModerator(new User("mod"));

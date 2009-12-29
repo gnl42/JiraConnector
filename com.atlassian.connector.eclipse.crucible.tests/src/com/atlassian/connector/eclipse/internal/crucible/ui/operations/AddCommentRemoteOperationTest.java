@@ -32,7 +32,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleUserCacheImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -114,7 +113,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(GeneralComment.class));
+		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");
@@ -150,7 +149,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		MockCrucibleClient client = getMockClient(serverCfg);
 
 		crucibleSessionMock.addGeneralCommentReply(EasyMock.isA(PermId.class), EasyMock.isA(PermId.class),
-				EasyMock.isA(GeneralComment.class));
+				EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");
@@ -378,7 +377,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(GeneralComment.class));
+		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");
@@ -416,7 +415,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(GeneralComment.class));
+		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");
@@ -454,7 +453,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(GeneralComment.class));
+		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");
@@ -497,7 +496,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(GeneralComment.class));
+		crucibleSessionMock.addGeneralComment(EasyMock.isA(PermId.class), EasyMock.isA(Comment.class));
 		GeneralCommentBean result = new GeneralCommentBean();
 		result.setAuthor(user);
 		result.setMessage("resultMsg");

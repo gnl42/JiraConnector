@@ -18,7 +18,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -270,7 +269,7 @@ public final class CrucibleUtil {
 			result = prime * result + miniResult;
 
 			miniResult = 0;
-			for (GeneralComment comment : review.getGeneralComments()) {
+			for (Comment comment : review.getGeneralComments()) {
 				miniResult = createHashForGeneralComment(miniResult, comment);
 			}
 			result = prime * result + miniResult;
@@ -303,7 +302,7 @@ public final class CrucibleUtil {
 
 	}
 
-	private static int createHashForGeneralComment(int result, GeneralComment comment) {
+	private static int createHashForGeneralComment(int result, Comment comment) {
 
 		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
@@ -316,7 +315,7 @@ public final class CrucibleUtil {
 			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
 		}
 
-		for (GeneralComment reply : comment.getReplies2()) {
+		for (Comment reply : comment.getReplies()) {
 			result = createHashForGeneralComment(result, reply);
 		}
 
@@ -341,8 +340,12 @@ public final class CrucibleUtil {
 			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
 		}
 
-		for (VersionedComment reply : comment.getReplies2()) {
-			result = createHashForVersionedComment(result, reply);
+		for (Comment reply : comment.getReplies()) {
+			if (reply instanceof VersionedComment) {
+				result = createHashForVersionedComment(result, (VersionedComment) reply);
+			} else {
+				result = createHashForGeneralComment(result, comment);
+			}
 		}
 
 		return result;
@@ -417,10 +420,11 @@ public final class CrucibleUtil {
 			return false;
 		}
 
-		for (VersionedComment vc1 : c1.getReplies2()) {
+		for (Comment vc1 : c1.getReplies()) {
 			boolean found = false;
-			for (VersionedComment vc2 : c2.getReplies2()) {
-				if (vc1.getPermId() == vc2.getPermId() && areVersionedCommentsDeepEquals(vc1, vc2)) {
+			for (Comment vc2 : c2.getReplies()) {
+				if (vc1.getPermId() == vc2.getPermId()
+						&& areVersionedCommentsDeepEquals((VersionedComment) vc1, (VersionedComment) vc2)) {
 					found = true;
 					break;
 				}
@@ -495,7 +499,7 @@ public final class CrucibleUtil {
 	}
 
 	// TODO add a param for whether it should be a deep comaparison?
-	public static boolean areGeneralCommentsDeepEquals(GeneralComment c1, GeneralComment c2) {
+	public static boolean areGeneralCommentsDeepEquals(Comment c1, Comment c2) {
 		if (c1 == c2) {
 			return true;
 		}
@@ -512,9 +516,9 @@ public final class CrucibleUtil {
 			return false;
 		}
 
-		for (GeneralComment vc1 : c1.getReplies2()) {
+		for (Comment vc1 : c1.getReplies()) {
 			boolean found = false;
-			for (GeneralComment vc2 : c2.getReplies2()) {
+			for (Comment vc2 : c2.getReplies()) {
 				if (vc1.getPermId() == vc2.getPermId() && areGeneralCommentsDeepEquals(vc1, vc2)) {
 					found = true;
 					break;
