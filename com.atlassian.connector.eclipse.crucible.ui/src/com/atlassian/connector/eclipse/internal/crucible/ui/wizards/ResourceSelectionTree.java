@@ -1,5 +1,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
 import org.eclipse.core.resources.IContainer;
@@ -32,13 +33,14 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ResourceSelectionTree extends Composite {
 	private Tree tree;
@@ -67,8 +69,6 @@ public class ResourceSelectionTree extends Composite {
 
 	private Action compressedAction;
 
-	private final HashMap statusMap;
-
 	private final ResourceComparator comparator = new ResourceComparator();
 
 	private final IToolbarControlCreator toolbarControlCreator;
@@ -93,23 +93,20 @@ public class ResourceSelectionTree extends Composite {
 	 *            parent composite for this tree
 	 * @param label
 	 *            label in the toolbar
-	 * @param resources
+	 * @param resourcesToShow
 	 *            list of resources to show
-	 * @param statusMap
-	 *            map of statuses to show (can be null)
 	 * @param toolbarControlCreator
 	 *            toolbar actions creator if want to add additional actions (can be null)
 	 */
-	public ResourceSelectionTree(Composite parent, String label, List<IResource> resources, HashMap statusMap,
-			IToolbarControlCreator toolbarControlCreator) {
+	public ResourceSelectionTree(Composite parent, String label,
+			@NotNull Map<IResource, ResourceStatus> resourcesToShow, IToolbarControlCreator toolbarControlCreator) {
 		super(parent, SWT.NONE);
 		this.label = label;
-		this.resources = resources;
-		this.statusMap = statusMap;
+		this.resources = new ArrayList<IResource>(resourcesToShow.keySet());
 		this.toolbarControlCreator = toolbarControlCreator;
 		// TODO jj restore tree type setting
 //		this.settings = SVNUIPlugin.getPlugin().getDialogSettings();
-		if (resources != null) {
+		if (resourcesToShow != null) {
 			Collections.sort(resources, comparator);
 		}
 		createControls();
@@ -602,53 +599,31 @@ public class ResourceSelectionTree extends Composite {
 	private class ResourceSelectionLabelProvider extends LabelProvider {
 		private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
-		// TODO jj add icons
-		public Image getImage(Object element) {
-			if (resources.contains(element)) {
-//				SVNStatusKind statusKind = ResourceWithStatusUtil.getStatusKind((IResource) element);
-				Image image = null;
-				if (element instanceof IContainer /*&& (statusKind == null || !statusKind.equals(SVNStatusKind.DELETED))*/) {
-					return workbenchLabelProvider.getImage(element);
-//					image = compareConfiguration.getImage(image, Differencer.NO_CHANGE);
-				} else {
-					return workbenchLabelProvider.getImage(element);
-//					if (statusKind != null) {
-//						if (statusKind.hasTreeConflict()) {
-//							image = workbenchLabelProvider.getImage(element);
-//							image = resourceSelectionTreeDecorator.getImage(image,
-//									ResourceSelectionTreeDecorator.TREE_CONFLICT);
-//						} else if (statusKind != null && statusKind.equals(SVNStatusKind.CONFLICTED)) {
-//							image = workbenchLabelProvider.getImage(element);
-//							image = resourceSelectionTreeDecorator.getImage(image,
-//									ResourceSelectionTreeDecorator.TEXT_CONFLICTED);
-//						}
-//					}
+//		private final AbstractSynchronizeLabelProvider syncLabelProvider = new AbstractSynchronizeLabelProvider() {
+//
+//			protected ILabelProvider getDelegateLabelProvider() {
+//				return workbenchLabelProvider;
+//			}
+//
+//			protected boolean isDecorationEnabled() {
+//				return true;
+//			}
+//		};
 
-//					if (element instanceof IContainer) {
-//						return image;
-//					}
-//					if (unversionedResourceList.contains(element)) {
-//						image = resourceSelectionTreeDecorator.getImage(image,
-//								ResourceSelectionTreeDecorator.UNVERSIONED);
-//					}
-//					if (statusKind != null && statusKind.equals(SVNStatusKind.MISSING)) {
-//						image = resourceSelectionTreeDecorator.getImage(image, ResourceSelectionTreeDecorator.MISSING);
-//					}
-				}
-//				String propertyStatus = ResourceWithStatusUtil.getPropertyStatus((IResource) element);
-//				if (propertyStatus != null && propertyStatus.length() > 0) {
-//					if (propertyStatus.equals("conflicted")) {
-//						image = resourceSelectionTreeDecorator.getImage(image,
-//								ResourceSelectionTreeDecorator.PROPERTY_CONFLICTED);
-//					} else {
-//						image = resourceSelectionTreeDecorator.getImage(image,
-//								ResourceSelectionTreeDecorator.PROPERTY_CHANGE);
-//					}
-//				}
-//				return image;
-			} else {
-				return workbenchLabelProvider.getImage(element);
-			}
+//		private final ResourceSelectionTreeDecorator resourceSelectionTreeDecorator = new ResourceSelectionTreeDecorator();
+
+		public Image getImage(Object element) {
+//			Image image = null;
+//			if (resources.contains(element)) {
+//				image = syncLabelProvider.getImage(element);
+//				image = resourceSelectionTreeDecorator.getImage(image, ResourceSelectionTreeDecorator.FILE_CHANGED);
+//			} else {
+//				image = workbenchLabelProvider.getImage(element);
+//			}
+//
+//			return image;
+
+			return workbenchLabelProvider.getImage(element);
 		}
 
 		public String getText(Object element) {
@@ -682,8 +657,8 @@ public class ResourceSelectionTree extends Composite {
 		public int getControlCount();
 	}
 
-	public void setResources(List<IResource> resourcesToShow) {
-		resources = resourcesToShow;
+	public void setResources(@NotNull Map<IResource, ResourceStatus> resourcesToShow) {
+		resources = new ArrayList<IResource>(resourcesToShow.keySet());
 
 		compressedFolders = null;
 		folders = null;

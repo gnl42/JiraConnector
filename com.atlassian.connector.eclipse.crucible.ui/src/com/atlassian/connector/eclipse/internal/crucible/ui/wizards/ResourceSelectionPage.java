@@ -55,6 +55,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,13 +87,33 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		}
 	}
 
+	public class ResourceStatus {
+
+		private final String state;
+
+		private final boolean upToDate;
+
+		public ResourceStatus(boolean upToDate, String state) {
+			this.upToDate = upToDate;
+			this.state = state;
+		}
+
+		public String getState() {
+			return state;
+		}
+
+		public boolean isUpToDate() {
+			return upToDate;
+		}
+	}
+
 	private CheckboxTreeViewer changeViewer;
 
 //	private Object[] initialSelection;
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
-	private final List<IResource> resourcesToShow = new ArrayList<IResource>();
+	private final Map<IResource, ResourceStatus> resourcesToShow = new HashMap<IResource, ResourceStatus>();
 
 	private final Collection<String> scmPaths = new ArrayList<String>();
 
@@ -155,8 +176,8 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Include changes:");
 
-		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null, null);
-		resourceSelectionTree.setEnabled(false);
+		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null);
+//		resourceSelectionTree.setEnabled(false);
 
 		GridDataFactory.fillDefaults()
 				.span(2, 1)
@@ -302,7 +323,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 	private void populateResourcesTree() {
 
 		final Collection<ResourceEntry> resourceEntries = new ArrayList<ResourceEntry>();
-		final Collection<IResource> validResources = new ArrayList<IResource>();
+		final Map<IResource, ResourceStatus> resourcesToShow = new HashMap<IResource, ResourceStatus>();
 
 		IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -337,19 +358,19 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 							if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
 								resourceEntries.add(new ResourceEntry(resource, false, "unversioned"));
-								validResources.add(resource);
+								resourcesToShow.put(resource, new ResourceStatus(false, "unversioned"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_IGNORED)) {
 								resourceEntries.add(new ResourceEntry(resource, false, "ignored"));
-								validResources.add(resource);
+								resourcesToShow.put(resource, new ResourceStatus(false, "ignored"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-								resourceEntries.add(new ResourceEntry(resource, false, "other change"));
-								validResources.add(resource);
+								resourceEntries.add(new ResourceEntry(resource, false, "changed"));
+								resourcesToShow.put(resource, new ResourceStatus(false, "changed"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_VERSIONED)) {
 								resourceEntries.add(new ResourceEntry(resource, true, "committed"));
-								validResources.add(resource);
+								resourcesToShow.put(resource, new ResourceStatus(true, "committed"));
 							} else {
 								// ignore the resource
 							}
@@ -374,8 +395,6 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		changeViewer.setInput(resourceEntries.toArray(new ResourceEntry[resourceEntries.size()]));
 
-		resourcesToShow.clear();
-		resourcesToShow.addAll(validResources);
 		resourceSelectionTree.setResources(resourcesToShow);
 		resourceSelectionTree.refresh();
 

@@ -1,5 +1,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.ui.AtlassianImages;
+
 import org.eclipse.compare.CompareUI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -7,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import java.util.HashMap;
 
 public class ResourceSelectionTreeDecorator {
-	public final static int PROPERTY_CHANGE = 0;
+	public final static int FILE_CHANGED = 0;
 
 	public final static int TEXT_CONFLICTED = 1;
 
@@ -26,7 +28,7 @@ public class ResourceSelectionTreeDecorator {
 	private Image[] fImages = new Image[6];
 
 	static {
-		fgImages[PROPERTY_CHANGE] = null; //SVNUIPlugin.getPlugin().getImageDescriptor(ISVNUIConstants.IMG_PROPERTY_CHANGED);
+		fgImages[FILE_CHANGED] = AtlassianImages.IMG_FILE_CHANGED;
 //		fgImages[TEXT_CONFLICTED] = SVNUIPlugin.getPlugin().getImageDescriptor(ISVNUIConstants.IMG_TEXT_CONFLICTED);
 		fgImages[TEXT_CONFLICTED] = null; //SVNUIPlugin.getPlugin().getImageDescriptor(ISVNUIConstants.IMG_CONFLICTED);
 		fgImages[UNVERSIONED] = null; //SVNUIPlugin.getPlugin().getImageDescriptor(ISVNUIConstants.IMG_QUESTIONABLE);
@@ -48,7 +50,7 @@ public class ResourceSelectionTreeDecorator {
 		}
 		Image b = a[kind];
 		if (b == null) {
-			boolean onLeft = kind == PROPERTY_CHANGE;
+			boolean onLeft = kind == TEXT_CONFLICTED;
 			b = new DiffImage(base, fgImages[kind], 22, onLeft).createImage();
 			CompareUI.disposeOnShutdown(b);
 			a[kind] = b;
