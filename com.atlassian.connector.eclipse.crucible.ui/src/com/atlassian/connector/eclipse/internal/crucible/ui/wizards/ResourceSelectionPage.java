@@ -92,6 +92,8 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
+	private final List<IResource> resourcesToShow = new ArrayList<IResource>();
+
 	private final Collection<String> scmPaths = new ArrayList<String>();
 
 //	private Object[] realSelection;
@@ -101,6 +103,8 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 	private final TaskRepository taskRepository;
 
 	private DefineRepositoryMappingButton mappingButtonFactory;
+
+	private ResourceSelectionTree resourceSelectionTree;
 
 	public ResourceSelectionPage(@NotNull TaskRepository taskRepository, @NotNull List<IResource> roots) {
 		super("Add Resources to Review");
@@ -150,6 +154,16 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Include changes:");
+
+		resourceSelectionTree = new ResourceSelectionTree(composite, "",
+				resourcesToShow.toArray(new IResource[resourcesToShow.size()]), null, null);
+		resourceSelectionTree.setEnabled(false);
+
+		GridDataFactory.fillDefaults()
+				.span(2, 1)
+				.hint(SWT.DEFAULT, 220)
+				.grab(true, true)
+				.applyTo(resourceSelectionTree);
 
 		changeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
 		Tree tree = changeViewer.getTree();
@@ -289,13 +303,13 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 	private void populateResourcesTree() {
 
 		final Collection<ResourceEntry> resourceEntries = new ArrayList<ResourceEntry>();
+		final Collection<IResource> validResources = new ArrayList<IResource>();
 
 		IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				monitor.beginTask("Getting workspace resources data", IProgressMonitor.UNKNOWN);
 
 				final Collection<IResource> resources = new ArrayList<IResource>();
-				final Collection<IResource> validResources = new ArrayList<IResource>();
 
 				try {
 
@@ -360,6 +374,11 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		}
 
 		changeViewer.setInput(resourceEntries.toArray(new ResourceEntry[resourceEntries.size()]));
+
+		resourcesToShow.clear();
+		resourcesToShow.addAll(validResources);
+		resourceSelectionTree.setResources(resourcesToShow);
+		resourceSelectionTree.refresh();
 
 		changeViewer.expandAll();
 		setAllChecked(true);

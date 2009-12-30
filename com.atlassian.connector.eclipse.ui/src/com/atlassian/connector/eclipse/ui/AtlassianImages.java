@@ -29,11 +29,19 @@ public final class AtlassianImages {
 
 	private static final URL BASE_URL = AtlassianUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
+	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
+
 //	private static final String TOOL = "tool16";
 //
 //	public static final ImageDescriptor DELETE = create(TOOL, "delete.gif");
 
 	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
+
+	public static final ImageDescriptor IMG_FLAT_MODE = create(T_OBJ, "flatLayout.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor IMG_TREE_MODE = create(T_OBJ, "treeLayout.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor IMG_COMPRESSED_FOLDER_MODE = create(T_OBJ, "compressedLayout.gif"); //$NON-NLS-1$
 
 	private AtlassianImages() {
 	}
