@@ -155,8 +155,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Include changes:");
 
-		resourceSelectionTree = new ResourceSelectionTree(composite, "",
-				resourcesToShow.toArray(new IResource[resourcesToShow.size()]), null, null);
+		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null, null);
 		resourceSelectionTree.setEnabled(false);
 
 		GridDataFactory.fillDefaults()

@@ -2,8 +2,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -37,6 +35,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -46,21 +45,13 @@ public class ResourceSelectionTree extends Composite {
 
 	private int mode;
 
-	private IResource[] resources;
+	private List<IResource> resources;
 
-	private ArrayList<IResource> resourceList;
-
-//	private Set unversionedResourceList;
-
-	private IContainer[] compressedFolders;
+	private List<IContainer> compressedFolders = null;
 
 	private IContainer[] folders;
 
-	private ArrayList<IContainer> folderList;
-
 	private IContainer[] rootFolders;
-
-	private ArrayList<IContainer> compressedFolderList;
 
 	private CheckboxTreeViewer treeViewer;
 
@@ -76,23 +67,13 @@ public class ResourceSelectionTree extends Composite {
 
 	private Action compressedAction;
 
-//	private final IDialogSettings settings;
-
 	private final HashMap statusMap;
 
 	private final ResourceComparator comparator = new ResourceComparator();
 
 	private final IToolbarControlCreator toolbarControlCreator;
 
-//	private IRemoveFromViewValidator removeFromViewValidator;
-
-//	private final boolean showRemoveFromViewAction = true;
-
 //	private final ResourceSelectionTreeDecorator resourceSelectionTreeDecorator = new ResourceSelectionTreeDecorator();
-
-//	private final boolean resourceRemoved = false;
-
-//	private final boolean includeUnversioned = true;
 
 	private final ResourceSelectionContentProvider resourceSelectionContentProvider = new ResourceSelectionContentProvider();
 
@@ -119,7 +100,7 @@ public class ResourceSelectionTree extends Composite {
 	 * @param toolbarControlCreator
 	 *            toolbar actions creator if want to add additional actions (can be null)
 	 */
-	public ResourceSelectionTree(Composite parent, String label, IResource[] resources, HashMap statusMap,
+	public ResourceSelectionTree(Composite parent, String label, List<IResource> resources, HashMap statusMap,
 			IToolbarControlCreator toolbarControlCreator) {
 		super(parent, SWT.NONE);
 		this.label = label;
@@ -129,11 +110,7 @@ public class ResourceSelectionTree extends Composite {
 		// TODO jj restore tree type setting
 //		this.settings = SVNUIPlugin.getPlugin().getDialogSettings();
 		if (resources != null) {
-			Arrays.sort(resources, comparator);
-			resourceList = new ArrayList<IResource>();
-			for (IResource resource : resources) {
-				resourceList.add(resource);
-			}
+			Collections.sort(resources, comparator);
 		}
 		createControls();
 	}
@@ -146,7 +123,7 @@ public class ResourceSelectionTree extends Composite {
 		ArrayList<IResource> selected = new ArrayList<IResource>();
 		Object[] checkedResources = treeViewer.getCheckedElements();
 		for (Object checkedResource : checkedResources) {
-			if (resourceList.contains(checkedResource)) {
+			if (resources.contains(checkedResource)) {
 				selected.add((IResource) checkedResource);
 			}
 		}
@@ -315,7 +292,6 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.getControl().setLayoutData(gd);
 		treeViewer.setInput(this);
 
-//		if (checkbox) {
 //		  SelectionListener selectionListener = new SelectionAdapter() {
 //		    public void widgetSelected(SelectionEvent e) {
 //		      setAllChecked(e.getSource() == selectAllButton);
@@ -331,7 +307,6 @@ public class ResourceSelectionTree extends Composite {
 //  	  selectAllButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 //  	  selectAllButton.setText(Policy.bind("ResourceSelectionTree.SelectAll")); //$NON-NLS-1$
 //  	  selectAllButton.addSelectionListener(selectionListener);
-//		}
 
 		treeViewer.expandAll();
 
@@ -373,22 +348,7 @@ public class ResourceSelectionTree extends Composite {
 			}
 		};
 		menuMgr.add(deselectAllAction);
-//			if (showIncludeUnversionedButton() && includeUnversioned) {
-//				menuMgr.add(new Separator());
-//				Action selectUnversionedAction = new Action("ResourceSelectionTree.SelectUnversioned") { //$NON-NLS-1$
-//					public void run() {
-//						checkUnversioned(tree.getItems(), true);
-//					}
-//				};
-//				menuMgr.add(selectUnversionedAction);
-//				Action deselectUnversionedAction = new Action("ResourceSelectionTree.DeselectUnversioned") { //$NON-NLS-1$
-//					public void run() {
-//						checkUnversioned(tree.getItems(), false);
-//					}
-//				};
-//				menuMgr.add(deselectUnversionedAction);
-//			}
-//		}
+
 		menuMgr.add(new Separator());
 		if (mode != MODE_FLAT) {
 			Action expandAllAction = new Action("Expand All") { //$NON-NLS-1$
@@ -398,40 +358,7 @@ public class ResourceSelectionTree extends Composite {
 			};
 			menuMgr.add(expandAllAction);
 		}
-//		if (showRemoveFromViewAction && !checkbox && !treeViewer.getSelection().isEmpty()) {
-//			Action removeAction = new Action("ResourceSelectionTree.remove") {
-//				public void run() {
-//					removeFromView();
-//				}
-//			};
-//			menuMgr.add(removeAction);
-//		}
 	}
-
-//	private void removeFromView() {
-//		IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-//		if (removeFromViewValidator != null) {
-//			if (!removeFromViewValidator.canRemove(resourceList, selection)) {
-//				if (removeFromViewValidator.getErrorMessage() != null) {
-//					MessageDialog.openError(getShell(),
-//							"ResourceSelectionTree.remove", removeFromViewValidator.getErrorMessage()); //$NON-NLS-1$
-//				}
-//				return;
-//			}
-//		}
-//		Iterator iter = selection.iterator();
-//		while (iter.hasNext()) {
-//			IResource resource = (IResource) iter.next();
-//			remove(resource);
-//			resourceRemoved = true;
-//		}
-//		resources = new IResource[resourceList.size()];
-//		resourceList.toArray(resources);
-//		compressedFolders = null;
-//		rootFolders = null;
-//		folders = null;
-//		refresh();
-//	}
 
 //	private void remove(IResource resource) {
 //		ArrayList removedResources = new ArrayList();
@@ -447,10 +374,6 @@ public class ResourceSelectionTree extends Composite {
 //		while (iter.hasNext()) {
 //			resourceList.remove(iter.next());
 //		}
-//	}
-
-//	public boolean showIncludeUnversionedButton() {
-//		return unversionedResourceList != null && unversionedResourceList.size() > 0;
 //	}
 
 //	public void removeUnversioned() {
@@ -493,15 +416,6 @@ public class ResourceSelectionTree extends Composite {
 //		}
 //	}
 
-//	private void checkUnversioned(TreeItem[] items, boolean state) {
-//		for (TreeItem item : items) {
-//			if (unversionedResourceList.contains(item.getData())) {
-//				item.setChecked(state);
-//			}
-//			checkUnversioned(item.getItems(), state);
-//		}
-//	}
-
 //	private boolean isChild(IResource resource, IResource parent) {
 //		IContainer container = resource.getParent();
 //		while (container != null) {
@@ -521,7 +435,7 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	private void updateParentState(IResource child, boolean baseChildState) {
-		if (mode == MODE_FLAT || child == null || child.getParent() == null || resourceList.contains(child.getParent())) {
+		if (mode == MODE_FLAT || child == null || child.getParent() == null || resources.contains(child.getParent())) {
 			return;
 		}
 		if (child == null) {
@@ -565,32 +479,30 @@ public class ResourceSelectionTree extends Composite {
 
 	private IContainer[] getCompressedFolders() {
 		if (compressedFolders == null) {
-			compressedFolderList = new ArrayList<IContainer>();
-			for (int i = 0; i < resources.length; i++) {
-				if (resources[i] instanceof IContainer && !compressedFolderList.contains(resources[i])) {
-					compressedFolderList.add((IContainer) resources[i]);
+			compressedFolders = new ArrayList<IContainer>();
+			for (IResource res : resources) {
+				if (res instanceof IContainer && !compressedFolders.contains(res)) {
+					compressedFolders.add((IContainer) res);
 				}
-				if (!(resources[i] instanceof IContainer)) {
-					IContainer parent = resources[i].getParent();
-					if (parent != null && !(parent instanceof IWorkspaceRoot) && !compressedFolderList.contains(parent)) {
-						compressedFolderList.add(parent);
+				if (!(res instanceof IContainer)) {
+					IContainer parent = res.getParent();
+					if (parent != null && !(parent instanceof IWorkspaceRoot) && !compressedFolders.contains(parent)) {
+						compressedFolders.add(parent);
 					}
 				}
 			}
-			compressedFolders = new IContainer[compressedFolderList.size()];
-			compressedFolderList.toArray(compressedFolders);
-			Arrays.sort(compressedFolders, comparator);
+			Collections.sort(compressedFolders, comparator);
 		}
-		return compressedFolders;
+		return compressedFolders.toArray(new IContainer[compressedFolders.size()]);
 	}
 
 	private IResource[] getChildResources(IContainer parent) {
 		ArrayList<IResource> children = new ArrayList<IResource>();
-		for (int i = 0; i < resources.length; i++) {
-			if (!(resources[i] instanceof IContainer)) {
-				IContainer parentFolder = resources[i].getParent();
+		for (IResource res : resources) {
+			if (!(res instanceof IContainer)) {
+				IContainer parentFolder = res.getParent();
 				if (parentFolder != null && parentFolder.equals(parent) && !children.contains(parentFolder)) {
-					children.add(resources[i]);
+					children.add(res);
 				}
 			}
 		}
@@ -607,10 +519,9 @@ public class ResourceSelectionTree extends Composite {
 				children.add(folder);
 			}
 		}
-		for (int i = 0; i < resources.length; i++) {
-			if (!(resources[i] instanceof IContainer) && resources[i].getParent() != null
-					&& resources[i].getParent().equals(parent)) {
-				children.add(resources[i]);
+		for (IResource res : resources) {
+			if (!(res instanceof IContainer) && res.getParent() != null && res.getParent().equals(parent)) {
+				children.add(res);
 			}
 		}
 		IResource[] childArray = new IResource[children.size()];
@@ -620,8 +531,9 @@ public class ResourceSelectionTree extends Composite {
 
 	private IContainer[] getFolders() {
 		List<IContainer> rootList = new ArrayList<IContainer>();
+
 		if (folders == null) {
-			folderList = new ArrayList<IContainer>();
+			ArrayList<IContainer> folderList = new ArrayList<IContainer>();
 			for (IResource resource : resources) {
 				if (resource instanceof IContainer) {
 					folderList.add((IContainer) resource);
@@ -668,7 +580,7 @@ public class ResourceSelectionTree extends Composite {
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ResourceSelectionTree) {
 				if (mode == MODE_FLAT) {
-					return resources;
+					return resources.toArray(new IResource[resources.size()]);
 				} else if (mode == MODE_COMPRESSED_FOLDERS) {
 					return getCompressedFolders();
 				} else {
@@ -690,16 +602,16 @@ public class ResourceSelectionTree extends Composite {
 	private class ResourceSelectionLabelProvider extends LabelProvider {
 		private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
-		private final CompareConfiguration compareConfiguration = new CompareConfiguration();
-
+		// TODO jj add icons
 		public Image getImage(Object element) {
-			if (resourceList.contains(element)) {
+			if (resources.contains(element)) {
 //				SVNStatusKind statusKind = ResourceWithStatusUtil.getStatusKind((IResource) element);
 				Image image = null;
 				if (element instanceof IContainer /*&& (statusKind == null || !statusKind.equals(SVNStatusKind.DELETED))*/) {
-					image = workbenchLabelProvider.getImage(element);
+					return workbenchLabelProvider.getImage(element);
 //					image = compareConfiguration.getImage(image, Differencer.NO_CHANGE);
 				} else {
+					return workbenchLabelProvider.getImage(element);
 //					if (statusKind != null) {
 //						if (statusKind.hasTreeConflict()) {
 //							image = workbenchLabelProvider.getImage(element);
@@ -712,9 +624,9 @@ public class ResourceSelectionTree extends Composite {
 //						}
 //					}
 
-					if (element instanceof IContainer) {
-						return image;
-					}
+//					if (element instanceof IContainer) {
+//						return image;
+//					}
 //					if (unversionedResourceList.contains(element)) {
 //						image = resourceSelectionTreeDecorator.getImage(image,
 //								ResourceSelectionTreeDecorator.UNVERSIONED);
@@ -733,21 +645,17 @@ public class ResourceSelectionTree extends Composite {
 //								ResourceSelectionTreeDecorator.PROPERTY_CHANGE);
 //					}
 //				}
-				return image;
+//				return image;
 			} else {
-				Image image = workbenchLabelProvider.getImage(element);
-				return compareConfiguration.getImage(image, Differencer.NO_CHANGE);
+				return workbenchLabelProvider.getImage(element);
 			}
 		}
 
 		public String getText(Object element) {
-//			if (statusMap == null) {
-//				return workbenchLabelProvider.getText(element);
-//			}
 			String text = null;
 			IResource resource = (IResource) element;
 			if (mode == MODE_FLAT) {
-				text = resource.getName() + " - " + resource.getFullPath().toString(); //$NON-NLS-1$
+				text = resource.getFullPath().toString();
 			} else if (mode == MODE_COMPRESSED_FOLDERS) {
 				if (element instanceof IContainer) {
 					IContainer container = (IContainer) element;
@@ -760,76 +668,7 @@ public class ResourceSelectionTree extends Composite {
 			}
 			return text;
 		}
-
 	}
-
-//	private class ResourceSelectionDiff implements IThreeWayDiff {
-//		private IResource resource;
-//
-//		public ResourceSelectionDiff(IResource resource) {
-//			this.resource = resource;
-//		}
-//
-//		public int getDirection() {
-//			return IThreeWayDiff.OUTGOING;
-//		}
-//
-//		public ITwoWayDiff getLocalChange() {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		public ITwoWayDiff getRemoteChange() {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//		public int getKind() {
-//			int kind = IDiff.NO_CHANGE;
-//			if (syncInfoSet != null) {
-//				SyncInfo syncInfo = syncInfoSet.getSyncInfo(resource);
-//				if (syncInfo != null) {
-//					int change = SyncInfo.getChange(syncInfo.getKind());
-//					if (change == SyncInfo.CONFLICTING) {
-//						kind = IThreeWayDiff.CONFLICTING;
-//					} else if (change == SyncInfo.CHANGE) {
-//						kind = IDiff.CHANGE;
-//					} else if (change == SyncInfo.ADDITION) {
-//						kind = IDiff.ADD;
-//					} else if (change == SyncInfo.DELETION) {
-//						kind = IDiff.REMOVE;
-//					}
-//				}
-//			} else {
-//				SVNStatusKind statusKind = (SVNStatusKind) statusMap.get(resource);
-//				if (statusKind == null) {
-//					kind = IDiff.NO_CHANGE;
-//				} else if (statusKind.equals(SVNStatusKind.CONFLICTED)) {
-//					kind = IThreeWayDiff.CONFLICTING;
-//				} else if (statusKind.equals(SVNStatusKind.MODIFIED)) {
-//					kind = IDiff.CHANGE;
-//				} else if (statusKind.equals(SVNStatusKind.ADDED)) {
-//					kind = IDiff.ADD;
-//				} else if (statusKind.equals(SVNStatusKind.DELETED)) {
-//					kind = IDiff.REMOVE;
-//				}
-//			}
-//			if (resource instanceof IContainer) {
-//				return IDiff.REMOVE;
-//			}
-//			return kind;
-//		}
-//
-//		public IPath getPath() {
-//			return resource.getFullPath();
-//		}
-//
-//		public String toDiffString() {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//
-//	}
 
 	private class ResourceComparator implements Comparator<IResource> {
 		public int compare(IResource obj0, IResource obj1) {
@@ -844,40 +683,14 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	public void setResources(List<IResource> resourcesToShow) {
-		resources = resourcesToShow.toArray(new IResource[resourcesToShow.size()]);
+		resources = resourcesToShow;
 
 		compressedFolders = null;
 		folders = null;
 		rootFolders = null;
 
 		if (resources != null) {
-			Arrays.sort(resources, comparator);
-			resourceList = new ArrayList<IResource>();
-			for (IResource resource : resources) {
-				resourceList.add(resource);
-			}
+			Collections.sort(resources, comparator);
 		}
 	}
-
-//	public static interface IRemoveFromViewValidator {
-//		public boolean canRemove(ArrayList resourceList, IStructuredSelection selection);
-//
-//		public String getErrorMessage();
-//	}
-
-//	public void setRemoveFromViewValidator(IRemoveFromViewValidator removeFromViewValidator) {
-//		this.removeFromViewValidator = removeFromViewValidator;
-//	}
-//
-//	public void setShowRemoveFromViewAction(boolean showRemoveFromViewAction) {
-//		this.showRemoveFromViewAction = showRemoveFromViewAction;
-//	}
-
-//	public boolean isResourceRemoved() {
-////		if (checkbox) {
-//		resourceRemoved = resources.length > getSelectedResources().length;
-////		}
-//		return resourceRemoved;
-//	}
-
 }
