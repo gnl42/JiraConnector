@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.ITreeViewModeSettingProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.TreeViewMode;
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
@@ -176,8 +178,18 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Include changes:");
 
-		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null);
-//		resourceSelectionTree.setEnabled(false);
+		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null,
+				new ITreeViewModeSettingProvider() {
+
+					public void setTreeViewMode(TreeViewMode mode) {
+						CrucibleUiPlugin.getDefault().setResourcesTreeViewMode(mode);
+					}
+
+					public TreeViewMode getTreeViewMode() {
+						return CrucibleUiPlugin.getDefault().getResourcesTreeViewMode();
+					}
+				});
+		resourceSelectionTree.setEnabled(false);
 
 		GridDataFactory.fillDefaults()
 				.span(2, 1)

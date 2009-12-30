@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.TreeViewMode;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -193,6 +194,21 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	public void setPreviousWorkspacePatchReviewSelection(boolean value) {
 		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREVIOUS_WORKSPACE_PATCH_REVIEW_SELECTION, value);
+	}
+
+	public TreeViewMode getResourcesTreeViewMode() {
+		int mode = plugin.getPreferenceStore().getInt(CrucibleUiConstants.PREFERENCE_RESOURCE_TREE_VIEW_MODE);
+		for (TreeViewMode treeMode : TreeViewMode.values()) {
+			if (treeMode.ordinal() == mode) {
+				return treeMode;
+			}
+		}
+
+		return TreeViewMode.MODE_COMPRESSED_FOLDERS;
+	}
+
+	public void setResourcesTreeViewMode(TreeViewMode mode) {
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_RESOURCE_TREE_VIEW_MODE, mode.ordinal());
 	}
 
 }

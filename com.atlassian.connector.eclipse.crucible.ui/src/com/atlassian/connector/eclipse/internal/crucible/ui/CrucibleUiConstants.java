@@ -26,4 +26,6 @@ public final class CrucibleUiConstants {
 
 	public static final String PREVIOUS_CHANGESET_REVIEW_SELECTION = "previous_changeset_review_selection";
 
+	public static final String PREFERENCE_RESOURCE_TREE_VIEW_MODE = "prefs_resources_tree_view_mode";
+
 }

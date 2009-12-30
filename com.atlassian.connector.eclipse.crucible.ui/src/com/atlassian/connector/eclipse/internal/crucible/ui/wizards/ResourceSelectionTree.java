@@ -45,7 +45,7 @@ import java.util.Map;
 public class ResourceSelectionTree extends Composite {
 	private Tree tree;
 
-	private int mode;
+	private TreeViewMode mode;
 
 	private List<IResource> resources;
 
@@ -77,15 +77,13 @@ public class ResourceSelectionTree extends Composite {
 
 	private final ResourceSelectionContentProvider resourceSelectionContentProvider = new ResourceSelectionContentProvider();
 
-	public final static String MODE_SETTING = "ResourceSelectionTree.mode"; //$NON-NLS-1$
-
-	public final static int MODE_COMPRESSED_FOLDERS = 0;
-
-	public final static int MODE_FLAT = 1;
-
-	public final static int MODE_TREE = 2;
+	public static enum TreeViewMode {
+		MODE_COMPRESSED_FOLDERS, MODE_FLAT, MODE_TREE;
+	}
 
 	private final static int SPACEBAR = 32;
+
+	private final ITreeViewModeSettingProvider settingsProvider;
 
 	/**
 	 * 
@@ -97,18 +95,36 @@ public class ResourceSelectionTree extends Composite {
 	 *            list of resources to show
 	 * @param toolbarControlCreator
 	 *            toolbar actions creator if want to add additional actions (can be null)
+	 * @param settingsProvider
+	 *            settings provider to store/restore resources tree mode (can be null)
 	 */
 	public ResourceSelectionTree(Composite parent, String label,
-			@NotNull Map<IResource, ResourceStatus> resourcesToShow, IToolbarControlCreator toolbarControlCreator) {
+			@NotNull Map<IResource, ResourceStatus> resourcesToShow, IToolbarControlCreator toolbarControlCreator,
+			ITreeViewModeSettingProvider settingsProvider) {
 		super(parent, SWT.NONE);
 		this.label = label;
+		this.settingsProvider = settingsProvider;
 		this.resources = new ArrayList<IResource>(resourcesToShow.keySet());
 		this.toolbarControlCreator = toolbarControlCreator;
-		// TODO jj restore tree type setting
-//		this.settings = SVNUIPlugin.getPlugin().getDialogSettings();
+
 		if (resourcesToShow != null) {
 			Collections.sort(resources, comparator);
 		}
+
+		if (settingsProvider == null) {
+			settingsProvider = new ITreeViewModeSettingProvider() {
+
+				public void setTreeViewMode(TreeViewMode mode) {
+				}
+
+				public TreeViewMode getTreeViewMode() {
+					return TreeViewMode.MODE_COMPRESSED_FOLDERS;
+				}
+			};
+		}
+
+		mode = settingsProvider.getTreeViewMode();
+
 		createControls();
 	}
 
@@ -205,8 +221,8 @@ public class ResourceSelectionTree extends Composite {
 
 		flatAction = new Action("ResourceSelectionTree.flat", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
-				mode = MODE_FLAT;
-//				settings.put(MODE_SETTING, MODE_FLAT);
+				mode = TreeViewMode.MODE_FLAT;
+				settingsProvider.setTreeViewMode(mode);
 				treeAction.setChecked(false);
 				compressedAction.setChecked(false);
 				refresh();
@@ -216,8 +232,8 @@ public class ResourceSelectionTree extends Composite {
 		toolbarManager.add(flatAction);
 		treeAction = new Action("ResourceSelectionTree.tree", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
-				mode = MODE_TREE;
-//				settings.put(MODE_SETTING, MODE_TREE);
+				mode = TreeViewMode.MODE_TREE;
+				settingsProvider.setTreeViewMode(mode);
 				flatAction.setChecked(false);
 				compressedAction.setChecked(false);
 				refresh();
@@ -228,8 +244,8 @@ public class ResourceSelectionTree extends Composite {
 
 		compressedAction = new Action("ResourceSelectionTree.compressedFolders", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
-				mode = MODE_COMPRESSED_FOLDERS;
-//				settings.put(MODE_SETTING, MODE_COMPRESSED_FOLDERS);
+				mode = TreeViewMode.MODE_COMPRESSED_FOLDERS;
+				settingsProvider.setTreeViewMode(mode);
 				treeAction.setChecked(false);
 				flatAction.setChecked(false);
 				refresh();
@@ -240,11 +256,6 @@ public class ResourceSelectionTree extends Composite {
 
 		toolbarManager.update(true);
 
-		mode = MODE_COMPRESSED_FOLDERS;
-		try {
-//			mode = settings.getInt(MODE_SETTING);
-		} catch (Exception e) {
-		}
 		switch (mode) {
 		case MODE_COMPRESSED_FOLDERS:
 			compressedAction.setChecked(true);
@@ -256,6 +267,9 @@ public class ResourceSelectionTree extends Composite {
 			treeAction.setChecked(true);
 			break;
 		default:
+			compressedAction.setChecked(true);
+			mode = TreeViewMode.MODE_COMPRESSED_FOLDERS;
+			settingsProvider.setTreeViewMode(mode);
 			break;
 		}
 
@@ -308,7 +322,7 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.expandAll();
 
 		setAllChecked(true);
-		if (mode == MODE_TREE) {
+		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
 		treeViewer.addCheckStateListener(new ICheckStateListener() {
@@ -347,7 +361,7 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(deselectAllAction);
 
 		menuMgr.add(new Separator());
-		if (mode != MODE_FLAT) {
+		if (mode != TreeViewMode.MODE_FLAT) {
 			Action expandAllAction = new Action("Expand All") { //$NON-NLS-1$
 				public void run() {
 					treeViewer.expandAll();
@@ -432,7 +446,8 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	private void updateParentState(IResource child, boolean baseChildState) {
-		if (mode == MODE_FLAT || child == null || child.getParent() == null || resources.contains(child.getParent())) {
+		if (mode == TreeViewMode.MODE_FLAT || child == null || child.getParent() == null
+				|| resources.contains(child.getParent())) {
 			return;
 		}
 		if (child == null) {
@@ -462,7 +477,7 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.refresh();
 		treeViewer.expandAll();
 		treeViewer.setCheckedElements(checkedElements);
-		if (mode == MODE_TREE) {
+		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
 	}
@@ -563,7 +578,7 @@ public class ResourceSelectionTree extends Composite {
 		}
 
 		public boolean hasChildren(Object element) {
-			if (mode != MODE_FLAT && element instanceof IContainer) {
+			if (mode != TreeViewMode.MODE_FLAT && element instanceof IContainer) {
 				return true;
 			} else {
 				return false;
@@ -576,19 +591,19 @@ public class ResourceSelectionTree extends Composite {
 
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ResourceSelectionTree) {
-				if (mode == MODE_FLAT) {
+				if (mode == TreeViewMode.MODE_FLAT) {
 					return resources.toArray(new IResource[resources.size()]);
-				} else if (mode == MODE_COMPRESSED_FOLDERS) {
+				} else if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
 					return getCompressedFolders();
 				} else {
 					return getRootFolders();
 				}
 			}
 			if (parentElement instanceof IContainer) {
-				if (mode == MODE_COMPRESSED_FOLDERS) {
+				if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
 					return getChildResources((IContainer) parentElement);
 				}
-				if (mode == MODE_TREE) {
+				if (mode == TreeViewMode.MODE_TREE) {
 					return getFolderChildren((IContainer) parentElement);
 				}
 			}
@@ -629,9 +644,9 @@ public class ResourceSelectionTree extends Composite {
 		public String getText(Object element) {
 			String text = null;
 			IResource resource = (IResource) element;
-			if (mode == MODE_FLAT) {
+			if (mode == TreeViewMode.MODE_FLAT) {
 				text = resource.getFullPath().toString();
-			} else if (mode == MODE_COMPRESSED_FOLDERS) {
+			} else if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
 				if (element instanceof IContainer) {
 					IContainer container = (IContainer) element;
 					text = container.getFullPath().makeRelative().toString();
@@ -655,6 +670,12 @@ public class ResourceSelectionTree extends Composite {
 		public void createToolbarControls(ToolBarManager toolbarManager);
 
 		public int getControlCount();
+	}
+
+	public static interface ITreeViewModeSettingProvider {
+		TreeViewMode getTreeViewMode();
+
+		void setTreeViewMode(TreeViewMode mode);
 	}
 
 	public void setResources(@NotNull Map<IResource, ResourceStatus> resourcesToShow) {
