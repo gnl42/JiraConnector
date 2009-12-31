@@ -24,27 +24,22 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TreeViewerColumn;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
@@ -56,15 +51,11 @@ import java.util.List;
 
 public class CommentsView extends ViewPart implements ISelectionListener, IReviewActivationListener {
 
-	private static final String[] NO_COMMENT_SELECTED = new String[] { "No comment was selected in Crucible Review Explorer." };
+	private static final String NO_COMMENT_SELECTED = "No comment was selected in Crucible Review Explorer.";
 
-	private static final String[] REVIEW_ITEM_HAS_NO_COMMENTS = new String[] { "Selected review item has no comments associated with itself." };
-
-	private TreeViewer viewer;
+	private static final String EMPTY = "";
 
 	private EditCommentAction editCommentAction;
-
-	private final List<Comment> comments = MiscUtil.buildArrayList();
 
 	private ReplyToCommentAction replyToCommentAction;
 
@@ -75,6 +66,14 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	private TreePath currentPath;
 
 	private Review activeReview;
+
+	private Text message;
+
+	private Text author;
+
+	private Text date;
+
+	private Text defect;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -94,85 +93,36 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent);
-		viewer.setUseHashlookup(true);
-		viewer.setContentProvider(new ReviewContentProvider());
-		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
+	public void createPartControl(Composite ancestor) {
+		Composite parent = new Composite(ancestor, SWT.NONE);
+		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(parent);
 
-		TreeViewerColumn commentColumn = new TreeViewerColumn(viewer, SWT.NONE);
-		commentColumn.getColumn().setText("Comment");
-		commentColumn.getColumn().setWidth(300);
-		commentColumn.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public Font getFont(Object element) {
-				if (element instanceof Comment) {
-					if (((Comment) element).getReadState().equals(ReadState.UNREAD)
-							|| ((Comment) element).getReadState().equals(ReadState.LEAVE_UNREAD)) {
-						return CommonFonts.BOLD;
-					}
-				}
-				return super.getFont(element);
-			}
+		// Author | Date | Defect
+		// Comment text here
 
-			@Override
-			public String getText(Object element) {
-				if (element instanceof Comment) {
-					Comment comment = (Comment) element;
-					String headerText = comment.getAuthor().getDisplayName() + "   ";
-					headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
-							comment.getCreateDate());
+		Composite header = new Composite(parent, SWT.NONE);
+		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(header);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
-					if (comment.isDefectApproved()) {
-						headerText += " Approved Defect";
-					} else if (comment.isDefectRaised()) {
-						headerText += " Defect";
-					}
+		author = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(author);
 
-					if (comment.isDraft()) {
-						headerText += " Draft";
-					}
-					headerText += "\n\n";
-					headerText += comment.getMessage();
-					return headerText;
-				}
-				return super.getText(element);
-			}
-		});
+		date = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(date);
+
+		defect = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(defect);
+
+		message = new Text(parent, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
 
 		createActions();
 		createToolbar();
 		createMenu();
-		createContextMenu();
 
-		viewer.setInput(NO_COMMENT_SELECTED);
+		message.setText(NO_COMMENT_SELECTED);
 
 		getViewSite().getPage().addSelectionListener(this);
-	}
-
-	private void createContextMenu() {
-		final MenuManager mgr = new MenuManager();
-		mgr.setRemoveAllWhenShown(true);
-		mgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				fillContextMenu(manager);
-			}
-		});
-
-		Menu menu = mgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-
-		getSite().registerContextMenu(mgr, viewer);
-	}
-
-	private void fillContextMenu(IMenuManager mgr) {
-		mgr.add(replyToCommentAction);
-		mgr.add(editCommentAction);
-		mgr.add(removeCommentAction);
-		mgr.add(postDraftCommentAction);
-		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
-		action.selectionChanged((IStructuredSelection) viewer.getSelection());
-		mgr.add(action);
 	}
 
 	private void createToolbar() {
@@ -196,27 +146,41 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 
 	private void fillMenu(IMenuManager manager) {
 		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
-		action.selectionChanged((IStructuredSelection) viewer.getSelection());
+		action.selectionChanged(currentPath != null ? new StructuredSelection(currentPath.getLastSegment())
+				: StructuredSelection.EMPTY);
 		manager.add(action);
 	}
 
 	private void createActions() {
 		replyToCommentAction = new ReplyToCommentAction();
-		viewer.addSelectionChangedListener(replyToCommentAction);
-
 		editCommentAction = new EditCommentAction();
-		viewer.addSelectionChangedListener(editCommentAction);
-
 		removeCommentAction = new RemoveCommentAction();
-		viewer.addSelectionChangedListener(removeCommentAction);
-
 		postDraftCommentAction = new PostDraftCommentAction();
-		viewer.addSelectionChangedListener(postDraftCommentAction);
+
+		getViewSite().getPage().addSelectionListener(new ISelectionListener() {
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if (!(part instanceof ExplorerView)) {
+					return;
+				}
+
+				if (selection instanceof IStructuredSelection) {
+					replyToCommentAction.selectionChanged((IStructuredSelection) selection);
+					editCommentAction.selectionChanged((IStructuredSelection) selection);
+					removeCommentAction.selectionChanged((IStructuredSelection) selection);
+					postDraftCommentAction.selectionChanged((IStructuredSelection) selection);
+				} else {
+					replyToCommentAction.selectionChanged(StructuredSelection.EMPTY);
+					editCommentAction.selectionChanged(StructuredSelection.EMPTY);
+					removeCommentAction.selectionChanged(StructuredSelection.EMPTY);
+					postDraftCommentAction.selectionChanged(StructuredSelection.EMPTY);
+				}
+			}
+		});
 	}
 
 	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		message.setFocus();
 	}
 
 	/**
@@ -228,58 +192,42 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 		}
 
 		currentPath = null;
+
 		if (selection instanceof ITreeSelection) {
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
 
 			if (paths != null && paths.length == 1) {
 				currentPath = paths[0];
-				updateViewer();
-				return;
 			}
 		}
 
-		viewer.setInput(NO_COMMENT_SELECTED);
+		updateViewer();
 	}
 
 	private void updateViewer() {
-		if (currentPath == null) {
-			return;
+		if (currentPath != null) {
+			Object lastSegment = currentPath.getLastSegment();
+
+			if (lastSegment instanceof Comment) {
+				Comment activeComment = findActiveComment((Comment) lastSegment);
+
+				if (activeComment != null) {
+					author.setText(activeComment.getAuthor().getDisplayName());
+					author.setToolTipText(activeComment.getAuthor().getUsername());
+					date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
+					defect.setText(activeComment.isDefectRaised() ? "Defect"
+							: (activeComment.isDefectApproved() ? "Defect Approved" : ""));
+					message.setText(activeComment.getMessage());
+					return;
+				}
+			}
 		}
 
-		Object lastSegment = currentPath.getLastSegment();
-
-		if (lastSegment instanceof Comment) {
-			Comment activeComment = findActiveComment((Comment) lastSegment);
-
-			comments.clear();
-			if (activeComment != null) {
-				comments.add(activeComment);
-			}
-			viewer.setInput(comments);
-			viewer.expandAll();
-			return;
-		} else if (lastSegment instanceof CrucibleFileInfo) {
-			CrucibleFileInfo activeFileInfo;
-			try {
-				activeFileInfo = activeReview.getFileByPermId(((CrucibleFileInfo) currentPath.getFirstSegment()).getPermId());
-			} catch (ValueNotYetInitialized e) {
-				activeFileInfo = null;
-			}
-
-			comments.clear();
-			if (activeFileInfo != null) {
-				comments.addAll(activeFileInfo.getVersionedComments());
-			}
-
-			if (comments.size() == 0) {
-				viewer.setInput(REVIEW_ITEM_HAS_NO_COMMENTS);
-			} else {
-				viewer.setInput(comments);
-				viewer.expandAll();
-			}
-			return;
-		}
-		viewer.setInput(NO_COMMENT_SELECTED);
+		message.setText(NO_COMMENT_SELECTED);
+		author.setText(EMPTY);
+		author.setToolTipText(EMPTY);
+		date.setText(EMPTY);
+		defect.setText(EMPTY);
 	}
 
 	private Comment findActiveComment(Comment comment) {
@@ -316,7 +264,7 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {
-		viewer.setInput(NO_COMMENT_SELECTED);
+		message.setText(NO_COMMENT_SELECTED);
 	}
 
 	public void reviewUpdated(ITask task, Review review) {
