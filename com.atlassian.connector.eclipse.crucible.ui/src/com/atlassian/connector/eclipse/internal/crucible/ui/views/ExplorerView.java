@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVirtualF
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -29,6 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,11 +39,16 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
@@ -92,7 +99,23 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		viewer = new TreeViewer(parent);
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new ReviewContentProvider());
-		viewer.setLabelProvider(new LabelProvider() {
+		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
+
+		TreeViewerColumn commentColumn = new TreeViewerColumn(viewer, SWT.NONE);
+		commentColumn.getColumn().setText("Comment");
+		commentColumn.getColumn().setWidth(300);
+		commentColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public Font getFont(Object element) {
+				if (element instanceof Comment) {
+					if (((Comment) element).getReadState().equals(ReadState.UNREAD)
+							|| ((Comment) element).getReadState().equals(ReadState.LEAVE_UNREAD)) {
+						return CommonFonts.BOLD;
+					}
+				}
+				return super.getFont(element);
+			}
+
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Comment) {
@@ -253,6 +276,9 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);
 		mgr.add(postDraftCommentAction);
+		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
+		action.selectionChanged((IStructuredSelection) viewer.getSelection());
+		mgr.add(action);
 		mgr.add(new Separator());
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
