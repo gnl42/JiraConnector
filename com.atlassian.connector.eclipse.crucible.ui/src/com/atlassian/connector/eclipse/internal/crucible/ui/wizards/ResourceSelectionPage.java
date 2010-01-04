@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.ITreeViewModeSettingProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.TreeViewMode;
-import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -26,68 +25,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
-
-	public class ResourceEntry {
-		private final IResource resource;
-
-		private final String state;
-
-		private final boolean updated;
-
-		public ResourceEntry(IResource resource, boolean updated, String state) {
-			this.resource = resource;
-			this.updated = updated;
-			this.state = state;
-		}
-
-		public IResource getResource() {
-			return resource;
-		}
-
-		public String getState() {
-			return state;
-		}
-
-		public boolean isUpdated() {
-			return updated;
-		}
-	}
 
 	public class ResourceStatus {
 
@@ -109,17 +68,11 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		}
 	}
 
-	private CheckboxTreeViewer changeViewer;
-
-//	private Object[] initialSelection;
-
 	private final List<IResource> roots = new ArrayList<IResource>();
 
 	private final Map<IResource, ResourceStatus> resourcesToShow = new HashMap<IResource, ResourceStatus>();
 
 	private final Collection<String> scmPaths = new ArrayList<String>();
-
-//	private Object[] realSelection;
 
 	private ITeamUiResourceConnector teamConnector;
 
@@ -149,18 +102,17 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		}
 	}
 
-	public ResourceEntry[] getSelection() {
+	public Map<IResource, ResourceStatus> getSelection() {
 
-//		Collection<IResource> resources = new ArrayList<IResource>();
-//
-//		for (Object selected : changeViewer.getCheckedElements()) {
-//			resources.add(((ResourceEntry) selected).getResource());
-//		}
-//
-//		return resources.toArray(new IResource[changeViewer.getCheckedElements().length]);
+		IResource[] selectedResources = resourceSelectionTree.getSelectedResources();
 
-		return Arrays.asList(changeViewer.getCheckedElements()).toArray(
-				new ResourceEntry[changeViewer.getCheckedElements().length]);
+		Map<IResource, ResourceStatus> ret = new HashMap<IResource, ResourceStatus>();
+
+		for (IResource resource : selectedResources) {
+			ret.put(resource, resourcesToShow.get(resource));
+		}
+
+		return ret;
 	}
 
 	/**
@@ -189,139 +141,18 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 						return CrucibleUiPlugin.getDefault().getResourcesTreeViewMode();
 					}
 				});
-		resourceSelectionTree.setEnabled(false);
+
+		resourceSelectionTree.getTreeViewer().addCheckStateListener(new ICheckStateListener() {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				validatePage();
+			}
+		});
 
 		GridDataFactory.fillDefaults()
 				.span(2, 1)
 				.hint(SWT.DEFAULT, 220)
 				.grab(true, true)
 				.applyTo(resourceSelectionTree);
-
-		changeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
-		Tree tree = changeViewer.getTree();
-		tree.setHeaderVisible(true);
-
-		TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-		column1.setWidth(500);
-		column1.setText("Resource");
-
-		TreeColumn column2 = new TreeColumn(tree, SWT.LEFT);
-		column2.setWidth(90);
-		column2.setText("SCM State");
-
-		TreeColumn column3 = new TreeColumn(tree, SWT.LEFT);
-		column3.setWidth(90);
-		column3.setText("Review Type");
-
-		GridDataFactory.fillDefaults().span(2, 1).hint(SWT.DEFAULT, 220).grab(true, true).applyTo(
-				changeViewer.getControl());
-
-		changeViewer.setContentProvider(new WorkbenchContentProvider() {
-
-			public Object[] getElements(Object inputElement) {
-				return (Object[]) inputElement;
-			}
-
-			public void dispose() {
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-		});
-		changeViewer.setLabelProvider(new ITableLabelProvider() {
-			public Image getColumnImage(Object element, int columnIndex) {
-				return null;
-			}
-
-			public String getColumnText(Object element, int columnIndex) {
-				if (element instanceof ResourceEntry) {
-					ResourceEntry resourceEntry = (ResourceEntry) element;
-					if (columnIndex == 0) {
-						return AbstractTeamUiConnector.getResourcePathWithProjectName(resourceEntry.getResource());
-					} else if (columnIndex == 1) {
-						return resourceEntry.getState();
-					} else if (columnIndex == 2) {
-						return (resourceEntry.isUpdated() ? "post-commit" : "pre-commit");
-					}
-				}
-
-				return "";
-			}
-
-			public void addListener(ILabelProviderListener listener) {
-			}
-
-			public void dispose() {
-			}
-
-			public boolean isLabelProperty(Object element, String property) {
-				return false;
-			}
-
-			public void removeListener(ILabelProviderListener listener) {
-			}
-		});
-		// TODO jj add support for tree view (with directories)
-		changeViewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-//				if (event.getChecked()) {
-//					ResourceEntry resourceEntry = (ResourceEntry) event.getElement();
-//					IResource resource = resourceEntry.getResource();
-//					if (resource.getType() != IResource.FILE) {
-//						IPath path = resource.getFullPath();
-//						for (Object current : ResourceSelectionPage.this.initialSelection) {
-//							if (path.isPrefixOf(((IResource) current).getFullPath())) {
-//								ResourceSelectionPage.this.changeViewer.setChecked(current, true);
-//								ResourceSelectionPage.this.changeViewer.setGrayed(current, false);
-//							}
-//						}
-//					}
-//					while ((resource = resource.getParent()).getType() != IResource.ROOT) {
-//						boolean hasUnchecked = false;
-//						IPath path = resource.getFullPath();
-//						for (Object element : ResourceSelectionPage.this.initialSelection) {
-//							IResource current = (IResource) element;
-//							if (path.isPrefixOf(current.getFullPath()) && current != resource) {
-//								hasUnchecked |= !ResourceSelectionPage.this.changeViewer.getChecked(current);
-//							}
-//						}
-//						if (!hasUnchecked) {
-//							ResourceSelectionPage.this.changeViewer.setGrayed(resource, false);
-//							ResourceSelectionPage.this.changeViewer.setChecked(resource, true);
-//						}
-//					}
-//				} else {
-//					IResource resource = ((ResourceEntry) event.getElement()).getResource();
-//					if (resource.getType() != IResource.FILE) {
-//						IPath path = resource.getFullPath();
-//						for (Object element : ResourceSelectionPage.this.initialSelection) {
-//							IResource current = (IResource) element;
-//							if (path.isPrefixOf(current.getFullPath())) {
-//								ResourceSelectionPage.this.changeViewer.setChecked(current, false);
-//							}
-//						}
-//					}
-//					while ((resource = resource.getParent()).getType() != IResource.ROOT) {
-//						ResourceSelectionPage.this.changeViewer.setGrayed(resource, true);
-//					}
-//				}
-
-//				ResourceSelectionPage.this.realSelection = changeViewer.getCheckedElements();
-
-				validatePage();
-			}
-		});
-		changeViewer.setUseHashlookup(true);
-
-		MenuManager menuMgr = new MenuManager();
-		Menu menu = menuMgr.createContextMenu(changeViewer.getTree());
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager menuMgr) {
-				fillTreeMenu(menuMgr);
-			}
-		});
-		menuMgr.setRemoveAllWhenShown(true);
-		changeViewer.getTree().setMenu(menu);
 
 		mappingButtonFactory = new DefineRepositoryMappingButton(this, composite, taskRepository);
 		Control buttonControl = mappingButtonFactory.getControl();
@@ -334,8 +165,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	private void populateResourcesTree() {
 
-		final Collection<ResourceEntry> resourceEntries = new ArrayList<ResourceEntry>();
-		final Map<IResource, ResourceStatus> resourcesToShow = new HashMap<IResource, ResourceStatus>();
+		resourcesToShow.clear();
 
 		IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -369,19 +199,15 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 							if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-								resourceEntries.add(new ResourceEntry(resource, false, "unversioned"));
 								resourcesToShow.put(resource, new ResourceStatus(false, "unversioned"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_IGNORED)) {
-								resourceEntries.add(new ResourceEntry(resource, false, "ignored"));
 								resourcesToShow.put(resource, new ResourceStatus(false, "ignored"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-								resourceEntries.add(new ResourceEntry(resource, false, "changed"));
 								resourcesToShow.put(resource, new ResourceStatus(false, "changed"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_VERSIONED)) {
-								resourceEntries.add(new ResourceEntry(resource, true, "committed"));
 								resourcesToShow.put(resource, new ResourceStatus(true, "committed"));
 							} else {
 								// ignore the resource
@@ -405,40 +231,12 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 					"Can't get list of modified resources", e));
 		}
 
-		changeViewer.setInput(resourceEntries.toArray(new ResourceEntry[resourceEntries.size()]));
-
 		resourceSelectionTree.setResources(resourcesToShow);
 		resourceSelectionTree.refresh();
+		resourceSelectionTree.setAllChecked(true);
 
-		changeViewer.expandAll();
-		setAllChecked(true);
 		validatePage();
-//		realSelection = getResourcesTreeSelection().toArray();
 
-	}
-
-	private void setAllChecked(boolean newState) {
-		for (Object element : (Object[]) changeViewer.getInput()) {
-			changeViewer.setSubtreeChecked(element, newState);
-		}
-
-	}
-
-	protected void fillTreeMenu(IMenuManager menuMgr) {
-		Action selectAllAction = new Action("Select all") {
-			public void run() {
-				setAllChecked(true);
-				validatePage();
-			}
-		};
-		menuMgr.add(selectAllAction);
-		Action deselectAllAction = new Action("Deselect all") {
-			public void run() {
-				setAllChecked(false);
-				validatePage();
-			}
-		};
-		menuMgr.add(deselectAllAction);
 	}
 
 	public void validatePage() {
@@ -447,7 +245,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		String errorMessage = null;
 
 		// check selection
-		if (changeViewer.getCheckedElements().length == 0) {
+		if (resourceSelectionTree.getSelectedResources().length == 0) {
 			errorMessage = "Nothing selected.";
 		}
 

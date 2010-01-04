@@ -24,7 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceEntry;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -405,8 +405,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		// create review from workbench selection (post- and pre-commit)
 		if (resourceSelectionPage != null && types.contains(Type.ADD_RESOURCES)) {
-			final ResourceEntry[] resources = resourceSelectionPage.getSelection();
-			if (resources != null && resources.length > 0) {
+			final Map<IResource, ResourceStatus> resources = resourceSelectionPage.getSelection();
+			if (resources != null && resources.size() > 0) {
 
 				final Collection<IResource> postCommitResources = new ArrayList<IResource>();
 				final Collection<UploadItem> preCommitResources = new ArrayList<UploadItem>();
@@ -415,11 +415,11 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					@Override
 					public void runImpl(IProgressMonitor monitor) {
 						Collection<IResource> preCommitTmp = new ArrayList<IResource>();
-						for (ResourceEntry resource : resources) {
-							if (resource.isUpdated()) {
-								postCommitResources.add(resource.getResource());
+						for (IResource resource : resources.keySet()) {
+							if (resources.get(resource).isUpToDate()) {
+								postCommitResources.add(resource);
 							} else {
-								preCommitTmp.add(resource.getResource());
+								preCommitTmp.add(resource);
 							}
 						}
 

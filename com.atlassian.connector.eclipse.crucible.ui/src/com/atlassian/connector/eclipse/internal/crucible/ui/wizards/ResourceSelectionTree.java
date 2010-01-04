@@ -13,10 +13,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
@@ -24,6 +29,7 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -57,12 +63,8 @@ public class ResourceSelectionTree extends Composite {
 
 	private CheckboxTreeViewer treeViewer;
 
-	private LabelProvider labelProvider;
-
 	private final String label;
 
-//	private Button selectAllButton;
-//	private Button deselectAllButton;
 	private Action treeAction;
 
 	private Action flatAction;
@@ -73,8 +75,6 @@ public class ResourceSelectionTree extends Composite {
 
 	private final IToolbarControlCreator toolbarControlCreator;
 
-//	private final ResourceSelectionTreeDecorator resourceSelectionTreeDecorator = new ResourceSelectionTreeDecorator();
-
 	private final ResourceSelectionContentProvider resourceSelectionContentProvider = new ResourceSelectionContentProvider();
 
 	public static enum TreeViewMode {
@@ -84,6 +84,8 @@ public class ResourceSelectionTree extends Composite {
 	private final static int SPACEBAR = 32;
 
 	private final ITreeViewModeSettingProvider settingsProvider;
+
+	private Map<IResource, ResourceStatus> resourcesToShow;
 
 	/**
 	 * 
@@ -103,11 +105,12 @@ public class ResourceSelectionTree extends Composite {
 			ITreeViewModeSettingProvider settingsProvider) {
 		super(parent, SWT.NONE);
 		this.label = label;
+		this.resourcesToShow = resourcesToShow;
 		this.settingsProvider = settingsProvider;
 		this.resources = new ArrayList<IResource>(resourcesToShow.keySet());
 		this.toolbarControlCreator = toolbarControlCreator;
 
-		if (resourcesToShow != null) {
+		if (resources != null) {
 			Collections.sort(resources, comparator);
 		}
 
@@ -146,32 +149,16 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	private void createControls() {
-		setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		setLayout(layout);
 		setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		ViewForm viewerPane = new ViewForm(this, SWT.BORDER | SWT.FLAT);
 		viewerPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-
-//		Composite treeGroup = new Composite(viewerPane, SWT.NONE);
-//		
-//		GridLayout treeLayout = new GridLayout();
-//		treeLayout.marginWidth = 0;
-//		treeLayout.verticalSpacing = 1;
-//		treeLayout.horizontalSpacing = 0;
-//		treeLayout.numColumns = 1;
-//		treeLayout.marginHeight = 0;
-//		treeGroup.setLayout(treeLayout);
-//		gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
-//		treeGroup.setLayoutData(gridData);	
-
-//		Composite toolbarGroup = new Composite(treeGroup, SWT.NONE);
-//		GridLayout toolbarGroupLayout = new GridLayout();
-//		toolbarGroupLayout.numColumns = 2;
-//		toolbarGroupLayout.marginWidth = 0;
-//		toolbarGroupLayout.marginHeight = 0;
-//		toolbarGroup.setLayout(toolbarGroupLayout);
-//		gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-//		toolbarGroup.setLayoutData(gridData);	
 
 		CLabel toolbarLabel = new CLabel(viewerPane, SWT.NONE) {
 			public Point computeSize(int wHint, int hHint, boolean changed) {
@@ -179,12 +166,6 @@ public class ResourceSelectionTree extends Composite {
 			}
 		};
 
-//		Label toolbarLabel = new Label(viewerPane, SWT.NONE);
-//		gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
-//		gridData.horizontalIndent = 3;
-//		gridData.horizontalAlignment = SWT.BEGINNING;
-//		gridData.verticalAlignment = SWT.CENTER;
-//		toolbarLabel.setLayoutData(gridData);
 		if (label != null) {
 			toolbarLabel.setText(label);
 		}
@@ -195,21 +176,7 @@ public class ResourceSelectionTree extends Composite {
 			buttonGroupColumns = buttonGroupColumns + toolbarControlCreator.getControlCount();
 		}
 
-//		Composite buttonGroup = new Composite(toolbarGroup, SWT.NONE);
-//		GridLayout buttonLayout = new GridLayout();
-//		buttonLayout.numColumns = buttonGroupColumns;
-//		buttonLayout.marginHeight = 0;
-//		buttonLayout.marginWidth = 0;
-//		buttonGroup.setLayout(buttonLayout);
-//		gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-//		buttonGroup.setLayoutData(gridData);
-
 		ToolBar toolbar = new ToolBar(viewerPane, SWT.FLAT);
-//		GridLayout toolbarLayout = new GridLayout();
-//		toolbarLayout.numColumns = 3;
-//		toolbar.setLayout(toolbarLayout);
-//		toolbar.setLayoutData(new GridData(GridData.FILL_BOTH));
-
 		viewerPane.setTopCenter(toolbar);
 
 		ToolBarManager toolbarManager = new ToolBarManager(toolbar);
@@ -293,7 +260,8 @@ public class ResourceSelectionTree extends Composite {
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewerPane.setContent(tree);
 
-		labelProvider = new ResourceSelectionLabelProvider();
+		final DelegatingStyledCellLabelProvider labelProvider = new DelegatingStyledCellLabelProvider(
+				new ResourceSelectionLabelProvider());
 
 		treeViewer.setLabelProvider(labelProvider);
 		treeViewer.setContentProvider(resourceSelectionContentProvider);
@@ -302,22 +270,6 @@ public class ResourceSelectionTree extends Composite {
 		gd.heightHint = 125;
 		treeViewer.getControl().setLayoutData(gd);
 		treeViewer.setInput(this);
-
-//		  SelectionListener selectionListener = new SelectionAdapter() {
-//		    public void widgetSelected(SelectionEvent e) {
-//		      setAllChecked(e.getSource() == selectAllButton);
-//		    }			
-//		  };
-//
-//		  deselectAllButton = new Button(this, SWT.PUSH);
-//  	  deselectAllButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
-//  	  deselectAllButton.setText(Policy.bind("ResourceSelectionTree.DeselectAll")); //$NON-NLS-1$
-//  	  deselectAllButton.addSelectionListener(selectionListener);
-//  	
-//  	  selectAllButton = new Button(this, SWT.PUSH);
-//  	  selectAllButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-//  	  selectAllButton.setText(Policy.bind("ResourceSelectionTree.SelectAll")); //$NON-NLS-1$
-//  	  selectAllButton.addSelectionListener(selectionListener);
 
 		treeViewer.expandAll();
 
@@ -343,7 +295,10 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	void setAllChecked(boolean state) {
-		treeViewer.setAllChecked(state);
+		for (IResource resource : resourcesToShow.keySet()) {
+			treeViewer.setChecked(resource, state);
+			handleCheckStateChange(resource, state);
+		}
 	}
 
 	protected void fillTreeMenu(IMenuManager menuMgr) {
@@ -353,6 +308,7 @@ public class ResourceSelectionTree extends Composite {
 			}
 		};
 		menuMgr.add(selectAllAction);
+
 		Action deselectAllAction = new Action("Deselect All") { //$NON-NLS-1$
 			public void run() {
 				setAllChecked(false);
@@ -361,6 +317,34 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(deselectAllAction);
 
 		menuMgr.add(new Separator());
+
+		Action deselectPreCommit = new Action("Deselect Pre-Commit") { //$NON-NLS-1$
+			public void run() {
+				for (Object obj : getSelectedResources()) {
+					if (!resourcesToShow.get(obj).isUpToDate()) {
+						treeViewer.setChecked(obj, false);
+						handleCheckStateChange(obj, false);
+					}
+				}
+
+			}
+		};
+		menuMgr.add(deselectPreCommit);
+
+		Action deselectPostCommit = new Action("Deselect Post-Commit") { //$NON-NLS-1$
+			public void run() {
+				for (Object obj : getSelectedResources()) {
+					if (resourcesToShow.get(obj).isUpToDate()) {
+						treeViewer.setChecked(obj, false);
+						handleCheckStateChange(obj, false);
+					}
+				}
+			}
+		};
+		menuMgr.add(deselectPostCommit);
+
+		menuMgr.add(new Separator());
+
 		if (mode != TreeViewMode.MODE_FLAT) {
 			Action expandAllAction = new Action("Expand All") { //$NON-NLS-1$
 				public void run() {
@@ -371,78 +355,15 @@ public class ResourceSelectionTree extends Composite {
 		}
 	}
 
-//	private void remove(IResource resource) {
-//		ArrayList removedResources = new ArrayList();
-//		Iterator iter = resourceList.iterator();
-//		while (iter.hasNext()) {
-//			IResource checkResource = (IResource) iter.next();
-//			if (checkResource.getFullPath().toString().equals(resource.getFullPath().toString())
-//					|| (mode != MODE_FLAT && isChild(checkResource, resource))) {
-//				removedResources.add(checkResource);
-//			}
-//		}
-//		iter = removedResources.iterator();
-//		while (iter.hasNext()) {
-//			resourceList.remove(iter.next());
-//		}
-//	}
-
-//	public void removeUnversioned() {
-//		try {
-//			Iterator iter = unversionedResourceList.iterator();
-//			while (iter.hasNext()) {
-//				resourceList.remove(iter.next());
-//			}
-//
-//			resources = new IResource[resourceList.size()];
-//			resourceList.toArray(resources);
-//			compressedFolders = null;
-//			rootFolders = null;
-//			folders = null;
-//			refresh();
-//			includeUnversioned = false;
-//		} catch (Exception e) {
-//			SVNUIPlugin.openError(getShell(), null, null, e);
-//		}
-//	}
-
-//	public void addUnversioned() {
-//		try {
-//			Iterator iter = unversionedResourceList.iterator();
-//			while (iter.hasNext()) {
-//				resourceList.add(iter.next());
-//			}
-//
-//			resources = new IResource[resourceList.size()];
-//			resourceList.toArray(resources);
-//			Arrays.sort(resources, comparator);
-//			compressedFolders = null;
-//			rootFolders = null;
-//			folders = null;
-//			refresh();
-//			checkUnversioned(tree.getItems(), true);
-//			includeUnversioned = true;
-//		} catch (Exception e) {
-//			SVNUIPlugin.openError(getShell(), null, null, e);
-//		}
-//	}
-
-//	private boolean isChild(IResource resource, IResource parent) {
-//		IContainer container = resource.getParent();
-//		while (container != null) {
-//			if (container.getFullPath().toString().equals(parent.getFullPath().toString())) {
-//				return true;
-//			}
-//			container = container.getParent();
-//		}
-//		return false;
-//	}
+	private void handleCheckStateChange(Object element, boolean checked) {
+		treeViewer.setGrayed(element, false);
+		treeViewer.setSubtreeChecked(element, checked);
+		IResource resource = (IResource) element;
+		updateParentState(resource, checked);
+	}
 
 	private void handleCheckStateChange(CheckStateChangedEvent event) {
-		treeViewer.setGrayed(event.getElement(), false);
-		treeViewer.setSubtreeChecked(event.getElement(), event.getChecked());
-		IResource resource = (IResource) event.getElement();
-		updateParentState(resource, event.getChecked());
+		handleCheckStateChange(event.getElement(), event.getChecked());
 	}
 
 	private void updateParentState(IResource child, boolean baseChildState) {
@@ -477,6 +398,9 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.refresh();
 		treeViewer.expandAll();
 		treeViewer.setCheckedElements(checkedElements);
+		for (Object checkedElement : checkedElements) {
+			handleCheckStateChange(checkedElement, true);
+		}
 		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
@@ -611,44 +535,21 @@ public class ResourceSelectionTree extends Composite {
 		}
 	}
 
-	private class ResourceSelectionLabelProvider extends LabelProvider {
+	private class ResourceSelectionLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider {
 		private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
-//		private final AbstractSynchronizeLabelProvider syncLabelProvider = new AbstractSynchronizeLabelProvider() {
-//
-//			protected ILabelProvider getDelegateLabelProvider() {
-//				return workbenchLabelProvider;
-//			}
-//
-//			protected boolean isDecorationEnabled() {
-//				return true;
-//			}
-//		};
-
-//		private final ResourceSelectionTreeDecorator resourceSelectionTreeDecorator = new ResourceSelectionTreeDecorator();
-
 		public Image getImage(Object element) {
-//			Image image = null;
-//			if (resources.contains(element)) {
-//				image = syncLabelProvider.getImage(element);
-//				image = resourceSelectionTreeDecorator.getImage(image, ResourceSelectionTreeDecorator.FILE_CHANGED);
-//			} else {
-//				image = workbenchLabelProvider.getImage(element);
-//			}
-//
-//			return image;
-
 			return workbenchLabelProvider.getImage(element);
 		}
 
-		public String getText(Object element) {
+		@NotNull
+		private String getTextForResource(IResource resource) {
 			String text = null;
-			IResource resource = (IResource) element;
 			if (mode == TreeViewMode.MODE_FLAT) {
 				text = resource.getFullPath().toString();
 			} else if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
-				if (element instanceof IContainer) {
-					IContainer container = (IContainer) element;
+				if (resource instanceof IContainer) {
+					IContainer container = (IContainer) resource;
 					text = container.getFullPath().makeRelative().toString();
 				} else {
 					text = resource.getName();
@@ -656,7 +557,34 @@ public class ResourceSelectionTree extends Composite {
 			} else {
 				text = resource.getName();
 			}
-			return text;
+			return text == null ? "" : text;
+		}
+
+		public StyledString getStyledText(Object element) {
+			StyledString styledString = new StyledString();
+
+			IResource resource = (IResource) element;
+
+			styledString.append(getTextForResource(resource));
+
+			if (resourcesToShow.containsKey(resource)) {
+				styledString.append(" ");
+				String suffix;
+				Styler styler;
+				if (resourcesToShow.get(resource).isUpToDate()) {
+					suffix = "post-commit";
+					styler = StyledString.DECORATIONS_STYLER;
+				} else {
+					suffix = "pre-commit";
+					String colorRed = "com.atlassian.connector.eclipse.internal.red";
+					JFaceResources.getColorRegistry().put(colorRed, new RGB(150, 20, 20));
+					styler = StyledString.createColorRegistryStyler(colorRed, null);
+
+				}
+				styledString.append(suffix, styler);
+			}
+
+			return styledString;
 		}
 	}
 
@@ -680,6 +608,7 @@ public class ResourceSelectionTree extends Composite {
 
 	public void setResources(@NotNull Map<IResource, ResourceStatus> resourcesToShow) {
 		resources = new ArrayList<IResource>(resourcesToShow.keySet());
+		this.resourcesToShow = resourcesToShow;
 
 		compressedFolders = null;
 		folders = null;
