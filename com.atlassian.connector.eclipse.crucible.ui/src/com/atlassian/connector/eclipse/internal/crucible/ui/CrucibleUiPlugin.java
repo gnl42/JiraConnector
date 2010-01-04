@@ -40,7 +40,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	public static final String REVIEW_PERSPECTIVE_ID = PLUGIN_ID + ".reviewPerspective";
 
-	public static final String COMMENTS_VIEW_ID = PLUGIN_ID + ".commentsView";
+	public static final String COMMENT_VIEW_ID = PLUGIN_ID + ".commentView";
 
 	public static final String EXPLORER_VIEW_ID = PLUGIN_ID + ".explorerView";
 

@@ -206,7 +206,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 			public void run() {
 				try {
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-							CrucibleUiPlugin.COMMENTS_VIEW_ID);
+							CrucibleUiPlugin.COMMENT_VIEW_ID);
 				} catch (PartInitException e) {
 					// don't care
 				}

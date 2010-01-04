@@ -52,7 +52,7 @@ import org.eclipse.ui.part.ViewPart;
 import java.text.DateFormat;
 import java.util.List;
 
-public class CommentsView extends ViewPart implements ISelectionListener, IReviewActivationListener {
+public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
 
 	private static final String NO_COMMENT_SELECTED = "No comment was selected in Crucible Review Explorer.";
 

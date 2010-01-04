@@ -56,7 +56,7 @@ public class ReviewPerspective implements IPerspectiveFactory {
 		left.addView(ITasksUiConstants.ID_VIEW_TASKS);
 
 		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
-		bottom.addView(CrucibleUiPlugin.COMMENTS_VIEW_ID);
+		bottom.addView(CrucibleUiPlugin.COMMENT_VIEW_ID);
 		bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
 
 		try {
@@ -69,7 +69,7 @@ public class ReviewPerspective implements IPerspectiveFactory {
 
 	private void defineActions(IPageLayout layout) {
 		layout.addShowViewShortcut(CrucibleUiPlugin.EXPLORER_VIEW_ID);
-		layout.addShowViewShortcut(CrucibleUiPlugin.COMMENTS_VIEW_ID);
+		layout.addShowViewShortcut(CrucibleUiPlugin.COMMENT_VIEW_ID);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
 		layout.addShowViewShortcut(ITasksUiConstants.ID_VIEW_TASKS);
