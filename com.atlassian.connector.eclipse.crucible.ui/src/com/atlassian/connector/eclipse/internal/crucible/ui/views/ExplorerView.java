@@ -12,10 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
@@ -27,9 +29,11 @@ import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -46,7 +50,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import java.util.Collection;
 
 /**
  * @author Pawel Niewiadomski
@@ -76,6 +83,12 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private ExpandAllAction expandAll;
 
 	private CollapseAllAction collapseAll;
+
+	private EditActiveTaskAction openEditorAction;
+
+	private final Collection<IReviewActivationListener> reviewActivationListeners = MiscUtil.buildHashSet();
+
+	private Action showCommentsViewAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review. This view contents are rendered only if there's an active review." };
 
@@ -140,7 +153,13 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 	@Override
 	public void dispose() {
-		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
+		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+
+		for (IReviewActivationListener listener : reviewActivationListeners) {
+			mgr.removeReviewActivationListener(listener);
+		}
+
+		mgr.removeReviewActivationListener(this);
 		super.dispose();
 	}
 
@@ -176,12 +195,45 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 		expandAll = new ExpandAllAction(viewer);
 		collapseAll = new CollapseAllAction(viewer);
+
+		showCommentsViewAction = new Action() {
+			{
+				setText("Show Comment View");
+				setToolTipText("Show Comment View");
+				setImageDescriptor(CrucibleImages.COMMENT_SMALL);
+			}
+
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+							CrucibleUiPlugin.COMMENTS_VIEW_ID);
+				} catch (PartInitException e) {
+					// don't care
+				}
+			};
+		};
+
+		openEditorAction = new EditActiveTaskAction();
+		reviewActivationListeners.add(openEditorAction);
+
+		// in the end register all aditional activation listeners
+		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+		for (IReviewActivationListener listener : reviewActivationListeners) {
+			if (mgr.isReviewActive()) {
+				listener.reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
+			}
+			mgr.addReviewActivationListener(listener);
+		}
 	}
 
 	public void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
 		mgr.add(expandAll);
 		mgr.add(collapseAll);
+		mgr.add(new Separator());
+		mgr.add(openEditorAction);
+		mgr.add(showCommentsViewAction);
+		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
