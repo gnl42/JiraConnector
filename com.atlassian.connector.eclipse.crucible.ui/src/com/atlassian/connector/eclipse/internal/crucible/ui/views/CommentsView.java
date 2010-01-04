@@ -39,11 +39,14 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
@@ -75,6 +78,8 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 
 	private Text defect;
 
+	private FormToolkit toolkit;
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -89,25 +94,50 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 	@Override
 	public void dispose() {
 		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
+
+		if (toolkit != null) {
+			toolkit.dispose();
+			toolkit = null;
+		}
+
 		super.dispose();
+	}
+
+	private Label createLabelControl(FormToolkit toolkit, Composite parent, String labelString) {
+		Label labelControl = toolkit.createLabel(parent, labelString);
+		labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		return labelControl;
 	}
 
 	@Override
 	public void createPartControl(Composite ancestor) {
-		Composite parent = new Composite(ancestor, SWT.NONE);
-		GridLayoutFactory.fillDefaults().numColumns(1).applyTo(parent);
+		if (toolkit == null) {
+			toolkit = new FormToolkit(ancestor.getDisplay());
+		}
+
+		Composite parent = toolkit.createComposite(ancestor);
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(parent);
 
 		// Author | Date | Defect
 		// Comment text here
 
-		Composite header = new Composite(parent, SWT.NONE);
+		Composite header = toolkit.createComposite(parent);
 		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
-		author = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		Composite composite = toolkit.createComposite(header);
+		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+
+		createLabelControl(toolkit, composite, "Author:");
+		author = toolkit.createText(composite, EMPTY, SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(author);
 
-		date = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		composite = toolkit.createComposite(header);
+		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+
+		createLabelControl(toolkit, composite, "Created:");
+		date = new Text(composite, SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(date);
 
 		defect = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
@@ -123,6 +153,10 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 		message.setText(NO_COMMENT_SELECTED);
 
 		getViewSite().getPage().addSelectionListener(this);
+
+		if (currentPath != null) {
+			updateViewer();
+		}
 	}
 
 	private void createToolbar() {
@@ -269,6 +303,8 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 
 	public void reviewUpdated(ITask task, Review review) {
 		activeReview = review;
-		updateViewer();
+		if (message != null) {
+			updateViewer();
+		}
 	}
 }
