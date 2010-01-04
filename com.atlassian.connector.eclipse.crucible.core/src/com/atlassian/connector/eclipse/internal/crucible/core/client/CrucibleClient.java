@@ -74,6 +74,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
 				Review review = server.getReview(serverCfg, new PermId(permId));
 
+//				 this stuff could be invoked when we have avatarUrl served by Crucible  
+//				fillMissingAvatarUrl(server, serverCfg, review);
 				int metricsVersion = review.getMetricsVersion();
 				if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
 					cachedReviewManager.setMetrics(metricsVersion, server.getMetrics(serverCfg, metricsVersion));
@@ -83,6 +85,35 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 				return getTaskDataForReview(getTaskRepository(), review, hasChanged);
 			}
+
+//			private void fillMissingAvatarUrl(CrucibleServerFacade2 server, ConnectionCfg serverCfg, Review review) {
+//				final List<User> users = server.getUsers(serverCfg);
+//				Map<String, User> myDict = MiscUtil.buildHashMap();
+//				for (User user : users) {
+//					myDict.put(user.getUsername(), user);
+//				}
+//
+//				try {
+//					for (CrucibleFileInfo cfi : review.getFiles()) {
+//						for (VersionedComment versionedComment : cfi.getVersionedComments()) {
+//							fixMissingAvatar(myDict, versionedComment);
+//						}
+//					}
+//				} catch (ValueNotYetInitialized e) {
+//					//
+//				}
+//
+//			}
+
+//			private void fixMissingAvatar(Map<String, User> myDict, Comment versionedComment) {
+//				final User userWithAvatarInfo = myDict.get(versionedComment.getAuthor().getUsername());
+//				if (userWithAvatarInfo != null) {
+//					versionedComment.getAuthor().setAvatarUrl(userWithAvatarInfo.getAvatarUrl());
+//				}
+//				for (Comment comment : versionedComment.getReplies()) {
+//					fixMissingAvatar(myDict, comment);
+//				}
+//			}
 		});
 
 	}

@@ -77,6 +77,8 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor ADD_PATCH = create(T_OBJ, "add_patch.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor DEFAULT_AVATAR = create(T_OBJ, "default_avatar.png"); //$NON-NLS-1$
+
 	private CrucibleImages() {
 		// ignore
 	}
