@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToComme
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
+import com.atlassian.connector.eclipse.ui.viewers.ExpandSelectionAction;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -36,6 +37,7 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -94,6 +96,8 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private final Collection<IReviewActivationListener> reviewActivationListeners = MiscUtil.buildHashSet();
 
 	private Action showCommentsViewAction;
+
+	private IAction expandSelected;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review. This view contents are rendered only if there's an active review." };
 
@@ -220,6 +224,8 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		expandAll = new ExpandAllAction(viewer);
 		collapseAll = new CollapseAllAction(viewer);
 
+		expandSelected = new ExpandSelectionAction(viewer);
+
 		showCommentsViewAction = new Action() {
 			{
 				setText("Show Comment View");
@@ -285,6 +291,8 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	}
 
 	private void fillContextMenu(MenuManager mgr) {
+		mgr.add(expandSelected);
+		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);
 		mgr.add(replyToCommentAction);
 		mgr.add(editCommentAction);
