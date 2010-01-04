@@ -28,6 +28,8 @@ import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -39,7 +41,10 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -125,6 +130,25 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 			}
 		});
 		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (compareAction.isEnabled()) {
+					compareAction.run();
+				} else if (openNewAction.isEnabled()) {
+					openNewAction.run();
+				} else if (openOldAction.isEnabled()) {
+					openOldAction.run();
+				} else if (event.getSelection() instanceof IStructuredSelection) {
+					Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
+					if (element instanceof CrucibleFileInfo) {
+						CrucibleFileInfo fileInfo = (CrucibleFileInfo) element;
+						if (fileInfo.getFileType().equals(FileType.Directory)) {
+							viewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+						}
+					}
+				}
+			}
+		});
 
 		viewer.setContentProvider(new ReviewContentProvider());
 		final DelegatingStyledCellLabelProvider styledLabelProvider = new DelegatingStyledCellLabelProvider(
