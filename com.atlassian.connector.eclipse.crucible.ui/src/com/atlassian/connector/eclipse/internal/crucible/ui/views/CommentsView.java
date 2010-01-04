@@ -137,13 +137,13 @@ public class CommentsView extends ViewPart implements ISelectionListener, IRevie
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
 
 		createLabelControl(toolkit, composite, "Created:");
-		date = new Text(composite, SWT.READ_ONLY | SWT.SINGLE);
+		date = toolkit.createText(composite, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(date);
 
-		defect = new Text(header, SWT.READ_ONLY | SWT.SINGLE);
+		defect = toolkit.createText(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(defect);
 
-		message = new Text(parent, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		message = toolkit.createText(parent, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
 
 		createActions();
