@@ -41,6 +41,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -198,6 +199,24 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 		viewer = new TreeViewer(parent);
 		viewer.setUseHashlookup(true);
+		viewer.setComparer(new IElementComparer() {
+			public int hashCode(Object element) {
+				// compare comments only by their perm id
+				// this is needed to preserve selection after
+				// comment was modified
+				if (element instanceof Comment) {
+					return ((Comment) element).getPermId().hashCode();
+				}
+				return element.hashCode();
+			}
+
+			public boolean equals(Object a, Object b) {
+				if (a instanceof Comment && b instanceof Comment) {
+					return ((Comment) a).getPermId().equals(((Comment) b).getPermId());
+				}
+				return a.equals(b);
+			}
+		});
 		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
 
 		viewer.setContentProvider(new ReviewContentProvider());
