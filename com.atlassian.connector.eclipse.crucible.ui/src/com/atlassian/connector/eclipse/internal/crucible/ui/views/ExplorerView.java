@@ -22,6 +22,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
+import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -70,6 +72,10 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private RemoveCommentAction removeCommentAction;
 
 	private PostDraftCommentAction postDraftCommentAction;
+
+	private ExpandAllAction expandAll;
+
+	private CollapseAllAction collapseAll;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review. This view contents are rendered only if there's an active review." };
 
@@ -167,10 +173,15 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 		postDraftCommentAction = new PostDraftCommentAction();
 		viewer.addSelectionChangedListener(postDraftCommentAction);
+
+		expandAll = new ExpandAllAction(viewer);
+		collapseAll = new CollapseAllAction(viewer);
 	}
 
 	public void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(expandAll);
+		mgr.add(collapseAll);
 		mgr.add(addGeneralCommentAction);
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
