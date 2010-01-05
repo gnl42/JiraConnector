@@ -37,7 +37,6 @@ public class JiraClientOfflineTest extends TestCase {
 	protected void setUp() throws Exception {
 		server = new TestProxy();
 		server.startAndWait();
-		server.setDebugEnabled(true);
 		client = new JiraClient(new WebLocation("http://localhost:" + server.getPort(), "", ""));
 	}
 
