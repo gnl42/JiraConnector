@@ -43,6 +43,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -155,8 +156,12 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		});
 
 		viewer.setContentProvider(new ReviewContentProvider());
-		final DelegatingStyledCellLabelProvider styledLabelProvider = new DelegatingStyledCellLabelProvider(
-				new CrucibleFileInfoLabelProvider());
+//		final DelegatingStyledCellLabelProvider styledLabelProvider = new DelegatingStyledCellLabelProvider(
+//				new CrucibleFileInfoLabelProvider());
+		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
+				new CrucibleFileInfoLabelProvider(), PlatformUI.getWorkbench()
+						.getDecoratorManager()
+						.getLabelDecorator(), null);
 		viewer.setLabelProvider(styledLabelProvider);
 
 		createActions();

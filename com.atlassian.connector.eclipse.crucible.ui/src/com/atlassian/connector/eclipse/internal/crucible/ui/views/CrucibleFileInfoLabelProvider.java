@@ -10,7 +10,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
@@ -19,13 +18,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * A simple label provider
  */
-public class CrucibleFileInfoLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider {
+public class CrucibleFileInfoLabelProvider extends AbstractCrucibleReviewItemLabelProvider implements
+		IStyledLabelProvider {
 
 	public String getText(Object element) {
 		return getStyledText(element).toString();
@@ -79,24 +76,12 @@ public class CrucibleFileInfoLabelProvider extends ColumnLabelProvider implement
 			final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor()
 					.getName());
 
-			return CrucibleImages.getImage(imageDescriptor);
+			return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(imageDescriptor, null));
+//			return CrucibleImages.getImage(imageDescriptor);
 			//return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 		}
 		if (element instanceof Comment) {
-			final Comment comment = (Comment) element;
-
-			final String avatarUrl = comment.getAuthor().getAvatarUrl();
-			if (avatarUrl != null) {
-				// this stuff will be actually used only when avatar URLs are served by Crucible to all authorized users
-				// who see given review
-				try {
-					return CrucibleImages.getImage(ImageDescriptor.createFromURL(new URL(avatarUrl + "%3Fs%3D16&s=16")));
-				} catch (MalformedURLException e) {
-					return CrucibleImages.getImage(CrucibleImages.DEFAULT_AVATAR);
-				}
-			} else {
-				return CrucibleImages.getImage(CrucibleImages.DEFAULT_AVATAR);
-			}
+			return getImage((Comment) element);
 		}
 		return null;
 	}

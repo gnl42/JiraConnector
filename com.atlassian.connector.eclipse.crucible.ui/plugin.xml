@@ -118,4 +118,20 @@
 		</perspective>
 	</extension>
 	
+   <extension point="org.eclipse.ui.decorators">
+      <decorator
+            class="com.atlassian.connector.eclipse.internal.crucible.ui.decoration.CommentDecorator"
+            id="com.atlassian.connector.eclipse.internal.crucible.ui.decoration.CommentDecorator"
+            label="Crucible Comment Defect Decorator"
+            lightweight="true"
+            state="true">
+         <enablement>
+               <objectClass
+                     name="com.atlassian.theplugin.commons.crucible.api.model.Comment">
+               </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
+	
+	
 </plugin>
