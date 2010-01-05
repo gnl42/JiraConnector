@@ -31,9 +31,13 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 	@Override
 	public Font getFont(Object element) {
 		if (element instanceof Comment) {
-			if (((Comment) element).getReadState().equals(ReadState.UNREAD)
-					|| ((Comment) element).getReadState().equals(ReadState.LEAVE_UNREAD)) {
+			final Comment comment = (Comment) element;
+			if (comment.getReadState().equals(ReadState.UNREAD)
+					|| comment.getReadState().equals(ReadState.LEAVE_UNREAD)) {
 				return CommonFonts.BOLD;
+			}
+			if (comment.isDraft()) {
+				return CommonFonts.ITALIC;
 			}
 		}
 		return super.getFont(element);
