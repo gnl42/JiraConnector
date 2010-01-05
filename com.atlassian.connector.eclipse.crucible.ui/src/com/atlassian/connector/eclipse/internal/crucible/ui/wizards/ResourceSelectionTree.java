@@ -576,7 +576,7 @@ public class ResourceSelectionTree extends Composite {
 
 			if (resourcesToShow.containsKey(resource)) {
 				styledString.append(" ");
-				Styler styler;
+				final Styler styler;
 				if (resourcesToShow.get(resource).isUpToDate()) {
 					styler = StyledString.DECORATIONS_STYLER;
 				} else {
@@ -596,7 +596,7 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	public static interface IToolbarControlCreator {
-		public void createToolbarControls(ToolBarManager toolbarManager);
+		void createToolbarControls(ToolBarManager toolbarManager);
 
 		public int getControlCount();
 	}
