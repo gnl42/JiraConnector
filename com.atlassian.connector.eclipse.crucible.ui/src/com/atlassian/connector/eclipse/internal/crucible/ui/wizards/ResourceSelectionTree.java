@@ -399,7 +399,7 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.expandAll();
 		treeViewer.setCheckedElements(checkedElements);
 		for (Object checkedElement : checkedElements) {
-			handleCheckStateChange(checkedElement, true);
+			updateParentState((IResource) checkedElement, true);
 		}
 		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
@@ -538,6 +538,13 @@ public class ResourceSelectionTree extends Composite {
 	private class ResourceSelectionLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider {
 		private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
+		private final static String colorRed = "com.atlassian.connector.eclipse.internal.red";
+
+		public ResourceSelectionLabelProvider() {
+			super();
+			JFaceResources.getColorRegistry().put(colorRed, new RGB(150, 20, 20));
+		}
+
 		public Image getImage(Object element) {
 			return workbenchLabelProvider.getImage(element);
 		}
@@ -569,19 +576,13 @@ public class ResourceSelectionTree extends Composite {
 
 			if (resourcesToShow.containsKey(resource)) {
 				styledString.append(" ");
-				String suffix;
 				Styler styler;
 				if (resourcesToShow.get(resource).isUpToDate()) {
-					suffix = "post-commit";
 					styler = StyledString.DECORATIONS_STYLER;
 				} else {
-					suffix = "pre-commit";
-					String colorRed = "com.atlassian.connector.eclipse.internal.red";
-					JFaceResources.getColorRegistry().put(colorRed, new RGB(150, 20, 20));
 					styler = StyledString.createColorRegistryStyler(colorRed, null);
-
 				}
-				styledString.append(suffix, styler);
+				styledString.append(resourcesToShow.get(resource).getState(), styler);
 			}
 
 			return styledString;

@@ -199,16 +199,16 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 							if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "unversioned"));
+								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_IGNORED)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "ignored"));
+								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "changed"));
+								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
 							} else if (teamConnector.isResourceAcceptedByFilter(resource,
 									ITeamUiResourceConnector.State.SF_VERSIONED)) {
-								resourcesToShow.put(resource, new ResourceStatus(true, "committed"));
+								resourcesToShow.put(resource, new ResourceStatus(true, "post-commit"));
 							} else {
 								// ignore the resource
 							}
@@ -246,7 +246,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		// check selection
 		if (resourceSelectionTree.getSelectedResources().length == 0) {
-			errorMessage = "Nothing selected.";
+			errorMessage = "Nothing is selected.";
 		}
 
 		// check repository mapping for committed root resources
@@ -257,7 +257,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 			if (sourceRepository == null || sourceRepository.getValue() == null
 					|| sourceRepository.getValue().length() == 0) {
-				errorMessage = "SCM Repository Mapping is not defined";
+				errorMessage = "SCM Repository Mapping is not defined.";
 				// TODO PLE-841 (do not suggest mapping to user)
 //				mappingButtonFactory.setMissingMapping(scmPath);
 			}
