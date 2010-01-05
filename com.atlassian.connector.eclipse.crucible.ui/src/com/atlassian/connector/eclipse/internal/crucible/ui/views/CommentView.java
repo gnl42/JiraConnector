@@ -11,7 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
@@ -22,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommen
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -36,6 +39,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -52,6 +57,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
 import java.util.List;
+import java.util.Map;
 
 public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
 
@@ -71,11 +77,11 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private Text message;
 
-	private Text author;
+	private Label author;
 
-	private Text date;
+	private Label date;
 
-	private Text defect;
+	private Label defect;
 
 	private FormToolkit toolkit;
 
@@ -86,6 +92,14 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	private Composite detailsComposite;
 
 	private Composite stackComposite;
+
+	private Label draft;
+
+	private Label defectClassification;
+
+	private Label defectRank;
+
+	private Composite header;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -150,32 +164,36 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		Composite detailsComposite = toolkit.createComposite(stackComposite);
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(detailsComposite);
 
-		// Author | Date | Defect
+		// Author | Date | Draft | Defect | Defect type 
 		// Comment text here
 
-		Composite header = toolkit.createComposite(detailsComposite);
-		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(header);
+		header = toolkit.createComposite(detailsComposite);
+		GridLayoutFactory.fillDefaults().numColumns(10).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
-		Composite composite = toolkit.createComposite(header);
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+		createLabelControl(toolkit, header, "Author:");
+		author = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().applyTo(author);
 
-		createLabelControl(toolkit, composite, "Author:");
-		author = toolkit.createText(composite, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(author);
+		createLabelControl(toolkit, header, "Created:");
+		date = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().applyTo(date);
 
-		composite = toolkit.createComposite(header);
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+		draft = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(draft);
 
-		createLabelControl(toolkit, composite, "Created:");
-		date = toolkit.createText(composite, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(date);
+		defect = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(defect);
 
-		defect = toolkit.createText(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(defect);
+		defectRank = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		defectRank.setToolTipText("Defect Rank");
+		GridDataFactory.fillDefaults().applyTo(defectRank);
 
-		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		defectClassification = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		defectClassification.setToolTipText("Defect Classification");
+		GridDataFactory.fillDefaults().applyTo(defectClassification);
+
+		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
 		return detailsComposite;
 	}
@@ -267,12 +285,53 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 				Comment activeComment = findActiveComment((Comment) lastSegment);
 
 				if (activeComment != null) {
+					if (activeComment.isDraft()) {
+						draft.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
+						draft.setToolTipText("Draft");
+					} else {
+						draft.setImage(null);
+						draft.setToolTipText(null);
+					}
+
+					if (activeComment.isDefectRaised()) {
+						defect.setImage(CommonImages.getImage(CommonImages.PRIORITY_1));
+						defect.setToolTipText("Defect Raised");
+					} else {
+						defect.setImage(null);
+						defect.setToolTipText(null);
+					}
+
+					defectClassification.setText("");
+					defectRank.setText("");
+
+					Map<String, CustomField> fields = activeComment.getCustomFields();
+					if (fields != null) {
+						if (fields.containsKey(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)) {
+							defectClassification.setText(fields.get(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)
+									.getValue());
+						}
+
+						if (fields.containsKey(CrucibleConstants.RANK_CUSTOM_FIELD_KEY)) {
+							defectRank.setText(fields.get(CrucibleConstants.RANK_CUSTOM_FIELD_KEY).getValue());
+						}
+					}
+
 					author.setText(activeComment.getAuthor().getDisplayName());
 					author.setToolTipText(activeComment.getAuthor().getUsername());
+
 					date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
-					defect.setText(activeComment.isDefectRaised() ? "Defect"
-							: (activeComment.isDefectApproved() ? "Defect Approved" : ""));
+
 					message.setText(activeComment.getMessage());
+					if (activeComment.isDraft()) {
+						message.setFont(CommonFonts.ITALIC);
+					} else if (activeComment.getReadState().equals(Comment.ReadState.UNREAD)
+							|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
+						message.setFont(CommonFonts.BOLD);
+					} else {
+						message.setFont(null);
+					}
+
+					header.layout();
 
 					stackLayout.topControl = detailsComposite;
 					stackComposite.layout();
