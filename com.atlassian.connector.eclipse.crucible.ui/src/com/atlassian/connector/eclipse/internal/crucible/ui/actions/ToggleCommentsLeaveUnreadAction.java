@@ -29,9 +29,9 @@ import java.util.List;
 
 public class ToggleCommentsLeaveUnreadAction extends BaseSelectionListenerAction implements IReviewAction {
 
-	private static String LEAVE_UNREAD = "Mark Comments As Leave Unread";
+	private static final String LEAVE_UNREAD = "Leave Unread";
 
-	private static String MARK_READ = "Mark Comments As Read";
+	private static final String MARK_READ = "Mark as Read";
 
 	private Review review;
 
