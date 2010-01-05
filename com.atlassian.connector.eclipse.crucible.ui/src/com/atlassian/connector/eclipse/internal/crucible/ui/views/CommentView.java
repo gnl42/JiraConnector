@@ -38,6 +38,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -55,8 +56,6 @@ import java.util.List;
 public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
 
 	private static final String NO_COMMENT_SELECTED = "No comment was selected in Crucible Review Explorer.";
-
-	private static final String EMPTY = "";
 
 	private EditCommentAction editCommentAction;
 
@@ -79,6 +78,14 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	private Text defect;
 
 	private FormToolkit toolkit;
+
+	private StackLayout stackLayout;
+
+	private Composite linkComposite;
+
+	private Composite detailsComposite;
+
+	private Composite stackComposite;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -115,13 +122,38 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 			toolkit = new FormToolkit(ancestor.getDisplay());
 		}
 
-		Composite parent = toolkit.createComposite(ancestor);
-		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(parent);
+		stackComposite = toolkit.createComposite(ancestor);
+		stackLayout = new StackLayout();
+		stackComposite.setLayout(stackLayout);
+
+		linkComposite = toolkit.createComposite(stackComposite);
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(linkComposite);
+		toolkit.createLabel(linkComposite, NO_COMMENT_SELECTED);
+
+		detailsComposite = createDetailsComposite(stackComposite);
+
+		stackLayout.topControl = linkComposite;
+		stackComposite.layout();
+
+		createActions();
+		createToolbar();
+		createMenu();
+
+		getViewSite().getPage().addSelectionListener(this);
+
+		if (currentPath != null) {
+			updateViewer();
+		}
+	}
+
+	private Composite createDetailsComposite(Composite stackComposite) {
+		Composite detailsComposite = toolkit.createComposite(stackComposite);
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(detailsComposite);
 
 		// Author | Date | Defect
 		// Comment text here
 
-		Composite header = toolkit.createComposite(parent);
+		Composite header = toolkit.createComposite(detailsComposite);
 		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
@@ -130,7 +162,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
 		createLabelControl(toolkit, composite, "Author:");
-		author = toolkit.createText(composite, EMPTY, SWT.READ_ONLY | SWT.SINGLE);
+		author = toolkit.createText(composite, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(author);
 
 		composite = toolkit.createComposite(header);
@@ -143,20 +175,9 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		defect = toolkit.createText(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().hint(150, SWT.DEFAULT).applyTo(defect);
 
-		message = toolkit.createText(parent, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
-
-		createActions();
-		createToolbar();
-		createMenu();
-
-		message.setText(NO_COMMENT_SELECTED);
-
-		getViewSite().getPage().addSelectionListener(this);
-
-		if (currentPath != null) {
-			updateViewer();
-		}
+		return detailsComposite;
 	}
 
 	private void createToolbar() {
@@ -252,16 +273,16 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 					defect.setText(activeComment.isDefectRaised() ? "Defect"
 							: (activeComment.isDefectApproved() ? "Defect Approved" : ""));
 					message.setText(activeComment.getMessage());
+
+					stackLayout.topControl = detailsComposite;
+					stackComposite.layout();
 					return;
 				}
 			}
 		}
 
-		message.setText(NO_COMMENT_SELECTED);
-		author.setText(EMPTY);
-		author.setToolTipText(EMPTY);
-		date.setText(EMPTY);
-		defect.setText(EMPTY);
+		stackLayout.topControl = linkComposite;
+		stackComposite.layout();
 	}
 
 	private Comment findActiveComment(Comment comment) {
