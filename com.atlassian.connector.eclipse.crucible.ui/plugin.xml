@@ -15,16 +15,6 @@
 
 	<!-- Menus -->
 	<extension point="org.eclipse.ui.popupMenus">
-		<objectContribution objectClass="org.eclipse.core.resources.mapping.ResourceMapping" adaptable="true" id="com.atlassian.connector.eclipse.crucible.ui.ResourceContributions">
-
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction" icon="icons/obj16/crucible.png" id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction" label="Create Pre-commit Review" menubarPath="team.main/group10" tooltip="Create Pre-commit Review in Crucible">
-			</action>
-		</objectContribution>
-		<objectContribution objectClass="org.eclipse.core.resources.mapping.ResourceMapping" adaptable="true" id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions">
-
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction" id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction" menubarPath="team.main/group10" icon="icons/obj16/crucible.png" label="Create Post-commit Review" tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
-			</action>
-		</objectContribution>
 		<objectContribution 
 			objectClass="org.eclipse.core.resources.mapping.ResourceMapping" 
 			adaptable="true" 
