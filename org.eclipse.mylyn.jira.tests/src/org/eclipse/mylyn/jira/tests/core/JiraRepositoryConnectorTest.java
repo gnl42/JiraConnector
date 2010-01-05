@@ -320,7 +320,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
-		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(issue.getCreated()));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(issue.getCreated(), -1)));
 		SynchronizationSession session = createSession(task);
 		connector.preSynchronization(session, null);
 		assertTrue(session.needsPerformQueries());
