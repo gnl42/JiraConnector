@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CommentNavigationAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
@@ -43,9 +44,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
@@ -156,12 +156,9 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		});
 
 		viewer.setContentProvider(new ReviewContentProvider());
-//		final DelegatingStyledCellLabelProvider styledLabelProvider = new DelegatingStyledCellLabelProvider(
-//				new CrucibleFileInfoLabelProvider());
 		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
-				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench()
-						.getDecoratorManager()
-						.getLabelDecorator(), null);
+				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
+				null);
 		viewer.setLabelProvider(styledLabelProvider);
 
 		createActions();
@@ -263,8 +260,14 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 	public void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(getViewSite(), false);
+		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(getViewSite(), true);
+
 		mgr.add(expandAll);
 		mgr.add(collapseAll);
+		mgr.add(new Separator());
+		mgr.add(prevCommentAction);
+		mgr.add(nextCommentAction);
 		mgr.add(new Separator());
 		mgr.add(openEditorAction);
 		mgr.add(showCommentsViewAction);
