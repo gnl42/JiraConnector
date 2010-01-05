@@ -65,8 +65,6 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 					.getTeamResourceManager()
 					.getTeamConnector(resource);
 
-			connectors.add(connector);
-
 			String message = null;
 
 			if (connector == null) {
@@ -79,6 +77,8 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 				MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PLUGIN_ID, message);
 				return;
 			}
+
+			connectors.add(connector);
 		}
 
 		if (connectors.size() > 1) {
@@ -127,7 +127,6 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 
 		analyzeResource.setUser(true);
 		analyzeResource.schedule();
-
 	}
 
 	private void openReviewWizard(final IResource[] resources, boolean isCrucible21Required) {
@@ -161,6 +160,7 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 				}
 			};
 
+			// skip repository selection wizard page if there is only one repository on the list
 			List<TaskRepository> taskRepositories = selectRepositoryPage.getTaskRepositories();
 			WizardDialog wd = null;
 			if (taskRepositories.size() != 1) {
@@ -174,7 +174,5 @@ public class CreateReviewFromResourcesAction extends TeamAction {
 			wd.setBlockOnOpen(true);
 			wd.open();
 		}
-
 	}
-
 }

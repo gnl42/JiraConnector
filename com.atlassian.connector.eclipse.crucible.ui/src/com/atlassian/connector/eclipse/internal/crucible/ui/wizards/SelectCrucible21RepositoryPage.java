@@ -58,15 +58,11 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 			// retrieve Crucible repos version and filter list of available repos in the wizard
 			final WizardPage page = this;
 
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					final Collection<TaskRepository> crucible21Repos = getCrucible21Repos(page);
+			final Collection<TaskRepository> crucible21Repos = getCrucible21Repos(page);
 
-					// we need our own content provider to inject filtered list of repos
-					getViewer().setContentProvider(new LocalRepositoryProvider(crucible21Repos));
-					getViewer().setInput(crucible21Repos);
-				}
-			});
+			// we need our own content provider to inject filtered list of repos
+			getViewer().setContentProvider(new LocalRepositoryProvider(crucible21Repos));
+			getViewer().setInput(crucible21Repos);
 		}
 	}
 
