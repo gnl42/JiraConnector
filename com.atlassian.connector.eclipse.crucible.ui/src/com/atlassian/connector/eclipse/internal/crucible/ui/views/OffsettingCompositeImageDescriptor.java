@@ -20,20 +20,28 @@ public class OffsettingCompositeImageDescriptor extends CompositeImageDescriptor
 
 	private final ImageData base;
 
-	private ImageData kind;
+	private final ImageData kind;
 
 	protected Point size;
 
 	public static final int OFFSET_DECORATION = 5;
 
-	static final int WIDTH_ICON = 16;
+	private static final int WIDTH_ICON = 16;
 
 	private int offset = 0;
 
+	private final ImageDescriptor icon;
+
+	private final ImageDescriptor optionalMarker;
+
 	public OffsettingCompositeImageDescriptor(ImageDescriptor icon, ImageDescriptor optionalMarker) {
+		this.icon = icon;
+		this.optionalMarker = optionalMarker;
 		this.base = getImageData(icon);
 		if (optionalMarker != null) {
-			this.kind = getImageData(optionalMarker);
+			kind = getImageData(optionalMarker);
+		} else {
+			kind = null;
 		}
 		int width = WIDTH_ICON + OFFSET_DECORATION;
 		offset = OFFSET_DECORATION;
@@ -50,7 +58,7 @@ public class OffsettingCompositeImageDescriptor extends CompositeImageDescriptor
 
 	@Override
 	public int hashCode() {
-		return base.hashCode() + 11 * (kind != null ? kind.hashCode() : 0);
+		return icon.hashCode() + 11 * (optionalMarker != null ? optionalMarker.hashCode() : 0);
 	}
 
 	private ImageData getImageData(ImageDescriptor descriptor) {

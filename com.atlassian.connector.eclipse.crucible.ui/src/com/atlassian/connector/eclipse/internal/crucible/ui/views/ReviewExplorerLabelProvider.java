@@ -21,7 +21,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * A simple label provider
  */
-public class CrucibleFileInfoLabelProvider extends AbstractCrucibleReviewItemLabelProvider implements
+public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabelProvider implements
 		IStyledLabelProvider {
 
 	public String getText(Object element) {
@@ -76,8 +76,10 @@ public class CrucibleFileInfoLabelProvider extends AbstractCrucibleReviewItemLab
 			final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor()
 					.getName());
 
+			// we want to leave some space for defect decorations (which are nicer and more readable when
+			// applied besides the main icon, so we use the trick with images by shifting them a little bit
+			// thus we use OffsettingCompositeImageDescriptor
 			return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(imageDescriptor, null));
-//			return CrucibleImages.getImage(imageDescriptor);
 			//return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 		}
 		if (element instanceof Comment) {

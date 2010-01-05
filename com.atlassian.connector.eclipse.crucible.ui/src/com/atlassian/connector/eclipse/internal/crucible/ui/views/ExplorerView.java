@@ -159,7 +159,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 //		final DelegatingStyledCellLabelProvider styledLabelProvider = new DelegatingStyledCellLabelProvider(
 //				new CrucibleFileInfoLabelProvider());
 		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
-				new CrucibleFileInfoLabelProvider(), PlatformUI.getWorkbench()
+				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench()
 						.getDecoratorManager()
 						.getLabelDecorator(), null);
 		viewer.setLabelProvider(styledLabelProvider);
