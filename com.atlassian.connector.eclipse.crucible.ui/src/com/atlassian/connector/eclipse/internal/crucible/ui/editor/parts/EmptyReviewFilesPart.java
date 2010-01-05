@@ -28,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -112,11 +112,12 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		parentComposite = toolkit.createComposite(commentsSection);
 		parentComposite.setLayout(GridLayoutFactory.fillDefaults().create());
 
-		Text t = toolkit.createText(parentComposite,
+		Label t = toolkit.createLabel(parentComposite,
 				"You need to activate this task to see review files and comments. "
 						+ "You will be automatically switched to Crucible Review Perspective. "
 						+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
-				SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
+				SWT.WRAP);
+
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
 
 		return parentComposite;
