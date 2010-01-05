@@ -102,11 +102,11 @@
 		</category>
 		
 		<view id="com.atlassian.connector.eclipse.crucible.ui.explorerView" 
-			name="Crucible Discussion Explorer" class="com.atlassian.connector.eclipse.internal.crucible.ui.views.ExplorerView" icon="icons/obj16/crucible.png" 
+			name="Review Explorer" class="com.atlassian.connector.eclipse.internal.crucible.ui.views.ExplorerView" icon="icons/obj16/crucible.png" 
 			category="com.atlassian.connector.eclipse.ui.category"/>
 			
 		<view id="com.atlassian.connector.eclipse.crucible.ui.commentView" 
-			name="Crucible Discussion Comment" class="com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView" icon="icons/obj16/crucible.png" 
+			name="Review Comment" class="com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView" icon="icons/obj16/crucible.png" 
 			category="com.atlassian.connector.eclipse.ui.category"/>
 	</extension>
 	
