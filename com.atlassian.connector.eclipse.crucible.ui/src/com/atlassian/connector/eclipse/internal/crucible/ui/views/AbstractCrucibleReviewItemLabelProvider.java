@@ -29,7 +29,8 @@ public abstract class AbstractCrucibleReviewItemLabelProvider extends ColumnLabe
 	protected Image getImage(final Comment comment) {
 		final String avatarUrl = comment.getAuthor().getAvatarUrl();
 		//			final Image image = CrucibleImages.getImage(CrucibleImages.DEFAULT_AVATAR);
-		final Image image = CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(CrucibleImages.DEFAULT_AVATAR, null));
+		final Image image = CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(
+				CrucibleImages.DEFAULT_AVATAR, null));
 		if (avatarUrl != null) {
 			// this stuff will be actually used only when avatar URLs are served by Crucible to all authorized users
 			// who see given review
