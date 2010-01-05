@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddReviewCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CommentNavigationAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
@@ -76,7 +76,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 
 	private TreeViewer viewer;
 
-	private AddGeneralCommentAction addGeneralCommentAction;
+	private AddReviewCommentAction addFileCommentAction;
 
 	private Object initilizeWith = NO_ACTIVE_REVIEW;
 
@@ -199,8 +199,8 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	}
 
 	public void createActions() {
-		addGeneralCommentAction = new AddGeneralCommentAction();
-		viewer.addSelectionChangedListener(addGeneralCommentAction);
+		addFileCommentAction = new AddReviewCommentAction("Add File Comment", "Add File Comment");
+		viewer.addSelectionChangedListener(addFileCommentAction);
 
 		openOldAction = new OpenVirtualFileAction(true);
 		viewer.addSelectionChangedListener(openOldAction);
@@ -272,7 +272,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		mgr.add(openEditorAction);
 		mgr.add(showCommentsViewAction);
 		mgr.add(new Separator());
-		mgr.add(addGeneralCommentAction);
+		mgr.add(addFileCommentAction);
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
 		mgr.add(compareAction);
@@ -301,7 +301,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	private void fillContextMenu(MenuManager mgr) {
 		mgr.add(expandSelected);
 		mgr.add(new Separator());
-		mgr.add(addGeneralCommentAction);
+		mgr.add(addFileCommentAction);
 		mgr.add(replyToCommentAction);
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);

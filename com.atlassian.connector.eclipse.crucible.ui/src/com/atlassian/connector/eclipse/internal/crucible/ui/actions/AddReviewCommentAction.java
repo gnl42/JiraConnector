@@ -44,9 +44,7 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
  */
-public class AddGeneralCommentAction extends BaseSelectionListenerAction implements IReviewAction {
-	private static String ADD_COMMENT = "Add General Comment";
-
+public class AddReviewCommentAction extends BaseSelectionListenerAction implements IReviewAction {
 	private IReviewActionListener actionListener;
 
 	private Review review;
@@ -66,7 +64,7 @@ public class AddGeneralCommentAction extends BaseSelectionListenerAction impleme
 			return;
 		}
 
-		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(), ADD_COMMENT,
+		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(), getText(),
 				review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
 
 		commentDialog.setReviewItem(new CrucibleFile(fileInfo, true));
@@ -77,19 +75,15 @@ public class AddGeneralCommentAction extends BaseSelectionListenerAction impleme
 		}
 	}
 
-	public AddGeneralCommentAction() {
-		super(ADD_COMMENT);
+	public AddReviewCommentAction(String text, String tooltipText) {
+		super(text);
 		setEnabled(false);
+		setToolTipText(tooltipText);
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return CrucibleImages.ADD_COMMENT;
-	}
-
-	@Override
-	public String getToolTipText() {
-		return ADD_COMMENT;
 	}
 
 	@Override

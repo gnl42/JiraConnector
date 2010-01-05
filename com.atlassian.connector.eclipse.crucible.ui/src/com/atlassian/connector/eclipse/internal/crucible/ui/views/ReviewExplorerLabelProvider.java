@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 
@@ -57,19 +58,38 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 			return new StyledString(headerText);
 		}
 		if (element instanceof CrucibleFileInfo) {
-			CrucibleFileInfo file = (CrucibleFileInfo) element;
-			StyledString styledString = new StyledString();
-			styledString.append(file.getFileDescriptor().getUrl());
-			StringBuilder revisionString = getRevisionInfo(file);
-
-			if (revisionString.length() > 0) {
-				styledString.append(" ");
-				styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
-			}
-			return styledString;
+			return getStyledText((CrucibleFileInfo) element);
 		}
 
 		return element == null ? new StyledString("") : new StyledString(element.toString());
+	}
+
+	private StyledString getStyledText(CrucibleFileInfo file) {
+		StyledString styledString = new StyledString();
+		styledString.append(file.getFileDescriptor().getUrl());
+		StringBuilder revisionString = getRevisionInfo(file);
+
+		final int numberOfComments = file.getNumberOfComments();
+		if (numberOfComments > 0) {
+			StyledString.Styler styler = new StyledString.Styler() {
+
+				@Override
+				public void applyStyles(TextStyle textStyle) {
+					textStyle.font = CommonFonts.BOLD;
+				}
+			};
+			styledString.append(" " + numberOfComments);
+			final int numberOfUnreadComments = file.getNumberOfUnreadComments();
+			if (numberOfUnreadComments > 0) {
+				styledString.append("(" + numberOfUnreadComments + ")", styler);
+			}
+		}
+
+		if (revisionString.length() > 0) {
+			styledString.append("  ");
+			styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
+		}
+		return styledString;
 	}
 
 	@Override
