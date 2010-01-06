@@ -101,6 +101,12 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private Composite header;
 
+	private Label draftIcon;
+
+	private Label defectIcon;
+
+	private Label readState;
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -168,7 +174,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		// Comment text here
 
 		header = toolkit.createComposite(detailsComposite);
-		GridLayoutFactory.fillDefaults().numColumns(10).applyTo(header);
+		GridLayoutFactory.fillDefaults().numColumns(15).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
 		createLabelControl(toolkit, header, "Author:");
@@ -179,11 +185,20 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		date = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().applyTo(date);
 
+		readState = createLabelControl(toolkit, header, "");
+		GridDataFactory.fillDefaults().applyTo(readState);
+
+		draftIcon = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(draftIcon);
+
 		draft = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(draft);
+		GridDataFactory.fillDefaults().applyTo(draft);
+
+		defectIcon = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(defectIcon);
 
 		defect = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(defect);
+		GridDataFactory.fillDefaults().applyTo(defect);
 
 		defectRank = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		defectRank.setToolTipText("Defect Rank");
@@ -193,7 +208,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		defectClassification.setToolTipText("Defect Classification");
 		GridDataFactory.fillDefaults().applyTo(defectClassification);
 
-		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP);
+		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
 		return detailsComposite;
 	}
@@ -285,20 +300,33 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 				Comment activeComment = findActiveComment((Comment) lastSegment);
 
 				if (activeComment != null) {
-					if (activeComment.isDraft()) {
-						draft.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
-						draft.setToolTipText("Draft");
+					if (activeComment.getReadState().equals(Comment.ReadState.READ)) {
+						readState.setText("Read");
+						readState.setFont(null);
+					} else if (activeComment.getReadState().equals(Comment.ReadState.UNREAD)
+							|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
+						readState.setText("Unread");
+						readState.setFont(CommonFonts.BOLD);
 					} else {
-						draft.setImage(null);
-						draft.setToolTipText(null);
+						readState.setText("");
+						readState.setFont(null);
+					}
+
+					if (activeComment.isDraft()) {
+						draftIcon.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
+						draft.setText("Draft");
+						//draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+					} else {
+						draftIcon.setImage(null);
+						draft.setText("");
 					}
 
 					if (activeComment.isDefectRaised()) {
-						defect.setImage(CommonImages.getImage(CommonImages.PRIORITY_1));
-						defect.setToolTipText("Defect Raised");
+						defectIcon.setImage(CommonImages.getImage(CommonImages.PRIORITY_1));
+						defect.setText("Defect");
 					} else {
-						defect.setImage(null);
-						defect.setToolTipText(null);
+						defectIcon.setImage(null);
+						defect.setText("");
 					}
 
 					defectClassification.setText("");
@@ -322,14 +350,6 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 					date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
 
 					message.setText(activeComment.getMessage());
-					if (activeComment.isDraft()) {
-						message.setFont(CommonFonts.ITALIC);
-					} else if (activeComment.getReadState().equals(Comment.ReadState.UNREAD)
-							|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
-						message.setFont(CommonFonts.BOLD);
-					} else {
-						message.setFont(null);
-					}
 
 					header.layout();
 
