@@ -52,7 +52,7 @@ public class JiraFixture extends TestFixture {
 
 	public static JiraFixture current(JiraFixture fixture) {
 		if (current == null) {
-			current = fixture;
+			fixture.activate();
 		}
 		return current;
 	}
@@ -71,6 +71,7 @@ public class JiraFixture extends TestFixture {
 	@Override
 	public JiraFixture activate() {
 		current = this;
+		setUpFramework();
 		return this;
 	}
 
