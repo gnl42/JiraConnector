@@ -192,7 +192,7 @@ public class ResourceSelectionTree extends Composite {
 			toolbarManager.add(new Separator());
 		}
 
-		flatAction = new Action("ResourceSelectionTree.flat", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+		flatAction = new Action("Flat Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				mode = TreeViewMode.MODE_FLAT;
 				settingsProvider.setTreeViewMode(mode);
@@ -203,7 +203,8 @@ public class ResourceSelectionTree extends Composite {
 		};
 		flatAction.setImageDescriptor(AtlassianImages.IMG_FLAT_MODE);
 		toolbarManager.add(flatAction);
-		treeAction = new Action("ResourceSelectionTree.tree", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+
+		treeAction = new Action("Tree Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				mode = TreeViewMode.MODE_TREE;
 				settingsProvider.setTreeViewMode(mode);
@@ -215,7 +216,7 @@ public class ResourceSelectionTree extends Composite {
 		treeAction.setImageDescriptor(AtlassianImages.IMG_TREE_MODE);
 		toolbarManager.add(treeAction);
 
-		compressedAction = new Action("ResourceSelectionTree.compressedFolders", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+		compressedAction = new Action("Compressed Folders Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				mode = TreeViewMode.MODE_COMPRESSED_FOLDERS;
 				settingsProvider.setTreeViewMode(mode);
