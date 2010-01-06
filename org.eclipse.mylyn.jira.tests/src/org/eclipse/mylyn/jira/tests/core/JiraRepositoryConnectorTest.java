@@ -311,6 +311,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		// create an issue
+		Date start = new Date();
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertFalse(task.isCompleted());
@@ -320,7 +321,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
-		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(issue.getCreated(), -1)));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 		SynchronizationSession session = createSession(task);
 		connector.preSynchronization(session, null);
 		assertTrue(session.needsPerformQueries());
