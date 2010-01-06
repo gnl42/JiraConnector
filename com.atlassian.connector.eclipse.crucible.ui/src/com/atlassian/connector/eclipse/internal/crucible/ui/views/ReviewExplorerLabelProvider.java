@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 
@@ -67,28 +66,21 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 	private StyledString getStyledText(CrucibleFileInfo file) {
 		StyledString styledString = new StyledString();
 		styledString.append(file.getFileDescriptor().getUrl());
-		StringBuilder revisionString = getRevisionInfo(file);
 
 		final int numberOfComments = file.getNumberOfComments();
 		if (numberOfComments > 0) {
-			StyledString.Styler styler = new StyledString.Styler() {
-
-				@Override
-				public void applyStyles(TextStyle textStyle) {
-					textStyle.font = CommonFonts.BOLD;
-				}
-			};
-			styledString.append(" " + numberOfComments);
+			styledString.append(" " + numberOfComments, StyledString.DECORATIONS_STYLER);
 			final int numberOfUnreadComments = file.getNumberOfUnreadComments();
 			if (numberOfUnreadComments > 0) {
-				styledString.append("(" + numberOfUnreadComments + ")", styler);
+				styledString.append(" (" + numberOfUnreadComments + ")", BOLD_FONT_DECORATION_STYLER);
 			}
 		}
 
-		if (revisionString.length() > 0) {
-			styledString.append("  ");
-			styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
-		}
+//		StringBuilder revisionString = getRevisionInfo(file);
+//		if (revisionString.length() > 0) {
+//			styledString.append("  ");
+//			styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
+//		}
 		return styledString;
 	}
 

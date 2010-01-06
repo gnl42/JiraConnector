@@ -11,20 +11,26 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.decoration;
 
-import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import org.eclipse.jface.viewers.IDecoration;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+public abstract class AbstractSimpleLightweightIconDecorator implements ILightweightLabelDecorator {
 
-public class CommentDecorator extends AbstractSimpleLightweightIconDecorator {
+	public AbstractSimpleLightweightIconDecorator() {
+		super();
+	}
 
-	public void decorate(Object element, IDecoration decoration) {
-		if (element instanceof Comment) {
-			Comment comment = (Comment) element;
-			if (comment.isDefectRaised()) {
-				decoration.addOverlay(CommonImages.PRIORITY_1, IDecoration.BOTTOM_LEFT);
-			}
-		}
+	public void addListener(ILabelProviderListener listener) {
+	}
+
+	public void dispose() {
+	}
+
+	public boolean isLabelProperty(Object element, String property) {
+		return false;
+	}
+
+	public void removeListener(ILabelProviderListener listener) {
 	}
 
 }

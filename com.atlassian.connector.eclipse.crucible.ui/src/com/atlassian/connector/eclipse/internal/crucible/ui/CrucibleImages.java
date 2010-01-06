@@ -29,6 +29,8 @@ public final class CrucibleImages {
 
 	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
+	private static final String OVR = "ovr"; //$NON-NLS-1$
+
 	public static final ImageDescriptor REVIEWER_COMPLETE = create(T_OBJ, "reviewerComplete.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor COMMENT_SMALL = create(T_OBJ, "comment-small.gif"); //$NON-NLS-1$
@@ -79,8 +81,17 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor DEFAULT_AVATAR = create(T_OBJ, "default_avatar.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor OVR_DELETED = create(OVR, "deleted.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor OVR_ADDED = create(OVR, "added.png"); //$NON-NLS-1$
+
+	/**
+	 * this icon is borrowed from org.eclipse.ui (access scope is there internal, so I don't want to have compilation
+	 * warning just because of it
+	 */
+	public static final ImageDescriptor OVR_MODIFIED = create(OVR, "dirty_ov.gif"); //$NON-NLS-1$
+
 	private CrucibleImages() {
-		// ignore
 	}
 
 	private static ImageDescriptor create(String prefix, String name) {

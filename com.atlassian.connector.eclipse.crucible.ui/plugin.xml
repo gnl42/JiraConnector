@@ -131,6 +131,18 @@
                </objectClass>
          </enablement>
       </decorator>
+      <decorator
+            class="com.atlassian.connector.eclipse.internal.crucible.ui.decoration.CrucibleFileInfoDecorator"
+            id="com.atlassian.connector.eclipse.internal.crucible.ui.decoration.CrucibleFileInfoDecorator"
+            label="Crucible File State Decorator"
+            lightweight="true"
+            state="true">
+         <enablement>
+               <objectClass
+                     name="com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo">
+               </objectClass>
+         </enablement>
+      </decorator>
    </extension>
 	
 	
