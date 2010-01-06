@@ -18,6 +18,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.swt.widgets.Display;
 
 public class EditActiveTaskAction extends Action implements IReviewActivationListener {
 
@@ -33,14 +34,22 @@ public class EditActiveTaskAction extends Action implements IReviewActivationLis
 		TasksUiUtil.openTask(activeTask);
 	}
 
-	public void reviewActivated(ITask task, Review review) {
-		activeTask = task;
-		setEnabled(activeTask != null);
+	public void reviewActivated(final ITask task, Review review) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeTask = task;
+				setEnabled(activeTask != null);
+			}
+		});
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {
-		activeTask = null;
-		setEnabled(false);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeTask = null;
+				setEnabled(false);
+			}
+		});
 	}
 
 	public void reviewUpdated(ITask task, Review review) {

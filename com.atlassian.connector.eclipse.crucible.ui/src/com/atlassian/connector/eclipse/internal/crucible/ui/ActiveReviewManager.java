@@ -34,7 +34,6 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
-import org.eclipse.swt.widgets.Display;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +46,11 @@ import java.util.Set;
  */
 public class ActiveReviewManager implements ITaskActivationListener, IReviewCacheListener {
 
+	/**
+	 * All methods are never called from UI thread.
+	 * 
+	 * @author pniewiadomski
+	 */
 	public interface IReviewActivationListener {
 		void reviewActivated(ITask task, Review review);
 
@@ -91,31 +95,19 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 	private synchronized void fireReviewActivated(final ITask task, final Review review) {
 		for (final IReviewActivationListener l : activationListeners) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					l.reviewActivated(task, review);
-				}
-			});
+			l.reviewActivated(task, review);
 		}
 	}
 
 	private synchronized void fireReviewDectivated(final ITask task, final Review review) {
 		for (final IReviewActivationListener l : activationListeners) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					l.reviewDeactivated(task, review);
-				}
-			});
+			l.reviewDeactivated(task, review);
 		}
 	}
 
 	private synchronized void fireReviewUpdated(final ITask task, final Review review) {
 		for (final IReviewActivationListener l : activationListeners) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					l.reviewUpdated(task, review);
-				};
-			});
+			l.reviewUpdated(task, review);
 		}
 	}
 

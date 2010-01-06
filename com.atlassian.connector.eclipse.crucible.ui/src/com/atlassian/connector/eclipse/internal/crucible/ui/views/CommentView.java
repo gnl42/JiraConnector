@@ -45,6 +45,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
@@ -398,13 +399,21 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {
-		message.setText(NO_COMMENT_SELECTED);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				message.setText(NO_COMMENT_SELECTED);
+			}
+		});
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
-		activeReview = review;
-		if (message != null) {
-			updateViewer();
-		}
+	public void reviewUpdated(ITask task, final Review review) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeReview = review;
+				if (message != null) {
+					updateViewer();
+				}
+			}
+		});
 	}
 }

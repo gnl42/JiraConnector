@@ -55,6 +55,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -315,33 +316,43 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 		mgr.add(compareAction);
 	}
 
-	public void reviewActivated(ITask task, Review review) {
-		if (review != null) {
-			try {
-				setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
-						review.getPermId().getId(), review.getFiles().size(), review.getNumberOfVersionedComments() }));
-			} catch (ValueNotYetInitialized e) {
-				// nothing here
-			}
+	public void reviewActivated(ITask task, final Review review) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				if (review != null) {
+					try {
+						setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
+								review.getPermId().getId(), review.getFiles().size(),
+								review.getNumberOfVersionedComments() }));
+					} catch (ValueNotYetInitialized e) {
+						// nothing here
+					}
 
-			try {
-				if (viewer != null) {
-					viewer.setInput(review.getFiles());
+					try {
+						if (viewer != null) {
+							viewer.setInput(review.getFiles());
+						} else {
+							initilizeWith = review.getFiles();
+						}
+					} catch (ValueNotYetInitialized e) {
+						StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+								"Review not initialized", e));
+					}
 				} else {
-					initilizeWith = review.getFiles();
+					setContentDescription("");
+					viewer.setInput(NO_ACTIVE_REVIEW);
 				}
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Review not initialized", e));
 			}
-		} else {
-			setContentDescription("");
-			viewer.setInput(NO_ACTIVE_REVIEW);
-		}
+		});
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {
-		setContentDescription("");
-		viewer.setInput(NO_ACTIVE_REVIEW);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				setContentDescription("");
+				viewer.setInput(NO_ACTIVE_REVIEW);
+			}
+		});
 	}
 
 	public void reviewUpdated(ITask task, Review review) {
