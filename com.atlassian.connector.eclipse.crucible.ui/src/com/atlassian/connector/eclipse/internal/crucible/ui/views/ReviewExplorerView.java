@@ -67,7 +67,7 @@ import java.util.Collection;
 /**
  * @author Pawel Niewiadomski
  */
-public class ExplorerView extends ViewPart implements IReviewActivationListener {
+public class ReviewExplorerView extends ViewPart implements IReviewActivationListener {
 
 	private OpenVirtualFileAction openOldAction;
 
@@ -108,7 +108,7 @@ public class ExplorerView extends ViewPart implements IReviewActivationListener 
 	/**
 	 * 
 	 */
-	public ExplorerView() {
+	public ReviewExplorerView() {
 		// ignore
 	}
 

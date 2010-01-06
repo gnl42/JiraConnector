@@ -49,8 +49,8 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 			final String headerText;
 
 			String msg = comment.getMessage();
-			if (msg.length() > ExplorerView.COMMENT_PREVIEW_LENGTH) {
-				headerText = msg.substring(0, ExplorerView.COMMENT_PREVIEW_LENGTH) + "...";
+			if (msg.length() > ReviewExplorerView.COMMENT_PREVIEW_LENGTH) {
+				headerText = msg.substring(0, ReviewExplorerView.COMMENT_PREVIEW_LENGTH) + "...";
 			} else {
 				headerText = msg;
 			}

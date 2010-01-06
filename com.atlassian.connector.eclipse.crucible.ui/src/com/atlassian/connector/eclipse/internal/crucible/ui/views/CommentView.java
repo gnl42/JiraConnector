@@ -248,7 +248,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 		getViewSite().getPage().addSelectionListener(new ISelectionListener() {
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (!(part instanceof ExplorerView)) {
+				if (!(part instanceof ReviewExplorerView)) {
 					return;
 				}
 
@@ -273,10 +273,10 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	}
 
 	/**
-	 * Here we listen to changes in {@link ExplorerView}
+	 * Here we listen to changes in {@link ReviewExplorerView}
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (!(part instanceof ExplorerView)) {
+		if (!(part instanceof ReviewExplorerView)) {
 			return;
 		}
 
