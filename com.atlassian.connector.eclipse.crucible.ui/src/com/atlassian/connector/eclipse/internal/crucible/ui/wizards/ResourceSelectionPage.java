@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -169,54 +170,48 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				monitor.beginTask("Getting workspace resources data", IProgressMonitor.UNKNOWN);
+				SubMonitor.convert(monitor, "Getting workspace resources data", IProgressMonitor.UNKNOWN);
 
 				final Collection<IResource> resources = new ArrayList<IResource>();
 
-				try {
+				resources.addAll(teamConnector.getResourcesByFilterRecursive(
+						roots.toArray(new IResource[roots.size()]), ITeamUiResourceConnector.State.SF_ALL));
 
-					resources.addAll(teamConnector.getResourcesByFilterRecursive(
-							roots.toArray(new IResource[roots.size()]), ITeamUiResourceConnector.State.SF_ALL));
+				for (IResource resource : resources) {
+					if (resource instanceof IFile) {
 
-					for (IResource resource : resources) {
-						if (resource instanceof IFile) {
-
-							// collect all scmPaths in order to find missing mappings
-							if (teamConnector.isResourceAcceptedByFilter(resource,
-									ITeamUiResourceConnector.State.SF_VERSIONED)
-									&& !teamConnector.isResourceAcceptedByFilter(resource,
-											ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-								try {
-									LocalStatus status = teamConnector.getLocalRevision(resource);
-									if (status.getScmPath() != null && status.getScmPath().length() > 0) {
-										scmPaths.add(teamConnector.getLocalRevision(resource.getProject()).getScmPath());
-									}
-								} catch (CoreException e) {
-									// resource is probably not under version control
-									// skip
+						// collect all scmPaths in order to find missing mappings
+						if (teamConnector.isResourceAcceptedByFilter(resource,
+								ITeamUiResourceConnector.State.SF_VERSIONED)
+								&& !teamConnector.isResourceAcceptedByFilter(resource,
+										ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
+							try {
+								LocalStatus status = teamConnector.getLocalRevision(resource);
+								if (status.getScmPath() != null && status.getScmPath().length() > 0) {
+									scmPaths.add(teamConnector.getLocalRevision(resource.getProject()).getScmPath());
 								}
-							}
-
-							if (teamConnector.isResourceAcceptedByFilter(resource,
-									ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
-							} else if (teamConnector.isResourceAcceptedByFilter(resource,
-									ITeamUiResourceConnector.State.SF_IGNORED)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
-							} else if (teamConnector.isResourceAcceptedByFilter(resource,
-									ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-								resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
-							} else if (teamConnector.isResourceAcceptedByFilter(resource,
-									ITeamUiResourceConnector.State.SF_VERSIONED)) {
-								resourcesToShow.put(resource, new ResourceStatus(true, "post-commit"));
-							} else {
-								// ignore the resource
+							} catch (CoreException e) {
+								// resource is probably not under version control
+								// skip
 							}
 						}
-					}
 
-				} finally {
-					monitor.done();
+						if (teamConnector.isResourceAcceptedByFilter(resource,
+								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
+							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+						} else if (teamConnector.isResourceAcceptedByFilter(resource,
+								ITeamUiResourceConnector.State.SF_IGNORED)) {
+							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+						} else if (teamConnector.isResourceAcceptedByFilter(resource,
+								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
+							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+						} else if (teamConnector.isResourceAcceptedByFilter(resource,
+								ITeamUiResourceConnector.State.SF_VERSIONED)) {
+							resourcesToShow.put(resource, new ResourceStatus(true, "post-commit"));
+						} else {
+							// ignore the resource
+						}
+					}
 				}
 			}
 		};
