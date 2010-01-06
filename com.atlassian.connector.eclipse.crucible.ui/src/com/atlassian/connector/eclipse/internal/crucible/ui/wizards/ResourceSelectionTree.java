@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ResourceSelectionTree extends Composite {
+	private static final int TREE_WIDTH = 500;
+
 	private Tree tree;
 
 	private TreeViewMode mode;
@@ -155,10 +157,14 @@ public class ResourceSelectionTree extends Composite {
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		setLayout(layout);
-		setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
+		layoutData.widthHint = 500;
+		setLayoutData(layoutData);
 
 		ViewForm viewerPane = new ViewForm(this, SWT.BORDER | SWT.FLAT);
-		viewerPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
+		layoutData.widthHint = 500;
+		viewerPane.setLayoutData(layoutData);
 
 		CLabel toolbarLabel = new CLabel(viewerPane, SWT.NONE) {
 			public Point computeSize(int wHint, int hHint, boolean changed) {
@@ -257,7 +263,9 @@ public class ResourceSelectionTree extends Composite {
 			}
 		});
 		tree = treeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		layoutData.widthHint = 500;
+		tree.setLayoutData(layoutData);
 		viewerPane.setContent(tree);
 
 		final DelegatingStyledCellLabelProvider labelProvider = new DelegatingStyledCellLabelProvider(
@@ -266,9 +274,10 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.setLabelProvider(labelProvider);
 		treeViewer.setContentProvider(resourceSelectionContentProvider);
 		treeViewer.setUseHashlookup(true);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.heightHint = 125;
-		treeViewer.getControl().setLayoutData(gd);
+		layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		layoutData.heightHint = 125;
+		layoutData.widthHint = TREE_WIDTH;
+		treeViewer.getControl().setLayoutData(layoutData);
 		treeViewer.setInput(this);
 
 		treeViewer.expandAll();

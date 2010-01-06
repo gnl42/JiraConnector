@@ -129,7 +129,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		setControl(composite);
 
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("Include changes:");
+		label.setText("Include resources:");
 
 		resourceSelectionTree = new ResourceSelectionTree(composite, "", resourcesToShow, null,
 				new ITreeViewModeSettingProvider() {
