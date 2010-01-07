@@ -200,7 +200,8 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 	public ScmRepository getRepository(String url, IProgressMonitor monitor) {
 		ISVNRepositoryLocation location = getRepositoryLocation(url, monitor);
 		if (location != null) {
-			return new ScmRepository(location.getUrl().toString(), location.getLabel(), this);
+			return new ScmRepository(location.getUrl().toString(), location.getRepositoryRoot().toString(),
+					location.getLabel(), this);
 		}
 		return null;
 	}
@@ -269,7 +270,8 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 			final ISVNRepositoryLocation repository = svnResource.getRepository();
 			if (repository != null) {
-				return new ScmRepository(repository.getUrl().toString(), repository.getLabel(), this);
+				return new ScmRepository(repository.getUrl().toString(), repository.getRepositoryRoot().toString(),
+						repository.getLabel(), this);
 			}
 		}
 		// ignore
@@ -658,7 +660,8 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 				monitor);
 		List<ScmRepository> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
-			res.add(new ScmRepository(repo.getUrl().toString(), repo.getLabel(), this));
+			res.add(new ScmRepository(repo.getUrl().toString(), repo.getRepositoryRoot().toString(), repo.getLabel(),
+					this));
 		}
 		return res;
 	}
