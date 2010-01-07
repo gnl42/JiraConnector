@@ -35,8 +35,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -51,7 +49,8 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -62,6 +61,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -161,6 +161,20 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
 				null);
 		viewer.setLabelProvider(styledLabelProvider);
+		viewer.setComparator(new ViewerComparator() {
+
+			@Override
+			public int compare(Viewer aViewer, Object e1, Object e2) {
+				boolean isE1Dir = e1 instanceof ReviewTreeNode;
+				boolean isE2Dir = e2 instanceof ReviewTreeNode;
+				if (isE1Dir == isE2Dir) {
+					return super.compare(aViewer, e1, e2);
+				} else {
+					return isE1Dir ? -1 : 1;
+				}
+			}
+
+		});
 
 		createActions();
 		createToolbar();
@@ -316,6 +330,15 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(compareAction);
 	}
 
+	private static final int MAX_EXPANDED_BY_DEFAULT_ELEMENTS = 10;
+
+	private void fillExpandedElements(ArrayList<Object> expandedElements, ReviewTreeNode root) {
+		expandedElements.add(root);
+		for (ReviewTreeNode treeNode : root.getChildren()) {
+			fillExpandedElements(expandedElements, treeNode);
+		}
+	}
+
 	public void reviewActivated(ITask task, final Review review) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -328,22 +351,42 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 						// nothing here
 					}
 
-					try {
-						if (viewer != null) {
-							viewer.setInput(review.getFiles());
-						} else {
-							initilizeWith = review.getFiles();
-						}
-					} catch (ValueNotYetInitialized e) {
-						StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-								"Review not initialized", e));
+//					try {
+					if (viewer != null) {
+						final ReviewTreeNode[] newInput = compactTree(review);
+						viewer.setInput(newInput);
+						final ArrayList<Object> expandedElements = MiscUtil.<Object> buildArrayList();
+						fillExpandedElements(expandedElements, newInput[0]);
+						viewer.setExpandedElements(expandedElements.subList(0,
+								Math.min(expandedElements.size(), MAX_EXPANDED_BY_DEFAULT_ELEMENTS + 1000)).toArray());
+					} else {
+						initilizeWith = compactTree(review);
 					}
+//					} catch (ValueNotYetInitialized e) {
+//						StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+//								"Review not initialized", e));
+//					}
 				} else {
 					setContentDescription("");
 					viewer.setInput(NO_ACTIVE_REVIEW);
 				}
 			}
 		});
+	}
+
+	public static ReviewTreeNode[] compactTree(Review review) {
+		ReviewTreeNode root = new ReviewTreeNode(null);
+		try {
+			for (CrucibleFileInfo cfi : review.getFiles()) {
+				String path = cfi.getFileDescriptor().getUrl();
+				final String[] pathTokens = path.split("/|\\\\");
+				root.add(pathTokens, cfi);
+			}
+		} catch (ValueNotYetInitialized e) {
+			// this is stupid exception... OMG
+		}
+		root.compact();
+		return new ReviewTreeNode[] { root };
 	}
 
 	public void reviewDeactivated(ITask task, Review review) {

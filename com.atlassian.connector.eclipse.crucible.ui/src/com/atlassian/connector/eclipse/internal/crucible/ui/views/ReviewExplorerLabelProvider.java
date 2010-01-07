@@ -7,6 +7,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -16,6 +17,7 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -59,20 +61,25 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 		if (element instanceof CrucibleFileInfo) {
 			return getStyledText((CrucibleFileInfo) element);
 		}
+		if (element instanceof Review) {
+			return new StyledString(((Review) element).getPermId().toString());
+		}
 
 		return element == null ? new StyledString("") : new StyledString(element.toString());
 	}
 
 	private StyledString getStyledText(CrucibleFileInfo file) {
 		StyledString styledString = new StyledString();
-		styledString.append(file.getFileDescriptor().getUrl());
+		styledString.append(file.getFileDescriptor().getName());
 
 		final int numberOfComments = file.getNumberOfComments();
 		if (numberOfComments > 0) {
 			styledString.append(" " + numberOfComments, StyledString.DECORATIONS_STYLER);
 			final int numberOfUnreadComments = file.getNumberOfUnreadComments();
 			if (numberOfUnreadComments > 0) {
-				styledString.append(" (" + numberOfUnreadComments + ")", BOLD_FONT_DECORATION_STYLER);
+				styledString.append(" (");
+				styledString.append(Integer.toString(numberOfUnreadComments), BOLD_FONT_DECORATION_STYLER);
+				styledString.append(")");
 			}
 		}
 
@@ -100,6 +107,11 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 		}
 		if (element instanceof Comment) {
 			return getImage((Comment) element);
+		}
+		if (element instanceof ReviewTreeNode) {
+			return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(PlatformUI.getWorkbench()
+					.getSharedImages()
+					.getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER), null));
 		}
 		return null;
 	}
