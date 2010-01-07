@@ -28,20 +28,24 @@ import java.util.ResourceBundle;
 public class CommentNavigationAction extends Action {
 	private final boolean isNext;
 
-	private static final String ACTION_BUNDLE = "com.atlassian.connector.eclipse.internal.crucible.ui.actions.actions"; //$NON-NLS-1$
+	private static final String ACTION_BUNDLE = "com.atlassian.connector.eclipse.internal.crucible.ui.actions.actions";
 
 	public CommentNavigationAction(IViewSite viewSite, boolean next) {
 		this.isNext = next;
 		IActionBars bars = viewSite.getActionBars();
 		if (next) {
 			Utils.initAction(this, "action.navigateNext.", ResourceBundle.getBundle(ACTION_BUNDLE)); //$NON-NLS-1$
-			setActionDefinitionId(ActionFactory.NEXT.getCommandId());
+			// I would like to use ActionFactory.NEXT.getCommandId(), but it's since e3.5...
+			// TODO e3.5+ use constants 
+			setActionDefinitionId("org.eclipse.ui.navigate.next");
 			if (bars != null) {
 				bars.setGlobalActionHandler(ActionFactory.NEXT.getId(), this);
 			}
 		} else {
 			Utils.initAction(this, "action.navigatePrevious.", ResourceBundle.getBundle(ACTION_BUNDLE)); //$NON-NLS-1$
-			setActionDefinitionId(ActionFactory.PREVIOUS.getCommandId());
+			// I would like to use ActionFactory.PREVIOUS.getCommandId(), but it's since e3.5...
+			// TODO e3.5+ use constants 
+			setActionDefinitionId("org.eclipse.ui.navigate.previous");
 			if (bars != null) {
 				bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), this);
 			}
