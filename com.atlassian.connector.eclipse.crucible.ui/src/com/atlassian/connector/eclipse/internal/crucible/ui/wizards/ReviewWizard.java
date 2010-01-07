@@ -34,6 +34,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -42,6 +43,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -85,6 +87,49 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
+		private final class AddChangesetsToReviewOperation extends CrucibleRemoteOperation<Review> {
+			private AddChangesetsToReviewOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
+				super(monitor, taskRepository);
+			}
+
+			@Override
+			public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+				SubMonitor submonitor = SubMonitor.convert(monitor);
+				Review review = null;
+				Map<String, List<String>> repositoriesWithRevisions = MiscUtil.buildHashMap();
+
+				for (SortedSet<ICustomChangesetLogEntry> entries : selectedLogEntries.values()) {
+					for (ICustomChangesetLogEntry entry : entries) {
+						String[] files = entry.getChangedFiles();
+						if (files == null || files.length == 0) {
+							continue;
+						}
+						for (String file : files) {
+							Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
+									TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()),
+									entry.getRepository().getRootPath() + '/' + file);
+							if (sourceRepository != null) {
+								if (!repositoriesWithRevisions.containsKey(sourceRepository.getValue())) {
+									repositoriesWithRevisions.put(sourceRepository.getValue(), new ArrayList<String>());
+								}
+								repositoriesWithRevisions.get(sourceRepository.getValue()).add(entry.getRevision());
+							}
+						}
+					}
+				}
+
+				submonitor.setWorkRemaining(repositoriesWithRevisions.size());
+				for (String repository : repositoriesWithRevisions.keySet()) {
+					//add changeset to review
+					review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(), repository,
+							repositoriesWithRevisions.get(repository));
+					submonitor.worked(1);
+				}
+				return review;
+			}
+		}
+
 		private final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
 
 		public AddChangesetsToReviewJob(String name, TaskRepository taskRepository,
@@ -95,28 +140,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-			Review review = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
-				@Override
-				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-					Review review = null;
-					for (ScmRepository repository : selectedLogEntries.keySet()) {
-						monitor.beginTask("Adding revisions to repository " + repository.getScmPath(),
-								selectedLogEntries.get(repository).size());
-						//collect revisions
-						ArrayList<String> revisions = new ArrayList<String>();
-						for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(repository)) {
-							revisions.add(logEntry.getRevision());
-						}
-
-						//add changeset to review
-						review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
-								TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()).get(
-										repository.getScmPath()), revisions);
-					}
-					return review;
-				}
-			});
+			Review review = client.execute(new AddChangesetsToReviewOperation(monitor, getTaskRepository()));
 
 			updateCrucibleReview(client, review, monitor);
 			return Status.OK_STATUS;

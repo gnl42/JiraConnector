@@ -352,7 +352,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
 
 		Control moderatorControl = createUserComboControl(toolkit, participantsComp, "Moderator: ",
-				crucibleReview.getModerator(), !newReview, ReviewAttributeType.MODERATOR);
+				crucibleReview.getModerator() == null ? crucibleReview.getAuthor() : crucibleReview.getModerator(),
+				!newReview, ReviewAttributeType.MODERATOR);
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 
 		Composite reviewersPartComp = toolkit.createComposite(participantsComp);

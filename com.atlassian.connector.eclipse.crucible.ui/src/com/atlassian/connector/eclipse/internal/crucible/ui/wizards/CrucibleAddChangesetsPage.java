@@ -42,6 +42,7 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -221,8 +222,6 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 
 	private final TaskRepository taskRepository;
 
-	private String firstMissingMapping;
-
 	private DefineRepositoryMappingButton mappingButton;
 
 	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository) {
@@ -286,8 +285,9 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 				for (String file : files) {
 					Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
 							TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), entry.getRepository()
-									.getScmPath()
+									.getRootPath()
 									+ '/' + file);
+
 					if (sourceRepository == null) {
 						mappingButton.setMissingMapping(entry.getRepository().getScmPath());
 						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define repository mappings.");
@@ -315,6 +315,7 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 		availableTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		availableTreeViewer.setContentProvider(new ChangesetContentProvider());
 		availableTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
+		availableTreeViewer.setSorter(new ViewerSorter());
 		availableTreeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
