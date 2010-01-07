@@ -182,7 +182,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 		List<ScmRepository> res = MiscUtil.buildArrayList(repositories.length);
 		for (IRepositoryLocation repo : repositories) {
-			res.add(new ScmRepository(repo.getUrl(), repo.getLabel(), this));
+			res.add(new ScmRepository(repo.getUrl(), repo.getRepositoryRootUrl(), repo.getLabel(), this));
 		}
 		return res;
 	}
@@ -190,7 +190,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 	protected ScmRepository getRepository(String url, IProgressMonitor monitor) {
 		IRepositoryLocation location = SubversiveUtil.getRepositoryLocation(url);
 		if (location != null) {
-			return new ScmRepository(location.getUrl(), location.getLabel(), this);
+			return new ScmRepository(location.getUrl(), location.getRepositoryRootUrl(), location.getLabel(), this);
 		}
 		return null;
 	}
@@ -296,7 +296,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		final IRepositoryLocation repositoryLocation = SVNRemoteStorage.instance().getRepositoryLocation(resource);
 		final String rootUrl = repositoryLocation.getRepositoryRootUrl();
 		final String label = repositoryLocation.getLabel();
-		return new ScmRepository(rootUrl, label, this);
+		return new ScmRepository(rootUrl, rootUrl, label, this);
 	}
 
 	public String getName() {

@@ -11,21 +11,36 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ScmRepository implements Comparable<ScmRepository> {
 	private final String scmPath;
 
+	private final String rootPath;
+
 	private final String name;
 
 	private final ITeamUiResourceConnector connector;
 
 	public ScmRepository(@NotNull String scmPath, @Nullable String name, @NotNull ITeamUiResourceConnector connector) {
+		this.rootPath = scmPath;
 		this.scmPath = scmPath;
 		this.name = name;
 		this.connector = connector;
+	}
+
+	public ScmRepository(@NotNull String scmPath, @NotNull String rootPath, @Nullable String name,
+			@NotNull ITeamUiResourceConnector connector) {
+		this.rootPath = rootPath;
+		this.scmPath = scmPath;
+		this.name = name;
+		this.connector = connector;
+	}
+
+	@NotNull
+	public String getRootPath() {
+		return rootPath;
 	}
 
 	@NotNull
