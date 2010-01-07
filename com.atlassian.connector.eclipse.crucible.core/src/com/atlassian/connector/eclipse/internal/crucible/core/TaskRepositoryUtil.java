@@ -23,6 +23,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
 import java.util.Map;
 
 public final class TaskRepositoryUtil {
@@ -76,7 +77,9 @@ public final class TaskRepositoryUtil {
 
 		Map.Entry<String, String> matching = null;
 		for (Map.Entry<String, String> prefix : repositories.entrySet()) {
-			if (scmPath.startsWith(prefix.getKey())) {
+			URI prefixUri = URI.create(prefix.getKey()).normalize();
+			URI scmUri = URI.create(scmPath).normalize();
+			if (scmUri.toString().startsWith(prefixUri.toString())) {
 				if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
 					matching = prefix;
 				}
