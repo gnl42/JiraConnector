@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
@@ -20,6 +21,8 @@ import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class SubversiveUtil {
 	
@@ -29,17 +32,30 @@ public final class SubversiveUtil {
 
 	public static IRepositoryLocation getRepositoryLocation(String url) {
 		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
+		IRepositoryLocation bestMatch = null;
+		
 		if (repositories != null) {
 			for (IRepositoryLocation repository : repositories) {
-				if (repository.getUrl().equals(url)) {
-					return repository;
+				if (url.startsWith(repository.getUrl())) {
+					if (bestMatch == null || bestMatch.getUrl().length() < repository.getUrl().length()) {
+						bestMatch = repository;
+					}
 				}
 			}
 		}
-		return null;
+		return bestMatch;
 	}
 	
-	public static IResource getLocalResourceFromFilePath(final String path) {
+	/**
+	 * 
+	 * @param repoUrl We need it here because we want to check if file described by path that we found has exactly the same SVN address
+	 * @param path
+	 * @param monitor
+	 * @return
+	 */
+	public static IResource getLocalResourceFromFilePath(final String repoUrl, final String path, IProgressMonitor monitor) {
+		SubMonitor submonitor = SubMonitor.convert(monitor);
+		
 		if (path == null || path.length() <= 0) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveCorePlugin.PLUGIN_ID, "Requested file path is null or empty."));
 			return null;
@@ -104,23 +120,13 @@ public final class SubversiveUtil {
 		return null;
 	}
 
-	public static IRepositoryFile getSvnRemoteFile(String repoUrl, String filePath, SVNRevision fileRevision,
-			final IProgressMonitor monitor) {
-		if (repoUrl == null) {
-			return null;
-		}
-
-		if (filePath.startsWith("/")) {
-			filePath = filePath.substring(1);
-		}
-
-		IResource localResource = getLocalResourceFromFilePath(filePath);
-
-		if (localResource != null) {
-			final IRepositoryResource repResource = SVNRemoteStorage.instance().asRepositoryResource(localResource);
-			final IRepositoryFile remoteFile = new SVNRepositoryFile(repResource.getRepositoryLocation(),
-					repResource.getUrl(), fileRevision);
-			return remoteFile;
+	@Nullable
+	public static IRepositoryFile getSvnRemoteFile(@NotNull String repoUrl, @NotNull String filePath, @NotNull SVNRevision fileRevision,
+			@Nullable final IProgressMonitor monitor) {
+		
+		IRepositoryLocation repository = getRepositoryLocation(repoUrl);
+		if (repository != null) {
+			return new SVNRepositoryFile(repository, repoUrl + '/' + filePath, fileRevision);
 		}
 		return null;
 	}
