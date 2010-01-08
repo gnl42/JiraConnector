@@ -199,13 +199,16 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 		if (targetEditor != null) {
 			this.resource = (IFile) targetEditor.getEditorInput().getAdapter(IFile.class);
 		}
-		action.setEnabled(false);
+//		action.setEnabled(false);
+		action.setEnabled(true);
 	}
 
+	// TODO jj check if selection field is necessary or should be passed further instead of IEditorInput
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof TextSelection) {
 			TextSelection sel = (TextSelection) selection;
-			action.setEnabled(sel.getLength() > 0);
+//			action.setEnabled(sel.getLength() > 0);
+			action.setEnabled(true);
 			this.selection = sel;
 		}
 	}
