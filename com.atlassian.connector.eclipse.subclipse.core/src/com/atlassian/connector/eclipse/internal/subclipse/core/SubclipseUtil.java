@@ -1,7 +1,7 @@
 package com.atlassian.connector.eclipse.internal.subclipse.core;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
-import java.util.Date;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -15,10 +15,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.Team;
-import org.tigris.subversion.subclipse.core.ISVNLocalResource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
-import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.resources.RemoteFile;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
@@ -76,71 +76,18 @@ public final class SubclipseUtil {
 		StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
 		return null;
 	}
-	
-	public static ISVNRemoteFile getRemoteFile(IResource localResource, String filePath, SVNRevision svnRevision,
-			SVNRevision otherSvnRevision, boolean localFileNotFound) throws ParseException, SVNException {
 
-		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
-
-		if (local.isManaged()) {
-			if (localFileNotFound) {
-				//file has been moved, so we have to do some funky file retrieval
-				ISVNRepositoryLocation location = local.getRepository();
-
-				SVNUrl svnUrl = local.getUrl();
-
-				if (otherSvnRevision instanceof SVNRevision.Number) {
-					return new RemoteFile(null, location, svnUrl, svnRevision, (SVNRevision.Number) svnRevision,
-							new Date(), "");
-				} else {
-					return new RemoteFile(null, location, svnUrl, svnRevision, SVNRevision.INVALID_REVISION,
-							new Date(), "");
-				}
-			} else {
-				return (ISVNRemoteFile) local.getRemoteResource(svnRevision);
+	@Nullable
+	public static ISVNRemoteFile getSvnRemoteFile(@Nullable ISVNRepositoryLocation location, @NotNull String repoUrl, @NotNull String filePath, @NotNull String fileRevision, @Nullable final IProgressMonitor monitor) {
+		if (location != null) {
+			try {
+				SVNRevision revision = SVNRevision.getRevision(fileRevision);
+				return new RemoteFile(null, location, new SVNUrl(repoUrl + '/' + filePath), revision, (SVNRevision.Number) revision, null, null);
+			} catch (ParseException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
+			} catch (MalformedURLException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
 			}
-		}
-
-		return null;
-	}
-
-
-	public static ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String otherRevisionFilePath,
-			String revisionString, String otherRevisionString, final IProgressMonitor monitor) {
-		if (repoUrl == null) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Provided repository url is null"));
-			return null;
-		}
-		try {
-
-			if (filePath.startsWith("/")) {
-				filePath = filePath.substring(1);
-			}
-
-			IResource localResource = SubclipseUtil.getLocalResourceFromFilePath(filePath);
-
-			boolean localFileNotFound = localResource == null;
-
-			if (localFileNotFound) {
-				StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get local resource from file path {0}", filePath)));
-				localResource = SubclipseUtil.getLocalResourceFromFilePath(otherRevisionFilePath);
-			}
-
-			if (localResource != null) {
-				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-				SVNRevision otherSvnRevision = SVNRevision.getRevision(otherRevisionString);
-				ISVNRemoteFile remoteFile = getRemoteFile(localResource, filePath, svnRevision, otherSvnRevision, localFileNotFound);
-				if (remoteFile == null) {
-					StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get remote file for local resource {0}", localResource.getName())));
-				}
-				return remoteFile;
-			} else {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get local resource from file path {0}", otherRevisionFilePath)));
-			}
-		} catch (SVNException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
 	}

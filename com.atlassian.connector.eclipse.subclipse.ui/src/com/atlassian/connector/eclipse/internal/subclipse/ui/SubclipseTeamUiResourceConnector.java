@@ -187,14 +187,20 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		ISVNRepositoryLocation[] repositories = SVNUIPlugin.getPlugin()
 				.getRepositoryManager()
 				.getKnownRepositoryLocations(monitor);
+		ISVNRepositoryLocation bestMatch = null;
+
 		if (repositories != null) {
 			for (ISVNRepositoryLocation repository : repositories) {
-				if (repository.getUrl() != null && repository.getUrl().toString().equals(url)) {
-					return repository;
+				if (repository.getUrl() != null && url.startsWith(repository.getUrl().toString())) {
+					if (bestMatch == null
+							|| bestMatch.getUrl().toString().length() < repository.getUrl().toString().length()) {
+						bestMatch = repository;
+					}
 				}
 			}
 		}
-		return null;
+
+		return bestMatch;
 	}
 
 	public ScmRepository getRepository(String url, IProgressMonitor monitor) {
@@ -312,7 +318,7 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		return SubclipseUtil.getLocalResourceFromFilePath(filePath) != null;
+		return getRepositoryLocation(repoUrl, monitor) != null;
 	}
 
 	@NotNull
@@ -392,10 +398,11 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
 			throws CoreException {
-		ISVNRemoteResource oldRemoteFile = SubclipseUtil.getSvnRemoteFile(repoUrl, oldFilePath, newFilePath,
-				oldRevisionString, newRevisionString, monitor);
-		ISVNRemoteResource newRemoteFile = SubclipseUtil.getSvnRemoteFile(repoUrl, newFilePath, oldFilePath,
-				newRevisionString, oldRevisionString, monitor);
+		ISVNRepositoryLocation location = getRepositoryLocation(repoUrl, monitor);
+		ISVNRemoteResource oldRemoteFile = SubclipseUtil.getSvnRemoteFile(location, repoUrl, oldFilePath,
+				oldRevisionString, monitor);
+		ISVNRemoteResource newRemoteFile = SubclipseUtil.getSvnRemoteFile(location, repoUrl, newFilePath,
+				newRevisionString, monitor);
 
 		if (oldRemoteFile != null && newRemoteFile != null) {
 			ResourceEditionNode left = new ResourceEditionNode(newRemoteFile);
@@ -411,64 +418,80 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
+
 		if (repoUrl == null) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-					"No repository URL given.."));
+					"No repository URL given."));
 		}
+
 		try {
+			return openFile(repoUrl, filePath, revisionString, monitor);
+		} catch (CoreException e) {
+			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+					"Failed to open {0} at revision {1}", filePath, revisionString)));
+		}
 
+		if (otherRevisionFilePath != null && otherRevisionString != null && !"".equals(otherRevisionString)) {
+			return openFile(repoUrl, otherRevisionFilePath, otherRevisionString, monitor);
+		}
+
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+				"Failed to open {0} at revision {1}", filePath, revisionString)));
+	}
+
+	public IEditorPart openFile(String repoUrl, String filePath, String fileRevision, final IProgressMonitor monitor)
+			throws CoreException {
+		final SubMonitor submonitor = SubMonitor.convert(monitor);
+
+		Assert.isNotNull(repoUrl);
+
+		try {
 			IResource localResource = SubclipseUtil.getLocalResourceFromFilePath(filePath);
-
-			boolean localFileNotFound = localResource == null;
-
-			if (localFileNotFound) {
-				localResource = SubclipseUtil.getLocalResourceFromFilePath(otherRevisionFilePath);
-			}
-
 			if (localResource != null) {
-				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-				SVNRevision otherSvnRevision = SVNRevision.getRevision(otherRevisionString);
+				SVNRevision svnRevision = SVNRevision.getRevision(fileRevision);
 				ISVNLocalFile localFile = getLocalFile(localResource);
 
 				if (localFile.getStatus().getLastChangedRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
 					return TeamUiUtils.openLocalResource(localResource);
-				} else {
-					final ISVNRemoteFile remoteFile = SubclipseUtil.getRemoteFile(localResource, filePath, svnRevision,
-							otherSvnRevision, localFileNotFound);
-					if (remoteFile != null) {
-						// we need to open the remote resource since the file is either dirty or the wrong revision
-
-						if (Display.getCurrent() != null) {
-							return openRemoteSvnFile(remoteFile, monitor);
-						} else {
-							final IEditorPart[] part = new IEditorPart[1];
-							final CoreException[] exception = new CoreException[1];
-							PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-								public void run() {
-									try {
-										part[0] = openRemoteSvnFile(remoteFile, monitor);
-									} catch (CoreException e) {
-										exception[0] = e;
-									}
-								}
-							});
-
-							if (exception[0] != null) {
-								throw exception[0];
-							}
-
-							return part[0];
-						}
-
-					} else {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-								NLS.bind("Could not get remote file for {0}.", filePath)));
-					}
 				}
-			} else {
+			}
+
+			final ISVNRepositoryLocation location = getRepositoryLocation(repoUrl, submonitor.newChild(1));
+			if (location == null) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not find local resource for {0}.", filePath)));
+						"Could not get remote file for {0}.", filePath)));
+			}
+
+			final ISVNRemoteFile remoteFile = SubclipseUtil.getSvnRemoteFile(location, repoUrl, filePath, fileRevision,
+					submonitor.newChild(1));
+			if (remoteFile == null) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+						"Could not get remote file for {0}.", filePath)));
+			}
+
+			// we need to open the remote resource since the file is either dirty or the wrong revision
+
+			if (Display.getCurrent() != null) {
+				return openRemoteSvnFile(remoteFile, submonitor.newChild(1));
+			} else {
+				final IEditorPart[] part = new IEditorPart[1];
+				final CoreException[] exception = new CoreException[1];
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+					public void run() {
+						try {
+							part[0] = openRemoteSvnFile(remoteFile, submonitor.newChild(1));
+						} catch (CoreException e) {
+							exception[0] = e;
+						}
+					}
+				});
+
+				if (exception[0] != null) {
+					throw exception[0];
+				}
+
+				return part[0];
 			}
 		} catch (SVNException e) {
 			Status status = new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e);
