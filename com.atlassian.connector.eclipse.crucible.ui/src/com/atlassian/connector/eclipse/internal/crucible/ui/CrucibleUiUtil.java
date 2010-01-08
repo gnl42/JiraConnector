@@ -299,6 +299,11 @@ public final class CrucibleUiUtil {
 				&& comment.getAuthor().getUsername().equals(CrucibleUiUtil.getCurrentUsername(review));
 	}
 
+	public static boolean canMarkAsReadOrUnread(Review review, Comment comment) {
+		return CrucibleUtil.canAddCommentToReview(review)
+				&& !comment.getAuthor().getUsername().equals(CrucibleUiUtil.getCurrentUsername(review));
+	}
+
 	public static Set<String> getUsernamesFromUsers(Collection<? extends User> users) {
 		final Set<String> userNames = new HashSet<String>();
 		for (User user : users) {

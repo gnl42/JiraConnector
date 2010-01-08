@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.MarkCommentsLeaveUnreadJob;
@@ -74,15 +75,20 @@ public class ToggleCommentsLeaveUnreadAction extends BaseSelectionListenerAction
 		this.review = null;
 		this.markCommentsAsRead = false;
 
-		final List<?> comments = getStructuredSelection().toList();
-		if (comments.size() > 0) {
+		final List<?> selectedNodes = getStructuredSelection().toList();
+		if (selectedNodes.size() > 0) {
 			this.review = getActiveReview();
 			if (this.review != null) {
-				for (Object comment : comments) {
-					if (!(comment instanceof Comment)) {
+				for (Object selectedNode : selectedNodes) {
+					if (!(selectedNode instanceof Comment)) {
 						return false;
 					}
-					switch (((Comment) comment).getReadState()) {
+					final Comment comment = (Comment) selectedNode;
+					if (!CrucibleUiUtil.canMarkAsReadOrUnread(review, comment)) {
+						return false;
+					}
+
+					switch (comment.getReadState()) {
 					case LEAVE_UNREAD:
 						markCommentsAsRead = true;
 						break;

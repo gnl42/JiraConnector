@@ -21,11 +21,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
-import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IMenuListener;
@@ -38,7 +35,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -57,7 +53,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
-import java.util.List;
 import java.util.Map;
 
 public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
@@ -72,7 +67,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private PostDraftCommentAction postDraftCommentAction;
 
-	private TreePath currentPath;
+	private Object currentSelection;
 
 	private Review activeReview;
 
@@ -162,7 +157,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 		getViewSite().getPage().addSelectionListener(this);
 
-		if (currentPath != null) {
+		if (currentSelection != null) {
 			updateViewer();
 		}
 	}
@@ -235,7 +230,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private void fillMenu(IMenuManager manager) {
 		ToggleCommentsLeaveUnreadAction action = new ToggleCommentsLeaveUnreadAction();
-		action.selectionChanged(currentPath != null ? new StructuredSelection(currentPath.getLastSegment())
+		action.selectionChanged(currentSelection != null ? new StructuredSelection(currentSelection)
 				: StructuredSelection.EMPTY);
 		manager.add(action);
 	}
@@ -280,13 +275,11 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 			return;
 		}
 
-		currentPath = null;
+		currentSelection = null;
 
 		if (selection instanceof ITreeSelection) {
-			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-
-			if (paths != null && paths.length == 1) {
-				currentPath = paths[0];
+			if (((ITreeSelection) selection).size() == 1) {
+				currentSelection = ((ITreeSelection) selection).getFirstElement();
 			}
 		}
 
@@ -294,70 +287,66 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	}
 
 	private void updateViewer() {
-		if (currentPath != null) {
-			Object lastSegment = currentPath.getLastSegment();
+		if (currentSelection instanceof Comment) {
+			Comment activeComment = (Comment) currentSelection;// findActiveComment((Comment) currentSelection);
 
-			if (lastSegment instanceof Comment) {
-				Comment activeComment = findActiveComment((Comment) lastSegment);
-
-				if (activeComment != null) {
-					if (activeComment.getReadState().equals(Comment.ReadState.READ)) {
-						readState.setText("Read");
-						readState.setFont(null);
-					} else if (activeComment.getReadState().equals(Comment.ReadState.UNREAD)
-							|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
-						readState.setText("Unread");
-						readState.setFont(CommonFonts.BOLD);
-					} else {
-						readState.setText("");
-						readState.setFont(null);
-					}
-
-					if (activeComment.isDraft()) {
-						draftIcon.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
-						draft.setText("Draft");
-						//draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-					} else {
-						draftIcon.setImage(null);
-						draft.setText("");
-					}
-
-					if (activeComment.isDefectRaised()) {
-						defectIcon.setImage(CommonImages.getImage(CommonImages.PRIORITY_1));
-						defect.setText("Defect");
-					} else {
-						defectIcon.setImage(null);
-						defect.setText("");
-					}
-
-					defectClassification.setText("");
-					defectRank.setText("");
-
-					Map<String, CustomField> fields = activeComment.getCustomFields();
-					if (fields != null) {
-						if (fields.containsKey(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)) {
-							defectClassification.setText(fields.get(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)
-									.getValue());
-						}
-
-						if (fields.containsKey(CrucibleConstants.RANK_CUSTOM_FIELD_KEY)) {
-							defectRank.setText(fields.get(CrucibleConstants.RANK_CUSTOM_FIELD_KEY).getValue());
-						}
-					}
-
-					author.setText(activeComment.getAuthor().getDisplayName());
-					author.setToolTipText(activeComment.getAuthor().getUsername());
-
-					date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
-
-					message.setText(activeComment.getMessage());
-
-					header.layout();
-
-					stackLayout.topControl = detailsComposite;
-					stackComposite.layout();
-					return;
+			if (activeComment != null) {
+				if (activeComment.getReadState().equals(Comment.ReadState.READ)) {
+					readState.setText("Read");
+					readState.setFont(null);
+				} else if (activeComment.getReadState().equals(Comment.ReadState.UNREAD)
+						|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
+					readState.setText("Unread");
+					readState.setFont(CommonFonts.BOLD);
+				} else {
+					readState.setText("");
+					readState.setFont(null);
 				}
+
+				if (activeComment.isDraft()) {
+					draftIcon.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
+					draft.setText("Draft");
+					//draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+				} else {
+					draftIcon.setImage(null);
+					draft.setText("");
+				}
+
+				if (activeComment.isDefectRaised()) {
+					defectIcon.setImage(CommonImages.getImage(CommonImages.PRIORITY_1));
+					defect.setText("Defect");
+				} else {
+					defectIcon.setImage(null);
+					defect.setText("");
+				}
+
+				defectClassification.setText("");
+				defectRank.setText("");
+
+				Map<String, CustomField> fields = activeComment.getCustomFields();
+				if (fields != null) {
+					if (fields.containsKey(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)) {
+						defectClassification.setText(fields.get(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY)
+								.getValue());
+					}
+
+					if (fields.containsKey(CrucibleConstants.RANK_CUSTOM_FIELD_KEY)) {
+						defectRank.setText(fields.get(CrucibleConstants.RANK_CUSTOM_FIELD_KEY).getValue());
+					}
+				}
+
+				author.setText(activeComment.getAuthor().getDisplayName());
+				author.setToolTipText(activeComment.getAuthor().getUsername());
+
+				date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
+
+				message.setText(activeComment.getMessage());
+
+				header.layout();
+
+				stackLayout.topControl = detailsComposite;
+				stackComposite.layout();
+				return;
 			}
 		}
 
@@ -365,34 +354,35 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		stackComposite.layout();
 	}
 
-	private Comment findActiveComment(Comment comment) {
-		CrucibleFileInfo activeFileInfo;
-		try {
-			activeFileInfo = activeReview.getFileByPermId(((CrucibleFileInfo) currentPath.getFirstSegment()).getPermId());
-		} catch (ValueNotYetInitialized e) {
-			return null;
-		}
+//	private Comment findActiveComment(Comment comment) {
+//		CrucibleFileInfo activeFileInfo;
+//		try {
+//			activeFileInfo = activeReview.getFileByPermId(comment.get
+//					((CrucibleFileInfo) currentSelection.getFirstSegment()).getPermId());
+//		} catch (ValueNotYetInitialized e) {
+//			return null;
+//		}
+//
+//		return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
+//	}
 
-		return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
-	}
-
-	private Comment findComment(PermId commentId, List<? extends Comment> comments) {
-		if (comments != null) {
-			for (Comment comment : comments) {
-				if (comment.getPermId().equals(commentId)) {
-					return comment;
-				}
-
-				if (comment.getReplies() != null) {
-					Comment found = findComment(commentId, comment.getReplies());
-					if (found != null) {
-						return found;
-					}
-				}
-			}
-		}
-		return null;
-	}
+//	private Comment findComment(PermId commentId, List<? extends Comment> comments) {
+//		if (comments != null) {
+//			for (Comment comment : comments) {
+//				if (comment.getPermId().equals(commentId)) {
+//					return comment;
+//				}
+//
+//				if (comment.getReplies() != null) {
+//					Comment found = findComment(commentId, comment.getReplies());
+//					if (found != null) {
+//						return found;
+//					}
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
 	public void reviewActivated(ITask task, Review review) {
 		reviewUpdated(task, review);

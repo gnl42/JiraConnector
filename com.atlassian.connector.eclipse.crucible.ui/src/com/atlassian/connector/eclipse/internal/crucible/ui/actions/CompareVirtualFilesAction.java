@@ -22,8 +22,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.team.internal.ui.ITeamUIImages;
 import org.eclipse.team.ui.TeamImages;
@@ -56,24 +54,21 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		fileInfo = null;
 		review = null;
+		comment = null;
 
-		if (selection instanceof ITreeSelection) {
-			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths == null || paths.length != 1) {
-				return false;
-			}
-
-			if (paths[0].getFirstSegment() instanceof CrucibleFileInfo) {
-				fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
+		if (selection.size() == 1) {
+			if (selection.getFirstElement() instanceof CrucibleFileInfo) {
+				fileInfo = (CrucibleFileInfo) selection.getFirstElement();
 				review = getReview(fileInfo);
 
 				comment = null;
-				if (paths[0].getLastSegment() instanceof VersionedComment) {
-					comment = (VersionedComment) paths[0].getLastSegment();
-				}
+				// FIXME wseliga restore support for comment
+//				if (paths[0].getLastSegment() instanceof VersionedComment) {
+//					comment = (VersionedComment) paths[0].getLastSegment();
+//				}
 
-				VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
-				VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
+				final VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+				final VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
 
 				boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
 						&& oldFileDescriptor.getRevision().length() > 0;

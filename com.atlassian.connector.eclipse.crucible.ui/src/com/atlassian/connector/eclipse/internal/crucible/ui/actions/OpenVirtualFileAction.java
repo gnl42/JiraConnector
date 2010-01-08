@@ -24,8 +24,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -56,36 +54,30 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 		fileInfo = null;
 		review = null;
 		task = null;
+		comment = null;
+		if (selection.size() == 1 && selection.getFirstElement() instanceof CrucibleFileInfo) {
+			fileInfo = (CrucibleFileInfo) selection.getFirstElement();
+			review = getReview(fileInfo);
+			task = getTask(fileInfo);
+			comment = null;
+			// FIXME wseliga support comment
+//			if (paths[0].getLastSegment() instanceof VersionedComment) {
+//				comment = (VersionedComment) paths[0].getLastSegment();
+//			}
 
-		if (selection instanceof ITreeSelection) {
-			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths == null || paths.length != 1) {
-				return false;
+			VersionedVirtualFile fileDescriptor;
+			if (oldFile) {
+				fileDescriptor = fileInfo.getOldFileDescriptor();
+			} else {
+				fileDescriptor = fileInfo.getFileDescriptor();
 			}
 
-			if (paths[0].getFirstSegment() instanceof CrucibleFileInfo) {
-				fileInfo = (CrucibleFileInfo) paths[0].getFirstSegment();
-				review = getReview(fileInfo);
-				task = getTask(fileInfo);
-				comment = null;
-				if (paths[0].getLastSegment() instanceof VersionedComment) {
-					comment = (VersionedComment) paths[0].getLastSegment();
-				}
-
-				VersionedVirtualFile fileDescriptor;
-				if (oldFile) {
-					fileDescriptor = fileInfo.getOldFileDescriptor();
-				} else {
-					fileDescriptor = fileInfo.getFileDescriptor();
-				}
-
-				return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
-						&& fileDescriptor != null
-						&& fileDescriptor.getUrl() != null
-						&& fileDescriptor.getUrl().length() > 0
-						&& fileDescriptor.getRevision() != null
-						&& fileDescriptor.getRevision().length() > 0;
-			}
+			return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
+					&& fileDescriptor != null
+					&& fileDescriptor.getUrl() != null
+					&& fileDescriptor.getUrl().length() > 0
+					&& fileDescriptor.getRevision() != null
+					&& fileDescriptor.getRevision().length() > 0;
 		}
 		return false;
 	}

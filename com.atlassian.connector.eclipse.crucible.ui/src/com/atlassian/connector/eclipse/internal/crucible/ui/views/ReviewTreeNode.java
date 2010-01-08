@@ -30,7 +30,11 @@ public class ReviewTreeNode {
 	@Nullable
 	private String pathToken;
 
-	public ReviewTreeNode(@Nullable String pathToken) {
+	@Nullable
+	private final ReviewTreeNode parent;
+
+	public ReviewTreeNode(@Nullable ReviewTreeNode parent, @Nullable String pathToken) {
+		this.parent = parent;
 		this.pathToken = pathToken;
 	}
 
@@ -55,15 +59,14 @@ public class ReviewTreeNode {
 				return;
 			}
 		}
-		ReviewTreeNode newChild = new ReviewTreeNode(path[0]);
+		ReviewTreeNode newChild = new ReviewTreeNode(this, path[0]);
 		children.add(newChild);
 		newChild.add(Arrays.copyOfRange(path, 1, path.length), aCfi);
 		return;
 	}
 
 	public void compact() {
-		int size = children.size();
-		if (size == 1) {
+		while (children.size() == 1) {
 			ReviewTreeNode onlyChild = children.get(0);
 			if (onlyChild.getCrucibleFileInfo() == null) {
 				if (pathToken == null) {
@@ -72,6 +75,8 @@ public class ReviewTreeNode {
 					pathToken = pathToken + "/" + onlyChild.pathToken;
 				}
 				children = onlyChild.children;
+			} else {
+				break;
 			}
 		}
 		for (ReviewTreeNode child : children) {
@@ -79,8 +84,65 @@ public class ReviewTreeNode {
 		}
 	}
 
+	public String getPathToken() {
+		return pathToken;
+	}
+
 	@Override
 	public String toString() {
 		return pathToken;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cfi == null) ? 0 : cfi.hashCode());
+		result = prime * result + ((pathToken == null) ? 0 : pathToken.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ReviewTreeNode other = (ReviewTreeNode) obj;
+		if (!MiscUtil.isEqual(parent, other.parent)) {
+			return false;
+		}
+		if (cfi == null) {
+			if (other.cfi != null) {
+				return false;
+			}
+		} else if (!cfi.equals(other.cfi)) {
+			return false;
+		}
+		if (pathToken == null) {
+			if (other.pathToken != null) {
+				return false;
+			}
+		} else if (!pathToken.equals(other.pathToken)) {
+			return false;
+		}
+		return true;
+	}
+
+//	@Override
+//	public int hashCode() {
+//		if (cfi != null) {
+//			return cfi.hashCode();
+//		}
+//		if (pathToken != null) {
+//			return pathToken.hashCode();
+//		}
+//		return super.hashCode();
+//	}
+
 }
