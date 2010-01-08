@@ -25,7 +25,10 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -43,6 +46,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -268,14 +272,58 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			addPage(addPatchPage);
 		}
 
+		// pre-commit
 		if (types.contains(Type.ADD_WORKSPACE_PATCH)) {
 			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), selectedWorkspaceResources);
 			addPage(addWorkspacePatchPage);
 		}
+
+		// post-commit for editor selection
 		if (types.contains(Type.ADD_SCM_RESOURCES)) {
-			defineMappingPage = new DefineRepositoryMappingsPage(getTaskRepository(), selectedWorkspaceResources);
-			addPage(defineMappingPage);
+
+			if (selectedWorkspaceResources.size() > 0 && selectedWorkspaceResources.get(0) != null) {
+
+				// single SCM integration selection supported
+				final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
+						.getTeamResourceManager()
+						.getTeamConnector(selectedWorkspaceResources.get(0));
+				if (teamConnector == null) {
+					MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PRODUCT_NAME,
+							"Cannot find Atlassian SCM Integration for '" + selectedWorkspaceResources.get(0).getName()
+									+ "'.");
+				} else {
+					boolean missingMapping = false;
+					Collection<String> scmPaths = new ArrayList<String>();
+					// TODO use job below if there are plenty of resource (currently it is used for single resource)
+					for (IResource resource : selectedWorkspaceResources) {
+						try {
+							LocalStatus status = teamConnector.getLocalRevision(resource);
+							if (status.getScmPath() != null && status.getScmPath().length() > 0) {
+								String scmPath = teamConnector.getLocalRevision(resource.getProject()).getScmPath();
+
+								if (TaskRepositoryUtil.getMatchingSourceRepository(
+										TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), scmPath) == null) {
+									// we need to see mapping page
+									missingMapping = true;
+									scmPaths.add(scmPath);
+								}
+
+							}
+						} catch (CoreException e) {
+							// resource is probably not under version control
+							// skip
+						}
+					}
+
+					if (missingMapping) {
+						defineMappingPage = new DefineRepositoryMappingsPage(scmPaths, getTaskRepository());
+						addPage(defineMappingPage);
+					}
+				}
+			}
 		}
+
+		// mixed review
 		if (types.contains(Type.ADD_RESOURCES)) {
 			resourceSelectionPage = new ResourceSelectionPage(getTaskRepository(), selectedWorkspaceResources);
 			addPage(resourceSelectionPage);
@@ -346,6 +394,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		// TODO jj remove unused code
 		// create pre-commit review
 		if (addWorkspacePatchPage != null) {
 			final IResource[] selection = addWorkspacePatchPage.getSelection();
@@ -399,8 +448,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		// create post-commit review
-		if (defineMappingPage != null && types.contains(Type.ADD_SCM_RESOURCES)) {
+		// create review from editor selection (post-commit)
+		if (types.contains(Type.ADD_SCM_RESOURCES)) {
 			if (selectedWorkspaceResources != null) {
 				final JobWithStatus job = new AddResourcesToReviewJob(crucibleReview,
 						selectedWorkspaceResources.toArray(new IResource[selectedWorkspaceResources.size()]));
@@ -412,7 +461,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		// create review from editor selection
+		// create review from editor selection (pre-commit)
 		if (types.contains(Type.ADD_UPLOAD_ITEMS)) {
 			if (uploadItems.size() > 0) {
 				JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(), uploadItems);

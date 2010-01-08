@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -51,8 +52,8 @@ public class SourceRepostioryMappingEditor {
 	private final ArrayList<FishEyeMappingConfiguration> urlToRepositories = MiscUtil.buildArrayList();
 	private final List<ModifyListener> modifyListeners = MiscUtil.buildArrayList();
 
-	public SourceRepostioryMappingEditor(Composite parent) {
-		this(parent, SWT.NONE);
+	public SourceRepostioryMappingEditor(Composite parent, TaskRepository repository) {
+		this(parent, repository, SWT.NONE);
 	}
 
 	public void setRepositoryMappings(Collection<FishEyeMappingConfiguration> mapping) {
@@ -61,7 +62,7 @@ public class SourceRepostioryMappingEditor {
 		tableViewer.setInput(this.urlToRepositories);
 	}
 
-	public SourceRepostioryMappingEditor(Composite ancestor, int style) {
+	public SourceRepostioryMappingEditor(Composite ancestor, final TaskRepository repository, int style) {
 		parent = new Composite(ancestor, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(parent);
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
@@ -121,7 +122,7 @@ public class SourceRepostioryMappingEditor {
 		addButton.setFocus();
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(), null);
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(), repository, null, null);
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
 							dialog.getScmPath(), dialog.getSourceRepository());

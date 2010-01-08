@@ -105,7 +105,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 				}
 			}
 		});
-		mappingEditor = new SourceRepostioryMappingEditor(parent);
+		mappingEditor = new SourceRepostioryMappingEditor(parent, null);
 		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
 
 		return ancestor;

@@ -50,7 +50,9 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 
 	private SourceRepostioryMappingEditor mappingEditor;
 
-	private final Set<IResource> resources;
+	private Set<IResource> resources;
+
+	private Collection<String> scmPaths;
 
 	public DefineRepositoryMappingsPage(TaskRepository repository, Collection<IResource> resources) {
 		super("crucibleRepoMapping");
@@ -63,10 +65,21 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		setDescription("Define repository mapping used to create review.");
 	}
 
+	public DefineRepositoryMappingsPage(Collection<String> scmPaths, TaskRepository repository) {
+		super("crucibleRepoMapping");
+
+		this.taskRepository = repository;
+		this.scmPaths = MiscUtil.buildArrayList();
+		this.scmPaths.addAll(scmPaths);
+
+		setTitle("Define Repository Mapping");
+		setDescription("Define repository mapping used to create review.");
+	}
+
 	public Composite createRepositoryMappingComposite(Composite ancestor, int hSizeHint) {
 		final Composite parent = new Composite(ancestor, SWT.NONE);
 
-		mappingEditor = new SourceRepostioryMappingEditor(parent);
+		mappingEditor = new SourceRepostioryMappingEditor(parent, taskRepository);
 		mappingEditor.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				try {
@@ -108,31 +121,50 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 
 	protected void validatePage() {
 		setErrorMessage(null);
+		setMessage("All necessary mappings are defined.");
 
 		//check if all custom repositories are mapped to Crucible repositories
 		boolean allFine = true;
 
-		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
+		if (scmPaths == null) {
+			if (resources != null) {
+				TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 
-		for (IResource resource : resources) {
-			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+				for (IResource resource : resources) {
+					ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 
-			final LocalStatus revision;
-			try {
-				revision = teamConnector.getLocalRevision(resource);
-			} catch (CoreException e) {
-				setErrorMessage(e.getMessage());
-				return;
+					final LocalStatus revision;
+					try {
+						revision = teamConnector.getLocalRevision(resource);
+					} catch (CoreException e) {
+						setErrorMessage(e.getMessage());
+						return;
+					}
+
+					if (revision != null && revision.isVersioned()) {
+						if (TaskRepositoryUtil.getMatchingSourceRepository(
+								TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
+							setErrorMessage(NLS.bind(
+									"Unable to map SCM path {0} to Crucible repository. Please define a mapping.",
+									revision.getScmPath()));
+							allFine = false;
+							break;
+						}
+					}
+				}
 			}
-
-			if (revision != null && revision.isVersioned()) {
+			/*
+			else {
+				// no input to validate so the page is valid
+			}
+			*/
+		} else {
+			for (String path : scmPaths) {
 				if (TaskRepositoryUtil.getMatchingSourceRepository(
-						TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), revision.getScmPath()) == null) {
-					setErrorMessage(NLS.bind(
-							"Unable to map SCM path {0} to Crucible repository. Please define a mapping.",
-							revision.getScmPath()));
+						TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), path) == null) {
 					allFine = false;
-					break;
+					setErrorMessage(NLS.bind(
+							"Unable to map SCM path {0} to Crucible repository. Please define a mapping.", path));
 				}
 			}
 		}

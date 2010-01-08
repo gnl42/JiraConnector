@@ -25,7 +25,7 @@
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateReviewAction" 
 				menubarPath="team.main/group10" 
 				icon="icons/obj16/crucible.png" 
-				label="Create Review" tooltip="Create Review in Crucible for Selected Resource(s)">
+				label="Create Review for Selected Resource(s)" tooltip="Create Review in Crucible for Selected Resource(s)">
 			</action>
 		</objectContribution>
 		<viewerContribution
@@ -35,7 +35,7 @@
            class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
            icon="icons/obj16/crucible.png"
            id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction1"
-           label="Create Review from Editor Selection"
+           label="Discuss Editor Selection"
            menubarPath="team.main/group10">
      	</action>
      	</viewerContribution>
@@ -46,7 +46,7 @@
            class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
            icon="icons/obj16/crucible.png"
            id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction2"
-           label="Create Review from Editor Selection"
+           label="Discuss Editor Selection"
            menubarPath="team.main/group10">
      	</action>
   </viewerContribution>
