@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -39,12 +40,14 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("restriction")
@@ -93,7 +96,7 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 			isPostCommit = true;
 		}
 
-		openReviewWizard(resource, connector, isPostCommit);
+		openReviewWizard(resource, editor, connector, isPostCommit);
 
 //		SelectRepositoryPage selectRepositoryPage = new SelectRepositoryPage(
 //				SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
@@ -122,8 +125,8 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 //		wd.open();
 	}
 
-	private void openReviewWizard(final IResource resource, final ITeamUiResourceConnector connector,
-			boolean isPostCommit) {
+	private void openReviewWizard(final IResource resource, final IEditorPart editorPart,
+			final ITeamUiResourceConnector connector, boolean isPostCommit) {
 
 		// TODO jj replace SOO with Comments in the last wizard page
 
@@ -133,9 +136,13 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
 				@Override
 				protected IWizard createWizard(TaskRepository taskRepository) {
-					ReviewWizard wizard = new ReviewWizard(taskRepository,
-							MiscUtil.buildHashSet(ReviewWizard.Type.ADD_SCM_RESOURCES));
+					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
+							ReviewWizard.Type.ADD_SCM_RESOURCES, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
 					wizard.setRoots(Arrays.asList(resource));
+					HashMap<IEditorInput, LineRange> comments = new HashMap<IEditorInput, LineRange>();
+					comments.put(editorPart.getEditorInput(), TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(
+							editorPart, editor.getEditorInput()));
+					wizard.setFilesCommentData(comments);
 					return wizard;
 				}
 			};
@@ -189,7 +196,9 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.editor = targetEditor;
-		this.resource = (IFile) targetEditor.getEditorInput().getAdapter(IFile.class);
+		if (targetEditor != null) {
+			this.resource = (IFile) targetEditor.getEditorInput().getAdapter(IFile.class);
+		}
 		action.setEnabled(false);
 	}
 

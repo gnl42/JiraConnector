@@ -20,12 +20,15 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -46,9 +49,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -62,6 +66,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -70,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +93,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS, ADD_RESOURCES;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS, ADD_RESOURCES, ADD_COMMENT_TO_FILE;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -229,6 +235,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private IResource[] previousWorkspaceSelection;
 
 	private List<UploadItem> uploadItems;
+
+	private Map<IEditorInput, LineRange> versionedComments = new HashMap<IEditorInput, LineRange>();
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -539,6 +547,34 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
+		if (crucibleReview != null && types.contains(Type.ADD_COMMENT_TO_FILE)) {
+
+			JobWithStatus job = new CrucibleReviewChangeJob("Add versioned comments to review", getTaskRepository()) {
+
+				@Override
+				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+					updateCrucibleReview(client, crucibleReview, monitor);
+					SubMonitor subMonitor = SubMonitor.convert(monitor);
+					for (Map.Entry<IEditorInput, LineRange> versionedComment : versionedComments.entrySet()) {
+						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(
+								versionedComment.getKey(), crucibleReview);
+						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
+								crucibleReview, client, crucibleFile, crucibleReview.getDescription(), monitor);
+						operation.setCommentLines(versionedComment.getValue());
+						client.execute(operation);
+					}
+
+					return Status.OK_STATUS;
+				}
+
+			};
+
+			IStatus result = runJobInContainer(job);
+			if (!result.isOK()) {
+				creationProcessStatus.add(result);
+			}
+		}
+
 		EnumSet<CrucibleAction> crucibleActions = null;
 		try {
 			crucibleActions = crucibleReview.getActions();
@@ -726,6 +762,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public void setUploadItems(List<UploadItem> uploadItems) {
 		this.uploadItems = uploadItems;
+	}
+
+	public void setFilesCommentData(Map<IEditorInput, LineRange> comments) {
+		this.versionedComments = comments;
 	}
 
 }
