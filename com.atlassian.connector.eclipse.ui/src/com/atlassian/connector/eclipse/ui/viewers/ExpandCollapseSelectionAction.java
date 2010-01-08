@@ -19,15 +19,26 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 
-public class ExpandSelectionAction extends Action {
+import java.util.Iterator;
+
+public class ExpandCollapseSelectionAction extends Action {
 
 	private final Viewer viewer;
 
-	public ExpandSelectionAction(Viewer viewer) {
+	private final boolean isExpandMode;
+
+	public ExpandCollapseSelectionAction(Viewer viewer, boolean isExpandMode) {
 		this.viewer = viewer;
-		setImageDescriptor(CommonImages.EXPAND_ALL);
-		setText("Expand Selection");
-		setToolTipText("Expand Selection");
+		this.isExpandMode = isExpandMode;
+		if (isExpandMode) {
+			setImageDescriptor(CommonImages.EXPAND_ALL);
+			setText("Expand Selection");
+			setToolTipText("Expand Selection");
+		} else {
+			setImageDescriptor(CommonImages.COLLAPSE_ALL);
+			setText("Collapse Selection");
+			setToolTipText("Collapse Selection");
+		}
 	}
 
 	@Override
@@ -39,12 +50,18 @@ public class ExpandSelectionAction extends Action {
 				TreePath[] paths = ((ITreeSelection) viewer.getSelection()).getPaths();
 				if (paths != null) {
 					for (TreePath path : paths) {
-						((AbstractTreeViewer) viewer).expandToLevel(path, AbstractTreeViewer.ALL_LEVELS);
+						if (isExpandMode) {
+							((AbstractTreeViewer) viewer).expandToLevel(path, AbstractTreeViewer.ALL_LEVELS);
+						} else {
+							((AbstractTreeViewer) viewer).collapseToLevel(path, AbstractTreeViewer.ALL_LEVELS);
+						}
 					}
 				}
 			} else if (viewer.getSelection() instanceof IStructuredSelection) {
-				((AbstractTreeViewer) viewer).expandToLevel(
-						((IStructuredSelection) viewer.getSelection()).getFirstElement(), AbstractTreeViewer.ALL_LEVELS);
+
+				for (Iterator<?> it = ((IStructuredSelection) viewer.getSelection()).iterator(); it.hasNext();) {
+					((AbstractTreeViewer) viewer).expandToLevel(it.next(), AbstractTreeViewer.ALL_LEVELS);
+				}
 			}
 			viewer.getControl().setRedraw(true);
 		}
