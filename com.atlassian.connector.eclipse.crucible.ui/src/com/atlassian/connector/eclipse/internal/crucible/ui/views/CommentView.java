@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
@@ -24,6 +25,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommen
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -53,6 +55,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.Map;
 
 public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
@@ -68,8 +71,6 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	private PostDraftCommentAction postDraftCommentAction;
 
 	private Object currentSelection;
-
-	private Review activeReview;
 
 	private Text message;
 
@@ -103,6 +104,10 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private Label readState;
 
+	private EditActiveTaskAction openEditorAction;
+
+	private final Collection<IReviewActivationListener> reviewActivationListeners = MiscUtil.buildHashSet();
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -116,6 +121,12 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	@Override
 	public void dispose() {
+		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+
+		for (IReviewActivationListener listener : reviewActivationListeners) {
+			mgr.removeReviewActivationListener(listener);
+		}
+
 		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
 
 		if (toolkit != null) {
@@ -211,6 +222,8 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(openEditorAction);
+		mgr.add(new Separator());
 		mgr.add(replyToCommentAction);
 		mgr.add(editCommentAction);
 		mgr.add(removeCommentAction);
@@ -236,6 +249,9 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	}
 
 	private void createActions() {
+		openEditorAction = new EditActiveTaskAction();
+		reviewActivationListeners.add(openEditorAction);
+
 		replyToCommentAction = new ReplyToCommentAction();
 		editCommentAction = new EditCommentAction();
 		removeCommentAction = new RemoveCommentAction();
@@ -260,6 +276,16 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 				}
 			}
 		});
+
+		// in the end register all aditional activation listeners
+		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
+		for (IReviewActivationListener listener : reviewActivationListeners) {
+			if (mgr.isReviewActive()) {
+				listener.reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
+			}
+			mgr.addReviewActivationListener(listener);
+		}
+
 	}
 
 	@Override
@@ -399,7 +425,6 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	public void reviewUpdated(ITask task, final Review review) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				activeReview = review;
 				if (message != null) {
 					updateViewer();
 				}
