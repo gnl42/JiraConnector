@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 
@@ -106,7 +107,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 			}
 		});
 		mappingEditor = new SourceRepostioryMappingEditor(parent, null);
-		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
+		mappingEditor.setRepositoryMappings(FishEyeUiUtil.getScmRepositoryMappings());
 
 		return ancestor;
 	}
@@ -116,8 +117,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 	@Override
 	public boolean performOk() {
 		try {
-			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mappingEditor.getMapping());
-			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
+			FishEyeUiUtil.setScmRepositoryMappings(mappingEditor.getMapping());
 		} catch (IOException e) {
 			ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
 					"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.command;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
@@ -78,8 +79,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 
 	private void processResource(IResource resource, LineRange lineRange, final Shell shell) {
 		try {
-			final String url = FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().buildFishEyeUrl(resource,
-					lineRange);
+			final String url = FishEyeUiUtil.buildFishEyeUrl(resource, lineRange);
 			if (url != null) {
 				processUrl(url);
 			}

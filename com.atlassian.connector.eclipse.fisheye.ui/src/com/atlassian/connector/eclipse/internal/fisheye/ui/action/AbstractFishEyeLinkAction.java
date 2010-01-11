@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
@@ -174,8 +175,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 			return;
 		}
 		try {
-			final String url = FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().buildFishEyeUrl(resource,
-					lineRange);
+			final String url = FishEyeUiUtil.buildFishEyeUrl(resource, lineRange);
 			processUrl(url);
 		} catch (final NoMatchingFishEyeConfigurationException e) {
 			final ScmRepository repoInfo = TeamUiUtils.getApplicableRepository(resource);

@@ -1,7 +1,5 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeSettingsManager;
-
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -18,16 +16,10 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static FishEyeUiPlugin plugin;
 
-	private FishEyeSettingsManager settingsManager;
-
 	/**
 	 * The constructor
 	 */
 	public FishEyeUiPlugin() {
-	}
-
-	public FishEyeSettingsManager getFishEyeSettingsManager() {
-		return settingsManager;
 	}
 
 	/*
@@ -37,7 +29,6 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		settingsManager = new FishEyeSettingsManager(getPreferenceStore());
 	}
 
 	/*
@@ -46,13 +37,12 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		settingsManager = null;
 		super.stop(context);
 	}
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static FishEyeUiPlugin getDefault() {

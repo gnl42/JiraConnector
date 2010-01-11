@@ -285,21 +285,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		taskRepositoryCombo.setContentProvider(new ArrayContentProvider());
 		taskRepositoryCombo.setInput(taskRepositories.toArray());
 
-		if (scmPath != null) {
-			scmPathEdit.setText(scmPath);
-		}
-
-		if (taskRepository != null) {
-			taskRepositoryCombo.setSelection(new StructuredSelection(taskRepository));
-			Set<String> cachedRepositories = fishEyeClientManager.getClient(taskRepository)
-					.getClientData()
-					.getCachedRepositories();
-
-			sourceRepositoryCombo.setInput(getSortedRepositories(cachedRepositories));
-		}
-
-		// Listeners at the end - after we restored settings (in edit mode)
-		// Otherwise they would be called during fields initialization and that could break - as they depend on each other.
 		scmPathEdit.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				scmPath = scmPathEdit.getText();
@@ -312,16 +297,13 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					if (selection.getFirstElement() instanceof TaskRepository) {
-						final TaskRepository newTaskRepository = (TaskRepository) selection.getFirstElement();
-						if (!newTaskRepository.equals(taskRepository)) {
-							taskRepository = newTaskRepository;
-							final FishEyeClient client = fishEyeClientManager.getClient(newTaskRepository);
-							if (!client.hasRepositoryData()) {
-								updateServerData(newTaskRepository);
-							} else {
-								sourceRepositoryCombo.setInput(getSortedRepositories(client.getClientData()
-										.getCachedRepositories()));
-							}
+						taskRepository = (TaskRepository) selection.getFirstElement();
+						final FishEyeClient client = fishEyeClientManager.getClient(taskRepository);
+						if (!client.hasRepositoryData()) {
+							updateServerData(taskRepository);
+						} else {
+							sourceRepositoryCombo.setInput(getSortedRepositories(client.getClientData()
+									.getCachedRepositories()));
 						}
 					}
 				}
@@ -329,10 +311,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				updateServerRelatedControls();
 			}
 		});
-
-		if (sourceRepository != null) {
-			sourceRepositoryCombo.setSelection(new StructuredSelection(sourceRepository));
-		}
 
 		sourceRepositoryCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -360,6 +338,18 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			}
 		});
 
+		if (scmPath != null) {
+			scmPathEdit.setText(scmPath);
+		}
+
+		if (taskRepository != null) {
+			taskRepositoryCombo.setSelection(new StructuredSelection(taskRepository));
+		}
+
+		if (sourceRepository != null) {
+			sourceRepositoryCombo.setSelection(new StructuredSelection(sourceRepository));
+		}
+
 		getShell().addShellListener(new OnShowHandler());
 
 		if (taskRepositories == null || taskRepositories.size() == 0) {
@@ -374,7 +364,9 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	private void updateOkButtonState() {
 		boolean isEnabled = (getSourceRepository() != null && getTaskRepository() != null && scmPathEdit.getText()
 				.length() > 0);
-		okButton.setEnabled(isEnabled);
+		if (okButton != null) {
+			okButton.setEnabled(isEnabled);
+		}
 	}
 
 	private void updateServerRelatedControls() {

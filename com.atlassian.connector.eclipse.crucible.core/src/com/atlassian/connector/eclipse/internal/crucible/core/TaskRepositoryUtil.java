@@ -88,4 +88,20 @@ public final class TaskRepositoryUtil {
 		return matching;
 	}
 
+	@Nullable
+	public static Map.Entry<String, String> getNamedSourceRepository(@NotNull Map<String, String> repositories,
+			@NotNull String name) {
+		for (Map.Entry<String, String> entry : repositories.entrySet()) {
+			if (entry.getValue().equals(name)) {
+				return entry;
+			}
+		}
+		return null;
+	}
+
+	public static void setScmRepositoryMapping(TaskRepository repository, String scmPath, String value) {
+		Map<String, String> mappings = getScmRepositoryMappings(repository);
+		mappings.put(scmPath, value);
+		setScmRepositoryMappings(repository, mappings);
+	}
 }
