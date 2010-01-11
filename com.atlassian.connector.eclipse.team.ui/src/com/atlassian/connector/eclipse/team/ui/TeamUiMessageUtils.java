@@ -46,7 +46,7 @@ public final class TeamUiMessageUtils {
 	}
 
 	private static String getErrorHints() {
-		return "- You have correctly defined repository mappings.\n"
+		return "- You have correctly defined Repository Mappings.\n"
 				+ "- You are using a supported team provider. Supported providers: "
 				+ StringUtils.join(TeamUiUtils.getSupportedTeamConnectors(), ", ");
 	}
