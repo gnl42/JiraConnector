@@ -523,10 +523,10 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 	}
 
 	@Nullable
-	public CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
+	public CrucibleFile getCrucibleFileFromReview(@NotNull Review review, @NotNull String fileUrl,
 			@NotNull String revision) {
 		try {
-			for (CrucibleFileInfo file : activeReview.getFiles()) {
+			for (CrucibleFileInfo file : review.getFiles()) {
 				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
 				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
 				String newFileUrl = null;
@@ -560,7 +560,7 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		return null;
 	}
 
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
+	public CrucibleFile getCrucibleFileFromReview(Review review, IFile file) {
 		SVNUrl fileUrl = null;
 		String revision = null;
 
@@ -577,16 +577,16 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		}
 
 		if (fileUrl != null && revision != null) {
-			return getCrucibleFileFromReview(activeReview, fileUrl.toString(), revision);
+			return getCrucibleFileFromReview(review, fileUrl.toString(), revision);
 		} else {
 			return null;
 		}
 	}
 
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
+	public CrucibleFile getCrucibleFileFromReview(Review review, IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
 			// this is a local file that we know how to deal with
-			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
+			return getCrucibleFileFromReview(review, ((FileEditorInput) editorInput).getFile());
 		} else if (editorInput instanceof RemoteFileEditorInput) {
 			// this is a remote file that we know how to deal with
 			RemoteFileEditorInput input = (RemoteFileEditorInput) editorInput;
@@ -594,7 +594,7 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 			String fileUrl = remoteFile.getUrl() != null ? remoteFile.getUrl().toString() : null;
 			String revision = remoteFile.getRevision() != null ? remoteFile.getRevision().toString() : null;
 			if (fileUrl != null && revision != null) {
-				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
+				return getCrucibleFileFromReview(review, fileUrl, revision);
 			}
 		}
 		return null;

@@ -60,9 +60,6 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 	private IFile resource;
 
 	public CreateReviewFromEditorSelectionAction() {
-		// TODO jj action disabled after eclipse start when editor is opened
-
-		// TODO jj action should work also without selection (comment for cursor placement) - change also action title (no selection)
 	}
 
 	@Override
@@ -128,9 +125,9 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 	private void openReviewWizard(final IResource resource, final IEditorPart editorPart,
 			final ITeamUiResourceConnector connector, boolean isPostCommit) {
 
-		// TODO jj replace SOO with Comments in the last wizard page
-
-		// TODO jj add also comment for the selected editor part
+		final HashMap<IEditorInput, LineRange> comments = new HashMap<IEditorInput, LineRange>();
+		comments.put(editorPart.getEditorInput(), TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart,
+				editor.getEditorInput()));
 
 		if (isPostCommit) {
 			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
@@ -139,9 +136,6 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
 							ReviewWizard.Type.ADD_SCM_RESOURCES, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
 					wizard.setRoots(Arrays.asList(resource));
-					HashMap<IEditorInput, LineRange> comments = new HashMap<IEditorInput, LineRange>();
-					comments.put(editorPart.getEditorInput(), TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(
-							editorPart, editor.getEditorInput()));
 					wizard.setFilesCommentData(comments);
 					return wizard;
 				}
@@ -170,10 +164,11 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 					SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
 				@Override
 				protected IWizard createWizard(TaskRepository taskRepository) {
-					ReviewWizard wizard = new ReviewWizard(taskRepository,
-							MiscUtil.buildHashSet(ReviewWizard.Type.ADD_UPLOAD_ITEMS));
+					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
+							ReviewWizard.Type.ADD_UPLOAD_ITEMS, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
 
 					wizard.setUploadItems(items);
+					wizard.setFilesCommentData(comments);
 					return wizard;
 				}
 			};
@@ -184,8 +179,8 @@ public class CreateReviewFromEditorSelectionAction extends TeamAction implements
 			if (taskRepositories.size() != 1) {
 				wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(selectRepositoryPage));
 			} else {
-				ReviewWizard wizard = new ReviewWizard(taskRepositories.get(0),
-						MiscUtil.buildHashSet(ReviewWizard.Type.ADD_UPLOAD_ITEMS));
+				ReviewWizard wizard = new ReviewWizard(taskRepositories.get(0), MiscUtil.buildHashSet(
+						ReviewWizard.Type.ADD_UPLOAD_ITEMS, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
 				wizard.setUploadItems(items);
 				wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 			}

@@ -17,10 +17,20 @@ import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public class CrucibleTeamUiUtil {
 
@@ -28,18 +38,19 @@ public class CrucibleTeamUiUtil {
 	}
 
 	@Nullable
-	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
-		if (activeReview == null) {
+	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review review) {
+		if (review == null) {
 			return null;
 		}
 
 		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			connector.getCrucibleFileFromReview(review, editorInput);
 			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
 				CrucibleFile fileInfo;
 				try {
-					fileInfo = connector.getCrucibleFileFromReview(activeReview, editorInput);
+					fileInfo = connector.getCrucibleFileFromReview(review, editorInput);
 				} catch (UnsupportedTeamProviderException e) {
 					return null;
 				}
@@ -50,7 +61,7 @@ public class CrucibleTeamUiUtil {
 		}
 
 		try {
-			CrucibleFile file = TeamUiUtils.getDefaultConnector().getCrucibleFileFromReview(activeReview, editorInput);
+			CrucibleFile file = TeamUiUtils.getDefaultConnector().getCrucibleFileFromReview(review, editorInput);
 			if (file != null) {
 				return file;
 			}
@@ -58,18 +69,41 @@ public class CrucibleTeamUiUtil {
 			// ignore
 		}
 
-		return getCruciblePreCommitFile(editorInput);
+		return getCruciblePreCommitFile(editorInput, review);
 
 	}
 
 	@Nullable
-	private static CrucibleFile getCruciblePreCommitFile(IEditorInput editorInput) {
+	private static CrucibleFile getCruciblePreCommitFile(IEditorInput editorInput, Review review) {
 
 		if (editorInput instanceof CruciblePreCommitFileInput) {
 			CruciblePreCommitFileInput input = (CruciblePreCommitFileInput) editorInput;
 			return input.getCrucibleFile();
+		} else if (editorInput instanceof FileEditorInput) {
+
+			FileEditorInput localFile = (FileEditorInput) editorInput;
+			String localFileUrl = StringUtil.removeTrailingSlashes(localFile.getFile().getFullPath().toString());
+
+			Set<CrucibleFileInfo> reviewFiles;
+			try {
+				reviewFiles = review.getFiles();
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
+						"Cannot find file {0} in the review {1}", localFile.getName(), review.getPermId().getId()), e));
+				return null;
+			}
+
+			for (CrucibleFileInfo file : reviewFiles) {
+				String newFileUrl = StringUtil.removeTrailingSlashes(file.getFileDescriptor().getUrl());
+				String oldFileUrl = StringUtil.removeTrailingSlashes(file.getOldFileDescriptor().getUrl());
+
+				if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
+					return new CrucibleFile(file, false);
+				} else if (oldFileUrl != null && oldFileUrl.equals(localFileUrl)) {
+					return new CrucibleFile(file, true);
+				}
+			}
 		}
 		return null;
 	}
-
 }

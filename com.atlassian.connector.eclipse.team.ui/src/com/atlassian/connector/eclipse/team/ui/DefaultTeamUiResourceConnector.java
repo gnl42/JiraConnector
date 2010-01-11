@@ -380,7 +380,7 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return null;
 	}
 
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
+	public CrucibleFile getCrucibleFileFromReview(Review review, IFile file) {
 		IProject project = file.getProject();
 
 		if (project == null) {
@@ -402,7 +402,7 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 			if (inSync && localFileRevision.getContentIdentifier() != null) {
 
 				try {
-					for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+					for (CrucibleFileInfo fileInfo : review.getFiles()) {
 						VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
 						VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 

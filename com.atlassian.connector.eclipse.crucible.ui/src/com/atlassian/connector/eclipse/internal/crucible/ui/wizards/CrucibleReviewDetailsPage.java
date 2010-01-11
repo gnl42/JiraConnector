@@ -80,8 +80,15 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private boolean firstTimeCheck = true;
 
+	private final boolean addCommentLabel;
+
 	public CrucibleReviewDetailsPage(TaskRepository repository) {
+		this(repository, false);
+	}
+
+	public CrucibleReviewDetailsPage(TaskRepository repository, boolean addCommentLabel) {
 		super("crucibleDetails"); //$NON-NLS-1$
+		this.addCommentLabel = addCommentLabel;
 		Assert.isNotNull(repository);
 		setTitle("New Crucible Review");
 		setDescription(ENTER_THE_DETAILS_OF_THE_REVIEW);
@@ -234,7 +241,12 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(true, false).span(6, 1).applyTo(label);
 
 		label = new Label(composite, SWT.NONE);
-		label.setText("Objectives:");
+		if (addCommentLabel) {
+			label.setText("Comment and Objectives:");
+		} else {
+			label.setText("Objectives:");
+		}
+
 		GridDataFactory.fillDefaults().span(4, 1).applyTo(label);
 
 		label = new Label(composite, SWT.NONE);

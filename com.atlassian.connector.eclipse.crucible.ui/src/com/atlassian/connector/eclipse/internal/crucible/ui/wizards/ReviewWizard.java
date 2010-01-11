@@ -236,7 +236,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private List<UploadItem> uploadItems;
 
-	private Map<IEditorInput, LineRange> versionedComments = new HashMap<IEditorInput, LineRange>();
+	private Map<IEditorInput, LineRange> versionedCommentsToAdd = new HashMap<IEditorInput, LineRange>();
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -339,7 +339,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		//only add details page if review is not already existing
 		if (crucibleReview == null) {
-			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
+			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository(), types.contains(Type.ADD_COMMENT_TO_FILE));
 			addPage(detailsPage);
 		}
 	}
@@ -555,7 +555,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 					updateCrucibleReview(client, crucibleReview, monitor);
 					SubMonitor subMonitor = SubMonitor.convert(monitor);
-					for (Map.Entry<IEditorInput, LineRange> versionedComment : versionedComments.entrySet()) {
+					for (Map.Entry<IEditorInput, LineRange> versionedComment : versionedCommentsToAdd.entrySet()) {
 						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(
 								versionedComment.getKey(), crucibleReview);
 						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
@@ -765,7 +765,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	public void setFilesCommentData(Map<IEditorInput, LineRange> comments) {
-		this.versionedComments = comments;
+		this.versionedCommentsToAdd = comments;
 	}
 
 }
