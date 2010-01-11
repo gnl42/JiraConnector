@@ -92,7 +92,7 @@ public class ReviewTreeNode {
 
 	@Override
 	public String toString() {
-		return pathToken;
+		return pathToken != null ? pathToken : "";
 	}
 
 	@Override
