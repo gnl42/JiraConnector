@@ -61,8 +61,10 @@ public class ReviewTreeNode {
 		}
 		ReviewTreeNode newChild = new ReviewTreeNode(this, path[0]);
 		children.add(newChild);
-		newChild.add(Arrays.copyOfRange(path, 1, path.length), aCfi);
-		return;
+
+		String[] allButFirst = new String[path.length - 1];
+		System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
+		newChild.add(allButFirst, aCfi);
 	}
 
 	public void compact() {
