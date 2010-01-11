@@ -12,8 +12,10 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.AddRepositoryUrlMappingDialog;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -27,13 +29,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+
+import java.util.Map;
 
 /**
  * Action to open a version file
@@ -44,14 +51,44 @@ public class OpenVersionedVirtualFileAction extends Action implements IReviewCha
 
 	private final class OpenVersionedVirtualFileRunnable implements ICoreRunnable {
 		public void run(IProgressMonitor monitor) throws CoreException {
-			VersionedVirtualFile newFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
-			VersionedVirtualFile oldFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
+			final TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
+			final CrucibleFileInfo fileInfo = crucibleFile.getCrucibleFileInfo();
+
+			final VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
+			VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
+
+			Map.Entry<String, String> mapping = null;
+			while ((mapping = TaskRepositoryUtil.getNamedSourceRepository(
+					TaskRepositoryUtil.getScmRepositoryMappings(repository), fileInfo.getRepositoryName())) == null) {
+				final boolean[] abort = { false };
+
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+					public void run() {
+						final AddRepositoryUrlMappingDialog dialog = new AddRepositoryUrlMappingDialog(
+								WorkbenchUtil.getShell(), fileInfo.getRepositoryName(), newFile.getRepoUrl());
+						if (dialog.open() == Window.OK) {
+							TaskRepositoryUtil.setScmRepositoryMapping(repository, dialog.getScmPath(),
+									fileInfo.getRepositoryName());
+						} else {
+							abort[0] = true;
+						}
+					}
+				});
+				if (abort[0]) {
+					return;
+				}
+			}
+
+			if (mapping == null) {
+				return;
+			}
+
 			IEditorPart editor = null;
 			if (crucibleFile.isOldFile()) {
-				editor = TeamUiUtils.openFile(oldFile.getRepoUrl(), oldFile.getUrl(), newFile.getUrl(),
+				editor = TeamUiUtils.openFile(mapping.getKey(), oldFile.getUrl(), newFile.getUrl(),
 						oldFile.getRevision(), newFile.getRevision(), monitor);
 			} else {
-				editor = TeamUiUtils.openFile(newFile.getRepoUrl(), newFile.getUrl(), oldFile.getUrl(),
+				editor = TeamUiUtils.openFile(mapping.getKey(), newFile.getUrl(), oldFile.getUrl(),
 						newFile.getRevision(), oldFile.getRevision(), monitor);
 			}
 
@@ -61,7 +98,6 @@ public class OpenVersionedVirtualFileAction extends Action implements IReviewCha
 
 			CrucibleUiUtil.attachCrucibleAnnotation(editor, task, review, crucibleFile, versionedComment);
 		}
-
 	}
 
 	private CrucibleFile crucibleFile;

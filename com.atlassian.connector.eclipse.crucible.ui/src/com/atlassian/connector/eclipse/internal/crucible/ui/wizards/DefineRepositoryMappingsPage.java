@@ -11,12 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepostioryMappingEditor;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -83,8 +83,7 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		mappingEditor.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				try {
-					FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mappingEditor.getMapping());
-					FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
+					FishEyeUiUtil.setScmRepositoryMappings(mappingEditor.getMapping());
 				} catch (IOException e) {
 					ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
 							"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
@@ -93,7 +92,7 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 				validatePage();
 			}
 		});
-		mappingEditor.setRepositoryMappings(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
+		mappingEditor.setRepositoryMappings(FishEyeUiUtil.getScmRepositoryMappings());
 
 		return parent;
 	}

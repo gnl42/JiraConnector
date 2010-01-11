@@ -12,11 +12,13 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCompareAnnotationModel;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.AddRepositoryUrlMappingDialog;
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -30,10 +32,14 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.ui.PlatformUI;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * Action to open the compare editor given a crucible file with 2 revisions
@@ -79,16 +85,42 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-					final VersionedVirtualFile newVirtualFile = crucibleFile.getFileDescriptor();
+					final VersionedVirtualFile newFile = crucibleFile.getFileDescriptor();
+					final VersionedVirtualFile oldFile = crucibleFile.getOldFileDescriptor();
+					final TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 
-					final VersionedVirtualFile oldVirtualFile = crucibleFile.getOldFileDescriptor();
+					Map.Entry<String, String> mapping = null;
+					while ((mapping = TaskRepositoryUtil.getNamedSourceRepository(
+							TaskRepositoryUtil.getScmRepositoryMappings(repository), crucibleFile.getRepositoryName())) == null) {
+						final boolean[] abort = { false };
+
+						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+							public void run() {
+								final AddRepositoryUrlMappingDialog dialog = new AddRepositoryUrlMappingDialog(
+										WorkbenchUtil.getShell(), crucibleFile.getRepositoryName(),
+										newFile.getRepoUrl());
+								if (dialog.open() == Window.OK) {
+									TaskRepositoryUtil.setScmRepositoryMapping(repository, dialog.getScmPath(),
+											crucibleFile.getRepositoryName());
+								} else {
+									abort[0] = true;
+								}
+							}
+						});
+						if (abort[0]) {
+							return;
+						}
+					}
+
+					if (mapping == null) {
+						return;
+					}
 
 					final ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(crucibleFile,
 							review, versionedComment);
 
-					TeamUiUtils.openCompareEditor(newVirtualFile.getRepoUrl(), newVirtualFile.getUrl(),
-							oldVirtualFile.getUrl(), oldVirtualFile.getRevision(), newVirtualFile.getRevision(),
-							annotationModel, monitor);
+					TeamUiUtils.openCompareEditor(newFile.getRepoUrl(), newFile.getUrl(), oldFile.getUrl(),
+							oldFile.getRevision(), newFile.getRevision(), annotationModel, monitor);
 				}
 
 			});
