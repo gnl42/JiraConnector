@@ -46,8 +46,7 @@ public final class TeamUiMessageUtils {
 	}
 
 	private static String getErrorHints() {
-		return "- The enclosing project is checked out at the latest revision and it's open in Eclipse.\n"
-				+ "- The file has not been moved or deleted since the creation of the review\n"
+		return "- You have correctly defined repository mappings.\n"
 				+ "- You are using a supported team provider. Supported providers: "
 				+ StringUtils.join(TeamUiUtils.getSupportedTeamConnectors(), ", ");
 	}
