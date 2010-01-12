@@ -47,7 +47,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -379,9 +378,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					detailsPage.isStartReviewImmediately());
 		}
 
-		final MultiStatus creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
-				"Error during review creation. See Error Log for details.", null);
-
 		// create patch review
 		if (addPatchPage != null) {
 			String patchToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatch() : null;
@@ -397,7 +393,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					previousPatch = patchToAdd;
 					previousPatchRepository = patchRepositoryToAdd;
 				} else {
-					creationProcessStatus.add(result);
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
 			}
 		}
@@ -413,14 +411,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				JobWithStatus getItemsJob = new JobWithStatus("Prepare upload items for review") {
 					@Override
-					public void runImpl(IProgressMonitor monitor) {
-						try {
-							uploadItems.addAll(addWorkspacePatchPage.getSelectedTeamResourceConnector()
-									.getUploadItemsForResources(selection, monitor));
-						} catch (CoreException e) {
-							setStatus(e.getStatus());
-							creationProcessStatus.add(e.getStatus());
-						}
+					public void runImpl(IProgressMonitor monitor) throws CoreException {
+						uploadItems.addAll(addWorkspacePatchPage.getSelectedTeamResourceConnector()
+								.getUploadItemsForResources(selection, monitor));
 					}
 				};
 
@@ -432,11 +425,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					if (result.isOK()) {
 						previousWorkspaceSelection = selection;
 					} else {
-						creationProcessStatus.add(result);
+						StatusHandler.log(result);
+						setErrorMessage(result.getMessage());
+						return false;
 					}
-				} else {
-					creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-							"Can't create a patch, did you select modified files?"));
 				}
 			}
 		}
@@ -451,7 +443,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				IStatus result = runJobInContainer(job);
 				if (!result.isOK()) {
-					creationProcessStatus.add(result);
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
 			}
 		}
@@ -464,7 +458,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				IStatus result = runJobInContainer(job);
 				if (!result.isOK()) {
-					creationProcessStatus.add(result);
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
 			}
 		}
@@ -476,11 +472,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				IStatus result = runJobInContainer(job);
 				if (!result.isOK()) {
-					creationProcessStatus.add(result);
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
-			} else {
-				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-						"Cannot add selection items to review. List of items is empty."));
 			}
 		}
 
@@ -489,12 +484,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			final Map<IResource, ResourceStatus> resources = resourceSelectionPage.getSelection();
 			if (resources != null && resources.size() > 0) {
 
-				final Collection<IResource> postCommitResources = new ArrayList<IResource>();
-				final Collection<UploadItem> preCommitResources = new ArrayList<UploadItem>();
+				final Collection<IResource> postCommitResources = MiscUtil.buildArrayList();
+				final Collection<UploadItem> preCommitResources = MiscUtil.buildArrayList();
 
 				JobWithStatus getItemsJob = new JobWithStatus("Preparing data for review") {
 					@Override
-					public void runImpl(IProgressMonitor monitor) {
+					public void runImpl(IProgressMonitor monitor) throws CoreException {
 						Collection<IResource> preCommitTmp = new ArrayList<IResource>();
 						for (IResource resource : resources.keySet()) {
 							if (resources.get(resource).isUpToDate()) {
@@ -504,14 +499,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 							}
 						}
 
-						try {
-							preCommitResources.addAll(resourceSelectionPage.getTeamResourceConnector()
-									.getUploadItemsForResources(
-											preCommitTmp.toArray(new IResource[preCommitTmp.size()]), monitor));
-						} catch (CoreException e) {
-							setStatus(e.getStatus());
-							creationProcessStatus.add(e.getStatus());
-						}
+						preCommitResources.addAll(resourceSelectionPage.getTeamResourceConnector()
+								.getUploadItemsForResources(preCommitTmp.toArray(new IResource[preCommitTmp.size()]),
+										monitor));
 					}
 				};
 
@@ -524,7 +514,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 						result = runJobInContainer(job);
 						if (!result.isOK()) {
-							creationProcessStatus.add(result);
+							StatusHandler.log(result);
+							setErrorMessage(result.getMessage());
+							return false;
 						}
 					}
 
@@ -535,22 +527,18 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 						result = runJobInContainer(job);
 						if (!result.isOK()) {
-							creationProcessStatus.add(result);
+							StatusHandler.log(result);
+							setErrorMessage(result.getMessage());
+							return false;
 						}
 					}
 
 				}
-
-			} else {
-				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-						"Cannot add items to review. List of items is empty."));
 			}
 		}
 
 		if (crucibleReview != null && types.contains(Type.ADD_COMMENT_TO_FILE)) {
-
 			JobWithStatus job = new CrucibleReviewChangeJob("Add versioned comments to review", getTaskRepository()) {
-
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 					updateCrucibleReview(client, crucibleReview, monitor);
@@ -571,7 +559,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 			IStatus result = runJobInContainer(job);
 			if (!result.isOK()) {
-				creationProcessStatus.add(result);
+				StatusHandler.log(result);
+				setErrorMessage(result.getMessage());
+				return false;
 			}
 		}
 
@@ -592,21 +582,19 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 			IStatus result = startAndUpdateReview();
 			if (!result.isOK()) {
-				creationProcessStatus.add(result);
+				StatusHandler.log(result);
+				setErrorMessage(result.getMessage());
+				return false;
 			}
 
 			if (crucibleActions.contains(CrucibleAction.APPROVE)) {
 				result = approveAndUpdateReview();
 				if (!result.isOK()) {
-					creationProcessStatus.add(result);
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
 			}
-		}
-
-		if (creationProcessStatus.getSeverity() != IStatus.OK) {
-			setErrorMessage(creationProcessStatus.getMessage());
-			StatusHandler.log(creationProcessStatus);
-			return false;
 		}
 
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -629,13 +617,16 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				}
 			}
 		};
+
 		try {
 			getContainer().run(true, false, runnable);
-		} catch (Exception e) {
-			setErrorMessage("Could not open created review. Refresh tasklist.");
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error opening review", e));
+		} catch (InvocationTargetException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unable to refresh review.", e));
+		} catch (InterruptedException e) {
+			// don't care
 		}
-		return crucibleReview != null && creationProcessStatus.getSeverity() == IStatus.OK;
+
+		return true;
 	}
 
 	private IStatus startAndUpdateReview() {

@@ -78,6 +78,24 @@ public class CrucibleAddPatchPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				includePatch = includePatchButton.getSelection();
+				if (includePatch) {
+					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
+						CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(),
+								CrucibleAddPatchPage.this);
+					}
+					//copy content from clipboard, only if not already done
+					Clipboard clipboard = new Clipboard(Display.getDefault());
+					Object patch = clipboard.getContents(TextTransfer.getInstance());
+					if (patch != null && patch instanceof String && !patchPasted) {
+						patchText.setText((String) patch);
+						patchPasted = true;
+					}
+					if (cachedRepositories == null) {
+						cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
+					}
+					comboViewer.setInput(cachedRepositories);
+				}
+
 				validatePage();
 			}
 		});
@@ -165,34 +183,4 @@ public class CrucibleAddPatchPage extends WizardPage {
 		return selectedRepository;
 	}
 
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		if (visible) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
-						CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(),
-								CrucibleAddPatchPage.this);
-					}
-					//copy content from clipboard, only if not already done
-					Clipboard clipboard = new Clipboard(Display.getDefault());
-					Object patch = clipboard.getContents(TextTransfer.getInstance());
-					if (patch != null && patch instanceof String && !patchPasted) {
-						patchText.setText((String) patch);
-						patchPasted = true;
-					}
-					if (cachedRepositories == null) {
-						cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
-					}
-					comboViewer.setInput(cachedRepositories);
-					validatePage();
-				}
-			});
-		} else {
-			setErrorMessage(null);
-			setPageComplete(true);
-			getContainer().updateButtons();
-		}
-	}
 }
