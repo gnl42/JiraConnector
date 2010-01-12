@@ -731,7 +731,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private void setErrorMessage(String message) {
 		IWizardPage page = getContainer().getCurrentPage();
 		if (page instanceof WizardPage) {
-			((WizardPage) page).setErrorMessage(message);
+			((WizardPage) page).setErrorMessage(message != null ? message.replace("\n", " ") : null);
 		}
 	}
 
