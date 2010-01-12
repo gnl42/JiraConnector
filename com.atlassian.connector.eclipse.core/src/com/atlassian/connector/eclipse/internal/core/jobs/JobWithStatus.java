@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.core.jobs;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,9 +41,13 @@ public abstract class JobWithStatus extends Job {
 	@Override
 	@NotNull
 	public IStatus run(IProgressMonitor monitor) {
-		runImpl(monitor);
-		return Status.OK_STATUS;
+		try {
+			runImpl(monitor);
+			return Status.OK_STATUS;
+		} catch (CoreException e) {
+			return e.getStatus();
+		}
 	}
 
-	protected abstract void runImpl(IProgressMonitor monitor);
+	protected abstract void runImpl(IProgressMonitor monitor) throws CoreException;
 }
