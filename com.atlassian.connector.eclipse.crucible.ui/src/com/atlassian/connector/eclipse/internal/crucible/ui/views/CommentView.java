@@ -108,6 +108,8 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	private final Collection<IReviewActivationListener> reviewActivationListeners = MiscUtil.buildHashSet();
 
+	public static final String ID = "com.atlassian.connector.eclipse.crucible.ui.commentView";
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -128,6 +130,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		}
 
 		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
+		getViewSite().getPage().removeSelectionListener(this);
 
 		if (toolkit != null) {
 			toolkit.dispose();

@@ -11,8 +11,17 @@
 
 package com.atlassian.connector.eclipse.ui.commons;
 
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -28,5 +37,37 @@ public final class AtlassianUiUtil {
 	public static boolean isAnimationsEnabled() {
 		IPreferenceStore store = PlatformUI.getPreferenceStore();
 		return store.getBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS);
+	}
+
+	/**
+	 * Must be invoked in UI thread
+	 * 
+	 * @param viewId
+	 * @return <code>true</code> when the view has been successfully made visible or it already was, <code>false</code>
+	 *         if operation failed
+	 */
+	public static boolean ensureViewIsVisible(String viewId) {
+		final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (activeWorkbenchWindow == null) {
+			return false;
+		}
+		IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+		if (activePage == null) {
+			return false;
+		}
+		for (IViewReference view : activePage.getViewReferences()) {
+			if (view.getId().equals(viewId)) {
+				return true;
+			}
+		}
+		try {
+			activePage.showView(viewId, null, IWorkbenchPage.VIEW_ACTIVATE);
+			return true;
+		} catch (PartInitException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
+					+ " view."));
+			return false;
+		}
+	
 	}
 }

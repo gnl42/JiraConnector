@@ -31,7 +31,6 @@ import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -158,12 +157,18 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					openNewAction.run();
 				} else if (openOldAction.isEnabled()) {
 					openOldAction.run();
-				} else if (event.getSelection() instanceof IStructuredSelection) {
-					Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
-					if (element instanceof CrucibleFileInfo) {
-						CrucibleFileInfo fileInfo = (CrucibleFileInfo) element;
-						if (fileInfo.getFileType().equals(FileType.Directory)) {
+				} else {
+					if (event.getSelection() instanceof IStructuredSelection) {
+						final IStructuredSelection structuredSelection = ((IStructuredSelection) event.getSelection());
+						if (structuredSelection.size() != 1) {
+							return;
+						}
+						final Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
+						if (viewer.getExpandedState(element)) {
+							viewer.collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+						} else {
 							viewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+
 						}
 					}
 				}

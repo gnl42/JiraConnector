@@ -11,8 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
@@ -41,6 +43,7 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 
 	@Override
 	public void run() {
+		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
 		IAction action;
 		if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
 			action = new CompareVersionedVirtualFileAction(fileInfo, comment, review);
@@ -59,32 +62,34 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 		if (selection.size() == 1) {
 			if (selection.getFirstElement() instanceof CrucibleFileInfo) {
 				fileInfo = (CrucibleFileInfo) selection.getFirstElement();
-				review = getReview(fileInfo);
-
 				comment = null;
-				// FIXME wseliga restore support for comment
+			} else if (selection.getFirstElement() instanceof Comment) {
+				comment = ReviewTreeUtils.getParentVersionedComment(selection);
+				fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
+			}
+
+			if (fileInfo == null) {
+				return false;
+			}
+			review = ReviewTreeUtils.getReview(fileInfo);
+			// FIXME wseliga restore support for comment
 //				if (paths[0].getLastSegment() instanceof VersionedComment) {
 //					comment = (VersionedComment) paths[0].getLastSegment();
 //				}
 
-				final VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
-				final VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
+			final VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+			final VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
 
-				boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
-						&& oldFileDescriptor.getRevision().length() > 0;
+			boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
+					&& oldFileDescriptor.getRevision().length() > 0;
 
-				boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
-						&& newFileDescriptor.getRevision().length() > 0;
+			boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
+					&& newFileDescriptor.getRevision().length() > 0;
 
-				return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
-						&& fileInfo.getFileType() == FileType.File && oldFileHasRevision && newFileHasRevision;
-			}
+			return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
+					&& fileInfo.getFileType() == FileType.File && oldFileHasRevision && newFileHasRevision;
 		}
 		return false;
-	}
-
-	private Review getReview(CrucibleFileInfo fileInfo) {
-		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
 	@SuppressWarnings("restriction")

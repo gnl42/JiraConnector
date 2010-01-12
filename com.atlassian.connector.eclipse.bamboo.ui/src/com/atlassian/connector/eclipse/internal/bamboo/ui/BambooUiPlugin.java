@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +27,6 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -124,27 +124,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)
 					&& !AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
 				Display.getDefault().asyncExec(new Runnable() {
-
 					public void run() {
-						final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow();
-						if (activeWorkbenchWindow == null) {
-							return;
-						}
-						IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-						if (activePage == null) {
-							return;
-						}
-						for (IViewReference view : activePage.getViewReferences()) {
-							if (view.getId().equals(BambooView.ID)) {
-								return;
-							}
-						}
-						try {
-							activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_ACTIVATE);
-						} catch (PartInitException e) {
-							StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID, "Could not initialize Bamboo view."));
-						}
+						AtlassianUiUtil.ensureViewIsVisible(BambooView.ID);
 					}
 				});
 

@@ -12,9 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -55,43 +58,40 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 		review = null;
 		task = null;
 		comment = null;
-		if (selection.size() == 1 && selection.getFirstElement() instanceof CrucibleFileInfo) {
-			fileInfo = (CrucibleFileInfo) selection.getFirstElement();
-			review = getReview(fileInfo);
-			task = getTask(fileInfo);
-			comment = null;
-			// FIXME wseliga support comment
-//			if (paths[0].getLastSegment() instanceof VersionedComment) {
-//				comment = (VersionedComment) paths[0].getLastSegment();
-//			}
-
-			VersionedVirtualFile fileDescriptor;
-			if (oldFile) {
-				fileDescriptor = fileInfo.getOldFileDescriptor();
-			} else {
-				fileDescriptor = fileInfo.getFileDescriptor();
-			}
-
-			return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
-					&& fileDescriptor != null
-					&& fileDescriptor.getUrl() != null
-					&& fileDescriptor.getUrl().length() > 0
-					&& fileDescriptor.getRevision() != null
-					&& fileDescriptor.getRevision().length() > 0;
+		if (selection.size() != 1) {
+			return false;
 		}
-		return false;
-	}
+		if (selection.getFirstElement() instanceof CrucibleFileInfo) {
+			fileInfo = (CrucibleFileInfo) selection.getFirstElement();
+		} else if (selection.getFirstElement() instanceof Comment) {
+			comment = ReviewTreeUtils.getParentVersionedComment(selection);
+			fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
+		}
 
-	private Review getReview(CrucibleFileInfo fileInfo) {
-		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-	}
+		if (fileInfo == null) {
+			return false;
+		}
 
-	private ITask getTask(CrucibleFileInfo fileInfo) {
-		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
+		review = ReviewTreeUtils.getReview(fileInfo);
+		task = ReviewTreeUtils.getTask(fileInfo);
+
+		VersionedVirtualFile fileDescriptor;
+		if (oldFile) {
+			fileDescriptor = fileInfo.getOldFileDescriptor();
+		} else {
+			fileDescriptor = fileInfo.getFileDescriptor();
+		}
+
+		return (fileInfo.getRepositoryType() == RepositoryType.UPLOAD || fileInfo.getRepositoryType() == RepositoryType.SCM)
+				&& fileDescriptor != null
+				&& fileDescriptor.getUrl() != null
+				&& fileDescriptor.getUrl().length() > 0
+				&& fileDescriptor.getRevision() != null && fileDescriptor.getRevision().length() > 0;
 	}
 
 	@Override
 	public void run() {
+		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
 		switch (fileInfo.getRepositoryType()) {
 		case UPLOAD:
 			OpenUploadedVirtualFileAction action = new OpenUploadedVirtualFileAction(task, new CrucibleFile(fileInfo,
