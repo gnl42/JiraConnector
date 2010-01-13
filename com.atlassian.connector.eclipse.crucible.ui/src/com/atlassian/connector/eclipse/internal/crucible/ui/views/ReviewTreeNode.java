@@ -17,7 +17,6 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ReviewTreeNode {
@@ -55,7 +54,10 @@ public class ReviewTreeNode {
 		}
 		for (ReviewTreeNode child : children) {
 			if (child.pathToken.equals(path[0])) {
-				child.add(Arrays.copyOfRange(path, 1, path.length), aCfi);
+				// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
+				final String[] allButFirst = new String[path.length - 1];
+				System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
+				child.add(allButFirst, aCfi);
 				return;
 			}
 		}
