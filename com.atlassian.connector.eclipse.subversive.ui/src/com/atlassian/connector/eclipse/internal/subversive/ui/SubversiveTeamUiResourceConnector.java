@@ -32,7 +32,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -77,9 +76,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -93,10 +90,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	public boolean isEnabled() {
 		return true;
-	}
-
-	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		return SubversiveUtil.getRepositoryLocation(repoUrl) != null;
 	}
 
 	@NotNull
@@ -177,51 +170,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			return new ScmRepository(location.getUrl(), location.getRepositoryRootUrl(), location.getLabel(), this);
 		}
 		return null;
-	}
-
-	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
-		Assert.isNotNull(file);
-		try {
-			monitor.beginTask("Getting Revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
-			final IRepositoryResource remoteResource = SVNRemoteStorage.instance().asRepositoryResource(file);
-
-			GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(remoteResource, false);
-			getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
-			getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
-			getLogMessagesOp.setIncludeMerged(true);
-
-			getLogMessagesOp.run(monitor);
-			SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
-			SortedSet<Long> revisions = new TreeSet<Long>();
-			if (logEntries != null) {
-				for (SVNLogEntry logEntry : logEntries) {
-					revisions.add(new Long(logEntry.revision));
-				}
-			}
-			return revisions;
-		} catch (Exception e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"Error while retrieving Revisions for file " + file.getName() + ".", e));
-		}
-	}
-
-	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
-			throws CoreException {
-		Assert.isNotNull(files);
-
-		Map<IFile, SortedSet<Long>> map = new HashMap<IFile, SortedSet<Long>>();
-
-		monitor.beginTask("Getting Revisions", files.size());
-
-		for (IFile file : files) {
-			final IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
-			try {
-				map.put(file, getRevisionsForFile(file, subMonitor));
-			} finally {
-				subMonitor.done();
-			}
-		}
-		return map;
 	}
 
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {

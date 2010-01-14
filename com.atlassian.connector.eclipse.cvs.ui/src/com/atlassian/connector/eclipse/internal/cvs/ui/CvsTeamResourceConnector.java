@@ -62,18 +62,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		return true;
 	}
 
-	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		// @todo implement it
-		return false;
-	}
-
-	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
-		Assert.isNotNull(file);
-		// @todo implement it
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
-				"Not implemented yet for CVS."));
-	}
-
 	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
 		ICVSRepositoryLocation[] repositories = CVSProviderPlugin.getPlugin().getKnownRepositories();
 		if (repositories == null) {

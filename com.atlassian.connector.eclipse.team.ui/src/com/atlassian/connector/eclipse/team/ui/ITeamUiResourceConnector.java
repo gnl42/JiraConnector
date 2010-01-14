@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 
 /**
@@ -42,29 +41,6 @@ public interface ITeamUiResourceConnector {
 	};
 
 	boolean isEnabled();
-
-	boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor);
-
-	/**
-	 * 
-	 * @param file
-	 * @param monitor
-	 * @return null if operation is not supported/handled, otherwise sorted revisions
-	 * @throws CoreException
-	 */
-	@Nullable
-	SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException;
-
-	/**
-	 * 
-	 * @param files
-	 * @param monitor
-	 * @return null if operation is not supported/handled, otherwise revisions map
-	 * @throws CoreException
-	 */
-	@Nullable
-	Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
-			throws CoreException;
 
 	/**
 	 * @param repositoryUrl

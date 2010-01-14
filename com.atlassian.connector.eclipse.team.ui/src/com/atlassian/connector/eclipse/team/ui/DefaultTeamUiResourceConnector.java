@@ -51,7 +51,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 
 /**
@@ -65,11 +64,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	public static final String TEAM_PROV_ID_SVN_SUBVERSIVE = "org.eclipse.team.svn.core.svnnature";
 
-	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		// the default one handles anything
-		return true;
-	}
-
 	public boolean isEnabled() {
 		// the default one is always enabled
 		return true;
@@ -78,17 +72,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 	@NotNull
 	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
 			IProgressMonitor monitor) throws CoreException {
-		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID, "Not implemented yet."));
-	}
-
-	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
-		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID, "Not implemented yet."));
-	}
-
-	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
-			throws CoreException {
 		//TODO
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
