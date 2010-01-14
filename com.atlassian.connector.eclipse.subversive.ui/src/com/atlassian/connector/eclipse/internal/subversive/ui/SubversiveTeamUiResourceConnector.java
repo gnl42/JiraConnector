@@ -12,16 +12,13 @@
 package com.atlassian.connector.eclipse.internal.subversive.ui;
 
 import com.atlassian.connector.eclipse.internal.subversive.core.SubversiveUtil;
-import com.atlassian.connector.eclipse.internal.subversive.ui.compare.CrucibleSubversiveCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.CustomChangeSetLogEntry;
-import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
@@ -30,7 +27,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -44,50 +40,34 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.svn.core.IStateFilter;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
-import org.eclipse.team.svn.core.connector.ISVNConnector;
-import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
 import org.eclipse.team.svn.core.connector.SVNConnectorException;
-import org.eclipse.team.svn.core.connector.SVNDiffStatus;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
-import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.connector.SVNLogEntry;
 import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
 import org.eclipse.team.svn.core.connector.SVNRevision;
-import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.connector.SVNRevision.Kind;
 import org.eclipse.team.svn.core.operation.IActionOperation;
 import org.eclipse.team.svn.core.operation.local.GetLocalFileContentOperation;
 import org.eclipse.team.svn.core.operation.local.InfoOperation;
 import org.eclipse.team.svn.core.operation.remote.GetLogMessagesOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
-import org.eclipse.team.svn.core.resource.IRepositoryFile;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.utility.FileUtility;
-import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
 import org.eclipse.team.svn.ui.preferences.SVNTeamPreferences;
 import org.eclipse.team.svn.ui.repository.RepositoryFileEditorInput;
 import org.eclipse.team.svn.ui.utility.UIMonitorUtility;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 
@@ -374,162 +354,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return TeamConnectorType.SVN;
 	}
 
-	private final class ProgressMonitorWrapper implements ISVNProgressMonitor {
-		private final IProgressMonitor subMonitor;
-
-		private ProgressMonitorWrapper(IProgressMonitor subMonitor) {
-			this.subMonitor = subMonitor;
-		}
-
-		public boolean isActivityCancelled() {
-			return false;
-		}
-
-		public void progress(int current, int total, ItemState state) {
-			ProgressMonitorUtility.progress(subMonitor, current, total);
-		}
-
-		public void reportError(String errorMessage) {
-		}
-	}
-
-	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
-			throws CoreException {
-
-		IRepositoryResource oldRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, oldFilePath,
-				SVNRevision.fromString(oldRevisionString), monitor);
-		IRepositoryResource newRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, newFilePath,
-				SVNRevision.fromString(newRevisionString), monitor);
-
-		if (oldRemoteFile != null && newRemoteFile != null) {
-			oldRemoteFile.setPegRevision(oldRemoteFile.getSelectedRevision());
-			newRemoteFile.setPegRevision(newRemoteFile.getSelectedRevision());
-
-			final IRepositoryLocation location = oldRemoteFile.getRepositoryLocation();
-			final ISVNConnector proxy = location.acquireSVNProxy();
-			final ArrayList<SVNDiffStatus> statuses = new ArrayList<SVNDiffStatus>();
-			final IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
-
-			try {
-				subMonitor.beginTask("Retrieving SVN statuses", 101);
-
-				SVNEntryRevisionReference refOldRemoteFile = SVNUtility.getEntryRevisionReference(oldRemoteFile);
-				SVNEntryRevisionReference refNewRemoteFile = SVNUtility.getEntryRevisionReference(newRemoteFile);
-				if (SVNUtility.useSingleReferenceSignature(refOldRemoteFile, refNewRemoteFile)) {
-					SVNUtility.diffStatus(proxy, statuses, refOldRemoteFile, refNewRemoteFile.revision,
-							refNewRemoteFile.revision, Depth.INFINITY, ISVNConnector.Options.NONE,
-							new ProgressMonitorWrapper(subMonitor));
-				} else {
-					SVNUtility.diffStatus(proxy, statuses, refOldRemoteFile, refNewRemoteFile, Depth.INFINITY,
-							ISVNConnector.Options.NONE, new ProgressMonitorWrapper(subMonitor));
-				}
-			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not get revisions for {0}.", newFilePath)));
-			} finally {
-				location.releaseSVNProxy(proxy);
-				subMonitor.done();
-			}
-
-			CompareConfiguration cc = new CompareConfiguration();
-			CrucibleSubversiveCompareEditorInput input = new CrucibleSubversiveCompareEditorInput(cc, newRemoteFile,
-					oldRemoteFile, statuses, annotationModel);
-			try {
-				input.initialize(monitor);
-			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not get revisions for {0}.", newFilePath)));
-			}
-
-			TeamUiUtils.openCompareEditorForInput(input);
-			return true;
-		}
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-				"Could not get revisions for {0}.", newFilePath)));
-
-	}
-
-	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
-
-		if (repoUrl == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"No repository URL given."));
-		}
-
-		try {
-			return openFile(repoUrl, filePath, revisionString, monitor);
-		} catch (CoreException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Failed to open {0} at revision {1}", filePath, revisionString)));
-		}
-
-		if (otherRevisionFilePath != null && otherRevisionString != null && !"".equals(otherRevisionString)) {
-			return openFile(repoUrl, otherRevisionFilePath, otherRevisionString, monitor);
-		}
-
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-				"Failed to open {0} at revision {1}", filePath, revisionString)));
-	}
-
-	public IEditorPart openFile(final String repoUrl, final String filePath, final String fileRevision,
-			final IProgressMonitor monitor) throws CoreException {
-		final SubMonitor submonitor = SubMonitor.convert(monitor);
-
-		Assert.isNotNull(repoUrl);
-
-		SVNRevision svnRevision;
-		try {
-			svnRevision = SVNRevision.fromString(fileRevision);
-		} catch (IllegalArgumentException e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Invalid revision {0} for {1}", fileRevision, filePath)));
-		}
-
-		IResource localResource = SubversiveUtil.getLocalResourceFromFilePath(repoUrl, filePath, submonitor.newChild(1));
-		if (localResource != null) {
-			// check local file first
-			final ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(localResource);
-			if (SVNRevision.fromNumber(localFile.getBaseRevision()).equals(svnRevision)
-					&& localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
-				// the file is not dirty and we have the right local copy
-				return TeamUiUtils.openLocalResource(localResource);
-			}
-		}
-
-		// fallback to remote
-		final IRepositoryFile remoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, filePath, svnRevision,
-				submonitor.newChild(1));
-		if (remoteFile == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not get remote file for {0}.", filePath)));
-		}
-
-		// we need to open the remote resource since the file is either dirty or the wrong revision
-		if (Display.getCurrent() != null) {
-			return openRemoteSvnFile(remoteFile, submonitor.newChild(1));
-		} else {
-			final IEditorPart[] part = new IEditorPart[1];
-			final CoreException[] exception = new CoreException[1];
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				public void run() {
-					try {
-						part[0] = openRemoteSvnFile(remoteFile, submonitor.newChild(1));
-					} catch (CoreException e) {
-						exception[0] = e;
-					}
-				}
-			});
-
-			if (exception[0] != null) {
-				throw exception[0];
-			}
-
-			return part[0];
-		}
-	}
-
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
 			final IFile file = ((FileEditorInput) editorInput).getFile();
@@ -662,37 +486,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			}
 		}
 		return null;
-	}
-
-	private IEditorPart openRemoteSvnFile(IRepositoryFile remoteFile, IProgressMonitor monitor) throws CoreException {
-		try {
-			IWorkbench workbench = AtlassianSubversiveUiPlugin.getDefault().getWorkbench();
-			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-
-			RepositoryFileEditorInput editorInput = new RepositoryFileEditorInput(remoteFile);
-			String editorId = getEditorId(workbench, remoteFile);
-			return page.openEditor(editorInput, editorId);
-		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not open editor for {0}", remoteFile.getName())));
-		}
-	}
-
-	private String getEditorId(IWorkbench workbench, IRepositoryFile file) {
-		IEditorRegistry registry = workbench.getEditorRegistry();
-		String filename = file.getName();
-		IEditorDescriptor descriptor = registry.getDefaultEditor(filename);
-		String id;
-		if (descriptor == null) {
-			descriptor = registry.findEditor(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
-		}
-		if (descriptor == null) {
-			id = "org.eclipse.ui.DefaultTextEditor";
-		} else {
-			id = descriptor.getId();
-		}
-		return id;
 	}
 
 	private IStateFilter getStateFilter(State filter) {
