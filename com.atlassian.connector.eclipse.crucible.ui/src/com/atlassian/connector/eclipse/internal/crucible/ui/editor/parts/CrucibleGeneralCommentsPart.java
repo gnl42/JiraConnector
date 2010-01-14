@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewContentProvider;
-import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -105,7 +104,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	@Override
 	public Control createControl(final Composite parent, final FormToolkit toolkit) {
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED;
-		commentsSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
+		commentsSection = toolkit.createSection(parent, style);
 		commentsSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentsSection);
 

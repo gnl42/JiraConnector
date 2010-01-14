@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentA
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -63,9 +62,8 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 
 	protected SizeCachingComposite sectionClient;
 
-	public CommentPart(Comment comment, Review crucibleReview, CrucibleReviewEditorPage editor,
-			CrucibleFile crucibleFile) {
-		super(editor, crucibleReview);
+	public CommentPart(Comment comment, Review crucibleReview, CrucibleFile crucibleFile) {
+		super(crucibleReview);
 		this.comment = comment;
 		this.crucibleFile = crucibleFile;
 	}

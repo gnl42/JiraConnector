@@ -178,7 +178,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 			currentPopupDialog = this;
 			for (CrucibleCommentAnnotation annotation : annotationInput.getCrucibleAnnotations()) {
 				VersionedCommentPart part = new VersionedCommentPart(annotation.getVersionedComment(),
-						annotation.getReview(), annotation.getCrucibleFileInfo(), null);
+						annotation.getReview(), annotation.getCrucibleFileInfo());
 
 				part.addCustomAction(new OpenReviewEditorToCommentAction(annotation.getReview(),
 						annotation.getVersionedComment(), annotation.getCrucibleFileInfo()));

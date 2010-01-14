@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.OpenVirtualFileJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -23,26 +23,20 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.team.internal.ui.ITeamUIImages;
 import org.eclipse.team.ui.TeamImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+@SuppressWarnings("restriction")
 public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	private CrucibleFileInfo fileInfo;
 
 	private VersionedComment comment;
 
 	private Review review;
-
-	private ITask task;
 
 	private final boolean oldFile;
 
@@ -56,7 +50,6 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		fileInfo = null;
 		review = null;
-		task = null;
 		comment = null;
 		if (selection.size() != 1) {
 			return false;
@@ -73,7 +66,6 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 		}
 
 		review = ReviewTreeUtils.getReview(fileInfo);
-		task = ReviewTreeUtils.getTask(fileInfo);
 
 		VersionedVirtualFile fileDescriptor;
 		if (oldFile) {
@@ -92,26 +84,11 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	@Override
 	public void run() {
 		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
-		switch (fileInfo.getRepositoryType()) {
-		case UPLOAD:
-			OpenUploadedVirtualFileAction action = new OpenUploadedVirtualFileAction(task, new CrucibleFile(fileInfo,
-					oldFile), oldFile ? fileInfo.getOldFileDescriptor() : fileInfo.getFileDescriptor(), review,
-					comment, WorkbenchUtil.getShell(), PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow()
-							.getActivePage());
-			action.run();
-			break;
-		case SCM:
-			OpenVersionedVirtualFileAction action1 = new OpenVersionedVirtualFileAction(task, new CrucibleFile(
-					fileInfo, oldFile), comment, review);
-			action1.run();
-			break;
-		default:
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Invalid Repository Type"));
-		}
+		OpenVirtualFileJob job = new OpenVirtualFileJob(review, new CrucibleFile(fileInfo, oldFile), comment);
+		job.setPriority(Job.INTERACTIVE);
+		job.schedule();
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		if (oldFile) {

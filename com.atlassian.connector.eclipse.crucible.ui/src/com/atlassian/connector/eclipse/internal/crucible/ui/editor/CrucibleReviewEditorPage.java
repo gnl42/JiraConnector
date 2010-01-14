@@ -26,9 +26,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeRev
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleGeneralCommentsPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
-import com.atlassian.connector.eclipse.ui.forms.IReflowRespectingPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -109,7 +108,7 @@ import java.util.List;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRespectingPart {
+public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private static final String REVIEW_UPDATE_FAILED = "Review Update Failed";
 
@@ -891,10 +890,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				}
 			}
 		}
-	}
-
-	public boolean canReflow() {
-		return reflow;
 	}
 
 	public Color getColorIncoming() {

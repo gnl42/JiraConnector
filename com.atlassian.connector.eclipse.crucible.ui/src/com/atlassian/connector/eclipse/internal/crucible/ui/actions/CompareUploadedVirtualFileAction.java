@@ -36,9 +36,12 @@ import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import java.io.ByteArrayInputStream;
@@ -75,6 +78,18 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 
 		final ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(crucibleFile,
 				crucibleReview, versionedComment);
+
+		if (oldVirtualFile.getContentUrl() == null || newVirtualFile.getContentUrl() == null) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(
+							WorkbenchUtil.getShell(),
+							"Unable to open review item",
+							"Crucible did not return review item content URL. Probably you're using Crucible 1.6.x which doesn't support direct access to review items. Please upgrade to Crucible 2.x.");
+				}
+			});
+			return;
+		}
 
 		ReviewFileContent oldFile = getContent(oldVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
 		ReviewFileContent newFile = getContent(newVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);

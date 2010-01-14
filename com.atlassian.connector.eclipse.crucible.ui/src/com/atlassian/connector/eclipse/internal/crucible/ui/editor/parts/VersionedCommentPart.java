@@ -16,18 +16,11 @@ import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAc
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenUploadedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -70,9 +63,8 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 
 	private final List<IReviewChangeListenerAction> reviewActions = new ArrayList<IReviewChangeListenerAction>();
 
-	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
-			CrucibleReviewEditorPage editor) {
-		super(comment, review, editor, new CrucibleFile(crucibleFileInfo, false));
+	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo) {
+		super(comment, review, new CrucibleFile(crucibleFileInfo, false));
 		this.versionedComment = comment;
 		this.crucibleFileInfo = crucibleFileInfo;
 		customActions = new ArrayList<IReviewAction>();
@@ -102,7 +94,7 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 			text += "DEFECT ";
 		}
 
-		if (getCrucibleEditor() == null && !comment.isReply()) {
+		if (!comment.isReply()) {
 			text += getLineNumberText(crucibleFileInfo);
 		}
 		return text;
@@ -184,47 +176,6 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 
 		reviewActions.clear();
 
-		if (getCrucibleEditor() != null && !comment.isReply()) {
-
-			// if both revisions are available (--> commitType neither added nor deleted), use compareAction
-			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
-					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
-				IReviewChangeListenerAction compareAction;
-				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
-					compareAction = new CompareUploadedVirtualFileAction(crucibleFileInfo, versionedComment,
-							crucibleReview, toolbarComposite.getShell());
-				} else {
-					compareAction = new CompareVersionedVirtualFileAction(crucibleFileInfo, versionedComment,
-							crucibleReview);
-				}
-				compareAction.setToolTipText("Open the file to the comment in the compare editor");
-				compareAction.setText(getLineNumberText(crucibleFileInfo));
-				// TODO set the image descriptor
-				createActionHyperlink(toolbarComposite, toolkit, compareAction);
-
-				reviewActions.add(compareAction);
-			} else {
-				// if fromLineComment --> oldFile
-				CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
-				IReviewChangeListenerAction openFileAction;
-				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
-					VersionedVirtualFile versionedFile = crucibleFileInfo.getCommitType() == CommitType.Added ? crucibleFileInfo.getFileDescriptor()
-							: crucibleFileInfo.getOldFileDescriptor();
-					openFileAction = new OpenUploadedVirtualFileAction(getCrucibleEditor().getTask(), crucibleFile,
-							versionedFile, crucibleReview, versionedComment, getSection().getShell(),
-							getCrucibleEditor().getSite().getWorkbenchWindow().getActivePage());
-				} else {
-					openFileAction = new OpenVersionedVirtualFileAction(getCrucibleEditor().getTask(), crucibleFile,
-							versionedComment, crucibleReview);
-				}
-				openFileAction.setText(getLineNumberText(crucibleFileInfo));
-				openFileAction.setToolTipText("Open the file to the comment");
-				createActionHyperlink(toolbarComposite, toolkit, openFileAction);
-
-				reviewActions.add(openFileAction);
-			}
-		}
-
 		for (IReviewAction customAction : customActions) {
 			ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 			textHyperlink.setText(" ");
@@ -233,20 +184,6 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 
 			createActionHyperlink(toolbarComposite, toolkit, customAction);
 		}
-	}
-
-	private boolean canOpenCompare() {
-		if (crucibleFileInfo != null) {
-			VersionedVirtualFile oldFileDescriptor = crucibleFileInfo.getOldFileDescriptor();
-			VersionedVirtualFile newFileDescriptor = crucibleFileInfo.getFileDescriptor();
-			if (oldFileDescriptor == null || oldFileDescriptor.getRevision() == null
-					|| oldFileDescriptor.getRevision().length() == 0 || newFileDescriptor == null
-					|| newFileDescriptor.getRevision() == null || newFileDescriptor.getRevision().length() == 0) {
-				return false;
-			}
-			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -312,7 +249,6 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 			Control newControl = createControl(parentComposite, toolkit);
 
 			setIncomming(true);
-			decorate();
 
 			createdControl = newControl;
 		} else {
@@ -343,9 +279,8 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 	}
 
 	@Override
-	protected VersionedCommentPart createChildPart(Comment comment, Review crucibleReview2,
-			CrucibleReviewEditorPage crucibleEditor2) {
-		return new VersionedCommentPart((VersionedComment) comment, crucibleReview2, crucibleFileInfo, crucibleEditor2);
+	protected VersionedCommentPart createChildPart(Comment comment, Review crucibleReview2) {
+		return new VersionedCommentPart((VersionedComment) comment, crucibleReview2, crucibleFileInfo);
 	}
 
 	@Override
@@ -367,8 +302,4 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 		return versionedComment.getPermId().equals(comment.getPermId());
 	}
 
-	@Override
-	protected boolean shouldHighlight(Comment comment, CrucibleReviewEditorPage crucibleEditor2) {
-		return !comment.getAuthor().getUsername().equals(crucibleEditor.getUsername());
-	}
 }

@@ -13,9 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
-import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
@@ -23,7 +21,6 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -65,8 +62,6 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 	private final List<V> childrenParts;
 
-	protected final CrucibleReviewEditorPage crucibleEditor;
-
 	protected Review crucibleReview;
 
 	private IReviewActionListener actionListener;
@@ -79,8 +74,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 	private Label annotationsTextLabel;
 
-	public ExpandablePart(CrucibleReviewEditorPage editor, Review crucibleReview) {
-		this.crucibleEditor = editor;
+	public ExpandablePart(Review crucibleReview) {
 		this.crucibleReview = crucibleReview;
 		childrenParts = new ArrayList<V>();
 	}
@@ -93,10 +87,6 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		return childrenParts;
 	}
 
-	public CrucibleReviewEditorPage getCrucibleEditor() {
-		return crucibleEditor;
-	}
-
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
 
 		this.formToolkit = toolkit;
@@ -105,12 +95,9 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		if (canExpand()) {
 			style |= ExpandableComposite.TWISTIE;
 		}
-
-//		if (crucibleEditor == null) {
 		style |= ExpandableComposite.EXPANDED;
-//		}
 
-		commentSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
+		commentSection = toolkit.createSection(parent, style);
 		updateSectionText();
 		commentSection.setTitleBarForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
@@ -126,7 +113,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		ToolBar toolbarControl = toolBarManager.createControl(actionsComposite);
 		toolkit.adapt(toolbarControl);
 
-		if (commentSection.isExpanded() || crucibleEditor == null) {
+		if (commentSection.isExpanded()) {
 			isExpanded = true;
 			fillToolBar(toolBarManager, isExpanded);
 			if (hasContents()) {
@@ -142,39 +129,6 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 					}
 				});
 			}
-
-		} else {
-			fillToolBar(toolBarManager, false);
-			commentSection.addExpansionListener(new ExpansionAdapter() {
-				@Override
-				public void expansionStateChanged(ExpansionEvent e) {
-					isExpanded = e.getState();
-					fillToolBar(toolBarManager, isExpanded);
-					if (commentSection.getClient() == null) {
-						try {
-							if (crucibleEditor != null) {
-								crucibleEditor.setReflow(false);
-							}
-							Composite composite = createSectionContents(commentSection, toolkit);
-
-							if (crucibleEditor != null && crucibleEditor.getMenu() != null) {
-								CommonUiUtil.setMenu(composite, crucibleEditor.getMenu());
-							}
-							commentSection.setClient(composite);
-						} finally {
-							if (crucibleEditor != null) {
-								crucibleEditor.setReflow(true);
-							}
-						}
-						if (crucibleEditor != null) {
-							crucibleEditor.reflow(false);
-						}
-					}
-					if (getSection() != null && !getSection().isDisposed()) {
-						getSection().layout();
-					}
-				}
-			});
 		}
 		return commentSection;
 	}
@@ -365,23 +319,6 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		return isIncomming;
 	}
 
-	public void decorate() {
-		Section highlightedSection = getSection();
-		if (highlightedSection != null) {
-			Control client = highlightedSection.getClient();
-			if (client != null) {
-				Color color;
-				if (isIncomming()) {
-					color = crucibleEditor.getColorIncoming();
-				} else {
-					color = formToolkit.getColors().getBackground();
-				}
-
-				highlightControl(client, color);
-			}
-		}
-	}
-
 	private void highlightControl(Control client, Color highlightColor) {
 		if (highlightColor == null || highlightColor.isDisposed()) {
 			return;
@@ -451,15 +388,10 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 					newParts.add(oldPart);
 				} else {
-					V commentPart = createChildPart(comment, crucibleReview, crucibleEditor);
+					V commentPart = createChildPart(comment, crucibleReview);
 					commentPart.hookCustomActionRunListener(actionListener);
 					newParts.add(commentPart);
 					Control commentControl = commentPart.createControl(composite, toolkit);
-
-					if (shouldHighlight && shouldHighlight(comment, crucibleEditor)) {
-						commentPart.setIncomming(true);
-						commentPart.decorate();
-					}
 
 					GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 					if (prevControl != null) {
@@ -491,9 +423,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		childrenParts.addAll(newParts);
 	}
 
-	protected abstract boolean shouldHighlight(T comment, CrucibleReviewEditorPage crucibleEditor2);
-
-	protected abstract V createChildPart(T comment, Review crucibleReview2, CrucibleReviewEditorPage crucibleEditor2);
+	protected abstract V createChildPart(T comment, Review crucibleReview2);
 
 	protected abstract Control update(Composite parentComposite, FormToolkit toolkit, T newComment, Review newReview);
 

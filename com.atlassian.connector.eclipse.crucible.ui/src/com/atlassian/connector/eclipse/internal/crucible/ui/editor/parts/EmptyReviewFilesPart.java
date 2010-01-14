@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -68,7 +67,7 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	public Control createControl(final Composite parent, final FormToolkit toolkit) {
 
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
-		commentsSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
+		commentsSection = toolkit.createSection(parent, style);
 		commentsSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentsSection);
 
