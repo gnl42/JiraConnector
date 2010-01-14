@@ -421,13 +421,7 @@ public final class TeamUiUtils {
 
 		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
-//				try {
 				res.addAll(connector.getRepositories(monitor));
-//				} catch (CoreException e) {
-//					StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-//							"Cannot get repositories for a connector"));
-//					// ignore and try other connector(s)
-//				}
 			}
 		}
 		res.addAll(defaultConnector.getRepositories(monitor));
