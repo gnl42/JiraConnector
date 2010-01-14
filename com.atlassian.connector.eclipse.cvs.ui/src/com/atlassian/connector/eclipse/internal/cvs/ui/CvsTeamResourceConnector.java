@@ -226,4 +226,9 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		return false;
 	}
 
+	public boolean canHandleFile(IFile file) {
+		// ignore
+		return false;
+	}
+
 }

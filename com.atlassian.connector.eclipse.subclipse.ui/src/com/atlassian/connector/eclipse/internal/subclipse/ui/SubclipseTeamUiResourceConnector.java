@@ -506,19 +506,25 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
-			try {
-				IFile file = ((FileEditorInput) editorInput).getFile();
-				ISVNLocalFile localFile = getLocalFile(file);
-				if (localFile != null && !localFile.isDirty()) {
-					return true;
-				}
-			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-						"Unable to get svn information for local file.", e));
-			}
+			IFile file = ((FileEditorInput) editorInput).getFile();
+			return canHandleFile(file);
 		} else if (editorInput instanceof RemoteFileEditorInput) {
 			return true;
 		}
+		return false;
+	}
+
+	public boolean canHandleFile(IFile file) {
+		try {
+			ISVNLocalFile localFile = getLocalFile(file);
+			if (localFile != null && !localFile.isDirty()) {
+				return true;
+			}
+		} catch (SVNException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"Unable to get svn information for local file.", e));
+		}
+
 		return false;
 	}
 

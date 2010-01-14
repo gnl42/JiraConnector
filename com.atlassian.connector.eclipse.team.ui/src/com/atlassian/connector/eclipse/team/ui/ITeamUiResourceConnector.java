@@ -162,6 +162,8 @@ public interface ITeamUiResourceConnector {
 
 	boolean canHandleEditorInput(IEditorInput editorInput);
 
+	boolean canHandleFile(IFile file);
+
 	/**
 	 * 
 	 * @param editorInput

@@ -19,15 +19,31 @@
 			objectClass="org.eclipse.core.resources.mapping.ResourceMapping" 
 			adaptable="true" 
 			id="com.atlassian.connector.eclipse.crucible.ui.ReviewResource">
-
 			<action 
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromResourcesAction" 
+				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromResourcesOldAction" 
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateReviewAction" 
 				menubarPath="team.main/group10" 
 				icon="icons/obj16/crucible.png" 
-				label="Create Review for Selected Resource(s)" tooltip="Create Review in Crucible for Selected Resource(s)">
+				label="Create Review for Selected Resource(s)" 
+				tooltip="Create Review in Crucible for Selected Resource(s)">
 			</action>
 		</objectContribution>
+		
+		<objectContribution
+            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
+            adaptable="true"
+            id="com.atlassian.connector.eclipse.crucible.ui.ReviewResource2">
+         <action
+               class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromResourcesAction"
+               id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateReviewAction2"
+               menubarPath="team.main/group10"
+               icon="icons/obj16/crucible.png"
+               label="Create Review"
+               tooltip="Create Review">
+         </action>
+      </objectContribution>
+		
+		
 		<viewerContribution
         	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
         	targetID="#CompilationUnitEditorContext">
@@ -144,6 +160,4 @@
          </enablement>
       </decorator>
    </extension>
-	
-	
 </plugin>

@@ -22,6 +22,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -46,7 +48,6 @@ public class CrucibleTeamUiUtil {
 		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			connector.getCrucibleFileFromReview(review, editorInput);
 			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
 				CrucibleFile fileInfo;
 				try {
@@ -81,29 +82,72 @@ public class CrucibleTeamUiUtil {
 			return input.getCrucibleFile();
 		} else if (editorInput instanceof FileEditorInput) {
 
-			FileEditorInput localFile = (FileEditorInput) editorInput;
-			String localFileUrl = StringUtil.removeTrailingSlashes(localFile.getFile().getFullPath().toString());
+			IFile localFile = ((FileEditorInput) editorInput).getFile();
 
-			Set<CrucibleFileInfo> reviewFiles;
-			try {
-				reviewFiles = review.getFiles();
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
-						"Cannot find file {0} in the review {1}", localFile.getName(), review.getPermId().getId()), e));
-				return null;
-			}
+			return getCruciblePreCommitFile(localFile, review);
 
-			for (CrucibleFileInfo file : reviewFiles) {
-				String newFileUrl = StringUtil.removeTrailingSlashes(file.getFileDescriptor().getUrl());
-				String oldFileUrl = StringUtil.removeTrailingSlashes(file.getOldFileDescriptor().getUrl());
+		}
+		return null;
+	}
 
-				if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
-					return new CrucibleFile(file, false);
-				} else if (oldFileUrl != null && oldFileUrl.equals(localFileUrl)) {
-					return new CrucibleFile(file, true);
+	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review) {
+		if (review == null || !(resource instanceof IFile)) {
+			return null;
+		}
+
+		IFile file = (IFile) resource;
+
+		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled() && connector.canHandleFile(file)) {
+				CrucibleFile fileInfo;
+				try {
+					fileInfo = connector.getCrucibleFileFromReview(review, file);
+				} catch (UnsupportedTeamProviderException e) {
+					return null;
+				}
+				if (fileInfo != null) {
+					return fileInfo;
 				}
 			}
 		}
+
+		try {
+			CrucibleFile crucibleFile = TeamUiUtils.getDefaultConnector().getCrucibleFileFromReview(review, file);
+			if (crucibleFile != null) {
+				return crucibleFile;
+			}
+		} catch (UnsupportedTeamProviderException e) {
+			// ignore
+		}
+
+		return getCruciblePreCommitFile(file, review);
+	}
+
+	private static CrucibleFile getCruciblePreCommitFile(IFile file, Review review) {
+		String localFileUrl = StringUtil.removeTrailingSlashes(file.getFullPath().toString());
+
+		Set<CrucibleFileInfo> reviewFiles;
+		try {
+			reviewFiles = review.getFiles();
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
+					"Cannot find file {0} in the review {1}", file.getName(), review.getPermId().getId()), e));
+			return null;
+		}
+
+		for (CrucibleFileInfo cruFile : reviewFiles) {
+			String newFileUrl = StringUtil.removeTrailingSlashes(cruFile.getFileDescriptor().getUrl());
+			String oldFileUrl = StringUtil.removeTrailingSlashes(cruFile.getOldFileDescriptor().getUrl());
+
+			if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
+				return new CrucibleFile(cruFile, false);
+			} else if (oldFileUrl != null && oldFileUrl.equals(localFileUrl)) {
+				return new CrucibleFile(cruFile, true);
+			}
+		}
+
 		return null;
 	}
 }

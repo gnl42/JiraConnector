@@ -27,6 +27,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.action.AbstractResourceAction.ResourceEditorBean;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
@@ -51,7 +52,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -65,7 +65,6 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -74,7 +73,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -235,7 +233,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private List<UploadItem> uploadItems;
 
-	private Map<IEditorInput, LineRange> versionedCommentsToAdd = new HashMap<IEditorInput, LineRange>();
+	private List<ResourceEditorBean> versionedCommentsToAdd = new ArrayList<ResourceEditorBean>();
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -542,13 +540,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 					updateCrucibleReview(client, crucibleReview, monitor);
-					SubMonitor subMonitor = SubMonitor.convert(monitor);
-					for (Map.Entry<IEditorInput, LineRange> versionedComment : versionedCommentsToAdd.entrySet()) {
-						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(
-								versionedComment.getKey(), crucibleReview);
+					SubMonitor.convert(monitor);
+					for (ResourceEditorBean resourceEditor : versionedCommentsToAdd) {
+						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCrucibleFileFromResource(
+								resourceEditor.getResource(), crucibleReview);
 						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
 								crucibleReview, client, crucibleFile, crucibleReview.getDescription(), monitor);
-						operation.setCommentLines(versionedComment.getValue());
+						operation.setCommentLines(resourceEditor.getLineRange());
 						client.execute(operation);
 					}
 
@@ -755,8 +753,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		this.uploadItems = uploadItems;
 	}
 
-	public void setFilesCommentData(Map<IEditorInput, LineRange> comments) {
-		this.versionedCommentsToAdd = comments;
+	public void setFilesCommentData(List<ResourceEditorBean> list) {
+		this.versionedCommentsToAdd = list;
 	}
 
 }

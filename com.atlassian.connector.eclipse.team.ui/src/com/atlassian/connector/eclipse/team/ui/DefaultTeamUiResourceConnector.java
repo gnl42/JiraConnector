@@ -591,4 +591,8 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return false;
 	}
 
+	public boolean canHandleFile(IFile file) {
+		return true;
+	}
+
 }

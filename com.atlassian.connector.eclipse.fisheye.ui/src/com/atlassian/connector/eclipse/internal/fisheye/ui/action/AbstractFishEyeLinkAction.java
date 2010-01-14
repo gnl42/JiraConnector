@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
-import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
@@ -24,165 +23,73 @@ import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.text.source.LineRange;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("restriction")
-public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAction {
+import java.util.List;
 
-	protected static final class ResultBean {
-		private final IResource resource;
-
-		private final LineRange lineRange;
-
-		private ResultBean(IResource resource, LineRange lineRange) {
-			this.resource = resource;
-			this.lineRange = lineRange;
-		}
-	}
-
-	private IWorkbenchWindow workbenchWindow;
-
-	private ResultBean selectionData;
+public abstract class AbstractFishEyeLinkAction extends AbstractResourceAction {
 
 	public AbstractFishEyeLinkAction(String text) {
 		super(text);
 	}
 
-	public void dispose() {
-	}
+	protected abstract void processUrl(String url);
 
-	public void init(IWorkbenchWindow window) {
-		this.workbenchWindow = window;
-	}
-
-	public void run(IAction action) {
-		if (selectionData != null) {
-			if (selectionData.resource != null) {
-				processResource(selectionData.resource, selectionData.lineRange, WorkbenchUtil.getShell());
-			}
-
-		}
-	}
-
-	private ResultBean getData(ISelection selection) {
-		IResource resource = null;
-		LineRange lineRange = null;
-		if (selection instanceof IStructuredSelection) {
-			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (structuredSelection.getFirstElement() instanceof IFishEyeResource) {
-				IFishEyeResource a = (IFishEyeResource) structuredSelection.getFirstElement();
-				resource = a.getResource();
-				lineRange = a.getLineRange();
-
-			} else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
-				resource = (IResource) ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
-				lineRange = getJavaEditorSelection(structuredSelection);
-			}
-		} else {
-
-			IEditorPart activeEditor = getActiveEditor();
-			if (activeEditor != null) {
-				IEditorInput editorInput = getEditorInputFromSelection(selection);
-				if (editorInput != null) {
-					resource = (IResource) editorInput.getAdapter(IResource.class);
-				}
-				// such call:
-				//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
-				//						- textSelection.getStartLine());
-				// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-				lineRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(activeEditor,
-						activeEditor.getEditorInput());
-			}
-		}
-		return new ResultBean(resource, lineRange);
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
+	@Override
+	protected void selectionChanged(IAction action, @NotNull List<ResourceEditorBean> selection) {
 		if (action.isEnabled()) {
-			selectionData = getData(selection);
 			boolean isEnabled = false;
-			try {
-				if (selectionData.resource != null) {
+
+			if (selection.get(0) != null && selection.get(0).getResource() != null) {
+				IResource resource = selection.get(0).getResource();
+
+				try {
 					if (TeamUiUtils.hasNoTeamConnectors()) {
 						isEnabled = true;
 					} else {
-						LocalStatus status = TeamUiUtils.getLocalRevision(selectionData.resource);
+						LocalStatus status = TeamUiUtils.getLocalRevision(resource);
 						if (status != null && status.isVersioned()) {
 							isEnabled = true;
 						}
 					}
+				} catch (CoreException e) {
+					isEnabled = false;
 				}
-			} catch (CoreException e) {
-				isEnabled = false;
-			}
-			action.setEnabled(isEnabled);
-			setEnabled(selectionData.resource != null);
-		} else {
-			selectionData = null;
-		}
 
-	}
-
-	private IEditorPart getActiveEditor() {
-		IWorkbenchWindow window = workbenchWindow;
-		if (window == null) {
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		}
-		if (window != null && window.getActivePage() != null) {
-			return window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
-
-	private IEditorInput getEditorInputFromSelection(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
-			if (structuredSelection.getFirstElement() instanceof IEditorInput) {
-				return (IEditorInput) structuredSelection.getFirstElement();
+				action.setEnabled(isEnabled);
+				setEnabled(selection.get(0) != null && selection.get(0).getResource() != null);
 			}
 		}
-		return null;
 	}
 
-	@Nullable
-	private LineRange getJavaEditorSelection(ISelection selection) {
-		IEditorPart editorPart = getActiveEditor();
-		IEditorInput editorInput = getEditorInputFromSelection(selection);
-		if (editorInput != null && editorPart != null) {
-			return TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
-		}
-		return null;
-	}
-
-	protected abstract void processUrl(String url);
-
-	private void processResource(IResource resource, LineRange lineRange, final Shell shell) {
+	@Override
+	protected void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell) {
 		if (!TeamUiUtils.checkTeamConnectors()) {
 			return;
 		}
-		try {
-			final String url = FishEyeUiUtil.buildFishEyeUrl(resource, lineRange);
-			processUrl(url);
-		} catch (final NoMatchingFishEyeConfigurationException e) {
-			final ScmRepository repoInfo = TeamUiUtils.getApplicableRepository(resource);
-			String scmPathToConfigure = (repoInfo != null) ? repoInfo.getScmPath() : null;
-			handleException(resource, shell, e.getMessage(), new FishEyePreferenceContextData(scmPathToConfigure));
-		} catch (CoreException e) {
-			handleException(resource, shell, e.getMessage(), null);
+
+		if (selection.get(0) != null) {
+			IResource resource = selection.get(0).getResource();
+			LineRange lineRange = selection.get(0).getLineRange();
+			if (resource != null) {
+				try {
+					final String url = FishEyeUiUtil.buildFishEyeUrl(resource, lineRange);
+					processUrl(url);
+				} catch (final NoMatchingFishEyeConfigurationException e) {
+					final ScmRepository repoInfo = TeamUiUtils.getApplicableRepository(resource);
+					String scmPathToConfigure = (repoInfo != null) ? repoInfo.getScmPath() : null;
+					handleException(resource, shell, e.getMessage(), new FishEyePreferenceContextData(
+							scmPathToConfigure));
+				} catch (CoreException e) {
+					handleException(resource, shell, e.getMessage(), null);
+				}
+			}
 		}
 	}
 
