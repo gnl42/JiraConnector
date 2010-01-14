@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
-import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
@@ -585,14 +584,11 @@ public class ResourceSelectionTree extends Composite {
 			styledString.append(getTextForResource(resource));
 
 			if (resourcesToShow.containsKey(resource)) {
-				styledString.append(" ");
-				final Styler styler;
-				if (resourcesToShow.get(resource).isUpToDate()) {
-					styler = StyledString.DECORATIONS_STYLER;
-				} else {
-					styler = StyledString.createColorRegistryStyler(colorRed, null);
+				if (!resourcesToShow.get(resource).isUpToDate()) {
+					styledString.append(" ");
+					styledString.append(resourcesToShow.get(resource).getState(),
+							StyledString.createColorRegistryStyler(colorRed, null));
 				}
-				styledString.append(resourcesToShow.get(resource).getState(), styler);
 			}
 
 			return styledString;
