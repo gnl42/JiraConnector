@@ -79,8 +79,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		this.crucibleFile = file;
 	}
 
-	protected static byte[] getContent(String contentUrl, CrucibleSession session, String url)
-			throws RemoteApiException, ServerPasswordNotProvidedException {
+	public static byte[] getContent(String contentUrl, CrucibleSession session, String url) throws RemoteApiException,
+			ServerPasswordNotProvidedException {
 
 		try {
 			contentUrl = URLDecoder.decode(contentUrl, "UTF-8");
@@ -138,6 +138,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 
 	@Override
 	protected void runImpl(IProgressMonitor monitor) throws CoreException {
+		CrucibleUiUtil.checkAndRequestReviewActivation(review);
+
 		final SubMonitor submonitor = SubMonitor.convert(monitor, 2);
 
 		final CrucibleFileInfo fileInfo = crucibleFile.getCrucibleFileInfo();
@@ -271,7 +273,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		return CrucibleUiUtil.getCrucibleTaskRepository(review);
 	}
 
-	private void contentUrlMissingPopup() {
+	public static void contentUrlMissingPopup() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				MessageDialog.openError(

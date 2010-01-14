@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.cvs.ui;
 
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -31,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
@@ -44,7 +42,6 @@ import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -68,14 +65,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		// @todo implement it
 		return false;
-	}
-
-	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
-			throws CoreException {
-		// @todo implement it
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
-				"Could not get revisions for {0}.", newFilePath)));
 	}
 
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
@@ -116,16 +105,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		Assert.isNotNull(files);
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
 				"Not implemented yet for CVS."));
-	}
-
-	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
-		if (repoUrl == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
-					"No repository URL given.."));
-		}
-		// @todo implement it
-		return null;
 	}
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {

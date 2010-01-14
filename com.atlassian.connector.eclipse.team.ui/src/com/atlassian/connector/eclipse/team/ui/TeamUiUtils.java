@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
-import com.atlassian.connector.eclipse.team.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -32,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -165,50 +163,6 @@ public final class TeamUiUtils {
 			return location.findMember(path);
 		}
 		return null;
-	}
-
-	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
-			String oldRevisionString, String newRevisionString, ICompareAnnotationModel annotationModel,
-			IProgressMonitor monitor) {
-		assert (filePath != null);
-		assert (oldRevisionString != null);
-		assert (newRevisionString != null);
-		if (!checkTeamConnectors()) {
-			return;
-		}
-
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-
-		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
-
-		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				try {
-					if (connector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
-							newRevisionString, annotationModel, monitor)) {
-						return;
-					}
-				} catch (CoreException e) {
-					StatusHandler.log(e.getStatus());
-					//ignore and try with default
-				}
-			}
-		}
-
-		try {
-			if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
-					newRevisionString, annotationModel, monitor)) {
-				TeamUiMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString,
-						newRevisionString, null);
-			}
-		} catch (UnsupportedTeamProviderException e) {
-			TeamUiMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
-		} catch (CoreException e) {
-			TeamUiMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString,
-					e);
-		}
 	}
 
 	public static LineRange getSelectedLineNumberRangeFromEditorInput(IEditorPart editor, IEditorInput editorInput) {

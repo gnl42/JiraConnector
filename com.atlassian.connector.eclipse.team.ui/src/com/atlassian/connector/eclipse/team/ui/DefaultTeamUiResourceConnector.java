@@ -19,8 +19,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -35,7 +33,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.history.IFileHistory;
@@ -43,12 +40,8 @@ import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.history.FileRevisionEditorInput;
-import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -251,52 +244,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return false;
 	}
 
-	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, IProgressMonitor monitor) throws CoreException {
-		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
-	}
-
-	public boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
-			String oldRevisionString, String newRevisionString, final ICompareAnnotationModel annotationModel,
-			IProgressMonitor monitor) throws CoreException {
-		//TODO support for moved/deleted files
-		IResource resource = findResourceForPath(filePath);
-		if (resource != null) {
-			IFileRevision oldFile = getFileRevision(resource, oldRevisionString, monitor);
-			if (oldFile != null) {
-				IFileRevision newFile = getFileRevision(resource, newRevisionString, monitor);
-				if (newFile != null) {
-					@SuppressWarnings("restriction")
-					final ITypedElement left = new FileRevisionTypedElement(newFile, getLocalEncoding(resource));
-					@SuppressWarnings("restriction")
-					final ITypedElement right = new FileRevisionTypedElement(oldFile, getLocalEncoding(resource));
-
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							CompareEditorInput input = new TeamCompareFileRevisionEditorInput(left, right,
-									AtlassianTeamUiPlugin.getDefault()
-											.getWorkbench()
-											.getActiveWorkbenchWindow()
-											.getActivePage(), annotationModel);
-							TeamUiUtils.openCompareEditorForInput(input);
-						}
-					});
-					return true;
-				} else {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-							"Could not get new revision file {0}.", newRevisionString)));
-				}
-			} else {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not get old revision file {0}.", oldRevisionString)));
-			}
-		} else {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not locate resource {0}.", filePath)));
-		}
-
-	}
-
 	private static void checkIfSupportedTeamProvider(RepositoryProvider rp) {
 		//only support subversive > 0.7.8
 		Bundle bundle = Platform.getBundle("org.eclipse.team.svn");
@@ -435,78 +382,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return null;
 	}
 
-	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, String otherRevisionFilePath,
-			final String revisionString, final IProgressMonitor monitor) throws CoreException {
-		// this is a good backup (works for cvs and anyone that uses the history provider)
-
-		// TODO add support for finding a project in the path so that we can find the proper resource 
-		// (i.e. file path and project name may be different)
-
-		//TODO support for moved/deleted files
-		IResource resource = findResourceForPath(filePath);
-
-		if (resource == null) {
-			resource = findResourceForPath(otherRevisionFilePath);
-		}
-
-		if (resource != null) {
-			if (!(resource instanceof IFile)) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-						"Unable to get resource {0}.", filePath)));
-			}
-
-			IProject project = resource.getProject();
-
-			if (project == null) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-						"Unable to get project for resource {0}.", filePath)));
-			}
-
-			RepositoryProvider rp = RepositoryProvider.getProvider(project);
-			checkIfSupportedTeamProvider(rp);
-			if (rp != null && rp.getFileHistoryProvider() != null) {
-
-				// this project has a team nature associated with it in the workspace
-				final IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
-
-				IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(resource);
-
-				boolean inSync = isRemoteFileInSync(resource, rp);
-
-				if (inSync && localFileRevision.getContentIdentifier() != null
-						&& localFileRevision.getContentIdentifier().equals(revisionString)) {
-					return TeamUiUtils.openLocalResource(resource);
-				} else {
-					if (Display.getCurrent() != null) {
-						return openRemoteResource(revisionString, resource, historyProvider, monitor);
-					} else {
-						final IEditorPart[] part = new IEditorPart[1];
-						final CoreException[] exception = new CoreException[1];
-						final IResource res = resource;
-						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-							public void run() {
-								try {
-									part[0] = openRemoteResource(revisionString, res, historyProvider, monitor);
-								} catch (CoreException e) {
-									exception[0] = e;
-								}
-							}
-						});
-						if (exception[0] != null) {
-							throw exception[0];
-						}
-
-						return part[0];
-					}
-				}
-			}
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-					"Unable to get repository provider for project {0}.", project.getName())));
-		}
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-				"Unable to get resource {0}.", filePath)));
-	}
-
 	private static IResource findResourceForPath(String filePath) {
 		IPath path = new Path(filePath);
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
@@ -536,31 +411,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 			return location.findMember(path);
 		}
 		return null;
-	}
-
-	private static IEditorPart openRemoteResource(String revisionString, IResource resource,
-			IFileHistoryProvider historyProvider, IProgressMonitor monitor) throws CoreException {
-		// we need a different revision than the one in the local workspace
-		IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
-
-		if (fileHistory != null) {
-			IFileRevision remoteFileRevision = fileHistory.getFileRevision(revisionString);
-			if (remoteFileRevision != null) {
-				try {
-					return Utils.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
-							remoteFileRevision, monitor);
-				} catch (CoreException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, e.getMessage(), e));
-					throw e;
-				}
-			} else {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-						"Cannot open editor for {0}. Remote file revision is null.", resource.getName())));
-			}
-		} else {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-					"Cannot open editor for {0}. File history is null.", resource.getName())));
-		}
 	}
 
 	private static boolean isRemoteFileInSync(IResource resource, RepositoryProvider rp) {

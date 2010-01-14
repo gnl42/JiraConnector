@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CompareVirtualFilesJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -21,10 +22,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.jface.action.IAction;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.team.internal.ui.ITeamUIImages;
 import org.eclipse.team.ui.TeamImages;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -44,13 +44,9 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 	@Override
 	public void run() {
 		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
-		IAction action;
-		if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
-			action = new CompareVersionedVirtualFileAction(fileInfo, comment, review);
-		} else {
-			action = new CompareUploadedVirtualFileAction(fileInfo, comment, review, WorkbenchUtil.getShell());
-		}
-		action.run();
+		CompareVirtualFilesJob job = new CompareVirtualFilesJob(review, fileInfo, comment);
+		job.setPriority(Job.INTERACTIVE);
+		job.schedule();
 	}
 
 	@Override

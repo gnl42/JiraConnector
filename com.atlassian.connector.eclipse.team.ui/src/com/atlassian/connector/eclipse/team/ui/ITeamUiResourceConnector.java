@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -145,21 +144,6 @@ public interface ITeamUiResourceConnector {
 	 */
 	boolean isResourceManagedBy(IResource resource);
 
-	/**
-	 * 
-	 * @param repoUrl
-	 * @param filePath
-	 * @param otherRevisionFilePath
-	 * @param revisionString
-	 * @param otherRevisionString
-	 * @param monitor
-	 * @return null if operations is not supported/handled, otherwise editor part
-	 * @throws CoreException
-	 */
-	@Nullable
-	IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, IProgressMonitor monitor) throws CoreException;
-
 	boolean canHandleEditorInput(IEditorInput editorInput);
 
 	boolean canHandleFile(IFile file);
@@ -179,10 +163,6 @@ public interface ITeamUiResourceConnector {
 
 	@Nullable
 	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull IFile file);
-
-	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor)
-			throws CoreException;
 
 	/**
 	 * @param monitor
