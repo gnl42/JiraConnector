@@ -437,7 +437,7 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, String otherRevisionFilePath,
 			final String revisionString, final IProgressMonitor monitor) throws CoreException {
-		// this is a good backup (Works for cvs and anyone that uses the history provider
+		// this is a good backup (works for cvs and anyone that uses the history provider)
 
 		// TODO add support for finding a project in the path so that we can find the proper resource 
 		// (i.e. file path and project name may be different)

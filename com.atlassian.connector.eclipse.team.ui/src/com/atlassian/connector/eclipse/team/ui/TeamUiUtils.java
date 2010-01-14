@@ -23,12 +23,17 @@ import org.eclipse.compare.contentmergeviewer.IMergeViewerContentProvider;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -67,6 +72,7 @@ import java.util.Collection;
  */
 @SuppressWarnings("restriction")
 public final class TeamUiUtils {
+	public static final String TEAM_PROV_ID_SVN_SUBVERSIVE = "org.eclipse.team.svn.core.svnnature";
 
 	public static final String TEAM_PROVIDER_ID_CVS_ECLIPSE = "org.eclipse.team.cvs.core.cvsnature";
 
@@ -81,55 +87,14 @@ public final class TeamUiUtils {
 		return defaultConnector;
 	}
 
-	@Nullable
-	public static IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath,
-			String revisionString, String otherRevisionString, IProgressMonitor monitor) {
-		// TODO if the repo url is null, we should probably use the task repo host and look at all repos
-
-		assert (filePath != null);
-		assert (revisionString != null);
-		if (!checkTeamConnectors()) {
-			return null;
-		}
-
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-
-		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
-
-		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				try {
-					IEditorPart editor = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
-							otherRevisionString, monitor);
-					if (editor == null) {
-						StatusHandler.log(new Status(IStatus.INFO, AtlassianTeamUiPlugin.PLUGIN_ID,
-								"Requested file opened in external editor"));
-					}
-					return editor;
-				} catch (CoreException e) {
-					StatusHandler.log(e.getStatus());
-					//ignore and try with default
-				}
-			}
-		}
-
-		// try a backup solution
+	public static boolean isInSync(IResource resource, String revision) {
+		LocalStatus status;
 		try {
-			IEditorPart editor = defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
-					otherRevisionString, monitor);
-			if (editor == null) {
-				StatusHandler.log(new Status(IStatus.INFO, AtlassianTeamUiPlugin.PLUGIN_ID,
-						"Requested file opened in external editor"));
-			}
-			return editor;
-		} catch (UnsupportedTeamProviderException e) {
-			TeamUiMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
-			return null;
+			status = getLocalRevision(resource);
+			return (status != null && (status.getRevision().equals(revision) || status.getLastChangedRevision().equals(
+					revision)));
 		} catch (CoreException e) {
-			TeamUiMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
-			return null;
+			return false;
 		}
 	}
 
@@ -155,6 +120,51 @@ public final class TeamUiUtils {
 			return false;
 		}
 		return true;
+	}
+
+	public static IEditorPart openLocalResource(IResource resource, String revision) throws CoreException {
+		IProject project = resource.getProject();
+
+		if (!(resource instanceof IFile) || project == null) {
+			return null;
+		}
+
+		if (isInSync(resource, revision)) {
+			return TeamUiUtils.openLocalResource(resource);
+		}
+
+		return null;
+	}
+
+	public static IResource findResourceForPath(String repoUrl, String filePath, IProgressMonitor monitor) {
+		IPath path = new Path(filePath);
+		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+		if (resource == null) {
+			return findResourceForPath2(filePath);
+		}
+		return resource;
+	}
+
+	private static IResource findResourceForPath2(String filePath) {
+		if (filePath == null || filePath.length() <= 0) {
+			return null;
+		}
+		IContainer location = ResourcesPlugin.getWorkspace().getRoot();
+
+		IPath path = new Path(filePath);
+		IResource resource = null;
+		while (!path.isEmpty() && resource == null) {
+			resource = match(location, path);
+			path = path.removeFirstSegments(1);
+		}
+		return resource;
+	}
+
+	private static IResource match(IContainer location, IPath path) {
+		if (!path.isEmpty()) {
+			return location.findMember(path);
+		}
+		return null;
 	}
 
 	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,

@@ -28,10 +28,25 @@ public class LocalStatus {
 
 	private final boolean ignored;
 
+	private final String lastChangedRevision;
+
 	public LocalStatus(@Nullable String scmPath, @Nullable String revision, boolean added, boolean dirty,
 			boolean binary, boolean versioned, boolean ignored) {
 		this.scmPath = scmPath;
 		this.revision = revision;
+		this.lastChangedRevision = revision;
+		this.binary = binary;
+		this.dirty = dirty;
+		this.added = added;
+		this.versioned = versioned;
+		this.ignored = ignored;
+	}
+
+	public LocalStatus(@Nullable String scmPath, @Nullable String revision, @Nullable String lastChangedRevision,
+			boolean added, boolean dirty, boolean binary, boolean versioned, boolean ignored) {
+		this.scmPath = scmPath;
+		this.revision = revision;
+		this.lastChangedRevision = lastChangedRevision;
 		this.binary = binary;
 		this.dirty = dirty;
 		this.added = added;
@@ -79,6 +94,11 @@ public class LocalStatus {
 		return new LocalStatus(scmPath, revision, false, dirty, binary, true, false);
 	}
 
+	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision,
+			@Nullable String lastChangedRevision, boolean dirty, boolean binary) {
+		return new LocalStatus(scmPath, revision, lastChangedRevision, false, dirty, binary, true, false);
+	}
+
 	public static LocalStatus makeVersioned(@Nullable String scmPath, @Nullable String revision) {
 		return makeVersioned(scmPath, revision, false, false);
 	}
@@ -89,5 +109,13 @@ public class LocalStatus {
 
 	public static LocalStatus makeIngored() {
 		return new LocalStatus(null, null, false, false, false, false, true);
+	}
+
+	public String getLastChangedRevision() {
+		return lastChangedRevision;
+	}
+
+	public boolean isIgnored() {
+		return ignored;
 	}
 }
