@@ -196,7 +196,11 @@ public class JiraClientCache {
 	private void initializeProjectRoles(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_project_roles, 1);
 
-		data.projectRoles = jiraClient.getProjectRoles(submonitor.newChild(1));
+		ProjectRole[] projectRoles = jiraClient.getProjectRoles(submonitor.newChild(1));
+		if (projectRoles == null) {
+			projectRoles = new ProjectRole[0];
+		}
+		data.projectRoles = projectRoles;
 	}
 
 	private void initializeResolutions(JiraClientData data, IProgressMonitor monitor) throws JiraException {

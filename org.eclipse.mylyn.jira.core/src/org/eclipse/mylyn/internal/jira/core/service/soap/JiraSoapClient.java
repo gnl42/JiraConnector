@@ -60,6 +60,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRoleActors;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
@@ -314,10 +315,18 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
-	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+	public ProjectRole[] getProjectRoles(final IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<ProjectRole[]>() {
 			public ProjectRole[] call() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getProjectRoles(loginToken.getCurrentValue()));
+				String version = jiraClient.getCache().getServerInfo(monitor).getVersion();
+				boolean hasApi = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0);
+				if (hasApi) {
+					RemoteProjectRole[] remoteProjectRoles = getSoapService().getProjectRoles(
+							loginToken.getCurrentValue());
+					return JiraSoapConverter.convert(remoteProjectRoles);
+				} else {
+					return null;
+				}
 			}
 		});
 	}
