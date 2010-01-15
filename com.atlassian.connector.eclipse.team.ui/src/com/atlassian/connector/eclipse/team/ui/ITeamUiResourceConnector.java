@@ -57,6 +57,7 @@ public interface ITeamUiResourceConnector {
 			IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Return local revision status. Maybe called from UI thread.
 	 * 
 	 * @param resource
 	 * @return null if operation is not handled/supported, otherwise revision info

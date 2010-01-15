@@ -44,8 +44,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.svn.core.IStateFilter;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
+import org.eclipse.team.svn.core.connector.SVNChangeStatus;
 import org.eclipse.team.svn.core.connector.SVNConnectorException;
-import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.SVNLogEntry;
 import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
@@ -53,7 +53,6 @@ import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.connector.SVNRevision.Kind;
 import org.eclipse.team.svn.core.operation.IActionOperation;
 import org.eclipse.team.svn.core.operation.local.GetLocalFileContentOperation;
-import org.eclipse.team.svn.core.operation.local.InfoOperation;
 import org.eclipse.team.svn.core.operation.remote.GetLogMessagesOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
@@ -65,7 +64,6 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
 import org.eclipse.team.svn.ui.preferences.SVNTeamPreferences;
 import org.eclipse.team.svn.ui.repository.RepositoryFileEditorInput;
-import org.eclipse.team.svn.ui.utility.UIMonitorUtility;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
@@ -200,16 +198,14 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 						SVNProperty.BuiltIn.MIME_TYPE);
 				boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
 
-				final InfoOperation infoOperation = new InfoOperation(resource);
-				UIMonitorUtility.doTaskBusyDefault(infoOperation);
-				final SVNEntryInfo entryInfo = infoOperation.getInfo();
-
 				if (IStateFilter.SF_ADDED.accept(localResource)) {
 					return LocalStatus.makeAdded(svnResource.getUrl(), isBinary);
 				}
 
-				return LocalStatus.makeVersioned(svnResource.getUrl(), String.valueOf(entryInfo.revision),
-						String.valueOf(entryInfo.lastChangedRevision),
+				final SVNChangeStatus status = SVNUtility.getSVNInfoForNotConnected(resource);
+
+				return LocalStatus.makeVersioned(svnResource.getUrl(), String.valueOf(status.revision),
+						String.valueOf(status.lastChangedRevision),
 						localResource.getChangeMask() != ILocalResource.NO_MODIFICATION, isBinary);
 			} catch (RuntimeException e) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
