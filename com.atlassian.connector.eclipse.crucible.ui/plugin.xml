@@ -14,23 +14,9 @@
 	</extension>
 
 	<!-- Menus -->
-	<extension point="org.eclipse.ui.popupMenus">
-		<objectContribution 
-			objectClass="org.eclipse.core.resources.mapping.ResourceMapping" 
-			adaptable="true" 
-			id="com.atlassian.connector.eclipse.crucible.ui.ReviewResource">
-			<action 
-				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromResourcesOldAction" 
-				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateReviewAction" 
-				menubarPath="team.main/group10" 
-				icon="icons/obj16/crucible.png" 
-				label="Create Review for Selected Resource(s)" 
-				tooltip="Create Review in Crucible for Selected Resource(s)">
-			</action>
-		</objectContribution>
-		
+	<extension point="org.eclipse.ui.popupMenus">		
 		<objectContribution
-            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
+            objectClass="com.atlassian.connector.eclipse.ui.commons.IEditorResource"
             adaptable="true"
             id="com.atlassian.connector.eclipse.crucible.ui.ReviewResource2">
          <action
@@ -42,30 +28,6 @@
                tooltip="Create Review">
          </action>
       </objectContribution>
-		
-		
-		<viewerContribution
-        	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
-        	targetID="#CompilationUnitEditorContext">
-     	<action
-           class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
-           icon="icons/obj16/crucible.png"
-           id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction1"
-           label="Discuss Editor Selection"
-           menubarPath="team.main/group10">
-     	</action>
-     	</viewerContribution>
-     	<viewerContribution
-        	id="com.atlassian.connector.eclipse.crucible.ui.viewerContribution1"
-        	targetID="#TextEditorContext">
-     	<action
-           class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewFromEditorSelectionAction"
-           icon="icons/obj16/crucible.png"
-           id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSelectionReviewAction2"
-           label="Discuss Editor Selection"
-           menubarPath="team.main/group10">
-     	</action>
-  </viewerContribution>
 	</extension>
 
 	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup" name="Crucible Review Actions" point="org.eclipse.ui.popupMenus">
@@ -160,4 +122,19 @@
          </enablement>
       </decorator>
    </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+         <!-- I declare that I can adapt from IAdaptable in order actually to make it work in as many contexts as possible -
+         not only for instanceofs IResource, but also for CompilationUnit, IJavaProject, etc. which do adapt to IResource, but 
+         do not implement this interface. It also handles IEditorInput -->
+      <factory
+            adaptableType="org.eclipse.core.runtime.IAdaptable"
+            class="com.atlassian.connector.eclipse.ui.commons.EditorResourceAdapterFactory">
+         <adapter
+               type="com.atlassian.connector.eclipse.ui.commons.IEditorResource">
+         </adapter>
+      </factory>
+   </extension>
+   
 </plugin>

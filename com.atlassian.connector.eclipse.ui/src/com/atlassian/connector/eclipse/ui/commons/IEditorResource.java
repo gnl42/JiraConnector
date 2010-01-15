@@ -9,13 +9,13 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.fisheye.ui;
+package com.atlassian.connector.eclipse.ui.commons;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.source.LineRange;
 
-public interface IFishEyeResource extends IAdaptable {
+public interface IEditorResource extends IAdaptable {
 	LineRange getLineRange();
 
 	IResource getResource();

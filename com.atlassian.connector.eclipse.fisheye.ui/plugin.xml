@@ -24,7 +24,7 @@
       
 		<!-- copying FishEye link to clipboard -->
       <objectContribution
-            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
+            objectClass="com.atlassian.connector.eclipse.ui.commons.IEditorResource"
             adaptable="true"
             id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectContribution">
          <action
@@ -39,7 +39,7 @@
 
 		<!-- opening in FishEye -->
       <objectContribution
-            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
+            objectClass="com.atlassian.connector.eclipse.ui.commons.IEditorResource"
             adaptable="true"
             id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectContribution">
          <action
@@ -114,19 +114,5 @@
             id="com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage"
             name="Repository Mappings">
       </page>
-   </extension>
-
-   <extension
-         point="org.eclipse.core.runtime.adapters">
-         <!-- I declare that I can adapt from IAdaptable in order actually to make it work in as many contexts as possible -
-         not only for instanceofs IResource, but also for CompilationUnit, IJavaProject, etc. which do adapt to IResource, but 
-         do not implement this interface. It also handles IEditorInput -->
-      <factory
-            adaptableType="org.eclipse.core.runtime.IAdaptable"
-            class="com.atlassian.connector.eclipse.fisheye.ui.FishEyeResourceAdapterFactory">
-         <adapter
-               type="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource">
-         </adapter>
-      </factory>
    </extension>
 </plugin>

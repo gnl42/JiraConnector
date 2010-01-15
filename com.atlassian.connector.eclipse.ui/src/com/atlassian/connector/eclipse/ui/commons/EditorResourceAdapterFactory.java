@@ -9,9 +9,8 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.fisheye.ui;
+package com.atlassian.connector.eclipse.ui.commons;
 
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -22,19 +21,19 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-public class FishEyeResourceAdapterFactory implements IAdapterFactory {
+public class EditorResourceAdapterFactory implements IAdapterFactory {
 
-	private final class BasicFishEyeResource implements IFishEyeResource {
+	private final class BasicEditorResource implements IEditorResource {
 		private final IResource resource;
 
 		private final LineRange lineRange;
 
-		public BasicFishEyeResource(IResource resource, LineRange lineRange) {
+		public BasicEditorResource(IResource resource, LineRange lineRange) {
 			this.resource = resource;
 			this.lineRange = lineRange;
 		}
 
-		private BasicFishEyeResource(IResource resource) {
+		private BasicEditorResource(IResource resource) {
 			this(resource, null);
 		}
 
@@ -57,16 +56,16 @@ public class FishEyeResourceAdapterFactory implements IAdapterFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static final Class[] ADAPTERS = { IFishEyeResource.class };
+	private static final Class[] ADAPTERS = { IEditorResource.class };
 
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (!IFishEyeResource.class.equals(adapterType)) {
+		if (!IEditorResource.class.equals(adapterType)) {
 			return null;
 		}
 
 		if (adaptableObject instanceof IResource) {
-			return new BasicFishEyeResource((IResource) adaptableObject);
+			return new BasicEditorResource((IResource) adaptableObject);
 		}
 
 		if (adaptableObject instanceof IEditorInput) {
@@ -81,15 +80,16 @@ public class FishEyeResourceAdapterFactory implements IAdapterFactory {
 			//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
 			//						- textSelection.getStartLine());
 			// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-			final LineRange lineRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
-			return new BasicFishEyeResource(resource, lineRange);
+			final LineRange lineRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart,
+					editorInput);
+			return new BasicEditorResource(resource, lineRange);
 		}
 
 		if (adaptableObject instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) adaptableObject;
 			final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
 			if (resource != null) {
-				return new BasicFishEyeResource(resource);
+				return new BasicEditorResource(resource);
 			}
 		}
 

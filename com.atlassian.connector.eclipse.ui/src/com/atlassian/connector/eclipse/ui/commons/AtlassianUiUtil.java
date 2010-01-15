@@ -16,13 +16,19 @@ import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Provides utility methods for the Atlassian Connector for Eclipse
@@ -68,6 +74,18 @@ public final class AtlassianUiUtil {
 					+ " view."));
 			return false;
 		}
-	
+	}
+
+	public static LineRange getSelectedLineNumberRangeFromEditorInput(IEditorPart editor, IEditorInput editorInput) {
+
+		if (editor instanceof ITextEditor && editor.getEditorInput() == editorInput) {
+			ISelection selection = ((ITextEditor) editor).getSelectionProvider().getSelection();
+			if (selection instanceof TextSelection) {
+				TextSelection textSelection = ((TextSelection) selection);
+				return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
+						- textSelection.getStartLine());
+			}
+		}
+		return null;
 	}
 }

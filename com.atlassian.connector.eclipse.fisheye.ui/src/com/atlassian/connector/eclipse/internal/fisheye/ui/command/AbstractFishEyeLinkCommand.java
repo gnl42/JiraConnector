@@ -15,8 +15,8 @@ import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -60,7 +60,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 				//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
 				//						- textSelection.getStartLine());
 				// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-				lineRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(activeEditor,
+				lineRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor,
 						activeEditor.getEditorInput());
 				if (lineRange == null) {
 					StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
@@ -117,7 +117,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 
 		IEditorInput editorInput = getEditorInputFromSelection(HandlerUtil.getCurrentSelection(event));
 		if (editorInput != null && editorPart != null) {
-			return TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
+			return AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
 		}
 		return null;
 	}

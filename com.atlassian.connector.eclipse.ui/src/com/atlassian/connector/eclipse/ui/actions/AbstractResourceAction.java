@@ -9,10 +9,11 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
+package com.atlassian.connector.eclipse.ui.actions;
 
-import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
+import com.atlassian.connector.eclipse.ui.commons.IEditorResource;
+import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -33,37 +34,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("restriction")
 public abstract class AbstractResourceAction extends BaseSelectionListenerAction {
 
-	// TODO jj move it up
-	public static final class ResourceEditorBean {
-		private final IResource resource;
-
-		private final LineRange lineRange;
-
-		private ResourceEditorBean(IResource resource, LineRange lineRange) {
-			this.resource = resource;
-			this.lineRange = lineRange;
-		}
-
-		public IResource getResource() {
-			return resource;
-		}
-
-		public LineRange getLineRange() {
-			return lineRange;
-		}
-	}
-
-	// TODO jj move to another location the whole action
 	private IWorkbenchWindow workbenchWindow;
 
 	private List<ResourceEditorBean> selectionData;
 
 	protected AbstractResourceAction(String text) {
 		super(text);
-		// ignore
 	}
 
 	public void dispose() {
@@ -88,8 +66,8 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 
 			for (Object selectedObject : selectedObjects) {
 
-				if (selectedObject instanceof IFishEyeResource) {
-					IFishEyeResource a = (IFishEyeResource) selectedObject;
+				if (selectedObject instanceof IEditorResource) {
+					IEditorResource a = (IEditorResource) selectedObject;
 					ret.add(new ResourceEditorBean(a.getResource(), a.getLineRange()));
 
 				} else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
@@ -112,7 +90,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 					//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
 					//						- textSelection.getStartLine());
 					// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-					lineRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(activeEditor,
+					lineRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor,
 							activeEditor.getEditorInput());
 					ret.add(new ResourceEditorBean(resource, lineRange));
 				}
@@ -159,7 +137,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 		IEditorPart editorPart = getActiveEditor();
 		IEditorInput editorInput = getEditorInputFromSelection(selection);
 		if (editorInput != null && editorPart != null) {
-			return TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
+			return AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
 		}
 		return null;
 	}

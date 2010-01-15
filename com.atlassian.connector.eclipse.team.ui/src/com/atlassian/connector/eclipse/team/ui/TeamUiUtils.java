@@ -37,10 +37,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
@@ -161,19 +158,6 @@ public final class TeamUiUtils {
 	private static IResource match(IContainer location, IPath path) {
 		if (!path.isEmpty()) {
 			return location.findMember(path);
-		}
-		return null;
-	}
-
-	public static LineRange getSelectedLineNumberRangeFromEditorInput(IEditorPart editor, IEditorInput editorInput) {
-
-		if (editor instanceof ITextEditor && editor.getEditorInput() == editorInput) {
-			ISelection selection = ((ITextEditor) editor).getSelectionProvider().getSelection();
-			if (selection instanceof TextSelection) {
-				TextSelection textSelection = ((TextSelection) selection);
-				return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
-						- textSelection.getStartLine());
-			}
 		}
 		return null;
 	}

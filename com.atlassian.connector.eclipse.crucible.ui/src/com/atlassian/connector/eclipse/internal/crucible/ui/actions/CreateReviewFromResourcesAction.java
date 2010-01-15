@@ -17,12 +17,13 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySe
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
-import com.atlassian.connector.eclipse.internal.fisheye.ui.action.AbstractResourceAction;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector.State;
+import com.atlassian.connector.eclipse.ui.actions.AbstractResourceAction;
+import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -55,11 +56,16 @@ import java.util.Set;
 @SuppressWarnings("restriction")
 public class CreateReviewFromResourcesAction extends AbstractResourceAction implements IActionDelegate {
 
-//	private List<ResultBean> selection;
-
 	public CreateReviewFromResourcesAction() {
 		super("Create Review Action");
 	}
+
+	// TODO jj test with subversive
+
+	// TODO jj selection tree not visible if only one file???
+
+	// TODO jj extended test after adapter refactoring
+	// TODO jj code review after refactoring
 
 	@Override
 	protected void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell) {
