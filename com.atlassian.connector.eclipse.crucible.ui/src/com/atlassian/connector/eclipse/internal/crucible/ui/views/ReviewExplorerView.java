@@ -61,7 +61,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Pawel Niewiadomski
@@ -212,9 +214,27 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		setReview(initializeWith);
 	}
 
+	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
+		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments") {
+			@Override
+			public List<? extends Object> getChildren() {
+				try {
+					return newReview.getGeneralComments();
+				} catch (ValueNotYetInitialized e) {
+					return MiscUtil.buildArrayList();
+				}
+			}
+		}, new ReviewTreeNode(null, "Files") {
+			public java.util.List<? extends Object> getChildren() {
+				return Arrays.asList(compactTree(newReview));
+			};
+		} };
+		return nodes;
+	}
+
 	private void setReview(Review newReview) {
 		if (newReview != null) {
-			final ReviewTreeNode[] newInput = compactTree(newReview);
+			final ReviewTreeNode[] newInput = reviewToTreeNodes(newReview);
 			final Object[] previouslyExpandedElements = viewer.getExpandedElements();
 			viewer.setInput(newInput);
 			if (review == null || !review.equals(newReview)) {
@@ -388,8 +408,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private void fillExpandedElements(ArrayList<Object> expandedElements, ReviewTreeNode root) {
 		expandedElements.add(root);
-		for (ReviewTreeNode treeNode : root.getChildren()) {
-			fillExpandedElements(expandedElements, treeNode);
+		for (Object treeNode : root.getChildren()) {
+			if (treeNode instanceof ReviewTreeNode) {
+				fillExpandedElements(expandedElements, (ReviewTreeNode) treeNode);
+			}
 		}
 	}
 

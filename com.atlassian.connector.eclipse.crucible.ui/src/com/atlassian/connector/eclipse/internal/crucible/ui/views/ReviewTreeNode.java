@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ReviewTreeNode {
 	@NotNull
-	private List<ReviewTreeNode> children = MiscUtil.buildArrayList();
+	private List<Object> children = MiscUtil.buildArrayList();
 
 	@Nullable
 	private CrucibleFileInfo cfi;
@@ -43,7 +43,7 @@ public class ReviewTreeNode {
 	}
 
 	@NotNull
-	public List<ReviewTreeNode> getChildren() {
+	public List<?> getChildren() {
 		return children;
 	}
 
@@ -52,12 +52,15 @@ public class ReviewTreeNode {
 			cfi = aCfi;
 			return;
 		}
-		for (ReviewTreeNode child : children) {
-			if (child.pathToken.equals(path[0])) {
+		for (Object child : children) {
+			if (!(child instanceof ReviewTreeNode)) {
+				continue;
+			}
+			if (((ReviewTreeNode) child).pathToken.equals(path[0])) {
 				// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
 				final String[] allButFirst = new String[path.length - 1];
 				System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
-				child.add(allButFirst, aCfi);
+				((ReviewTreeNode) child).add(allButFirst, aCfi);
 				return;
 			}
 		}
@@ -71,20 +74,22 @@ public class ReviewTreeNode {
 
 	public void compact() {
 		while (children.size() == 1) {
-			ReviewTreeNode onlyChild = children.get(0);
-			if (onlyChild.getCrucibleFileInfo() == null) {
+			Object onlyChild = children.get(0);
+			if (onlyChild instanceof ReviewTreeNode && ((ReviewTreeNode) onlyChild).getCrucibleFileInfo() == null) {
 				if (pathToken == null) {
-					pathToken = onlyChild.pathToken;
+					pathToken = ((ReviewTreeNode) onlyChild).pathToken;
 				} else {
-					pathToken = pathToken + "/" + onlyChild.pathToken;
+					pathToken = pathToken + "/" + ((ReviewTreeNode) onlyChild).pathToken;
 				}
-				children = onlyChild.children;
+				children = ((ReviewTreeNode) onlyChild).children;
 			} else {
 				break;
 			}
 		}
-		for (ReviewTreeNode child : children) {
-			child.compact();
+		for (Object child : children) {
+			if (child instanceof ReviewTreeNode) {
+				((ReviewTreeNode) child).compact();
+			}
 		}
 	}
 

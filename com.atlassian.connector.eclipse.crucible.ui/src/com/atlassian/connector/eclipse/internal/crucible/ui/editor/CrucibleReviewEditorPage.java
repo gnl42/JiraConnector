@@ -25,7 +25,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleGeneralCommentsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -476,7 +475,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	private void createFormParts() {
 		focusablePart = new CrucibleDetailsPart();
 		parts.add(focusablePart);
-		parts.add(new CrucibleGeneralCommentsPart());
 		parts.add(new EmptyReviewFilesPart());
 	}
 

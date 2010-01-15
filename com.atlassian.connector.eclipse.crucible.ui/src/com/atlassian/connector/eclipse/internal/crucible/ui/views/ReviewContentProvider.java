@@ -26,9 +26,10 @@ public final class ReviewContentProvider extends ArrayTreeContentProvider {
 		if (inputElement instanceof ReviewTreeNode) {
 			ReviewTreeNode myTreeNode = (ReviewTreeNode) inputElement;
 			final ArrayList<Object> children = MiscUtil.buildArrayList();
-			for (ReviewTreeNode childNode : myTreeNode.getChildren()) {
-				if (childNode.getCrucibleFileInfo() != null && childNode.getChildren().isEmpty()) {
-					children.add(childNode.getCrucibleFileInfo());
+			for (Object childNode : myTreeNode.getChildren()) {
+				if (childNode instanceof ReviewTreeNode && ((ReviewTreeNode) childNode).getCrucibleFileInfo() != null
+						&& ((ReviewTreeNode) childNode).getChildren().isEmpty()) {
+					children.add(((ReviewTreeNode) childNode).getCrucibleFileInfo());
 				} else {
 					children.add(childNode);
 				}
