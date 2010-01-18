@@ -25,9 +25,9 @@ import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jetbrains.annotations.NotNull;
@@ -44,30 +44,32 @@ public abstract class AbstractFishEyeLinkAction extends AbstractResourceAction {
 	protected abstract void processUrl(String url);
 
 	@Override
-	protected void selectionChanged(IAction action, @NotNull List<ResourceEditorBean> selection) {
-		if (action.isEnabled()) {
-			boolean isEnabled = false;
+	protected boolean updateSelection(IStructuredSelection structuredSelection) {
+		if (!super.updateSelection(structuredSelection)) {
+			return false;
+		}
 
-			if (selection.get(0) != null && selection.get(0).getResource() != null) {
-				IResource resource = selection.get(0).getResource();
+		boolean isEnabled = false;
+		List<ResourceEditorBean> selection = getSelectionData();
 
-				try {
-					if (TeamUiUtils.hasNoTeamConnectors()) {
+		if (selection != null && selection.size() > 0
+				&& selection.get(0) != null && selection.get(0).getResource() != null) {
+			IResource resource = selection.get(0).getResource();
+
+			try {
+				if (TeamUiUtils.hasNoTeamConnectors()) {
+					isEnabled = true;
+				} else {
+					LocalStatus status = TeamUiUtils.getLocalRevision(resource);
+					if (status != null && status.isVersioned()) {
 						isEnabled = true;
-					} else {
-						LocalStatus status = TeamUiUtils.getLocalRevision(resource);
-						if (status != null && status.isVersioned()) {
-							isEnabled = true;
-						}
 					}
-				} catch (CoreException e) {
-					isEnabled = false;
 				}
-
-				action.setEnabled(isEnabled);
-				setEnabled(selection.get(0) != null && selection.get(0).getResource() != null);
+			} catch (CoreException e) {
+				isEnabled = false;
 			}
 		}
+		return isEnabled;
 	}
 
 	@Override

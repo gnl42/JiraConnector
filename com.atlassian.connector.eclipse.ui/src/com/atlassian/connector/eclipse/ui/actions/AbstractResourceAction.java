@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -42,6 +43,10 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 
 	protected AbstractResourceAction(String text) {
 		super(text);
+	}
+
+	protected List<ResourceEditorBean> getSelectionData() {
+		return selectionData;
 	}
 
 	public void dispose() {
@@ -99,17 +104,19 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 		return ret;
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (action.isEnabled()) {
-			selectionData = getData(selection);
-			selectionChanged(action, selectionData);
-		} else {
-			selectionData = null;
-		}
-
+	@Override
+	protected boolean updateSelection(IStructuredSelection selection) {
+		selectionData = getData(selection);
+		return super.updateSelection(selection);
 	}
 
-	protected abstract void selectionChanged(IAction action, List<ResourceEditorBean> selection);
+	public void selectionChanged(IAction action, ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			selectionChanged((IStructuredSelection) selection);
+		} else {
+			selectionChanged(StructuredSelection.EMPTY);
+		}
+	}
 
 	private IEditorPart getActiveEditor() {
 		IWorkbenchWindow window = workbenchWindow;
