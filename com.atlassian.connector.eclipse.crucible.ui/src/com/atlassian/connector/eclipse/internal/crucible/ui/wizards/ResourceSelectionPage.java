@@ -127,7 +127,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		super("Add Resources to Review");
 		this.taskRepository = taskRepository;
 		setTitle("Add Resources to Review");
-		setDescription("Add Resources to Review");
+		setDescription("Add selected resources to Review. Modified or unversioned resources will be added as pre-commit review items.");
 
 		this.roots.addAll(roots);
 

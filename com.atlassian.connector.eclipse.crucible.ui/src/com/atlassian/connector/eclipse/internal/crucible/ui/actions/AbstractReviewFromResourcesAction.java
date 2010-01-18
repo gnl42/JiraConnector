@@ -29,6 +29,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionDelegate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractReviewFromResourcesAction extends AbstractResourceAction {
+public abstract class AbstractReviewFromResourcesAction extends AbstractResourceAction implements IActionDelegate {
 
 	protected AbstractReviewFromResourcesAction(String text) {
 		super(text);

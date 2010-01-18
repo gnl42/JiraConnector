@@ -38,18 +38,22 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 
 	private final boolean waitForTaskListSync;
 
+	private final boolean refresh;
+
 	protected CrucibleReviewChangeJob(String name, TaskRepository taskRepository) {
-		this(name, taskRepository, false);
+		this(name, taskRepository, false, false);
 	}
 
-	protected CrucibleReviewChangeJob(String name, TaskRepository taskRepository, boolean waitForTaskListSync) {
+	protected CrucibleReviewChangeJob(String name, TaskRepository taskRepository, boolean refresh,
+			boolean waitForTaskListSync) {
 		super(name);
 		this.taskRepository = taskRepository;
+		this.refresh = refresh;
 		this.waitForTaskListSync = waitForTaskListSync;
 	}
 
 	@Override
-	public void runImpl(IProgressMonitor monitor) {
+	public void runImpl(IProgressMonitor monitor) throws CoreException {
 		setStatus(Status.CANCEL_STATUS);
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
@@ -58,8 +62,10 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 					"Unable to get client, please try to refresh"));
 			return;
 		}
-		try {
-			setStatus(execute(client, monitor));
+
+		setStatus(execute(client, monitor));
+
+		if (refresh || waitForTaskListSync) {
 			SynchronizationJob synchronizeRepositoriesJob = TasksUiPlugin.getTaskJobFactory()
 					.createSynchronizeRepositoriesJob(Collections.singleton(taskRepository));
 			synchronizeRepositoriesJob.schedule();
@@ -70,8 +76,6 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 					//ignore
 				}
 			}
-		} catch (CoreException e) {
-			setStatus(e.getStatus());
 		}
 	}
 

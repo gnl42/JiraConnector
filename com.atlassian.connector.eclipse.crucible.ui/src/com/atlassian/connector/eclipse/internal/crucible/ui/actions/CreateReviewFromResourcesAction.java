@@ -24,13 +24,11 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionDelegate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("restriction")
-public class CreateReviewFromResourcesAction extends AbstractReviewFromResourcesAction implements IActionDelegate {
+public class CreateReviewFromResourcesAction extends AbstractReviewFromResourcesAction {
 
 	public CreateReviewFromResourcesAction() {
 		super("Create Review Action");
@@ -152,7 +150,4 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 		}
 	}
 
-	@Override
-	protected void selectionChanged(IAction action, List<ResourceEditorBean> selection) {
-	}
 }

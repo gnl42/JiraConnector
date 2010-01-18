@@ -31,30 +31,37 @@
 	</extension>
 
 	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup" name="Crucible Review Actions" point="org.eclipse.ui.popupMenus">
-		<objectContribution adaptable="true" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution" objectClass="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry">
+		<objectContribution adaptable="true" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution" 
+			objectClass="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry">
 
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction" enablesFor="+" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewAction" label="Create Review..." menubarPath="mylyn" style="push" tooltip="Create a review from the selected Revision">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction" 
+				enablesFor="+" id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewAction" 
+				label="Create Review..." menubarPath="mylyn" style="push" tooltip="Create a review from the selected Revision">
 			</action>
 
 		</objectContribution>
 		<objectContribution id="com.atlassian.connector.eclipse.crucible.ui.objectContribution1" objectClass="org.eclipse.ui.IEditorInput">
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction" enablesFor="1" icon="icons/obj16/pin_addcomment.png" id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment" label="Comment on Selected Lines..." menubarPath="group.undo" tooltip="Add Line Comment to Active Review">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction" 
+				enablesFor="1" icon="icons/obj16/pin_addcomment.png" id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment" 
+				label="Comment on Selected Lines..." menubarPath="group.undo" tooltip="Add Line Comment to Active Review">
 			</action>
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction" enablesFor="1" id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment" label="Add General File Comment..." menubarPath="group.undo" tooltip="Add Comment to Active Review">
-			</action>
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" enablesFor="1" id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" label="Add File to Active Review" menubarPath="group.undo" tooltip="Add File to Active Review">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction" 
+				enablesFor="1" id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment" 
+				label="Add General File Comment..." menubarPath="group.undo" tooltip="Add Comment to Active Review">
 			</action>
 			<visibility>
-				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true">
-				</systemProperty>
+				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true"/>
 			</visibility>
 		</objectContribution>
-		<objectContribution id="com.atlassian.connector.eclipse.crucible.ui.objectContribution2" objectClass="org.eclipse.core.resources.IResource" adaptable="true">
-			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" label="Add Files to Active Review" menubarPath="team.main/group10" tooltip="Add Files to Active Review">
+		
+		<objectContribution id="com.atlassian.connector.eclipse.crucible.ui.objectContribution2" 
+			objectClass="com.atlassian.connector.eclipse.ui.commons.IEditorResource" adaptable="true">
+			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" 
+				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" 
+				label="Add Files to Active Review" menubarPath="team.main/group10" tooltip="Add Files to Active Review">
 			</action>
 			<visibility>
-				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true">
-				</systemProperty>
+				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true"/>
 			</visibility>
 		</objectContribution>
 	</extension>

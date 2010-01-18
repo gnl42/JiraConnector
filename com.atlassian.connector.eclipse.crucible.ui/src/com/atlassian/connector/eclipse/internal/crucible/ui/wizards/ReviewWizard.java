@@ -25,7 +25,9 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddUploadItemsToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -147,9 +149,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-			Review review = client.execute(new AddChangesetsToReviewOperation(monitor, getTaskRepository()));
-
-			updateCrucibleReview(client, review, monitor);
+			client.execute(new AddChangesetsToReviewOperation(monitor, getTaskRepository()));
 			return Status.OK_STATUS;
 		}
 	}
@@ -167,7 +167,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-			Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+			client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 				@Override
 				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -175,32 +175,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					return server.addPatchToReview(serverCfg, crucibleReview.getPermId(), patchRepository, patch);
 				}
 			});
-
-			updateCrucibleReview(client, updatedReview, monitor);
-			return Status.OK_STATUS;
-		}
-	}
-
-	private class AddItemsToReviewJob extends CrucibleReviewChangeJob {
-		private final Collection<UploadItem> items;
-
-		public AddItemsToReviewJob(String name, TaskRepository taskRepository, Collection<UploadItem> items) {
-			super(name, taskRepository);
-			this.items = items;
-		}
-
-		@Override
-		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-			Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
-				@Override
-				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-
-					return server.addItemsToReview(serverCfg, crucibleReview.getPermId(), items);
-				}
-			});
-
-			updateCrucibleReview(client, updatedReview, monitor);
 			return Status.OK_STATUS;
 		}
 	}
@@ -417,7 +391,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				IStatus result = runJobInContainer(getItemsJob);
 				if (result.isOK() && uploadItems.size() > 0) {
-					JobWithStatus job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(), uploadItems);
+					final JobWithStatus job = new AddUploadItemsToReviewJob(crucibleReview, uploadItems);
 
 					result = runJobInContainer(job);
 					if (result.isOK()) {
@@ -466,7 +440,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		// create review from editor selection (pre-commit)
 		if (types.contains(Type.ADD_UPLOAD_ITEMS)) {
 			if (uploadItems.size() > 0) {
-				JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(), uploadItems);
+				final JobWithStatus job = new AddUploadItemsToReviewJob(crucibleReview, uploadItems);
 
 				IStatus result = runJobInContainer(job);
 				if (!result.isOK()) {
@@ -481,56 +455,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		if (resourceSelectionPage != null && types.contains(Type.ADD_RESOURCES)) {
 			final List<DecoratedResource> resources = resourceSelectionPage.getSelection();
 			if (resources != null && resources.size() > 0) {
-
-				final Collection<IResource> postCommitResources = MiscUtil.buildArrayList();
-				final Collection<UploadItem> preCommitResources = MiscUtil.buildArrayList();
-
-				JobWithStatus getItemsJob = new JobWithStatus("Preparing data for review") {
-					@Override
-					public void runImpl(IProgressMonitor monitor) throws CoreException {
-						Collection<IResource> preCommitTmp = new ArrayList<IResource>();
-						for (DecoratedResource resource : resources) {
-							if (resource.isUpToDate()) {
-								postCommitResources.add(resource.getResource());
-							} else {
-								preCommitTmp.add(resource.getResource());
-							}
-						}
-
-						preCommitResources.addAll(resourceSelectionPage.getTeamResourceConnector()
-								.getUploadItemsForResources(preCommitTmp.toArray(new IResource[preCommitTmp.size()]),
-										monitor));
-					}
-				};
-
-				IStatus result = runJobInContainer(getItemsJob);
-				if (result.isOK()) {
-					// add post-commit resources
-					if (postCommitResources.size() > 0) {
-						final JobWithStatus job = new AddResourcesToReviewJob(crucibleReview,
-								postCommitResources.toArray(new IResource[postCommitResources.size()]));
-
-						result = runJobInContainer(job);
-						if (!result.isOK()) {
-							StatusHandler.log(result);
-							setErrorMessage(result.getMessage());
-							return false;
-						}
-					}
-
-					// add pre-commit items
-					if (preCommitResources.size() > 0) {
-						JobWithStatus job = new AddItemsToReviewJob("Add items to review", getTaskRepository(),
-								preCommitResources);
-
-						result = runJobInContainer(job);
-						if (!result.isOK()) {
-							StatusHandler.log(result);
-							setErrorMessage(result.getMessage());
-							return false;
-						}
-					}
-
+				IStatus result = runJobInContainer(new AddDecoratedResourcesToReviewJob(crucibleReview,
+						resourceSelectionPage.getTeamResourceConnector(), resources));
+				if (!result.isOK()) {
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
 				}
 			}
 		}
@@ -539,8 +469,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			JobWithStatus job = new CrucibleReviewChangeJob("Add versioned comments to review", getTaskRepository()) {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-					updateCrucibleReview(client, crucibleReview, monitor);
-					SubMonitor.convert(monitor);
 					for (ResourceEditorBean resourceEditor : versionedCommentsToAdd) {
 						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCrucibleFileFromResource(
 								resourceEditor.getResource(), crucibleReview);
@@ -552,7 +480,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 					return Status.OK_STATUS;
 				}
-
 			};
 
 			IStatus result = runJobInContainer(job);
@@ -632,15 +559,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+				client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						return server.submitReview(serverCfg, crucibleReview.getPermId());
 					}
 				});
-
-				updateCrucibleReview(client, updatedReview, monitor);
 				return Status.OK_STATUS;
 			}
 		};
@@ -654,15 +579,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+				client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						return server.approveReview(serverCfg, crucibleReview.getPermId());
 					}
 				});
-
-				updateCrucibleReview(client, updatedReview, monitor);
 				return Status.OK_STATUS;
 			}
 		};
@@ -671,6 +594,22 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	private IStatus runJobInContainer(final JobWithStatus job) {
+		IStatus status = runInJobContainer0(job);
+		if (status.isOK()) {
+			runInJobContainer0(new CrucibleReviewChangeJob("Refresh Review", getTaskRepository(), false, false) {
+				@Override
+				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+					// Update review after every change because otherwise some data will be missing (in this case we miss actions)
+					crucibleReview = client.getReview(getTaskRepository(),
+							CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
+					return Status.OK_STATUS;
+				}
+			});
+		}
+		return status;
+	}
+
+	private IStatus runInJobContainer0(final JobWithStatus job) {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				job.run(monitor);
@@ -689,7 +628,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		final CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Create new review", getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+				SubMonitor submonitor = SubMonitor.convert(monitor, "Create new review", 2);
+
+				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(submonitor.newChild(1),
+						getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -706,7 +648,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Server didn't return review");
 				}
 
-				updateCrucibleReview(client, updatedReview, monitor);
+				crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview),
+						true, submonitor.newChild(1));
+
 				return Status.OK_STATUS;
 			}
 		};
@@ -740,13 +684,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	public void setRoots(List<IResource> list) {
 		this.selectedWorkspaceResources.clear();
 		this.selectedWorkspaceResources.addAll(list);
-	}
-
-	private void updateCrucibleReview(CrucibleClient client, Review updatedReview, IProgressMonitor monitor)
-			throws CoreException {
-		// Update review after every change because otherwise some data will be missing (in this case we miss actions)
-		crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview), true,
-				monitor);
 	}
 
 	public void setUploadItems(List<UploadItem> uploadItems) {
