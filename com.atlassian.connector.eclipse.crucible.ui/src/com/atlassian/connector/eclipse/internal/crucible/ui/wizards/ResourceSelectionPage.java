@@ -13,8 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.ITreeViewModeSettingProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.TreeViewMode;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.ITreeViewModeSettingProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.TreeViewMode;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -43,35 +44,74 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
-	public class ResourceStatus {
+	// TODO jj move it up
+	public static class DecoratedResource {
 
-		private final String state;
+		private final String decorationText;
 
 		private final boolean upToDate;
 
-		public ResourceStatus(boolean upToDate, String state) {
+		private final IResource resource;
+
+		public DecoratedResource(IResource resource, boolean upToDate, String decorationText) {
+			this.resource = resource;
 			this.upToDate = upToDate;
-			this.state = state;
+			this.decorationText = decorationText;
 		}
 
-		public String getState() {
-			return state;
+		public IResource getResource() {
+			return resource;
+		}
+
+		public String getDecorationText() {
+			return decorationText;
 		}
 
 		public boolean isUpToDate() {
 			return upToDate;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((resource == null) ? 0 : resource.hashCode());
+			return result;
+		}
+
+		// TODO jj add UnitTest for equlas
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			DecoratedResource other = (DecoratedResource) obj;
+			if (resource == null) {
+				if (other.resource != null) {
+					return false;
+				}
+			} else if (!resource.equals(other.resource)) {
+				return false;
+			}
+			return true;
+		}
+
 	}
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
-	private final Map<IResource, ResourceStatus> resourcesToShow = new HashMap<IResource, ResourceStatus>();
+	private final List<DecoratedResource> resourcesToShow = new ArrayList<DecoratedResource>();
 
 	private final Collection<String> scmPaths = new ArrayList<String>();
 
@@ -103,14 +143,17 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		}
 	}
 
-	public Map<IResource, ResourceStatus> getSelection() {
+	public List<DecoratedResource> getSelection() {
 
-		IResource[] selectedResources = resourceSelectionTree.getSelectedResources();
+		// TODO jj check the change
 
-		Map<IResource, ResourceStatus> ret = new HashMap<IResource, ResourceStatus>();
+		// TODO jj convert array to list (do we need it?)
+		DecoratedResource[] selectedResources = resourceSelectionTree.getSelectedResources();
 
-		for (IResource resource : selectedResources) {
-			ret.put(resource, resourcesToShow.get(resource));
+		List<DecoratedResource> ret = new ArrayList<DecoratedResource>();
+
+		for (DecoratedResource resource : selectedResources) {
+			ret.add(resource);
 		}
 
 		return ret;
@@ -198,16 +241,16 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 						if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_IGNORED)) {
-							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-							resourcesToShow.put(resource, new ResourceStatus(false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_VERSIONED)) {
-							resourcesToShow.put(resource, new ResourceStatus(true, "post-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, true, ""));
 						} else {
 							// ignore the resource
 						}

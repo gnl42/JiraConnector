@@ -26,7 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
@@ -479,7 +479,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		// create review from workbench selection (post- and pre-commit)
 		if (resourceSelectionPage != null && types.contains(Type.ADD_RESOURCES)) {
-			final Map<IResource, ResourceStatus> resources = resourceSelectionPage.getSelection();
+			final List<DecoratedResource> resources = resourceSelectionPage.getSelection();
 			if (resources != null && resources.size() > 0) {
 
 				final Collection<IResource> postCommitResources = MiscUtil.buildArrayList();
@@ -489,11 +489,11 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					@Override
 					public void runImpl(IProgressMonitor monitor) throws CoreException {
 						Collection<IResource> preCommitTmp = new ArrayList<IResource>();
-						for (IResource resource : resources.keySet()) {
-							if (resources.get(resource).isUpToDate()) {
-								postCommitResources.add(resource);
+						for (DecoratedResource resource : resources) {
+							if (resource.isUpToDate()) {
+								postCommitResources.add(resource.getResource());
 							} else {
-								preCommitTmp.add(resource);
+								preCommitTmp.add(resource.getResource());
 							}
 						}
 

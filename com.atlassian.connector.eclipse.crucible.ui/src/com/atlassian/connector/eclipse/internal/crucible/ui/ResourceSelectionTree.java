@@ -1,6 +1,6 @@
-package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
+package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.ResourceStatus;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
 import org.eclipse.core.resources.IContainer;
@@ -42,10 +42,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class ResourceSelectionTree extends Composite {
 	private static final int TREE_WIDTH = 500;
@@ -54,13 +54,13 @@ public class ResourceSelectionTree extends Composite {
 
 	private TreeViewMode mode;
 
-	private List<IResource> resources;
+//	private List<IResource> resources;
 
-	private List<IContainer> compressedFolders = null;
+	private List<DecoratedResource> compressedFolders = null;
 
-	private IContainer[] folders;
+	private DecoratedResource[] folders;
 
-	private IContainer[] rootFolders;
+	private DecoratedResource[] rootFolders;
 
 	private CheckboxTreeViewer treeViewer;
 
@@ -86,7 +86,7 @@ public class ResourceSelectionTree extends Composite {
 
 	private final ITreeViewModeSettingProvider settingsProvider;
 
-	private Map<IResource, ResourceStatus> resourcesToShow;
+	private Collection<DecoratedResource> resourcesToShow;
 
 	/**
 	 * 
@@ -101,19 +101,18 @@ public class ResourceSelectionTree extends Composite {
 	 * @param settingsProvider
 	 *            settings provider to store/restore resources tree mode (can be null)
 	 */
-	public ResourceSelectionTree(Composite parent, String label,
-			@NotNull Map<IResource, ResourceStatus> resourcesToShow, IToolbarControlCreator toolbarControlCreator,
-			ITreeViewModeSettingProvider settingsProvider) {
+	public ResourceSelectionTree(Composite parent, String label, @NotNull List<DecoratedResource> resourcesToShow,
+			IToolbarControlCreator toolbarControlCreator, ITreeViewModeSettingProvider settingsProvider) {
 		super(parent, SWT.NONE);
 		this.label = label;
 		this.resourcesToShow = resourcesToShow;
 		this.settingsProvider = settingsProvider;
-		this.resources = new ArrayList<IResource>(resourcesToShow.keySet());
+//		this.resources = getResourcesFromDecoratedResource(resourcesToShow);
 		this.toolbarControlCreator = toolbarControlCreator;
 
-		if (resources != null) {
-			Collections.sort(resources, comparator);
-		}
+//		if (resources != null) {
+//			Collections.sort(resources, comparator);
+//		}
 
 		if (settingsProvider == null) {
 			settingsProvider = new ITreeViewModeSettingProvider() {
@@ -136,15 +135,15 @@ public class ResourceSelectionTree extends Composite {
 		return treeViewer;
 	}
 
-	public IResource[] getSelectedResources() {
-		ArrayList<IResource> selected = new ArrayList<IResource>();
+	public DecoratedResource[] getSelectedResources() {
+		ArrayList<DecoratedResource> selected = new ArrayList<DecoratedResource>();
 		Object[] checkedResources = treeViewer.getCheckedElements();
 		for (Object checkedResource : checkedResources) {
-			if (resources.contains(checkedResource)) {
-				selected.add((IResource) checkedResource);
+			if (resourcesToShow.contains(checkedResource)) {
+				selected.add((DecoratedResource) checkedResource);
 			}
 		}
-		IResource[] selectedResources = new IResource[selected.size()];
+		DecoratedResource[] selectedResources = new DecoratedResource[selected.size()];
 		selected.toArray(selectedResources);
 		return selectedResources;
 	}
@@ -303,8 +302,8 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.getTree().setMenu(menu);
 	}
 
-	void setAllChecked(boolean state) {
-		for (IResource resource : resourcesToShow.keySet()) {
+	public void setAllChecked(boolean state) {
+		for (DecoratedResource resource : resourcesToShow) {
 			treeViewer.setChecked(resource, state);
 			handleCheckStateChange(resource, state);
 		}
@@ -329,10 +328,10 @@ public class ResourceSelectionTree extends Composite {
 
 		Action deselectPreCommit = new Action("Deselect Pre-Commit") { //$NON-NLS-1$
 			public void run() {
-				for (Object obj : getSelectedResources()) {
-					if (!resourcesToShow.get(obj).isUpToDate()) {
-						treeViewer.setChecked(obj, false);
-						handleCheckStateChange(obj, false);
+				for (DecoratedResource res : getSelectedResources()) {
+					if (res.isUpToDate()) {
+						treeViewer.setChecked(res, false);
+						handleCheckStateChange(res, false);
 					}
 				}
 
@@ -342,10 +341,10 @@ public class ResourceSelectionTree extends Composite {
 
 		Action deselectPostCommit = new Action("Deselect Post-Commit") { //$NON-NLS-1$
 			public void run() {
-				for (Object obj : getSelectedResources()) {
-					if (resourcesToShow.get(obj).isUpToDate()) {
-						treeViewer.setChecked(obj, false);
-						handleCheckStateChange(obj, false);
+				for (DecoratedResource res : getSelectedResources()) {
+					if (res.isUpToDate()) {
+						treeViewer.setChecked(res, false);
+						handleCheckStateChange(res, false);
 					}
 				}
 			}
@@ -364,20 +363,19 @@ public class ResourceSelectionTree extends Composite {
 		}
 	}
 
-	private void handleCheckStateChange(Object element, boolean checked) {
+	private void handleCheckStateChange(DecoratedResource element, boolean checked) {
 		treeViewer.setGrayed(element, false);
 		treeViewer.setSubtreeChecked(element, checked);
-		IResource resource = (IResource) element;
-		updateParentState(resource, checked);
+		updateParentState(element, checked);
 	}
 
 	private void handleCheckStateChange(CheckStateChangedEvent event) {
-		handleCheckStateChange(event.getElement(), event.getChecked());
+		handleCheckStateChange((DecoratedResource) event.getElement(), event.getChecked());
 	}
 
-	private void updateParentState(IResource child, boolean baseChildState) {
-		if (mode == TreeViewMode.MODE_FLAT || child == null || child.getParent() == null
-				|| resources.contains(child.getParent())) {
+	private void updateParentState(DecoratedResource child, boolean baseChildState) {
+		if (mode == TreeViewMode.MODE_FLAT || child == null || child.getResource().getParent() == null
+				|| resourcesToShow.contains(new DecoratedResource(child.getResource().getParent(), true, ""))) {
 			return;
 		}
 		if (child == null) {
@@ -398,7 +396,7 @@ public class ResourceSelectionTree extends Composite {
 		}
 		treeViewer.setGrayed(parent, !allSameState);
 		treeViewer.setChecked(parent, !allSameState || baseChildState);
-		updateParentState((IResource) parent, baseChildState);
+		updateParentState((DecoratedResource) parent, baseChildState);
 	}
 
 	public void refresh() {
@@ -408,97 +406,111 @@ public class ResourceSelectionTree extends Composite {
 		treeViewer.expandAll();
 		treeViewer.setCheckedElements(checkedElements);
 		for (Object checkedElement : checkedElements) {
-			updateParentState((IResource) checkedElement, true);
+			updateParentState((DecoratedResource) checkedElement, true);
 		}
 		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
 	}
 
-	private IContainer[] getRootFolders() {
+	private DecoratedResource[] getRootFolders() {
 		if (rootFolders == null) {
 			getFolders();
 		}
 		return rootFolders;
 	}
 
-	private IContainer[] getCompressedFolders() {
+	private DecoratedResource[] getCompressedFolders() {
 		if (compressedFolders == null) {
-			compressedFolders = new ArrayList<IContainer>();
-			for (IResource res : resources) {
-				if (res instanceof IContainer && !compressedFolders.contains(res)) {
-					compressedFolders.add((IContainer) res);
+			compressedFolders = new ArrayList<DecoratedResource>();
+			for (DecoratedResource res : resourcesToShow) {
+				IResource resource = res.getResource();
+				if (resource instanceof IContainer) {
+					DecoratedResource decoratedContainer = new DecoratedResource(resource, true, "");
+					if (!compressedFolders.contains(decoratedContainer)) {
+						compressedFolders.add(decoratedContainer);
+					}
 				}
-				if (!(res instanceof IContainer)) {
-					IContainer parent = res.getParent();
-					if (parent != null && !(parent instanceof IWorkspaceRoot) && !compressedFolders.contains(parent)) {
-						compressedFolders.add(parent);
+				if (!(resource instanceof IContainer)) {
+					IContainer parent = resource.getParent();
+					if (parent != null && !(parent instanceof IWorkspaceRoot)) {
+						DecoratedResource decoratedContainer = new DecoratedResource(parent, true, "");
+						if (!compressedFolders.contains(decoratedContainer)) {
+							compressedFolders.add(decoratedContainer);
+						}
 					}
 				}
 			}
 			Collections.sort(compressedFolders, comparator);
 		}
-		return compressedFolders.toArray(new IContainer[compressedFolders.size()]);
+		return compressedFolders.toArray(new DecoratedResource[compressedFolders.size()]);
 	}
 
-	private IResource[] getChildResources(IContainer parent) {
-		ArrayList<IResource> children = new ArrayList<IResource>();
-		for (IResource res : resources) {
-			if (!(res instanceof IContainer)) {
-				IContainer parentFolder = res.getParent();
-				if (parentFolder != null && parentFolder.equals(parent) && !children.contains(parentFolder)) {
+	private DecoratedResource[] getChildResources(IContainer directory) {
+		ArrayList<DecoratedResource> children = new ArrayList<DecoratedResource>();
+		for (DecoratedResource res : resourcesToShow) {
+			if (!(res.getResource() instanceof IContainer)) {
+				IContainer parentFolder = res.getResource().getParent();
+				if (parentFolder != null && parentFolder.equals(directory) /*&& !children.contains(parentFolder)*/) {
 					children.add(res);
 				}
 			}
 		}
-		IResource[] childArray = new IResource[children.size()];
+
+		DecoratedResource[] childArray = new DecoratedResource[children.size()];
 		children.toArray(childArray);
 		return childArray;
 	}
 
-	private IResource[] getFolderChildren(IContainer parent) {
-		ArrayList<IResource> children = new ArrayList<IResource>();
+	private DecoratedResource[] getFolderChildren(IContainer parent) {
+		ArrayList<DecoratedResource> children = new ArrayList<DecoratedResource>();
 		folders = getFolders();
-		for (IContainer folder : folders) {
-			if (folder.getParent() != null && folder.getParent().equals(parent)) {
+		for (DecoratedResource folder : folders) {
+			if (folder.getResource().getParent() != null && folder.getResource().getParent().equals(parent)) {
 				children.add(folder);
 			}
 		}
-		for (IResource res : resources) {
-			if (!(res instanceof IContainer) && res.getParent() != null && res.getParent().equals(parent)) {
+		for (DecoratedResource res : resourcesToShow) {
+			if (!(res.getResource() instanceof IContainer) && res.getResource().getParent() != null
+					&& res.getResource().getParent().equals(parent)) {
 				children.add(res);
 			}
 		}
-		IResource[] childArray = new IResource[children.size()];
+		DecoratedResource[] childArray = new DecoratedResource[children.size()];
 		children.toArray(childArray);
 		return childArray;
 	}
 
-	private IContainer[] getFolders() {
-		List<IContainer> rootList = new ArrayList<IContainer>();
+	private DecoratedResource[] getFolders() {
+		List<DecoratedResource> rootList = new ArrayList<DecoratedResource>();
 
 		if (folders == null) {
-			ArrayList<IContainer> folderList = new ArrayList<IContainer>();
-			for (IResource resource : resources) {
-				if (resource instanceof IContainer) {
-					folderList.add((IContainer) resource);
+			ArrayList<DecoratedResource> folderList = new ArrayList<DecoratedResource>();
+			for (DecoratedResource resource : resourcesToShow) {
+				if (resource.getResource() instanceof IContainer) {
+					folderList.add(resource);
 				}
-				IResource parent = resource;
+				IResource parent = resource.getResource();
+				if (parent != null && !(parent instanceof IContainer || parent instanceof IWorkspaceRoot)) {
+					parent = parent.getParent();
+				}
 				while (parent != null && !(parent instanceof IWorkspaceRoot)) {
-					if (!(parent.getParent() instanceof IWorkspaceRoot) && folderList.contains(parent.getParent())) {
+					DecoratedResource decoratedParent = new DecoratedResource(parent, true, "");
+					DecoratedResource decoratedParentParent = new DecoratedResource(parent.getParent(), true, "");
+					if (!(parent.getParent() instanceof IWorkspaceRoot) && folderList.contains(decoratedParentParent)) {
 						break;
 					}
 					if (parent.getParent() == null || parent.getParent() instanceof IWorkspaceRoot) {
-						rootList.add((IContainer) parent);
+						rootList.add(decoratedParent);
 					}
 					parent = parent.getParent();
-					folderList.add((IContainer) parent);
+					folderList.add(decoratedParent);
 				}
 			}
-			folders = new IContainer[folderList.size()];
+			folders = new DecoratedResource[folderList.size()];
 			folderList.toArray(folders);
 			Arrays.sort(folders, comparator);
-			rootFolders = new IContainer[rootList.size()];
+			rootFolders = new DecoratedResource[rootList.size()];
 			rootList.toArray(rootFolders);
 			Arrays.sort(rootFolders, comparator);
 		}
@@ -507,11 +519,15 @@ public class ResourceSelectionTree extends Composite {
 
 	private class ResourceSelectionContentProvider extends WorkbenchContentProvider {
 		public Object getParent(Object element) {
-			return ((IResource) element).getParent();
+			IContainer parent = ((DecoratedResource) element).getResource().getParent();
+			if (parent != null) {
+				return new DecoratedResource(parent, true, "");
+			}
+			return null;
 		}
 
 		public boolean hasChildren(Object element) {
-			if (mode != TreeViewMode.MODE_FLAT && element instanceof IContainer) {
+			if (mode != TreeViewMode.MODE_FLAT && ((DecoratedResource) element).getResource() instanceof IContainer) {
 				return true;
 			} else {
 				return false;
@@ -525,19 +541,21 @@ public class ResourceSelectionTree extends Composite {
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ResourceSelectionTree) {
 				if (mode == TreeViewMode.MODE_FLAT) {
-					return resources.toArray(new IResource[resources.size()]);
+					return resourcesToShow.toArray(new DecoratedResource[resourcesToShow.size()]);
 				} else if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
 					return getCompressedFolders();
 				} else {
 					return getRootFolders();
 				}
 			}
-			if (parentElement instanceof IContainer) {
+			IResource resource = ((DecoratedResource) parentElement).getResource();
+			if (resource instanceof IContainer) {
+				IContainer directory = (IContainer) resource;
 				if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
-					return getChildResources((IContainer) parentElement);
+					return getChildResources(directory);
 				}
 				if (mode == TreeViewMode.MODE_TREE) {
-					return getFolderChildren((IContainer) parentElement);
+					return getFolderChildren(directory);
 				}
 			}
 			return new Object[0];
@@ -555,12 +573,13 @@ public class ResourceSelectionTree extends Composite {
 		}
 
 		public Image getImage(Object element) {
-			return workbenchLabelProvider.getImage(element);
+			return workbenchLabelProvider.getImage(((DecoratedResource) element).getResource());
 		}
 
 		@NotNull
-		private String getTextForResource(IResource resource) {
+		private String getTextForResource(DecoratedResource decoratedResource) {
 			String text = null;
+			IResource resource = decoratedResource.getResource();
 			if (mode == TreeViewMode.MODE_FLAT) {
 				text = resource.getFullPath().toString();
 			} else if (mode == TreeViewMode.MODE_COMPRESSED_FOLDERS) {
@@ -579,25 +598,24 @@ public class ResourceSelectionTree extends Composite {
 		public StyledString getStyledText(Object element) {
 			StyledString styledString = new StyledString();
 
-			IResource resource = (IResource) element;
+			DecoratedResource resource = (DecoratedResource) element;
 
 			styledString.append(getTextForResource(resource));
 
-			if (resourcesToShow.containsKey(resource)) {
-				if (!resourcesToShow.get(resource).isUpToDate()) {
-					styledString.append(" ");
-					styledString.append(resourcesToShow.get(resource).getState(),
-							StyledString.createColorRegistryStyler(colorRed, null));
-				}
+			if (resourcesToShow.contains(resource)) {
+				styledString.append(" ");
+				styledString.append(resource.getDecorationText(),
+						StyledString.createColorRegistryStyler(colorRed, null));
 			}
 
 			return styledString;
 		}
 	}
 
-	private class ResourceComparator implements Comparator<IResource> {
-		public int compare(IResource obj0, IResource obj1) {
-			return obj0.getFullPath().toOSString().compareTo(obj1.getFullPath().toOSString());
+	private class ResourceComparator implements Comparator<DecoratedResource> {
+		public int compare(DecoratedResource obj0, DecoratedResource obj1) {
+			return obj0.getResource().getFullPath().toOSString().compareTo(
+					obj1.getResource().getFullPath().toOSString());
 		}
 	}
 
@@ -613,16 +631,25 @@ public class ResourceSelectionTree extends Composite {
 		void setTreeViewMode(TreeViewMode mode);
 	}
 
-	public void setResources(@NotNull Map<IResource, ResourceStatus> resourcesToShow) {
-		resources = new ArrayList<IResource>(resourcesToShow.keySet());
+	public void setResources(@NotNull List<DecoratedResource> resourcesToShow) {
+//		resources = getResourcesFromDecoratedResource(resourcesToShow);
 		this.resourcesToShow = resourcesToShow;
 
 		compressedFolders = null;
 		folders = null;
 		rootFolders = null;
 
-		if (resources != null) {
-			Collections.sort(resources, comparator);
-		}
+//		if (resources != null) {
+//			Collections.sort(resources, comparator);
+//		}
 	}
+
+//	private List<IResource> getResourcesFromDecoratedResource(List<DecoratedResource> decoratedResources) {
+//		List<IResource> ret = new ArrayList<IResource>();
+//
+//		for (DecoratedResource res : decoratedResources) {
+//			ret.add(res.getResource());
+//		}
+//		return ret;
+//	}
 }

@@ -13,10 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.TreeViewMode;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionTree.TreeViewMode;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
