@@ -42,7 +42,7 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -315,7 +315,16 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 		availableTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		availableTreeViewer.setContentProvider(new ChangesetContentProvider());
 		availableTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
-		availableTreeViewer.setSorter(new ViewerSorter());
+		availableTreeViewer.setComparator(new ViewerComparator() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				if (e1 instanceof ICustomChangesetLogEntry && e2 instanceof ICustomChangesetLogEntry) {
+					return ((ICustomChangesetLogEntry) e2).getDate().compareTo(
+							((ICustomChangesetLogEntry) e1).getDate());
+				}
+				return super.compare(viewer, e1, e2);
+			}
+		});
 		availableTreeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
