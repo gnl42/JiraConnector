@@ -375,7 +375,7 @@ public class ResourceSelectionTree extends Composite {
 
 	private void updateParentState(DecoratedResource child, boolean baseChildState) {
 		if (mode == TreeViewMode.MODE_FLAT || child == null || child.getResource().getParent() == null
-				|| resourcesToShow.contains(new DecoratedResource(child.getResource().getParent(), true, ""))) {
+				|| resourcesToShow.contains(new DecoratedResource(child.getResource().getParent()))) {
 			return;
 		}
 		if (child == null) {
@@ -426,7 +426,7 @@ public class ResourceSelectionTree extends Composite {
 			for (DecoratedResource res : resourcesToShow) {
 				IResource resource = res.getResource();
 				if (resource instanceof IContainer) {
-					DecoratedResource decoratedContainer = new DecoratedResource(resource, true, "");
+					DecoratedResource decoratedContainer = new DecoratedResource(resource);
 					if (!compressedFolders.contains(decoratedContainer)) {
 						compressedFolders.add(decoratedContainer);
 					}
@@ -434,7 +434,7 @@ public class ResourceSelectionTree extends Composite {
 				if (!(resource instanceof IContainer)) {
 					IContainer parent = resource.getParent();
 					if (parent != null && !(parent instanceof IWorkspaceRoot)) {
-						DecoratedResource decoratedContainer = new DecoratedResource(parent, true, "");
+						DecoratedResource decoratedContainer = new DecoratedResource(parent);
 						if (!compressedFolders.contains(decoratedContainer)) {
 							compressedFolders.add(decoratedContainer);
 						}
@@ -495,8 +495,8 @@ public class ResourceSelectionTree extends Composite {
 					parent = parent.getParent();
 				}
 				while (parent != null && !(parent instanceof IWorkspaceRoot)) {
-					DecoratedResource decoratedParent = new DecoratedResource(parent, true, "");
-					DecoratedResource decoratedParentParent = new DecoratedResource(parent.getParent(), true, "");
+					DecoratedResource decoratedParent = new DecoratedResource(parent);
+					DecoratedResource decoratedParentParent = new DecoratedResource(parent.getParent());
 					if (!(parent.getParent() instanceof IWorkspaceRoot) && folderList.contains(decoratedParentParent)) {
 						break;
 					}
@@ -521,7 +521,7 @@ public class ResourceSelectionTree extends Composite {
 		public Object getParent(Object element) {
 			IContainer parent = ((DecoratedResource) element).getResource().getParent();
 			if (parent != null) {
-				return new DecoratedResource(parent, true, "");
+				return new DecoratedResource(parent);
 			}
 			return null;
 		}

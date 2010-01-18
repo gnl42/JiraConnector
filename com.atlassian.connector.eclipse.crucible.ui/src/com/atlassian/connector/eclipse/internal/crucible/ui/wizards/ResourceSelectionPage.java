@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CustomToolTip;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.ITreeViewModeSettingProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.TreeViewMode;
@@ -58,10 +59,17 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		private final IResource resource;
 
-		public DecoratedResource(IResource resource, boolean upToDate, String decorationText) {
+		private final String tooltipText;
+
+		public DecoratedResource(IResource resource, boolean upToDate, String decorationText, String tooltipText) {
 			this.resource = resource;
 			this.upToDate = upToDate;
 			this.decorationText = decorationText;
+			this.tooltipText = tooltipText;
+		}
+
+		public DecoratedResource(IResource parent) {
+			this(parent, true, "", "");
 		}
 
 		public IResource getResource() {
@@ -74,6 +82,10 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		public boolean isUpToDate() {
 			return upToDate;
+		}
+
+		public String getTooltipText() {
+			return tooltipText;
 		}
 
 		@Override
@@ -198,6 +210,23 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 				.grab(true, true)
 				.applyTo(resourceSelectionTree);
 
+		resourceSelectionTree.getTreeViewer().getTree().setToolTipText("");
+		CustomToolTip toolTip = new CustomToolTip(resourceSelectionTree.getTreeViewer().getControl());
+
+//		// update tooltip contents
+//		getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				updateToolTip(true);
+//			}
+//		});
+//
+//		getViewer().getTree().addFocusListener(new FocusAdapter() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				taskListToolTip.hide();
+//			}
+//		});
+
 		mappingButtonFactory = new DefineRepositoryMappingButton(this, composite, taskRepository);
 		Control buttonControl = mappingButtonFactory.getControl();
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonControl);
@@ -241,16 +270,19 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 						if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
+									"This file is unversioned."));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_IGNORED)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
+									"This file is ignored."));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit"));
+							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
+									"This file has been added or changed locally."));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_VERSIONED)) {
-							resourcesToShow.add(new DecoratedResource(resource, true, ""));
+							resourcesToShow.add(new DecoratedResource(resource, true, "", "This file is up to date."));
 						} else {
 							// ignore the resource
 						}
