@@ -37,9 +37,13 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -211,27 +215,26 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 				.applyTo(resourceSelectionTree);
 
 		resourceSelectionTree.getTreeViewer().getTree().setToolTipText("");
-		CustomToolTip toolTip = new CustomToolTip(resourceSelectionTree.getTreeViewer().getControl());
+		final CustomToolTip toolTip = new CustomToolTip(resourceSelectionTree.getTreeViewer().getControl());
 
-//		// update tooltip contents
-//		getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-//			public void selectionChanged(SelectionChangedEvent event) {
-//				updateToolTip(true);
-//			}
-//		});
-//
-//		getViewer().getTree().addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				taskListToolTip.hide();
-//			}
-//		});
+		resourceSelectionTree.getTreeViewer().getTree().addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				toolTip.hide();
+			}
+		});
 
 		mappingButtonFactory = new DefineRepositoryMappingButton(this, composite, taskRepository);
 		Control buttonControl = mappingButtonFactory.getControl();
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonControl);
 
 		populateResourcesTree();
+
+		IContextService contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
+
+		if (contextService != null) {
+			contextService.activateContext("org.eclipse.mylyn.tasks.ui.views.taskss");
+		}
 
 		validatePage();
 	}

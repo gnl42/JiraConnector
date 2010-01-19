@@ -144,4 +144,44 @@
       </factory>
    </extension>
    
+    <extension point="org.eclipse.ui.commands">
+      <category
+            id="com.atlassian.connector.eclipse.internal.crucible.ui.commands"
+            name="Crucible Commands"
+            description="">
+      </category>
+      <command
+            categoryId="com.atlassian.connector.eclipse.internal.crucible.ui.commands"
+            defaultHandler="com.atlassian.connector.eclipse.internal.crucible.ui.commands.ResourceTreeToolTipHandler"
+            id="com.atlassian.connector.eclipse.internal.crucible.ui.commands.showToolTip"
+            name="Show Tooltip for DecoratedResource">
+      </command>
+   </extension>
+   
+            <!-- contextId="com.atlassian.connector.eclipse.internal.crucible.ui.resources" -->
+            
+   <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.atlassian.connector.eclipse.internal.crucible.ui.commands.showToolTip"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F4">
+      </key>
+   </extension>
+   
+   <extension point="org.eclipse.ui.contexts">
+
+      <context
+            id="org.eclipse.mylyn.tasks.ui.views.taskss"
+            name="%context.views.tasks.name"
+            parentId="org.eclipse.ui.contexts.dialog">
+      </context>
+   
+      <context
+            id="com.atlassian.connector.eclipse.internal.crucible.ui.resources"
+            name="Crucible Resources"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
+   
 </plugin>

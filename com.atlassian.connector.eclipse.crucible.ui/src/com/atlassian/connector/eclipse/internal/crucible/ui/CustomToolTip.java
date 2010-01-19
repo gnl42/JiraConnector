@@ -88,6 +88,8 @@ public class CustomToolTip extends GradientToolTip {
 		this(control, false);
 	}
 
+	// TODO jj move to more general location (outside crucible)
+
 	public CustomToolTip(Control control, boolean showForDirectories) {
 		super(control);
 		this.control = control;

@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+// TODO jj move to more general location (outside crucible)
 public class ResourceSelectionTree extends Composite {
 	private static final int TREE_WIDTH = 500;
 
@@ -190,7 +191,7 @@ public class ResourceSelectionTree extends Composite {
 			toolbarManager.add(new Separator());
 		}
 
-		flatAction = new Action("Flat Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+		flatAction = new Action("Flat Mode", IAction.AS_RADIO_BUTTON) {
 			public void run() {
 				mode = TreeViewMode.MODE_FLAT;
 				settingsProvider.setTreeViewMode(mode);
@@ -202,7 +203,7 @@ public class ResourceSelectionTree extends Composite {
 		flatAction.setImageDescriptor(AtlassianImages.IMG_FLAT_MODE);
 		toolbarManager.add(flatAction);
 
-		treeAction = new Action("Tree Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+		treeAction = new Action("Tree Mode", IAction.AS_RADIO_BUTTON) {
 			public void run() {
 				mode = TreeViewMode.MODE_TREE;
 				settingsProvider.setTreeViewMode(mode);
@@ -214,7 +215,7 @@ public class ResourceSelectionTree extends Composite {
 		treeAction.setImageDescriptor(AtlassianImages.IMG_TREE_MODE);
 		toolbarManager.add(treeAction);
 
-		compressedAction = new Action("Compressed Folders Mode", IAction.AS_RADIO_BUTTON) { //$NON-NLS-1$
+		compressedAction = new Action("Compressed Folders Mode", IAction.AS_RADIO_BUTTON) {
 			public void run() {
 				mode = TreeViewMode.MODE_COMPRESSED_FOLDERS;
 				settingsProvider.setTreeViewMode(mode);
@@ -310,14 +311,14 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	protected void fillTreeMenu(IMenuManager menuMgr) {
-		Action selectAllAction = new Action("Select All") { //$NON-NLS-1$
+		Action selectAllAction = new Action("Select All") {
 			public void run() {
 				setAllChecked(true);
 			}
 		};
 		menuMgr.add(selectAllAction);
 
-		Action deselectAllAction = new Action("Deselect All") { //$NON-NLS-1$
+		Action deselectAllAction = new Action("Deselect All") {
 			public void run() {
 				setAllChecked(false);
 			}
@@ -326,7 +327,7 @@ public class ResourceSelectionTree extends Composite {
 
 		menuMgr.add(new Separator());
 
-		Action deselectPreCommit = new Action("Deselect Pre-Commit") { //$NON-NLS-1$
+		Action deselectPreCommit = new Action("Deselect Pre-Commit") {
 			public void run() {
 				for (DecoratedResource res : getSelectedResources()) {
 					if (res.isUpToDate()) {
@@ -339,7 +340,7 @@ public class ResourceSelectionTree extends Composite {
 		};
 		menuMgr.add(deselectPreCommit);
 
-		Action deselectPostCommit = new Action("Deselect Post-Commit") { //$NON-NLS-1$
+		Action deselectPostCommit = new Action("Deselect Post-Commit") {
 			public void run() {
 				for (DecoratedResource res : getSelectedResources()) {
 					if (res.isUpToDate()) {
@@ -354,7 +355,7 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(new Separator());
 
 		if (mode != TreeViewMode.MODE_FLAT) {
-			Action expandAllAction = new Action("Expand All") { //$NON-NLS-1$
+			Action expandAllAction = new Action("Expand All") {
 				public void run() {
 					treeViewer.expandAll();
 				}
