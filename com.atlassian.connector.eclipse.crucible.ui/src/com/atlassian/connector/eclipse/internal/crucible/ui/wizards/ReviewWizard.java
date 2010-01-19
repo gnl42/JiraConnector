@@ -28,13 +28,13 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddUploadItemsToReviewJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;

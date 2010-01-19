@@ -12,8 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;

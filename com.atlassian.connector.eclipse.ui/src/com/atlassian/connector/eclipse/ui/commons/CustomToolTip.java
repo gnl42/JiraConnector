@@ -10,9 +10,7 @@
  *     Kevin Barnes, IBM Corporation - fix for bug 277974
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.ui;
-
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
+package com.atlassian.connector.eclipse.ui.commons;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -87,8 +85,6 @@ public class CustomToolTip extends GradientToolTip {
 	public CustomToolTip(Control control) {
 		this(control, false);
 	}
-
-	// TODO jj move to more general location (outside crucible)
 
 	public CustomToolTip(Control control, boolean showForDirectories) {
 		super(control);

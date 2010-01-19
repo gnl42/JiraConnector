@@ -54,7 +54,6 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 		final Set<ITeamUiResourceConnector> connectors = new HashSet<ITeamUiResourceConnector>();
 
 		// svn support only
-		// TODO jj allow to create pre-commit review if no scm integration found
 		for (ResourceEditorBean resourceBean : selection) {
 			ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
 					.getTeamResourceManager()

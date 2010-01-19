@@ -1,6 +1,5 @@
-package com.atlassian.connector.eclipse.internal.crucible.ui;
+package com.atlassian.connector.eclipse.ui.commons;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
 import org.eclipse.core.resources.IContainer;
@@ -47,15 +46,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-// TODO jj move to more general location (outside crucible)
+/**
+ * @author Jacek Jaroczynski
+ */
 public class ResourceSelectionTree extends Composite {
 	private static final int TREE_WIDTH = 500;
 
 	private Tree tree;
 
 	private TreeViewMode mode;
-
-//	private List<IResource> resources;
 
 	private List<DecoratedResource> compressedFolders = null;
 
@@ -108,12 +107,7 @@ public class ResourceSelectionTree extends Composite {
 		this.label = label;
 		this.resourcesToShow = resourcesToShow;
 		this.settingsProvider = settingsProvider;
-//		this.resources = getResourcesFromDecoratedResource(resourcesToShow);
 		this.toolbarControlCreator = toolbarControlCreator;
-
-//		if (resources != null) {
-//			Collections.sort(resources, comparator);
-//		}
 
 		if (settingsProvider == null) {
 			settingsProvider = new ITreeViewModeSettingProvider() {
@@ -166,6 +160,7 @@ public class ResourceSelectionTree extends Composite {
 		viewerPane.setLayoutData(layoutData);
 
 		CLabel toolbarLabel = new CLabel(viewerPane, SWT.NONE) {
+			@Override
 			public Point computeSize(int wHint, int hHint, boolean changed) {
 				return super.computeSize(wHint, Math.max(24, hHint), changed);
 			}
@@ -192,6 +187,7 @@ public class ResourceSelectionTree extends Composite {
 		}
 
 		flatAction = new Action("Flat Mode", IAction.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				mode = TreeViewMode.MODE_FLAT;
 				settingsProvider.setTreeViewMode(mode);
@@ -204,6 +200,7 @@ public class ResourceSelectionTree extends Composite {
 		toolbarManager.add(flatAction);
 
 		treeAction = new Action("Tree Mode", IAction.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				mode = TreeViewMode.MODE_TREE;
 				settingsProvider.setTreeViewMode(mode);
@@ -216,6 +213,7 @@ public class ResourceSelectionTree extends Composite {
 		toolbarManager.add(treeAction);
 
 		compressedAction = new Action("Compressed Folders Mode", IAction.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				mode = TreeViewMode.MODE_COMPRESSED_FOLDERS;
 				settingsProvider.setTreeViewMode(mode);
@@ -248,8 +246,11 @@ public class ResourceSelectionTree extends Composite {
 
 		treeViewer = new CheckboxTreeViewer(viewerPane, SWT.MULTI);
 
+		// TODO jj check key behavior
+
 		// Override the spacebar behavior to toggle checked state for all selected items.
 		treeViewer.getControl().addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.keyCode == SPACEBAR) {
 					Tree tree = (Tree) treeViewer.getControl();
@@ -312,6 +313,7 @@ public class ResourceSelectionTree extends Composite {
 
 	protected void fillTreeMenu(IMenuManager menuMgr) {
 		Action selectAllAction = new Action("Select All") {
+			@Override
 			public void run() {
 				setAllChecked(true);
 			}
@@ -319,6 +321,7 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(selectAllAction);
 
 		Action deselectAllAction = new Action("Deselect All") {
+			@Override
 			public void run() {
 				setAllChecked(false);
 			}
@@ -328,6 +331,7 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(new Separator());
 
 		Action deselectPreCommit = new Action("Deselect Pre-Commit") {
+			@Override
 			public void run() {
 				for (DecoratedResource res : getSelectedResources()) {
 					if (res.isUpToDate()) {
@@ -341,6 +345,7 @@ public class ResourceSelectionTree extends Composite {
 		menuMgr.add(deselectPreCommit);
 
 		Action deselectPostCommit = new Action("Deselect Post-Commit") {
+			@Override
 			public void run() {
 				for (DecoratedResource res : getSelectedResources()) {
 					if (res.isUpToDate()) {
@@ -356,6 +361,7 @@ public class ResourceSelectionTree extends Composite {
 
 		if (mode != TreeViewMode.MODE_FLAT) {
 			Action expandAllAction = new Action("Expand All") {
+				@Override
 				public void run() {
 					treeViewer.expandAll();
 				}
@@ -519,6 +525,7 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	private class ResourceSelectionContentProvider extends WorkbenchContentProvider {
+		@Override
 		public Object getParent(Object element) {
 			IContainer parent = ((DecoratedResource) element).getResource().getParent();
 			if (parent != null) {
@@ -527,6 +534,7 @@ public class ResourceSelectionTree extends Composite {
 			return null;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (mode != TreeViewMode.MODE_FLAT && ((DecoratedResource) element).getResource() instanceof IContainer) {
 				return true;
@@ -535,10 +543,12 @@ public class ResourceSelectionTree extends Composite {
 			}
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return getChildren(inputElement);
 		}
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ResourceSelectionTree) {
 				if (mode == TreeViewMode.MODE_FLAT) {
@@ -573,6 +583,7 @@ public class ResourceSelectionTree extends Composite {
 			JFaceResources.getColorRegistry().put(colorRed, new RGB(150, 20, 20));
 		}
 
+		@Override
 		public Image getImage(Object element) {
 			return workbenchLabelProvider.getImage(((DecoratedResource) element).getResource());
 		}
@@ -633,24 +644,11 @@ public class ResourceSelectionTree extends Composite {
 	}
 
 	public void setResources(@NotNull List<DecoratedResource> resourcesToShow) {
-//		resources = getResourcesFromDecoratedResource(resourcesToShow);
 		this.resourcesToShow = resourcesToShow;
 
 		compressedFolders = null;
 		folders = null;
 		rootFolders = null;
-
-//		if (resources != null) {
-//			Collections.sort(resources, comparator);
-//		}
 	}
 
-//	private List<IResource> getResourcesFromDecoratedResource(List<DecoratedResource> decoratedResources) {
-//		List<IResource> ret = new ArrayList<IResource>();
-//
-//		for (DecoratedResource res : decoratedResources) {
-//			ret.add(res.getResource());
-//		}
-//		return ret;
-//	}
 }

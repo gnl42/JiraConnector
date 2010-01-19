@@ -13,13 +13,14 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CustomToolTip;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.ITreeViewModeSettingProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ResourceSelectionTree.TreeViewMode;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.ui.commons.CustomToolTip;
+import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
+import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree;
+import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.ITreeViewModeSettingProvider;
+import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -51,77 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
-
-	// TODO jj move it up
-	public static class DecoratedResource {
-
-		private final String decorationText;
-
-		private final boolean upToDate;
-
-		private final IResource resource;
-
-		private final String tooltipText;
-
-		public DecoratedResource(IResource resource, boolean upToDate, String decorationText, String tooltipText) {
-			this.resource = resource;
-			this.upToDate = upToDate;
-			this.decorationText = decorationText;
-			this.tooltipText = tooltipText;
-		}
-
-		public DecoratedResource(IResource parent) {
-			this(parent, true, "", "");
-		}
-
-		public IResource getResource() {
-			return resource;
-		}
-
-		public String getDecorationText() {
-			return decorationText;
-		}
-
-		public boolean isUpToDate() {
-			return upToDate;
-		}
-
-		public String getTooltipText() {
-			return tooltipText;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((resource == null) ? 0 : resource.hashCode());
-			return result;
-		}
-
-		// TODO jj add UnitTest for equlas
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			DecoratedResource other = (DecoratedResource) obj;
-			if (resource == null) {
-				if (other.resource != null) {
-					return false;
-				}
-			} else if (!resource.equals(other.resource)) {
-				return false;
-			}
-			return true;
-		}
-
-	}
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
@@ -159,9 +89,6 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	public List<DecoratedResource> getSelection() {
 
-		// TODO jj check the change
-
-		// TODO jj convert array to list (do we need it?)
 		DecoratedResource[] selectedResources = resourceSelectionTree.getSelectedResources();
 
 		List<DecoratedResource> ret = new ArrayList<DecoratedResource>();
@@ -170,6 +97,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 			ret.add(resource);
 		}
 
+		// could return array instead of list
 		return ret;
 	}
 
