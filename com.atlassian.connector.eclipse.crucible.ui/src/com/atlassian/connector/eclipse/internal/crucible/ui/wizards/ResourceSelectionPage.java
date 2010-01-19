@@ -42,8 +42,6 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.contexts.IContextService;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -229,12 +227,6 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonControl);
 
 		populateResourcesTree();
-
-		IContextService contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
-
-		if (contextService != null) {
-			contextService.activateContext("org.eclipse.mylyn.tasks.ui.views.taskss");
-		}
 
 		validatePage();
 	}
