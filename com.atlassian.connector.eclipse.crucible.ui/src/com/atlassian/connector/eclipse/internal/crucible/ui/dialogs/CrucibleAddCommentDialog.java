@@ -201,7 +201,9 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 				if (commentText != null && commentText.getText().trim().length() > 0) {
 					enabled = true;
 				}
-				if (saveButton != null && !saveButton.isDisposed()) {
+
+				if (saveButton != null && !saveButton.isDisposed()
+						&& (parentComment == null || !parentComment.isDraft())) {
 					saveButton.setEnabled(enabled);
 				}
 
