@@ -51,6 +51,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -108,6 +110,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private IAction collapseSelected;
 
 	private AddGeneralCommentToActiveReviewAction addGeneralCommentAction;
+
+	private Action showUnreadOnlyAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
@@ -211,10 +215,16 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		createActions();
 		createToolbar();
+		createMenu();
 		createContextMenu();
 
 		getSite().setSelectionProvider(viewer);
 		setReview(initializeWith);
+	}
+
+	private void createMenu() {
+		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
+		mgr.add(showUnreadOnlyAction);
 	}
 
 	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
@@ -296,6 +306,21 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void createActions() {
+		showUnreadOnlyAction = new Action("Show unread comments only", IAction.AS_CHECK_BOX) {
+			{
+				setImageDescriptor(CommonImages.FILTER_COMPLETE);
+			}
+
+			public void run() {
+				if (isChecked()) {
+					viewer.setFilters(new ViewerFilter[] { new UnreadCommentsViewerFilter() });
+					viewer.expandAll();
+				} else {
+					viewer.setFilters(new ViewerFilter[0]);
+				}
+			};
+		};
+
 		addFileCommentAction = new AddFileCommentAction("Add File Comment", "Add File Comment");
 		viewer.addSelectionChangedListener(addFileCommentAction);
 
@@ -366,6 +391,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		mgr.add(expandAll);
 		mgr.add(collapseAll);
+		mgr.add(showUnreadOnlyAction);
 		mgr.add(new Separator());
 		mgr.add(prevCommentAction);
 		mgr.add(nextCommentAction);
