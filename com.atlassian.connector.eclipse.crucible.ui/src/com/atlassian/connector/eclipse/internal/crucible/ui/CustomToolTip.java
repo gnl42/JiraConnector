@@ -53,11 +53,14 @@ import java.util.List;
  * @author Eric Booth
  * @author Leo Dos Santos
  * @author Steffen Pingel
+ * @author Jacek Jaroczynski
+ * 
+ *         It works with controls containing {@link DecoratedResource} elements.
  */
 @SuppressWarnings("restriction")
 public class CustomToolTip extends GradientToolTip {
 
-	private final static int MAX_TEXT_WIDTH = 300;
+//	private final static int MAX_TEXT_WIDTH = 300;
 
 	private final static int MAX_WIDTH = 600;
 
@@ -67,7 +70,7 @@ public class CustomToolTip extends GradientToolTip {
 
 	private DecoratedResource currentTipElement;
 
-	private final List<TaskListToolTipListener> listeners = new ArrayList<TaskListToolTipListener>();
+	private final List<CustomToolTipListener> listeners = new ArrayList<CustomToolTipListener>();
 
 	private boolean visible;
 
@@ -101,16 +104,16 @@ public class CustomToolTip extends GradientToolTip {
 	protected void afterHideToolTip(Event event) {
 		triggeredByMouse = true;
 		visible = false;
-		for (TaskListToolTipListener listener : listeners.toArray(new TaskListToolTipListener[0])) {
+		for (CustomToolTipListener listener : listeners.toArray(new CustomToolTipListener[0])) {
 			listener.toolTipHidden(event);
 		}
 	}
 
-	public void addTaskListToolTipListener(TaskListToolTipListener listener) {
+	public void addTaskListToolTipListener(CustomToolTipListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeTaskListToolTipListener(TaskListToolTipListener listener) {
+	public void removeTaskListToolTipListener(CustomToolTipListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -283,8 +286,7 @@ public class CustomToolTip extends GradientToolTip {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).hint(width, SWT.DEFAULT).applyTo(textLabel);
 	}
 
-	public static interface TaskListToolTipListener {
-
+	public static interface CustomToolTipListener {
 		void toolTipHidden(Event event);
 	}
 

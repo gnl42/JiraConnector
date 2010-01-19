@@ -268,18 +268,20 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 							}
 						}
 
+						String preCommitExplanation = " and will be added to the review in pre-commit mode.";
+
 						if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is unversioned."));
+									"This file is unversioned" + preCommitExplanation));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_IGNORED)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is ignored."));
+									"This file is ignored" + preCommitExplanation));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file has been added or changed locally."));
+									"This file has been added or changed locally" + preCommitExplanation));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_VERSIONED)) {
 							resourcesToShow.add(new DecoratedResource(resource, true, "", "This file is up to date."));
