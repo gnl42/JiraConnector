@@ -15,7 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddReviewCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CommentNavigationAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
@@ -78,7 +79,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private TreeViewer viewer;
 
-	private AddReviewCommentAction addFileCommentAction;
+	private AddFileCommentAction addFileCommentAction;
 
 	private Review initializeWith;
 
@@ -105,6 +106,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private IAction expandSelected;
 
 	private IAction collapseSelected;
+
+	private AddGeneralCommentToActiveReviewAction addGeneralCommentAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
@@ -293,7 +296,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void createActions() {
-		addFileCommentAction = new AddReviewCommentAction("Add File Comment", "Add File Comment");
+		addFileCommentAction = new AddFileCommentAction("Add File Comment", "Add File Comment");
 		viewer.addSelectionChangedListener(addFileCommentAction);
 
 		openOldAction = new OpenVirtualFileAction(true);
@@ -340,6 +343,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
+		addGeneralCommentAction = new AddGeneralCommentToActiveReviewAction();
+		reviewActivationListeners.add(addGeneralCommentAction);
+
 		openEditorAction = new EditActiveTaskAction();
 		reviewActivationListeners.add(openEditorAction);
 
@@ -366,6 +372,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(new Separator());
 		mgr.add(openEditorAction);
 		mgr.add(showCommentsViewAction);
+		mgr.add(addGeneralCommentAction);
 		mgr.add(new Separator());
 		mgr.add(addFileCommentAction);
 		mgr.add(openOldAction);

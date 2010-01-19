@@ -13,29 +13,23 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
-import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Action to add a general file comment to the active review
@@ -44,12 +38,9 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
  */
-public class AddReviewCommentAction extends BaseSelectionListenerAction implements IReviewAction {
-	private IReviewActionListener actionListener;
+public class AddGeneralCommentToActiveReviewAction extends Action implements IReviewActivationListener {
 
 	private Review review;
-
-	private CrucibleFileInfo fileInfo;
 
 	@Override
 	public void run() {
@@ -67,58 +58,40 @@ public class AddReviewCommentAction extends BaseSelectionListenerAction implemen
 		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(), getText(),
 				review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
 
-		commentDialog.setReviewItem(new CrucibleFile(fileInfo, true));
 		commentDialog.open();
-
-		if (actionListener != null) {
-			actionListener.actionRan(this);
-		}
 	}
 
-	public AddReviewCommentAction(String text, String tooltipText) {
-		super(text);
+	public AddGeneralCommentToActiveReviewAction() {
+		super("Add General Comment To Active Review");
 		setEnabled(false);
-		setToolTipText(tooltipText);
+		setToolTipText("Add General Comment To Active Review");
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return CrucibleImages.ADD_COMMENT;
+		return CrucibleImages.ADD_GENERAL_COMMENT;
 	}
 
-	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		this.review = null;
-		this.fileInfo = null;
-
-		Object element = selection.getFirstElement();
-		if (element instanceof CrucibleFileInfo && selection.size() == 1) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-			if (this.review != null && CrucibleUtil.canAddCommentToReview(review)) {
-				this.fileInfo = (CrucibleFileInfo) element;
-				return true;
+	public void reviewActivated(final ITask task, final Review review) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				AddGeneralCommentToActiveReviewAction.this.review = review;
+				setEnabled(AddGeneralCommentToActiveReviewAction.this.review != null);
 			}
-		}
+		});
+	}
 
-		if (selection instanceof ITreeSelection) {
-			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths != null && paths.length == 1) {
-				for (TreePath path : paths) {
-					for (int i = 0, s = path.getSegmentCount(); i < s; ++i) {
-						if (path.getSegment(i) instanceof CrucibleFileInfo) {
-							this.fileInfo = (CrucibleFileInfo) path.getSegment(i);
-							return true;
-						}
-					}
-				}
+	public void reviewDeactivated(ITask task, Review review) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				AddGeneralCommentToActiveReviewAction.this.review = null;
+				setEnabled(false);
 			}
-		}
-		return false;
+		});
 	}
 
-	public void setActionListener(IReviewActionListener listener) {
-		this.actionListener = listener;
-	}
+	public void reviewUpdated(ITask task, Review review) {
+		reviewActivated(task, review);
+	};
 
 }
