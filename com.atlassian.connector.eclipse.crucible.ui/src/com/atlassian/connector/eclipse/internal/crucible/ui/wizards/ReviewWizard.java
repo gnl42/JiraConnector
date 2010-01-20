@@ -465,7 +465,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		if (crucibleReview != null && types.contains(Type.ADD_COMMENT_TO_FILE)) {
+		if (crucibleReview != null && types.contains(Type.ADD_COMMENT_TO_FILE) && detailsPage.getComment().length() > 0) {
+			final String commentText = detailsPage.getComment();
 			JobWithStatus job = new CrucibleReviewChangeJob("Add versioned comments to review", getTaskRepository()) {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
@@ -473,7 +474,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCrucibleFileFromResource(
 								resourceEditor.getResource(), crucibleReview);
 						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
-								crucibleReview, client, crucibleFile, crucibleReview.getDescription(), monitor);
+								crucibleReview, client, crucibleFile, commentText, monitor);
 						operation.setCommentLines(resourceEditor.getLineRange());
 						client.execute(operation);
 					}

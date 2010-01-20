@@ -53,6 +53,8 @@ import java.util.Map;
 
 public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
+	private static final String PRE_COMMIT_EXPLANATION = " and will be added to the review in pre-commit mode.";
+
 	private final List<IResource> roots = new ArrayList<IResource>();
 
 	private final List<DecoratedResource> resourcesToShow = new ArrayList<DecoratedResource>();
@@ -191,20 +193,18 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 							}
 						}
 
-						String preCommitExplanation = " and will be added to the review in pre-commit mode.";
-
 						if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is unversioned" + preCommitExplanation));
+									"This file is unversioned" + PRE_COMMIT_EXPLANATION));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_IGNORED)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is ignored" + preCommitExplanation));
+									"This file is ignored" + PRE_COMMIT_EXPLANATION));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file has been added or changed locally" + preCommitExplanation));
+									"This file has been added or changed locally" + PRE_COMMIT_EXPLANATION));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_VERSIONED)) {
 							resourcesToShow.add(new DecoratedResource(resource, true, "", "This file is up to date."));

@@ -42,6 +42,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -80,15 +82,17 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private boolean firstTimeCheck = true;
 
-	private final boolean addCommentLabel;
+	private final boolean addComment;
+
+	private Text commentText;
 
 	public CrucibleReviewDetailsPage(TaskRepository repository) {
 		this(repository, false);
 	}
 
-	public CrucibleReviewDetailsPage(TaskRepository repository, boolean addCommentLabel) {
+	public CrucibleReviewDetailsPage(TaskRepository repository, boolean addComment) {
 		super("crucibleDetails"); //$NON-NLS-1$
-		this.addCommentLabel = addCommentLabel;
+		this.addComment = addComment;
 		Assert.isNotNull(repository);
 		setTitle("New Crucible Review");
 		setDescription(ENTER_THE_DETAILS_OF_THE_REVIEW);
@@ -241,11 +245,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(true, false).span(6, 1).applyTo(label);
 
 		label = new Label(composite, SWT.NONE);
-		if (addCommentLabel) {
-			label.setText("Comment and Objectives:");
-		} else {
-			label.setText("Objectives:");
-		}
+		label.setText("Objectives:");
 
 		GridDataFactory.fillDefaults().span(4, 1).applyTo(label);
 
@@ -253,8 +253,29 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		label.setText("Reviewers:");
 		GridDataFactory.fillDefaults().span(2, 1).indent(5, SWT.DEFAULT).applyTo(label);
 
-		objectivesText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).span(4, 2).applyTo(objectivesText);
+		Composite textAreacomposite = new Composite(composite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginLeft = 0;
+		layout.marginTop = 0;
+		layout.marginWidth = 0;
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 10;
+		textAreacomposite.setLayout(layout);
+		GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
+		gd.horizontalIndent = 0;
+		textAreacomposite.setLayoutData(gd);
+		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).span(4, 2).applyTo(textAreacomposite);
+
+		objectivesText = new Text(textAreacomposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
+		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).applyTo(objectivesText);
+
+		if (addComment) {
+			label = new Label(textAreacomposite, SWT.NONE);
+			label.setText("Selection Comment:");
+			GridDataFactory.fillDefaults().applyTo(label);
+			commentText = new Text(textAreacomposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
+			GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).applyTo(commentText);
+		}
 
 		reviewersSelectionTreePart = new ReviewersSelectionTreePart(Collections.<Reviewer> emptySet(),
 				CrucibleUiUtil.getAllCachedUsersAsReviewers(taskRepository));
@@ -399,6 +420,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	boolean isAllowAnyoneToJoin() {
 		return anyoneCanJoin.getSelection();
+	}
+
+	public String getComment() {
+		return commentText.getText();
 	}
 
 }
