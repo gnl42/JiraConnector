@@ -246,8 +246,6 @@ public class ResourceSelectionTree extends Composite {
 
 		treeViewer = new CheckboxTreeViewer(viewerPane, SWT.MULTI);
 
-		// TODO jj check key behavior
-
 		// Override the spacebar behavior to toggle checked state for all selected items.
 		treeViewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
