@@ -46,6 +46,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -283,14 +284,14 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 					continue;
 				}
 				for (String file : files) {
+					String scmPath = entry.getRepository().getRootPath() + '/' + file;
 					Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
-							TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), entry.getRepository()
-									.getRootPath()
-									+ '/' + file);
+							TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), scmPath);
 
 					if (sourceRepository == null) {
 						mappingButton.setMissingMapping(entry.getRepository().getScmPath());
-						setErrorMessage("Some local SCM repositories are not mapped to Crucible repositories, please define repository mappings.");
+						setErrorMessage(NLS.bind("SCM repository path {0} is not mapped to Crucible repository.",
+								entry.getRepository().getScmPath()));
 						allFine = false;
 						break;
 					}
