@@ -59,7 +59,6 @@ public class DecoratedResource {
 		return result;
 	}
 
-	// TODO jj add UnitTest for equlas
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

@@ -3,6 +3,7 @@ package com.atlassian.connector.eclipse.internal.crucible.tests;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleClientManagerUiTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest;
+import com.atlassian.connector.eclipse.internal.crucible.ui.DecoratedResourceTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.RepositoryConnectorUiTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserLabelProviderTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserSorterTest;
@@ -37,6 +38,7 @@ public final class AllCrucibleUiTests {
 		suite.addTestSuite(ActiveReviewManagerTest.class);
 		suite.addTestSuite(CrucibleClientManagerUiTest.class);
 		suite.addTestSuite(CrucibleRepositorySettingsPageTest.class);
+		suite.addTestSuite(DecoratedResourceTest.class);
 
 		// $JUnit-END$
 		return suite;
