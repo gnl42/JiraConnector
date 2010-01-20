@@ -307,16 +307,18 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public void createActions() {
 		showUnreadOnlyAction = new Action("Show unread comments only", IAction.AS_CHECK_BOX) {
+			private final ViewerFilter filter = new UnreadCommentsViewerFilter();
+
 			{
 				setImageDescriptor(CommonImages.FILTER_COMPLETE);
 			}
 
 			public void run() {
 				if (isChecked()) {
-					viewer.setFilters(new ViewerFilter[] { new UnreadCommentsViewerFilter() });
+					viewer.addFilter(filter);
 					viewer.expandAll();
 				} else {
-					viewer.setFilters(new ViewerFilter[0]);
+					viewer.removeFilter(filter);
 				}
 			};
 		};
@@ -386,8 +388,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(getViewSite(), false);
-		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(getViewSite(), true);
+		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(viewer, getViewSite(), false);
+		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(viewer, getViewSite(), true);
 
 		mgr.add(expandAll);
 		mgr.add(collapseAll);
