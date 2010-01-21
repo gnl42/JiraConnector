@@ -218,13 +218,13 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 					actions.add(new CannotRemoveCommentAction("Remove Comment", CrucibleImages.COMMENT_DELETE));
 				} else {
 					RemoveCommentAction action1 = new RemoveCommentAction();
-					action.selectionChanged(new StructuredSelection(comment));
+					action1.selectionChanged(new StructuredSelection(comment));
 					actions.add(action1);
 				}
 
 				if (comment.isDraft()) {
 					PostDraftCommentAction action1 = new PostDraftCommentAction();
-					action.selectionChanged(new StructuredSelection(comment));
+					action1.selectionChanged(new StructuredSelection(comment));
 					actions.add(action1);
 				}
 			}

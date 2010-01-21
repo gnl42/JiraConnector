@@ -75,13 +75,14 @@ public class ReviewTreeNode {
 	public void compact() {
 		while (children.size() == 1) {
 			Object onlyChild = children.get(0);
-			if (onlyChild instanceof ReviewTreeNode && ((ReviewTreeNode) onlyChild).getCrucibleFileInfo() == null) {
+			final ReviewTreeNode childTreeNode = (ReviewTreeNode) onlyChild;
+			if (onlyChild instanceof ReviewTreeNode && childTreeNode.getCrucibleFileInfo() == null) {
 				if (pathToken == null) {
-					pathToken = ((ReviewTreeNode) onlyChild).pathToken;
+					pathToken = childTreeNode.pathToken;
 				} else {
-					pathToken = pathToken + "/" + ((ReviewTreeNode) onlyChild).pathToken;
+					pathToken = pathToken + "/" + childTreeNode.pathToken;
 				}
-				children = ((ReviewTreeNode) onlyChild).children;
+				children = childTreeNode.children;
 			} else {
 				break;
 			}
@@ -142,16 +143,4 @@ public class ReviewTreeNode {
 		}
 		return true;
 	}
-
-//	@Override
-//	public int hashCode() {
-//		if (cfi != null) {
-//			return cfi.hashCode();
-//		}
-//		if (pathToken != null) {
-//			return pathToken.hashCode();
-//		}
-//		return super.hashCode();
-//	}
-
 }

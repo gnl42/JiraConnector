@@ -71,7 +71,7 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 		if (element instanceof Comment && selection.size() == 1) {
 			this.review = getActiveReview();
 			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)
-					&& ((Comment) element).isDraft()) {
+					&& ((Comment) element).isDraft() && !ReviewTreeUtils.hasDraftParent(selection)) {
 				return true;
 			}
 		}

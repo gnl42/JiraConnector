@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
@@ -69,6 +70,41 @@ public final class ReviewTreeUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param selection
+	 *            expected {@link ITreeSelection} - otherwise it won't help
+	 * @return
+	 */
+	public static boolean hasDraftParent(ISelection selection) {
+		if (selection instanceof ITreeSelection) {
+			ITreeSelection treeSelection = (ITreeSelection) selection;
+			final Object selectedElement = treeSelection.getFirstElement();
+			if (selectedElement == null || treeSelection.size() != 1) {
+				return false;
+			}
+
+			TreePath[] paths = treeSelection.getPathsFor(selectedElement);
+			if (paths == null || paths.length != 1) {
+				return false;
+			}
+
+			final TreePath selectedPath = paths[0];
+
+			for (int i = selectedPath.getSegmentCount() - 2; i >= 0; --i) {
+				final Object segment = selectedPath.getSegment(i);
+				if (segment instanceof Comment) {
+					if (((Comment) segment).isDraft()) {
+						return true;
+					}
+				} else {
+					return false; // stop searching as soon as we navigate up to non-comment node
+				}
+			}
+		}
+		return false;
 	}
 
 	public static Review getReview(CrucibleFileInfo fileInfo) {

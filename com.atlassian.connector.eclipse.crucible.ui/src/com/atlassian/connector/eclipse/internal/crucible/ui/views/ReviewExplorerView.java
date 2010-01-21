@@ -120,13 +120,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private static final int MAX_EXPANDED_BY_DEFAULT_ELEMENTS = 100;
 
-	/**
-	 * 
-	 */
-	public ReviewExplorerView() {
-		// ignore
-	}
-
 	@Override
 	public void createPartControl(Composite parent) {
 
