@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.2.0,3.4.0)"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.fisheye.core;x-friends:="com.atlassian.connector.eclipse.fisheye.ui, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.core",
+Export-Package: com.atlassian.connector.eclipse.internal.fisheye.core;x-friends:="com.atlassian.connector.eclipse.fisheye.ui, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.internal.fisheye.core.client;x-friends:="com.atlassian.connector.eclipse.fisheye.ui, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.ui"
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.tasks.core,
