@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -79,7 +80,7 @@ import java.util.TreeSet;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
+public class SelectScmChangesetsPage extends AbstractCrucibleWizardPage {
 
 	private static final int LIMIT = 25;
 
@@ -144,7 +145,7 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 			return new Object[0];
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		public Object getParent(Object element) {
 			if (logEntries == null) {
 				return null;
@@ -159,7 +160,7 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		public boolean hasChildren(Object element) {
 			if (logEntries == null) {
 				return false;
@@ -194,7 +195,7 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			if (newInput instanceof Map) {
 				logEntries = (Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>>) newInput;
@@ -225,11 +226,11 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 
 	private DefineRepositoryMappingButton mappingButton;
 
-	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository) {
+	public SelectScmChangesetsPage(@NotNull TaskRepository repository) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>());
 	}
 
-	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository,
+	public SelectScmChangesetsPage(@NotNull TaskRepository repository,
 			@Nullable SortedSet<ICustomChangesetLogEntry> logEntries) {
 		super("crucibleChangesets"); //$NON-NLS-1$
 		setTitle("Select Changesets");
@@ -698,8 +699,30 @@ public class CrucibleAddChangesetsPage extends AbstractCrucibleWizardPage {
 		return null;
 	}
 
-	public Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> getSelectedChangesets() {
-		return selectedLogEntries;
+	public Map<String, Set<String>> getSelectedChangesets() {
+		Map<String, Set<String>> result = MiscUtil.buildHashMap();
+
+		for (SortedSet<ICustomChangesetLogEntry> entries : selectedLogEntries.values()) {
+			for (ICustomChangesetLogEntry entry : entries) {
+				String[] files = entry.getChangedFiles();
+				if (files == null || files.length == 0) {
+					continue;
+				}
+				for (String file : files) {
+					Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
+							TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), entry.getRepository()
+									.getRootPath()
+									+ '/' + file);
+					if (sourceRepository != null) {
+						if (!result.containsKey(sourceRepository.getValue())) {
+							result.put(sourceRepository.getValue(), new HashSet<String>());
+						}
+						result.get(sourceRepository.getValue()).add(entry.getRevision());
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 }

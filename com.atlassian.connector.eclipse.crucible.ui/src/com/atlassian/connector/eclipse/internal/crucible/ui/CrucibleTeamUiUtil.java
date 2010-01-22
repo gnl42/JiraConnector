@@ -126,7 +126,7 @@ public class CrucibleTeamUiUtil {
 	}
 
 	private static CrucibleFile getCruciblePreCommitFile(IFile file, Review review) {
-		String localFileUrl = StringUtil.removeTrailingSlashes(file.getFullPath().toString());
+		String localFileUrl = StringUtil.removeLeadingAndTrailingSlashes(file.getFullPath().toString());
 
 		Set<CrucibleFileInfo> reviewFiles;
 		try {
@@ -138,8 +138,8 @@ public class CrucibleTeamUiUtil {
 		}
 
 		for (CrucibleFileInfo cruFile : reviewFiles) {
-			String newFileUrl = StringUtil.removeTrailingSlashes(cruFile.getFileDescriptor().getUrl());
-			String oldFileUrl = StringUtil.removeTrailingSlashes(cruFile.getOldFileDescriptor().getUrl());
+			String newFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getFileDescriptor().getUrl());
+			String oldFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getOldFileDescriptor().getUrl());
 
 			if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
 				return new CrucibleFile(cruFile, false);

@@ -33,17 +33,16 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
-import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -104,47 +103,23 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			@Override
 			public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-				SubMonitor submonitor = SubMonitor.convert(monitor);
+				SubMonitor submonitor = SubMonitor.convert(monitor, changesets.keySet().size());
 				Review review = null;
-				Map<String, List<String>> repositoriesWithRevisions = MiscUtil.buildHashMap();
-
-				for (SortedSet<ICustomChangesetLogEntry> entries : selectedLogEntries.values()) {
-					for (ICustomChangesetLogEntry entry : entries) {
-						String[] files = entry.getChangedFiles();
-						if (files == null || files.length == 0) {
-							continue;
-						}
-						for (String file : files) {
-							Map.Entry<String, String> sourceRepository = TaskRepositoryUtil.getMatchingSourceRepository(
-									TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()),
-									entry.getRepository().getRootPath() + '/' + file);
-							if (sourceRepository != null) {
-								if (!repositoriesWithRevisions.containsKey(sourceRepository.getValue())) {
-									repositoriesWithRevisions.put(sourceRepository.getValue(), new ArrayList<String>());
-								}
-								repositoriesWithRevisions.get(sourceRepository.getValue()).add(entry.getRevision());
-							}
-						}
-					}
-				}
-
-				submonitor.setWorkRemaining(repositoriesWithRevisions.size());
-				for (String repository : repositoriesWithRevisions.keySet()) {
+				for (String repository : changesets.keySet()) {
 					//add changeset to review
 					review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(), repository,
-							repositoriesWithRevisions.get(repository));
+							changesets.get(repository));
 					submonitor.worked(1);
 				}
 				return review;
 			}
 		}
 
-		private final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
+		private final Map<String, Set<String>> changesets;
 
-		public AddChangesetsToReviewJob(String name, TaskRepository taskRepository,
-				Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries) {
+		public AddChangesetsToReviewJob(String name, TaskRepository taskRepository, Map<String, Set<String>> changesets) {
 			super(name, taskRepository);
-			this.selectedLogEntries = selectedLogEntries;
+			this.changesets = changesets;
 		}
 
 		@Override
@@ -183,7 +158,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private Review crucibleReview;
 
-	private CrucibleAddChangesetsPage addChangeSetsPage;
+	private SelectScmChangesetsPage addChangeSetsPage;
 
 	private CrucibleAddPatchPage addPatchPage;
 
@@ -208,6 +183,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private List<UploadItem> uploadItems;
 
 	private List<ResourceEditorBean> versionedCommentsToAdd = new ArrayList<ResourceEditorBean>();
+
+	private SelectChangesetsFromCruciblePage addChangeSetsFromCruciblePage;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -243,9 +220,17 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	@Override
 	public void addPages() {
 		if (types.contains(Type.ADD_CHANGESET)) {
-			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
-			addPage(addChangeSetsPage);
+			CrucibleVersionInfo versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(getTaskRepository());
+			if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
+				addChangeSetsPage = new SelectScmChangesetsPage(getTaskRepository(), preselectedLogEntries);
+				addPage(addChangeSetsPage);
+			} else {
+				addChangeSetsFromCruciblePage = new SelectChangesetsFromCruciblePage(getTaskRepository(),
+						preselectedLogEntries);
+				addPage(addChangeSetsFromCruciblePage);
+			}
 		}
+
 		if (types.contains(Type.ADD_PATCH)) {
 			addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
 			addPage(addPatchPage);
@@ -406,8 +391,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		// create review from changeset
-		if (addChangeSetsPage != null) {
-			final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+		if (addChangeSetsPage != null || addChangeSetsFromCruciblePage != null) {
+			final Map<String, Set<String>> changesetsToAdd = addChangeSetsPage != null ? addChangeSetsPage.getSelectedChangesets()
+					: addChangeSetsFromCruciblePage.getSelectedChangesets();
 
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
 				final CrucibleReviewChangeJob job = new AddChangesetsToReviewJob("Add changesets to review",

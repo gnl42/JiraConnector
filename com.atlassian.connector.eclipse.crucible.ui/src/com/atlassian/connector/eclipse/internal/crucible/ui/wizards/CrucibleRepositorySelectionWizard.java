@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
-import com.atlassian.theplugin.commons.exception.IncorrectVersionException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
@@ -60,11 +59,7 @@ public class CrucibleRepositorySelectionWizard extends RepositorySelectionWizard
 									IProgressMonitor monitor) throws RemoteApiException,
 									ServerPasswordNotProvidedException {
 								CrucibleVersionInfo version = server.getServerVersion(serverCfg);
-								try {
-									return version.isVersion21OrGreater();
-								} catch (IncorrectVersionException e) {
-									throw new RemoteApiException(e);
-								}
+								return version.isVersion21OrGreater();
 							}
 						});
 

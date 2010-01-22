@@ -28,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -279,6 +281,15 @@ public final class CrucibleUiUtil {
 			repositories = clientData.getCachedRepositories();
 		}
 		return repositories;
+	}
+
+	@Nullable
+	public static CrucibleVersionInfo getCrucibleVersionInfo(TaskRepository repository) {
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repository);
+
+		return clientData == null ? null : clientData.getVersionInfo();
 	}
 
 	public static Set<CrucibleProject> getCachedProjects(TaskRepository repository) {

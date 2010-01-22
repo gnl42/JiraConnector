@@ -12,10 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -107,12 +109,23 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 			}
 		});
 
+		// check if this is a Crucible 2.x repository, if so, we don't need SCM integration
+		CrucibleVersionInfo versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(taskRepository);
+		if (versionInfo == null) {
+			CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), ReviewTypeSelectionPage.this);
+			versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(taskRepository);
+		}
+
 		Set<ITeamUiResourceConnector> teamConnectors = AtlassianTeamUiPlugin.getDefault()
 				.getTeamResourceManager()
 				.getTeamConnectors();
 
 		if (teamConnectors.size() == 0) {
-			disableScmRelatedReviewMethods(
+			if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
+				disablePostCommits();
+			}
+			disablePreCommits();
+			showScmRelatedWarning(
 					buttonComp,
 					"You don't have any SCM integration installed for Atlassian Connector for Eclipse. "
 							+ "You need to install one of Subversion integrations to be able to create reviews. "
@@ -138,14 +151,16 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 						"Failed to retrieve repositories", e));
 			}
 			if (repoCount[0] == 0) {
-				disableScmRelatedReviewMethods(
+				if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
+					disablePostCommits();
+				}
+				disablePreCommits();
+				showScmRelatedWarning(
 						buttonComp,
 						"In order to create regular pre- or post-commit review you need to have at least one "
 								+ "supported SCM repository configured in your Eclipse workspace.\n"
 								+ "If you use SVN, make sure that your \"SVN Repositories\" View contain at least one entry.");
-
 			}
-
 		}
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
@@ -178,12 +193,17 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 
 	}
 
-	private void disableScmRelatedReviewMethods(Composite parent, String infoMessage) {
-		changesetReview.setSelection(false);
-		changesetReview.setEnabled(false);
+	private void disablePreCommits() {
 		workspacePatchReview.setSelection(false);
 		workspacePatchReview.setEnabled(false);
+	}
 
+	private void disablePostCommits() {
+		changesetReview.setSelection(false);
+		changesetReview.setEnabled(false);
+	}
+
+	private void showScmRelatedWarning(Composite parent, String infoMessage) {
 		Link missingTeamConnectors = new Link(parent, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
 		GridDataFactory.fillDefaults().grab(true, true).hint(250, SWT.DEFAULT).applyTo(missingTeamConnectors);
 		missingTeamConnectors.setText(infoMessage);
