@@ -12,9 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -37,6 +40,8 @@ public class CrucibleClientData implements Serializable {
 
 	private Set<Repository> cachedRepositories;
 
+	private CrucibleVersionInfo versionInfo;
+
 	public CrucibleClientData() {
 
 	}
@@ -46,7 +51,7 @@ public class CrucibleClientData implements Serializable {
 	}
 
 	public void setRepositories(List<Repository> repositories) {
-		cachedRepositories = new HashSet<Repository>();
+		cachedRepositories = MiscUtil.buildHashSet();
 		cachedRepositories.addAll(repositories);
 	}
 
@@ -56,7 +61,7 @@ public class CrucibleClientData implements Serializable {
 	}
 
 	public void setProjects(List<CrucibleProject> projects) {
-		cachedProjects = new HashSet<CrucibleProject>();
+		cachedProjects = MiscUtil.buildHashSet();
 		cachedProjects.addAll(projects);
 	}
 
@@ -82,6 +87,15 @@ public class CrucibleClientData implements Serializable {
 		} else {
 			return Collections.unmodifiableSet(new HashSet<Repository>());
 		}
+	}
+
+	public void setVersionInfo(@Nullable CrucibleVersionInfo versionInfo) {
+		this.versionInfo = versionInfo;
+	}
+
+	@Nullable
+	public CrucibleVersionInfo getVersionInfo() {
+		return versionInfo;
 	}
 
 }

@@ -76,6 +76,10 @@ public class CrucibleCorePlugin extends Plugin {
 	public void stop(BundleContext context) throws Exception {
 		reviewCache = null;
 
+		if (repositoryConnector != null) {
+			repositoryConnector.flush();
+		}
+
 		plugin = null;
 		super.stop(context);
 	}

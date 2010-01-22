@@ -22,6 +22,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
@@ -33,6 +34,7 @@ import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -237,22 +239,41 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		return clientData;
 	}
 
+	public void updateVersionInfo(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
+		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
+			@Override
+			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+					throws RemoteApiException, ServerPasswordNotProvidedException {
+				SubMonitor submonitor = SubMonitor.convert(monitor, "Updating server version info", 1);
+				CrucibleVersionInfo versionInfo = server.getServerVersion(serverCfg);
+				clientData.setVersionInfo(versionInfo);
+				submonitor.worked(1);
+				return null;
+			}
+		});
+	}
+
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-				monitor.subTask("Retrieving Crucible projects");
+				SubMonitor submonitor = SubMonitor.convert(monitor, "Updating repository data", 4);
+				CrucibleVersionInfo versionInfo = server.getServerVersion(serverCfg);
+				clientData.setVersionInfo(versionInfo);
+				submonitor.worked(1);
+
 				List<CrucibleProject> projects = server.getProjects(serverCfg);
 				clientData.setProjects(projects);
+				submonitor.worked(1);
 
-				monitor.subTask("Retrieving Crucible users");
 				List<User> users = server.getUsers(serverCfg);
 				clientData.setUsers(users);
+				submonitor.worked(1);
 
-				monitor.subTask("Retrieving Crucible repositories");
 				List<Repository> repositories = server.getRepositories(serverCfg);
 				clientData.setRepositories(repositories);
+				submonitor.worked(1);
 				return null;
 			}
 		});

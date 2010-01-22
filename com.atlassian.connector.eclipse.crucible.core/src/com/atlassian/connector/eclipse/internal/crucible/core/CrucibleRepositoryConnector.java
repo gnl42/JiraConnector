@@ -296,4 +296,10 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		};
 	}
+
+	public synchronized void flush() {
+		if (clientManager != null) {
+			clientManager.writeCache();
+		}
+	}
 }
