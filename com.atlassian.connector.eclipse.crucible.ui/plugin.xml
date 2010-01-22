@@ -58,7 +58,7 @@
 			objectClass="com.atlassian.connector.eclipse.ui.commons.IEditorResource" adaptable="true">
 			<action class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction" 
 				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview" 
-				label="Add Files to Active Review" menubarPath="team.main/group10" tooltip="Add Files to Active Review">
+				label="Add to Active Review" menubarPath="team.main/group10" tooltip="Add to Active Review">
 			</action>
 			<visibility>
 				<systemProperty name="com.atlassian.connector.eclipse.crucible.ui.review.active" value="true"/>

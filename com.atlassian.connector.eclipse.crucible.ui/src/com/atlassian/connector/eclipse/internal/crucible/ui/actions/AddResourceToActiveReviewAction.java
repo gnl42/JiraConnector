@@ -64,8 +64,68 @@ import java.util.List;
  */
 public class AddResourceToActiveReviewAction extends AbstractReviewFromResourcesAction {
 
+	private final class AddResourceToActiveReviewWizard extends Wizard {
+		private final List<IResource> resources;
+
+		private ResourceSelectionPage resourceSelectionPage;
+
+		private AddResourceToActiveReviewWizard(List<IResource> resources) {
+			this.resources = resources;
+		}
+
+		@Override
+		public void addPages() {
+			resourceSelectionPage = new ResourceSelectionPage(
+					CrucibleUiUtil.getCrucibleTaskRepository(getActiveReview()), resources);
+			addPage(resourceSelectionPage);
+		}
+
+		@Override
+		public boolean performFinish() {
+			setErrorMessage(null);
+
+			final List<DecoratedResource> resources = resourceSelectionPage.getSelection();
+			if (resources != null && resources.size() > 0) {
+				Review review = getActiveReview();
+				IStatus result = runJobInContainer(new AddDecoratedResourcesToReviewJob(review,
+						resourceSelectionPage.getTeamResourceConnector(), resources));
+				if (!result.isOK()) {
+					StatusHandler.log(result);
+					setErrorMessage(result.getMessage());
+					return false;
+				} else {
+					runJobInContainer(new RefreshReviewAndTaskListJob(review));
+				}
+			}
+
+			return true;
+		}
+
+		private void setErrorMessage(String message) {
+			IWizardPage page = getContainer().getCurrentPage();
+			if (page instanceof WizardPage) {
+				((WizardPage) page).setErrorMessage(message != null ? message.replace("\n", " ") : null);
+			}
+		}
+
+		private IStatus runJobInContainer(final JobWithStatus job) {
+			IRunnableWithProgress runnable = new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					job.run(monitor);
+				}
+			};
+			try {
+				getContainer().run(true, true, runnable);
+			} catch (Exception e) {
+				return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, String.format("Job \"%s\" failed",
+						job.getName()), e);
+			}
+			return job.getStatus();
+		}
+	}
+
 	public AddResourceToActiveReviewAction() {
-		super("Add Files to Active Review");
+		super("Add to Active Review");
 	}
 
 	@Override
@@ -157,93 +217,9 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 
 	protected void openReviewWizard(final List<IResource> resources, boolean isCrucible21Required, Shell shell) {
 		WizardDialog wd = null;
-		Wizard wizard = new Wizard() {
-			private ResourceSelectionPage resourceSelectionPage;
-
-			@Override
-			public void addPages() {
-				resourceSelectionPage = new ResourceSelectionPage(
-						CrucibleUiUtil.getCrucibleTaskRepository(getActiveReview()), resources);
-				addPage(resourceSelectionPage);
-			}
-
-			@Override
-			public boolean performFinish() {
-				setErrorMessage(null);
-
-				final List<DecoratedResource> resources = resourceSelectionPage.getSelection();
-				if (resources != null && resources.size() > 0) {
-					Review review = getActiveReview();
-					IStatus result = runJobInContainer(new AddDecoratedResourcesToReviewJob(review,
-							resourceSelectionPage.getTeamResourceConnector(), resources));
-					if (!result.isOK()) {
-						StatusHandler.log(result);
-						setErrorMessage(result.getMessage());
-						return false;
-					} else {
-						runJobInContainer(new RefreshReviewAndTaskListJob(review));
-					}
-				}
-
-				return true;
-			}
-
-			private void setErrorMessage(String message) {
-				IWizardPage page = getContainer().getCurrentPage();
-				if (page instanceof WizardPage) {
-					((WizardPage) page).setErrorMessage(message != null ? message.replace("\n", " ") : null);
-				}
-			}
-
-			private IStatus runJobInContainer(final JobWithStatus job) {
-				IRunnableWithProgress runnable = new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						job.run(monitor);
-					}
-				};
-				try {
-					getContainer().run(true, true, runnable);
-				} catch (Exception e) {
-					return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, String.format("Job \"%s\" failed",
-							job.getName()), e);
-				}
-				return job.getStatus();
-			}
-
-		};
+		Wizard wizard = new AddResourceToActiveReviewWizard(resources);
 		wd = new WizardDialog(shell, wizard);
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}
-
-	/*final AddResourcesToReviewJob job = new AddResourcesToReviewJob(getActiveReview(), getSelectedResources());
-	job.addJobChangeListener(new JobChangeAdapter() {
-		@Override
-		public void done(IJobChangeEvent event) {
-			final IStatus status = job.getStatus();
-			if (!status.isOK()) {
-				StatusHandler.log(status);
-
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-						mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-						String message = NLS.bind(
-								"Failed to add selected resources to active review. Error message was: \n\n{0}",
-								status.getMessage());
-						if (status.getMessage().contains("does not exist")) {
-							message += "\n\nCheck if your mappings are correct in:\n"
-									+ "Preferences -> Atlassian -> Repository Mappings.";
-						}
-						mb.setMessage(message);
-						mb.open();
-					}
-				});
-			} else {
-
-			}
-		}
-	});
-	job.setPriority(Job.INTERACTIVE);
-	job.schedule();*/
 }
