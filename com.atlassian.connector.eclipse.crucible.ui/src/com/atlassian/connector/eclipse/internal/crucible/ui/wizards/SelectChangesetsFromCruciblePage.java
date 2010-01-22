@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.commons.fisheye.FishEyeServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
@@ -21,6 +22,10 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeRemoteOperation;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.viewers.ArrayTreeContentProvider;
@@ -29,6 +34,10 @@ import com.atlassian.theplugin.commons.crucible.api.model.changes.Change;
 import com.atlassian.theplugin.commons.crucible.api.model.changes.Changes;
 import com.atlassian.theplugin.commons.crucible.api.model.changes.Revision;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.fisheye.api.FishEyeSession;
+import com.atlassian.theplugin.commons.fisheye.api.model.changeset.Changeset;
+import com.atlassian.theplugin.commons.fisheye.api.model.changeset.ChangesetIdList;
+import com.atlassian.theplugin.commons.fisheye.api.model.changeset.FileRevisionKey;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -36,6 +45,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -75,6 +85,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -92,6 +103,95 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 	private static final int LIMIT = 25;
 
 	private static final String EMPTY_NODE = "No changesets available.";
+
+	private final class GetChangesetsRunnable implements IRunnableWithProgress {
+		private final int numberToRetrieve;
+
+		private final IStatus[] status;
+
+		private final Repository repository;
+
+		private GetChangesetsRunnable(int numberToRetrieve, IStatus[] status, Repository repository) {
+			this.numberToRetrieve = numberToRetrieve;
+			this.status = status;
+			this.repository = repository;
+		}
+
+		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			try {
+				if (repository.getType().equals(Repository.PLUGIN_TYPE)) {
+					SubMonitor submonitor = SubMonitor.convert(monitor, "Gettings changesets from Crucible", 1);
+					CrucibleClientManager mgr = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
+					CrucibleClient client = mgr.getClient(getTaskRepository());
+					Changes changes = client.execute(new CrucibleRemoteOperation<Changes>(submonitor.newChild(1),
+							getTaskRepository()) {
+						@Override
+						public Changes run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
+								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
+							return server.getSession(serverCfg).getChanges(repository.getName(), null, false, null,
+									false, Integer.valueOf(numberToRetrieve));
+						}
+					});
+					availableChanges.put(repository, changes);
+				} else {
+					SubMonitor submonitor = SubMonitor.convert(monitor, "Getting changesets from FishEye", 2);
+					// that's FishEye repository
+					FishEyeClientManager mgr = FishEyeCorePlugin.getDefault()
+							.getRepositoryConnector()
+							.getClientManager();
+					FishEyeClient client = mgr.getClient(getTaskRepository());
+					final ChangesetIdList csids = client.execute(new FishEyeRemoteOperation<ChangesetIdList>(
+							submonitor.newChild(1), getTaskRepository()) {
+						@Override
+						public ChangesetIdList run(FishEyeServerFacade2 server, ConnectionCfg serverCfg,
+								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
+							FishEyeSession session = server.getSession(serverCfg);
+							session.login(serverCfg.getUsername(), serverCfg.getPassword().toCharArray());
+
+							return session.getChangesetList(repository.getName(), null, null, null,
+									Integer.valueOf(numberToRetrieve));
+						}
+					});
+
+					List<Changeset> changesets = client.execute(new FishEyeRemoteOperation<List<Changeset>>(
+							submonitor.newChild(1), getTaskRepository()) {
+						@Override
+						public List<Changeset> run(FishEyeServerFacade2 server, ConnectionCfg serverCfg,
+								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
+							SubMonitor submonitor = SubMonitor.convert(monitor, csids.getCsids().size());
+							FishEyeSession session = server.getSession(serverCfg);
+							session.login(serverCfg.getUsername(), serverCfg.getPassword().toCharArray());
+
+							List<Changeset> result = MiscUtil.buildArrayList();
+							for (String csid : csids.getCsids()) {
+								result.add(session.getChangeset(repository.getName(), csid));
+								submonitor.worked(1);
+							}
+							return result;
+						}
+					});
+
+					List<Change> changes = MiscUtil.buildArrayList();
+					for (Changeset cs : changesets) {
+						List<Revision> revisions = MiscUtil.buildArrayList();
+						for (FileRevisionKey rev : cs.getRevisionKeys()) {
+							revisions.add(new Revision(rev.getRev(), rev.getPath(), null));
+						}
+						changes.add(new Change(cs.getAuthor(), cs.getDate(), cs.getCsid(), null, cs.getComment(),
+								revisions));
+					}
+					availableChanges.put(repository, new Changes(false, false, changes));
+				}
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						availableTreeViewer.refresh(repository);
+					}
+				});
+			} catch (CoreException e) {
+				status[0] = e.getStatus();
+			}
+		}
+	}
 
 	private static class ChangesetLabelProvider extends LabelProvider {
 		private static final int COMMENT_PREVIEW_LENGTH = 50;
@@ -162,9 +262,9 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 
 	}
 
-	private final Map<Repository, Changes> availableChanges;
+	private final Map<Repository, Changes> availableChanges = MiscUtil.buildHashMap();
 
-	private final Map<Repository, Set<Change>> selectedChanges;
+	private final Map<Repository, Set<Change>> selectedChanges = MiscUtil.buildHashMap();
 
 	private TreeViewer availableTreeViewer;
 
@@ -193,8 +293,6 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 		setDescription("Select the changesets that should be included in the review. Changesets information is provided by Crucible.");
 
 		this.taskRepository = repository;
-		this.availableChanges = MiscUtil.buildHashMap();
-		this.selectedChanges = MiscUtil.buildHashMap();
 
 		if (logEntries != null && logEntries.size() > 0) {
 			Map<String, String> mappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
@@ -508,39 +606,16 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 	private void updateChangesets(final Repository repository, final int numberToRetrieve) {
 		final IStatus[] status = { Status.OK_STATUS };
 
-		IRunnableWithProgress getChangesets = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				try {
-					CrucibleClientManager mgr = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
-					CrucibleClient client = mgr.getClient(getTaskRepository());
-					Changes changes = client.execute(new CrucibleRemoteOperation<Changes>(monitor, getTaskRepository()) {
-						@Override
-						public Changes run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
-								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
-							return server.getSession(serverCfg).getChanges(repository.getName(), null, false, null,
-									false, Integer.valueOf(numberToRetrieve));
-						}
-					});
-					availableChanges.put(repository, changes);
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							availableTreeViewer.refresh(repository);
-						}
-					});
-				} catch (CoreException e) {
-					status[0] = e.getStatus();
-				}
-			}
-		};
+		IRunnableWithProgress getChangesets = new GetChangesetsRunnable(numberToRetrieve, status, repository);
 
 		try {
 			setErrorMessage(null);
 			getContainer().run(false, true, getChangesets); // blocking operation
 		} catch (Exception e) {
-			status[0] = new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve changesets", e);
+			status[0] = new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e);
 		}
 
-		if (status[0].getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
+		if (!status[0].isOK()) { //only log errors, swallow warnings
 			setErrorMessage(String.format("Error while retrieving changesets (%s). See Error Log for details.",
 					status[0].getMessage()));
 			StatusHandler.log(status[0]);
