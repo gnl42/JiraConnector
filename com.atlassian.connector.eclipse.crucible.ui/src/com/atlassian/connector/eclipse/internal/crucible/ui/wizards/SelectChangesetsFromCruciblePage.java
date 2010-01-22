@@ -207,7 +207,7 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 				return CommonImages.getImage(CrucibleImages.CHANGESET);
 			} else if (element == EMPTY_NODE) {
 				return null;
-			} else if (element instanceof String) {
+			} else if (element instanceof String || element instanceof Revision) {
 				return CommonImages.getImage(CrucibleImages.FILE);
 			}
 			return super.getImage(element);
