@@ -28,7 +28,7 @@ import com.atlassian.theplugin.commons.crucible.CrucibleServerFacadeImpl;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleUserCacheImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
@@ -602,7 +602,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 	}
 
 	private CrucibleFile getMockReviewItem(boolean isOldFIle) {
-		return new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("path", "1.0"),
+		return new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile("path", "1.0"),
 				new VersionedVirtualFile("path", "0.9"), new PermId("permID")), isOldFIle);
 	}
 

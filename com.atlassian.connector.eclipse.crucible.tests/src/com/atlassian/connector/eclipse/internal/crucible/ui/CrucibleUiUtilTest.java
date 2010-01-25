@@ -18,7 +18,7 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
@@ -185,15 +185,15 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		ITask task = new TaskTask("kind", "url", "A");
 
-		CrucibleFile file1 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("abc", "123"), null,
+		CrucibleFile file1 = new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile("abc", "123"), null,
 				new PermId("1")), false);
-		CrucibleFile file2 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("def", "456"), null,
+		CrucibleFile file2 = new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile("def", "456"), null,
 				new PermId("2")), false);
-		CrucibleFile file3 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("ghi", "789"), null,
+		CrucibleFile file3 = new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile("ghi", "789"), null,
 				new PermId("3")), false);
-		CrucibleFile file4 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile(null, null), null,
+		CrucibleFile file4 = new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile(null, null), null,
 				new PermId("4")), false);
-		CrucibleFile file5 = new CrucibleFile(new CrucibleFileInfoImpl(null, null, new PermId("5")), false);
+		CrucibleFile file5 = new CrucibleFile(new CrucibleFileInfo(null, null, new PermId("5")), false);
 		CrucibleFile file6 = new CrucibleFile(null, false);
 
 		Set<CrucibleFileInfo> setA = new HashSet<CrucibleFileInfo>();

@@ -16,7 +16,7 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
@@ -737,8 +737,8 @@ public class CrucibleUtilTest extends TestCase {
 	public void testCrucibleFileDeepEquals() {
 		Review review = new Review("http://crucible.atlassian.com/cru/");
 
-		CrucibleFileInfoImpl f1 = new CrucibleFileInfoImpl(null, null, null);
-		CrucibleFileInfoImpl f2 = new CrucibleFileInfoImpl(null, null, null);
+		CrucibleFileInfo f1 = new CrucibleFileInfo(null, null, null);
+		CrucibleFileInfo f2 = new CrucibleFileInfo(null, null, null);
 
 		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 
