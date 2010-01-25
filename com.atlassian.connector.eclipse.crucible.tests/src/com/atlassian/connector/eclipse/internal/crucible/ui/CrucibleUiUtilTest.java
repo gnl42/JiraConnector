@@ -443,7 +443,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		Review review = new Review(repo.getUrl());
 		review.setActions(MiscUtil.buildHashSet(CrucibleAction.COMMENT));
-		GeneralCommentBean comment = new GeneralCommentBean();
+		GeneralCommentBean comment = new GeneralCommentBean(review);
 		final String connUserName = repo.getCredentials(AuthenticationType.REPOSITORY).getUserName();
 		User me = new User("not" + connUserName);
 		comment.setAuthor(me);

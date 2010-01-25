@@ -103,7 +103,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
 
-			return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(), newComment);
+			return server.addGeneralCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
 		} else if (reviewItem != null) {
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
 			VersionedCommentBean newComment = createNewVersionedComment();
@@ -112,10 +112,9 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.getCustomFields().putAll(customFields);
 
 			if (parentComment != null && newComment.isReply()) {
-				return server.addVersionedCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),
-						newComment);
+				return server.addVersionedCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
 			} else {
-				return server.addVersionedComment(serverCfg, new PermId(permId), riId, newComment);
+				return server.addVersionedComment(serverCfg, review, riId, newComment);
 			}
 		} else {
 			GeneralCommentBean newComment = createNewGeneralComment();
@@ -124,16 +123,15 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.getCustomFields().putAll(customFields);
 
 			if (parentComment != null && newComment.isReply()) {
-				return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),
-						newComment);
+				return server.addGeneralCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
 			} else {
-				return server.addGeneralComment(serverCfg, new PermId(permId), newComment);
+				return server.addGeneralComment(serverCfg, review, newComment);
 			}
 		}
 	}
 
 	private GeneralCommentBean createNewGeneralComment() {
-		GeneralCommentBean newComment = new GeneralCommentBean();
+		GeneralCommentBean newComment = new GeneralCommentBean(review);
 		newComment.setMessage(message);
 		if (parentComment != null && parentComment instanceof Comment) {
 			newComment.setReply(true);
@@ -145,7 +143,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	}
 
 	private VersionedCommentBean createNewVersionedComment() {
-		VersionedCommentBean newComment = new VersionedCommentBean();
+		VersionedCommentBean newComment = new VersionedCommentBean(review);
 
 		if (commentLines != null) {
 			if (reviewItem.isOldFile()) {
