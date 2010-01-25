@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.atlassian.connector.eclipse.subversive"
+      id="com.atlassian.connector.eclipse.perforce"
       label="%featureName"
       version="1.4.0.qualifier"
       provider-name="%providerName"
@@ -39,7 +39,7 @@
    </requires>
 
    <plugin
-         id="com.atlassian.connector.eclipse.subversive.ui"
+         id="com.atlassian.connector.eclipse.perforce.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -47,7 +47,7 @@
 
 
    <plugin
-         id="com.atlassian.connector.eclipse.subversive.core"
+         id="com.atlassian.connector.eclipse.perforce.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
