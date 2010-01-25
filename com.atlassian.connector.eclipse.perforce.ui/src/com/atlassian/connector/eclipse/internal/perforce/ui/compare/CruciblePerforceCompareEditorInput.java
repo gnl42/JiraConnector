@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.subversive.ui.compare;
+package com.atlassian.connector.eclipse.internal.perforce.ui.compare;
 
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
@@ -25,11 +25,11 @@ import org.eclipse.team.svn.ui.compare.TwoWayResourceCompareInput;
 
 import java.util.Collection;
 
-public class CrucibleSubversiveCompareEditorInput extends TwoWayResourceCompareInput implements IAnnotationCompareInput {
+public class CruciblePerforceCompareEditorInput extends TwoWayResourceCompareInput implements IAnnotationCompareInput {
 
 	private final ICompareAnnotationModel annotationModelToAttach;
 
-	public CrucibleSubversiveCompareEditorInput(CompareConfiguration cc, IRepositoryResource left,
+	public CruciblePerforceCompareEditorInput(CompareConfiguration cc, IRepositoryResource left,
 			IRepositoryResource right, Collection<SVNDiffStatus> statuses,
 			ICompareAnnotationModel annotationModelToAttach) {
 		super(cc, left, right, statuses);
@@ -65,7 +65,7 @@ public class CrucibleSubversiveCompareEditorInput extends TwoWayResourceCompareI
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CrucibleSubversiveCompareEditorInput other = (CrucibleSubversiveCompareEditorInput) obj;
+		CruciblePerforceCompareEditorInput other = (CruciblePerforceCompareEditorInput) obj;
 		if (annotationModelToAttach == null) {
 			if (other.annotationModelToAttach != null) {
 				return false;

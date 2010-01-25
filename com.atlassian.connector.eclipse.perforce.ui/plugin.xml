@@ -2,7 +2,7 @@
    <extension
          point="com.atlassian.connector.eclipse.team.ui.teamUiConnector">
       <teamUiConnector
-            class="com.atlassian.connector.eclipse.internal.subversive.ui.SubversiveTeamUiResourceConnector">
+            class="com.atlassian.connector.eclipse.internal.perforce.ui.PerforceTeamUiResourceConnector">
       </teamUiConnector>
    </extension>
      <!--extension point="org.eclipse.core.runtime.adapters">

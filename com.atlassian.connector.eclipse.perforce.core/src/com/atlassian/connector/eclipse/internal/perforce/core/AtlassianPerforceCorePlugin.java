@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.subversive.core;
+package com.atlassian.connector.eclipse.internal.perforce.core;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -6,18 +6,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianSubversiveCorePlugin extends Plugin {
+public class AtlassianPerforceCorePlugin extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.subversive.core";
 
 	// The shared instance
-	private static AtlassianSubversiveCorePlugin plugin;
+	private static AtlassianPerforceCorePlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public AtlassianSubversiveCorePlugin() {
+	public AtlassianPerforceCorePlugin() {
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class AtlassianSubversiveCorePlugin extends Plugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static AtlassianSubversiveCorePlugin getDefault() {
+	public static AtlassianPerforceCorePlugin getDefault() {
 		return plugin;
 	}
 

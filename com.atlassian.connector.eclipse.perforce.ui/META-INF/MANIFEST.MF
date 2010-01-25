@@ -3,11 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Perforce UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.perforce.ui;singleton:=true
 Bundle-Version: 1.4.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.subversive.ui.AtlassianSubversiveUiPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.internal.perforce.ui.AtlassianPerforceUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.team.ui,
- com.atlassian.connector.eclipse.subversive.core,
+ com.atlassian.connector.eclipse.perforce.core,
  org.eclipse.mylyn.commons.core,
  org.eclipse.team.core,
  org.eclipse.core.filesystem,
@@ -23,7 +23,7 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.io,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.subversive.ui;x-internal:=true,
- com.atlassian.connector.eclipse.internal.subversive.ui.compare;x-internal:=true
+Export-Package: com.atlassian.connector.eclipse.internal.perforce.ui;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.perforce.ui.compare;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

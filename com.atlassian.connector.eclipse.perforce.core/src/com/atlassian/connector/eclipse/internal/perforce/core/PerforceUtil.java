@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.subversive.core;
+package com.atlassian.connector.eclipse.internal.perforce.core;
 
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -24,9 +24,9 @@ import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class SubversiveUtil {
+public final class PerforceUtil {
 	
-	private SubversiveUtil() {
+	private PerforceUtil() {
 		// ignore
 	}
 
@@ -57,7 +57,7 @@ public final class SubversiveUtil {
 		SubMonitor submonitor = SubMonitor.convert(monitor);
 		
 		if (path == null || path.length() <= 0) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveCorePlugin.PLUGIN_ID, "Requested file path is null or empty."));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianPerforceCorePlugin.PLUGIN_ID, "Requested file path is null or empty."));
 			return null;
 		}
 		
@@ -116,7 +116,7 @@ public final class SubversiveUtil {
 			}
 		}
 
-		StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubversiveCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
+		StatusHandler.log(new Status(IStatus.WARNING, AtlassianPerforceCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
 		return null;
 	}
 

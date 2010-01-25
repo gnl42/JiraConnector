@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.subversive.ui;
+package com.atlassian.connector.eclipse.internal.perforce.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -6,18 +6,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianSubversiveUiPlugin extends AbstractUIPlugin {
+public class AtlassianPerforceUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.subversive.ui";
 
 	// The shared instance
-	private static AtlassianSubversiveUiPlugin plugin;
+	private static AtlassianPerforceUiPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public AtlassianSubversiveUiPlugin() {
+	public AtlassianPerforceUiPlugin() {
 	}
 
 	/*
@@ -45,7 +45,7 @@ public class AtlassianSubversiveUiPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static AtlassianSubversiveUiPlugin getDefault() {
+	public static AtlassianPerforceUiPlugin getDefault() {
 		return plugin;
 	}
 

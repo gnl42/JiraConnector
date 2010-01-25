@@ -9,9 +9,9 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.subversive.ui;
+package com.atlassian.connector.eclipse.internal.perforce.ui;
 
-import com.atlassian.connector.eclipse.internal.subversive.core.SubversiveUtil;
+import com.atlassian.connector.eclipse.internal.perforce.core.PerforceUtil;
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.CustomChangeSetLogEntry;
@@ -84,7 +84,7 @@ import java.util.TreeSet;
  * @author Pawel Niewiadomski
  * @author Wojciech Seliga
  */
-public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
+public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	public boolean isEnabled() {
 		return true;
@@ -94,9 +94,9 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
 			IProgressMonitor monitor) throws CoreException {
 
-		IRepositoryLocation location = SubversiveUtil.getRepositoryLocation(repositoryUrl);
+		IRepositoryLocation location = PerforceUtil.getRepositoryLocation(repositoryUrl);
 		if (location == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID, NLS.bind(
 					"Could not get repository location for {0}", repositoryUrl)));
 		}
 
@@ -134,7 +134,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			} else {
 				if (getLogMessagesOp.getStatus().toString().contains(
 						"Selected SVN connector library is not available or cannot be loaded.")) {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 							"Subversive doesn't have a default client installed", getLogMessagesOp.getStatus()
 									.getException()));
 				} else {
@@ -142,7 +142,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 				}
 			}
 		} else {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 					"Getting all changesets is not supported"));
 		}
 
@@ -163,7 +163,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	protected ScmRepository getRepository(String url, IProgressMonitor monitor) {
-		IRepositoryLocation location = SubversiveUtil.getRepositoryLocation(url);
+		IRepositoryLocation location = PerforceUtil.getRepositoryLocation(url);
 		if (location != null) {
 			return new ScmRepository(location.getUrl(), location.getRepositoryRootUrl(), location.getLabel(), this);
 		}
@@ -208,7 +208,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 						String.valueOf(status.lastChangedRevision),
 						localResource.getChangeMask() != ILocalResource.NO_MODIFICATION, isBinary);
 			} catch (RuntimeException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 						"Cannot determine local revision for [" + resource.getName() + "]", e));
 			}
 		}
@@ -369,7 +369,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 				}
 			}
 		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 					"Review is not fully initialized.  Unable to get file from review.", e));
 		}
 		return null;
@@ -388,7 +388,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 			try {
 				revision = Long.toString(remoteFile.getRevision());
 			} catch (SVNConnectorException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
 			if (revision != null && fileUrl != null) {
@@ -426,7 +426,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 					return projectResource.getUrl().toString();
 				}
 			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, e.getMessage(), e));
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			}
 		}
 		return null;
@@ -454,7 +454,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		try {
 			return SVNRemoteStorage.instance().getRegisteredChildren(element);
 		} catch (Exception e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
 					"Can't get container members", e));
 		}
 	}
