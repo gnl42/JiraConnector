@@ -20,7 +20,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -443,7 +443,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		Review review = new Review(repo.getUrl());
 		review.setActions(MiscUtil.buildHashSet(CrucibleAction.COMMENT));
-		GeneralCommentBean comment = new GeneralCommentBean(review);
+		GeneralComment comment = new GeneralComment(review);
 		final String connUserName = repo.getCredentials(AuthenticationType.REPOSITORY).getUserName();
 		User me = new User("not" + connUserName);
 		comment.setAuthor(me);

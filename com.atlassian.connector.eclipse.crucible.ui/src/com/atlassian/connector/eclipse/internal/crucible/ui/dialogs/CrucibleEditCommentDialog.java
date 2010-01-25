@@ -17,16 +17,16 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.UpdateCommentRemoteOperation;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CommentBean;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
@@ -166,11 +166,11 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 	}
 
 	private Comment prepareNewComment(Comment oldComment, boolean shouldPostIfDraft) {
-		final CommentBean commentBean;
+		final Comment commentBean;
 		if (oldComment instanceof VersionedComment) {
-			commentBean = new VersionedCommentBean((VersionedComment) oldComment);
+			commentBean = new VersionedComment((VersionedComment) oldComment);
 		} else if (oldComment instanceof Comment) {
-			commentBean = new GeneralCommentBean(oldComment);
+			commentBean = new GeneralComment(oldComment);
 		} else {
 			throw new IllegalArgumentException("Unhandled type of comment class "
 					+ oldComment.getClass().getSimpleName());
