@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -355,27 +354,6 @@ public final class TeamUiUtils {
 		} catch (Throwable t) {
 			// ignore as it may not exist in other versions
 		}
-	}
-
-	public static void selectAndRevealComment(ITextEditor textEditor, VersionedComment comment, CrucibleFile file) {
-
-		int startLine = comment.getToStartLine();
-		if (file.isOldFile()) {
-			startLine = comment.getFromStartLine();
-		}
-
-		int endLine = comment.getToEndLine();
-		if (file.isOldFile()) {
-			endLine = comment.getFromEndLine();
-		}
-		if (endLine == 0) {
-			endLine = startLine;
-		}
-		if (startLine != 0) {
-			startLine--;
-		}
-		selectAndReveal(textEditor, startLine, endLine);
-
 	}
 
 	public static void handleMissingTeamConnectors() {
