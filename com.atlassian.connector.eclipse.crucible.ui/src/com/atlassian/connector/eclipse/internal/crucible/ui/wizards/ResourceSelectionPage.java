@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.ITreeViewModeSettingProvider;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -169,7 +170,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				SubMonitor.convert(monitor, "Getting workspace resources data", IProgressMonitor.UNKNOWN);
 
-				final Collection<IResource> resources = new ArrayList<IResource>();
+				final Collection<IResource> resources = MiscUtil.buildLinkedHashSet();
 
 				resources.addAll(teamConnector.getResourcesByFilterRecursive(
 						roots.toArray(new IResource[roots.size()]), ITeamUiResourceConnector.State.SF_ALL));
