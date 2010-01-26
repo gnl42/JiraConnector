@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -34,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.jetbrains.annotations.NotNull;
@@ -87,6 +84,8 @@ public class ResourceSelectionTree extends Composite {
 	private final ITreeViewModeSettingProvider settingsProvider;
 
 	private Collection<DecoratedResource> resourcesToShow;
+
+	private ICheckStateListener checkStateListener;
 
 	/**
 	 * 
@@ -244,23 +243,8 @@ public class ResourceSelectionTree extends Composite {
 			break;
 		}
 
-		treeViewer = new CheckboxTreeViewer(viewerPane, SWT.MULTI);
+		treeViewer = new CheckboxTreeViewer(viewerPane, SWT.SINGLE);
 
-		// Override the spacebar behavior to toggle checked state for all selected items.
-		treeViewer.getControl().addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent event) {
-				if (event.keyCode == SPACEBAR) {
-					Tree tree = (Tree) treeViewer.getControl();
-					TreeItem[] items = tree.getSelection();
-					for (int i = 0; i < items.length; i++) {
-						if (i > 0) {
-							items[i].setChecked(!items[i].getChecked());
-						}
-					}
-				}
-			}
-		});
 		tree = treeViewer.getTree();
 		layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		layoutData.widthHint = 500;
@@ -285,11 +269,12 @@ public class ResourceSelectionTree extends Composite {
 		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
-		treeViewer.addCheckStateListener(new ICheckStateListener() {
+		checkStateListener = new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				handleCheckStateChange(event);
 			}
-		});
+		};
+		treeViewer.addCheckStateListener(checkStateListener);
 
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
@@ -496,9 +481,9 @@ public class ResourceSelectionTree extends Composite {
 					folderList.add(resource);
 				}
 				IResource parent = resource.getResource();
-				if (parent != null && !(parent instanceof IContainer || parent instanceof IWorkspaceRoot)) {
-					parent = parent.getParent();
-				}
+//				if (parent != null && !(parent instanceof IContainer || parent instanceof IWorkspaceRoot)) {
+//					parent = parent.getParent();
+//				}
 				while (parent != null && !(parent instanceof IWorkspaceRoot)) {
 					DecoratedResource decoratedParent = new DecoratedResource(parent);
 					DecoratedResource decoratedParentParent = new DecoratedResource(parent.getParent());
@@ -506,10 +491,12 @@ public class ResourceSelectionTree extends Composite {
 						break;
 					}
 					if (parent.getParent() == null || parent.getParent() instanceof IWorkspaceRoot) {
-						rootList.add(decoratedParent);
+						if (!rootList.contains(decoratedParent)) {
+							rootList.add(decoratedParent);
+						}
 					}
 					parent = parent.getParent();
-					folderList.add(decoratedParent);
+					folderList.add(decoratedParentParent);
 				}
 			}
 			folders = new DecoratedResource[folderList.size()];
