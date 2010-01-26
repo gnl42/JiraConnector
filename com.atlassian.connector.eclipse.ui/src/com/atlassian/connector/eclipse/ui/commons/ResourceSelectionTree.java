@@ -79,13 +79,9 @@ public class ResourceSelectionTree extends Composite {
 		MODE_COMPRESSED_FOLDERS, MODE_FLAT, MODE_TREE;
 	}
 
-	private final static int SPACEBAR = 32;
-
 	private final ITreeViewModeSettingProvider settingsProvider;
 
 	private Collection<DecoratedResource> resourcesToShow;
-
-	private ICheckStateListener checkStateListener;
 
 	/**
 	 * 
@@ -269,12 +265,11 @@ public class ResourceSelectionTree extends Composite {
 		if (mode == TreeViewMode.MODE_TREE) {
 			treeViewer.collapseAll();
 		}
-		checkStateListener = new ICheckStateListener() {
+		treeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				handleCheckStateChange(event);
 			}
-		};
-		treeViewer.addCheckStateListener(checkStateListener);
+		});
 
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
