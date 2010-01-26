@@ -817,4 +817,23 @@ public class CrucibleUtilTest extends TestCase {
 		c2.setMessage("test");
 		assertFalse(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 	}
+
+	public void testGetParentVersionedComment() {
+		Review review = new Review("http://crucible.atlassian.com/cru/");
+		GeneralComment gc1 = new GeneralComment(review, null);
+		VersionedComment vc1 = new VersionedComment(review, null);
+		GeneralComment rc1 = new GeneralComment(review, gc1);
+		GeneralComment rc2 = new GeneralComment(review, rc1);
+
+		GeneralComment rc3 = new GeneralComment(review, vc1);
+		GeneralComment rc4 = new GeneralComment(review, rc3);
+
+		assertNull(CrucibleUtil.getParentVersionedComment(null));
+		assertNull(CrucibleUtil.getParentVersionedComment(gc1));
+		assertNull(CrucibleUtil.getParentVersionedComment(rc1));
+		assertNull(CrucibleUtil.getParentVersionedComment(rc2));
+		assertEquals(vc1, CrucibleUtil.getParentVersionedComment(vc1));
+		assertEquals(vc1, CrucibleUtil.getParentVersionedComment(rc3));
+		assertEquals(vc1, CrucibleUtil.getParentVersionedComment(rc4));
+	}
 }

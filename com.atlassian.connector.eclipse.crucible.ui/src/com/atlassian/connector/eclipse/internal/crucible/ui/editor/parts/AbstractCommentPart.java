@@ -287,7 +287,7 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 					actions.add(action1);
 				}
 
-				if (comment.isDraft()) {
+				if (CrucibleUtil.canPublishDraft(comment)) {
 					PostDraftCommentAction action1 = new PostDraftCommentAction();
 					action1.selectionChanged(new StructuredSelection(comment));
 					actions.add(action1);

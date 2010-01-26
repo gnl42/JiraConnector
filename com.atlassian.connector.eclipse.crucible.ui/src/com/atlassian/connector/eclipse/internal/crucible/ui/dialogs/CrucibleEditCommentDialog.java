@@ -12,11 +12,11 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.UpdateCommentRemoteOperation;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -320,7 +319,7 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		if (customFields == null) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					"Metrics are for review version are not cached: " + review.getMetricsVersion() + " "
-							+ review.getName(), null));
+					+ review.getName(), null));
 			return 0;
 		} else {
 			for (CustomFieldDef customField : customFields) {
@@ -431,7 +430,7 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 			}
 		});
 		updateButton.setEnabled(false);
-		if (comment.isDraft()) {
+		if (CrucibleUtil.canPublishDraft(comment)) {
 			saveDraftButton = createButton(parent, IDialogConstants.CLIENT_ID + 2, DRAFT_LABEL, false);
 			saveDraftButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -443,11 +442,11 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		}
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false).addSelectionListener(
 				new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						cancelPressed();
-					}
-				});
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				cancelPressed();
+			}
+		});
 	}
 
 	public void cancelUpdateComment() {

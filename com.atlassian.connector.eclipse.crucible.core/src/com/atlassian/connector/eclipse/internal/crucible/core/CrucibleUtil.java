@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.tasks.core.TasksUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -511,6 +512,20 @@ public final class CrucibleUtil {
 		}
 
 		return true;
+	}
+
+	public static boolean canPublishDraft(Comment comment) {
+		return (comment.isDraft() && !comment.hasDraftParents());
+	}
+
+	// VersionedComment -> Coment -> Comment -> ***
+	// GeneralComment -> Coment -> Comment -> ***
+	@Nullable
+	public static VersionedComment getParentVersionedComment(Comment comment) {
+		while (comment != null && !(comment instanceof VersionedComment)) {
+			comment = comment.getParentComment();
+		}
+		return (VersionedComment) comment;
 	}
 
 }
