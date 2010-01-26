@@ -80,11 +80,20 @@ public final class AtlassianUiUtil {
 
 		if (editor instanceof ITextEditor && editor.getEditorInput() == editorInput) {
 			ISelection selection = ((ITextEditor) editor).getSelectionProvider().getSelection();
-			if (selection instanceof TextSelection) {
-				TextSelection textSelection = ((TextSelection) selection);
-				return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
-						- textSelection.getStartLine());
-			}
+			return getLineRange(selection);
+		} else if (editor.getAdapter(ITextEditor.class) != null) {
+			ISelection selection = ((ITextEditor) editor.getAdapter(ITextEditor.class)).getSelectionProvider()
+					.getSelection();
+			return getLineRange(selection);
+		}
+		return null;
+	}
+
+	private static LineRange getLineRange(ISelection selection) {
+		if (selection instanceof TextSelection) {
+			TextSelection textSelection = ((TextSelection) selection);
+			return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
+					- textSelection.getStartLine());
 		}
 		return null;
 	}

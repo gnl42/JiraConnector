@@ -35,6 +35,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 @SuppressWarnings("restriction")
 public class CreateReviewFromResourcesAction extends AbstractReviewFromResourcesAction {
 
