@@ -116,6 +116,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 		} else {
 			selectionChanged(StructuredSelection.EMPTY);
 		}
+		action.setEnabled(isEnabled());
 	}
 
 	private IEditorPart getActiveEditor() {
