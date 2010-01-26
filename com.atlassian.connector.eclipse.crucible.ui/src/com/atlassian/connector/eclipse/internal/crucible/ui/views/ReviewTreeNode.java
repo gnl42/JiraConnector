@@ -32,9 +32,16 @@ public class ReviewTreeNode {
 	@Nullable
 	private final ReviewTreeNode parent;
 
+	private final int weight;
+
 	public ReviewTreeNode(@Nullable ReviewTreeNode parent, @Nullable String pathToken) {
+		this(parent, pathToken, 0);
+	}
+
+	public ReviewTreeNode(@Nullable ReviewTreeNode parent, @Nullable String pathToken, int weight) {
 		this.parent = parent;
 		this.pathToken = pathToken;
+		this.weight = weight;
 	}
 
 	@Nullable
@@ -142,5 +149,9 @@ public class ReviewTreeNode {
 			return false;
 		}
 		return true;
+	}
+
+	public int getCategory() {
+		return weight;
 	}
 }

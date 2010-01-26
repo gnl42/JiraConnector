@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
@@ -24,6 +25,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -59,6 +61,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -349,6 +352,19 @@ public final class CrucibleUiUtil {
 		return allReviewers;
 	}
 
+	private static void selectAndRevealComment(ITextEditor textEditor, VersionedComment comment,
+			VersionedVirtualFile file) {
+		Map<String, IntRanges> lineRanges = comment.getLineRanges();
+		if (lineRanges == null) {
+			return;
+		}
+
+		IntRanges lineRange = lineRanges.get(file.getRevision());
+		if (lineRange != null) {
+			TeamUiUtils.selectAndReveal(textEditor, lineRange.getTotalMin(), lineRange.getTotalMax());
+		}
+	}
+
 	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
 			CrucibleFile crucibleFile, VersionedComment versionedComment) {
 		boolean annotationsAdded = false;
@@ -360,7 +376,9 @@ public final class CrucibleUiUtil {
 				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 			}
 			if (versionedComment != null) {
-				TeamUiUtils.selectAndRevealComment(textEditor, versionedComment, crucibleFile);
+				selectAndRevealComment(textEditor, versionedComment,
+						crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo().getOldFileDescriptor()
+								: crucibleFile.getCrucibleFileInfo().getFileDescriptor());
 			}
 		}
 

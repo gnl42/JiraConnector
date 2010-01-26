@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -19,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCo
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -59,6 +61,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Model for annotations in the diff view.
@@ -122,8 +125,8 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			}
 
 			/**
-			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText
-			 * will not contain the whole text anymore, so our line numbering is off
+			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText will
+			 * not contain the whole text anymore, so our line numbering is off
 			 * 
 			 * @param event
 			 * @return
@@ -514,25 +517,24 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 	public void focusOnComment() {
 		if (commentToFocus != null) {
-			//ignore general file comment
-			if (!commentToFocus.isFromLineInfo() && !commentToFocus.isToLineInfo()) {
-				return;
-			}
-			boolean isOldFile = commentToFocus.isFromLineInfo();
+			CrucibleFile leftFile = leftAnnotationModel.getCrucibleFile();
+			VersionedVirtualFile virtualLeft = leftFile.isOldFile() ? leftFile.getCrucibleFileInfo()
+					.getOldFileDescriptor() : leftFile.getCrucibleFileInfo().getFileDescriptor();
 
-			int startLine = isOldFile ? commentToFocus.getFromStartLine() : commentToFocus.getToStartLine();
+			CrucibleFile rightFile = rightAnnotationModel.getCrucibleFile();
+			VersionedVirtualFile virtualRight = rightFile.isOldFile() ? rightFile.getCrucibleFileInfo()
+					.getOldFileDescriptor() : rightFile.getCrucibleFileInfo().getFileDescriptor();
 
-			int endLine = isOldFile ? commentToFocus.getFromEndLine() : commentToFocus.getToEndLine();
-
-			if (endLine == 0 || endLine > startLine) {
-				endLine = startLine;
+			Map<String, IntRanges> lineRanges = commentToFocus.getLineRanges();
+			if (lineRanges != null) {
+				IntRanges range;
+				if ((range = lineRanges.get(virtualLeft.getRevision())) != null) {
+					// get the correct listener (new file is left)
+					leftViewerListener.focusOnLines(range.getTotalMin(), range.getTotalMax());
+				} else if ((range = lineRanges.get(virtualRight.getRevision())) != null) {
+					rightViewerListener.focusOnLines(range.getTotalMin(), range.getTotalMax());
+				}
 			}
-			if (startLine != 0) {
-				startLine--;
-			}
-			//get the correct listener (new file is left)
-			CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
-			listener.focusOnLines(startLine, endLine);
 		}
 	}
 

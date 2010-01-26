@@ -185,6 +185,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		viewer.setComparator(new ViewerComparator() {
 
 			@Override
+			public int category(Object element) {
+				if (element instanceof ReviewTreeNode) {
+					return ((ReviewTreeNode) element).getCategory();
+				}
+				return super.category(element);
+			}
+
+			@Override
 			public int compare(Viewer aViewer, Object e1, Object e2) {
 				boolean isE1Dir = e1 instanceof ReviewTreeNode;
 				boolean isE2Dir = e2 instanceof ReviewTreeNode;
@@ -221,7 +229,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
-		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments") {
+		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments", -1) {
 			@Override
 			public List<? extends Object> getChildren() {
 				try {
@@ -232,7 +240,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 		}, new ReviewTreeNode(null, "Files") {
 			public java.util.List<? extends Object> getChildren() {
-				return Arrays.asList(compactTree(newReview));
+				return Arrays.asList(compactReviewFiles(newReview));
 			};
 		} };
 		return nodes;
@@ -245,7 +253,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			viewer.setInput(newInput);
 			if (review == null || !review.equals(newReview)) {
 				final ArrayList<Object> expandedElements = MiscUtil.<Object> buildArrayList();
-				fillExpandedElements(expandedElements, newInput[0]);
+				fillExpandedElements(expandedElements, Arrays.asList(newInput));
 				viewer.setExpandedElements(expandedElements.subList(0,
 						Math.min(expandedElements.size(), MAX_EXPANDED_BY_DEFAULT_ELEMENTS)).toArray());
 			} else {
@@ -434,11 +442,11 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(compareAction);
 	}
 
-	private void fillExpandedElements(ArrayList<Object> expandedElements, ReviewTreeNode root) {
-		expandedElements.add(root);
-		for (Object treeNode : root.getChildren()) {
-			if (treeNode instanceof ReviewTreeNode) {
-				fillExpandedElements(expandedElements, (ReviewTreeNode) treeNode);
+	private void fillExpandedElements(Collection<Object> expandedElements, List<? extends Object> roots) {
+		for (Object root : roots) {
+			if (root instanceof ReviewTreeNode) {
+				expandedElements.add(root);
+				fillExpandedElements(expandedElements, ((ReviewTreeNode) root).getChildren());
 			}
 		}
 	}
@@ -455,7 +463,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		});
 	}
 
-	public static ReviewTreeNode[] compactTree(Review review) {
+	public static ReviewTreeNode[] compactReviewFiles(Review review) {
 		ReviewTreeNode root = new ReviewTreeNode(null, null);
 		try {
 			for (CrucibleFileInfo cfi : review.getFiles()) {
@@ -467,7 +475,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			// this is stupid exception... OMG
 		}
 		root.compact();
-		return new ReviewTreeNode[] { root };
+		return (root.getPathToken() != null) ? new ReviewTreeNode[] { root } : root.getChildren().toArray(
+				new ReviewTreeNode[0]);
 	}
 
 	public void reviewDeactivated(ITask task, Review aReview) {

@@ -48,12 +48,6 @@ public final class ReviewTreeUtils {
 	}
 
 	public static VersionedComment getParentVersionedComment(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection strSelection = (IStructuredSelection) selection;
-			if (strSelection.size() == 1 && strSelection.getFirstElement() instanceof VersionedComment) {
-				return (VersionedComment) strSelection.getFirstElement();
-			}
-		}
 		if (selection instanceof ITreeSelection) {
 			TreePath[] paths = ((ITreeSelection) selection).getPaths();
 			if (paths == null || paths.length != 1) {
@@ -62,11 +56,17 @@ public final class ReviewTreeUtils {
 
 			final TreePath selectedPath = paths[0];
 
-			for (int i = selectedPath.getSegmentCount() - 1; i >= 0; --i) {
+			for (int i = 0, s = selectedPath.getSegmentCount(); i < s; ++i) {
 				final Object segment = selectedPath.getSegment(i);
 				if (segment instanceof VersionedComment) {
 					return (VersionedComment) segment;
 				}
+			}
+		}
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection strSelection = (IStructuredSelection) selection;
+			if (strSelection.size() == 1 && strSelection.getFirstElement() instanceof VersionedComment) {
+				return (VersionedComment) strSelection.getFirstElement();
 			}
 		}
 		return null;
