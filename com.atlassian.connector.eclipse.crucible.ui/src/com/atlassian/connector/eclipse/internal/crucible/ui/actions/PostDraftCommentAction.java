@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -49,11 +50,11 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 		IAction action = new AbstractBackgroundJobReviewAction("Publish Comment", review, comment,
 				WorkbenchUtil.getShell(), "Publishing selected comment for review " + review.getPermId().getId(),
 				CrucibleImages.COMMENT_POST, new RemoteCrucibleOperation() {
-					public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
-					}
-				}, true) {
+			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
+					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+				server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
+			}
+		}, true) {
 			// nothing needed here
 		};
 		action.run();
@@ -65,13 +66,13 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		this.review = null;
+		review = null;
 
 		Object element = selection.getFirstElement();
 		if (element instanceof Comment && selection.size() == 1) {
-			this.review = getActiveReview();
-			if (this.review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)
-					&& ((Comment) element).isDraft() && !ReviewTreeUtils.hasDraftParent(selection)) {
+			review = getActiveReview();
+			if (review != null && CrucibleUiUtil.canModifyComment(review, (Comment) element)
+					&& CrucibleUtil.canPublishDraft((Comment) element)) {
 				return true;
 			}
 		}

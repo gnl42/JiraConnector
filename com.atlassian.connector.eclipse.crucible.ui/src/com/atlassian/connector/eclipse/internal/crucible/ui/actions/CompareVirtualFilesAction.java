@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CompareVirtualFilesJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
@@ -60,7 +61,7 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 				fileInfo = (CrucibleFileInfo) selection.getFirstElement();
 				comment = null;
 			} else if (selection.getFirstElement() instanceof Comment) {
-				comment = ReviewTreeUtils.getParentVersionedComment(selection);
+				comment = CrucibleUtil.getParentVersionedComment((Comment) selection.getFirstElement());
 				fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
 			}
 

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.OpenVirtualFileJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
@@ -57,7 +58,7 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 		if (selection.getFirstElement() instanceof CrucibleFileInfo) {
 			fileInfo = (CrucibleFileInfo) selection.getFirstElement();
 		} else if (selection.getFirstElement() instanceof Comment) {
-			comment = ReviewTreeUtils.getParentVersionedComment(selection);
+			comment = CrucibleUtil.getParentVersionedComment((Comment) selection.getFirstElement());
 			fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
 		}
 
