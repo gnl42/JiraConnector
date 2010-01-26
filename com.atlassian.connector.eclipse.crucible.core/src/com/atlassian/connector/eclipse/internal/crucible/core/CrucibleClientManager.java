@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClien
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacadeImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleUserCacheImpl;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
+import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -131,7 +132,8 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	private synchronized CrucibleServerFacade2 getCrucibleServer(HttpSessionCallback callback) {
 		if (crucibleServerFacade == null) {
-			crucibleServerFacade = new CrucibleServerFacadeImpl(new CrucibleUserCacheImpl(), callback);
+			crucibleServerFacade = new CrucibleServerFacadeImpl(LoggerImpl.getInstance(), new CrucibleUserCacheImpl(),
+					callback);
 		}
 		return crucibleServerFacade;
 	}

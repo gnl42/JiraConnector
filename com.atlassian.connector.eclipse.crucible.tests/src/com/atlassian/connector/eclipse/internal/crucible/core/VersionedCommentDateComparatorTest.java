@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.commons.misc.IntRange;
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -29,6 +31,8 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 
 	private final Review review = new Review("myurl.com");
 
+	private final CrucibleFileInfo crucibleFileInfo = new CrucibleFileInfo(null, null, new PermId("cfi-permid"));
+
 	public void testCompare() {
 
 		VersionedCommentDateComparator comparator = new VersionedCommentDateComparator();
@@ -37,35 +41,35 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 		Date d2 = new Date(d1.getTime() + 10);
 
 		// test comment equal
-		VersionedComment c1 = new VersionedComment(review);
+		VersionedComment c1 = new VersionedComment(review, crucibleFileInfo);
 		c1.setCreateDate(d1);
 		c1.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertEquals(0, comparator.compare(c1, c1));
 
 		// test comment equal
-		VersionedComment c2 = new VersionedComment(review);
+		VersionedComment c2 = new VersionedComment(review, crucibleFileInfo);
 		c2.setCreateDate(d1);
 		c2.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertEquals(0, comparator.compare(c1, c2));
 
 		// test line number smaller
-		c2 = new VersionedComment(review);
+		c2 = new VersionedComment(review, crucibleFileInfo);
 		c2.setCreateDate(d1);
 		c2.setToLineRanges(new IntRanges(new IntRange(9, 11)));
 
 		assertTrue(0 < comparator.compare(c1, c2));
 
 		// test line number larger
-		c2 = new VersionedComment(review);
+		c2 = new VersionedComment(review, crucibleFileInfo);
 		c2.setCreateDate(d1);
 		c2.setToLineRanges(new IntRanges(new IntRange(11)));
 
 		assertTrue(0 > comparator.compare(c1, c2));
 
 		// test date newer
-		c2 = new VersionedComment(review);
+		c2 = new VersionedComment(review, crucibleFileInfo);
 		c2.setCreateDate(d2);
 		c2.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
@@ -78,7 +82,7 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 		Date d1 = new Date();
 
 		// test comment equal
-		VersionedComment c1 = new VersionedComment(review);
+		VersionedComment c1 = new VersionedComment(review, crucibleFileInfo);
 		c1.setCreateDate(d1);
 
 		final Map<String, IntRanges> lr1 = MiscUtil.buildHashMap();
@@ -92,7 +96,7 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 		lr2.put("10.48.4", new IntRanges(new IntRange(2), new IntRange(110, 120)));
 		lr2.put("10.48.5", new IntRanges(new IntRange(8), new IntRange(10, 120)));
 
-		VersionedComment c2 = new VersionedComment(review);
+		VersionedComment c2 = new VersionedComment(review, crucibleFileInfo);
 		c2.setCreateDate(d1);
 		c2.setLineRanges(lr2);
 

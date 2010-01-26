@@ -23,7 +23,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -386,32 +385,14 @@ public final class CrucibleUtil {
 			return true;
 		}
 
+		if (!c1.equals(c2)) {
+			return false;
+		}
+
 		if (!areCommentsEqual(c1, c2)) {
 			return false;
 		}
 
-		if (!MiscUtil.isEqual(c1.getLineRanges(), c2.getLineRanges())) {
-			return false;
-		}
-
-		if (c1.getFromEndLine() != c2.getFromEndLine()) {
-			return false;
-		}
-		if (c1.isFromLineInfo() != c2.isFromLineInfo()) {
-			return false;
-		}
-		if (c1.getFromStartLine() != c2.getFromStartLine()) {
-			return false;
-		}
-		if (c1.getToEndLine() != c2.getToEndLine()) {
-			return false;
-		}
-		if (c1.isToLineInfo() != c2.isToLineInfo()) {
-			return false;
-		}
-		if (c1.getToStartLine() != c2.getToStartLine()) {
-			return false;
-		}
 		if (c1.getReplies() != null ? !c1.getReplies().equals(c2.getReplies()) : c2.getReplies() != null) {
 			return false;
 		}
@@ -474,7 +455,7 @@ public final class CrucibleUtil {
 
 	// TODO add a param for whether it should be a deep comaparison?
 	public static boolean areCrucibleFilesDeepEqual(CrucibleFileInfo file, CrucibleFileInfo file2) {
-		if (file.getPermId() != null ? file.getPermId().getId().equals(file2.getPermId().getId())
+		if (file.getPermId() != null ? !file.getPermId().getId().equals(file2.getPermId().getId())
 				: file2.getPermId() != null) {
 			return false;
 		}

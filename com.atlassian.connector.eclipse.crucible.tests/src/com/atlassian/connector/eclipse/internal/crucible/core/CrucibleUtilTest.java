@@ -16,7 +16,6 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
@@ -486,13 +485,13 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
 		List<Comment> genC = MiscUtil.buildArrayList();
-		GeneralComment genCBean = new GeneralComment(review);
+		GeneralComment genCBean = new GeneralComment(review, null);
 		genCBean.setCreateDate(new Date(2L));
 		genC.add(genCBean);
 		review1.setGeneralComments(genC);
 
 		genC = MiscUtil.buildArrayList();
-		genCBean = new GeneralComment(review);
+		genCBean = new GeneralComment(review, null);
 		genCBean.setCreateDate(new Date(2L));
 		genC.add(genCBean);
 		review.setGeneralComments(genC);
@@ -599,7 +598,8 @@ public class CrucibleUtilTest extends TestCase {
 
 	public void testVersionedCommentDeepEquals() {
 		Review review = new Review("http://crucible.atlassian.com/cru/");
-		VersionedComment c1 = new VersionedComment(review);
+		CrucibleFileInfo cfi = new CrucibleFileInfo(null, null, new PermId("cfi1"));
+		VersionedComment c1 = new VersionedComment(review, cfi);
 		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
@@ -607,7 +607,7 @@ public class CrucibleUtilTest extends TestCase {
 		c1.setToStartLine(1);
 		c1.setToEndLine(12);
 
-		VersionedComment c2 = new VersionedComment(review);
+		VersionedComment c2 = new VersionedComment(review, cfi);
 		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
@@ -617,7 +617,7 @@ public class CrucibleUtilTest extends TestCase {
 
 		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
 
-		VersionedComment r1 = new VersionedComment(review);
+		VersionedComment r1 = new VersionedComment(review, cfi);
 		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
@@ -626,7 +626,7 @@ public class CrucibleUtilTest extends TestCase {
 		r1.setToEndLine(12);
 		r1.setReply(true);
 
-		VersionedComment r2 = new VersionedComment(review);
+		VersionedComment r2 = new VersionedComment(review, cfi);
 		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
@@ -648,15 +648,39 @@ public class CrucibleUtilTest extends TestCase {
 		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
 	}
 
+	public void testVersionedCommentsWithDifferentParentsDeepEquals() {
+		Review review = new Review("http://crucible.atlassian.com/cru/");
+		CrucibleFileInfo cfi1 = new CrucibleFileInfo(null, null, new PermId("cfi1"));
+		CrucibleFileInfo cfi2 = new CrucibleFileInfo(null, null, new PermId("cfi2"));
+		VersionedComment c1 = new VersionedComment(review, cfi1);
+		c1.setAuthor(new User("sminto"));
+		c1.setCreateDate(new Date(2L));
+		c1.setDraft(true);
+		c1.setMessage("testing message");
+		c1.setToStartLine(1);
+		c1.setToEndLine(12);
+
+		VersionedComment c2 = new VersionedComment(review, cfi2);
+		c2.setAuthor(new User("sminto"));
+		c2.setCreateDate(new Date(2L));
+		c2.setDraft(true);
+		c2.setMessage("testing message");
+		c2.setToStartLine(1);
+		c2.setToEndLine(12);
+
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+	}
+
 	public void testVersionedCommentWithLineRangesDeepEquals() {
 		Review review = new Review("http://crucible.atlassian.com/cru/");
-		VersionedComment c1 = new VersionedComment(review);
+		CrucibleFileInfo cfi = new CrucibleFileInfo(null, null, new PermId("cfi1"));
+		VersionedComment c1 = new VersionedComment(review, cfi);
 		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
 		c1.setMessage("testing message");
 
-		VersionedComment c2 = new VersionedComment(review);
+		VersionedComment c2 = new VersionedComment(review, cfi);
 		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
@@ -693,13 +717,13 @@ public class CrucibleUtilTest extends TestCase {
 	public void testGeneralCommentDeepEquals() {
 		Review review = new Review("http://crucible.atlassian.com/cru/");
 
-		GeneralComment c1 = new GeneralComment(review);
+		GeneralComment c1 = new GeneralComment(review, null);
 		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
 		c1.setMessage("testing message");
 
-		GeneralComment c2 = new GeneralComment(review);
+		GeneralComment c2 = new GeneralComment(review, null);
 		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
@@ -707,14 +731,14 @@ public class CrucibleUtilTest extends TestCase {
 
 		assertTrue(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
 
-		GeneralComment r1 = new GeneralComment(review);
+		GeneralComment r1 = new GeneralComment(review, c1);
 		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
 		r1.setMessage("testing message");
 		r1.setReply(true);
 
-		GeneralComment r2 = new GeneralComment(review);
+		GeneralComment r2 = new GeneralComment(review, c2);
 		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
@@ -737,12 +761,12 @@ public class CrucibleUtilTest extends TestCase {
 	public void testCrucibleFileDeepEquals() {
 		Review review = new Review("http://crucible.atlassian.com/cru/");
 
-		CrucibleFileInfo f1 = new CrucibleFileInfo(null, null, null);
-		CrucibleFileInfo f2 = new CrucibleFileInfo(null, null, null);
+		CrucibleFileInfo f1 = new CrucibleFileInfo(null, null, new PermId("cfi"));
+		CrucibleFileInfo f2 = new CrucibleFileInfo(null, null, new PermId("cfi"));
 
 		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 
-		VersionedComment c1 = new VersionedComment(review);
+		VersionedComment c1 = new VersionedComment(review, f1);
 		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
@@ -750,7 +774,7 @@ public class CrucibleUtilTest extends TestCase {
 		c1.setToStartLine(1);
 		c1.setToEndLine(12);
 
-		VersionedComment c2 = new VersionedComment(review);
+		VersionedComment c2 = new VersionedComment(review, f2);
 		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
@@ -763,7 +787,7 @@ public class CrucibleUtilTest extends TestCase {
 
 		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 
-		VersionedComment r1 = new VersionedComment(review);
+		VersionedComment r1 = new VersionedComment(review, f1);
 		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
@@ -772,7 +796,7 @@ public class CrucibleUtilTest extends TestCase {
 		r1.setToEndLine(12);
 		r1.setReply(true);
 
-		VersionedComment r2 = new VersionedComment(review);
+		VersionedComment r2 = new VersionedComment(review, f2);
 		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
