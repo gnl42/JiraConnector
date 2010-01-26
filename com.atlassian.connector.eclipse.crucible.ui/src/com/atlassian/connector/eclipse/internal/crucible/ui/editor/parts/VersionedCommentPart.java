@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAc
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
-import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -36,9 +35,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -51,7 +48,7 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  */
-public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentPart> {
+public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 
 	private VersionedComment versionedComment;
 
@@ -64,25 +61,17 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 	private final List<IReviewChangeListenerAction> reviewActions = new ArrayList<IReviewChangeListenerAction>();
 
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo) {
-		super(comment, review, new CrucibleFile(crucibleFileInfo, false));
+		super(comment, review);
 		this.versionedComment = comment;
 		this.crucibleFileInfo = crucibleFileInfo;
 		customActions = new ArrayList<IReviewAction>();
 	}
 
 	@Override
-	protected String getSectionHeaderText() {
-		String headerText = versionedComment.getAuthor().getDisplayName() + "   ";
-		headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
-				versionedComment.getCreateDate());
-		return headerText;
-	}
-
-	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		composite = super.createSectionContents(section, toolkit);
 
-		updateChildren(composite, toolkit, false, versionedComment.getReplies());
+		updateChildren(composite, toolkit, false, comment.getReplies());
 		return composite;
 	}
 
@@ -125,13 +114,13 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 		return lineRanges.get(candidate);
 	}
 
-	private String getLineNumberText(CrucibleFileInfo crucibleFileInfo) {
+	private String getLineNumberText(CrucibleFileInfo cfi) {
 		Set<String> displayedRevisions = new HashSet<String>();
-		final VersionedVirtualFile toFile = crucibleFileInfo.getFileDescriptor();
+		final VersionedVirtualFile toFile = cfi.getFileDescriptor();
 		if (toFile != null && toFile.getRevision() != null) {
 			displayedRevisions.add(toFile.getRevision());
 		}
-		final VersionedVirtualFile fromFile = crucibleFileInfo.getOldFileDescriptor();
+		final VersionedVirtualFile fromFile = cfi.getOldFileDescriptor();
 		if (fromFile != null && fromFile.getRevision() != null) {
 			displayedRevisions.add(fromFile.getRevision());
 		}
@@ -240,66 +229,14 @@ public class VersionedCommentPart extends CommentPart<Comment, VersionedCommentP
 		return getSection();
 	}
 
-	// TODO handle changed highlighting properly
-
-	protected final Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit) {
-		Control createdControl = null;
-		if (getSection() == null) {
-
-			Control newControl = createControl(parentComposite, toolkit);
-
-			setIncomming(true);
-
-			createdControl = newControl;
-		} else {
-
-			if (commentTextComposite != null && !commentTextComposite.isDisposed()) {
-				Composite parent = commentTextComposite.getParent();
-				commentTextComposite.dispose();
-				createCommentArea(toolkit, composite);
-				if (parent.getChildren().length > 0) {
-					commentTextComposite.moveAbove(parent.getChildren()[0]);
-				}
-
-			}
-			updateChildren(composite, toolkit, true, versionedComment.getReplies());
-
-			createdControl = getSection();
-		}
-
-		if (sectionClient != null && !sectionClient.isDisposed()) {
-			sectionClient.clearCache();
-		}
-		getSection().layout(true, true);
-
-		update();
-
-		return createdControl;
-
-	}
-
-	@Override
-	protected VersionedCommentPart createChildPart(Comment comment, Review crucibleReview2) {
-		return new VersionedCommentPart((VersionedComment) comment, crucibleReview2, crucibleFileInfo);
-	}
-
-	@Override
-	protected Comparator<Comment> getComparator() {
-		return new Comparator<Comment>() {
-
-			public int compare(Comment o1, Comment o2) {
-				if (o1 != null && o2 != null) {
-					return o1.getCreateDate().compareTo(o2.getCreateDate());
-				}
-				return 0;
-			}
-
-		};
-	}
-
 	@Override
 	protected boolean represents(Comment comment) {
 		return versionedComment.getPermId().equals(comment.getPermId());
+	}
+
+	@Override
+	protected CommentPart createChildPart(Comment comment, Review crucibleReview2) {
+		return new CommentPart(comment, crucibleReview2);
 	}
 
 }

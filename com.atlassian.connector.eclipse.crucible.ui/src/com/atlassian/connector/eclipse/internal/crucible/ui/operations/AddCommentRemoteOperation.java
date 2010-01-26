@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
@@ -93,19 +94,19 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	public Comment run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 
-		String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
+		final String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
 
 		if (parentComment != null) {
 			// replies are always general comments
-			GeneralComment newComment = createNewGeneralComment();
+			GeneralComment newComment = createNewGeneralComment(parentComment);
 			newComment.setDefectRaised(isDefect);
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
 
-			return server.addGeneralCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
+			return server.addGeneralCommentReply(serverCfg, newComment);
 		} else if (reviewItem != null) {
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
-			VersionedComment newComment = createNewVersionedComment();
+			VersionedComment newComment = createNewVersionedComment(reviewItem.getCrucibleFileInfo());
 			newComment.setDefectRaised(isDefect);
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
@@ -116,23 +117,18 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 				return server.addVersionedComment(serverCfg, review, riId, newComment);
 			}
 		} else {
-			GeneralComment newComment = createNewGeneralComment();
+			GeneralComment newComment = createNewGeneralComment(null);
 			newComment.setDefectRaised(isDefect);
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
-
-			if (parentComment != null && newComment.isReply()) {
-				return server.addGeneralCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
-			} else {
-				return server.addGeneralComment(serverCfg, review, newComment);
-			}
+			return server.addGeneralComment(serverCfg, review, newComment);
 		}
 	}
 
-	private GeneralComment createNewGeneralComment() {
-		GeneralComment newComment = new GeneralComment(review);
+	private GeneralComment createNewGeneralComment(Comment aParentComment) {
+		GeneralComment newComment = new GeneralComment(review, aParentComment);
 		newComment.setMessage(message);
-		if (parentComment != null && parentComment instanceof Comment) {
+		if (aParentComment != null && aParentComment instanceof Comment) {
 			newComment.setReply(true);
 		} else {
 			newComment.setReply(false);
@@ -141,8 +137,8 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 		return newComment;
 	}
 
-	private VersionedComment createNewVersionedComment() {
-		VersionedComment newComment = new VersionedComment(review);
+	private VersionedComment createNewVersionedComment(CrucibleFileInfo crucibleFileInfo) {
+		VersionedComment newComment = new VersionedComment(review, crucibleFileInfo);
 
 		if (commentLines != null) {
 			if (reviewItem.isOldFile()) {

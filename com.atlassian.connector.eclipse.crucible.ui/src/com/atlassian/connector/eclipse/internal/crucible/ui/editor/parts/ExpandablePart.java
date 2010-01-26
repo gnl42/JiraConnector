@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
@@ -50,7 +51,7 @@ import java.util.List;
  * 
  * @author Shawn Minto
  */
-public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
+public abstract class ExpandablePart<T extends Comment, V extends ExpandablePart<T, V>> {
 
 	private Section commentSection;
 
