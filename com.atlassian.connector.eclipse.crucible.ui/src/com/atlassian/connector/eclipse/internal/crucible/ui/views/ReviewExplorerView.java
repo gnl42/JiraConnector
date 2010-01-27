@@ -29,6 +29,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommen
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
+import com.atlassian.connector.eclipse.ui.viewers.SelectionChangedTreeViewer;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -123,7 +124,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	@Override
 	public void createPartControl(Composite parent) {
 
-		viewer = new TreeViewer(parent);
+		viewer = new SelectionChangedTreeViewer(parent);
 		viewer.setUseHashlookup(true);
 		viewer.setComparer(new IElementComparer() {
 			public int hashCode(Object element) {
