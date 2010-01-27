@@ -20,12 +20,14 @@ import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector.State;
 import com.atlassian.connector.eclipse.ui.actions.AbstractResourceAction;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -46,6 +48,9 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 
 	@Override
 	protected void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell) {
+
+		// TODO jj allow to create review for projects not undev vcs
+
 		if (!TeamUiUtils.checkTeamConnectors()) {
 			// no connectors at all
 			return;
@@ -163,6 +168,28 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 
 		analyzeResource.setUser(true);
 		analyzeResource.schedule();
+	}
+
+	@Override
+	protected boolean updateSelection(IStructuredSelection structuredSelection) {
+		if (!super.updateSelection(structuredSelection)) {
+			return false;
+		}
+
+		List<ResourceEditorBean> selection = getSelectionData();
+
+		if (selection == null) {
+			return false;
+		}
+
+		for (ResourceEditorBean resourceBean : selection) {
+			IResource resource = resourceBean.getResource();
+			if (resource instanceof IProject && !((IProject) resource).isOpen()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected void handleError(final Shell shell, String message) {

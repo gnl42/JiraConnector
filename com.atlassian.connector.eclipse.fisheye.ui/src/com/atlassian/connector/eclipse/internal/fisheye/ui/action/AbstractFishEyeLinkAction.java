@@ -52,7 +52,7 @@ public abstract class AbstractFishEyeLinkAction extends AbstractResourceAction {
 		boolean isEnabled = false;
 		List<ResourceEditorBean> selection = getSelectionData();
 
-		if (selection != null && selection.size() > 0
+		if (selection != null && selection.size() == 1
 				&& selection.get(0) != null && selection.get(0).getResource() != null) {
 			IResource resource = selection.get(0).getResource();
 
