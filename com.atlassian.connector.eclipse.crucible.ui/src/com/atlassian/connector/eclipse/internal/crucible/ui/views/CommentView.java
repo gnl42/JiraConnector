@@ -35,7 +35,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -306,10 +305,8 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 		currentSelection = null;
 
-		if (selection instanceof ITreeSelection) {
-			if (((ITreeSelection) selection).size() == 1) {
-				currentSelection = ((ITreeSelection) selection).getFirstElement();
-			}
+		if (selection instanceof IStructuredSelection) {
+			currentSelection = ((IStructuredSelection) selection).getFirstElement();
 		}
 
 		updateViewer();
