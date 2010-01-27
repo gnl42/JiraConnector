@@ -25,7 +25,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucib
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -139,12 +138,8 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 			return false;
 		}
 
-		try {
-			if (!getActiveReview().getActions().contains(CrucibleAction.MODIFY_FILES)) {
-				return false;
-			}
-		} catch (ValueNotYetInitialized e) {
-			// don't care, just enable
+		if (!getActiveReview().getActions().contains(CrucibleAction.MODIFY_FILES)) {
+			return false;
 		}
 		return true;
 	}

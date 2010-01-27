@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -234,72 +233,60 @@ public final class CrucibleUtil {
 		return CrucibleUtil.getTaskIdFromPermId(key);
 	}
 
+	/// @todo wseliga refactoring !!!
 	public static boolean isPartialReview(Review review) {
-		try {
-			review.getFiles();
-		} catch (ValueNotYetInitialized e) {
-
-			return true;
-		}
 		return false;
 	}
 
 	public static int createHash(Review review) {
 
-		try {
-			final int prime = 31;
-			int result = 1;
+		final int prime = 31;
+		int result = 1;
 
-			result = prime * result + (review.isAllowReviewerToJoin() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
-			result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUsername().hashCode());
-			result = prime * result + ((review.getCloseDate() == null) ? 0 : review.getCloseDate().hashCode());
-			result = prime * result + ((review.getCreateDate() == null) ? 0 : review.getCreateDate().hashCode());
-			result = prime * result
-					+ ((review.getCreator() == null) ? 0 : review.getCreator().getUsername().hashCode());
-			result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
-			result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
+		result = prime * result + (review.isAllowReviewerToJoin() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+		result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUsername().hashCode());
+		result = prime * result + ((review.getCloseDate() == null) ? 0 : review.getCloseDate().hashCode());
+		result = prime * result + ((review.getCreateDate() == null) ? 0 : review.getCreateDate().hashCode());
+		result = prime * result
+				+ ((review.getCreator() == null) ? 0 : review.getCreator().getUsername().hashCode());
+		result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
+		result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
 
-			int miniResult = 0;
-			for (CrucibleFileInfo file : review.getFiles()) {
-				miniResult += ((file.getFileDescriptor() == null) ? 0 : file.getFileDescriptor().getUrl().hashCode());
-				for (VersionedComment comment : file.getVersionedComments()) {
-					miniResult = createHashForVersionedComment(miniResult, comment);
-				}
+		int miniResult = 0;
+		for (CrucibleFileInfo file : review.getFiles()) {
+			miniResult += ((file.getFileDescriptor() == null) ? 0 : file.getFileDescriptor().getUrl().hashCode());
+			for (VersionedComment comment : file.getVersionedComments()) {
+				miniResult = createHashForVersionedComment(miniResult, comment);
 			}
-			result = prime * result + miniResult;
-
-			miniResult = 0;
-			for (Comment comment : review.getGeneralComments()) {
-				miniResult = createHashForGeneralComment(miniResult, comment);
-			}
-			result = prime * result + miniResult;
-
-			result = prime * result
-					+ ((review.getModerator() == null) ? 0 : review.getModerator().getUsername().hashCode());
-			result = prime * result + ((review.getName() == null) ? 0 : review.getName().hashCode());
-			result = prime * result
-					+ ((review.getParentReview() == null) ? 0 : review.getParentReview().getId().hashCode());
-			result = prime * result + ((review.getPermId() == null) ? 0 : review.getPermId().getId().hashCode());
-			result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
-			result = prime * result + ((review.getRepoName() == null) ? 0 : review.getRepoName().hashCode());
-
-			miniResult = 0;
-			for (Reviewer reviewer : review.getReviewers()) {
-				miniResult += (reviewer.getUsername().hashCode());
-				miniResult += (reviewer.isCompleted() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
-			}
-			result = prime * result + miniResult;
-
-			result = prime * result + ((review.getState() == null) ? 0 : review.getState().name().hashCode());
-			result = prime * result + ((review.getSummary() == null) ? 0 : review.getSummary().hashCode());
-
-			return result;
-		} catch (ValueNotYetInitialized e) {
-			//ignore
 		}
+		result = prime * result + miniResult;
 
-		return -1;
+		miniResult = 0;
+		for (Comment comment : review.getGeneralComments()) {
+			miniResult = createHashForGeneralComment(miniResult, comment);
+		}
+		result = prime * result + miniResult;
 
+		result = prime * result
+				+ ((review.getModerator() == null) ? 0 : review.getModerator().getUsername().hashCode());
+		result = prime * result + ((review.getName() == null) ? 0 : review.getName().hashCode());
+		result = prime * result
+				+ ((review.getParentReview() == null) ? 0 : review.getParentReview().getId().hashCode());
+		result = prime * result + ((review.getPermId() == null) ? 0 : review.getPermId().getId().hashCode());
+		result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
+		result = prime * result + ((review.getRepoName() == null) ? 0 : review.getRepoName().hashCode());
+
+		miniResult = 0;
+		for (Reviewer reviewer : review.getReviewers()) {
+			miniResult += (reviewer.getUsername().hashCode());
+			miniResult += (reviewer.isCompleted() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+		}
+		result = prime * result + miniResult;
+
+		result = prime * result + ((review.getState() == null) ? 0 : review.getState().name().hashCode());
+		result = prime * result + ((review.getSummary() == null) ? 0 : review.getSummary().hashCode());
+
+		return result;
 	}
 
 	private static int createHashForGeneralComment(int result, Comment comment) {
@@ -353,11 +340,7 @@ public final class CrucibleUtil {
 
 	public static boolean canAddCommentToReview(Review review) {
 		if (review != null) {
-			try {
-				return review.getActions().contains(CrucibleAction.COMMENT);
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-			}
+			return review.getActions().contains(CrucibleAction.COMMENT);
 		}
 		return false;
 	}
@@ -368,14 +351,10 @@ public final class CrucibleUtil {
 	}
 
 	public static boolean isUserCompleted(String userName, Review review) {
-		try {
-			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUsername().equals(userName)) {
-					return reviewer.isCompleted();
-				}
+		for (Reviewer reviewer : review.getReviewers()) {
+			if (reviewer.getUsername().equals(userName)) {
+				return reviewer.isCompleted();
 			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
 		}
 		return false;
 	}

@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -258,15 +257,11 @@ public final class CrucibleAnnotationModelManager {
 			CrucibleFile crucibleFile = crucibleAnnotationModel.getCrucibleFile();
 			if (crucibleFile != null) {
 
-				try {
-					CrucibleFileInfo newFileInfo = activeReview.getFileByPermId(crucibleFile.getCrucibleFileInfo()
-							.getPermId());
-					if (newFileInfo != null) {
-						crucibleAnnotationModel.updateCrucibleFile(new CrucibleFile(newFileInfo,
-								crucibleFile.isOldFile()), activeReview);
-					}
-				} catch (ValueNotYetInitialized e) {
-					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+				CrucibleFileInfo newFileInfo = activeReview.getFileByPermId(crucibleFile.getCrucibleFileInfo()
+						.getPermId());
+				if (newFileInfo != null) {
+					crucibleAnnotationModel.updateCrucibleFile(new CrucibleFile(newFileInfo,
+							crucibleFile.isOldFile()), activeReview);
 				}
 			}
 		} else {

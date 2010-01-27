@@ -29,7 +29,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommen
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -232,11 +231,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments", -1) {
 			@Override
 			public List<? extends Object> getChildren() {
-				try {
-					return newReview.getGeneralComments();
-				} catch (ValueNotYetInitialized e) {
-					return MiscUtil.buildArrayList();
-				}
+				return newReview.getGeneralComments();
 			}
 		}, new ReviewTreeNode(null, "Files") {
 			public java.util.List<? extends Object> getChildren() {
@@ -266,13 +261,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		if (newReview == null) {
 			setContentDescription("");
 		} else {
-			try {
-				setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
-						newReview.getPermId().getId(), newReview.getFiles().size(),
-						newReview.getNumberOfVersionedComments() }));
-			} catch (ValueNotYetInitialized e) {
-				// nothing here
-			}
+			setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
+					newReview.getPermId().getId(), newReview.getFiles().size(),
+					newReview.getNumberOfVersionedComments() }));
 
 		}
 
@@ -465,14 +456,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public static ReviewTreeNode[] compactReviewFiles(Review review) {
 		ReviewTreeNode root = new ReviewTreeNode(null, null);
-		try {
-			for (CrucibleFileInfo cfi : review.getFiles()) {
-				String path = cfi.getFileDescriptor().getUrl();
-				final String[] pathTokens = path.split("/|\\\\");
-				root.add(pathTokens, cfi);
-			}
-		} catch (ValueNotYetInitialized e) {
-			// this is stupid exception... OMG
+		for (CrucibleFileInfo cfi : review.getFiles()) {
+			String path = cfi.getFileDescriptor().getUrl();
+			final String[] pathTokens = path.split("/|\\\\");
+			root.add(pathTokens, cfi);
 		}
 		root.compact();
 		return (root.getPathToken() != null) ? new ReviewTreeNode[] { root } : root.getChildren().toArray(

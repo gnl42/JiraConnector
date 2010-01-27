@@ -11,18 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -98,13 +93,8 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	private String getSectionTitle() {
-		try {
-			return NLS.bind("Review files ({0} files, {1} comments)", new Object[] { crucibleReview.getFiles().size(),
-					crucibleReview.getNumberOfVersionedComments() });
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			return "Review files";
-		}
+		return NLS.bind("Review files ({0} files, {1} comments)", new Object[] { crucibleReview.getFiles().size(),
+				crucibleReview.getNumberOfVersionedComments() });
 	}
 
 	private Composite createCommentViewers(Composite parent, FormToolkit toolkit) {
@@ -113,8 +103,8 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 		Label t = toolkit.createLabel(parentComposite,
 				"You need to activate this task to see review files and comments. "
-						+ "You will be automatically switched to Crucible Review Perspective. "
-						+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
+				+ "You will be automatically switched to Crucible Review Perspective. "
+				+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
 				SWT.WRAP);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);

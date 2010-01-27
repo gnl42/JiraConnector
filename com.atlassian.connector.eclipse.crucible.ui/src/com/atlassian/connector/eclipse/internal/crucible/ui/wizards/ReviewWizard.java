@@ -35,7 +35,6 @@ import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -254,7 +253,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				if (teamConnector == null) {
 					MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PRODUCT_NAME,
 							"Cannot find Atlassian SCM Integration for '" + selectedWorkspaceResources.get(0).getName()
-									+ "'.");
+							+ "'.");
 				} else {
 					boolean missingMapping = false;
 					Collection<String> scmPaths = new ArrayList<String>();
@@ -477,13 +476,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		EnumSet<CrucibleAction> crucibleActions = null;
-		try {
-			crucibleActions = crucibleReview.getActions();
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to get allowed actions",
-					e));
-		}
+		EnumSet<CrucibleAction> crucibleActions = crucibleReview.getActions();
 
 		if (crucibleActions == null) {
 			crucibleActions = EnumSet.noneOf(CrucibleAction.class);

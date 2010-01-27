@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineComme
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
@@ -166,7 +165,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						//log error since we assume the initial text contains all slaveTexts.
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Could not find text offset for annotation highlighting"
-										+ " - current text not contained in initial text."));
+								+ " - current text not contained in initial text."));
 					}
 				}
 				return 0;
@@ -500,18 +499,14 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	public void updateCrucibleFile(Review newReview) {
 		CrucibleFile leftOldFile = leftAnnotationModel.getCrucibleFile();
 		CrucibleFile rightOldFile = rightAnnotationModel.getCrucibleFile();
-		try {
-			CrucibleFileInfo newLeftFileInfo = newReview.getFileByPermId(leftOldFile.getCrucibleFileInfo().getPermId());
-			CrucibleFileInfo newRightFileInfo = newReview.getFileByPermId(rightOldFile.getCrucibleFileInfo()
-					.getPermId());
-			if (newLeftFileInfo != null && newRightFileInfo != null) {
-				leftAnnotationModel.updateCrucibleFile(new CrucibleFile(newLeftFileInfo, leftOldFile.isOldFile()),
-						newReview);
-				rightAnnotationModel.updateCrucibleFile(new CrucibleFile(newRightFileInfo, rightOldFile.isOldFile()),
-						newReview);
-			}
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		CrucibleFileInfo newLeftFileInfo = newReview.getFileByPermId(leftOldFile.getCrucibleFileInfo().getPermId());
+		CrucibleFileInfo newRightFileInfo = newReview.getFileByPermId(rightOldFile.getCrucibleFileInfo()
+				.getPermId());
+		if (newLeftFileInfo != null && newRightFileInfo != null) {
+			leftAnnotationModel.updateCrucibleFile(new CrucibleFile(newLeftFileInfo, leftOldFile.isOldFile()),
+					newReview);
+			rightAnnotationModel.updateCrucibleFile(new CrucibleFile(newRightFileInfo, rightOldFile.isOldFile()),
+					newReview);
 		}
 	}
 

@@ -23,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -100,13 +99,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				Set<Reviewer> reviewers = dialog.getSelectedReviewers();
 				final Set<String> reviewerUserNames = CrucibleUiUtil.getUsernamesFromUsers(reviewers);
 
-				boolean unchanged;
-				try {
-					unchanged = reviewers.size() == crucibleReview.getReviewers().size()
-							&& reviewers.containsAll(crucibleReview.getReviewers());
-				} catch (ValueNotYetInitialized e) {
-					unchanged = false;
-				}
+				boolean unchanged = reviewers.size() == crucibleReview.getReviewers().size()
+						&& reviewers.containsAll(crucibleReview.getReviewers());
 				if (unchanged) {
 					changedAttributes.remove(ReviewAttributeType.REVIEWERS);
 				} else {
@@ -138,7 +132,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 							StatusHandler.log(status);
 							crucibleEditor.getEditor()
 									.setMessage("Error while setting reviewers. See Error Log for details.",
-											IMessageProvider.ERROR);
+									IMessageProvider.ERROR);
 						}
 						return Status.OK_STATUS;
 					}
@@ -302,14 +296,9 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		parentComposite.setMenu(null);
 
 		boolean hasModifyFilesAction = false;
-		try {
-			Set<CrucibleAction> actions = crucibleReview.getActions();
-			if (actions != null && actions.contains(CrucibleAction.MODIFY_FILES)) {
-				hasModifyFilesAction = true;
-			}
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-					"Could not retrieve available Crucible actions", e));
+		Set<CrucibleAction> actions = crucibleReview.getActions();
+		if (actions != null && actions.contains(CrucibleAction.MODIFY_FILES)) {
+			hasModifyFilesAction = true;
 		}
 
 		reviewTitleText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, !newReview);
@@ -403,20 +392,16 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersComp);
 		}
 
-		try {
-			if (canEditReviewers) {
-				setReviewersAction = new SetReviewersAction();
-				setReviewersAction.setToolTipText("Add/Remove Reviewers");
-				setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
-			}
-
-			Set<Reviewer> reviewers = crucibleReview.getReviewers();
-			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
-			crucibleReviewersPart.setMenu(parent.getMenu());
-			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		if (canEditReviewers) {
+			setReviewersAction = new SetReviewersAction();
+			setReviewersAction.setToolTipText("Add/Remove Reviewers");
+			setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
 		}
+
+		Set<Reviewer> reviewers = crucibleReview.getReviewers();
+		CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
+		crucibleReviewersPart.setMenu(parent.getMenu());
+		reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
 	}
 
 	@Override

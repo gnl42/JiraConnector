@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersPart;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -231,33 +230,21 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	}
 
 	private boolean checkForDrafts() {
-		try {
-			if ((review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts()) > 0) {
-				return true;
-			}
-		} catch (ValueNotYetInitialized e) {
-			return false;
+		if ((review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts()) > 0) {
+			return true;
 		}
 		return false;
 	}
 
 	private Set<Reviewer> getOthersDrafts() {
 		Set<Reviewer> othersDrafts = new LinkedHashSet<Reviewer>();
-		try {
-			for (Comment comment : review.getGeneralComments()) {
+		for (Comment comment : review.getGeneralComments()) {
+			checkCommentForDraft(comment, othersDrafts);
+		}
+		for (CrucibleFileInfo file : review.getFiles()) {
+			for (VersionedComment comment : file.getVersionedComments()) {
 				checkCommentForDraft(comment, othersDrafts);
 			}
-		} catch (ValueNotYetInitialized e) {
-			//
-		}
-		try {
-			for (CrucibleFileInfo file : review.getFiles()) {
-				for (VersionedComment comment : file.getVersionedComments()) {
-					checkCommentForDraft(comment, othersDrafts);
-				}
-			}
-		} catch (ValueNotYetInitialized e) {
-			// 
 		}
 		if (othersDrafts.contains(null)) {
 			othersDrafts.remove(null);
@@ -277,42 +264,30 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	}
 
 	private Reviewer getReviewer(User author) {
-		try {
-			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUsername().equals(author.getUsername())) {
-					return reviewer;
-				}
+		for (Reviewer reviewer : review.getReviewers()) {
+			if (reviewer.getUsername().equals(author.getUsername())) {
+				return reviewer;
 			}
-		} catch (ValueNotYetInitialized e) {
-			// 
 		}
 		return null;
 	}
 
 	private Set<Reviewer> getOpenReviewers() {
 		Set<Reviewer> openReviewers = new LinkedHashSet<Reviewer>();
-		try {
-			for (Reviewer reviewer : review.getReviewers()) {
-				if (!reviewer.isCompleted()) {
-					openReviewers.add(reviewer);
-				}
+		for (Reviewer reviewer : review.getReviewers()) {
+			if (!reviewer.isCompleted()) {
+				openReviewers.add(reviewer);
 			}
-		} catch (ValueNotYetInitialized e) {
-			//
 		}
 		return openReviewers;
 	}
 
 	private Set<Reviewer> getCompletedReviewers() {
 		Set<Reviewer> completedReviewers = new LinkedHashSet<Reviewer>();
-		try {
-			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.isCompleted()) {
-					completedReviewers.add(reviewer);
-				}
+		for (Reviewer reviewer : review.getReviewers()) {
+			if (reviewer.isCompleted()) {
+				completedReviewers.add(reviewer);
 			}
-		} catch (ValueNotYetInitialized e) {
-			//
 		}
 		return completedReviewers;
 	}
@@ -323,15 +298,11 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	 * @return
 	 */
 	private boolean checkForOthersDrafts() {
-		try {
-			int totalDrafts = review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts();
-			int myDrafts = review.getNumberOfGeneralCommentsDrafts(userName)
-					+ review.getNumberOfVersionedCommentsDrafts(userName);
-			if (totalDrafts > myDrafts) {
-				return true;
-			}
-		} catch (ValueNotYetInitialized e) {
-			return false;
+		int totalDrafts = review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts();
+		int myDrafts = review.getNumberOfGeneralCommentsDrafts(userName)
+				+ review.getNumberOfVersionedCommentsDrafts(userName);
+		if (totalDrafts > myDrafts) {
+			return true;
 		}
 		return false;
 	}

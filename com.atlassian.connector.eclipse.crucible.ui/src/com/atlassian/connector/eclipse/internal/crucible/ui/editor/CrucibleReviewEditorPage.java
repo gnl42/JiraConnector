@@ -27,7 +27,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Abstrac
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -543,59 +542,55 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	@Override
 	protected void fillToolBar(IToolBarManager manager) {
 		if (review != null) {
-			try {
-				EnumSet<CrucibleAction> transitions = review.getTransitions();
-				EnumSet<CrucibleAction> actions = review.getActions();
-				boolean needsSeparator = false;
-				if (actions.contains(CrucibleAction.COMPLETE) && !CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
-					createCompleteReviewAction(manager);
+			EnumSet<CrucibleAction> transitions = review.getTransitions();
+			EnumSet<CrucibleAction> actions = review.getActions();
+			boolean needsSeparator = false;
+			if (actions.contains(CrucibleAction.COMPLETE) && !CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
+				createCompleteReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (actions.contains(CrucibleAction.UNCOMPLETE) && CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
+				createUncompleteReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (canJoinReview()) {
+				if (!CrucibleUiUtil.isCurrentUserReviewer(review)) {
+					createJoinReviewAction(manager);
 					needsSeparator = true;
 				}
-				if (actions.contains(CrucibleAction.UNCOMPLETE) && CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
-					createUncompleteReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (canJoinReview()) {
-					if (!CrucibleUiUtil.isCurrentUserReviewer(review)) {
-						createJoinReviewAction(manager);
-						needsSeparator = true;
-					}
-				}
-				if (actions.contains(CrucibleAction.APPROVE)
-						&& (review.getState() == State.APPROVAL || review.getState() == State.DRAFT)) {
-					createApproveReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (needsSeparator) {
-					manager.add(new Separator());
-					needsSeparator = false;
-				}
-				if (transitions.contains(CrucibleAction.SUMMARIZE)) {
-					createSummarizeReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (transitions.contains(CrucibleAction.REOPEN)) {
-					createReopenReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (transitions.contains(CrucibleAction.ABANDON)) {
-					createAbandonReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (transitions.contains(CrucibleAction.RECOVER)) {
-					createRecoverReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (transitions.contains(CrucibleAction.SUBMIT)) {
-					createSubmitReviewAction(manager);
-					needsSeparator = true;
-				}
-				if (needsSeparator) {
-					manager.add(new Separator());
-					needsSeparator = false;
-				}
-			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unexpected error", e));
+			}
+			if (actions.contains(CrucibleAction.APPROVE)
+					&& (review.getState() == State.APPROVAL || review.getState() == State.DRAFT)) {
+				createApproveReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (needsSeparator) {
+				manager.add(new Separator());
+				needsSeparator = false;
+			}
+			if (transitions.contains(CrucibleAction.SUMMARIZE)) {
+				createSummarizeReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (transitions.contains(CrucibleAction.REOPEN)) {
+				createReopenReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (transitions.contains(CrucibleAction.ABANDON)) {
+				createAbandonReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (transitions.contains(CrucibleAction.RECOVER)) {
+				createRecoverReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (transitions.contains(CrucibleAction.SUBMIT)) {
+				createSubmitReviewAction(manager);
+				needsSeparator = true;
+			}
+			if (needsSeparator) {
+				manager.add(new Separator());
+				needsSeparator = false;
 			}
 		}
 

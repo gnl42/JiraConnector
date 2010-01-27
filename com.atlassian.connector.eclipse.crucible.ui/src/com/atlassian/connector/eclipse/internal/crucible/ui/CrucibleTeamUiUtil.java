@@ -17,17 +17,12 @@ import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.Nullable;
@@ -128,14 +123,7 @@ public class CrucibleTeamUiUtil {
 	private static CrucibleFile getCruciblePreCommitFile(IFile file, Review review) {
 		String localFileUrl = StringUtil.removeLeadingAndTrailingSlashes(file.getFullPath().toString());
 
-		Set<CrucibleFileInfo> reviewFiles;
-		try {
-			reviewFiles = review.getFiles();
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
-					"Cannot find file {0} in the review {1}", file.getName(), review.getPermId().getId()), e));
-			return null;
-		}
+		Set<CrucibleFileInfo> reviewFiles = review.getFiles();
 
 		for (CrucibleFileInfo cruFile : reviewFiles) {
 			String newFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getFileDescriptor().getUrl());

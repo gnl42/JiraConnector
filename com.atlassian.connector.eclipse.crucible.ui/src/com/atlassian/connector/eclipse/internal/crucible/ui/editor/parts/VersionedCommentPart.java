@@ -14,19 +14,14 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -192,21 +187,14 @@ public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 		this.crucibleReview = newReview;
 		if (reviewActions != null) {
 
-			try {
-				Set<CrucibleFileInfo> files;
-				files = crucibleReview.getFiles();
-				// FIXME we need new file here with refreshed comments collection (we have to find it as we do not get as param)
-				// workaround for PLE-727 (expandable part generic is an obstacle to solve that in the right way)
-				for (CrucibleFileInfo file : files) {
-					if (file.equals(crucibleFileInfo)) {
-						this.crucibleFileInfo = file;
-						break;
-					}
+			final Set<CrucibleFileInfo> files = crucibleReview.getFiles();
+			// FIXME we need new file here with refreshed comments collection (we have to find it as we do not get as param)
+			// workaround for PLE-727 (expandable part generic is an obstacle to solve that in the right way)
+			for (CrucibleFileInfo file : files) {
+				if (file.equals(crucibleFileInfo)) {
+					this.crucibleFileInfo = file;
+					break;
 				}
-			} catch (ValueNotYetInitialized e) {
-				// we can do nothing here but there should be at least one file as we are inside VersionedCommentPart)
-				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-						"Missing files in the processed review"));
 			}
 
 			for (IReviewChangeListenerAction reviewAction : reviewActions) {

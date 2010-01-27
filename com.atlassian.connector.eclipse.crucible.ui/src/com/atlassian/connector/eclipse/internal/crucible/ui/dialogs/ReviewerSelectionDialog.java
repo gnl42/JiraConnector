@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -45,11 +44,7 @@ public class ReviewerSelectionDialog extends Dialog {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.review = review;
-		try {
-			selectedReviewers = review.getReviewers();
-		} catch (ValueNotYetInitialized e) {
-			throw new RuntimeException(e);
-		}
+		selectedReviewers = review.getReviewers();
 		allReviewers = CrucibleUiUtil.getAllCachedUsersAsReviewers(review);
 	}
 

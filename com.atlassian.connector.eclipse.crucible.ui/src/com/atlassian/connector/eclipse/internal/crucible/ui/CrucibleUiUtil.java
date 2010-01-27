@@ -26,7 +26,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
@@ -151,14 +150,10 @@ public final class CrucibleUiUtil {
 	}
 
 	private static boolean hasReviewerCompleted(Review review, String username) {
-		try {
-			for (Reviewer r : review.getReviewers()) {
-				if (r.getUsername().equals(username)) {
-					return r.isCompleted();
-				}
+		for (Reviewer r : review.getReviewers()) {
+			if (r.getUsername().equals(username)) {
+				return r.isCompleted();
 			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
 		}
 		return false;
 	}
@@ -188,14 +183,10 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean isUserReviewer(String userName, Review review) {
-		try {
-			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUsername().equals(userName)) {
-					return true;
-				}
+		for (Reviewer reviewer : review.getReviewers()) {
+			if (reviewer.getUsername().equals(userName)) {
+				return true;
 			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
 		}
 		return false;
 	}
@@ -210,19 +201,15 @@ public final class CrucibleUiUtil {
 				|| crucibleFile.getCrucibleFileInfo().getFileDescriptor() == null) {
 			return false;
 		}
-		try {
-			for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
-				if (fileInfo != null
-						&& fileInfo.getFileDescriptor() != null
-						&& fileInfo.getFileDescriptor().getUrl().equals(
-								crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
-						&& fileInfo.getFileDescriptor().getRevision().equals(
-								crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
-					return true;
-				}
+		for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+			if (fileInfo != null
+					&& fileInfo.getFileDescriptor() != null
+					&& fileInfo.getFileDescriptor().getUrl().equals(
+					crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
+					&& fileInfo.getFileDescriptor().getRevision().equals(
+					crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+				return true;
 			}
-		} catch (ValueNotYetInitialized e) {
-			//ignore
 		}
 		return false;
 	}
@@ -378,7 +365,7 @@ public final class CrucibleUiUtil {
 			if (versionedComment != null) {
 				selectAndRevealComment(textEditor, versionedComment,
 						crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo().getOldFileDescriptor()
-								: crucibleFile.getCrucibleFileInfo().getFileDescriptor());
+						: crucibleFile.getCrucibleFileInfo().getFileDescriptor());
 			}
 		}
 
