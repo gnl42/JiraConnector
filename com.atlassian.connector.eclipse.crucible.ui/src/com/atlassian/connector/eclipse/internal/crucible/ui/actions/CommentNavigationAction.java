@@ -109,7 +109,6 @@ public class CommentNavigationAction extends Action {
 					toBeExpanded[expanded.length + i] = treeSelection.getPaths()[0].getSegment(i);
 				}
 				viewer.setExpandedElements(toBeExpanded);
-				viewer.addSelectionChangedListener(null);
 			}
 		} finally {
 			viewer.getControl().setRedraw(true);
