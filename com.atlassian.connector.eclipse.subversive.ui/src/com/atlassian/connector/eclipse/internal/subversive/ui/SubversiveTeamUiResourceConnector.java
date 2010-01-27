@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -136,7 +135,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 						"Selected SVN connector library is not available or cannot be loaded.")) {
 					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 							"Subversive doesn't have a default client installed", getLogMessagesOp.getStatus()
-									.getException()));
+							.getException()));
 				} else {
 					throw new CoreException(getLogMessagesOp.getStatus());
 				}
@@ -342,35 +341,30 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	public CrucibleFile getCrucibleFileFromReview(Review activeReview, String fileUrl, String revision) {
-		try {
-			for (CrucibleFileInfo file : activeReview.getFiles()) {
-				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
-				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-				String newFileUrl = null;
-				String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
-				if (newAbsoluteUrl != null) {
-					newFileUrl = newAbsoluteUrl;
-				}
-
-				String oldFileUrl = null;
-				String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
-				if (oldAbsoluteUrl != null) {
-					oldFileUrl = oldAbsoluteUrl;
-				}
-				if ((newFileUrl != null && newFileUrl.equals(fileUrl))
-						|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
-					if (revision.equals(fileDescriptor.getRevision())) {
-						return new CrucibleFile(file, false);
-					}
-					if (revision.equals(oldFileDescriptor.getRevision())) {
-						return new CrucibleFile(file, true);
-					}
-					return null;
-				}
+		for (CrucibleFileInfo file : activeReview.getFiles()) {
+			VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+			VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+			String newFileUrl = null;
+			String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
+			if (newAbsoluteUrl != null) {
+				newFileUrl = newAbsoluteUrl;
 			}
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"Review is not fully initialized.  Unable to get file from review.", e));
+
+			String oldFileUrl = null;
+			String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
+			if (oldAbsoluteUrl != null) {
+				oldFileUrl = oldAbsoluteUrl;
+			}
+			if ((newFileUrl != null && newFileUrl.equals(fileUrl))
+					|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
+				if (revision.equals(fileDescriptor.getRevision())) {
+					return new CrucibleFile(file, false);
+				}
+				if (revision.equals(oldFileDescriptor.getRevision())) {
+					return new CrucibleFile(file, true);
+				}
+				return null;
+			}
 		}
 		return null;
 	}

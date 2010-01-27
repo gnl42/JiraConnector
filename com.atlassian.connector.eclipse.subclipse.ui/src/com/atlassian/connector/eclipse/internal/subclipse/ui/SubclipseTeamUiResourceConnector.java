@@ -23,7 +23,6 @@ import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -433,9 +432,6 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 					return null;
 				}
 			}
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-					"Review is not fully initialized.  Unable to get file from review.", e));
 		} catch (MalformedURLException e) {
 			// ignore
 		}

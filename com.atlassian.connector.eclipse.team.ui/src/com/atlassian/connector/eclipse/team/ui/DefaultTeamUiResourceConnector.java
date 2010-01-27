@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.team.ui;
 
 import com.atlassian.connector.eclipse.team.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -285,27 +284,23 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 	public CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
 			@NotNull String revision) {
 
-		try {
-			for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
-				VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
-				VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+		for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+			VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
+			VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 
-				String oldUrl = oldFileDescriptor.getUrl();
-				String newUrl = fileDescriptor.getUrl();
+			String oldUrl = oldFileDescriptor.getUrl();
+			String newUrl = fileDescriptor.getUrl();
 
-				if ((newUrl != null && newUrl.length() > 0 && fileUrl.endsWith(newUrl))
-						|| (oldUrl != null && oldUrl.length() > 0 && fileUrl.endsWith(oldUrl))) {
+			if ((newUrl != null && newUrl.length() > 0 && fileUrl.endsWith(newUrl))
+					|| (oldUrl != null && oldUrl.length() > 0 && fileUrl.endsWith(oldUrl))) {
 
-					if (revision.equals(fileDescriptor.getRevision())) {
-						return new CrucibleFile(fileInfo, false);
-					}
-					if (revision.equals(oldFileDescriptor.getRevision())) {
-						return new CrucibleFile(fileInfo, true);
-					}
+				if (revision.equals(fileDescriptor.getRevision())) {
+					return new CrucibleFile(fileInfo, false);
+				}
+				if (revision.equals(oldFileDescriptor.getRevision())) {
+					return new CrucibleFile(fileInfo, true);
 				}
 			}
-		} catch (ValueNotYetInitialized e) {
-			return null;
 		}
 		return null;
 	}
@@ -331,37 +326,32 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 			if (inSync && localFileRevision.getContentIdentifier() != null) {
 
-				try {
-					for (CrucibleFileInfo fileInfo : review.getFiles()) {
-						VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
-						VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+				for (CrucibleFileInfo fileInfo : review.getFiles()) {
+					VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
+					VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 
-						IPath newPath = new Path(fileDescriptor.getUrl());
-						final IResource newResource = findResourceForPath(newPath.toPortableString());
+					IPath newPath = new Path(fileDescriptor.getUrl());
+					final IResource newResource = findResourceForPath(newPath.toPortableString());
 
-						IPath oldPath = new Path(fileDescriptor.getUrl());
-						final IResource oldResource = findResourceForPath(oldPath.toPortableString());
+					IPath oldPath = new Path(fileDescriptor.getUrl());
+					final IResource oldResource = findResourceForPath(oldPath.toPortableString());
 
-						if ((newResource != null && newResource.equals(file))
-								|| (oldResource != null && oldResource.equals(file))) {
+					if ((newResource != null && newResource.equals(file))
+							|| (oldResource != null && oldResource.equals(file))) {
 
-							String revision = localFileRevision.getContentIdentifier();
+						String revision = localFileRevision.getContentIdentifier();
 
-							if (revision.equals(fileDescriptor.getRevision())) {
-								return new CrucibleFile(fileInfo, false);
-							}
-							if (revision.equals(oldFileDescriptor.getRevision())) {
-								return new CrucibleFile(fileInfo, true);
-							}
+						if (revision.equals(fileDescriptor.getRevision())) {
+							return new CrucibleFile(fileInfo, false);
+						}
+						if (revision.equals(oldFileDescriptor.getRevision())) {
+							return new CrucibleFile(fileInfo, true);
 						}
 					}
-				} catch (ValueNotYetInitialized e) {
-					return null;
 				}
 				return null;
 			}
 		}
-		// ignore
 		return null;
 	}
 
