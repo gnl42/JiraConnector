@@ -11,15 +11,21 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.tasks.core.ITaskRepositoryFilter;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoryLabelProvider;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.graphics.RGB;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +42,12 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 	private CrucibleRepositorySelectionWizard crucibleRepositoryWizard;
 
+	protected TaskRepository selectedRepository;
+
+	private Collection<TaskRepository> crucible21Repos;
+
 	public SelectCrucible21RepositoryPage() {
-		super(EMPTY_REPOSITORY_FILTER);
+		super(ENABLED_CRUCIBLE_REPOSITORY_FILTER);
 		setDescription("Add new repositories using the Task Repositories view.\nOnly Crucible 2.1 or newer supports current operation.");
 	}
 
@@ -58,12 +68,40 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 			// retrieve Crucible repos version and filter list of available repos in the wizard
 			final WizardPage page = this;
 
-			final Collection<TaskRepository> crucible21Repos = getCrucible21Repos(page);
+			crucible21Repos = getCrucible21Repos(page);
 
-			// we need our own content provider to inject filtered list of repos
-			getViewer().setContentProvider(new LocalRepositoryProvider(crucible21Repos));
-			getViewer().setInput(crucible21Repos);
+			// we need our own label provider to mark not matching repos as not clickable instead of hide them
+			getViewer().setLabelProvider(
+					new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider(crucible21Repos)));
+
+			getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+
+				public void selectionChanged(SelectionChangedEvent event) {
+					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+					if (selection.getFirstElement() instanceof TaskRepository) {
+						selectedRepository = (TaskRepository) selection.getFirstElement();
+						if (crucible21Repos.contains(selectedRepository)) {
+							setPageComplete(true);
+						} else {
+							setPageComplete(false);
+						}
+					} else {
+						setPageComplete(false);
+					}
+				}
+			});
+
+			getViewer().setInput(getCrucibeTaskRepositories());
 		}
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() != null;
+	}
+
+	public boolean canFinish() {
+		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() != null;
 	}
 
 	private Collection<TaskRepository> getCrucible21Repos(final WizardPage page) {
@@ -108,46 +146,36 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		super.setWizard(wizard);
 	}
 
-	private static final ITaskRepositoryFilter EMPTY_REPOSITORY_FILTER = new ITaskRepositoryFilter() {
-		public boolean accept(TaskRepository repository, AbstractRepositoryConnector connector) {
-			return false;
-		}
-	};
+	public final class LocalRepositoryLabelProvider extends TaskRepositoryLabelProvider implements IStyledLabelProvider {
 
-	private final class LocalRepositoryProvider implements IStructuredContentProvider {
-		private Collection<TaskRepository> crucible21Repos;
+		private final Collection<TaskRepository> crucible21Repos;
 
-		private boolean newRepositoryAdded = false;
-
-		private LocalRepositoryProvider(Collection<TaskRepository> crucible21Repos) {
+		public LocalRepositoryLabelProvider(Collection<TaskRepository> crucible21Repos) {
 			this.crucible21Repos = crucible21Repos;
+			JFaceResources.getColorRegistry().put("colorGrey", new RGB(100, 100, 100));
 		}
 
-		public Object[] getElements(Object inputElement) {
-			if (newRepositoryAdded) {
-				// filter list once again as it comes from Mylyn
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						crucible21Repos = getCrucible21Repos(SelectCrucible21RepositoryPage.this);
-						getViewer().setInput(crucible21Repos);
-					}
-				});
-				return new Object[0];
+		public StyledString getStyledText(Object element) {
+
+			StyledString styledString = new StyledString();
+
+			if (element instanceof TaskRepository) {
+				TaskRepository repository = (TaskRepository) element;
+
+				if (crucible21Repos.contains(repository)) {
+					styledString.append(super.getText(element));
+				} else {
+					styledString.append(super.getText(element), StyledString.createColorRegistryStyler("colorGrey",
+							null));
+					styledString.append(" (this repository version is below 2.1)", StyledString.DECORATIONS_STYLER);
+				}
+
+			} else if (element instanceof AbstractRepositoryConnector) {
+				styledString.append(((AbstractRepositoryConnector) element).getLabel());
 			}
-			return crucible21Repos.toArray();
+
+			return styledString;
 		}
 
-		public void dispose() {
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			if (newInput != crucible21Repos && oldInput == crucible21Repos) {
-				// new repository added using the button in the wizard 
-				// (input comes from the base Mylyn class which means it is not filtered)
-				newRepositoryAdded = true;
-			} else {
-				newRepositoryAdded = false;
-			}
-		}
 	}
 }
