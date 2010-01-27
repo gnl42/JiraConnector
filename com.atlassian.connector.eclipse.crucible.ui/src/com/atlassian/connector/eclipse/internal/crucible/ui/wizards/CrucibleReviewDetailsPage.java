@@ -264,7 +264,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
 		gd.horizontalIndent = 0;
 		textAreacomposite.setLayoutData(gd);
-		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).span(4, 2).applyTo(textAreacomposite);
+		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).span(4, 1).applyTo(textAreacomposite);
 
 		objectivesText = new Text(textAreacomposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
 		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).applyTo(objectivesText);
@@ -287,13 +287,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			}
 		});
 
-		anyoneCanJoin = new Button(composite, SWT.CHECK);
-		anyoneCanJoin.setText("Allow anyone to join");
-		GridDataFactory.fillDefaults().indent(5, SWT.DEFAULT).span(2, 1).applyTo(anyoneCanJoin);
-
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
-		GridDataFactory.fillDefaults().span(4, 1).align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
+		GridDataFactory.fillDefaults().span(4, 2).align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -302,6 +298,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(taskRepository));
 			}
 		});
+
+		anyoneCanJoin = new Button(composite, SWT.CHECK);
+		anyoneCanJoin.setText("Allow anyone to join");
+		GridDataFactory.fillDefaults().indent(5, SWT.DEFAULT).span(2, 1).applyTo(anyoneCanJoin);
 
 		startReview = new Button(composite, SWT.CHECK);
 		startReview.setText("Start review immediately (if permitted)");

@@ -201,7 +201,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_IGNORED)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is ignored" + PRE_COMMIT_EXPLANATION));
+									"This file is ignored in version control" + PRE_COMMIT_EXPLANATION));
 						} else if (teamConnector.isResourceAcceptedByFilter(resource,
 								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
 							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
