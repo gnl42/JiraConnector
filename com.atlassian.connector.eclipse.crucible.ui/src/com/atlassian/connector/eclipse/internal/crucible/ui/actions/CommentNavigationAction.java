@@ -22,11 +22,13 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -118,7 +120,8 @@ public class CommentNavigationAction extends Action {
 	private List<Comment> prepareListOfComments() {
 		ITreeContentProvider provider = (ITreeContentProvider) viewer.getContentProvider();
 		List<Comment> comments = MiscUtil.buildArrayList();
-		comments.addAll(getComments(viewer, provider, provider.getElements(viewer.getInput())));
+		comments.addAll(getComments(viewer, provider, filter(viewer, viewer.getInput(),
+				provider.getElements(viewer.getInput()))));
 		return comments;
 	}
 
@@ -132,8 +135,39 @@ public class CommentNavigationAction extends Action {
 			if (element instanceof Comment) {
 				comments.add((Comment) element);
 			}
-			comments.addAll(getComments(viewer, provider, provider.getChildren(element)));
+			comments.addAll(getComments(viewer, provider, filter(viewer, element, provider.getChildren(element))));
 		}
 		return comments;
 	}
+
+	/**
+	 * Filter the children elements.
+	 * 
+	 * @param parentElementOrTreePath
+	 *            the parent element or path
+	 * @param elements
+	 *            the child elements
+	 * @return the filter list of children
+	 */
+	private Object[] filter(AbstractTreeViewer viewer, Object parentElementOrTreePath, Object[] elements) {
+		ViewerFilter[] filters = viewer.getFilters();
+		if (filters != null) {
+			ArrayList filtered = new ArrayList(elements.length);
+			for (Object element : elements) {
+				boolean add = true;
+				for (ViewerFilter filter : filters) {
+					add = filter.select(viewer, parentElementOrTreePath, element);
+					if (!add) {
+						break;
+					}
+				}
+				if (add) {
+					filtered.add(element);
+				}
+			}
+			return filtered.toArray();
+		}
+		return elements;
+	}
+
 }
