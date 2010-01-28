@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -228,14 +229,9 @@ public final class CrucibleUtil {
 		}
 	}
 
-	public static String getTaskIdFromReview(Review review) {
+	public static String getTaskIdFromReview(BasicReview review) {
 		String key = review.getPermId().getId();
 		return CrucibleUtil.getTaskIdFromPermId(key);
-	}
-
-	/// @todo wseliga refactoring !!!
-	public static boolean isPartialReview(Review review) {
-		return false;
 	}
 
 	public static int createHash(Review review) {

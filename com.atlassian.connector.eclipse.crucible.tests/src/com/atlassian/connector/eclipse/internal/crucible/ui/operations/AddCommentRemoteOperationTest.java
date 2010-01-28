@@ -108,7 +108,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -143,7 +143,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -185,7 +185,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -229,7 +229,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -267,7 +267,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -316,7 +316,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -371,7 +371,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -409,7 +409,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -447,7 +447,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -490,7 +490,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -533,7 +533,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		ConnectionCfg serverCfg = prepareServerBean();
-		Review review = new Review(serverCfg.getUrl());
+		Review review = prepareReview(serverCfg);
 		PermId permId = new PermId("1");
 		User user = new User("user");
 		review.setPermId(permId);
@@ -617,4 +617,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		return new ConnectionCfg("myname", VALID_URL, VALID_LOGIN.getUsername(), VALID_PASSWORD);
 	}
 
+	private Review prepareReview(ConnectionCfg connectionCfg) {
+		return new Review(connectionCfg.getUrl(), "prkey", new User("myauthor"), new User("mymoderator"));
+	}
 }

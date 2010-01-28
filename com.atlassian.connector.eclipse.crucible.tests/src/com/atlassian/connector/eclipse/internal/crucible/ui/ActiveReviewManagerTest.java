@@ -288,27 +288,24 @@ public class ActiveReviewManagerTest extends TestCase {
 	}
 
 	private Review createReview(String repositoryUrl, String taskKey) {
-		Review review = new Review(repositoryUrl);
+		Review review = new Review(repositoryUrl, "prj", new User("aut"), new User("mod"));
 		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
 		actions.add(CrucibleAction.ABANDON);
 		actions.add(CrucibleAction.APPROVE);
 		review.setActions(actions);
 		review.setAllowReviewerToJoin(true);
-		review.setAuthor(new User("aut"));
 		review.setCloseDate(new Date(1L));
 		review.setCreateDate(new Date(1L));
 		review.setCreator(new User("cre"));
-		review.setProjectKey("pro");
+//		review.setProjectKey("pro");
 		review.setDescription("des");
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
 		List<Comment> genC = new ArrayList<Comment>();
 		review.setGeneralComments(genC);
 		review.setMetricsVersion(5);
-		review.setModerator(new User("mod"));
 		review.setName("nam");
 		review.setPermId(new PermId(taskKey));
-		review.setProjectKey("prj");
 		review.setRepoName("rep");
 		Set<Reviewer> reviewers = new LinkedHashSet<Reviewer>();
 		Reviewer reviewer = new Reviewer("user", false);

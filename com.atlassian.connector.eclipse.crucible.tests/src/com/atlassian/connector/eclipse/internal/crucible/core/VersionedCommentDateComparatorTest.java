@@ -16,6 +16,7 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -29,7 +30,7 @@ import junit.framework.TestCase;
  */
 public class VersionedCommentDateComparatorTest extends TestCase {
 
-	private final Review review = new Review("myurl.com");
+	private final Review review = new Review("http://myurl.com", "prkey", new User("myuser"), new User("mymoderator"));
 
 	private final CrucibleFileInfo crucibleFileInfo = new CrucibleFileInfo(null, null, new PermId("cfi-permid"));
 

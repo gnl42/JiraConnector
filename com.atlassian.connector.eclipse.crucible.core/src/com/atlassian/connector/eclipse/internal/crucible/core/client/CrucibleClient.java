@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
@@ -141,8 +142,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 					String filterId = query.getAttribute(CrucibleConstants.KEY_FILTER_ID);
 					PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
 					if (filter != null) {
-						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
-						for (Review review : reviewsForFilter) {
+						List<BasicReview> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
+						for (BasicReview review : reviewsForFilter) {
 
 							collectTaskDataForReview(server, serverCfg, taskRepository, resultCollector, review);
 						}
@@ -152,8 +153,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 				} else {
 					CustomFilterBean customFilter = CrucibleUtil.createCustomFilterFromQuery(query);
 
-					List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
-					for (Review review : reviewsForFilter) {
+					List<BasicReview> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
+					for (BasicReview review : reviewsForFilter) {
 
 						collectTaskDataForReview(server, serverCfg, taskRepository, resultCollector, review);
 					}
@@ -165,14 +166,12 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 	}
 
 	private void collectTaskDataForReview(CrucibleServerFacade2 crucibleFacade, ConnectionCfg conCfg,
-			final TaskRepository taskRepository, final TaskDataCollector resultCollector, Review review)
+			final TaskRepository taskRepository, final TaskDataCollector resultCollector, BasicReview basicReview)
 			throws RemoteApiException, ServerPasswordNotProvidedException {
-		String taskId = CrucibleUtil.getTaskIdFromReview(review);
-		if (CrucibleUtil.isPartialReview(review)) {
-			review = crucibleFacade.getReview(conCfg, review.getPermId());
-		}
+		String taskId = CrucibleUtil.getTaskIdFromReview(basicReview);
+		Review review = crucibleFacade.getReview(conCfg, basicReview.getPermId());
 
-		int metricsVersion = review.getMetricsVersion();
+		int metricsVersion = basicReview.getMetricsVersion();
 		if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
 			cachedReviewManager.setMetrics(metricsVersion, facade.getMetrics(conCfg, metricsVersion));
 		}

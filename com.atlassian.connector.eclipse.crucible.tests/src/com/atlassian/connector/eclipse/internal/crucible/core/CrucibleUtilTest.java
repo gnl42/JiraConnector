@@ -22,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.ReviewTestUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -403,7 +404,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testGetTaskIdFromReview() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		String permId = "CR-5";
 		String expected = "CR%2D_5";
 		PermId id = new PermId(permId);
@@ -411,16 +412,8 @@ public class CrucibleUtilTest extends TestCase {
 		assertEquals(expected, CrucibleUtil.getTaskIdFromReview(review));
 	}
 
-	public void testIsPartialReview() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
-		assertTrue(CrucibleUtil.isPartialReview(review));
-		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
-		review.setFiles(files);
-		assertFalse(CrucibleUtil.isPartialReview(review));
-	}
-
 	public void testCreateHash() {
-		Review review1 = new Review("http://crucible.atlassian.com/cru/");
+		Review review1 = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
 		actions.add(CrucibleAction.ABANDON);
 		actions.add(CrucibleAction.APPROVE);
@@ -446,7 +439,7 @@ public class CrucibleUtilTest extends TestCase {
 		review1.setReviewers(reviewers);
 		review1.setState(State.CLOSED);
 
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		actions = new LinkedHashSet<CrucibleAction>();
 		actions.add(CrucibleAction.ABANDON);
 		actions.add(CrucibleAction.APPROVE);
@@ -480,8 +473,6 @@ public class CrucibleUtilTest extends TestCase {
 		transitions.add(CrucibleAction.CLOSE);
 		review.setTransitions(transitions);
 
-		//test for incomplete reviews
-		assertTrue(-1 == CrucibleUtil.createHash(review));
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
 		List<Comment> genC = MiscUtil.buildArrayList();
@@ -514,7 +505,7 @@ public class CrucibleUtilTest extends TestCase {
 
 	public void testCanAddCommentToReview() {
 
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		assertFalse(CrucibleUtil.canAddCommentToReview(review));
 
 		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
@@ -530,7 +521,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testIsReviewComplete() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		review.setState(State.ABANDONED);
 		assertTrue(CrucibleUtil.isCompleted(review));
 
@@ -564,7 +555,7 @@ public class CrucibleUtilTest extends TestCase {
 		String username = "username";
 		String username2 = "username2";
 
-		Review review = new Review(repositoryUrl);
+		Review review = ReviewTestUtil.createReview(repositoryUrl);
 
 		Set<Reviewer> reviewers = new HashSet<Reviewer>();
 		review.setReviewers(reviewers);
@@ -597,7 +588,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testVersionedCommentDeepEquals() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		CrucibleFileInfo cfi = new CrucibleFileInfo(null, null, new PermId("cfi1"));
 		VersionedComment c1 = new VersionedComment(review, cfi);
 		c1.setAuthor(new User("sminto"));
@@ -649,7 +640,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testVersionedCommentsWithDifferentParentsDeepEquals() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		CrucibleFileInfo cfi1 = new CrucibleFileInfo(null, null, new PermId("cfi1"));
 		CrucibleFileInfo cfi2 = new CrucibleFileInfo(null, null, new PermId("cfi2"));
 		VersionedComment c1 = new VersionedComment(review, cfi1);
@@ -672,7 +663,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testVersionedCommentWithLineRangesDeepEquals() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		CrucibleFileInfo cfi = new CrucibleFileInfo(null, null, new PermId("cfi1"));
 		VersionedComment c1 = new VersionedComment(review, cfi);
 		c1.setAuthor(new User("sminto"));
@@ -715,7 +706,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testGeneralCommentDeepEquals() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 
 		GeneralComment c1 = new GeneralComment(review, null);
 		c1.setAuthor(new User("sminto"));
@@ -759,7 +750,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testCrucibleFileDeepEquals() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 
 		CrucibleFileInfo f1 = new CrucibleFileInfo(null, null, new PermId("cfi"));
 		CrucibleFileInfo f2 = new CrucibleFileInfo(null, null, new PermId("cfi"));
@@ -819,7 +810,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testGetParentVersionedComment() {
-		Review review = new Review("http://crucible.atlassian.com/cru/");
+		Review review = ReviewTestUtil.createReview("http://crucible.atlassian.com/cru/");
 		GeneralComment gc1 = new GeneralComment(review, null);
 		VersionedComment vc1 = new VersionedComment(review, null);
 		GeneralComment rc1 = new GeneralComment(review, gc1);

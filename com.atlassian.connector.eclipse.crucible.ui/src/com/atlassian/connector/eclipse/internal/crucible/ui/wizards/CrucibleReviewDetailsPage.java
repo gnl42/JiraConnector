@@ -20,7 +20,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -49,7 +48,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
@@ -109,7 +108,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 						CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(),
 								CrucibleReviewDetailsPage.this);
 						setInputAndInitialSelections();
-						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(taskRepository));
+						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil
+								.getAllCachedUsersAsReviewers(taskRepository));
 					}
 				});
 			} else {
@@ -164,7 +164,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	private void updateInputAndRestoreSelections() {
-		CrucibleProject previousProject = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
+		CrucibleProject previousProject = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection())
+				.getFirstElement();
 		User previousModerator = (User) ((IStructuredSelection) moderatorComboViewer.getSelection()).getFirstElement();
 		User previousAuthor = (User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement();
 
@@ -321,13 +322,14 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private boolean hasRequiredFields(Review newReview) {
 		setErrorMessage(null);
 		String newMessage = null;
-		if (newReview.getProjectKey() == null) {
+
+		if (getSelectedProject() == null) {
 			newMessage = "Select a project";
 		}
 		if (newReview.getModerator() == null) {
 			newMessage = "Select a moderator";
 		}
-		if (newReview.getAuthor() == null) {
+		if (getSelectedAuthor() == null) {
 			newMessage = "Select an author";
 		}
 		if (newReview.getSummary() == null || newReview.getSummary().trim().length() == 0) {
@@ -366,8 +368,16 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return false;
 	}
 
+	@Nullable
 	public Review getReview() {
-		Review review = new Review(taskRepository.getUrl());
+		final User author = getSelectedAuthor();
+		final CrucibleProject project = getSelectedProject();
+
+		if (project == null || project.getKey() == null) {
+			return null;
+		}
+
+		Review review = new Review(taskRepository.getUrl(), project.getKey(), author, null);
 
 		if (titleText != null) {
 			review.setName(titleText.getText());
@@ -387,19 +397,18 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		}
 		review.setCreator(CrucibleUiUtil.getCurrentCachedUser(taskRepository));
 
-		if (authorComboViewer != null) {
-			review.setAuthor((User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement());
-		}
-
 		if (moderatorComboViewer != null) {
 			review.setModerator((User) ((IStructuredSelection) moderatorComboViewer.getSelection()).getFirstElement());
 		}
 
-		if (projectsComboViewer != null) {
-			CrucibleProject project = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
-			review.setProjectKey(project != null ? project.getKey() : null);
-		}
 		return review;
+	}
+
+	private User getSelectedAuthor() {
+		User author = (authorComboViewer != null)
+				? (User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement()
+				: null;
+		return author;
 	}
 
 	Set<Reviewer> getReviewers() {
@@ -410,7 +419,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return startReview.getSelection();
 	}
 
+	@Nullable
 	CrucibleProject getSelectedProject() {
+		if (projectsComboViewer == null) {
+			return null;
+		}
 		Object firstElement = ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
 		if (firstElement != null) {
 			return (CrucibleProject) firstElement;

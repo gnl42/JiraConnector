@@ -22,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.ReviewTestUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -128,7 +129,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		String repositoryUrl = "https://testServer.com";
 
-		Review review = new Review(repositoryUrl);
+		Review review = prepareReview(repositoryUrl);
 
 		assertNull(CrucibleUiUtil.getCrucibleTaskRepository((Review) null));
 		assertNull(CrucibleUiUtil.getCrucibleTaskRepository(review));
@@ -152,7 +153,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		String repositoryUrl = "https://testServer.com";
 
-		Review review = new Review(repositoryUrl);
+		Review review = prepareReview(repositoryUrl);
 		review.setPermId(new PermId(taskKey));
 
 		assertNull(CrucibleUiUtil.getCrucibleTask(null));
@@ -179,8 +180,8 @@ public class CrucibleUiUtilTest extends TestCase {
 	public void testIsFilePartOfActiveReview() {
 		String repositoryUrl = "http://crucible.atlassian.com/cru/";
 
-		Review reviewA = new Review(repositoryUrl);
-		Review reviewB = new Review(repositoryUrl);
+		Review reviewA = prepareReview(repositoryUrl);
+		Review reviewB = prepareReview(repositoryUrl);
 
 		ITask task = new TaskTask("kind", "url", "A");
 
@@ -255,7 +256,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 	private Review createMockReview(TaskRepository repo) {
 		TasksUi.getRepositoryManager().addRepository(repo);
-		Review review = new Review(repo.getRepositoryUrl());
+		Review review = ReviewTestUtil.createReview(repo.getRepositoryUrl());
 		return review;
 	}
 
@@ -440,7 +441,7 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repo = createMockRepository();
 		TasksUi.getRepositoryManager().addRepository(repo);
 
-		Review review = new Review(repo.getUrl());
+		Review review = prepareReview(repo.getUrl());
 		review.setActions(MiscUtil.buildHashSet(CrucibleAction.COMMENT));
 		GeneralComment comment = new GeneralComment(review, null);
 		final String connUserName = repo.getCredentials(AuthenticationType.REPOSITORY).getUserName();
@@ -453,6 +454,10 @@ public class CrucibleUiUtilTest extends TestCase {
 		assertTrue(CrucibleUiUtil.canModifyComment(review, comment));
 		review.setActions(MiscUtil.buildHashSet(CrucibleAction.VIEW, CrucibleAction.CLOSE));
 		assertFalse(CrucibleUiUtil.canModifyComment(review, comment));
+	}
+
+	private Review prepareReview(String url) {
+		return new Review(url, "prkey", new User("myauthor"), new User("mymoderator"));
 	}
 
 }
