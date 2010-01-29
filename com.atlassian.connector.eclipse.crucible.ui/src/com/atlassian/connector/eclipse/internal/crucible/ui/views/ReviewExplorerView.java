@@ -35,8 +35,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
-import org.eclipse.jdt.internal.ui.util.SelectionUtil;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -50,7 +48,6 @@ import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -69,7 +66,6 @@ import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.OpenAndLinkWithEditorHelper;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
@@ -171,7 +167,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private IMemento memento;
 
-	private OpenAndLinkWithEditorHelper openAndLinkWithEditorHelper;
+	// does not work on e3.4
+	//private OpenAndLinkWithEditorHelper openAndLinkWithEditorHelper;
 
 	private Action linkWithEditorAction;
 
@@ -283,6 +280,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		});
 
+		/* it does not work on e3.4
 		openAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(viewer) {
 			@SuppressWarnings("restriction")
 			protected void activate(ISelection selection) {
@@ -311,6 +309,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 
 		};
+		*/
 
 		createActions();
 		createToolbar();
@@ -512,7 +511,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		openEditorAction = new EditActiveTaskAction();
 		reviewActivationListeners.add(openEditorAction);
 
-		// in the end register all aditional activation listeners
+		// in the end register all additional activation listeners
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		for (IReviewActivationListener listener : reviewActivationListeners) {
 			if (mgr.isReviewActive()) {
@@ -651,19 +650,21 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		linkingEnabled = val != null && val.intValue() != 0;
 	}
 
-	private void linkToEditor(ISelection selection) {
-		Object obj = SelectionUtil.getSingleElement(selection);
-		if (obj != null) {
-			IEditorPart part = EditorUtility.isOpenInEditor(obj);
-			if (part != null) {
-				IWorkbenchPage page = getSite().getPage();
-				page.bringToTop(part);
-				/*if (obj instanceof IJavaElement) {
-					EditorUtility.revealInEditor(part, (IJavaElement) obj);
-				}*/
-			}
-		}
-	}
+	// wseliga's note: this is evil, as it couples Review Explorer with JDT, which is bad.
+	// we can only _optionally_ depend on JDT, but IMO not for such fundamental thing like linking editor with these views 
+//	private void linkToEditor(ISelection selection) {
+//		Object obj = SelectionUtil.getSingleElement(selection);
+//		if (obj != null) {
+//			IEditorPart part = EditorUtility.isOpenInEditor(obj);
+//			if (part != null) {
+//				IWorkbenchPage page = getSite().getPage();
+//				page.bringToTop(part);
+//				/*if (obj instanceof IJavaElement) {
+//					EditorUtility.revealInEditor(part, (IJavaElement) obj);
+//				}*/
+//			}
+//		}
+//	}
 
 	public boolean isLinkingEnabled() {
 		return linkingEnabled;
