@@ -5,6 +5,7 @@ Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.tests;singleton:=t
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
 Require-Bundle: org.junit,
+ org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.crucible.core,
  org.eclipse.mylyn.tasks.core,
  com.atlassian.connector.commons,

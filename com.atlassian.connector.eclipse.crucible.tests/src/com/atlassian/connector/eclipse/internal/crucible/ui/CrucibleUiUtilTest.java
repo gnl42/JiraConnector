@@ -22,7 +22,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewTestUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -256,7 +255,7 @@ public class CrucibleUiUtilTest extends TestCase {
 
 	private Review createMockReview(TaskRepository repo) {
 		TasksUi.getRepositoryManager().addRepository(repo);
-		Review review = ReviewTestUtil.createReview(repo.getRepositoryUrl());
+		Review review = new Review(repo.getRepositoryUrl(), "prj-key", new User("anauthor"), null);
 		return review;
 	}
 

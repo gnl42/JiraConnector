@@ -17,7 +17,6 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.graphics.Image;
 
 public class BambooImageUtil {
-	private static int iconBuildingIndex;
 
 	public static Image getImage(BambooBuild build) {
 
@@ -38,18 +37,4 @@ public class BambooImageUtil {
 
 		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
 	}
-
-//	public static Image getBuildingImage(BambooBuild build) {
-//		switch (build.getPlanState()) {
-//		case BUILDING:
-//			++iconBuildingIndex;
-//			iconBuildingIndex %= BambooImages.STATUS_BUILDING.length;
-//			return CommonImages.getImage(BambooImages.STATUS_BUILDING[iconBuildingIndex]);
-//		case IN_QUEUE:
-//			return CommonImages.getImage(BambooImages.STATUS_WAITING);
-//		default:
-//			return null;
-//		}
-//	}
-
 }

@@ -152,7 +152,7 @@ public class CommentNavigationAction extends Action {
 	private Object[] filter(AbstractTreeViewer viewer, Object parentElementOrTreePath, Object[] elements) {
 		ViewerFilter[] filters = viewer.getFilters();
 		if (filters != null) {
-			ArrayList filtered = new ArrayList(elements.length);
+			ArrayList<Object> filtered = new ArrayList<Object>(elements.length);
 			for (Object element : elements) {
 				boolean add = true;
 				for (ViewerFilter filter : filters) {

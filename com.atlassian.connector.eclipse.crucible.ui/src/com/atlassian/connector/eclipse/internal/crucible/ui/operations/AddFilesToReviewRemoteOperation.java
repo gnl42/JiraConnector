@@ -16,6 +16,7 @@ import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
 import com.atlassian.theplugin.commons.crucible.api.model.SvnRepository;
@@ -65,7 +66,7 @@ public final class AddFilesToReviewRemoteOperation extends CrucibleRemoteOperati
 	@Override
 	public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-		CrucibleSession session = server.getSession(serverCfg);
+		final CrucibleSession session = server.getSession(serverCfg);
 
 		if (fixPaths) {
 			Set<RevisionData> fixedRevision = MiscUtil.buildHashSet();
@@ -100,9 +101,17 @@ public final class AddFilesToReviewRemoteOperation extends CrucibleRemoteOperati
 				fixedRevision.add(new RevisionData(revision.getSource(), filePath, revision.getRevisions()));
 			}
 
-			return session.addRevisionsToReviewItems(review.getPermId(), fixedRevision);
+			final BasicReview basicReview = session.addRevisionsToReviewItems(review.getPermId(), fixedRevision);
+			return getFullReview(basicReview, session);
 		}
 
-		return session.addRevisionsToReviewItems(review.getPermId(), files);
+		return getFullReview(session.addRevisionsToReviewItems(review.getPermId(), files), session);
+	}
+
+	private Review getFullReview(BasicReview basicReview, CrucibleSession session) throws RemoteApiException {
+		if (basicReview == null) {
+			return null;
+		}
+		return session.getReview(basicReview.getPermId());
 	}
 }

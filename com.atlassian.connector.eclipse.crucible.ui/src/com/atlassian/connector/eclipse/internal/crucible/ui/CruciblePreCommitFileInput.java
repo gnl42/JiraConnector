@@ -56,6 +56,7 @@ public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEdi
 		return storage.getFullPath().toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

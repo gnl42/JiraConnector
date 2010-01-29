@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -93,8 +92,6 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	@Override
 	public Comment run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-
-		final String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
 
 		if (parentComment != null) {
 			// replies are always general comments
