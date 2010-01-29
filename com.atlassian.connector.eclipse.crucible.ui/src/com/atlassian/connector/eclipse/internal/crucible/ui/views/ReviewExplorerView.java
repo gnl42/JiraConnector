@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
@@ -34,6 +35,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
+import org.eclipse.jdt.internal.ui.util.SelectionUtil;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -41,11 +44,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -57,11 +62,23 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.OpenAndLinkWithEditorHelper;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,6 +88,10 @@ import java.util.List;
  * @author Pawel Niewiadomski
  */
 public class ReviewExplorerView extends ViewPart implements IReviewActivationListener {
+
+	private static final String TAG_LINK_EDITOR = "linkWithEditor"; //$NON-NLS-1$
+
+	private static final String TAG_MEMENTO = "memento"; //$NON-NLS-1$
 
 	private OpenVirtualFileAction openOldAction;
 
@@ -112,12 +133,61 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private Action showUnreadOnlyAction;
 
+	private final IPartListener2 linkWithEditorListener = new IPartListener2() {
+		public void partVisible(IWorkbenchPartReference partRef) {
+		}
+
+		public void partBroughtToTop(IWorkbenchPartReference partRef) {
+		}
+
+		public void partClosed(IWorkbenchPartReference partRef) {
+		}
+
+		public void partDeactivated(IWorkbenchPartReference partRef) {
+		}
+
+		public void partHidden(IWorkbenchPartReference partRef) {
+		}
+
+		public void partOpened(IWorkbenchPartReference partRef) {
+		}
+
+		public void partInputChanged(IWorkbenchPartReference partRef) {
+			if (partRef instanceof IEditorReference) {
+				editorActivated(((IEditorReference) partRef).getEditor(true));
+			}
+		}
+
+		public void partActivated(IWorkbenchPartReference partRef) {
+			if (partRef instanceof IEditorReference) {
+				editorActivated(((IEditorReference) partRef).getEditor(true));
+			}
+		}
+	};
+
+	private boolean linkingEnabled;
+
+	private final IDialogSettings dialogSettings;
+
+	private IMemento memento;
+
+	private OpenAndLinkWithEditorHelper openAndLinkWithEditorHelper;
+
+	private Action linkWithEditorAction;
+
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
 
 	protected static final int COMMENT_PREVIEW_LENGTH = 50;
 
 	private static final int MAX_EXPANDED_BY_DEFAULT_ELEMENTS = 100;
+
+	public ReviewExplorerView() {
+		// exception: initialize from preference
+		dialogSettings = CrucibleUiPlugin.getDefault().getDialogSettingsSection(getClass().getName());
+
+		linkingEnabled = dialogSettings.getBoolean(TAG_LINK_EDITOR);
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -213,6 +283,35 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		});
 
+		openAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(viewer) {
+			@SuppressWarnings("restriction")
+			protected void activate(ISelection selection) {
+				try {
+					final Object selectedElement = SelectionUtil.getSingleElement(selection);
+					if (EditorUtility.isOpenInEditor(selectedElement) != null) {
+						EditorUtility.openInEditor(selectedElement, true);
+					}
+				} catch (PartInitException ex) {
+					// ignore if no editor input can be found
+				}
+			}
+
+			protected void linkToEditor(ISelection selection) {
+				ReviewExplorerView.this.linkToEditor(selection);
+			}
+
+			protected void open(ISelection selection, boolean activate) {
+				if (compareAction.isEnabled()) {
+					compareAction.run();
+				} else if (openNewAction.isEnabled()) {
+					openNewAction.run();
+				} else if (openOldAction.isEnabled()) {
+					openOldAction.run();
+				}
+			}
+
+		};
+
 		createActions();
 		createToolbar();
 		createMenu();
@@ -220,6 +319,11 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		getSite().setSelectionProvider(viewer);
 		setReview(initializeWith);
+	}
+
+	protected void editorActivated(IEditorPart editor) {
+		// ignore
+
 	}
 
 	private void createMenu() {
@@ -270,8 +374,23 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	@Override
-	public void init(IViewSite site) throws PartInitException {
-		super.init(site);
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		super.init(site, memento);
+		if (memento == null) {
+			String persistedMemento = dialogSettings.get(TAG_MEMENTO);
+			if (persistedMemento != null) {
+				try {
+					memento = XMLMemento.createReadRoot(new StringReader(persistedMemento));
+				} catch (WorkbenchException e) {
+					// don't do anything. Simply don't restore the settings
+				}
+			}
+		}
+
+		this.memento = memento;
+		if (this.memento != null) {
+			restoreLinkingEnabled(memento);
+		}
 
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		if (mgr.isReviewActive()) {
@@ -289,6 +408,19 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		}
 
 		mgr.removeReviewActivationListener(this);
+
+		XMLMemento memento = XMLMemento.createWriteRoot("reviewExplorer"); //$NON-NLS-1$
+		saveState(memento);
+		StringWriter writer = new StringWriter();
+		try {
+			memento.save(writer);
+			dialogSettings.put(TAG_MEMENTO, writer.getBuffer().toString());
+		} catch (IOException e) {
+			// don't do anything. Simply don't store the settings
+		}
+
+		getSite().getPage().removePartListener(linkWithEditorListener); // always remove even if we didn't register
+
 		super.dispose();
 	}
 
@@ -313,6 +445,18 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					viewer.removeFilter(filter);
 				}
 			};
+		};
+
+		linkWithEditorAction = new Action("Link With Editor and Comment View", IAction.AS_CHECK_BOX) {
+			{
+				setImageDescriptor(AtlassianImages.IMG_LINK_WITH_EDITOR);
+				setChecked(isLinkingEnabled());
+			}
+
+			public void run() {
+				setLinkingEnabled(isChecked());
+			};
+
 		};
 
 		addFileCommentAction = new AddFileCommentAction("Add File Comment", "Add File Comment");
@@ -385,6 +529,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		mgr.add(expandAll);
 		mgr.add(collapseAll);
+		mgr.add(linkWithEditorAction);
+		mgr.add(new Separator());
 		mgr.add(showUnreadOnlyAction);
 		mgr.add(new Separator());
 		mgr.add(prevCommentAction);
@@ -477,4 +623,50 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	public void reviewUpdated(ITask task, Review aReview) {
 		reviewActivated(task, aReview);
 	}
+
+	public void setLinkingEnabled(boolean enabled) {
+		linkingEnabled = enabled;
+		saveDialogSettings();
+
+		IWorkbenchPage page = getSite().getPage();
+		if (enabled) {
+			page.addPartListener(linkWithEditorListener);
+
+			IEditorPart editor = page.getActiveEditor();
+			if (editor != null) {
+				editorActivated(editor);
+			}
+		} else {
+			page.removePartListener(linkWithEditorListener);
+		}
+		//fOpenAndLinkWithEditorHelper.setLinkWithEditor(enabled);
+	}
+
+	private void saveDialogSettings() {
+		dialogSettings.put(TAG_LINK_EDITOR, linkingEnabled);
+	}
+
+	private void restoreLinkingEnabled(IMemento memento) {
+		Integer val = memento.getInteger(TAG_LINK_EDITOR);
+		linkingEnabled = val != null && val.intValue() != 0;
+	}
+
+	private void linkToEditor(ISelection selection) {
+		Object obj = SelectionUtil.getSingleElement(selection);
+		if (obj != null) {
+			IEditorPart part = EditorUtility.isOpenInEditor(obj);
+			if (part != null) {
+				IWorkbenchPage page = getSite().getPage();
+				page.bringToTop(part);
+				/*if (obj instanceof IJavaElement) {
+					EditorUtility.revealInEditor(part, (IJavaElement) obj);
+				}*/
+			}
+		}
+	}
+
+	public boolean isLinkingEnabled() {
+		return linkingEnabled;
+	}
+
 }

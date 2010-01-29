@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeView
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -211,4 +212,12 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_RESOURCE_TREE_VIEW_MODE, mode.ordinal());
 	}
 
+	public IDialogSettings getDialogSettingsSection(String name) {
+		IDialogSettings dialogSettings = getDialogSettings();
+		IDialogSettings section = dialogSettings.getSection(name);
+		if (section == null) {
+			section = dialogSettings.addNewSection(name);
+		}
+		return section;
+	}
 }
