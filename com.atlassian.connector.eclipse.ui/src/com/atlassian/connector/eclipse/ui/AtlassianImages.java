@@ -33,9 +33,7 @@ public final class AtlassianImages {
 
 	private static final String T_OVR = "ovr16"; //$NON-NLS-1$
 
-//	private static final String TOOL = "tool16";
-//
-//	public static final ImageDescriptor DELETE = create(TOOL, "delete.gif");
+	private static final String T_ECL = "elcl16";
 
 	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
 
@@ -46,6 +44,8 @@ public final class AtlassianImages {
 	public static final ImageDescriptor IMG_COMPRESSED_FOLDER_MODE = create(T_OBJ, "compressedLayout.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor IMG_FILE_CHANGED = create(T_OVR, "fileChanged_ov.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor IMG_LINK_WITH_EDITOR = create(T_ECL, "synced.gif"); //$NON-NLS-1$
 
 	private AtlassianImages() {
 	}
