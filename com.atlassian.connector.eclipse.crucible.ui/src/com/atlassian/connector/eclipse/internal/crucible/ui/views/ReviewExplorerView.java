@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
@@ -26,6 +27,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.OpenAndLinkWithEditorHelper;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
@@ -36,6 +38,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.jdt.internal.ui.util.SelectionUtil;
 import org.eclipse.jface.action.Action;
@@ -46,10 +51,12 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -60,10 +67,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -71,6 +80,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 
 import java.io.IOException;
@@ -278,6 +288,20 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					openNewAction.run();
 				} else if (openOldAction.isEnabled()) {
 					openOldAction.run();
+				} else {
+					if (selection instanceof IStructuredSelection) {
+						final IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
+						if (structuredSelection.size() != 1) {
+							return;
+						}
+						final Object element = ((IStructuredSelection) selection).getFirstElement();
+						if (viewer.getExpandedState(element)) {
+							viewer.collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+						} else {
+							viewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
+
+						}
+					}
 				}
 			}
 
@@ -293,8 +317,108 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	protected void editorActivated(IEditorPart editor) {
-		// ignore
+		IEditorInput editorInput = editor.getEditorInput();
+		if (editorInput == null) {
+			return;
+		}
+		Object input = getInputFromEditor(editorInput);
+		if (input == null) {
+			return;
+		}
+		if (!inputIsSelected(editorInput)) {
+			showInput(input);
+		} else {
+			viewer.getTree().showSelection();
+		}
+	}
 
+	private boolean inputIsSelected(IEditorInput input) {
+		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		if (selection.size() != 1) {
+			return false;
+		}
+
+		IEditorInput selectionAsInput = null;
+		if (input instanceof IFile) {
+			selectionAsInput = new FileEditorInput((IFile) input);
+		}
+
+		return input.equals(selectionAsInput);
+	}
+
+	boolean showInput(Object input) {
+		Object element = null;
+
+		/*
+		if (input instanceof IFile && isOnClassPath((IFile) input)) {
+			element = JavaCore.create((IFile) input);
+		}*/
+
+		if (element == null) {
+			element = input;
+		}
+
+		if (element != null) {
+			ISelection newSelection = new StructuredSelection(element);
+			if (viewer.getSelection().equals(newSelection)) {
+				viewer.reveal(element);
+			} else {
+				viewer.setSelection(newSelection, true);
+
+				while (element != null && viewer.getSelection().isEmpty()) {
+					// Try to select parent in case element is filtered
+					element = getParent(element);
+					if (element != null) {
+						newSelection = new StructuredSelection(element);
+						viewer.setSelection(newSelection, true);
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the element's parent.
+	 * 
+	 * @param element
+	 *            the element
+	 * 
+	 * @return the parent or <code>null</code> if there's no parent
+	 */
+	private Object getParent(Object element) {
+		if (element instanceof IResource) {
+			return ((IResource) element).getParent();
+		}
+		return null;
+	}
+
+	private Object getInputFromEditor(IEditorInput editorInput) {
+		Object input = null;
+		/*Object input = JavaUI.getEditorInputJavaElement(editorInput);
+		if (input instanceof ICompilationUnit) {
+			ICompilationUnit cu = (ICompilationUnit) input;
+			if (!cu.getJavaProject().isOnClasspath(cu)) { // test needed for Java files in non-source folders (bug 207839)
+				input = cu.getResource();
+			}
+		}*/
+		if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
+			input = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
+		} else if (editorInput instanceof CruciblePreCommitFileInput) {
+			input = ((CruciblePreCommitFileInput) editorInput).getCrucibleFile().getCrucibleFileInfo();
+		}
+		if (input == null) {
+			input = editorInput.getAdapter(IFile.class);
+		}
+		if (input == null && editorInput instanceof IStorageEditorInput) {
+			try {
+				input = ((IStorageEditorInput) editorInput).getStorage();
+			} catch (CoreException e) {
+				// ignore
+			}
+		}
+		return input;
 	}
 
 	private void createMenu() {
