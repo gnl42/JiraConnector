@@ -216,12 +216,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				if (a instanceof Comment && b instanceof Comment) {
 					return ((Comment) a).getPermId().equals(((Comment) b).getPermId());
 				}
-				if (a instanceof ReviewTreeNode && b instanceof ReviewTreeNode) {
-					ReviewTreeNode a1 = (ReviewTreeNode) a;
-					ReviewTreeNode b1 = (ReviewTreeNode) b;
-					if (a1.getCrucibleFileInfo() != null && b1.getCrucibleFileInfo() != null) {
-						return a1.getCrucibleFileInfo().getPermId().equals(b1.getCrucibleFileInfo().getPermId());
-					}
+				if (a instanceof CrucibleFileInfo && b instanceof CrucibleFileInfo) {
+					return ((CrucibleFileInfo) a).getPermId().equals(((CrucibleFileInfo) b).getPermId());
 				}
 				return a.equals(b);
 			}
@@ -427,13 +423,17 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
-		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments", -1) {
+		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode("General Comments", null) {
+			{
+				setCategory(-1);
+			}
+
 			@Override
 			public List<? extends Object> getChildren() {
 				return newReview.getGeneralComments();
 			}
-		}, new ReviewTreeNode(null, "Files") {
-			public java.util.List<? extends Object> getChildren() {
+		}, new ReviewTreeNode("Files", null) {
+			public List<? extends Object> getChildren() {
 				return Arrays.asList(compactReviewFiles(newReview));
 			};
 		} };
@@ -697,10 +697,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public static ReviewTreeNode[] compactReviewFiles(Review review) {
 		ReviewTreeNode root = new ReviewTreeNode(null, null);
-		for (CrucibleFileInfo cfi : review.getFiles()) {
-			String path = cfi.getFileDescriptor().getUrl();
-			final String[] pathTokens = path.split("/|\\\\");
-			root.add(pathTokens, cfi);
+		for (CrucibleFileInfo fileInfo : review.getFiles()) {
+			root.addChild(ReviewTreeNode.convert(fileInfo));
 		}
 		root.compact();
 		return (root.getPathToken() != null) ? new ReviewTreeNode[] { root } : root.getChildren().toArray(
