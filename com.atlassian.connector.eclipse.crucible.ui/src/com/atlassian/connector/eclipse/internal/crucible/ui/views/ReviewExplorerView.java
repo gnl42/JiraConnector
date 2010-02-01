@@ -37,6 +37,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -345,10 +346,15 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	boolean showInput(Object input) {
 		Object element = null;
 
-		/*
-		if (input instanceof IFile && isOnClassPath((IFile) input)) {
-			element = JavaCore.create((IFile) input);
-		}*/
+		if (input instanceof IFile) {
+			final String fileName = StringUtil.removeLeadingAndTrailingSlashes(((IFile) input).getFullPath().toString());
+			for (CrucibleFileInfo fileInfo : review.getFiles()) {
+				if (StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor().getUrl()).equals(fileName)) {
+					element = fileInfo;
+					break;
+				}
+			}
+		}
 
 		if (element == null) {
 			element = input;
