@@ -133,7 +133,6 @@
 		<antcall target="init-3.4"/>
 
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
-		<fail message="Required property build.publish.password is not set" unless="build.publish.password"/>
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
 		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
 		
