@@ -46,10 +46,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -220,32 +217,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 		});
 		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				if (compareAction.isEnabled()) {
-					compareAction.run();
-				} else if (openNewAction.isEnabled()) {
-					openNewAction.run();
-				} else if (openOldAction.isEnabled()) {
-					openOldAction.run();
-				} else {
-					if (event.getSelection() instanceof IStructuredSelection) {
-						final IStructuredSelection structuredSelection = ((IStructuredSelection) event.getSelection());
-						if (structuredSelection.size() != 1) {
-							return;
-						}
-						final Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
-						if (viewer.getExpandedState(element)) {
-							viewer.collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
-						} else {
-							viewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
-
-						}
-					}
-				}
-			}
-		});
-
 		viewer.setContentProvider(new ReviewContentProvider());
 		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
 				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
