@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -77,10 +76,15 @@ public class ReviewPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(ITasksUiConstants.ID_VIEW_REPOSITORIES);
 
 		layout.addActionSet("org.eclipse.debug.ui.launchActionSet");
-		layout.addActionSet(JavaUI.ID_ACTION_SET);
-		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
+
+		try {
+			Class.forName("org.eclipse.jdt.ui.JavaUI");
+			layout.addActionSet("org.eclipse.jdt.ui.JavaActionSet");
+			layout.addActionSet("org.eclipse.jdt.ui.JavaElementCreationActionSet");
+		} catch (ClassNotFoundException e) {
+			// ignore
+		}
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 
 	}
-
 }

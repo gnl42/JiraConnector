@@ -28,8 +28,10 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
+import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.OpenAndLinkWithEditorHelper;
+import com.atlassian.connector.eclipse.ui.util.SelectionUtil;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
@@ -42,8 +44,6 @@ import com.atlassian.theplugin.commons.util.StringUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
-import org.eclipse.jdt.internal.ui.util.SelectionUtil;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -262,15 +262,12 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		});
 
 		openAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(viewer) {
-			@SuppressWarnings("restriction")
 			protected void activate(ISelection selection) {
-				try {
-					final Object selectedElement = SelectionUtil.getSingleElement(selection);
-					if (EditorUtility.isOpenInEditor(selectedElement) != null) {
-						EditorUtility.openInEditor(selectedElement, true);
-					}
-				} catch (PartInitException ex) {
-					// ignore if no editor input can be found
+				final Object selectedElement = SelectionUtil.getSingleElement(selection);
+				IEditorPart part = EditorUtil.isOpenInEditor(selectedElement);
+				IWorkbenchPage page = EditorUtil.getActivePage();
+				if (page != null && part != null) {
+					page.activate(part);
 				}
 			}
 
@@ -738,7 +735,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		} else {
 			page.removePartListener(linkWithEditorListener);
 		}
-		//fOpenAndLinkWithEditorHelper.setLinkWithEditor(enabled);
+		openAndLinkWithEditorHelper.setLinkWithEditor(enabled);
 	}
 
 	private void saveDialogSettings() {
@@ -753,7 +750,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private void linkToEditor(ISelection selection) {
 		Object obj = SelectionUtil.getSingleElement(selection);
 		if (obj != null) {
-			IEditorPart part = EditorUtility.isOpenInEditor(obj);
+			IEditorPart part = EditorUtil.isOpenInEditor(obj);
 			if (part != null) {
 				IWorkbenchPage page = getSite().getPage();
 				page.bringToTop(part);
