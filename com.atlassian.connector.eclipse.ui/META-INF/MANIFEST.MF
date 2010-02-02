@@ -49,4 +49,5 @@ Export-Package: com.atlassian.connector.eclipse.ui;
    com.atlassian.connector.eclipse.crucible.tests,
    com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.directclickthrough.ui",
+ com.atlassian.connector.eclipse.ui.util,
  com.atlassian.connector.eclipse.ui.viewers
