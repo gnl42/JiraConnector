@@ -193,7 +193,6 @@ public class CrucibleUiUtilTest extends TestCase {
 		CrucibleFile file4 = new CrucibleFile(new CrucibleFileInfo(new VersionedVirtualFile(null, null), null,
 				new PermId("4")), false);
 		CrucibleFile file5 = new CrucibleFile(new CrucibleFileInfo(null, null, new PermId("5")), false);
-		CrucibleFile file6 = new CrucibleFile(null, false);
 
 		Set<CrucibleFileInfo> setA = new HashSet<CrucibleFileInfo>();
 		setA.add(file1.getCrucibleFileInfo());
@@ -218,7 +217,6 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file4));
 		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file5));
-		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file6));
 	}
 
 	public void testGetCachedUsersReview() {
