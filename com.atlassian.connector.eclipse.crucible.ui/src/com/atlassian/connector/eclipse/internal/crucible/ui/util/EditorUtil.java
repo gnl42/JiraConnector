@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
+import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
@@ -21,7 +21,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -38,7 +37,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import java.util.Map;
 
 public final class EditorUtil {
@@ -65,7 +63,7 @@ public final class EditorUtil {
 						if (inputElement instanceof CrucibleFileInfo) {
 							fileInfo = (CrucibleFileInfo) inputElement;
 						} else if (inputElement instanceof Comment) {
-							VersionedComment parent = CrucibleUtil.getParentVersionedComment((Comment) inputElement);
+							VersionedComment parent = ReviewModelUtil.getParentVersionedComment((Comment) inputElement);
 							if (parent != null) {
 								fileInfo = parent.getCrucibleFileInfo();
 							}
@@ -92,7 +90,8 @@ public final class EditorUtil {
 									.toString());
 							if (location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getOldFileDescriptor()
 									.getUrl()))
-									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor()
+									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo
+											.getFileDescriptor()
 											.getUrl()))) {
 								return ref.getEditor(true);
 							}

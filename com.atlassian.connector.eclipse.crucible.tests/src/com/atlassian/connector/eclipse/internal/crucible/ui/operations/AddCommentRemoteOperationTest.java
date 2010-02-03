@@ -149,7 +149,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		review.setPermId(permId);
 		MockCrucibleClient client = getMockClient(serverCfg);
 
-		crucibleSessionMock.addGeneralCommentReply(review, EasyMock.isA(Comment.class));
+		crucibleSessionMock.addReply(review, EasyMock.isA(Comment.class));
 		GeneralComment parentComment = new GeneralComment(review, null);
 		parentComment.setPermId(new PermId("2"));
 		parentComment.setAuthor(user);

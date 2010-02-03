@@ -27,11 +27,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-
 import java.util.HashMap;
 
 /**
@@ -100,7 +98,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
 
-			return server.addGeneralCommentReply(serverCfg, newComment);
+			return server.addReply(serverCfg, newComment);
 		} else if (reviewItem != null) {
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
 			VersionedComment newComment = createNewVersionedComment(reviewItem.getCrucibleFileInfo());
@@ -109,7 +107,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.getCustomFields().putAll(customFields);
 
 			if (parentComment != null && newComment.isReply()) {
-				return server.addVersionedCommentReply(serverCfg, review, parentComment.getPermId(), newComment);
+				return server.addReply(serverCfg, newComment);
 			} else {
 				return server.addVersionedComment(serverCfg, review, riId, newComment);
 			}
