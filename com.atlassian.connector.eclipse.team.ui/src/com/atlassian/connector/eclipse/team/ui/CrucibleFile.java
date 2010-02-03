@@ -39,7 +39,7 @@ public class CrucibleFile {
 		return crucibleFileInfo.getOldFileDescriptor().equals(virtualFile);
 	}
 
-	public VersionedVirtualFile getVirtualFile() {
+	public VersionedVirtualFile getSelectedFile() {
 		return virtualFile;
 	}
 
