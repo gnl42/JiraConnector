@@ -34,8 +34,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -43,15 +41,12 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -249,32 +244,6 @@ public final class TeamUiUtils {
 		return null;
 	}
 
-	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {
-		IDocumentProvider documentProvider = textEditor.getDocumentProvider();
-		IEditorInput editorInput = textEditor.getEditorInput();
-		if (documentProvider != null) {
-			IDocument document = documentProvider.getDocument(editorInput);
-			if (document != null) {
-				try {
-					final int offset = document.getLineOffset(startLine);
-					final int length = document.getLineOffset(endLine) - offset;
-					if (Display.getCurrent() != null) {
-						internalSelectAndReveal(textEditor, offset, length);
-					} else {
-						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-							public void run() {
-								internalSelectAndReveal(textEditor, offset, length);
-							}
-						});
-					}
-
-				} catch (BadLocationException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, e.getMessage(), e));
-				}
-			}
-		}
-	}
-
 	public static void openCompareEditorForInput(final CompareEditorInput compareEditorInput) {
 		if (Display.getCurrent() != null) {
 			internalOpenCompareEditorForInput(compareEditorInput);
@@ -291,10 +260,6 @@ public final class TeamUiUtils {
 		IWorkbench workbench = AtlassianTeamUiPlugin.getDefault().getWorkbench();
 		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		CompareUI.openCompareEditorOnPage(compareEditorInput, page);
-	}
-
-	private static void internalSelectAndReveal(ITextEditor textEditor, final int offset, final int length) {
-		textEditor.selectAndReveal(offset, length);
 	}
 
 	public static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,

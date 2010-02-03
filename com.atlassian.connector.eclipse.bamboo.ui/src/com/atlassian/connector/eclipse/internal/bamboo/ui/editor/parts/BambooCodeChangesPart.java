@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
 import com.atlassian.theplugin.commons.BambooFileInfo;
-import com.atlassian.theplugin.commons.VersionedFileInfo;
 import com.atlassian.theplugin.commons.bamboo.BambooChangeSet;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
@@ -126,7 +125,7 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 					return "[" + ((BambooChangeSet) element).getAuthor() + "]   "
 							+ BambooUiUtil.getCommentSnippet(((BambooChangeSet) element).getComment());
 				} else if (element instanceof BambooFileInfo) {
-					return ((VersionedFileInfo) element).getFileDescriptor().getAbsoluteUrl();
+					return ((BambooFileInfo) element).getFileDescriptor().getAbsoluteUrl();
 				} else {
 					return super.getText(element);
 				}
