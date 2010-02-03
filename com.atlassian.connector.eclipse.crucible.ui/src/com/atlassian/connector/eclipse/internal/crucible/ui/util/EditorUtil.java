@@ -13,9 +13,16 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -24,6 +31,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public final class EditorUtil {
 	private EditorUtil() {
@@ -78,6 +87,36 @@ public final class EditorUtil {
 		}
 
 		return null;
+	}
+
+	private static void internalSelectAndReveal(ITextEditor textEditor, final int offset, final int length) {
+		textEditor.selectAndReveal(offset, length);
+	}
+
+	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {
+		IDocumentProvider documentProvider = textEditor.getDocumentProvider();
+		IEditorInput editorInput = textEditor.getEditorInput();
+		if (documentProvider != null) {
+			IDocument document = documentProvider.getDocument(editorInput);
+			if (document != null) {
+				try {
+					final int offset = document.getLineOffset(startLine);
+					final int length = document.getLineOffset(endLine) - offset;
+					if (Display.getCurrent() != null) {
+						internalSelectAndReveal(textEditor, offset, length);
+					} else {
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								internalSelectAndReveal(textEditor, offset, length);
+							}
+						});
+					}
+
+				} catch (BadLocationException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, e.getMessage(), e));
+				}
+			}
+		}
 	}
 
 	public static IWorkbenchPage getActivePage() {
