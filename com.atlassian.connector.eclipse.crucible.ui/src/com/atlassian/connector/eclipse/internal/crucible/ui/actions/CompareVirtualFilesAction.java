@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CompareVirtualFilesJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.CommentView;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
@@ -22,7 +22,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -61,7 +60,7 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 				fileInfo = (CrucibleFileInfo) selection.getFirstElement();
 				comment = null;
 			} else if (selection.getFirstElement() instanceof Comment) {
-				comment = CrucibleUtil.getParentVersionedComment((Comment) selection.getFirstElement());
+				comment = ReviewModelUtil.getParentVersionedComment((Comment) selection.getFirstElement());
 				fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
 			}
 
@@ -70,9 +69,9 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 			}
 			review = ReviewTreeUtils.getReview(fileInfo);
 			// FIXME wseliga restore support for comment
-//				if (paths[0].getLastSegment() instanceof VersionedComment) {
-//					comment = (VersionedComment) paths[0].getLastSegment();
-//				}
+			// if (paths[0].getLastSegment() instanceof VersionedComment) {
+			// comment = (VersionedComment) paths[0].getLastSegment();
+			// }
 
 			final VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 			final VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();
