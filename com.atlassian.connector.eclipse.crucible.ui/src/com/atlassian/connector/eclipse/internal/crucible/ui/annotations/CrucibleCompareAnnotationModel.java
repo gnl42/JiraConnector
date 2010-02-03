@@ -165,7 +165,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						//log error since we assume the initial text contains all slaveTexts.
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Could not find text offset for annotation highlighting"
-								+ " - current text not contained in initial text."));
+										+ " - current text not contained in initial text."));
 					}
 				}
 				return 0;
@@ -500,8 +500,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		CrucibleFile leftOldFile = leftAnnotationModel.getCrucibleFile();
 		CrucibleFile rightOldFile = rightAnnotationModel.getCrucibleFile();
 		CrucibleFileInfo newLeftFileInfo = newReview.getFileByPermId(leftOldFile.getCrucibleFileInfo().getPermId());
-		CrucibleFileInfo newRightFileInfo = newReview.getFileByPermId(rightOldFile.getCrucibleFileInfo()
-				.getPermId());
+		CrucibleFileInfo newRightFileInfo = newReview.getFileByPermId(rightOldFile.getCrucibleFileInfo().getPermId());
 		if (newLeftFileInfo != null && newRightFileInfo != null) {
 			leftAnnotationModel.updateCrucibleFile(new CrucibleFile(newLeftFileInfo, leftOldFile.isOldFile()),
 					newReview);
@@ -513,12 +512,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	public void focusOnComment() {
 		if (commentToFocus != null) {
 			CrucibleFile leftFile = leftAnnotationModel.getCrucibleFile();
-			VersionedVirtualFile virtualLeft = leftFile.isOldFile() ? leftFile.getCrucibleFileInfo()
-					.getOldFileDescriptor() : leftFile.getCrucibleFileInfo().getFileDescriptor();
+			VersionedVirtualFile virtualLeft = leftFile.getSelectedFile();
 
 			CrucibleFile rightFile = rightAnnotationModel.getCrucibleFile();
-			VersionedVirtualFile virtualRight = rightFile.isOldFile() ? rightFile.getCrucibleFileInfo()
-					.getOldFileDescriptor() : rightFile.getCrucibleFileInfo().getFileDescriptor();
+			VersionedVirtualFile virtualRight = rightFile.getSelectedFile();
 
 			Map<String, IntRanges> lineRanges = commentToFocus.getLineRanges();
 			if (lineRanges != null) {

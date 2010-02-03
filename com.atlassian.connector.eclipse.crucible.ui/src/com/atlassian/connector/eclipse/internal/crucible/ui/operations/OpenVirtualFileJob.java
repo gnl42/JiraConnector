@@ -193,8 +193,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				final SubMonitor submonitor = SubMonitor.convert(monitor, "Download file from Crucible", 2);
-				final VersionedVirtualFile virtualFile = crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo()
-						.getOldFileDescriptor() : crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+				final VersionedVirtualFile virtualFile = crucibleFile.getSelectedFile();
 
 				if (virtualFile.getContentUrl() == null) {
 					contentUrlMissingPopup();

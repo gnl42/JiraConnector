@@ -23,8 +23,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEd
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -205,9 +205,9 @@ public final class CrucibleUiUtil {
 			if (fileInfo != null
 					&& fileInfo.getFileDescriptor() != null
 					&& fileInfo.getFileDescriptor().getUrl().equals(
-					crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
+							crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
 					&& fileInfo.getFileDescriptor().getRevision().equals(
-					crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+							crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
 				return true;
 			}
 		}
@@ -348,7 +348,7 @@ public final class CrucibleUiUtil {
 
 		IntRanges lineRange = lineRanges.get(file.getRevision());
 		if (lineRange != null) {
-			TeamUiUtils.selectAndReveal(textEditor, lineRange.getTotalMin(), lineRange.getTotalMax());
+			EditorUtil.selectAndReveal(textEditor, lineRange.getTotalMin(), lineRange.getTotalMax());
 		}
 	}
 
@@ -363,9 +363,7 @@ public final class CrucibleUiUtil {
 				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 			}
 			if (versionedComment != null) {
-				selectAndRevealComment(textEditor, versionedComment,
-						crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo().getOldFileDescriptor()
-						: crucibleFile.getCrucibleFileInfo().getFileDescriptor());
+				selectAndRevealComment(textEditor, versionedComment, crucibleFile.getSelectedFile());
 			}
 		}
 

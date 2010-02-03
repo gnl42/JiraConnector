@@ -148,9 +148,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 			final Map<String, IntRanges> lineRanges = comment.getLineRanges();
 			if (lineRanges != null && !lineRanges.isEmpty()) {
 
-				final String displayedRev = !crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo()
-						.getFileDescriptor()
-						.getRevision() : crucibleFile.getCrucibleFileInfo().getOldFileDescriptor().getRevision();
+				final String displayedRev = crucibleFile.getSelectedFile().getRevision();
 				final IntRanges intRanges = lineRanges.get(displayedRev);
 				if (intRanges != null) {
 					startLine = intRanges.getTotalMin();

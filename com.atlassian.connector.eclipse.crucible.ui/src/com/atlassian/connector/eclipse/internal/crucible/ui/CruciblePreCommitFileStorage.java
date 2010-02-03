@@ -39,8 +39,7 @@ public class CruciblePreCommitFileStorage implements IStorage {
 	public CruciblePreCommitFileStorage(CrucibleFile crucibleFile, byte[] content, File localCopy) {
 		this.crucibleFile = crucibleFile;
 		this.localCopy = localCopy;
-		this.virtualFile = crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo().getOldFileDescriptor()
-				: crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+		this.virtualFile = crucibleFile.getSelectedFile();
 		this.content = content;
 	}
 
@@ -52,6 +51,7 @@ public class CruciblePreCommitFileStorage implements IStorage {
 		return new Path(virtualFile.getUrl());
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
