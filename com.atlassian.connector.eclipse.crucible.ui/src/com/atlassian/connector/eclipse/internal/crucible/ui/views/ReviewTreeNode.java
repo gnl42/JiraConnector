@@ -17,7 +17,6 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -77,7 +76,7 @@ public class ReviewTreeNode {
 	@NotNull
 	public static ReviewTreeNode convert(@NotNull CrucibleFileInfo fileInfo) {
 		final String path = fileInfo.getFileDescriptor().getUrl();
-		final List<String> pathTokens = Arrays.asList(path.split("/|\\\\"));
+		final List<String> pathTokens = MiscUtil.buildArrayList(path.split("/|\\\\"));
 
 		for (int i = 0, s = pathTokens.size(); i < s;) {
 			if ("".equals(pathTokens.get(i))) {
