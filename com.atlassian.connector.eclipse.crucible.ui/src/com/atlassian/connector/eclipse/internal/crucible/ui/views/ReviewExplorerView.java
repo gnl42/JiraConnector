@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
@@ -38,6 +39,7 @@ import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
@@ -83,6 +85,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -754,11 +757,25 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			if (part != null) {
 				IWorkbenchPage page = getSite().getPage();
 				page.bringToTop(part);
-				/*if (obj instanceof IJavaElement) {
-					EditorUtility.revealInEditor(part, (IJavaElement) obj);
-				}*/
+
+				if (obj instanceof Comment) {
+					revealComment(part, (Comment) obj);
+				}
 			}
 		}
+	}
+
+	private void revealComment(IEditorPart part, Comment comment) {
+		VersionedComment parent = CrucibleUtil.getParentVersionedComment(comment);
+
+		if (part instanceof ITextEditor) {
+			IEditorInput input = part.getEditorInput();
+			if (input instanceof CruciblePreCommitFileInput) {
+				EditorUtil.selectAndReveal((ITextEditor) part, parent,
+						((CruciblePreCommitFileInput) input).getCrucibleFile().getSelectedFile());
+			}
+		}
+
 	}
 
 	public boolean isLinkingEnabled() {

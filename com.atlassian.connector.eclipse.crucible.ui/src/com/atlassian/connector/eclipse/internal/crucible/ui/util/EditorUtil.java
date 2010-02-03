@@ -11,10 +11,15 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
+import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.runtime.IStatus;
@@ -33,6 +38,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import java.util.Map;
 
 public final class EditorUtil {
 	private EditorUtil() {
@@ -54,29 +61,40 @@ public final class EditorUtil {
 				for (IEditorReference ref : editors) {
 					try {
 						IEditorInput input = ref.getEditorInput();
+						CrucibleFileInfo fileInfo = null;
+						if (inputElement instanceof CrucibleFileInfo) {
+							fileInfo = (CrucibleFileInfo) inputElement;
+						} else if (inputElement instanceof Comment) {
+							VersionedComment parent = CrucibleUtil.getParentVersionedComment((Comment) inputElement);
+							if (parent != null) {
+								fileInfo = parent.getCrucibleFileInfo();
+							}
+						}
+
+						if (fileInfo == null) {
+							return null;
+						}
+
 						if (input instanceof CruciblePreCommitFileInput) {
-							if (inputElement.equals(((CruciblePreCommitFileInput) input).getCrucibleFile()
+							if (fileInfo.equals(((CruciblePreCommitFileInput) input).getCrucibleFile()
 									.getCrucibleFileInfo())) {
 								return ref.getEditor(true);
 							}
 						}
 						if (input instanceof CrucibleFileInfoCompareEditorInput) {
-							if (((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo().equals(inputElement)) {
+							if (fileInfo.equals(((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo())) {
 								return ref.getEditor(true);
 							}
 						}
-						if (inputElement instanceof CrucibleFileInfo) {
-							final CrucibleFileInfo fileInfo = (CrucibleFileInfo) inputElement;
-							if (input instanceof FileEditorInput) {
-								String location = StringUtil.removeLeadingAndTrailingSlashes(((FileEditorInput) input).getFile()
-										.getFullPath()
-										.toString());
-								if (location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getOldFileDescriptor()
-										.getUrl()))
-										|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor()
-												.getUrl()))) {
-									return ref.getEditor(true);
-								}
+						if (input instanceof FileEditorInput) {
+							String location = StringUtil.removeLeadingAndTrailingSlashes(((FileEditorInput) input).getFile()
+									.getFullPath()
+									.toString());
+							if (location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getOldFileDescriptor()
+									.getUrl()))
+									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor()
+											.getUrl()))) {
+								return ref.getEditor(true);
 							}
 						}
 					} catch (PartInitException e) {
@@ -116,6 +134,18 @@ public final class EditorUtil {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
+		}
+	}
+
+	public static void selectAndReveal(ITextEditor textEditor, VersionedComment comment, VersionedVirtualFile file) {
+		Map<String, IntRanges> lineRanges = comment.getLineRanges();
+		if (lineRanges == null) {
+			return;
+		}
+
+		IntRanges lineRange = lineRanges.get(file.getRevision());
+		if (lineRange != null) {
+			EditorUtil.selectAndReveal(textEditor, lineRange.getTotalMin(), lineRange.getTotalMax());
 		}
 	}
 
