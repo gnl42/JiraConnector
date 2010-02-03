@@ -11,22 +11,24 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 
 /**
  * This is a stucture that represents a crucible file info and whether it is the old or the new file
  * 
  * @author Shawn Minto
+ * @author Pawel Niewiadomski
  */
 public class CrucibleFile {
 
 	private final CrucibleFileInfo crucibleFileInfo;
 
-	private final boolean isOldFile;
+	private final VersionedVirtualFile virtualFile;
 
-	public CrucibleFile(CrucibleFileInfo crucibleFileInfo, boolean isOldFile) {
-		this.crucibleFileInfo = crucibleFileInfo;
-		this.isOldFile = isOldFile;
+	public CrucibleFile(CrucibleFileInfo fileInfo, boolean takeOld) {
+		this.crucibleFileInfo = fileInfo;
+		this.virtualFile = takeOld ? fileInfo.getOldFileDescriptor() : fileInfo.getFileDescriptor();
 	}
 
 	public CrucibleFileInfo getCrucibleFileInfo() {
@@ -34,7 +36,11 @@ public class CrucibleFile {
 	}
 
 	public boolean isOldFile() {
-		return isOldFile;
+		return crucibleFileInfo.getOldFileDescriptor().equals(virtualFile);
+	}
+
+	public VersionedVirtualFile getVirtualFile() {
+		return virtualFile;
 	}
 
 }
