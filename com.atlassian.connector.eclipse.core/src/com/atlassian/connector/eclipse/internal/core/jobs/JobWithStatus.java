@@ -45,7 +45,8 @@ public abstract class JobWithStatus extends Job {
 			runImpl(monitor);
 			return Status.OK_STATUS;
 		} catch (CoreException e) {
-			return e.getStatus();
+			setStatus(e.getStatus());
+			return Status.OK_STATUS;
 		}
 	}
 
