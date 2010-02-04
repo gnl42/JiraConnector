@@ -22,8 +22,6 @@ import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -38,15 +36,11 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,20 +105,6 @@ public final class TeamUiUtils {
 		return true;
 	}
 
-	public static IEditorPart openLocalResource(IResource resource, String revision) throws CoreException {
-		IProject project = resource.getProject();
-
-		if (!(resource instanceof IFile) || project == null) {
-			return null;
-		}
-
-		if (isInSync(resource, revision)) {
-			return TeamUiUtils.openLocalResource(resource);
-		}
-
-		return null;
-	}
-
 	public static IResource findResourceForPath(String repoUrl, String filePath, IProgressMonitor monitor) {
 		IPath path = new Path(filePath);
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
@@ -154,59 +134,6 @@ public final class TeamUiUtils {
 			return location.findMember(path);
 		}
 		return null;
-	}
-
-	/**
-	 * Opens editor for specified resource
-	 * 
-	 * @param resource
-	 *            resource/file to open
-	 * @return editor reference or null if external editor was open
-	 * @throws CoreException
-	 *             thrown in case there was a problem when opening editor
-	 */
-	public static IEditorPart openLocalResource(final IResource resource) throws CoreException {
-		if (Display.getCurrent() != null) {
-			return openLocalResourceInternal(resource);
-		} else {
-			final IEditorPart[] part = new IEditorPart[1];
-			final CoreException[] exception = new CoreException[1];
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				public void run() {
-					try {
-						part[0] = openLocalResourceInternal(resource);
-					} catch (CoreException e) {
-						exception[0] = e;
-					}
-				}
-			});
-
-			if (exception[0] != null) {
-				throw exception[0];
-			}
-			return part[0];
-		}
-	}
-
-	/**
-	 * Opens editor for specified resource
-	 * 
-	 * @param resource
-	 *            resource/file to open
-	 * @return editor reference or null if external editor was open
-	 * @throws CoreException
-	 *             thrown in case there was a problem when opening editor
-	 */
-	private static IEditorPart openLocalResourceInternal(IResource resource) throws CoreException {
-		// the local revision matches the revision we care about and the file is in sync
-		try {
-			return IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
-					(IFile) resource, true);
-		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianTeamUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not open editor for {0}.", resource.getName())));
-		}
 	}
 
 	@Nullable
