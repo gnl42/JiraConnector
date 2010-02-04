@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -72,10 +72,8 @@ public final class EditorUtil {
 						if (fileInfo == null) {
 							return null;
 						}
-
-						if (input instanceof CruciblePreCommitFileInput) {
-							if (fileInfo.equals(((CruciblePreCommitFileInput) input).getCrucibleFile()
-									.getCrucibleFileInfo())) {
+						if (input instanceof ICrucibleFileProvider) {
+							if (fileInfo.equals(((ICrucibleFileProvider) input).getCrucibleFile().getCrucibleFileInfo())) {
 								return ref.getEditor(true);
 							}
 						}

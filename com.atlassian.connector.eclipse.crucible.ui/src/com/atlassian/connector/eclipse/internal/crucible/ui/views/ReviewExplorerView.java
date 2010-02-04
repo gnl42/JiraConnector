@@ -14,8 +14,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
@@ -42,6 +42,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -85,6 +86,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -159,6 +161,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		}
 
 		public void partOpened(IWorkbenchPartReference partRef) {
+			if (partRef instanceof IEditorReference) {
+				editorOpened(((IEditorReference) partRef).getEditor(true));
+			}
 		}
 
 		public void partInputChanged(IWorkbenchPartReference partRef) {
@@ -311,6 +316,16 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		setReview(initializeWith);
 	}
 
+	protected void editorOpened(IEditorPart editor) {
+		/*IEditorInput editorInput = editor.getEditorInput();
+		if (editorInput == null) {
+			return;
+		}
+		if (editor instanceof ITextEditor) {
+			((ITextEditor) editor).getDocumentProvider().
+		}*/
+	}
+
 	protected void editorActivated(IEditorPart editor) {
 		IEditorInput editorInput = editor.getEditorInput();
 		if (editorInput == null) {
@@ -396,15 +411,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private Object getInputFromEditor(IEditorInput editorInput) {
 		Object input = null;
-		/*
-		 * Object input = JavaUI.getEditorInputJavaElement(editorInput); if (input instanceof ICompilationUnit) {
-		 * ICompilationUnit cu = (ICompilationUnit) input; if (!cu.getJavaProject().isOnClasspath(cu)) { // test needed for Java
-		 * files in non-source folders (bug 207839) input = cu.getResource(); } }
-		 */
 		if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 			input = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
-		} else if (editorInput instanceof CruciblePreCommitFileInput) {
-			input = ((CruciblePreCommitFileInput) editorInput).getCrucibleFile().getCrucibleFileInfo();
+		} else if (editorInput instanceof ICrucibleFileProvider) {
+			input = ((ICrucibleFileProvider) editorInput).getCrucibleFile().getCrucibleFileInfo();
 		}
 		if (input == null) {
 			input = editorInput.getAdapter(IFile.class);
@@ -766,9 +776,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		if (part instanceof ITextEditor) {
 			IEditorInput input = part.getEditorInput();
-			if (input instanceof CruciblePreCommitFileInput) {
+			if (input instanceof ICrucibleFileProvider) {
 				EditorUtil.selectAndReveal((ITextEditor) part, parent,
-						((CruciblePreCommitFileInput) input).getCrucibleFile().getSelectedFile());
+						((ICrucibleFileProvider) input).getCrucibleFile().getSelectedFile());
 			}
 		}
 

@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePostCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -38,6 +39,7 @@ import com.atlassian.theplugin.commons.util.UrlUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -143,8 +145,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		final SubMonitor submonitor = SubMonitor.convert(monitor, 2);
 
 		final CrucibleFileInfo fileInfo = crucibleFile.getCrucibleFileInfo();
-		final VersionedVirtualFile virtualFile = crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo()
-				.getOldFileDescriptor() : crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+		final VersionedVirtualFile virtualFile = crucibleFile.getSelectedFile();
 
 		final IResource[] workspaceReviewItem = { null };
 
@@ -158,17 +159,14 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				workspaceReviewItem[0] = TeamUiUtils.findResourceForPath(mapping.getKey(), virtualFile.getUrl(),
 						submonitor.newChild(1));
 				if (workspaceReviewItem[0] != null) {
-					try {
-						IEditorPart editor = TeamUiUtils.openLocalResource(workspaceReviewItem[0],
-								virtualFile.getRevision());
+					if (TeamUiUtils.isInSync(workspaceReviewItem[0], virtualFile.getRevision())) {
+						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem[0]);
 
 						if (editor != null) {
 							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
 									review, crucibleFile, comment);
 							return;
 						}
-					} catch (CoreException e) {
-						StatusHandler.log(e.getStatus());
 					}
 				}
 			} else {
@@ -223,7 +221,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				if (workspaceReviewItem[0] != null) {
 					try {
 						if (FileUtils.contentEquals(localCopy, workspaceReviewItem[0].getRawLocation().toFile())) {
-							IEditorPart editor = TeamUiUtils.openLocalResource(workspaceReviewItem[0]);
+							IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem[0]);
 
 							if (editor != null) {
 								CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
@@ -268,6 +266,28 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		});
 	}
 
+	private IEditorPart openEditor(final CrucibleFile crucibleFile2, final IResource iResource) throws CoreException {
+		final IEditorPart[] part = new IEditorPart[1];
+		final CoreException[] exception = new CoreException[1];
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				try {
+					final String editorId = getEditorId(PlatformUI.getWorkbench(), crucibleFile2.getSelectedFile()
+							.getName());
+					part[0] = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+							new CruciblePostCommitFileInput(crucibleFile2, (IFile) iResource), editorId);
+				} catch (CoreException e) {
+					exception[0] = e;
+				}
+			}
+		});
+
+		if (exception[0] != null) {
+			throw exception[0];
+		}
+		return part[0];
+	}
+
 	private TaskRepository getTaskRepository() {
 		return CrucibleUiUtil.getCrucibleTaskRepository(review);
 	}
@@ -282,5 +302,4 @@ public class OpenVirtualFileJob extends JobWithStatus {
 			}
 		});
 	}
-
 }

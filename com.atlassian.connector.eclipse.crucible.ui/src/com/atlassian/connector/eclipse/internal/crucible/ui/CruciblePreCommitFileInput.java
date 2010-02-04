@@ -25,7 +25,7 @@ import org.eclipse.ui.IStorageEditorInput;
  * 
  * @author Jacek Jaroczynski
  */
-public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEditorInput {
+public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEditorInput, ICrucibleFileProvider {
 	private final CruciblePreCommitFileStorage storage;
 
 	public CruciblePreCommitFileInput(CruciblePreCommitFileStorage storage) {
@@ -56,7 +56,7 @@ public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEdi
 		return storage.getFullPath().toString();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
