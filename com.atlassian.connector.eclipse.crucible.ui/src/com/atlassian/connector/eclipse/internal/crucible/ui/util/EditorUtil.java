@@ -16,11 +16,11 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -55,43 +54,43 @@ public final class EditorUtil {
 	 */
 	public static IEditorPart isOpenInEditor(Object inputElement) {
 		IWorkbenchPage page = getActivePage();
+
+		CrucibleFileInfo fileInfo = null;
+		VersionedComment parentComment = null;
+		if (inputElement instanceof CrucibleFileInfo) {
+			fileInfo = (CrucibleFileInfo) inputElement;
+		} else if (inputElement instanceof Comment) {
+			parentComment = ReviewModelUtil.getParentVersionedComment((Comment) inputElement);
+			if (parentComment != null) {
+				fileInfo = parentComment.getCrucibleFileInfo();
+			}
+		}
+
+		if (fileInfo == null) {
+			return null;
+		}
+
 		if (page != null) {
 			IEditorReference[] editors = page.getEditorReferences();
 			if (editors != null) {
 				for (IEditorReference ref : editors) {
 					try {
 						IEditorInput input = ref.getEditorInput();
-						CrucibleFileInfo fileInfo = null;
-						if (inputElement instanceof CrucibleFileInfo) {
-							fileInfo = (CrucibleFileInfo) inputElement;
-						} else if (inputElement instanceof Comment) {
-							VersionedComment parent = ReviewModelUtil.getParentVersionedComment((Comment) inputElement);
-							if (parent != null) {
-								fileInfo = parent.getCrucibleFileInfo();
-							}
-						}
-
-						if (fileInfo == null) {
-							return null;
-						}
 						if (input instanceof ICrucibleFileProvider) {
-							if (fileInfo.equals(((ICrucibleFileProvider) input).getCrucibleFile().getCrucibleFileInfo())) {
-								return ref.getEditor(true);
+							CrucibleFile crucibleFile = ((ICrucibleFileProvider) input).getCrucibleFile();
+							if (fileInfo.equals(crucibleFile.getCrucibleFileInfo())) {
+								if (parentComment != null) {
+									if (parentComment.getLineRanges().containsKey(
+											crucibleFile.getSelectedFile().getRevision())) {
+										return ref.getEditor(true);
+									}
+								} else {
+									return ref.getEditor(true);
+								}
 							}
 						}
 						if (input instanceof CrucibleFileInfoCompareEditorInput) {
 							if (fileInfo.equals(((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo())) {
-								return ref.getEditor(true);
-							}
-						}
-						if (input instanceof FileEditorInput) {
-							String location = StringUtil.removeLeadingAndTrailingSlashes(((FileEditorInput) input).getFile()
-									.getFullPath()
-									.toString());
-							if (location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getOldFileDescriptor()
-									.getUrl()))
-									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor()
-											.getUrl()))) {
 								return ref.getEditor(true);
 							}
 						}
