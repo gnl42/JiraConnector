@@ -12,9 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.ICrucibleCompareSourceViewer;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
@@ -66,9 +66,8 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
-			if (editorInput != null && editorPart != null) {
-				crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+			if (editorPart != null && editorInput instanceof ICrucibleFileProvider) {
+				crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
 				if (crucibleCompareSourceViewer == null) {
 					getJavaEditorSelection(selection);
 				} else {
@@ -103,11 +102,10 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	private void getJavaEditorSelection(ISelection selection) {
 		IEditorPart editorPart = getActiveEditor();
 		IEditorInput editorInput = getEditorInputFromSelection(selection);
-		if (editorInput != null && editorPart != null) {
+		if (editorPart != null && editorInput instanceof ICrucibleFileProvider) {
 			selectedRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
 			if (selectedRange != null) {
-				crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
 			} else {
 				StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
 						"Editor is not an ITextEditor or there's no text selection available."));

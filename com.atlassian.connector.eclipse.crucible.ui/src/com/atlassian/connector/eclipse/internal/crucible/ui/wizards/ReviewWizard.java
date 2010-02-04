@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
@@ -253,7 +252,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				if (teamConnector == null) {
 					MessageDialog.openInformation(getShell(), CrucibleUiPlugin.PRODUCT_NAME,
 							"Cannot find Atlassian SCM Integration for '" + selectedWorkspaceResources.get(0).getName()
-							+ "'.");
+									+ "'.");
 				} else {
 					boolean missingMapping = false;
 					Collection<String> scmPaths = new ArrayList<String>();
@@ -456,7 +455,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 					for (ResourceEditorBean resourceEditor : versionedCommentsToAdd) {
-						CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCrucibleFileFromResource(
+						CrucibleFile crucibleFile = CrucibleUiUtil.getCrucibleFileFromResource(
 								resourceEditor.getResource(), crucibleReview);
 						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
 								crucibleReview, client, crucibleFile, commentText, monitor);

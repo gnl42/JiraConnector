@@ -12,9 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -46,7 +46,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		//if file and review are already set, dont bother
+		//if file and review are already set, don't bother
 		if (crucibleFile != null && review != null) {
 			return;
 		}
@@ -54,10 +54,9 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
-			if (editorInput != null && editorPart != null) {
+			if (editorPart != null && editorInput instanceof ICrucibleFileProvider) {
 				if (crucibleFile == null) {
-					crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+					crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
 				}
 				if (crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {

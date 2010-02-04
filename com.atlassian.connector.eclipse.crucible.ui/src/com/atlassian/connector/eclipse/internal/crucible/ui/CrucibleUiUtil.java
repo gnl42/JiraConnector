@@ -23,7 +23,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
@@ -33,7 +38,10 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -392,6 +400,60 @@ public final class CrucibleUiUtil {
 		if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
 			currentPage.setErrorMessage("Could not retrieve available projects and users from server.");
 		}
+	}
+
+	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review) {
+		if (review == null || !(resource instanceof IFile)) {
+			return null;
+		}
+
+		IFile file = (IFile) resource;
+
+		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled() && connector.canHandleFile(file)) {
+				CrucibleFile fileInfo;
+				try {
+					fileInfo = connector.getCrucibleFileFromReview(review, file);
+				} catch (UnsupportedTeamProviderException e) {
+					return null;
+				}
+				if (fileInfo != null) {
+					return fileInfo;
+				}
+			}
+		}
+
+		try {
+			CrucibleFile crucibleFile = TeamUiUtils.getDefaultConnector().getCrucibleFileFromReview(review, file);
+			if (crucibleFile != null) {
+				return crucibleFile;
+			}
+		} catch (UnsupportedTeamProviderException e) {
+			// ignore
+		}
+
+		return getCruciblePreCommitFile(file, review);
+	}
+
+	private static CrucibleFile getCruciblePreCommitFile(IFile file, Review review) {
+		String localFileUrl = StringUtil.removeLeadingAndTrailingSlashes(file.getFullPath().toString());
+
+		Set<CrucibleFileInfo> reviewFiles = review.getFiles();
+
+		for (CrucibleFileInfo cruFile : reviewFiles) {
+			String newFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getFileDescriptor().getUrl());
+			String oldFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getOldFileDescriptor().getUrl());
+
+			if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
+				return new CrucibleFile(cruFile, false);
+			} else if (oldFileUrl != null && oldFileUrl.equals(localFileUrl)) {
+				return new CrucibleFile(cruFile, true);
+			}
+		}
+
+		return null;
 	}
 
 }

@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -60,10 +60,14 @@ public final class CrucibleAnnotationModelManager {
 
 	public static boolean attach(ITextEditor editor) {
 		IEditorInput editorInput = editor.getEditorInput();
-		CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-				CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 
-		return attach(editor, crucibleFile, CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+		if (!(editorInput instanceof ICrucibleFileProvider)) {
+			return false;
+		}
+
+		return attach(editor, ((ICrucibleFileProvider) editorInput).getCrucibleFile(), CrucibleUiPlugin.getDefault()
+				.getActiveReviewManager()
+				.getActiveReview());
 	}
 
 	public static boolean attach(ITextEditor editor, CrucibleFile crucibleFile, Review review) {
@@ -260,8 +264,8 @@ public final class CrucibleAnnotationModelManager {
 				CrucibleFileInfo newFileInfo = activeReview.getFileByPermId(crucibleFile.getCrucibleFileInfo()
 						.getPermId());
 				if (newFileInfo != null) {
-					crucibleAnnotationModel.updateCrucibleFile(new CrucibleFile(newFileInfo,
-							crucibleFile.isOldFile()), activeReview);
+					crucibleAnnotationModel.updateCrucibleFile(new CrucibleFile(newFileInfo, crucibleFile.isOldFile()),
+							activeReview);
 				}
 			}
 		} else {

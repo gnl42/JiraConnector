@@ -91,4 +91,34 @@ public class CruciblePostCommitFileInput implements IFileEditorInput, IPathEdito
 	public CrucibleFile getCrucibleFile() {
 		return crucibleFile;
 	}
+
+	/* (non-Javadoc)
+	 * Method declared on Object.
+	 */
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + crucibleFile.hashCode();
+		result = prime * result + fileEditorInput.hashCode();
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * Method declared on Object.
+	 *
+	 * The <code>FileEditorInput</code> implementation of this <code>Object</code>
+	 * method bases the equality of two <code>FileEditorInput</code> objects on the
+	 * equality of their underlying <code>IFile</code> resources.
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof CruciblePostCommitFileInput)) {
+			return false;
+		}
+		CruciblePostCommitFileInput other = (CruciblePostCommitFileInput) obj;
+		return crucibleFile.equals(other.crucibleFile) && fileEditorInput.equals(other.fileEditorInput);
+	}
+
 }

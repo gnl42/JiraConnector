@@ -21,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -37,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
 import java.util.Map;
 
 public final class EditorUtil {
@@ -88,8 +90,7 @@ public final class EditorUtil {
 									.toString());
 							if (location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getOldFileDescriptor()
 									.getUrl()))
-									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo
-											.getFileDescriptor()
+									|| location.equals(StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor()
 											.getUrl()))) {
 								return ref.getEditor(true);
 							}
