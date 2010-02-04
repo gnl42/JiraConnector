@@ -127,17 +127,17 @@ public interface ITeamUiResourceConnector {
 
 	/**
 	 * 
-	 * @param editorInput
 	 * @param activeReview
-	 * @return null if operations is not supported/handled, otherwise crucible file
+	 * @param fileUrl
+	 * @param revision
+	 * @return
 	 */
-	@Nullable
-	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull IEditorInput editorInput);
-
 	@Nullable
 	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
 			@NotNull String revision);
 
+	/**
+	 */
 	@Nullable
 	CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull IFile file);
 

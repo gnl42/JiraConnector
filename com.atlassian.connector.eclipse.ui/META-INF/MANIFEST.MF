@@ -39,7 +39,6 @@ Export-Package: com.atlassian.connector.eclipse.ui;
  com.atlassian.connector.eclipse.ui.commons;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.fisheye.ui,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.ui.dialogs;x-friends:="com.atlassian.connector.eclipse.fisheye.ui,com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.ui.editor;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.bamboo.ui",
- com.atlassian.connector.eclipse.ui.exceptions;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.ui.forms;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.ui.preferences;
   x-friends:="com.atlassian.connector.eclipse.crucible.ui,

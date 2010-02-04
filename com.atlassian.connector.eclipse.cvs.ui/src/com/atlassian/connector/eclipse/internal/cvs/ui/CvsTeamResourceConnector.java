@@ -100,11 +100,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 		return false;
 	}
 
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
-		// @todo implement it
-		return null;
-	}
-
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
 		final IProject project = resource.getProject();
 		if (project == null) {

@@ -24,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CrucibleFile {
 
+	private static final int HASH_NUMBER = 31;
+
 	private final CrucibleFileInfo crucibleFileInfo;
 
 	private final VersionedVirtualFile virtualFile;
@@ -46,4 +48,25 @@ public class CrucibleFile {
 		return virtualFile;
 	}
 
+	@Override
+	public int hashCode() {
+		int result;
+		result = crucibleFileInfo.hashCode();
+		result = HASH_NUMBER * result + virtualFile.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof CrucibleFile)) {
+			return false;
+		}
+
+		return virtualFile.equals(((CrucibleFile) obj).virtualFile)
+				&& crucibleFileInfo.equals(((CrucibleFile) obj).crucibleFileInfo);
+	}
 }

@@ -44,7 +44,6 @@ import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.svn.core.IStateFilter;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
 import org.eclipse.team.svn.core.connector.SVNChangeStatus;
-import org.eclipse.team.svn.core.connector.SVNConnectorException;
 import org.eclipse.team.svn.core.connector.SVNLogEntry;
 import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
@@ -135,7 +134,7 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 						"Selected SVN connector library is not available or cannot be loaded.")) {
 					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 							"Subversive doesn't have a default client installed", getLogMessagesOp.getStatus()
-							.getException()));
+									.getException()));
 				} else {
 					throw new CoreException(getLogMessagesOp.getStatus());
 				}
@@ -366,30 +365,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 				return null;
 			}
 		}
-		return null;
-	}
-
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
-		if (editorInput instanceof FileEditorInput) {
-			// this is a local file that we know how to deal with
-			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
-		} else if (editorInput instanceof RepositoryFileEditorInput) {
-			// this is a remote file that we know how to deal with
-			RepositoryFileEditorInput input = (RepositoryFileEditorInput) editorInput;
-			IRepositoryResource remoteFile = input.getRepositoryResource();
-			String revision = null;
-			String fileUrl = remoteFile.getUrl();
-			try {
-				revision = Long.toString(remoteFile.getRevision());
-			} catch (SVNConnectorException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-						"Unable to get svn information for local file.", e));
-			}
-			if (revision != null && fileUrl != null) {
-				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
-			}
-		}
-
 		return null;
 	}
 

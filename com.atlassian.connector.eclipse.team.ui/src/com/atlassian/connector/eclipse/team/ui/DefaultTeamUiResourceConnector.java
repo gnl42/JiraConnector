@@ -262,24 +262,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return editorInput instanceof FileEditorInput || editorInput instanceof FileRevisionEditorInput;
 	}
 
-	@SuppressWarnings("restriction")
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
-		if (editorInput instanceof FileRevisionEditorInput) {
-			IFileRevision fileRevision = ((FileRevisionEditorInput) editorInput).getFileRevision();
-
-			String path = fileRevision.getURI().getPath();
-			String revision = fileRevision.getContentIdentifier();
-
-			if (path != null && revision != null) {
-				return getCrucibleFileFromReview(activeReview, path, revision);
-			}
-		} else if (editorInput instanceof FileEditorInput) {
-			// this will only work on local files since they remote files are team provider specific
-			return getCrucibleFileFromReview(activeReview, ((FileEditorInput) editorInput).getFile());
-		}
-		return null;
-	}
-
 	@Nullable
 	public CrucibleFile getCrucibleFileFromReview(@NotNull Review activeReview, @NotNull String fileUrl,
 			@NotNull String revision) {
