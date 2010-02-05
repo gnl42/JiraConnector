@@ -512,6 +512,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		if (newReview != null) {
 			final ReviewTreeNode[] newInput = reviewToTreeNodes(newReview);
 			final Object[] previouslyExpandedElements = viewer.getExpandedElements();
+			final ISelection currentSelection = viewer.getSelection();
 			viewer.setInput(newInput);
 			if (review == null || !review.equals(newReview)) {
 				final ArrayList<Object> expandedElements = MiscUtil.<Object> buildArrayList();
@@ -521,6 +522,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			} else {
 				viewer.setExpandedElements(previouslyExpandedElements);
 			}
+			// this simple trick (thanks to properly working equals on permIds) refreshes selection, when
+			// the old selection now points to an outdated review model element (e.g. a review comment which has been changed)
+			viewer.setSelection(currentSelection);
 		} else {
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
