@@ -51,8 +51,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -273,40 +275,34 @@ public class DirectClickThroughServlet extends HttpServlet {
 
 	private void openFile(final IResource resource, final String line) {
 		Assert.isNotNull(resource);
-
-		final IEditorPart editor[] = new IEditorPart[1];
-		try {
-			editor[0] = TeamUiUtils.openLocalResource(resource);
-		} catch (CoreException e1) {
-			StatusHandler.log(e1.getStatus());
+		
+		if (resource.getType() != IResource.FILE) {
 			return;
 		}
 
-		if (line != null && line.length() > 0 && editor[0] instanceof ITextEditor) {
-			try {
-				final int l = Integer.parseInt(line);
-				if (Display.getCurrent() != null) {
-					gotoLine((ITextEditor) editor[0], l);
-				} else {
-					PlatformUI.getWorkbench().getDisplay().asyncExec(
-							new Runnable() {
-								public void run() {
-									gotoLine((ITextEditor) editor[0], l);
-								}
-							});
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				IEditorPart editor;
+				try {
+					editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), (IFile) resource);
+				} catch (PartInitException e1) {
+					StatusHandler.log(e1.getStatus());
+					return;
 				}
-			} catch (NumberFormatException e) {
-				StatusHandler
-						.log(new Status(
-								IStatus.WARNING,
-								DirectClickThroughUiPlugin.PLUGIN_ID,
-								NLS
-										.bind(
-												"Wrong line number format when requesting to open file in the IDE [{0}]",
-												line), e));
+				
+				if (editor != null) {
+					if (line != null && line.length() > 0 && editor instanceof ITextEditor) {
+						try {
+							final int l = Integer.parseInt(line);
+							gotoLine((ITextEditor) editor, l);
+						} catch (NumberFormatException e) {
+							StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, NLS.bind("Wrong line number format when requesting to open file in the IDE [{0}]", line), e));
+							return;
+						}
+					}
+				}
 			}
-
-		}
+		});
 	}
 
 	/**
