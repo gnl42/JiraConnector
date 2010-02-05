@@ -45,6 +45,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -316,34 +317,57 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		getSite().setSelectionProvider(viewer);
 		getSite().getPage().addPostSelectionListener(new ISelectionListener() {
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (selection instanceof TextSelection && part instanceof ITextEditor && isLinkingEnabled()) {
-					IEditorInput editorInput = ((ITextEditor) part).getEditorInput();
-					if (editorInput instanceof ICrucibleFileProvider) {
-						CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
-						TextSelection textSelection = (TextSelection) selection;
-						String revision = crucibleFile.getSelectedFile().getRevision();
-						int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1 
-						int end = textSelection.getEndLine() + 1;
+			private boolean focusMatchingComment(CrucibleFileInfo fileInfo, String revision, int start) {
+				for (VersionedComment comment : fileInfo.getVersionedComments()) {
+					Map<String, IntRanges> commentRanges = comment.getLineRanges();
+					if (commentRanges != null && commentRanges.containsKey(revision)) {
+						IntRanges ranges = comment.getLineRanges().get(revision);
+						if (ranges.getTotalMin() <= start && start <= ranges.getTotalMax()) {
+							if (!inputIsSelected(comment)) {
+								showInput(comment);
+							} else {
+								viewer.getTree().showSelection();
+							}
+							return true;
+						}
+					}
+				}
+				return false;
+			}
 
-						if (start != end) {
-							// don't care about multi line selection
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if (selection instanceof TextSelection && isLinkingEnabled()) {
+					IEditorInput editorInput = null;
+					if (part instanceof ITextEditor) {
+						editorInput = ((ITextEditor) part).getEditorInput();
+					} else if (part instanceof CompareEditor) {
+						editorInput = ((CompareEditor) part).getEditorInput();
+					}
+
+					TextSelection textSelection = (TextSelection) selection;
+					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1 
+					int end = textSelection.getEndLine() + 1;
+
+					if (start != end) {
+						// don't care about multi line selection
+						return;
+					}
+
+					if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
+						CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
+
+						if (focusMatchingComment(fileInfo, fileInfo.getOldFileDescriptor().getRevision(), start)
+								|| focusMatchingComment(fileInfo, fileInfo.getFileDescriptor().getRevision(), start)) {
 							return;
 						}
+					}
 
-						for (VersionedComment comment : crucibleFile.getCrucibleFileInfo().getVersionedComments()) {
-							Map<String, IntRanges> commentRanges = comment.getLineRanges();
-							if (commentRanges != null && commentRanges.containsKey(revision)) {
-								IntRanges ranges = comment.getLineRanges().get(revision);
-								if (ranges.getTotalMin() <= start && start <= ranges.getTotalMax()) {
-									if (!inputIsSelected(comment)) {
-										showInput(comment);
-									} else {
-										viewer.getTree().showSelection();
-									}
-									return;
-								}
-							}
+					if (editorInput instanceof ICrucibleFileProvider) {
+						CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
+						String revision = crucibleFile.getSelectedFile().getRevision();
+
+						if (focusMatchingComment(crucibleFile.getCrucibleFileInfo(), revision, start)) {
+							return;
 						}
 					}
 				}
