@@ -76,6 +76,25 @@ public final class AtlassianUiUtil {
 		}
 	}
 
+	public static boolean showViewInActiveWorkbenchPage(String viewId) {
+		final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (activeWorkbenchWindow == null) {
+			return false;
+		}
+		IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+		if (activePage == null) {
+			return false;
+		}
+		try {
+			activePage.showView(viewId);
+			return true;
+		} catch (PartInitException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
+					+ " view."));
+			return false;
+		}
+	}
+
 	public static LineRange getSelectedLineNumberRangeFromEditorInput(IEditorPart editor, IEditorInput editorInput) {
 
 		if (editor instanceof ITextEditor && editor.getEditorInput() == editorInput) {
