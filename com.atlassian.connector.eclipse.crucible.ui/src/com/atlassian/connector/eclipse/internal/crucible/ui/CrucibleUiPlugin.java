@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
-import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.LinkEditorWithActiveReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
 
@@ -56,7 +56,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	private CrucibleNotificationProvider crucibleNotificationManager;
 
-	private EditorLinkWithReviewSelectionListener editorLinkWithReviewSelectionListener;
+	private LinkEditorWithActiveReviewSelectionListener editorLinkWithReviewSelectionListener;
 
 	private SwitchingPerspectiveReviewActivationListener switchingPerspectivesListener;
 
@@ -90,7 +90,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		// TODO determine if we should be doing this differently and not through mylyn
 		MonitorUi.addWindowPartListener(crucibleEditorTracker);
-		editorLinkWithReviewSelectionListener = new EditorLinkWithReviewSelectionListener();
+		editorLinkWithReviewSelectionListener = new LinkEditorWithActiveReviewSelectionListener();
 		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
 
 		plugin.getPreferenceStore().setDefault(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW,

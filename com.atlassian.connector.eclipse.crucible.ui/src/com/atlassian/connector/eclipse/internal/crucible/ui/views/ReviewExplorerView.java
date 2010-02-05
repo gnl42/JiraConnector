@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -30,6 +31,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToComme
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.OpenAndLinkWithEditorHelper;
 import com.atlassian.connector.eclipse.ui.util.SelectionUtil;
@@ -54,6 +56,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IElementComparer;
@@ -75,15 +78,16 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -94,6 +98,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Pawel Niewiadomski
@@ -161,9 +166,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		}
 
 		public void partOpened(IWorkbenchPartReference partRef) {
-			if (partRef instanceof IEditorReference) {
-				editorOpened(((IEditorReference) partRef).getEditor(true));
-			}
 		}
 
 		public void partInputChanged(IWorkbenchPartReference partRef) {
@@ -313,17 +315,41 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		createContextMenu();
 
 		getSite().setSelectionProvider(viewer);
-		setReview(initializeWith);
-	}
+		getSite().getPage().addPostSelectionListener(new ISelectionListener() {
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if (selection instanceof TextSelection && part instanceof ITextEditor && isLinkingEnabled()) {
+					IEditorInput editorInput = ((ITextEditor) part).getEditorInput();
+					if (editorInput instanceof ICrucibleFileProvider) {
+						CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
+						TextSelection textSelection = (TextSelection) selection;
+						String revision = crucibleFile.getSelectedFile().getRevision();
+						int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1 
+						int end = textSelection.getEndLine() + 1;
 
-	protected void editorOpened(IEditorPart editor) {
-		/*IEditorInput editorInput = editor.getEditorInput();
-		if (editorInput == null) {
-			return;
-		}
-		if (editor instanceof ITextEditor) {
-			((ITextEditor) editor).getDocumentProvider().
-		}*/
+						if (start != end) {
+							// don't care about multi line selection
+							return;
+						}
+
+						for (VersionedComment comment : crucibleFile.getCrucibleFileInfo().getVersionedComments()) {
+							Map<String, IntRanges> commentRanges = comment.getLineRanges();
+							if (commentRanges != null && commentRanges.containsKey(revision)) {
+								IntRanges ranges = comment.getLineRanges().get(revision);
+								if (ranges.getTotalMin() <= start && start <= ranges.getTotalMax()) {
+									if (!inputIsSelected(comment)) {
+										showInput(comment);
+									} else {
+										viewer.getTree().showSelection();
+									}
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+		setReview(initializeWith);
 	}
 
 	protected void editorActivated(IEditorPart editor) {
@@ -335,25 +361,20 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		if (input == null) {
 			return;
 		}
-		if (!inputIsSelected(editorInput)) {
+		if (!inputIsSelected(input)) {
 			showInput(input);
 		} else {
 			viewer.getTree().showSelection();
 		}
 	}
 
-	private boolean inputIsSelected(IEditorInput input) {
+	private boolean inputIsSelected(Object input) {
 		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 		if (selection.size() != 1) {
 			return false;
 		}
 
-		IEditorInput selectionAsInput = null;
-		if (input instanceof IFile) {
-			selectionAsInput = new FileEditorInput((IFile) input);
-		}
-
-		return input.equals(selectionAsInput);
+		return selection.getFirstElement().equals(input);
 	}
 
 	boolean showInput(Object input) {

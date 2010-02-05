@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 /**
  * Class that performs a link with editor style action for the active review
  */
-public final class EditorLinkWithReviewSelectionListener implements ISelectionListener {
+public final class LinkEditorWithActiveReviewSelectionListener implements ISelectionListener {
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive()) {

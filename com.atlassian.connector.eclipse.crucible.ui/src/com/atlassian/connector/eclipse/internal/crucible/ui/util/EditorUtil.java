@@ -83,8 +83,9 @@ public final class EditorUtil {
 							CrucibleFile crucibleFile = ((ICrucibleFileProvider) input).getCrucibleFile();
 							if (fileInfo.equals(crucibleFile.getCrucibleFileInfo())) {
 								if (parentComment != null) {
-									if (parentComment.getLineRanges().containsKey(
-											crucibleFile.getSelectedFile().getRevision())) {
+									Map<String, IntRanges> commentRanges = parentComment.getLineRanges();
+									if (commentRanges != null
+											&& commentRanges.containsKey(crucibleFile.getSelectedFile().getRevision())) {
 										return ref.getEditor(true);
 									}
 								} else {
