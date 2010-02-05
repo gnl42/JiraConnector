@@ -117,7 +117,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		IRepositoryQuery query = getQuery();
 		boolean isCustom = query == null || JiraUtil.isFilterDefinition(query);
 
-		final Composite innerComposite = new Composite(parent, SWT.BORDER);
+		final Composite innerComposite = new Composite(parent, SWT.NONE);
 		innerComposite.setLayoutData(new GridData());
 		GridLayout gl = new GridLayout();
 		innerComposite.setLayout(gl);
