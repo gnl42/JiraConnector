@@ -25,9 +25,15 @@ public class DateRangeFilter extends DateFilter {
 
 	private final Date toDate;
 
-	public DateRangeFilter(Date fromDate, Date toDate) {
+	private final String from;
+
+	private final String to;
+
+	public DateRangeFilter(Date fromDate, Date toDate, String from, String to) {
 		this.fromDate = fromDate;
 		this.toDate = toDate;
+		this.from = from;
+		this.to = to;
 	}
 
 	public Date getFromDate() {
@@ -38,8 +44,16 @@ public class DateRangeFilter extends DateFilter {
 		return this.toDate;
 	}
 
+	public String getFrom() {
+		return from;
+	}
+
+	public String getTo() {
+		return to;
+	}
+
 	@Override
 	DateFilter copy() {
-		return new DateRangeFilter(fromDate, toDate);
+		return new DateRangeFilter(fromDate, toDate, from, to);
 	}
 }

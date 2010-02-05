@@ -289,7 +289,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			// get all tasks that were changed after the last known task modification
 			FilterDefinition changedFilter = new FilterDefinition();
-			changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, null));
+			changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, null, null, null));
 			// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
 			changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
 			return changedFilter;

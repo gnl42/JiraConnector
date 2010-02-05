@@ -105,9 +105,29 @@ public class Messages extends NLS {
 
 	public static String JiraFilterDefinitionPage_Update_Attributes_from_Repository;
 
+	public static String JiraFilterDefinitionPage_From;
+
+	public static String JiraFilterDefinitionPage_To;
+
+	public static String JiraFilterDefinitionPage_And;
+
+	public static String JiraIncorrectWdhmValue;
+
+	public static String JiraWdhmExplanation;
+
 	public static String JiraNamedFilterPage_Could_not_update_filters;
 
 	public static String JiraNamedFilterPage_Create_query_using_form;
+
+	public static String JiraNamedFilterPage_Predefined_filter_added_recently;
+
+	public static String JiraNamedFilterPage_Predefined_filter_updated_recently;
+
+	public static String JiraNamedFilterPage_Predefined_filter_resolved_recently;
+
+	public static String JiraNamedFilterPage_Predefined_filter_assigned_to_me;
+
+	public static String JiraNamedFilterPage_Predefined_filter_reported_by_me;
 
 	public static String JiraNamedFilterPage_Downloading_;
 
@@ -126,6 +146,8 @@ public class Messages extends NLS {
 	public static String JiraNamedFilterPage_Update_from_Repository;
 
 	public static String JiraNamedFilterPage_Use_saved_filter_from_the_repository;
+
+	public static String JiraNamedFilterPage_Predefined_Filter;
 
 	public static String JiraProjectPage_You_must_select_a_project;
 

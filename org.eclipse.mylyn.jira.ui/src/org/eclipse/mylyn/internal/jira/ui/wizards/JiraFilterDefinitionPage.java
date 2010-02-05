@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -71,6 +72,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.jira.ui.WdhmUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.DatePicker;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
@@ -103,10 +105,15 @@ import org.eclipse.ui.PlatformUI;
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
+ * @author Jacek Jaroczynski
  */
 public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
-	private static final int DATE_CONTROL_WIDTH_HINT = 250;
+	private static final String JIRA_STATUS_CLOSED = "6"; //$NON-NLS-1$
+
+	private static final String JIRA_STATUS_RESOLVED = "5"; //$NON-NLS-1$
+
+	private static final int DATE_CONTROL_WIDTH_HINT = 290;
 
 	final static class ComponentLabelProvider implements ILabelProvider {
 
@@ -303,6 +310,22 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private DatePicker updatedStartDatePicker;
 
 	private FilterDefinition workingCopy;
+
+	private Text createdFrom;
+
+	private Text createdTo;
+
+	private String title;
+
+	private Text updatedFrom;
+
+	private Text updatedTo;
+
+	private Text dueDateFrom;
+
+	private Text dueDateTo;
+
+	private boolean isPageComplete = true;
 
 	public JiraFilterDefinitionPage(TaskRepository repository) {
 		this(repository, null);
@@ -615,11 +638,11 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 		}
 
-		workingCopy.setDueDateFilter(getRangeFilter(dueStartDatePicker, dueEndDatePicker));
-
-		workingCopy.setCreatedDateFilter(getRangeFilter(createdStartDatePicker, createdEndDatePicker));
-
-		workingCopy.setUpdatedDateFilter(getRangeFilter(updatedStartDatePicker, updatedEndDatePicker));
+		workingCopy.setDueDateFilter(getRangeFilter(dueStartDatePicker, dueEndDatePicker, dueDateFrom, dueDateTo));
+		workingCopy.setCreatedDateFilter(getRangeFilter(createdStartDatePicker, createdEndDatePicker, createdFrom,
+				createdTo));
+		workingCopy.setUpdatedDateFilter(getRangeFilter(updatedStartDatePicker, updatedEndDatePicker, updatedFrom,
+				updatedTo));
 	}
 
 	@Override
@@ -673,7 +696,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	public void createControl(final Composite parent) {
 		Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
-		c.setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridData gdMain = new GridData(GridData.FILL_BOTH);
+		gdMain.widthHint = 800;
+		gdMain.minimumWidth = 800;
+		c.setLayoutData(gdMain);
 		setControl(c);
 
 		if (!inSearchContainer()) {
@@ -695,7 +721,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		SashForm sashForm = new SashForm(c, SWT.VERTICAL);
 		GridData gd_sashForm = new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1);
 		gd_sashForm.heightHint = 200;
-		gd_sashForm.widthHint = 500;
+		gd_sashForm.widthHint = 650;
 		sashForm.setLayoutData(gd_sashForm);
 
 		{
@@ -1027,58 +1053,190 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			});
 		}
 
+		ModifyListener wdhmLocalListener = new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validatePage();
+			}
+		};
+
 		{
 			Label createdLabel = new Label(c, SWT.NONE);
-			createdLabel.setText(Messages.JiraFilterDefinitionPage_Created);
+			createdLabel.setText(Messages.JiraFilterDefinitionPage_Created + ":"); //$NON-NLS-1$
+
+//			Composite cc = new Composite(c, SWT.NONE);
+//			GridLayout ll = new GridLayout(2, false);
+//			ll.marginWidth = 0;
+//			ll.marginHeight = 0;
+//			cc.setLayout(ll);
+//			GridDataFactory.fillDefaults().span(2, 2).applyTo(cc);
 
 			Composite composite = new Composite(c, SWT.NONE);
-			FillLayout fillLayout = new FillLayout();
-			fillLayout.spacing = 5;
-			composite.setLayout(fillLayout);
-			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			GridLayout layout = new GridLayout(2, true);
+			layout.marginWidth = 0;
+			layout.marginHeight = 0;
+			composite.setLayout(layout);
+			GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, false, false, 2, 2);
 			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
 			composite.setLayoutData(layoutData);
 
 			createdStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			GridDataFactory.fillDefaults()
+					.align(SWT.FILL, SWT.CENTER)
+					.grab(true, false)
+					.applyTo(createdStartDatePicker);
 			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(createdEndDatePicker);
+
+			new Label(c, SWT.NONE);
+
+			Composite c1 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
+			GridLayout gl = new GridLayout(2, false);
+			gl.marginHeight = 0;
+			gl.marginWidth = 0;
+			c1.setLayout(gl);
+
+			Label from = new Label(c1, SWT.NONE);
+			from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
+			createdFrom = new Text(c1, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(createdFrom);
+			createdFrom.addModifyListener(wdhmLocalListener);
+
+			Composite c2 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
+			GridLayout g2 = new GridLayout(2, false);
+			g2.marginHeight = 0;
+			g2.marginWidth = 0;
+			c2.setLayout(g2);
+
+			Label to = new Label(c2, SWT.NONE);
+			to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
+			createdTo = new Text(c2, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(createdTo);
+			createdTo.addModifyListener(wdhmLocalListener);
+
+//			Label explanation = new Label(cc, SWT.NONE);
+//			explanation.setText(Messages.JiraWdhmExplanation);
+//			GridDataFactory.fillDefaults().span(1, 2).align(SWT.LEFT, SWT.BOTTOM).applyTo(explanation);
 		}
 
 		{
 			Label updatedLabel = new Label(c, SWT.NONE);
-			updatedLabel.setText(Messages.JiraFilterDefinitionPage_Updated);
+			updatedLabel.setText(Messages.JiraFilterDefinitionPage_Updated + ":"); //$NON-NLS-1$
 
 			Composite composite = new Composite(c, SWT.NONE);
-			FillLayout fillLayout = new FillLayout();
-			fillLayout.spacing = 5;
-			composite.setLayout(fillLayout);
-			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			GridLayout layout = new GridLayout(2, true);
+			layout.marginWidth = 0;
+			layout.marginHeight = 0;
+			composite.setLayout(layout);
+			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
 			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
 			composite.setLayoutData(layoutData);
 
 			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			GridDataFactory.fillDefaults()
+					.align(SWT.FILL, SWT.CENTER)
+					.grab(true, false)
+					.applyTo(updatedStartDatePicker);
 			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(updatedEndDatePicker);
+
+			new Label(c, SWT.NONE);
+
+			Composite c1 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
+			GridLayout gl = new GridLayout(2, false);
+			gl.marginHeight = 0;
+			gl.marginWidth = 0;
+			c1.setLayout(gl);
+
+			Label from = new Label(c1, SWT.NONE);
+			from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
+			updatedFrom = new Text(c1, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(updatedFrom);
+			updatedFrom.addModifyListener(wdhmLocalListener);
+
+			Composite c2 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
+			GridLayout g2 = new GridLayout(2, false);
+			g2.marginHeight = 0;
+			g2.marginWidth = 0;
+			c2.setLayout(g2);
+
+			Label to = new Label(c2, SWT.NONE);
+			to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
+			updatedTo = new Text(c2, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(updatedTo);
+			updatedTo.addModifyListener(wdhmLocalListener);
 		}
 
 		{
 			Label dueDateLabel = new Label(c, SWT.NONE);
-			dueDateLabel.setText(Messages.JiraFilterDefinitionPage_Due_Date);
+			dueDateLabel.setText(Messages.JiraFilterDefinitionPage_Due_Date + ":"); //$NON-NLS-1$
 
 			Composite composite = new Composite(c, SWT.NONE);
-			FillLayout fillLayout = new FillLayout();
-			fillLayout.spacing = 5;
-			composite.setLayout(fillLayout);
-			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			GridLayout layout = new GridLayout(2, true);
+			layout.marginWidth = 0;
+			layout.marginHeight = 0;
+			composite.setLayout(layout);
+			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
 			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
 			composite.setLayoutData(layoutData);
 
 			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__start_date_,
 					true, 0);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueStartDatePicker);
 			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(dueEndDatePicker);
+
+			new Label(c, SWT.NONE);
+
+			Composite c1 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
+			GridLayout gl = new GridLayout(2, false);
+			gl.marginHeight = 0;
+			gl.marginWidth = 0;
+			c1.setLayout(gl);
+
+			Label from = new Label(c1, SWT.NONE);
+			from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
+			dueDateFrom = new Text(c1, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueDateFrom);
+			dueDateFrom.addModifyListener(wdhmLocalListener);
+
+			Composite c2 = new Composite(composite, SWT.NONE);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
+			GridLayout g2 = new GridLayout(2, false);
+			g2.marginHeight = 0;
+			g2.marginWidth = 0;
+			c2.setLayout(g2);
+
+			Label to = new Label(c2, SWT.NONE);
+			to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
+			dueDateTo = new Text(c2, SWT.BORDER);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueDateTo);
+			dueDateTo.addModifyListener(wdhmLocalListener);
+		}
+
+		{
+			new Label(c, SWT.NONE);
+
+			Composite cc = new Composite(c, SWT.NONE);
+			GridLayout gl = new GridLayout();
+			gl.marginWidth = 0;
+			gl.marginHeight = 20;
+			cc.setLayout(gl);
+			GridDataFactory.fillDefaults().span(2, 1).applyTo(cc);
+
+			Label explanation = new Label(cc, SWT.NONE);
+			explanation.setText(NLS.bind(Messages.JiraWdhmExplanation, "'" + Messages.JiraFilterDefinitionPage_From //$NON-NLS-1$
+					+ "' " + Messages.JiraFilterDefinitionPage_And + " '" + Messages.JiraFilterDefinitionPage_To + "'")); //$NON-NLS-1$
+
 		}
 
 		{
@@ -1338,11 +1496,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		return (titleText != null) ? titleText.getText() : ""; //$NON-NLS-1$
 	}
 
-	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker) {
+	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker, Text fromField,
+			Text toField) {
 		Calendar startDate = startDatePicker.getDate();
 		Calendar endDate = endDatePicker.getDate();
 		return new DateRangeFilter(startDate == null ? null : startDate.getTime(), endDate == null ? null
-				: endDate.getTime());
+				: endDate.getTime(), fromField.getText(), toField.getText());
 	}
 
 	private void initializeContentProviders() {
@@ -1434,8 +1593,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			restoreWidgetValues();
 		}
 
-		if (titleText != null && getQuery() != null) {
-			titleText.setText(getQuery().getSummary());
+		if (titleText != null) {
+			if (getQuery() != null) {
+				titleText.setText(getQuery().getSummary());
+			} else if (title != null) {
+				titleText.setText(title);
+			}
 		}
 
 		loadFromWorkingCopy();
@@ -1583,8 +1746,37 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
+
+		if (workingCopy.getCreatedDateFilter() != null && workingCopy.getCreatedDateFilter() instanceof DateRangeFilter) {
+			DateRangeFilter range = (DateRangeFilter) workingCopy.getCreatedDateFilter();
+			createdFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
+			createdTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
+		} else {
+			createdFrom.setText(""); //$NON-NLS-1$
+			createdTo.setText(""); //$NON-NLS-1$
+		}
+
 		setDateRange(workingCopy.getUpdatedDateFilter(), updatedStartDatePicker, updatedEndDatePicker);
+
+		if (workingCopy.getUpdatedDateFilter() != null && workingCopy.getUpdatedDateFilter() instanceof DateRangeFilter) {
+			DateRangeFilter range = (DateRangeFilter) workingCopy.getUpdatedDateFilter();
+			updatedFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
+			updatedTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
+		} else {
+			updatedFrom.setText(""); //$NON-NLS-1$
+			updatedTo.setText(""); //$NON-NLS-1$
+		}
+
 		setDateRange(workingCopy.getDueDateFilter(), dueStartDatePicker, dueEndDatePicker);
+
+		if (workingCopy.getDueDateFilter() != null && workingCopy.getDueDateFilter() instanceof DateRangeFilter) {
+			DateRangeFilter range = (DateRangeFilter) workingCopy.getDueDateFilter();
+			dueDateFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
+			dueDateTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
+		} else {
+			dueDateFrom.setText(""); //$NON-NLS-1$
+			dueDateTo.setText(""); //$NON-NLS-1$
+		}
 	}
 
 	@Override
@@ -1737,4 +1929,112 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		this.reportedIn.setInput(projects);
 		this.issueType.setInput(projects);
 	}
+
+	private void setQueryName(String queryName) {
+		if (titleText == null) {
+			this.title = queryName;
+		} else {
+			titleText.setText(queryName);
+		}
+	}
+
+	public void setCreatedRecently() {
+		this.workingCopy = new FilterDefinition();
+
+		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_added_recently);
+		this.workingCopy.setCreatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
+
+		if (!firstTime) {
+			loadFromWorkingCopy();
+		}
+
+	}
+
+	public void setUpdatedRecently() {
+		this.workingCopy = new FilterDefinition();
+
+		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_updated_recently);
+		this.workingCopy.setUpdatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
+
+		if (!firstTime) {
+			loadFromWorkingCopy();
+		}
+	}
+
+	public void setResolvedRecently() {
+		workingCopy = new FilterDefinition();
+
+		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_resolved_recently);
+		workingCopy.setUpdatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
+
+		List<JiraStatus> statuses = new ArrayList<JiraStatus>();
+
+		for (JiraStatus status : client.getCache().getStatuses()) {
+			if (status.getId().equals(JIRA_STATUS_RESOLVED) || status.getId().equals(JIRA_STATUS_CLOSED)) {
+				statuses.add(status);
+			}
+		}
+		workingCopy.setStatusFilter(new StatusFilter(statuses.toArray(new JiraStatus[statuses.size()])));
+
+		if (!firstTime) {
+			loadFromWorkingCopy();
+		}
+	}
+
+	public void setAssignedToMe() {
+		workingCopy = new FilterDefinition();
+
+		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_assigned_to_me);
+
+		// empty (but not null) resolution filter means UNRESOLVED 
+		workingCopy.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
+
+		workingCopy.setAssignedToFilter(new CurrentUserFilter());
+
+		if (!firstTime) {
+			loadFromWorkingCopy();
+		}
+	}
+
+	public void setReportedByMe() {
+		workingCopy = new FilterDefinition();
+
+		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_reported_by_me);
+
+		workingCopy.setReportedByFilter(new CurrentUserFilter());
+
+		if (!firstTime) {
+			loadFromWorkingCopy();
+		}
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		return isPageComplete && super.isPageComplete();
+	}
+
+	private void validatePage() {
+		if (!super.isPageComplete()) {
+			return;
+		}
+
+		setErrorMessage(null);
+
+		isPageComplete = true;
+
+		if (!WdhmUtil.isValid(createdFrom.getText()) || !WdhmUtil.isValid(createdTo.getText())) {
+			isPageComplete = false;
+			setErrorMessage(Messages.JiraIncorrectWdhmValue + Messages.JiraFilterDefinitionPage_Created);
+		} else if (!WdhmUtil.isValid(updatedFrom.getText()) || !WdhmUtil.isValid(updatedTo.getText())) {
+			isPageComplete = false;
+			setErrorMessage(Messages.JiraIncorrectWdhmValue + Messages.JiraFilterDefinitionPage_Updated);
+		} else if (!WdhmUtil.isValid(dueDateFrom.getText()) || !WdhmUtil.isValid(dueDateTo.getText())) {
+			isPageComplete = false;
+			setErrorMessage(Messages.JiraIncorrectWdhmValue + Messages.JiraFilterDefinitionPage_Due_Date);
+		}
+
+		setPageComplete(isPageComplete);
+
+	}
+
 }

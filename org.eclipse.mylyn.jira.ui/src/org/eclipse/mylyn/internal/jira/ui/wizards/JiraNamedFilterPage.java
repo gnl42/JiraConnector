@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.List;
  * @author Wesley Coelho (initial integration patch)
  * @author Eugene Kuleshov (layout and other improvements)
  * @author Steffen Pingel
+ * @author Jacek Jaroczynski
  */
 public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
@@ -64,6 +65,16 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	private Button updateButton = null;
 
 	private final NamedFilter workingCopy;
+
+	private Button buttonAddedRecently;
+
+	private Button buttonUpdatedRecently;
+
+	private Button buttonResolvedRecently;
+
+	private Button buttonAssignedToMe;
+
+	private Button buttonReportedByMe;
 
 	public JiraNamedFilterPage(TaskRepository repository) {
 		this(repository, null);
@@ -97,26 +108,54 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return buttonCustom.getSelection();
+		return buttonCustom.getSelection() || buttonAddedRecently.getSelection()
+				|| buttonUpdatedRecently.getSelection() || buttonResolvedRecently.getSelection()
+				|| buttonAssignedToMe.getSelection() || buttonReportedByMe.getSelection();
 	}
 
 	public void createControl(Composite parent) {
 		IRepositoryQuery query = getQuery();
 		boolean isCustom = query == null || JiraUtil.isFilterDefinition(query);
 
-		final Composite innerComposite = new Composite(parent, SWT.NONE);
+		final Composite innerComposite = new Composite(parent, SWT.BORDER);
 		innerComposite.setLayoutData(new GridData());
 		GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
 		innerComposite.setLayout(gl);
 
+//		final Label label = new Label(innerComposite, SWT.NONE);
+//		label.setText(Messages.JiraNamedFilterPage_Predefined_Filter);
+
+		buttonAssignedToMe = new Button(innerComposite, SWT.RADIO);
+		buttonAssignedToMe.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		buttonAssignedToMe.setText(Messages.JiraNamedFilterPage_Predefined_filter_assigned_to_me);
+
+		buttonReportedByMe = new Button(innerComposite, SWT.RADIO);
+		buttonReportedByMe.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		buttonReportedByMe.setText(Messages.JiraNamedFilterPage_Predefined_filter_reported_by_me);
+
+		buttonAddedRecently = new Button(innerComposite, SWT.RADIO);
+		buttonAddedRecently.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		buttonAddedRecently.setText(Messages.JiraNamedFilterPage_Predefined_filter_added_recently);
+
+		buttonUpdatedRecently = new Button(innerComposite, SWT.RADIO);
+		buttonUpdatedRecently.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		buttonUpdatedRecently.setText(Messages.JiraNamedFilterPage_Predefined_filter_updated_recently);
+
+		buttonResolvedRecently = new Button(innerComposite, SWT.RADIO);
+		buttonResolvedRecently.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		buttonResolvedRecently.setText(Messages.JiraNamedFilterPage_Predefined_filter_resolved_recently);
+
+//		final Composite horizontalSpaceComposite = new Composite(innerComposite, SWT.NONE);
+//		horizontalSpaceComposite.setLayout(new GridLayout());
+//		horizontalSpaceComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 		buttonCustom = new Button(innerComposite, SWT.RADIO);
-		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		buttonCustom.setText(Messages.JiraNamedFilterPage_Create_query_using_form);
 		buttonCustom.setSelection(isCustom);
 
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
-		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		buttonSaved.setText(Messages.JiraNamedFilterPage_Use_saved_filter_from_the_repository);
 		buttonSaved.setSelection(!isCustom);
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
@@ -137,6 +176,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		filterList.deselectAll();
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.horizontalIndent = 15;
+		data.minimumHeight = 100;
 		filterList.setLayoutData(data);
 		filterList.setEnabled(false);
 		filterList.addSelectionListener(new SelectionAdapter() {
@@ -147,7 +187,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		});
 
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
-		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
+		final GridData gridData = new GridData(SWT.LEFT, SWT.TOP, false, true);
+		gridData.horizontalIndent = 15;
 		updateButton.setLayoutData(gridData);
 		updateButton.setText(Messages.JiraNamedFilterPage_Update_from_Repository);
 		updateButton.setEnabled(isCustom);
@@ -253,7 +294,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public IWizardPage getNextPage() {
-		if (!buttonCustom.getSelection()) {
+		if (buttonSaved.getSelection()) {
 			return null;
 		}
 		if (filterDefinitionPage == null) {
@@ -262,6 +303,19 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				((Wizard) getWizard()).addPage(filterDefinitionPage);
 			}
 		}
+
+		if (buttonAddedRecently.getSelection()) {
+			filterDefinitionPage.setCreatedRecently();
+		} else if (buttonUpdatedRecently.getSelection()) {
+			filterDefinitionPage.setUpdatedRecently();
+		} else if (buttonResolvedRecently.getSelection()) {
+			filterDefinitionPage.setResolvedRecently();
+		} else if (buttonAssignedToMe.getSelection()) {
+			filterDefinitionPage.setAssignedToMe();
+		} else if (buttonReportedByMe.getSelection()) {
+			filterDefinitionPage.setReportedByMe();
+		}
+
 		return filterDefinitionPage;
 	}
 

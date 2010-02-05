@@ -358,20 +358,24 @@ public class FilterDefinitionConverter {
 		String after = getId(params, key + ":after"); //$NON-NLS-1$
 		String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-		Date fromDate;
+		Date afterDate;
 		try {
-			fromDate = dateFormat.parse(after);
+			afterDate = dateFormat.parse(after);
 		} catch (Exception ex) {
-			fromDate = null;
+			afterDate = null;
 		}
-		Date toDate;
+		Date beforeDate;
 		try {
-			toDate = dateFormat.parse(before);
+			beforeDate = dateFormat.parse(before);
 		} catch (Exception ex) {
-			toDate = null;
+			beforeDate = null;
 		}
 
-		return fromDate == null && toDate == null ? null : new DateRangeFilter(fromDate, toDate);
+		String previous = getId(params, key + ":previous"); //$NON-NLS-1$
+		String next = getId(params, key + ":next"); //$NON-NLS-1$
+
+		return afterDate == null && beforeDate == null && previous == null && next == null ? null
+				: new DateRangeFilter(afterDate, beforeDate, previous, next);
 	}
 
 	private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
@@ -559,6 +563,12 @@ public class FilterDefinitionConverter {
 			}
 			if (rangeFilter.getToDate() != null) {
 				addParameter(sb, type + ":before", dateFormat.format(rangeFilter.getToDate())); //$NON-NLS-1$
+			}
+			if (rangeFilter.getFrom() != null && rangeFilter.getFrom().length() > 0) {
+				addParameter(sb, type + ":previous", rangeFilter.getFrom()); //$NON-NLS-1$
+			}
+			if (rangeFilter.getTo() != null && rangeFilter.getTo().length() > 0) {
+				addParameter(sb, type + ":next", rangeFilter.getTo()); //$NON-NLS-1$
 			}
 		} else if (filter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
