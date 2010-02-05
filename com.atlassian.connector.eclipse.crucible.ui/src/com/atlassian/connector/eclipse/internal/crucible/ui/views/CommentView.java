@@ -26,7 +26,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -46,13 +45,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
-
+import org.jetbrains.annotations.Nullable;
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Map;
@@ -169,8 +172,10 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		createMenu();
 
 		getViewSite().getPage().addSelectionListener(this);
-
-		if (currentSelection != null) {
+		final ReviewExplorerView reviewExplorerView = findReviewExplorerView();
+		if (reviewExplorerView != null) {
+			selectionChanged(reviewExplorerView, reviewExplorerView.getSelection());
+		} else {
 			updateViewer();
 		}
 	}
@@ -179,7 +184,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		Composite detailsComposite = toolkit.createComposite(stackComposite);
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(detailsComposite);
 
-		// Author | Date | Draft | Defect | Defect type 
+		// Author | Date | Draft | Defect | Defect type
 		// Comment text here
 
 		header = toolkit.createComposite(detailsComposite);
@@ -295,6 +300,24 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		message.setFocus();
 	}
 
+	@Nullable
+	private ReviewExplorerView findReviewExplorerView() {
+		final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if (activeWorkbenchWindow == null) {
+			return null;
+		}
+		IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+		if (activePage == null) {
+			return null;
+		}
+		for (IViewReference view : activePage.getViewReferences()) {
+			if (view.getId().equals(ReviewExplorerView.ID) && view.getView(false) instanceof ReviewExplorerView) {
+				return (ReviewExplorerView) view.getView(false);
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Here we listen to changes in {@link ReviewExplorerView}
 	 */
@@ -332,7 +355,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 				if (activeComment.isDraft()) {
 					draftIcon.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
 					draft.setText("Draft");
-					//draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+					// draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 				} else {
 					draftIcon.setImage(null);
 					draft.setText("");
@@ -380,35 +403,35 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		stackComposite.layout();
 	}
 
-//	private Comment findActiveComment(Comment comment) {
-//		CrucibleFileInfo activeFileInfo;
-//		try {
-//			activeFileInfo = activeReview.getFileByPermId(comment.get
-//					((CrucibleFileInfo) currentSelection.getFirstSegment()).getPermId());
-//		} catch (ValueNotYetInitialized e) {
-//			return null;
-//		}
-//
-//		return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
-//	}
+	// private Comment findActiveComment(Comment comment) {
+	// CrucibleFileInfo activeFileInfo;
+	// try {
+	// activeFileInfo = activeReview.getFileByPermId(comment.get
+	// ((CrucibleFileInfo) currentSelection.getFirstSegment()).getPermId());
+	// } catch (ValueNotYetInitialized e) {
+	// return null;
+	// }
+	//
+	// return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
+	// }
 
-//	private Comment findComment(PermId commentId, List<? extends Comment> comments) {
-//		if (comments != null) {
-//			for (Comment comment : comments) {
-//				if (comment.getPermId().equals(commentId)) {
-//					return comment;
-//				}
-//
-//				if (comment.getReplies() != null) {
-//					Comment found = findComment(commentId, comment.getReplies());
-//					if (found != null) {
-//						return found;
-//					}
-//				}
-//			}
-//		}
-//		return null;
-//	}
+	// private Comment findComment(PermId commentId, List<? extends Comment> comments) {
+	// if (comments != null) {
+	// for (Comment comment : comments) {
+	// if (comment.getPermId().equals(commentId)) {
+	// return comment;
+	// }
+	//
+	// if (comment.getReplies() != null) {
+	// Comment found = findComment(commentId, comment.getReplies());
+	// if (found != null) {
+	// return found;
+	// }
+	// }
+	// }
+	// }
+	// return null;
+	// }
 
 	public void reviewActivated(ITask task, Review review) {
 		reviewUpdated(task, review);

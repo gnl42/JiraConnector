@@ -44,7 +44,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -91,7 +90,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-
+import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -105,6 +104,8 @@ import java.util.Map;
  * @author Pawel Niewiadomski
  */
 public class ReviewExplorerView extends ViewPart implements IReviewActivationListener {
+
+	public static final String ID = "com.atlassian.connector.eclipse.crucible.ui.explorerView";
 
 	private static final String TAG_LINK_EDITOR = "linkWithEditor"; //$NON-NLS-1$
 
@@ -204,6 +205,16 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		dialogSettings = CrucibleUiPlugin.getDefault().getDialogSettingsSection(getClass().getName());
 
 		linkingEnabled = dialogSettings.getBoolean(TAG_LINK_EDITOR);
+	}
+
+	// this method is not really nice, but we decided to keep selection model for all review related
+	// views & editors here in this class
+	@Nullable
+	public ISelection getSelection() {
+		if (viewer == null) {
+			return null;
+		}
+		return viewer.getSelection();
 	}
 
 	@Override
@@ -345,7 +356,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					}
 
 					TextSelection textSelection = (TextSelection) selection;
-					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1 
+					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
 					int end = textSelection.getEndLine() + 1;
 
 					if (start != end) {

@@ -83,7 +83,7 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 
 	@Override
 	public void run() {
-		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
+		AtlassianUiUtil.showViewInActiveWorkbenchPage(CommentView.ID);
 		OpenVirtualFileJob job = new OpenVirtualFileJob(review, new CrucibleFile(fileInfo, oldFile), comment);
 		job.setPriority(Job.INTERACTIVE);
 		job.schedule();

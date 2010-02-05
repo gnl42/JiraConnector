@@ -43,7 +43,7 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 
 	@Override
 	public void run() {
-		AtlassianUiUtil.ensureViewIsVisible(CommentView.ID);
+		AtlassianUiUtil.showViewInActiveWorkbenchPage(CommentView.ID);
 		CompareVirtualFilesJob job = new CompareVirtualFilesJob(review, fileInfo, comment);
 		job.setPriority(Job.INTERACTIVE);
 		job.schedule();
