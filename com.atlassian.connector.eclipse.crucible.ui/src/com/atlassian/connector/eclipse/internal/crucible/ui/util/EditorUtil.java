@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -35,9 +36,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public final class EditorUtil {
@@ -152,6 +155,20 @@ public final class EditorUtil {
 			return null;
 		}
 		return window.getActivePage();
+	}
+
+	public static SourceViewer getSourceViewer(ITextEditor editor) {
+		if (editor instanceof AbstractTextEditor) {
+			Method getSourceViewer;
+			try {
+				getSourceViewer = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer");
+				getSourceViewer.setAccessible(true);
+				return (SourceViewer) getSourceViewer.invoke(editor);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return null;
 	}
 
 }

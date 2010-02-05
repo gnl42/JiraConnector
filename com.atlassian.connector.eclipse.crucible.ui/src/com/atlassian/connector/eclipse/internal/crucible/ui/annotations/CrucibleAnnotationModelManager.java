@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -112,9 +113,7 @@ public final class CrucibleAnnotationModelManager {
 			AbstractTextEditor textEditor = (AbstractTextEditor) editor;
 
 			try {
-				Method getSourceViewer = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer");
-				getSourceViewer.setAccessible(true);
-				SourceViewer viewer = (SourceViewer) getSourceViewer.invoke(textEditor);
+				SourceViewer viewer = EditorUtil.getSourceViewer(editor);
 
 				if (viewer != null) {
 					Field hoverManager = SourceViewer.class.getDeclaredField("fVerticalRulerHoveringController");

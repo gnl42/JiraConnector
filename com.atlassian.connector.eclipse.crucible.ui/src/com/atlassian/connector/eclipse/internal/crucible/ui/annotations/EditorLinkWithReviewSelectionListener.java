@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
- * Class that performs a link with editor style action for the active reivew
+ * Class that performs a link with editor style action for the active review
  */
 public final class EditorLinkWithReviewSelectionListener implements ISelectionListener {
 
