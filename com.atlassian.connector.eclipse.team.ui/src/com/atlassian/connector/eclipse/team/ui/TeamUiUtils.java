@@ -13,14 +13,8 @@ package com.atlassian.connector.eclipse.team.ui;
 
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
-import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
-import org.eclipse.compare.contentmergeviewer.IMergeViewerContentProvider;
-import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.internal.MergeSourceViewer;
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -32,11 +26,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -44,8 +35,6 @@ import org.eclipse.ui.PlatformUI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
@@ -187,65 +176,6 @@ public final class TeamUiUtils {
 		IWorkbench workbench = AtlassianTeamUiPlugin.getDefault().getWorkbench();
 		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		CompareUI.openCompareEditorOnPage(compareEditorInput, page);
-	}
-
-	public static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,
-			ICompareAnnotationModel annotationModel) {
-
-		// FIXME: hack
-		if (contentViewer instanceof TextMergeViewer) {
-			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
-			try {
-				Class<TextMergeViewer> clazz = TextMergeViewer.class;
-				Field declaredField = clazz.getDeclaredField("fLeft");
-				declaredField.setAccessible(true);
-				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
-
-				declaredField = clazz.getDeclaredField("fRight");
-				declaredField.setAccessible(true);
-				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
-
-				annotationModel.attachToViewer(fLeft, fRight);
-				annotationModel.focusOnComment();
-				annotationModel.registerContextMenu();
-
-				hackGalileo(contentViewer, textMergeViewer, fLeft, fRight);
-			} catch (Throwable t) {
-				StatusHandler.log(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID,
-						"Could not initialize annotation model for " + input.getName(), t));
-			}
-		}
-		return contentViewer;
-	}
-
-	private static void hackGalileo(Viewer contentViewer, TextMergeViewer textMergeViewer,
-			final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
-		// FIXME: hack for e3.5
-		try {
-			Method getCompareConfiguration = ContentMergeViewer.class.getDeclaredMethod("getCompareConfiguration");
-			getCompareConfiguration.setAccessible(true);
-			CompareConfiguration cc = (CompareConfiguration) getCompareConfiguration.invoke(textMergeViewer);
-
-			Method getMergeContentProvider = ContentMergeViewer.class.getDeclaredMethod("getMergeContentProvider");
-			getMergeContentProvider.setAccessible(true);
-			IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
-
-			Method getSourceViewer = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
-
-			Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
-					SourceViewer.class, boolean.class);
-			configureSourceViewer.setAccessible(true);
-			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fLeft), cc.isLeftEditable()
-					&& cp.isLeftEditable(textMergeViewer.getInput()));
-			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fRight), cc.isRightEditable()
-					&& cp.isRightEditable(textMergeViewer.getInput()));
-
-			Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
-			isConfiguredField.setAccessible(true);
-			isConfiguredField.set(contentViewer, true);
-		} catch (Throwable t) {
-			// ignore as it may not exist in other versions
-		}
 	}
 
 	public static void handleMissingTeamConnectors() {
