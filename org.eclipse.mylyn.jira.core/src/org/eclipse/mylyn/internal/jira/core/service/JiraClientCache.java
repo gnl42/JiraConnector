@@ -65,7 +65,7 @@ public class JiraClientCache {
 	}
 
 	private void initializeProjects(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_project_details, 10);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_projects, 10);
 		data.projects = jiraClient.getProjects(submonitor.newChild(1));
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);

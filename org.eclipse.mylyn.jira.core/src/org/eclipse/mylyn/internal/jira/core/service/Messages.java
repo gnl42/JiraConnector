@@ -33,7 +33,7 @@ public class Messages {
 
 	public static String JiraClientCache_getting_priorities;
 
-	public static String JiraClientCache_getting_project_details;
+	public static String JiraClientCache_getting_projects;
 
 	public static String JiraClientCache_getting_resolutions;
 

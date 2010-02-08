@@ -149,6 +149,12 @@ public class Messages extends NLS {
 
 	public static String JiraNamedFilterPage_Predefined_Filter;
 
+	public static String JiraNamedFilterPage_Downloading_Projects;
+
+	public static String JiraNamedFilterPage_Download_Projects_Failed;
+
+	public static String JiraNamedFilterPage_Use_project_specific_predefined_filter;
+
 	public static String JiraProjectPage_You_must_select_a_project;
 
 	public static String JiraProjectPage_New_JIRA_Task;
