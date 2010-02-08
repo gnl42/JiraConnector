@@ -794,7 +794,11 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		}
 
 		if (part instanceof CompareEditor) {
-
+			IEditorInput editorInput = part.getEditorInput();
+			if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
+				CrucibleFileInfoCompareEditorInput compareInput = (CrucibleFileInfoCompareEditorInput) editorInput;
+				compareInput.getAnnotationModelToAttach().focusOnComment(parent);
+			}
 		}
 
 	}

@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -22,17 +22,27 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
+import org.eclipse.compare.contentmergeviewer.IMergeViewerContentProvider;
+import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
+import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput implements IAnnotationCompareInput {
 
@@ -100,7 +110,66 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput imple
 	@Override
 	public Viewer findContentViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
 		Viewer contentViewer = super.findContentViewer(oldViewer, input, parent);
-		return TeamUiUtils.findContentViewer(contentViewer, input, parent, annotationModel);
+		return CrucibleFileInfoCompareEditorInput.findContentViewer(contentViewer, input, parent, annotationModel);
+	}
+
+	private static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,
+			ICompareAnnotationModel annotationModel) {
+
+		// FIXME: hack
+		if (contentViewer instanceof TextMergeViewer) {
+			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
+			try {
+				Class<TextMergeViewer> clazz = TextMergeViewer.class;
+				Field declaredField = clazz.getDeclaredField("fLeft");
+				declaredField.setAccessible(true);
+				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
+
+				declaredField = clazz.getDeclaredField("fRight");
+				declaredField.setAccessible(true);
+				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
+
+				annotationModel.attachToViewer(fLeft, fRight);
+				annotationModel.focusOnComment();
+				annotationModel.registerContextMenu();
+
+				hackGalileo(contentViewer, textMergeViewer, fLeft, fRight);
+			} catch (Throwable t) {
+				StatusHandler.log(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID,
+						"Could not initialize annotation model for " + input.getName(), t));
+			}
+		}
+		return contentViewer;
+	}
+
+	private static void hackGalileo(Viewer contentViewer, TextMergeViewer textMergeViewer,
+			final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
+		// FIXME: hack for e3.5
+		try {
+			Method getCompareConfiguration = ContentMergeViewer.class.getDeclaredMethod("getCompareConfiguration");
+			getCompareConfiguration.setAccessible(true);
+			CompareConfiguration cc = (CompareConfiguration) getCompareConfiguration.invoke(textMergeViewer);
+
+			Method getMergeContentProvider = ContentMergeViewer.class.getDeclaredMethod("getMergeContentProvider");
+			getMergeContentProvider.setAccessible(true);
+			IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
+
+			Method getSourceViewer = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
+
+			Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
+					SourceViewer.class, boolean.class);
+			configureSourceViewer.setAccessible(true);
+			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fLeft), cc.isLeftEditable()
+					&& cp.isLeftEditable(textMergeViewer.getInput()));
+			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fRight), cc.isRightEditable()
+					&& cp.isRightEditable(textMergeViewer.getInput()));
+
+			Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
+			isConfiguredField.setAccessible(true);
+			isConfiguredField.set(contentViewer, true);
+		} catch (Throwable t) {
+			// ignore as it may not exist in other versions
+		}
 	}
 
 	public ICompareAnnotationModel getAnnotationModelToAttach() {

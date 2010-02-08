@@ -510,6 +510,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void focusOnComment() {
+		focusOnComment(commentToFocus);
+	}
+
+	public void focusOnComment(VersionedComment commentToFocus) {
 		if (commentToFocus != null) {
 			CrucibleFile leftFile = leftAnnotationModel.getCrucibleFile();
 			VersionedVirtualFile virtualLeft = leftFile.getSelectedFile();
