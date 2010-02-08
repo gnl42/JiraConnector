@@ -309,6 +309,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		createMenu();
 		createContextMenu();
 
+		getSite().setSelectionProvider(viewer);
 		getSite().getPage().addPostSelectionListener(new ISelectionListener() {
 			private boolean focusMatchingComment(CrucibleFileInfo fileInfo, String revision, int start) {
 				for (VersionedComment comment : fileInfo.getVersionedComments()) {
