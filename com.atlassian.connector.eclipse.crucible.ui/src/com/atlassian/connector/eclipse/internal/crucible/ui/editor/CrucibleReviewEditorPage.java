@@ -22,6 +22,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IRevi
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompleteReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
@@ -38,7 +39,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -94,7 +94,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.themes.IThemeManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -367,7 +366,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				+ getTask().getTaskKey(), getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				//check if repositoryData is initialized
+				// check if repositoryData is initialized
 				if (client.getClientData() == null || client.getClientData().getCachedUsers().size() == 0
 						|| client.getClientData().getCachedProjects().size() == 0) {
 					monitor.subTask("Updateing Repository Data");
@@ -652,19 +651,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void createCompleteReviewAction(IToolBarManager manager) {
-		Action completeAction = new ReviewChangeAction("Complete Crucible Review " + getTask().getTaskKey(),
-				"Review was completed.") {
-			@Override
-			protected Review runAsCrucibleRemoteOperation(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
-					IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-					ServerPasswordNotProvidedException {
-				String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-				server.completeReview(serverCfg, new PermId(permId), true);
-				return null;
-			}
-		};
+
+		Action completeAction = new CompleteReviewAction(review, "Complete Crucible Review " + getTask().getTaskKey());
 		completeAction.setText("Complete");
-		completeAction.setToolTipText("Complete review");
+		completeAction.setToolTipText("Complete Review");
 		completeAction.setImageDescriptor(CrucibleImages.COMPLETE);
 		manager.add(completeAction);
 	}
@@ -896,7 +886,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	private void reviewUpdateCompleted(final IStatus status, final boolean force) {
 		setBusy(false);
 
-		// TODO setup the image descriptor properly too 
+		// TODO setup the image descriptor properly too
 
 		if (editorComposite != null) {
 			if (status == null || review == null) {
@@ -995,14 +985,14 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	public void attributesModified() {
 		// TODO as soon as attributes can be submitted via Rest API (ACC-32), continue here
-//		boolean changesFound = false;
-//		for (int i = 0; i < parts.size() && !changesFound; i++) {
-//			changesFound = parts.get(i).hasChangedAttributes();
-//		}
-//		if (changesFound) {
-//			//TODO enable action
-//		} else {
-//			//TODO disable action
-//		}
+		// boolean changesFound = false;
+		// for (int i = 0; i < parts.size() && !changesFound; i++) {
+		// changesFound = parts.get(i).hasChangedAttributes();
+		// }
+		// if (changesFound) {
+		// //TODO enable action
+		// } else {
+		// //TODO disable action
+		// }
 	}
 }
