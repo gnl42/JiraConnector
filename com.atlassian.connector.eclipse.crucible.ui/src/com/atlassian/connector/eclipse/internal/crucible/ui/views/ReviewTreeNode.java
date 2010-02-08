@@ -87,7 +87,11 @@ public class ReviewTreeNode {
 			}
 		}
 
-		return convert(pathTokens, 0, fileInfo);
+		if (pathTokens.size() <= 1) {
+			return new ReviewTreeNode("/", MiscUtil.buildArrayList(fileInfo));
+		} else {
+			return convert(pathTokens, 0, fileInfo);
+		}
 	}
 
 	public void addChild(Object nodeToAdd) {
