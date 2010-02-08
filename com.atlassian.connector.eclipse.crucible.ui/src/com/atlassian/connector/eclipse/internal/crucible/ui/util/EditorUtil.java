@@ -112,7 +112,7 @@ public final class EditorUtil {
 		textEditor.selectAndReveal(offset, length);
 	}
 
-	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {
+	public static void selectAndReveal(final ITextEditor textEditor, int startLine) {
 		IDocumentProvider documentProvider = textEditor.getDocumentProvider();
 		IEditorInput editorInput = textEditor.getEditorInput();
 		if (documentProvider != null) {
@@ -120,13 +120,12 @@ public final class EditorUtil {
 			if (document != null) {
 				try {
 					final int offset = document.getLineOffset(startLine);
-					final int length = document.getLineOffset(endLine) - offset;
 					if (Display.getCurrent() != null) {
-						internalSelectAndReveal(textEditor, offset, length);
+						internalSelectAndReveal(textEditor, offset, 0);
 					} else {
 						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 							public void run() {
-								internalSelectAndReveal(textEditor, offset, length);
+								internalSelectAndReveal(textEditor, offset, 0);
 							}
 						});
 					}
@@ -146,7 +145,7 @@ public final class EditorUtil {
 
 		IntRanges lineRange = lineRanges.get(file.getRevision());
 		if (lineRange != null) {
-			EditorUtil.selectAndReveal(textEditor, lineRange.getTotalMin(), lineRange.getTotalMax());
+			EditorUtil.selectAndReveal(textEditor, lineRange.getTotalMin() - 1);
 		}
 	}
 

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -19,8 +20,6 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.team.internal.ui.Utils;
@@ -98,23 +97,7 @@ public class CommentNavigationAction extends Action {
 			currentComment = comments.get(isNext ? 0 : (comments.size() - 1));
 		}
 
-		Object[] expanded = viewer.getExpandedElements();
-		try {
-			viewer.getControl().setRedraw(false);
-			viewer.expandAll();
-			viewer.setSelection(new StructuredSelection(currentComment));
-			ITreeSelection treeSelection = (ITreeSelection) viewer.getSelection();
-			if (treeSelection.getPaths() != null && treeSelection.getPaths().length > 0) {
-				Object[] toBeExpanded = new Object[expanded.length + treeSelection.getPaths()[0].getSegmentCount()];
-				System.arraycopy(expanded, 0, toBeExpanded, 0, expanded.length);
-				for (int i = 0, s = treeSelection.getPaths()[0].getSegmentCount(); i < s; ++i) {
-					toBeExpanded[expanded.length + i] = treeSelection.getPaths()[0].getSegment(i);
-				}
-				viewer.setExpandedElements(toBeExpanded);
-			}
-		} finally {
-			viewer.getControl().setRedraw(true);
-		}
+		TreeViewerUtil.setSelection(viewer, currentComment);
 	}
 
 	private List<Comment> prepareListOfComments() {

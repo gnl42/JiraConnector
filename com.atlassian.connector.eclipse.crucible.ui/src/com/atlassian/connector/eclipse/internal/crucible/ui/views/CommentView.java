@@ -22,10 +22,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -33,7 +35,9 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -44,11 +48,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -56,11 +62,13 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.jetbrains.annotations.Nullable;
+
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Map;
 
-public class CommentView extends ViewPart implements ISelectionListener, IReviewActivationListener {
+public class CommentView extends ViewPart implements ISelectionChangedListener, ISelectionListener,
+		IReviewActivationListener {
 
 	private static final String NO_COMMENT_SELECTED = "No comment was selected in Crucible Review Explorer.";
 
@@ -112,6 +120,15 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 
 	public static final String ID = "com.atlassian.connector.eclipse.crucible.ui.commentView";
 
+	private final IPartListener2 linkWithReviewExplorerListener = new PartListenerAdapter() {
+		@Override
+		public void partOpened(IWorkbenchPartReference partRef) {
+			if (partRef.getPart(true) instanceof ReviewExplorerView) {
+				((ReviewExplorerView) partRef.getPart(true)).getViewer().addSelectionChangedListener(CommentView.this);
+			}
+		}
+	};
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -132,7 +149,11 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		}
 
 		CrucibleUiPlugin.getDefault().getActiveReviewManager().removeReviewActivationListener(this);
-		getViewSite().getPage().removeSelectionListener(this);
+
+		ReviewExplorerView explorerView = findReviewExplorerView();
+		if (explorerView != null) {
+			explorerView.getViewer().removeSelectionChangedListener(this);
+		}
 
 		if (toolkit != null) {
 			toolkit.dispose();
@@ -171,13 +192,15 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		createToolbar();
 		createMenu();
 
-		getViewSite().getPage().addSelectionListener(this);
 		final ReviewExplorerView reviewExplorerView = findReviewExplorerView();
 		if (reviewExplorerView != null) {
-			selectionChanged(reviewExplorerView, reviewExplorerView.getSelection());
+			selectionChanged(reviewExplorerView, reviewExplorerView.getViewer().getSelection());
+			reviewExplorerView.getViewer().addSelectionChangedListener(this);
 		} else {
 			updateViewer();
 		}
+
+		getSite().getPage().addPartListener(linkWithReviewExplorerListener);
 	}
 
 	private Composite createDetailsComposite(Composite stackComposite) {
@@ -322,7 +345,7 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 	 * Here we listen to changes in {@link ReviewExplorerView}
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (!(part instanceof ReviewExplorerView)) {
+		if (!(part instanceof ReviewExplorerView) && part != this) {
 			return;
 		}
 
@@ -403,36 +426,6 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 		stackComposite.layout();
 	}
 
-	// private Comment findActiveComment(Comment comment) {
-	// CrucibleFileInfo activeFileInfo;
-	// try {
-	// activeFileInfo = activeReview.getFileByPermId(comment.get
-	// ((CrucibleFileInfo) currentSelection.getFirstSegment()).getPermId());
-	// } catch (ValueNotYetInitialized e) {
-	// return null;
-	// }
-	//
-	// return findComment(comment.getPermId(), activeFileInfo.getVersionedComments());
-	// }
-
-	// private Comment findComment(PermId commentId, List<? extends Comment> comments) {
-	// if (comments != null) {
-	// for (Comment comment : comments) {
-	// if (comment.getPermId().equals(commentId)) {
-	// return comment;
-	// }
-	//
-	// if (comment.getReplies() != null) {
-	// Comment found = findComment(commentId, comment.getReplies());
-	// if (found != null) {
-	// return found;
-	// }
-	// }
-	// }
-	// }
-	// return null;
-	// }
-
 	public void reviewActivated(ITask task, Review review) {
 		reviewUpdated(task, review);
 	}
@@ -453,5 +446,9 @@ public class CommentView extends ViewPart implements ISelectionListener, IReview
 				}
 			}
 		});
+	}
+
+	public void selectionChanged(SelectionChangedEvent event) {
+		selectionChanged(this, event.getSelection());
 	}
 }

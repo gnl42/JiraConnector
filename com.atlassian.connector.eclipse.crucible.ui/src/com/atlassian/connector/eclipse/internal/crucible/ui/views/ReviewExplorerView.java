@@ -34,19 +34,21 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.OpenAndLinkWithEditorHelper;
+import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
 import com.atlassian.connector.eclipse.ui.util.SelectionUtil;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
+import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -91,6 +93,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -151,25 +154,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private Action showUnreadOnlyAction;
 
-	private final IPartListener2 linkWithEditorListener = new IPartListener2() {
-		public void partVisible(IWorkbenchPartReference partRef) {
-		}
-
-		public void partBroughtToTop(IWorkbenchPartReference partRef) {
-		}
-
-		public void partClosed(IWorkbenchPartReference partRef) {
-		}
-
-		public void partDeactivated(IWorkbenchPartReference partRef) {
-		}
-
-		public void partHidden(IWorkbenchPartReference partRef) {
-		}
-
-		public void partOpened(IWorkbenchPartReference partRef) {
-		}
-
+	private final IPartListener2 linkWithEditorListener = new PartListenerAdapter() {
 		public void partInputChanged(IWorkbenchPartReference partRef) {
 			if (partRef instanceof IEditorReference) {
 				editorActivated(((IEditorReference) partRef).getEditor(true));
@@ -207,14 +192,12 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		linkingEnabled = dialogSettings.getBoolean(TAG_LINK_EDITOR);
 	}
 
-	// this method is not really nice, but we decided to keep selection model for all review related
-	// views & editors here in this class
 	@Nullable
-	public ISelection getSelection() {
+	public TreeViewer getViewer() {
 		if (viewer == null) {
 			return null;
 		}
-		return viewer.getSelection();
+		return viewer;
 	}
 
 	@Override
@@ -326,7 +309,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		createMenu();
 		createContextMenu();
 
-		getSite().setSelectionProvider(viewer);
 		getSite().getPage().addPostSelectionListener(new ISelectionListener() {
 			private boolean focusMatchingComment(CrucibleFileInfo fileInfo, String revision, int start) {
 				for (VersionedComment comment : fileInfo.getVersionedComments()) {
@@ -347,14 +329,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (selection instanceof TextSelection && isLinkingEnabled()) {
-					IEditorInput editorInput = null;
-					if (part instanceof ITextEditor) {
-						editorInput = ((ITextEditor) part).getEditorInput();
-					} else if (part instanceof CompareEditor) {
-						editorInput = ((CompareEditor) part).getEditorInput();
-					}
-
+				if (selection instanceof TextSelection && isLinkingEnabled() && part instanceof IEditorPart) {
+					IEditorInput editorInput = ((IEditorPart) part).getEditorInput();
 					TextSelection textSelection = (TextSelection) selection;
 					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
 					int end = textSelection.getEndLine() + 1;
@@ -434,35 +410,11 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			if (viewer.getSelection().equals(newSelection)) {
 				viewer.reveal(element);
 			} else {
-				viewer.setSelection(newSelection, true);
-
-				while (element != null && viewer.getSelection().isEmpty()) {
-					// Try to select parent in case element is filtered
-					element = getParent(element);
-					if (element != null) {
-						newSelection = new StructuredSelection(element);
-						viewer.setSelection(newSelection, true);
-					}
-				}
+				TreeViewerUtil.setSelection(viewer, element);
 			}
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Returns the element's parent.
-	 * 
-	 * @param element
-	 *            the element
-	 * 
-	 * @return the parent or <code>null</code> if there's no parent
-	 */
-	private Object getParent(Object element) {
-		if (element instanceof IResource) {
-			return ((IResource) element).getParent();
-		}
-		return null;
 	}
 
 	private Object getInputFromEditor(IEditorInput editorInput) {
@@ -833,13 +785,15 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private void revealComment(IEditorPart part, Comment comment) {
 		VersionedComment parent = ReviewModelUtil.getParentVersionedComment(comment);
+		IEditorInput input = part.getEditorInput();
 
-		if (part instanceof ITextEditor) {
-			IEditorInput input = part.getEditorInput();
-			if (input instanceof ICrucibleFileProvider) {
-				EditorUtil.selectAndReveal((ITextEditor) part, parent,
-						((ICrucibleFileProvider) input).getCrucibleFile().getSelectedFile());
-			}
+		if (input instanceof ICrucibleFileProvider && part instanceof ITextEditor) {
+			EditorUtil.selectAndReveal((ITextEditor) part, parent, ((ICrucibleFileProvider) input).getCrucibleFile()
+					.getSelectedFile());
+		}
+
+		if (part instanceof CompareEditor) {
+
 		}
 
 	}
