@@ -18,13 +18,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractBackgroundJobReviewAction.RemoteCrucibleOperation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.BackgroundJobReviewAction.RemoteCrucibleOperation;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,16 +44,14 @@ public class RemoveCommentAction extends BaseSelectionListenerAction implements 
 
 	public void run() {
 		final Comment comment = (Comment) getStructuredSelection().getFirstElement();
-		IAction action = new AbstractBackgroundJobReviewAction(getText(), review, comment, WorkbenchUtil.getShell(),
+		IAction action = new BackgroundJobReviewAction(getText(), review, WorkbenchUtil.getShell(),
 				"Removing a comment from review " + review.getPermId().getId(), CrucibleImages.COMMENT_DELETE,
 				new RemoteCrucibleOperation() {
-					public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						server.removeComment(serverCfg, review.getPermId(), comment);
-					}
-				}, true) {
-			// nothing needed here
-		};
+			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
+					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+				server.removeComment(serverCfg, review.getPermId(), comment);
+			}
+		}, true);
 		action.run();
 
 		if (actionListener != null) {

@@ -17,11 +17,9 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
-import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -33,11 +31,9 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public abstract class AbstractBackgroundJobReviewAction extends AbstractListenableReviewAction {
+public class BackgroundJobReviewAction extends AbstractListenableReviewAction {
 
 	protected final Shell shell;
-
-	protected final Comment comment;
 
 	private final String jobMessage;
 
@@ -45,17 +41,16 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 
 	private final boolean reloadReview;
 
-	protected interface RemoteCrucibleOperation {
+	public interface RemoteCrucibleOperation {
 		void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
-	public AbstractBackgroundJobReviewAction(String text, Review review, Comment comment, Shell shell,
+	public BackgroundJobReviewAction(String text, Review review, Shell shell,
 			String jobMessage, ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation,
 			boolean reloadReview) {
 		super(text);
 		this.review = review;
-		this.comment = comment;
 		this.shell = shell;
 		this.jobMessage = jobMessage;
 		this.remoteOperation = remoteOperation;

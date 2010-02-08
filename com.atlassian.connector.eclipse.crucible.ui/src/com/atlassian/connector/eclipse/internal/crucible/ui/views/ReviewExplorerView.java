@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTa
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PublishAllDraftCommentsAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
@@ -139,6 +140,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private ExpandAllAction expandAll;
 
 	private CollapseAllAction collapseAll;
+
+	private PublishAllDraftCommentsAction publishAllDraftsAction;
 
 	private EditActiveTaskAction openEditorAction;
 
@@ -482,6 +485,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
 		review = newReview;
+		// this is needed too to let this action enable/disable itself when there are no draft comments
+		publishAllDraftsAction.reviewUpdated(review);
 		if (newReview == null) {
 			setContentDescription("");
 		} else {
@@ -606,6 +611,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		expandAll = new ExpandAllAction(viewer);
 		collapseAll = new CollapseAllAction(viewer);
 
+		publishAllDraftsAction = new PublishAllDraftCommentsAction();
+
 		expandSelected = new ExpandCollapseSelectionAction(viewer, true);
 		collapseSelected = new ExpandCollapseSelectionAction(viewer, false);
 
@@ -658,9 +665,11 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(new Separator());
 		mgr.add(openEditorAction);
 		mgr.add(showCommentsViewAction);
-		mgr.add(addGeneralCommentAction);
 		mgr.add(new Separator());
+		mgr.add(addGeneralCommentAction);
+		mgr.add(publishAllDraftsAction);
 		mgr.add(addFileCommentAction);
+		mgr.add(new Separator());
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
 		mgr.add(compareAction);

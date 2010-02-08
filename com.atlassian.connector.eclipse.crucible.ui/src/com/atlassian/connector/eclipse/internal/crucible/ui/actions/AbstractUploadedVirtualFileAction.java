@@ -23,18 +23,16 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.UrlUtil;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Shell;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public abstract class AbstractUploadedVirtualFileAction extends AbstractBackgroundJobReviewAction implements
+public abstract class AbstractUploadedVirtualFileAction extends BackgroundJobReviewAction implements
 		IReviewAction {
 
 	private IReviewActionListener actionListener;
@@ -42,7 +40,7 @@ public abstract class AbstractUploadedVirtualFileAction extends AbstractBackgrou
 	public AbstractUploadedVirtualFileAction(String text, Review review, Comment comment, Shell shell,
 			String jobMessage, ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation,
 			boolean reloadReview) {
-		super(text, review, comment, shell, jobMessage, imageDescriptor, remoteOperation, reloadReview);
+		super(text, review, shell, jobMessage, imageDescriptor, remoteOperation, reloadReview);
 	}
 
 	@Override

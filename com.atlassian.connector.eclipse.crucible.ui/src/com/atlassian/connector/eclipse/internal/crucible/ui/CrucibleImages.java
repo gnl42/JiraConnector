@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -87,9 +86,11 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor OVR_ADDED = create(OVR, "added.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor PUBLISH_DRAFT_COMMENTS = create(T_OBJ, "ico_comment_toggle_read.png"); //$NON-NLS-1$
+
 	/**
-	 * this icon is borrowed from org.eclipse.ui (access scope is there internal, so I don't want to have compilation
-	 * warning just because of it
+	 * this icon is borrowed from org.eclipse.ui (access scope is there internal, so I don't want to have compilation warning
+	 * just because of it
 	 */
 	public static final ImageDescriptor OVR_MODIFIED = create(OVR, "dirty_ov.gif"); //$NON-NLS-1$
 

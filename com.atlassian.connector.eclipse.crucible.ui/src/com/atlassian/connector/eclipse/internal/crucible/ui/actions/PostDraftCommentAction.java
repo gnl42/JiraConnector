@@ -19,13 +19,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractBackgroundJobReviewAction.RemoteCrucibleOperation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.BackgroundJobReviewAction.RemoteCrucibleOperation;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -34,7 +33,7 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 public class PostDraftCommentAction extends BaseSelectionListenerAction implements IReviewAction {
 
-	private static String PUBLISH_COMMENT = "Publish Comment";
+	private static final String PUBLISH_COMMENT = "Publish Comment";
 
 	private Review review;
 
@@ -47,16 +46,14 @@ public class PostDraftCommentAction extends BaseSelectionListenerAction implemen
 
 	public void run() {
 		final Comment comment = (Comment) getStructuredSelection().getFirstElement();
-		IAction action = new AbstractBackgroundJobReviewAction("Publish Comment", review, comment,
+		IAction action = new BackgroundJobReviewAction("Publish Comment", review,
 				WorkbenchUtil.getShell(), "Publishing selected comment for review " + review.getPermId().getId(),
 				CrucibleImages.COMMENT_POST, new RemoteCrucibleOperation() {
 			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
 			}
-		}, true) {
-			// nothing needed here
-		};
+		}, true);
 		action.run();
 
 		if (actionListener != null) {
