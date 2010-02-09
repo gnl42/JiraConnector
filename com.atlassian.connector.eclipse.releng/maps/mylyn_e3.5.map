@@ -77,6 +77,8 @@ plugin@org.eclipse.mylyn.wikitext.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:
 plugin@org.eclipse.mylyn.xplanner.core=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.core
 plugin@org.eclipse.mylyn.xplanner.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.ui
 
+plugin@org.eclipse.mylyn.tests.util=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests.util
+plugin@org.eclipse.mylyn.commons.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
 plugin@org.eclipse.mylyn.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests
 plugin@org.eclipse.mylyn.bugzilla.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.tests
 plugin@org.eclipse.mylyn.commons.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
