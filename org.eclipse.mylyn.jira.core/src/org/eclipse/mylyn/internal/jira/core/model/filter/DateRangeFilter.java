@@ -29,6 +29,10 @@ public class DateRangeFilter extends DateFilter {
 
 	private final String to;
 
+	public DateRangeFilter(Date fromDate, Date toDate) {
+		this(fromDate, toDate, null, null);
+	}
+
 	public DateRangeFilter(Date fromDate, Date toDate, String from, String to) {
 		this.fromDate = fromDate;
 		this.toDate = toDate;
