@@ -833,7 +833,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.READ_ONLY);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		taskData.getRoot().getAttribute(JiraAttribute.COMMENT_NEW.id()).setValue("new comment");
 
@@ -847,7 +847,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(2, comments.size());
 		assertEquals("comment", comments.get(0).getText());
 		assertEquals("new comment", comments.get(1).getText());
-		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 	}
 
 	private Set<TaskAttribute> buildChanged(TaskAttribute root, JiraAttribute... attrs) {
