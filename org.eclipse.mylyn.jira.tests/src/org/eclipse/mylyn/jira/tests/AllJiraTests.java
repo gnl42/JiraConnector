@@ -24,6 +24,7 @@ import org.eclipse.mylyn.jira.tests.core.JiraTaskDataHandlerTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTaskExternalizationTest;
 import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiStandaloneTest;
 import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiTest;
+import org.eclipse.mylyn.jira.tests.ui.WdhmUtilTest;
 import org.eclipse.mylyn.jira.tests.util.JiraFixture;
 
 /**
@@ -44,6 +45,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		suite.addTestSuite(JiraConnectorUiTest.class);
+		suite.addTestSuite(WdhmUtilTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
 			fixture.createSuite(suite);
