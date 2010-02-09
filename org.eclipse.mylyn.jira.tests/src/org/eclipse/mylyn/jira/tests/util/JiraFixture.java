@@ -23,7 +23,7 @@ import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
  */
 public class JiraFixture extends TestFixture {
 
-	public static final String SERVER = System.getProperty("mylyn.jira.server", "mylyn.eclipse.org");
+	public static final String SERVER = System.getProperty("mylyn.jira.server", "ecit.atlassian.com");
 
 	private static final String getServerUrl(String version) {
 		return "http://" + SERVER + "/" + version;
