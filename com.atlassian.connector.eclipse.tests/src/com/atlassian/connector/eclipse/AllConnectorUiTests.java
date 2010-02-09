@@ -30,6 +30,7 @@ public final class AllConnectorUiTests {
 		suite.addTest(AllBambooUiTests.suite());
 		suite.addTest(AllFisheyeUiTests.suite());
 		suite.addTest(AllEclipseUiTests.suite());
+
 		return suite;
 	}
 

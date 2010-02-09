@@ -10,7 +10,6 @@ feature@org.eclipse.mylyn.sdk_feature=R_3_3_0,:pserver:anonymous@dev.eclipse.org
 
 !******* EXTRAS ***********
 feature@org.eclipse.mylyn.trac_feature=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.trac-feature
-feature@org.eclipse.mylyn.jira_feature=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.jira-feature
 feature@org.eclipse.mylyn.web.tasks_feature=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.web.tasks-feature
 feature@org.eclipse.mylyn.extras_sdk_feature=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.extras-sdk-feature
 
@@ -44,8 +43,6 @@ plugin@org.eclipse.mylyn.ide.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsr
 plugin@org.eclipse.mylyn.ide.ant=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.ant
 plugin@org.eclipse.mylyn.java.tasks=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tasks
 plugin@org.eclipse.mylyn.java.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.ui
-plugin@org.eclipse.mylyn.jira.core=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.jira.core
-plugin@org.eclipse.mylyn.jira.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.jira.ui
 plugin@org.eclipse.mylyn.monitor.core=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.monitor.core
 plugin@org.eclipse.mylyn.monitor.reports=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.monitor.reports
 plugin@org.eclipse.mylyn.monitor.ui=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.monitor.ui
@@ -86,7 +83,6 @@ plugin@org.eclipse.mylyn.commons.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.or
 plugin@org.eclipse.mylyn.context.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
 plugin@org.eclipse.mylyn.ide.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.tests
 plugin@org.eclipse.mylyn.java.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tests
-plugin@org.eclipse.mylyn.jira.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.jira.tests
 plugin@org.eclipse.mylyn.monitor.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.monitor.tests
 plugin@org.eclipse.mylyn.resources.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
 plugin@org.eclipse.mylyn.sandbox.tests=R_3_3_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.tests

@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse;
 
+import org.eclipse.mylyn.jira.tests.AllJiraTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -24,6 +26,7 @@ public final class AllConnectorTests {
 
 		suite.addTest(AllConnectorCoreTests.suite());
 		suite.addTest(AllConnectorUiTests.suite());
+		suite.addTest(AllJiraTests.suite());
 
 		return suite;
 	}
