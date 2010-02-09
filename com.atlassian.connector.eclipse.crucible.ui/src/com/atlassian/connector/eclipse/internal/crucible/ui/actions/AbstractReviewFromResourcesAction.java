@@ -49,7 +49,7 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 	@Override
 	protected void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell) {
 
-		// TODO jj allow to create review for projects not undev vcs
+		// TODO allow to create review for projects not undev vcs
 
 		if (!TeamUiUtils.checkTeamConnectors()) {
 			// no connectors at all

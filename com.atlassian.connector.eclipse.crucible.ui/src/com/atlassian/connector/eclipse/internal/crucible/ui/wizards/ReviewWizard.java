@@ -333,6 +333,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					detailsPage.isStartReviewImmediately());
 		}
 
+		// TODO remove unused code (check if all below ifs are still used)
+
 		// create patch review
 		if (addPatchPage != null) {
 			String patchToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatch() : null;
@@ -355,7 +357,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		// TODO jj remove unused code
 		// create pre-commit review
 		if (addWorkspacePatchPage != null) {
 			final IResource[] selection = addWorkspacePatchPage.getSelection();
