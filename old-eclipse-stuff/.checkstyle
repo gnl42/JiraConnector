@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<fileset-config file-format-version="1.2.0" simple-config="false">
-    <fileset name="not all" enabled="true" check-config-name="PAZU" local="false">
-        <file-match-pattern match-pattern="." include-pattern="true"/>
-        <file-match-pattern match-pattern="NotificationPopupColors.java" include-pattern="false"/>
-        <file-match-pattern match-pattern="com.atlassian.theplugin.eclipse.view.popup.*" include-pattern="false"/>
-    </fileset>
-</fileset-config>
