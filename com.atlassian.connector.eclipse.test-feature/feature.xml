@@ -24,18 +24,23 @@
 
    <requires>
       <import plugin="org.junit"/>
-      <import plugin="com.atlassian.connector.eclipse.crucible.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.atlassian.connector.commons" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.atlassian.connector.eclipse.crucible.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.atlassian.connector.eclipse.ui" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="com.atlassian.connector.eclipse.core" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
+      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="com.atlassian.connector.eclipse.crucible.ui"/>
+      <import plugin="com.atlassian.connector.eclipse.ui"/>
+      <import plugin="com.atlassian.connector.eclipse.core"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.core"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.ui"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.soap" version="3.2.0.I20090529" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.jira.core"/>
+      <import plugin="org.eclipse.mylyn.jira.ui"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui" version="1.0.0" match="greaterOrEqual"/>
+      
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
+      
+      <import plugin="org.eclipse.mylyn.commons.soap" version="3.2.0.I20090529" match="compatible"/>
+      
       <!--
       <import plugin="com.atlassian.connector.eclipse.subclipse.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.subversive.ui" version="1.0.0" match="greaterOrEqual"/>
@@ -92,6 +97,12 @@
 		unpack="false"/>
 		
 	<plugin id="org.eclipse.mylyn.jira.ui"
+		download-size="0"
+		install-size="0"
+		version="0.0.0"
+		unpack="false"/>
+		
+	<plugin id="org.eclipse.mylyn.jira.tests"
 		download-size="0"
 		install-size="0"
 		version="0.0.0"
