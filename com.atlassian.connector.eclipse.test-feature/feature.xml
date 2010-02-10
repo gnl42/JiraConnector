@@ -53,7 +53,7 @@
          version="0.0.0"
          unpack="false"/>
 
-	<!-- unpack=false because we refere to file from this plugin in build system -->
+	<!-- unpack=false because we refer to file from this plugin in build system -->
    <plugin
          id="com.atlassian.connector.eclipse.tests"
          download-size="0"
