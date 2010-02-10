@@ -12,7 +12,7 @@
 <feature
       id="org.eclipse.mylyn.jira_feature"
       label="%featureName"
-      version="3.3.2.qualifier"
+      version="3.3.99.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.mylyn">
 
@@ -62,7 +62,7 @@
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
       
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="equivalent"/>
-      <import feature="com.atlassian.connector.eclipse.jira_feature"/>
+      <import feature="com.atlassian.connector.eclipse.jira" version="1.4.0.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
