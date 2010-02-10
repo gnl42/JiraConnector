@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Date: Thu, 11 Dec 2008 02:33:32 GMT
+Server: Apache-Coyote/1.1
+Content-Type: text/xml;charset=utf-8
+Connection: close
+Transfer-Encoding: chunked
+
+404
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><ns1:getServerInfoResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://soap.rpc.jira.atlassian.com"><getServerInfoReturn href="#id0"/></ns1:getServerInfoResponse><multiRef id="id0" soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:RemoteServerInfo" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns2="http://beans.soap.rpc.jira.atlassian.com"><baseUrl xsi:type="xsd:string">http://mylyn.eclipse.org/jira-enterprise-3.13.1</baseUrl><buildDate xsi:type="xsd:dateTime">2008-10-23T04:00:00.000Z</buildDate><buildNumber xsi:type="xsd:string">333</buildNumber><edition xsi:type="xsd:string">Enterprise</edition><version xsi:type="xsd:string">3.13.1</version></multiRef></soapenv:Body></soapenv:Envelope>
+0
+
