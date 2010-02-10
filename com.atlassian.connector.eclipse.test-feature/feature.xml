@@ -37,7 +37,7 @@
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui" version="1.0.0" match="greaterOrEqual"/>
       
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import feature="com.atlassian.connector.eclipse.jira_feature"/>
       
       <import plugin="org.eclipse.mylyn.commons.soap" version="3.2.0.I20090529" match="compatible"/>
       
@@ -90,19 +90,19 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin id="org.eclipse.mylyn.jira.core"
+	<plugin id="com.atlassian.connector.eclipse.jira.core"
 		download-size="0"
 		install-size="0"
 		version="0.0.0"
 		unpack="false"/>
 		
-	<plugin id="org.eclipse.mylyn.jira.ui"
+	<plugin id="com.atlassian.connector.eclipse.jira.ui"
 		download-size="0"
 		install-size="0"
 		version="0.0.0"
 		unpack="false"/>
 		
-	<plugin id="org.eclipse.mylyn.jira.tests"
+	<plugin id="com.atlassian.connector.eclipse.jira.tests"
 		download-size="0"
 		install-size="0"
 		version="0.0.0"
