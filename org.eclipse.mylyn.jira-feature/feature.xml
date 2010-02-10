@@ -69,14 +69,14 @@
          id="org.eclipse.mylyn.jira.ui"
          download-size="0"
          install-size="0"
-         version="3.3.2.qualifier"
+         version="3.3.99.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylyn.jira.core"
          download-size="0"
          install-size="0"
-         version="3.3.2.qualifier"
+         version="3.3.99.qualifier"
          unpack="false"/>
 
    <plugin
