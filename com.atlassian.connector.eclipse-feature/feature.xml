@@ -32,6 +32,11 @@
          version="0.0.0"
          name="Bamboo Integration"/>
 
+   <includes
+         id="com.atlassian.connector.eclipse.jira"
+         version="0.0.0"
+         name="Jira Integration"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
