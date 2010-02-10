@@ -45,6 +45,8 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.core.net"/>
+      
       <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
@@ -62,10 +64,10 @@
       <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.soap" version="3.0.0" match="compatible"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
+      
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="equivalent"/>
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.3.99.qualifier"/>
+      <import feature="org.eclipse.mylyn.jira_feature" version="3.3.99" match="greaterOrEqual"/>
    </requires>
 
    <plugin
