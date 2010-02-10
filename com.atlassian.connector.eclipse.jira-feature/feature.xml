@@ -10,7 +10,7 @@
          Tasktop Technologies - initial API and implementation
  -->
 <feature
-      id="com.atlassian.connector.eclipse.jira_feature"
+      id="com.atlassian.connector.eclipse.jira"
       label="%featureName"
       version="1.4.0.qualifier"
       provider-name="%providerName"
@@ -60,9 +60,7 @@
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
-      
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="equivalent"/>
-      <!--import feature="org.eclipse.mylyn.jira_feature" version="3.3.0.I20091013" match="equivalent" /-->
    </requires>
 
    <plugin
