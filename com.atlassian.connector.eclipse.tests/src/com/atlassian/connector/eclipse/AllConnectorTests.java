@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse;
 
-import org.eclipse.mylyn.jira.tests.AllJiraTests;
+import com.atlassian.connector.eclipse.jira.tests.AllJiraTests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

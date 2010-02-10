@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.eclipse.mylyn.jira.core" default="clean-source">
+<project name="com.atlassian.connector.eclipse.jira.core" default="clean-source">
     <description>
             Generate SOAP stubs
     </description>
 
 	<target name="clean-source">
-		<replace dir="src/org/eclipse/mylyn/internal/jira/core/wsdl">
+		<replace dir="src/com/atlassian/connector/eclipse/internal/jira/core/wsdl">
 			<include name="**/*.java"/>
   			<replacetoken><![CDATA[
 public ]]></replacetoken>
@@ -13,13 +13,13 @@ public ]]></replacetoken>
 @SuppressWarnings("all")
 public ]]></replacevalue>
 		</replace>
-		<replace dir="src/org/eclipse/mylyn/internal/jira/core/wsdl">
+		<replace dir="src/com/atlassian/connector/eclipse/internal/jira/core/wsdl">
 			<include name="**/*.java"/>
   			<replacetoken><![CDATA[by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.]]></replacetoken>
 			<replacevalue><![CDATA[by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.]]></replacevalue>
 		</replace>
 <!--
-		<replace dir="src/org/eclipse/mylyn/internal/jira/core/wsdl">
+		<replace dir="src/com/atlassian/connector/eclipse/internal/jira/core/wsdl">
 			<include name="**/*.java"/>
   			<replacetoken><![CDATA[/**
  *]]></replacetoken>

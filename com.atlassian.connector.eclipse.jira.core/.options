@@ -1,9 +1,9 @@
 
 # JiraRepositoryConnector
-org.eclipse.mylyn.jira.core/debug/connector=false
+com.atlassian.connector.eclipse.jira.core/debug/connector=false
 
 # JiraTaskDataHandler
-org.eclipse.mylyn.jira.core/debug/dataHandler=false
+com.atlassian.connector.eclipse.jira.core/debug/dataHandler=false
 
 # JiraUtil
-org.eclipse.mylyn.jira.core/debug/repository=false
+com.atlassian.connector.eclipse.jira.core/debug/repository=false

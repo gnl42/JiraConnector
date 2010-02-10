@@ -14,19 +14,6 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.mylyn.jira.tests.core.JiraClientFactoryTest;
-import org.eclipse.mylyn.jira.tests.core.JiraCustomQueryTest;
-import org.eclipse.mylyn.jira.tests.core.JiraFilterTest;
-import org.eclipse.mylyn.jira.tests.core.JiraRepositoryConnectorTest;
-import org.eclipse.mylyn.jira.tests.core.JiraStackTraceDuplicateDetectorTest;
-import org.eclipse.mylyn.jira.tests.core.JiraTaskAttachmentHandlerTest;
-import org.eclipse.mylyn.jira.tests.core.JiraTaskDataHandlerTest;
-import org.eclipse.mylyn.jira.tests.core.JiraTaskExternalizationTest;
-import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiStandaloneTest;
-import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiTest;
-import org.eclipse.mylyn.jira.tests.ui.WdhmUtilTest;
-import org.eclipse.mylyn.jira.tests.util.JiraFixture;
-
 /**
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
@@ -36,22 +23,6 @@ public class AllJiraTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Tests for org.eclipse.mylyn.jira.tests");
 		suite.addTest(AllJiraHeadlessStandaloneTests.suite());
-		suite.addTestSuite(JiraCustomQueryTest.class);
-		suite.addTestSuite(JiraConnectorUiStandaloneTest.class);
-		suite.addTestSuite(JiraClientFactoryTest.class);
-		suite.addTestSuite(JiraTaskExternalizationTest.class);
-		suite.addTestSuite(JiraRepositoryConnectorTest.class);
-		suite.addTestSuite(JiraTaskAttachmentHandlerTest.class);
-		suite.addTestSuite(JiraTaskDataHandlerTest.class);
-		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
-		suite.addTestSuite(JiraConnectorUiTest.class);
-		suite.addTestSuite(WdhmUtilTest.class);
-		// repository tests
-		for (JiraFixture fixture : JiraFixture.ALL) {
-			fixture.createSuite(suite);
-			fixture.add(JiraFilterTest.class);
-			fixture.done();
-		}
 		return suite;
 	}
 
