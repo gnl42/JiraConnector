@@ -74,29 +74,21 @@ public final class EditorUtil {
 		}
 
 		if (page != null) {
+			// check current first because we can match multiple editors and would be bad if we switched
+			// user to another editor if current matches too
+			IEditorPart editor = page.getActiveEditor();
+			if (editor != null) {
+				if (isOpenInEditor(fileInfo, parentComment, editor.getEditorInput())) {
+					return editor;
+				}
+			}
+
 			IEditorReference[] editors = page.getEditorReferences();
 			if (editors != null) {
 				for (IEditorReference ref : editors) {
 					try {
-						IEditorInput input = ref.getEditorInput();
-						if (input instanceof ICrucibleFileProvider) {
-							CrucibleFile crucibleFile = ((ICrucibleFileProvider) input).getCrucibleFile();
-							if (fileInfo.equals(crucibleFile.getCrucibleFileInfo())) {
-								if (parentComment != null) {
-									Map<String, IntRanges> commentRanges = parentComment.getLineRanges();
-									if (commentRanges != null
-											&& commentRanges.containsKey(crucibleFile.getSelectedFile().getRevision())) {
-										return ref.getEditor(true);
-									}
-								} else {
-									return ref.getEditor(true);
-								}
-							}
-						}
-						if (input instanceof CrucibleFileInfoCompareEditorInput) {
-							if (fileInfo.equals(((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo())) {
-								return ref.getEditor(true);
-							}
+						if (isOpenInEditor(fileInfo, parentComment, ref.getEditorInput())) {
+							return ref.getEditor(true);
 						}
 					} catch (PartInitException e) {
 						// ignore
@@ -106,6 +98,29 @@ public final class EditorUtil {
 		}
 
 		return null;
+	}
+
+	private static boolean isOpenInEditor(CrucibleFileInfo fileInfo, VersionedComment parentComment, IEditorInput input) {
+		if (input instanceof ICrucibleFileProvider) {
+			CrucibleFile crucibleFile = ((ICrucibleFileProvider) input).getCrucibleFile();
+			if (fileInfo.equals(crucibleFile.getCrucibleFileInfo())) {
+				if (parentComment != null) {
+					Map<String, IntRanges> commentRanges = parentComment.getLineRanges();
+					if (commentRanges != null
+							&& commentRanges.containsKey(crucibleFile.getSelectedFile().getRevision())) {
+						return true;
+					}
+				} else {
+					return true;
+				}
+			}
+		}
+		if (input instanceof CrucibleFileInfoCompareEditorInput) {
+			if (fileInfo.equals(((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static void internalSelectAndReveal(ITextEditor textEditor, final int offset, final int length) {

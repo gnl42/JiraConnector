@@ -30,7 +30,6 @@ import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedExcept
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -83,8 +82,8 @@ public class CompareVirtualFilesJob extends JobWithStatus {
 				cc.setLeftLabel(newFile.getName() + " " + newFile.getRevision());
 				cc.setRightLabel(oldFile.getName() + " " + oldFile.getRevision());
 
-				CompareEditorInput compareEditorInput = new CrucibleFileInfoCompareEditorInput(fileInfo, newContent,
-						oldContent, annotationModel, cc);
+				CrucibleFileInfoCompareEditorInput compareEditorInput = new CrucibleFileInfoCompareEditorInput(
+						fileInfo, newContent, oldContent, annotationModel, cc);
 				TeamUiUtils.openCompareEditorForInput(compareEditorInput);
 				return null;
 			}
