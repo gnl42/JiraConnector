@@ -55,6 +55,7 @@
       <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="javax.activation" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="compatible"/>
       <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
