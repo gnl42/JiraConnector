@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Perforce Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.perforce.core;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.perforce.core.AtlassianPerforceCorePlugin
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
