@@ -572,7 +572,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
-		linkWithEditorAction = new Action("Link With Editor and Comment View", IAction.AS_CHECK_BOX) {
+		linkWithEditorAction = new Action("Link With Editor", IAction.AS_CHECK_BOX) {
 			{
 				setImageDescriptor(AtlassianImages.IMG_LINK_WITH_EDITOR);
 				setChecked(isLinkingEnabled());
