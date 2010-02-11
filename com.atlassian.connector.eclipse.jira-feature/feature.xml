@@ -120,13 +120,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!-- org.eclipse.mylyn.jira_feature provides it -->
-   <!--plugin
+   <plugin
          id="javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/-->
+         unpack="false"/>
 
    <plugin
          id="javax.mail"
