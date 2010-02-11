@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Crucible UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.ui;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.core.runtime,
  org.eclipse.ui,
