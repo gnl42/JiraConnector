@@ -1,13 +1,5 @@
 <plugin>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-            id="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-            name="Atlassian Connector">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="com.atlassian.connector.eclipse.ui.preferences.PreferenceInitializer">
