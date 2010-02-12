@@ -244,7 +244,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			public void widgetSelected(SelectionEvent e) {
 				setErrorMessage(null);
 				boolean selection = buttonSaved.getSelection();
-				if (filters != null) {
+				if (filters != null && filters.length > 0) {
 					savedFilterList.setEnabled(selection);
 				}
 				getContainer().updateButtons();
@@ -337,7 +337,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					// download filters
 					downloadFilters();
 
-					savedFilterList.setEnabled(buttonSaved.getSelection());
+					savedFilterList.setEnabled(buttonSaved.getSelection() && filters != null && filters.length > 0);
 					savedFilterList.setSelection(s);
 
 					getContainer().updateButtons();
@@ -404,12 +404,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			projectList.getControl().setEnabled(false);
 			updateButton.setEnabled(false);
 
-			getContainer().updateButtons();
-
 			downloadProjects();
 
 			projectList.getControl().setEnabled(projectListEnabled);
-			getContainer().updateButtons();
 			updateButton.setEnabled(updateProjectsButtonEnabled);
 		}
 
