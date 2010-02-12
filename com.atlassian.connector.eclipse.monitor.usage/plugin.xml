@@ -12,11 +12,16 @@
    </extension>   
     
    <extension point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.AtlassianPreferencePage"
+            id="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+            name="Atlassian Connector">
+      </page>
       <page 
          name="%preferencePage.name"
          class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.UsageDataPreferencePage"
          id="com.atlassian.connector.eclipse.monitor.usage.preferences"
-		 category="%preferencePage.category">
+		 category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage">
          <keywordReference id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
       </page> 
    </extension>
