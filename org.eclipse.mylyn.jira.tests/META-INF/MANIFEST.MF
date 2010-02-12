@@ -3,22 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Jira Tests
 Bundle-SymbolicName: org.eclipse.mylyn.jira.tests
 Bundle-Version: 0.0.0
-Require-Bundle: org.junit,
- org.eclipse.core.runtime,
- org.eclipse.jface.text,
- org.eclipse.search,
- org.eclipse.ui,
- org.eclipse.mylyn.commons.core,
- org.eclipse.mylyn.commons.net,
- org.eclipse.mylyn.context.core,
- org.eclipse.mylyn.jira.core,
- org.eclipse.mylyn.jira.ui,
- org.eclipse.mylyn.tasks.core,
- org.eclipse.mylyn.tasks.ui,
- org.eclipse.mylyn.tests.util,
- org.apache.axis;bundle-version="1.4.0",
- org.eclipse.mylyn.commons.tests,
- org.eclipse.mylyn.commons.soap
+Require-Bundle: org.eclipse.mylyn.jira.core,
+ org.eclipse.mylyn.jira.ui
 Export-Package: org.eclipse.mylyn.jira.tests;x-internal:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Eclipse Mylyn
