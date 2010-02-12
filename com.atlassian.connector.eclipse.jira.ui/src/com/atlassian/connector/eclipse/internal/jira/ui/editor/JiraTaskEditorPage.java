@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
@@ -53,6 +54,26 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 				}
 			}.setPath(ID_PART_ATTRIBUTES + "/" + PATH_PLANNING)); //$NON-NLS-1$
 		}
+
+		// remove standard comment part 
+		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
+		while (iter.hasNext()) {
+			TaskEditorPartDescriptor part = iter.next();
+			if (part.getId().equals(ID_PART_NEW_COMMENT)) {
+				parts.remove(part);
+
+				// add JIRA specific comment part (with visibility restriction combo)
+				parts.add(new TaskEditorPartDescriptor(ID_PART_NEW_COMMENT) {
+					@Override
+					public AbstractTaskEditorPart createPart() {
+						return new JiraNewCommentPart(getModel());
+					}
+				}.setPath(part.getPath()));
+
+				break;
+			}
+		}
+
 		return parts;
 	}
 
