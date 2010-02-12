@@ -65,6 +65,7 @@
       <import plugin="org.eclipse.mylyn.commons.soap" version="3.0.0" match="compatible"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
+      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="equivalent"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.3.99" match="greaterOrEqual"/>
    </requires>
@@ -78,6 +79,13 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.jira.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="com.atlassian.connector.eclipse.monitor.usage"
          download-size="0"
          install-size="0"
          version="0.0.0"
