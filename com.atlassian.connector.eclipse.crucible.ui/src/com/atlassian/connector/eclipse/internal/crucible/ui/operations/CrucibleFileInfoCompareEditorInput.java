@@ -210,4 +210,10 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput imple
 		return fileInfo;
 	}
 
+	@Override
+	protected void contentsCreated() {
+		super.contentsCreated();
+		getAnnotationModelToAttach().focusOnComment();
+	}
+
 }
