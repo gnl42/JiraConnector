@@ -12,15 +12,25 @@
 
 package com.atlassian.connector.eclipse.jira.tests.core;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-
-import junit.framework.TestCase;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraTestResultCollector;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -41,25 +51,15 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestResultCollector;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+
+import junit.framework.TestCase;
 
 /**
  * @author Steffen Pingel
@@ -312,7 +312,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		// create an issue
-		Date start = new Date();
+		Date start = new Date();//new Date().getTime() + 1000 * 60 * 3);
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertFalse(task.isCompleted());
@@ -321,9 +321,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		String resolveOperation = JiraTestUtil.getOperation(client, issue.getKey(), "resolve");
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
-
-		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 		SynchronizationSession session = createSession(task);
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
+		System.out.println("Testing failing test");
 		connector.preSynchronization(session, null);
 		assertTrue(session.needsPerformQueries());
 		assertTrue("Expected preSynchronization() to update task", task.isCompleted());
