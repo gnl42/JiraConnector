@@ -211,8 +211,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 						monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
-						// only load old task data from if necessary 
+						// only load old task data from if necessary
+						System.out.println("About to check " + issue.getKey());
 						if (hasChanged(task, issue)) {
+							System.out.println("Issue has been changed " + issue.getKey());
 							TaskData oldTaskData = null;
 							if (session.getTaskDataManager() != null) {
 								try {

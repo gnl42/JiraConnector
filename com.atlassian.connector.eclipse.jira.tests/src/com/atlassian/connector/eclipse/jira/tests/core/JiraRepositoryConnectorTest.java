@@ -323,8 +323,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 		SynchronizationSession session = createSession(task);
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
-		System.out.println("Testing failing test");
+		System.out.println("BEGIN Testing failing test");
 		connector.preSynchronization(session, null);
+		System.out.println("END Testing failing test");
 		assertTrue(session.needsPerformQueries());
 		assertTrue("Expected preSynchronization() to update task", task.isCompleted());
 	}
