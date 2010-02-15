@@ -367,6 +367,31 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	}
 
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+
+		if (visible) {
+			if (!client.getCache().hasDetails()) {
+
+				boolean projectListEnabled = projectList.getControl().getEnabled();
+				boolean updateProjectsButtonEnabled = updateButton.getEnabled();
+
+				projectList.getControl().setEnabled(false);
+				updateButton.setEnabled(false);
+
+				downloadProjects();
+
+				projectList.getControl().setEnabled(projectListEnabled);
+				updateButton.setEnabled(updateProjectsButtonEnabled);
+
+			}
+
+			projectList.setInput(client.getCache().getProjects());
+
+		}
+	}
+
 	private void initializeProjects() {
 		projectList.setContentProvider(new IStructuredContentProvider() {
 
@@ -396,21 +421,6 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 		});
 
-		if (!client.getCache().hasDetails()) {
-
-			boolean projectListEnabled = projectList.getControl().getEnabled();
-			boolean updateProjectsButtonEnabled = updateButton.getEnabled();
-
-			projectList.getControl().setEnabled(false);
-			updateButton.setEnabled(false);
-
-			downloadProjects();
-
-			projectList.getControl().setEnabled(projectListEnabled);
-			updateButton.setEnabled(updateProjectsButtonEnabled);
-		}
-
-		projectList.setInput(client.getCache().getProjects());
 	}
 
 	private void initializePredefinedFilters() {
