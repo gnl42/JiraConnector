@@ -6,6 +6,9 @@
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
+   <feature url="features/com.atlassian.connector.eclipse.jira_@core@.jar" id="com.atlassian.connector.eclipse.jira" version="@core@">
+      <category name="Connector"/>
+   </feature>
    <feature url="features/com.atlassian.connector.eclipse.crucible_@core@.jar" id="com.atlassian.connector.eclipse.crucible" version="@core@">
       <category name="Integrations"/>
    </feature>
