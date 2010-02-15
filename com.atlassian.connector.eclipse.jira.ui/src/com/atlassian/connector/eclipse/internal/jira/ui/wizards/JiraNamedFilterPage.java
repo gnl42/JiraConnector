@@ -602,27 +602,28 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		} else if (buttonPredefined.getSelection()) {
 			IStructuredSelection filterSelection = (IStructuredSelection) predefinedFiltersList.getSelection();
 
-			IStructuredSelection projectSelection = (IStructuredSelection) projectList.getSelection();
-
-			if (filterSelection != null && !filterSelection.isEmpty() && projectSelection != null
-					&& !projectSelection.isEmpty()) {
+			if (filterSelection != null && !filterSelection.isEmpty()) {
 				PredefinedFilter selected = (PredefinedFilter) filterSelection.getFirstElement();
-				Object project = projectSelection.getFirstElement();
 
-				String projectName = null;
+				IStructuredSelection projectSelection = (IStructuredSelection) projectList.getSelection();
 
-				if (project instanceof String) {
-					projectName = (String) project;
-				} else if (project instanceof Project) {
-					projectName = ((Project) project).getName();
-				}
+				if (projectSelection != null && !projectSelection.isEmpty()) {
+					Object project = projectSelection.getFirstElement();
 
-				if (projectName != null) {
-					return selected.getName() + " (" + projectName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+					String projectName = null;
+
+					if (project instanceof String) {
+						projectName = (String) project;
+					} else if (project instanceof Project) {
+						projectName = ((Project) project).getName();
+					}
+
+					if (projectName != null) {
+						return selected.getName() + " (" + projectName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				}
 
 				return selected.getName();
-
 			}
 		}
 
