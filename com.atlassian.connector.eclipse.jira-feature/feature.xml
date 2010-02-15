@@ -36,6 +36,11 @@
          id="org.eclipse.mylyn.jira_feature"
          version="0.0.0"/>
 
+   <includes
+         id="com.atlassian.connector.eclipse.monitor"
+         version="0.0.0"
+         optional="true"/>
+
    <requires>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -45,29 +50,27 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.3.0" match="compatible"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
-      <import plugin="javax.activation" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.soap" version="3.0.0" match="compatible"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="compatible"/>
       <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
       <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.soap" version="3.0.0" match="compatible"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
-      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="equivalent"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.3.99" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
+      <import plugin="javax.servlet"/>
    </requires>
 
    <plugin
@@ -79,13 +82,6 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.jira.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-   <plugin
-         id="com.atlassian.connector.eclipse.monitor.usage"
          download-size="0"
          install-size="0"
          version="0.0.0"

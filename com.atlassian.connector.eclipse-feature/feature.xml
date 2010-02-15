@@ -37,10 +37,15 @@
          version="0.0.0"
          name="Jira Integration"/>
 
+   <includes
+         id="com.atlassian.connector.eclipse.monitor"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="com.atlassian.connector.commons"/>
       <import plugin="org.eclipse.mylyn.commons.core"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
@@ -52,34 +57,26 @@
       <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
       <import plugin="org.mortbay.jetty.server" version="6.1.15" match="compatible"/>
       <import plugin="org.mortbay.jetty.util" version="6.1.15" match="compatible"/>
-      <import plugin="org.eclipse.update.ui"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.ui.browser"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.jasper"/>
       <import plugin="javax.servlet.jsp"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
+      <import plugin="com.atlassian.connector.eclipse.core"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
    </requires>
 
    <plugin
          id="com.atlassian.connector.eclipse.directclickthrough.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.monitor.usage"
          download-size="0"
          install-size="0"
          version="0.0.0"

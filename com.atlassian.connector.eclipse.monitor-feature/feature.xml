@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.atlassian.connector.eclipse"
+      id="com.atlassian.connector.eclipse.monitor"
       label="%featureName"
       version="2.0.0.qualifier"
       provider-name="%providerName"
@@ -22,40 +22,16 @@
       <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
    </url>
 
-   <includes
-         id="com.atlassian.connector.eclipse.crucible"
-         version="0.0.0"
-         name="Crucible Integration"/>
-
-   <includes
-         id="com.atlassian.connector.eclipse.bamboo"
-         version="0.0.0"
-         name="Bamboo Integration"/>
-
-   <includes
-         id="com.atlassian.connector.eclipse.jira"
-         version="0.0.0"
-         name="Jira Integration"/>
-
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="com.atlassian.connector.commons"/>
-      <import plugin="org.eclipse.mylyn.commons.core"/>
-      <import plugin="org.eclipse.mylyn.commons.ui"/>
-      <import plugin="com.atlassian.connector.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui"/>
-      <import plugin="org.eclipse.mylyn.tasks.core"/>
-      <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
-      <import plugin="org.mortbay.jetty.server" version="6.1.15" match="compatible"/>
-      <import plugin="org.mortbay.jetty.util" version="6.1.15" match="compatible"/>
       <import plugin="org.eclipse.update.ui"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
@@ -64,50 +40,13 @@
       <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.jasper"/>
-      <import plugin="javax.servlet.jsp"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import plugin="com.atlassian.connector.eclipse.core"/>
    </requires>
 
    <plugin
-         id="com.atlassian.connector.eclipse.directclickthrough.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.atlassian.connector.eclipse.monitor.usage"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mortbay.jetty.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mortbay.jetty.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.team.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
