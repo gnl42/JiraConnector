@@ -32,6 +32,7 @@ import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestResultCollector;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.context.core.ContextCorePlugin;
@@ -316,6 +317,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertFalse(task.isCompleted());
+		task.setModificationDate(DateUtils.addMinutes(task.getModificationDate(), -10));
 
 		// close issue
 		String resolveOperation = JiraTestUtil.getOperation(client, issue.getKey(), "resolve");
