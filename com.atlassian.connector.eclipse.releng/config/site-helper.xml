@@ -24,6 +24,19 @@
 	</target>
 	
 	<target name="orbit-copy-bundles-helper">
+		<antcall target="orbit-pack-helper">
+			<param name="bundle" value="javax.xml.rpc"/>
+		</antcall>
+		<antcall target="orbit-pack-helper">
+			<param name="bundle" value="javax.xml.soap"/>
+		</antcall>
+		<antcall target="orbit-pack-helper">
+			<param name="bundle" value="org.apache.axis"/>
+		</antcall>
+		<antcall target="orbit-pack-helper">
+			<param name="bundle" value="org.apache.commons.discovery"/>
+		</antcall>
+
 		<!-- httpclient -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.commons.httpclient">
 			<include name="org.apache.commons.codec*.jar"/>
@@ -32,12 +45,6 @@
 			<include name="org.apache.commons.logging*.jar"/>
 		</fileset>
 
-		<!-- org.mortbay.jetty -->
-		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
-			<include name="org.mortbay.jetty*.jar"/>
-			<include name="javax.servlet*.jar"/>
-		</fileset>
-		
 		<!-- axis -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.axis">
 			<include name="javax.activation*.jar"/>
@@ -50,14 +57,29 @@
 			<include name="org.apache.commons.discovery*.jar"/>
 			<include name="org.apache.commons.logging*.jar"/>
 		</fileset>
-
+		<!-- bug 297912: copy target specific version of javax.servlet -->
+		<fileset dir="${baseLocation}/plugins" id="javax.servlet">
+			<include name="javax.servlet_*.jar"/>
+		</fileset>
+		
 		<!-- xml-rpc -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.xmlrpc">
 			<include name="javax.xml.bind*.jar"/>
 			<include name="org.apache.xmlrpc*.jar"/>				
 			<include name="org.apache.ws.commons.util*.jar"/>				
 		</fileset>
+		
+		<!-- jdom -->
+		<fileset dir="${buildDirectory}/plugins" id="org.jdom">
+			<include name="org.jdom*.jar"/>				
+		</fileset>
 
+		<!-- org.mortbay.jetty -->
+		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
+			<include name="org.mortbay.jetty*.jar"/>
+			<include name="javax.servlet*.jar"/>
+		</fileset>
+		
 		<!-- rome -->
 		<fileset dir="${buildDirectory}/plugins" id="com.sun.syndication">
 			<include name="com.sun.syndication*.jar"/>
@@ -75,8 +97,13 @@
 		<mkdir dir="${buildDirectory}/site/plugins"/>
 		<copy todir="${buildDirectory}/site/plugins">
 			<fileset refid="org.apache.commons.httpclient" />
-			<fileset refid="com.thoughtworks.xstream" />
+			<fileset refid="org.apache.axis" />
+			<fileset refid="javax.servlet" />
+			<fileset refid="org.apache.xmlrpc" />
+			<fileset refid="org.jdom" />
 			<fileset refid="org.mortbay.jetty" />
+			<fileset refid="com.sun.syndication" />
+			<fileset refid="com.thoughtworks.xstream" />
 		</copy>
 	</target>
 	
