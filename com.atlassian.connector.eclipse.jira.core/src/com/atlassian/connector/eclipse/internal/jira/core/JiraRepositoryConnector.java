@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
@@ -179,7 +180,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			try {
 				client.search(changedFilter, issueCollector, monitor);
 				//TODO remove when ready				
-				/*				System.out.println("Querying for tasks");
+				System.out.println("Querying for tasks");
 				for (ITask task : session.getTasks()) {
 					System.out.println(task.getTaskKey());
 				}
@@ -189,7 +190,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					System.out.println(jiraIssue.getKey() + ": " + (resolution != null ? resolution.getName() : "n/a"));
 				}
 				System.out.println("End");
-				 */
 
 				if (issues.isEmpty()) {
 					// repository is unchanged
@@ -213,14 +213,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 						monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
 						// only load old task data from if necessary
-						//TODO remove when ready							System.out.println("About to check " + issue.getKey());
+						//TODO remove when ready							
+						System.out.println("About to check " + issue.getKey());
 						if (hasChanged(task, issue)) {
-							//TODO remove when ready								System.out.println("Issue has been changed " + issue.getKey());
+							//TODO remove when ready								
+							System.out.println("Issue has been changed " + issue.getKey());
 							TaskData oldTaskData = null;
 							if (session.getTaskDataManager() != null) {
 								try {
+									System.out.println("before update " + issue.getKey());
 									oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
 								} catch (CoreException e) {
+									System.out.println("WOOT!!!");
+									e.printStackTrace();
 									// ignore
 								}
 							}
