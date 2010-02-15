@@ -317,6 +317,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertFalse(task.isCompleted());
+		// when tests were against local JIRA (in the same LAN), connector.preSynchronization could skip 
+		// updating tasks with data from incoming issue as issues had sometimes "last updated" timestamp 
+		// exactly the same (with seconds precision) as the timestamp of originally created created issue
+		// so we are manually tweaking the modification date to help JiraRepositoryConnector.hasChanged 
 		task.setModificationDate(DateUtils.addMinutes(task.getModificationDate(), -10));
 
 		// close issue
@@ -325,9 +329,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 		SynchronizationSession session = createSession(task);
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
-		System.out.println("BEGIN Testing failing test");
 		connector.preSynchronization(session, null);
-		System.out.println("END Testing failing test");
 		assertTrue(session.needsPerformQueries());
 		assertTrue("Expected preSynchronization() to update task", task.isCompleted());
 	}
