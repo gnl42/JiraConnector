@@ -565,7 +565,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		}
 
 		projectList.setInput(client.getCache().getProjects());
-		projectList.setSelection(selection);
+		projectList.setSelection(selection, true);
 	}
 
 	protected void handleError(final Throwable e, final String message) {
