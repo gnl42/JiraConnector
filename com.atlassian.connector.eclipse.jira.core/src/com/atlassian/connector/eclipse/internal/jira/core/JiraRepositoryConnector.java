@@ -498,6 +498,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	private boolean hasChanged(ITask task, JiraIssue issue) {
 		Date repositoryDate = issue.getUpdated();
 		Date localDate = task.getModificationDate();
+		System.out.println("Repo Date:" + repositoryDate);
+		System.out.println("Local Date:" + localDate);
 		if (repositoryDate != null && repositoryDate.equals(localDate)) {
 			return false;
 		}
