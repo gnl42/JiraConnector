@@ -103,6 +103,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String REASSIGN_OPERATION = "reassign"; //$NON-NLS-1$
 
+	private static final String STOP_PROGRESS_OPERATION = "301"; //$NON-NLS-1$
+
 	private static final String LEAVE_OPERATION = "leave"; //$NON-NLS-1$
 
 	private static final JiraVersion TASK_DATA_VERSION_1_0 = new JiraVersion("1.0"); //$NON-NLS-1$
@@ -1050,6 +1052,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						}
 					}
 
+					// stop progress must be run before issue is updated because assignee can be changed on update
+					// and this will cause stop progress to fail
+					if (STOP_PROGRESS_OPERATION.equals(operationId)) {
+						client.advanceIssueWorkflow(issue, operationId, null, monitor); //comment gets updated in the normal workflow already, so don"t post it a second time
+					}
+
 					// if only comment was modified do not do the workflow
 					if (!handled //
 							&& !JiraRepositoryConnector.isClosed(issue)
@@ -1071,7 +1079,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					postWorkLog(repository, client, taskData, issue, monitor);
 
 					// and do advanced workflow if necessary
-					if (!LEAVE_OPERATION.equals(operationId) && !REASSIGN_OPERATION.equals(operationId)) {
+					if (!LEAVE_OPERATION.equals(operationId) && !REASSIGN_OPERATION.equals(operationId)
+							&& !STOP_PROGRESS_OPERATION.equals(operationId)) {
 						client.advanceIssueWorkflow(issue, operationId, null, monitor); //comment gets updated in the normal workflow already, so don"t post it a second time
 					}
 					return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
