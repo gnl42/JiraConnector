@@ -23,24 +23,6 @@
    </url>
 
    <includes
-         id="com.atlassian.connector.eclipse.crucible"
-         version="0.0.0"
-         name="Crucible Integration"
-         optional="true"/>
-
-   <includes
-         id="com.atlassian.connector.eclipse.bamboo"
-         version="0.0.0"
-         name="Bamboo Integration"
-         optional="true"/>
-
-   <includes
-         id="com.atlassian.connector.eclipse.jira"
-         version="0.0.0"
-         name="Jira Integration"
-         optional="true"/>
-
-   <includes
          id="com.atlassian.connector.eclipse.monitor"
          version="0.0.0"/>
 
