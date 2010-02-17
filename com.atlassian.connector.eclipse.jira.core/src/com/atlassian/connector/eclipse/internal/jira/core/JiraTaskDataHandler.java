@@ -520,6 +520,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskComment.setCreationDate(comment.getCreated());
 			// TODO taskComment.setUrl()
 			taskComment.applyTo(attribute);
+
+			// add level attribute
+			if (comment.getRoleLevel() != null) {
+				TaskAttribute level = attribute.createAttribute(IJiraConstants.COMMENT_SECURITY_LEVEL);
+				level.setValue(comment.getRoleLevel());
+			}
 			i++;
 		}
 	}

@@ -54,6 +54,20 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+	public static String JiraCommetVisible;
+
+	public static String JiraCommetVisibleTooltip;
+
+	public static String TaskEditorCommentPart_0;
+
+	public static String TaskEditorCommentPart_1;
+
+	public static String TaskEditorCommentPart_Collapse_Comments;
+
+	public static String TaskEditorCommentPart_Comments;
+
+	public static String TaskEditorCommentPart_Expand_Comments;
+
 	private Messages() {
 	}
 }

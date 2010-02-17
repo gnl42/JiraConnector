@@ -55,8 +55,28 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}.setPath(ID_PART_ATTRIBUTES + "/" + PATH_PLANNING)); //$NON-NLS-1$
 		}
 
-		// remove standard comment part 
+		// remove comments part
 		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
+		while (iter.hasNext()) {
+			TaskEditorPartDescriptor part = iter.next();
+			if (part.getId().equals(ID_PART_COMMENTS)) {
+				parts.remove(part);
+
+				// add JIRA specific comments part (with visibility restriction info for each comment)
+				parts.add(new TaskEditorPartDescriptor(ID_PART_COMMENTS) {
+					@Override
+					public AbstractTaskEditorPart createPart() {
+						return new JiraCommentPartCopy();
+//						return new JiraCommentPart();
+					}
+				}.setPath(part.getPath()));
+
+				break;
+			}
+		}
+
+		// remove standard new comment part 
+		iter = parts.iterator();
 		while (iter.hasNext()) {
 			TaskEditorPartDescriptor part = iter.next();
 			if (part.getId().equals(ID_PART_NEW_COMMENT)) {

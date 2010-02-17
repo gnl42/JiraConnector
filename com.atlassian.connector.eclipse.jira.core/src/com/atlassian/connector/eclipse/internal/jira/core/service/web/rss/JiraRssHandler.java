@@ -112,6 +112,10 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private static final String LEVEL_ATTR = "level"; //$NON-NLS-1$
 
+	private static final String ROLE_LEVEL_ATTR = "rolelevel"; //$NON-NLS-1$
+
+	private static final String GROUP_LEVEL_ATTR = "grouplevel"; //$NON-NLS-1$
+
 	private static final String AUTHOR_ATTR = "author"; //$NON-NLS-1$
 
 	private static final String ID_ATTR = "id"; //$NON-NLS-1$
@@ -438,6 +442,12 @@ public class JiraRssHandler extends DefaultHandler {
 			if (COMMENT.equals(localName)) {
 				commentAuthor = attributes.getValue(AUTHOR_ATTR);
 				commentLevel = attributes.getValue(LEVEL_ATTR);
+				if (commentLevel == null) {
+					commentLevel = attributes.getValue(ROLE_LEVEL_ATTR);
+				}
+				if (commentLevel == null) {
+					commentLevel = attributes.getValue(GROUP_LEVEL_ATTR);
+				}
 				commentDate = convertToDate(attributes.getValue(CREATED_ATTR));
 			}
 			break;
