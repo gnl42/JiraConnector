@@ -41,6 +41,14 @@
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.test" />
 		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.jira" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="org.eclipse.mylyn.jira" />
+		</ant>
 	</target>
 
 	<target name="siteElementsDelegator">
@@ -67,6 +75,14 @@
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.cvs" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.jira" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="org.eclipse.mylyn.jira" />
 		</ant>
 	</target>
 	
@@ -96,6 +112,12 @@
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.cvs">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.jira">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.org.eclipse.mylyn.jira">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.test">
