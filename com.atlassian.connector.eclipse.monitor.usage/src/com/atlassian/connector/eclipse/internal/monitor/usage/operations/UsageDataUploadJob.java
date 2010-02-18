@@ -21,13 +21,17 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.eclipse.core.runtime.IBundleGroup;
+import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -38,7 +42,9 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -102,24 +108,38 @@ public final class UsageDataUploadJob extends Job {
 
 	private static final String SYSTEM_INFO_PREFIX = "system info: ";
 
+	private void logPlatformDetails(InteractionEventLogger log) {
+		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "os-arch=" + Platform.getOSArch()));
+		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "os=" + Platform.getOS()));
+		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ Platform.PI_RUNTIME + "="
+				+ Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "connector-version="
+				+ UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+	}
+
+	private void logInstalledFeatures(InteractionEventLogger log) {
+		Map<String, Version> featureToVersion = new HashMap<String, Version>();
+		for (IBundleGroupProvider provider : Platform.getBundleGroupProviders()) {
+			for (IBundleGroup bundleGroup : provider.getBundleGroups()) {
+				for (Bundle bundle : bundleGroup.getBundles()) {
+					if (bundle.getSymbolicName().startsWith("com.atlassian.connector.eclipse.")) {
+						featureToVersion.put(bundle.getSymbolicName(), bundle.getVersion());
+					}
+				}
+			}
+		}
+		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "plugins=" + featureToVersion.toString()));
+	}
+
 	private void performUpload(IProgressMonitor monitor) {
 		InteractionEventLogger interactionLogger = UiUsageMonitorPlugin.getDefault().getInteractionLogger();
-
-		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-				SYSTEM_INFO_PREFIX + "os-arch=" + Platform.getOSArch()));
-		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-				SYSTEM_INFO_PREFIX + "os=" + Platform.getOS()));
-		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-				SYSTEM_INFO_PREFIX + Platform.PI_RUNTIME + "="
-						+ Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
-		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-				SYSTEM_INFO_PREFIX
-						+ "connector-version="
-						+ UiUsageMonitorPlugin.getDefault()
-								.getBundle()
-								.getHeaders()
-								.get(Constants.BUNDLE_VERSION)
-								.toString()));
+		logPlatformDetails(interactionLogger);
+		logInstalledFeatures(interactionLogger);
 
 		UiUsageMonitorPlugin.setPerformingUpload(true);
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
