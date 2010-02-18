@@ -47,7 +47,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -94,13 +93,13 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -447,18 +446,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
-		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode("General Comments", null) {
-			{
-				setCategory(-1);
-			}
-
+		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new ReviewTreeNode(null, "General Comments", -1) {
 			@Override
-			public List<? extends Object> getChildren() {
-				return newReview.getGeneralComments();
+			public List<Object> getChildren() {
+				return Collections.<Object> unmodifiableList(newReview.getGeneralComments());
 			}
-		}, new ReviewTreeNode("Files", null) {
-			public List<? extends Object> getChildren() {
-				return Arrays.asList(compactReviewFiles(newReview));
+		}, new ReviewTreeNode(null, "Files") {
+			public List<Object> getChildren() {
+				return Arrays.<Object> asList((Object[]) compactReviewFiles(newReview));
 			};
 		} };
 		return nodes;
@@ -731,8 +726,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public static ReviewTreeNode[] compactReviewFiles(Review review) {
 		ReviewTreeNode root = new ReviewTreeNode(null, null);
-		for (CrucibleFileInfo fileInfo : review.getFiles()) {
-			root.addChild(ReviewTreeNode.convert(fileInfo));
+		for (CrucibleFileInfo cfi : review.getFiles()) {
+			final String path = cfi.getFileDescriptor().getUrl();
+			final String[] pathTokens = path.split("/|\\\\");
+			root.add(pathTokens, cfi);
 		}
 		root.compact();
 		return (root.getPathToken() != null) ? new ReviewTreeNode[] { root } : root.getChildren().toArray(

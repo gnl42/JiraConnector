@@ -9,7 +9,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -46,6 +45,14 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 	}
 
 	public StyledString getStyledText(Object element) {
+		if (element instanceof ReviewTreeNode) {
+			ReviewTreeNode node = (ReviewTreeNode) element;
+			final CrucibleFileInfo cfi = node.getCrucibleFileInfo();
+
+			if (cfi != null) {
+				return getStyledText(cfi);
+			}
+		}
 		if (element instanceof Comment) {
 			Comment comment = (Comment) element;
 			final String headerText;
@@ -83,11 +90,11 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 			}
 		}
 
-//		StringBuilder revisionString = getRevisionInfo(file);
-//		if (revisionString.length() > 0) {
-//			styledString.append("  ");
-//			styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
-//		}
+		// StringBuilder revisionString = getRevisionInfo(file);
+		// if (revisionString.length() > 0) {
+		// styledString.append("  ");
+		// styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
+		// }
 		return styledString;
 	}
 
@@ -95,25 +102,33 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 	public Image getImage(Object element) {
 		if (element instanceof CrucibleFileInfo) {
 			final CrucibleFileInfo cfi = (CrucibleFileInfo) element;
-			IEditorRegistry fEditorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
-			final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor()
-					.getName());
-
-			// we want to leave some space for defect decorations (which are nicer and more readable when
-			// applied besides the main icon, so we use the trick with images by shifting them a little bit
-			// thus we use OffsettingCompositeImageDescriptor
-			return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(imageDescriptor, null));
-			//return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+			return getImage(cfi);
 		}
 		if (element instanceof Comment) {
 			return getImage((Comment) element);
 		}
 		if (element instanceof ReviewTreeNode) {
+			ReviewTreeNode reviewTreeNode = (ReviewTreeNode) element;
+			if (reviewTreeNode.getCrucibleFileInfo() != null && reviewTreeNode.getChildren().isEmpty()) {
+				return getImage(reviewTreeNode.getCrucibleFileInfo());
+			}
 			return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(PlatformUI.getWorkbench()
 					.getSharedImages()
 					.getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER), null));
 		}
 		return null;
+	}
+
+	private Image getImage(final CrucibleFileInfo cfi) {
+		IEditorRegistry fEditorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
+		final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor()
+				.getName());
+
+		// we want to leave some space for defect decorations (which are nicer and more readable when
+		// applied besides the main icon, so we use the trick with images by shifting them a little bit
+		// thus we use OffsettingCompositeImageDescriptor
+		return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(imageDescriptor, null));
+		// return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 	}
 
 	private StringBuilder getRevisionInfo(CrucibleFileInfo file) {
@@ -135,14 +150,14 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 
 		StringBuilder revisionString = new StringBuilder();
 
-		//if repository type is uploaded or patch, display alternative for now since we cannot open the file yet
+		// if repository type is uploaded or patch, display alternative for now since we cannot open the file yet
 		if (file.getRepositoryType() == RepositoryType.PATCH) {
 			revisionString.append("Part of a Patch");
 		} else if (file.getRepositoryType() == RepositoryType.UPLOAD) {
 			revisionString.append("Pre-commit");
 		} else {
-			//if file is deleted or not a file, do not include any revisions 
-			//   (we need a local resource to retrieve the old revision from SVN, which we do not have)
+			// if file is deleted or not a file, do not include any revisions
+			// (we need a local resource to retrieve the old revision from SVN, which we do not have)
 			if (file.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
 				revisionString.append("N/A ");
 			} else {

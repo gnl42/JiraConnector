@@ -15,15 +15,31 @@ import com.atlassian.connector.eclipse.ui.viewers.ArrayTreeContentProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-
+import com.atlassian.theplugin.commons.util.MiscUtil;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ReviewContentProvider extends ArrayTreeContentProvider {
 	@Override
 	public Object[] getChildren(Object inputElement) {
 		if (inputElement instanceof ReviewTreeNode) {
-			return ((ReviewTreeNode) inputElement).getChildren().toArray();
+			ReviewTreeNode myTreeNode = (ReviewTreeNode) inputElement;
+			if (myTreeNode.getCrucibleFileInfo() != null) {
+				CrucibleFileInfo cfi = myTreeNode.getCrucibleFileInfo();
+				if (myTreeNode.getChildren().isEmpty()) {
+					return cfi.getVersionedComments().toArray();
+				} else {
+					final ArrayList<Object> children = MiscUtil.buildArrayList();
+					children.addAll(myTreeNode.getChildren());
+					children.addAll(cfi.getVersionedComments());
+					return children.toArray();
+				}
+
+			}
+
+			return myTreeNode.getChildren().toArray();
 		}
+
 		if (inputElement instanceof CrucibleFileInfo) {
 			return ((CrucibleFileInfo) inputElement).getVersionedComments().toArray();
 		}
@@ -36,7 +52,14 @@ public final class ReviewContentProvider extends ArrayTreeContentProvider {
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof ReviewTreeNode) {
-			return !((ReviewTreeNode) element).getChildren().isEmpty();
+			ReviewTreeNode myTreeNode = (ReviewTreeNode) element;
+			if (myTreeNode.getCrucibleFileInfo() != null) {
+				List<VersionedComment> comments = myTreeNode.getCrucibleFileInfo().getVersionedComments();
+				if (comments != null && comments.size() > 0) {
+					return true;
+				}
+			}
+			return !myTreeNode.getChildren().isEmpty();
 		}
 		if (element instanceof CrucibleFileInfo) {
 			List<VersionedComment> comments = ((CrucibleFileInfo) element).getVersionedComments();
@@ -52,5 +75,4 @@ public final class ReviewContentProvider extends ArrayTreeContentProvider {
 		}
 		return super.hasChildren(element);
 	}
-
 }

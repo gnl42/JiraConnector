@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -19,16 +20,16 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
+import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewTreeNode;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -83,6 +84,9 @@ public class AddFileCommentAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		this.review = null;
 		this.fileInfo = null;
+		if (selection.size() != 1) {
+			return false;
+		}
 
 		Object element = selection.getFirstElement();
 		if (element instanceof CrucibleFileInfo && selection.size() == 1) {
@@ -93,19 +97,20 @@ public class AddFileCommentAction extends BaseSelectionListenerAction {
 			}
 		}
 
-		if (selection instanceof ITreeSelection) {
+		if (element instanceof Comment) {
 			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-			TreePath[] paths = ((ITreeSelection) selection).getPaths();
-			if (paths != null && paths.length == 1) {
-				for (TreePath path : paths) {
-					for (int i = 0, s = path.getSegmentCount(); i < s; ++i) {
-						if (path.getSegment(i) instanceof CrucibleFileInfo) {
-							this.fileInfo = (CrucibleFileInfo) path.getSegment(i);
-							return true;
-						}
-					}
-				}
+			final VersionedComment parentVersionedComment = ReviewModelUtil.getParentVersionedComment((Comment) element);
+			if (parentVersionedComment != null) {
+				this.fileInfo = parentVersionedComment.getCrucibleFileInfo();
 			}
+			return true;
+		}
+
+		if (element instanceof ReviewTreeNode) {
+			ReviewTreeNode reviewTreeNode = (ReviewTreeNode) element;
+			this.review = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+			fileInfo = reviewTreeNode.getCrucibleFileInfo();
+			return fileInfo != null;
 		}
 		return false;
 	}
