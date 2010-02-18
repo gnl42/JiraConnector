@@ -1,5 +1,7 @@
 package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 
+import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
+import com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -17,9 +19,6 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.log.Log;
 import org.osgi.framework.BundleContext;
-
-import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
-import com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,6 +49,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
@@ -89,7 +89,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 					
 					embeddedServer.start();
 				} catch (Exception e) {
-					setStatus(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
+					setStatus(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID,
 							"Unable to run embedded web server, Direct Click Through will not be available", e));
 				}
 			}
@@ -109,6 +109,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		if (getPreferenceStore().getBoolean(IDirectClickThroughPreferenceConstants.ENABLED)) {
 			stopEmbeddedServer();
