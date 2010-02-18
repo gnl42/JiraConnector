@@ -39,6 +39,8 @@ public final class TreeViewerUtil {
 					toBeExpanded[expanded.length + i] = treeSelection.getPaths()[0].getSegment(i);
 				}
 				viewer.setExpandedElements(toBeExpanded);
+			} else {
+				viewer.setExpandedElements(expanded);
 			}
 		} finally {
 			viewer.getControl().setRedraw(true);

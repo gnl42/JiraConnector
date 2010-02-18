@@ -400,10 +400,17 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			final String fileName = StringUtil.removeLeadingAndTrailingSlashes(((IFile) input).getFullPath().toString());
 			for (CrucibleFileInfo fileInfo : review.getFiles()) {
 				if (StringUtil.removeLeadingAndTrailingSlashes(fileInfo.getFileDescriptor().getUrl()).equals(fileName)) {
-					element = fileInfo;
+					element = new ReviewTreeNode(fileInfo);
 					break;
 				}
 			}
+			if (element == null) {
+				return false;
+			}
+		}
+
+		if (input instanceof CrucibleFileInfo) {
+			element = new ReviewTreeNode((CrucibleFileInfo) input);
 		}
 
 		if (element == null) {
@@ -569,7 +576,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
-		linkWithEditorAction = new Action("Link With Editor", IAction.AS_CHECK_BOX) {
+		linkWithEditorAction = new Action("Link with Editor", IAction.AS_CHECK_BOX) {
 			{
 				setImageDescriptor(AtlassianImages.IMG_LINK_WITH_EDITOR);
 				setChecked(isLinkingEnabled());

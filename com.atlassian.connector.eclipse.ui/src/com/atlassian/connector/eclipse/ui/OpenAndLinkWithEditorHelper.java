@@ -54,7 +54,7 @@ public abstract class OpenAndLinkWithEditorHelper {
 		/*
 		 * @see org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers.OpenEvent)
 		 */
-		public final void open(OpenEvent event) {
+		public void open(OpenEvent event) {
 			lastOpenSelection = event.getSelection();
 			OpenAndLinkWithEditorHelper.this.open(lastOpenSelection, OpenStrategy.activateOnOpen());
 		}

@@ -42,6 +42,13 @@ public class ReviewTreeNode {
 		this.category = category;
 	}
 
+	public ReviewTreeNode(CrucibleFileInfo cfi) {
+		parent = null;
+		pathToken = null;
+		this.cfi = cfi;
+		category = 0;
+	}
+
 	@Nullable
 	public CrucibleFileInfo getCrucibleFileInfo() {
 		return cfi;
@@ -110,6 +117,12 @@ public class ReviewTreeNode {
 
 	@Override
 	public int hashCode() {
+		// if we have cfi, then we just base on it - useful while setting selection
+		// on a node representing CrucibleFileInfo when we don't know anything
+		// about such node (parent, path tokens), but cfi itself
+		if (cfi != null) {
+			return cfi.hashCode();
+		}
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cfi == null) ? 0 : cfi.hashCode());
@@ -128,17 +141,29 @@ public class ReviewTreeNode {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
+
 		ReviewTreeNode other = (ReviewTreeNode) obj;
-		if (!MiscUtil.isEqual(parent, other.parent)) {
-			return false;
-		}
-		if (cfi == null) {
+		// if we have cfi, then we just base on it - useful while setting selection
+		// on a node representing CrucibleFileInfo when we don't know anything
+		// about such node (parent, path tokens), but cfi itself
+		if (cfi != null) {
+			return MiscUtil.isEqual(cfi, other.cfi);
+		} else {
 			if (other.cfi != null) {
 				return false;
 			}
-		} else if (!cfi.equals(other.cfi)) {
+		}
+
+		if (!MiscUtil.isEqual(parent, other.parent)) {
 			return false;
 		}
+		// if (cfi == null) {
+		// if (other.cfi != null) {
+		// return false;
+		// }
+		// } else if (!cfi.equals(other.cfi)) {
+		// return false;
+		// }
 		if (pathToken == null) {
 			if (other.pathToken != null) {
 				return false;
