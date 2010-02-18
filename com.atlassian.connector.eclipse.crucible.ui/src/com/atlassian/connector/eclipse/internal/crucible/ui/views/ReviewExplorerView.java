@@ -47,6 +47,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -93,6 +94,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -813,4 +815,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		return linkingEnabled;
 	}
 
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		memento.putInteger(TAG_LINK_EDITOR, linkingEnabled ? 1 : 0);
+	}
 }
