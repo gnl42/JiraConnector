@@ -68,7 +68,7 @@ public class CruciblePostCommitFileInput implements IFileEditorInput, IPathEdito
 	}
 
 	public String getName() {
-		return fileEditorInput.getName();
+		return fileEditorInput.getName() + String.format(" [%s]", crucibleFile.getSelectedFile().getRevision());
 	}
 
 	public IPersistableElement getPersistable() {

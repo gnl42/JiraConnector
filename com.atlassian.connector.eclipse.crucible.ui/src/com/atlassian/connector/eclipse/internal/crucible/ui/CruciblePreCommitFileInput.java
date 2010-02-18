@@ -41,7 +41,7 @@ public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEdi
 	}
 
 	public String getName() {
-		return storage.getName();
+		return storage.getName() + String.format(" [%s]", storage.getCrucibleFile().getSelectedFile().getRevision());
 	}
 
 	public IPersistableElement getPersistable() {
