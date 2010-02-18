@@ -63,7 +63,10 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 				comment = null;
 			} else if (element instanceof Comment) {
 				comment = ReviewModelUtil.getParentVersionedComment((Comment) element);
-				fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
+				if (comment != null) {
+					fileInfo = comment.getCrucibleFileInfo();
+				}
+
 			}
 			if (element instanceof ReviewTreeNode) {
 				ReviewTreeNode reviewTreeNode = (ReviewTreeNode) element;
@@ -74,10 +77,6 @@ public class CompareVirtualFilesAction extends BaseSelectionListenerAction {
 				return false;
 			}
 			review = ReviewTreeUtils.getReview(fileInfo);
-			// FIXME wseliga restore support for comment
-			// if (paths[0].getLastSegment() instanceof VersionedComment) {
-			// comment = (VersionedComment) paths[0].getLastSegment();
-			// }
 
 			final VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 			final VersionedVirtualFile newFileDescriptor = fileInfo.getFileDescriptor();

@@ -60,7 +60,9 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 			fileInfo = (CrucibleFileInfo) element;
 		} else if (element instanceof Comment) {
 			comment = ReviewModelUtil.getParentVersionedComment((Comment) element);
-			fileInfo = ReviewTreeUtils.getParentCrucibleFileInfo(selection);
+			if (comment != null) {
+				fileInfo = comment.getCrucibleFileInfo();
+			}
 		} else if (element instanceof ReviewTreeNode) {
 			ReviewTreeNode reviewTreeNode = (ReviewTreeNode) element;
 			fileInfo = reviewTreeNode.getCrucibleFileInfo();
