@@ -67,8 +67,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -236,37 +234,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
 				null);
 		viewer.setLabelProvider(styledLabelProvider);
-		viewer.setComparator(new ViewerComparator() {
-
-			@Override
-			public int category(Object element) {
-				if (element instanceof ReviewTreeNode) {
-					return ((ReviewTreeNode) element).getCategory();
-				}
-				return super.category(element);
-			}
-
-			@Override
-			public int compare(Viewer aViewer, Object e1, Object e2) {
-				boolean isE1Dir = e1 instanceof ReviewTreeNode;
-				boolean isE2Dir = e2 instanceof ReviewTreeNode;
-				if (isE1Dir && isE2Dir) {
-					return super.compare(aViewer, e1, e2);
-				} else if (!isE1Dir && !isE2Dir) {
-					boolean isE1Comment = e1 instanceof Comment;
-					boolean isE2Comment = e2 instanceof Comment;
-					if (isE1Comment && isE2Comment) {
-						return ((Comment) e1).getCreateDate().compareTo(((Comment) e2).getCreateDate());
-					} else {
-						return super.compare(aViewer, e1, e2);
-					}
-				} else {
-					return isE1Dir ? -1 : 1;
-				}
-
-			}
-
-		});
+		viewer.setComparator(new ReviewTreeComparator());
 
 		openAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(viewer) {
 			protected void activate(ISelection selection) {
