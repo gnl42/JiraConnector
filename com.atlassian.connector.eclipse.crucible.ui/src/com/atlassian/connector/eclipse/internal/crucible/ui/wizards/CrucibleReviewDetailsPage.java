@@ -119,6 +119,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			}
 		}
 		super.setVisible(visible);
+		if (visible) {
+			titleText.setFocus();
+		}
+
 	}
 
 	private void setInputAndInitialSelections() {
