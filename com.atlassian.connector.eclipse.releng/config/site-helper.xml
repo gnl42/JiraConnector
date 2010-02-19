@@ -85,6 +85,11 @@
 			<include name="com.sun.syndication*.jar"/>
 			<include name="org.jdom*.jar"/>				
 		</fileset>
+		
+		<!-- org.joda.time -->
+		<fileset dir="${buildDirectory}/plugins" id="org.joda.time">
+			<include name="org.joda.time*.jar"/>				
+		</fileset>
 
 		<!-- xstream -->
 		<fileset dir="${buildDirectory}/plugins" id="com.thoughtworks.xstream">
@@ -101,6 +106,7 @@
 			<fileset refid="javax.servlet" />
 			<fileset refid="org.apache.xmlrpc" />
 			<fileset refid="org.jdom" />
+			<fileset refid="org.joda.time" />
 			<fileset refid="org.mortbay.jetty" />
 			<fileset refid="com.sun.syndication" />
 			<fileset refid="com.thoughtworks.xstream" />
