@@ -17,7 +17,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -33,7 +32,6 @@ import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -158,12 +156,12 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 				}
 			} else {
 
-				//if fromLineInfo and not toLineInfo and not oldFile -> old line comment but current model is new file
+				// if fromLineInfo and not toLineInfo and not oldFile -> old line comment but current model is new file
 				if (comment.isFromLineInfo() && !comment.isToLineInfo() && !crucibleFile.isOldFile()) {
 					return;
 				}
 
-				//if toLineInfo and not fromLineInfo and  and oldfile -> new line comment but current model is old file
+				// if toLineInfo and not fromLineInfo and and oldfile -> new line comment but current model is old file
 				if (comment.isToLineInfo() && !comment.isFromLineInfo() && crucibleFile.isOldFile()) {
 					return;
 				}
@@ -185,7 +183,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 				if (endLine == 0) {
 					endLine = startLine;
 				}
-				length = editorDocument.getLineOffset(endLine) - offset;
+				length = Math.max(editorDocument.getLineOffset(endLine) - offset - 1, 0);
 
 			}
 			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment,
@@ -300,11 +298,11 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 		result = prime
 				* result
 				+ ((crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl() == null) ? 0
-						: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl().hashCode());
+				: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl().hashCode());
 		result = prime
 				* result
 				+ ((crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() == null) ? 0
-						: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision().hashCode());
+				: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision().hashCode());
 		return result;
 	}
 

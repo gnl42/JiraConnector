@@ -47,7 +47,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -92,7 +91,6 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -307,11 +305,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					TextSelection textSelection = (TextSelection) selection;
 					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
 					int end = textSelection.getEndLine() + 1;
-
-					if (start != end) {
-						// don't care about multi line selection
-						return;
-					}
 
 					if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 						CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();

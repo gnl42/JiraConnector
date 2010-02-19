@@ -24,7 +24,6 @@ import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -55,7 +54,6 @@ import org.eclipse.ui.internal.texteditor.AnnotationColumn;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -83,7 +81,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 					return (SourceViewer) returnValue;
 				}
 			} catch (Exception e) {
-				//ignore
+				// ignore
 			}
 		}
 		return null;
@@ -124,31 +122,32 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			}
 
 			/**
-			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText will
-			 * not contain the whole text anymore, so our line numbering is off
+			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText will not
+			 * contain the whole text anymore, so our line numbering is off
 			 * 
 			 * @param event
 			 * @return
 			 */
 			private int getDocumentOffset(LineBackgroundEvent event) {
-				/* there is no access to DefaultDocumentAdapter and thus the (master or slave) document..
-				 * so we have to assume that on first call this event actually has the full text.
-				 * this text, and the text of the current styled text will be used to calculate the offset 
+				/*
+				 * there is no access to DefaultDocumentAdapter and thus the (master or slave) document.. so we have to assume
+				 * that on first call this event actually has the full text. this text, and the text of the current styled text
+				 * will be used to calculate the offset
 				 */
 				if (event.widget instanceof StyledText) {
 					String currentText = ((StyledText) event.widget).getText();
 					if (initialText == null) {
 						initialText = currentText;
-						//since it is initial call, offset should be 0 anyway
+						// since it is initial call, offset should be 0 anyway
 						return 0;
 					}
-					//if text is unchanged, offset it 0
+					// if text is unchanged, offset it 0
 					if (currentText.equals(initialText)) {
 						return 0;
 					}
-					//current text is different, check if it is contained in initialText
+					// current text is different, check if it is contained in initialText
 					if (initialText.contains(currentText)) {
-						//calculate the offset
+						// calculate the offset
 						int charoffset = initialText.indexOf(currentText);
 						int lineOffset = 0;
 						String delimiter = ((StyledText) event.widget).getLineDelimiter();
@@ -162,10 +161,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						}
 						return lineOffset;
 					} else {
-						//log error since we assume the initial text contains all slaveTexts.
+						// log error since we assume the initial text contains all slaveTexts.
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Could not find text offset for annotation highlighting"
-										+ " - current text not contained in initial text."));
+								+ " - current text not contained in initial text."));
 					}
 				}
 				return 0;
@@ -224,7 +223,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 						crucibleAnnotationModel.setEditorDocument(sourceViewer.getDocument());
 						createVerticalRuler(newInput, sourceViewerClazz);
-//						createOverviewRuler(newInput, sourceViewerClazz);
+						// createOverviewRuler(newInput, sourceViewerClazz);
 						createHighlighting(sourceViewerClazz);
 
 						sourceViewer.getTextWidget().addMouseListener(new MouseAdapter() {
@@ -245,16 +244,15 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 		private void createHighlighting(Class<SourceViewer> sourceViewerClazz) throws IllegalArgumentException,
 				IllegalAccessException, SecurityException, NoSuchFieldException {
-			//TODO this could use some performance tweaks
+			// TODO this could use some performance tweaks
 			final StyledText styledText = sourceViewer.getTextWidget();
 			styledText.addLineBackgroundListener(new ColoringLineBackgroundListener(styledText));
 		}
 
 		/*
-		 * overview ruler problem: displayed in both viewers. the diff editor ruler is actually custom drawn
-		 * (see TextMergeViewer.fBirdsEyeCanvas)
-		 * the ruler that gets created in this method is longer than the editor, meaning its not an overview
-		 * (not next to the scrollbar)
+		 * overview ruler problem: displayed in both viewers. the diff editor ruler is actually custom drawn (see
+		 * TextMergeViewer.fBirdsEyeCanvas) the ruler that gets created in this method is longer than the editor, meaning its
+		 * not an overview (not next to the scrollbar)
 		 */
 		@SuppressWarnings("unused")
 		private void createOverviewRuler(IDocument newInput, Class<SourceViewer> sourceViewerClazz)
@@ -282,7 +280,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			Method declareMethod = sourceViewerClazz.getDeclaredMethod("ensureOverviewHoverManagerInstalled");
 			declareMethod.setAccessible(true);
 			declareMethod.invoke(sourceViewer);
-			//overviewRuler is null
+			// overviewRuler is null
 
 			Field hoverManager = sourceViewerClazz.getDeclaredField("fOverviewRulerHoveringController");
 			hoverManager.setAccessible(true);
@@ -361,8 +359,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			sourceViewer.showAnnotationsOverview(true);
 		}
 
-		public void focusOnLines(int startLine, int endLine) {
-			// ignore
+		public void focusOnLines(IntRanges range) {
+			// editors count lines from 0, Crucible counts from 1
+			final int startLine = range.getTotalMin() - 1;
+			final int endLine = range.getTotalMax() - 1;
 			if (sourceViewer != null) {
 				IDocument document = sourceViewer.getDocument();
 				if (document != null) {
@@ -370,9 +370,14 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						int offset = document.getLineOffset(startLine);
 						int length = document.getLineOffset(endLine) - offset;
 						StyledText widget = sourceViewer.getTextWidget();
-						widget.setRedraw(false);
-						sourceViewer.revealRange(offset, length);
-						widget.setRedraw(true);
+						try {
+							widget.setRedraw(false);
+							sourceViewer.revealRange(offset, length);
+							sourceViewer.setSelectedRange(offset, 0);
+							// widget.setFocus();
+						} finally {
+							widget.setRedraw(true);
+						}
 					} catch (BadLocationException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 					}
@@ -441,17 +446,16 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
 		} else {
 			/*
-			 * Using asyncExec here because if the underlying slaveDocument (part of the file that
-			 * gets displayed when clicking on a java structure in the compare editor) is changed, but
-			 * the master document is not, we do not get any event afterwards that would give us a place
-			 * to hook our code to override the annotationHover.
-			 * Since all is done in the UI thread, using this asyncExec hack works because the unconfigure and
-			 * configure of the document is finished and our hover-hack stays. 
+			 * Using asyncExec here because if the underlying slaveDocument (part of the file that gets displayed when clicking
+			 * on a java structure in the compare editor) is changed, but the master document is not, we do not get any event
+			 * afterwards that would give us a place to hook our code to override the annotationHover. Since all is done in the
+			 * UI thread, using this asyncExec hack works because the unconfigure and configure of the document is finished and
+			 * our hover-hack stays.
 			 */
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
-						//if listeners exist, just make sure the hover hack is in there
+						// if listeners exist, just make sure the hover hack is in there
 						leftViewerListener.forceCustomAnnotationHover();
 					} catch (Exception e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
@@ -466,7 +470,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
-						//if listeners exist, just make sure the hover hack is in there
+						// if listeners exist, just make sure the hover hack is in there
 						rightViewerListener.forceCustomAnnotationHover();
 					} catch (Exception e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
@@ -526,9 +530,9 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				IntRanges range;
 				if ((range = lineRanges.get(virtualLeft.getRevision())) != null) {
 					// get the correct listener (new file is left)
-					leftViewerListener.focusOnLines(range.getTotalMin(), range.getTotalMax());
+					leftViewerListener.focusOnLines(range);
 				} else if ((range = lineRanges.get(virtualRight.getRevision())) != null) {
-					rightViewerListener.focusOnLines(range.getTotalMin(), range.getTotalMax());
+					rightViewerListener.focusOnLines(range);
 				}
 			}
 		}

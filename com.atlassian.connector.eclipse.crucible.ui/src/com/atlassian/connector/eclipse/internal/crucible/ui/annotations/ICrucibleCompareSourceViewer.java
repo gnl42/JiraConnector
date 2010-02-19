@@ -11,12 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import org.eclipse.jface.text.source.LineRange;
 
 public interface ICrucibleCompareSourceViewer {
 	LineRange getSelection();
 
-	void focusOnLines(int startLine, int endLine);
+	void focusOnLines(IntRanges ranges);
 
 	void registerContextMenu();
 }
