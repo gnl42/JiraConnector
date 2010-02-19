@@ -37,10 +37,13 @@
          version="0.0.0"
          name="Jira Integration"/>
 
+   <includes
+         id="com.atlassian.connector.commons"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.junit"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
-      <import plugin="com.atlassian.connector.commons"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.ui"/>
       <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="com.atlassian.connector.eclipse.core"/>
@@ -50,15 +53,9 @@
       <import plugin="com.atlassian.connector.eclipse.jira.ui"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.core"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui"/>
-      <!--
-      <import plugin="com.atlassian.connector.eclipse.subclipse.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.atlassian.connector.eclipse.subversive.ui" version="1.0.0" match="greaterOrEqual"/>
-      -->
-      
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.soap" version="3.2.0.I20090529" match="compatible"/>
-      
    </requires>
 
    <plugin
@@ -68,13 +65,11 @@
          version="0.0.0"
          unpack="false"/>
 
-	<!-- unpack=false because we refer to file from this plugin in build system -->
    <plugin
          id="com.atlassian.connector.eclipse.tests"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.jetbrains.annotations"
@@ -104,29 +99,32 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin 
-		id="com.atlassian.connector.eclipse.jira.tests"
-		download-size="0"
-		install-size="0"
-		version="0.0.0"
-		unpack="false"/>
-		
-	<plugin id="org.eclipse.mylyn.commons.soap"
-		download-size="0"
-		install-size="0"
-		version="0.0.0"
-		unpack="false"/>
-		
-	<plugin id="org.eclipse.mylyn.commons.tests"
-		download-size="0"
-		install-size="0"
-		version="0.0.0"
-		unpack="false"/>
-		
-	<plugin id="org.eclipse.mylyn.tests.util"
-		download-size="0"
-		install-size="0"
-		version="0.0.0"
-		unpack="false"/>
-		
+   <plugin
+         id="com.atlassian.connector.eclipse.jira.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.commons.soap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.commons.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.tests.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

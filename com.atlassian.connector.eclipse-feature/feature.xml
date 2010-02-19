@@ -62,13 +62,6 @@
    </requires>
 
    <plugin
-         id="com.atlassian.connector.commons"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.atlassian.connector.eclipse.directclickthrough.ui"
          download-size="0"
          install-size="0"
@@ -77,13 +70,6 @@
 
    <plugin
          id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-   <plugin
-         id="org.joda.time"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -28,25 +28,30 @@
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.mylyn.monitor.ui"/>
       <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.apache.commons.codec"/>
       <import plugin="org.apache.commons.logging"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.mylyn.monitor.core"/>
+      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
+      <import plugin="org.apache.axis"/>
+      <import plugin="javax.xml.rpc"/>
    </requires>
 
    <plugin
