@@ -15,6 +15,7 @@ feature@com.atlassian.connector.eclipse.jira=SVN,trunk,https://studio.atlassian.
 feature@org.eclipse.mylyn.jira_feature=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.eclipse.mylyn.jira-feature
 feature@com.atlassian.connector.eclipse.test=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.test-feature
 feature@com.atlassian.connector.eclipse.monitor=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.monitor-feature
+feature@com.atlassian.connector.commons=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons-feature
 
 plugin@com.atlassian.connector.eclipse.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.core
 plugin@com.atlassian.connector.eclipse.bamboo.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo.core

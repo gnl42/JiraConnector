@@ -21,86 +21,9 @@
    <url>
       <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
    </url>
-<!--
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="com.atlassian.connector.eclipse.fisheye.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.thoughtworks.xstream"/>
-      <import plugin="org.eclipse.mylyn.commons.core"/>
-      <import plugin="org.apache.commons.logging"/>
-   </requires>
 
-   <plugin
-         id="com.atlassian.connector.eclipse.fisheye.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.fisheye.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
+   <includes
          id="com.atlassian.connector.commons"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom_jaxen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.joda.time"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-         -->
+         version="0.0.0"/>
 
 </feature>

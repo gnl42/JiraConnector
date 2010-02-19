@@ -22,6 +22,10 @@
       <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
    </url>
 
+   <includes
+         id="com.atlassian.connector.commons"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="greaterOrEqual"/>
