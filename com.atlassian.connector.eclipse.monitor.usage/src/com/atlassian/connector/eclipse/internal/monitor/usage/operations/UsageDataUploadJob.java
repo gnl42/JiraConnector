@@ -44,7 +44,6 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -122,12 +121,14 @@ public final class UsageDataUploadJob extends Job {
 	}
 
 	private void logInstalledFeatures(InteractionEventLogger log) {
-		Map<String, Version> featureToVersion = new HashMap<String, Version>();
+		Map<String, String> featureToVersion = new HashMap<String, String>();
 		for (IBundleGroupProvider provider : Platform.getBundleGroupProviders()) {
 			for (IBundleGroup bundleGroup : provider.getBundleGroups()) {
 				for (Bundle bundle : bundleGroup.getBundles()) {
 					if (bundle.getSymbolicName().startsWith("com.atlassian.connector.eclipse.")) {
-						featureToVersion.put(bundle.getSymbolicName(), bundle.getVersion());
+						featureToVersion.put(bundle.getSymbolicName(), bundle.getHeaders()
+								.get(Constants.BUNDLE_VERSION)
+								.toString());
 					}
 				}
 			}
