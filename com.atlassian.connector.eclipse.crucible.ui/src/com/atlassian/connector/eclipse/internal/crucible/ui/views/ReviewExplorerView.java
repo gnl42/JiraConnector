@@ -327,9 +327,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 		});
 		setReview(initializeWith);
+		setLinkingEnabled(linkingEnabled);
 	}
 
 	protected void editorActivated(IEditorPart editor) {
+		if (review == null) {
+			return;
+		}
+
 		IEditorInput editorInput = editor.getEditorInput();
 		if (editorInput == null) {
 			return;
