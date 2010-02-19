@@ -36,22 +36,26 @@ public class JiraNewCommentPart extends TaskEditorNewCommentPart {
 	public void createControl(Composite parent, FormToolkit toolkit) {
 		super.createControl(parent, toolkit);
 
-		TaskAttribute projectRoles = taskDataModel.getTaskData().getRoot().getAttribute(
-				JiraAttribute.PROJECT_ROLES.id());
+		// there is no new comment control when creating new task
+		if (super.getComposite() != null) {
 
-		if (projectRoles != null) {
+			TaskAttribute projectRoles = taskDataModel.getTaskData().getRoot().getAttribute(
+					JiraAttribute.PROJECT_ROLES.id());
 
-			Composite composite = toolkit.createComposite(super.getComposite());
-			GridLayout layout = new GridLayout(2, false);
-			layout.marginWidth = 1;
-			layout.horizontalSpacing = 10;
-			composite.setLayout(layout);
+			if (projectRoles != null) {
 
-			SingleSelectionAttributeEditor editor = new SingleSelectionAttributeEditor(taskDataModel, projectRoles);
-			editor.createLabelControl(composite, toolkit);
-			editor.createControl(composite, toolkit);
+				Composite composite = toolkit.createComposite(super.getComposite());
+				GridLayout layout = new GridLayout(2, false);
+				layout.marginWidth = 1;
+				layout.horizontalSpacing = 10;
+				composite.setLayout(layout);
 
-			toolkit.paintBordersFor(composite);
+				SingleSelectionAttributeEditor editor = new SingleSelectionAttributeEditor(taskDataModel, projectRoles);
+				editor.createLabelControl(composite, toolkit);
+				editor.createControl(composite, toolkit);
+
+				toolkit.paintBordersFor(composite);
+			}
 		}
 
 	}
