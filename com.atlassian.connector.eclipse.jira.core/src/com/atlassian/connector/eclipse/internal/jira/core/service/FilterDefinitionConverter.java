@@ -114,6 +114,8 @@ public class FilterDefinitionConverter {
 
 	private static final String ISSUE_NO_REPORTER = "issue_no_reporter"; //$NON-NLS-1$
 
+	private static final String UNASSIGNED = "unassigned"; //$NON-NLS-1$
+
 	private static final String VERSION_NONE = "-1"; //$NON-NLS-1$
 
 	private static final String VERSION_RELEASED = "-3"; //$NON-NLS-1$
@@ -381,7 +383,7 @@ public class FilterDefinitionConverter {
 
 	private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
 		String type = getId(params, key + "Select"); //$NON-NLS-1$
-		if (ISSUE_NO_REPORTER.equals(type)) {
+		if (ISSUE_NO_REPORTER.equals(type) || UNASSIGNED.equals(type)) {
 			return new NobodyFilter();
 		} else if (ISSUE_CURRENT_USER.equals(type)) {
 			return new CurrentUserFilter();
@@ -521,8 +523,8 @@ public class FilterDefinitionConverter {
 			}
 		}
 
-		addUserFilter(sb, filter.getReportedByFilter(), REPORTER_KEY);
-		addUserFilter(sb, filter.getAssignedToFilter(), ASSIGNEE_KEY);
+		addUserFilter(sb, filter.getReportedByFilter(), REPORTER_KEY, ISSUE_NO_REPORTER);
+		addUserFilter(sb, filter.getAssignedToFilter(), ASSIGNEE_KEY, UNASSIGNED);
 
 		addDateFilter(sb, filter.getCreatedDateFilter(), CREATED_KEY);
 		addDateFilter(sb, filter.getUpdatedDateFilter(), UPDATED_KEY);
@@ -599,9 +601,9 @@ public class FilterDefinitionConverter {
 		return sb.toString();
 	}
 
-	private void addUserFilter(StringBuilder sb, UserFilter filter, String type) {
+	private void addUserFilter(StringBuilder sb, UserFilter filter, String type, String nobodyText) {
 		if (filter instanceof NobodyFilter) {
-			addParameter(sb, type + "Select", ISSUE_NO_REPORTER); //$NON-NLS-1$
+			addParameter(sb, type + "Select", nobodyText); //$NON-NLS-1$
 		} else if (filter instanceof CurrentUserFilter) {
 			addParameter(sb, type + "Select", ISSUE_CURRENT_USER); //$NON-NLS-1$
 		} else if (filter instanceof SpecificUserFilter) {
