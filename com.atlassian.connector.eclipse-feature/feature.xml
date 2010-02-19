@@ -57,8 +57,16 @@
       <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.compare"/>
+      <import plugin="org.joda.time"/>
       <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
    </requires>
+
+   <plugin
+         id="com.atlassian.connector.commons"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="com.atlassian.connector.eclipse.directclickthrough.ui"
