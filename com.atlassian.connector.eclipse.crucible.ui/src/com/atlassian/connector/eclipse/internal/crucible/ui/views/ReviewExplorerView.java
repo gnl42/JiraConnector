@@ -47,6 +47,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -91,6 +92,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -105,6 +107,53 @@ import java.util.Map;
  * @author Pawel Niewiadomski
  */
 public class ReviewExplorerView extends ViewPart implements IReviewActivationListener {
+
+	private final class TextSelectionToReviewItemListener implements ISelectionListener {
+		private boolean focusMatchingComment(CrucibleFileInfo fileInfo, String revision, int start) {
+			for (VersionedComment comment : fileInfo.getVersionedComments()) {
+				Map<String, IntRanges> commentRanges = comment.getLineRanges();
+				if (commentRanges != null && commentRanges.containsKey(revision)) {
+					IntRanges ranges = comment.getLineRanges().get(revision);
+					if (ranges.getTotalMin() <= start && start <= ranges.getTotalMax()) {
+						if (!inputIsSelected(comment)) {
+							showInput(comment);
+						} else {
+							viewer.getTree().showSelection();
+						}
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+			if (selection instanceof TextSelection && isLinkingEnabled() && part instanceof IEditorPart) {
+				IEditorInput editorInput = ((IEditorPart) part).getEditorInput();
+				TextSelection textSelection = (TextSelection) selection;
+				int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
+				int end = textSelection.getEndLine() + 1;
+
+				if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
+					CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
+
+					if (focusMatchingComment(fileInfo, fileInfo.getOldFileDescriptor().getRevision(), start)
+							|| focusMatchingComment(fileInfo, fileInfo.getFileDescriptor().getRevision(), start)) {
+						return;
+					}
+				}
+
+				if (editorInput instanceof ICrucibleFileProvider) {
+					CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
+					String revision = crucibleFile.getSelectedFile().getRevision();
+
+					if (focusMatchingComment(crucibleFile.getCrucibleFileInfo(), revision, start)) {
+						return;
+					}
+				}
+			}
+		}
+	}
 
 	public static final String ID = "com.atlassian.connector.eclipse.crucible.ui.explorerView";
 
@@ -177,6 +226,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private OpenAndLinkWithEditorHelper openAndLinkWithEditorHelper;
 
 	private Action linkWithEditorAction;
+
+	private final TextSelectionToReviewItemListener linkEditorSelectionToTreeListener = new TextSelectionToReviewItemListener();;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
@@ -280,52 +331,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		createContextMenu();
 
 		getSite().setSelectionProvider(viewer);
-		getSite().getPage().addPostSelectionListener(new ISelectionListener() {
-			private boolean focusMatchingComment(CrucibleFileInfo fileInfo, String revision, int start) {
-				for (VersionedComment comment : fileInfo.getVersionedComments()) {
-					Map<String, IntRanges> commentRanges = comment.getLineRanges();
-					if (commentRanges != null && commentRanges.containsKey(revision)) {
-						IntRanges ranges = comment.getLineRanges().get(revision);
-						if (ranges.getTotalMin() <= start && start <= ranges.getTotalMax()) {
-							if (!inputIsSelected(comment)) {
-								showInput(comment);
-							} else {
-								viewer.getTree().showSelection();
-							}
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (selection instanceof TextSelection && isLinkingEnabled() && part instanceof IEditorPart) {
-					IEditorInput editorInput = ((IEditorPart) part).getEditorInput();
-					TextSelection textSelection = (TextSelection) selection;
-					int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
-					int end = textSelection.getEndLine() + 1;
-
-					if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
-						CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
-
-						if (focusMatchingComment(fileInfo, fileInfo.getOldFileDescriptor().getRevision(), start)
-								|| focusMatchingComment(fileInfo, fileInfo.getFileDescriptor().getRevision(), start)) {
-							return;
-						}
-					}
-
-					if (editorInput instanceof ICrucibleFileProvider) {
-						CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
-						String revision = crucibleFile.getSelectedFile().getRevision();
-
-						if (focusMatchingComment(crucibleFile.getCrucibleFileInfo(), revision, start)) {
-							return;
-						}
-					}
-				}
-			}
-		});
+		getSite().getPage().addPostSelectionListener(linkEditorSelectionToTreeListener);
 		setReview(initializeWith);
 		setLinkingEnabled(linkingEnabled);
 	}
@@ -514,7 +520,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			// don't do anything. Simply don't store the settings
 		}
 
-		getSite().getPage().removePartListener(linkWithEditorListener); // always remove even if we didn't register
+		// always remove even if we didn't register
+		getSite().getPage().removePartListener(linkWithEditorListener);
+		getSite().getPage().removePostSelectionListener(linkEditorSelectionToTreeListener);
 
 		super.dispose();
 	}
