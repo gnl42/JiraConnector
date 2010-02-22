@@ -715,7 +715,7 @@ public class JiraWebClient {
 	private void addCustomField(JiraClient client, PostMethod post, CustomField customField) {
 		for (String value : customField.getValues()) {
 			String key = customField.getKey();
-			if (includeCustomField(key)) {
+			if (includeCustomField(key, value)) {
 				if (value != null
 						&& (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key))) {
 					try {
@@ -762,11 +762,23 @@ public class JiraWebClient {
 		}
 	}
 
-	private boolean includeCustomField(String key) {
-		return key == null || //
-				(!key.startsWith("com.atlassian.jira.toolkit") && // //$NON-NLS-1$
-						!key.startsWith("com.atlassian.jira.ext.charting") && // //$NON-NLS-1$
-				!key.startsWith("com.pyxis.greenhopper.jira:greenhopper-ranking")); //$NON-NLS-1$
+	private boolean includeCustomField(String key, String value) {
+		if (key == null) {
+			return true;
+		}
+
+		if (key.startsWith("com.pyxis.greenhopper.jira:greenhopper-ranking")) { //$NON-NLS-1$
+			// if this field is a valid float sent it back if not ignore it (old greenhopper publishes invalid content in this field)
+			try {
+				Float.parseFloat(value);
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+
+		return !key.startsWith("com.atlassian.jira.toolkit") && //$NON-NLS-1$
+				!key.startsWith("com.atlassian.jira.ext.charting"); //$NON-NLS-1$
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
