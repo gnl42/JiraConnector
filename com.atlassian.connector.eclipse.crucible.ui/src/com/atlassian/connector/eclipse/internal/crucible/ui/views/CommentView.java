@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
@@ -26,6 +27,7 @@ import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.action.IMenuListener;
@@ -129,6 +131,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		}
 	};
 
+	private Label revisions;
+
 	@Override
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -209,7 +213,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		Composite detailsComposite = toolkit.createComposite(stackComposite);
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(detailsComposite);
 
-		// Author | Date | Draft | Defect | Defect type
+		// Author | Date | Revisions | Draft | Defect | Defect type
 		// Comment text here
 
 		header = toolkit.createComposite(detailsComposite);
@@ -223,6 +227,10 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		createLabelControl(toolkit, header, "Created:");
 		date = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().applyTo(date);
+
+		createLabelControl(toolkit, header, "Revisions:");
+		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().applyTo(revisions);
 
 		readState = createLabelControl(toolkit, header, "");
 		GridDataFactory.fillDefaults().applyTo(readState);
@@ -413,6 +421,13 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				author.setToolTipText(activeComment.getAuthor().getUsername());
 
 				date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
+
+				if (activeComment instanceof VersionedComment) {
+					final Map<String, IntRanges> lines = ((VersionedComment) activeComment).getLineRanges();
+					revisions.setText(lines != null ? lines.keySet().toString() : "none");
+				} else {
+					revisions.setText("none");
+				}
 
 				message.setText(activeComment.getMessage());
 
