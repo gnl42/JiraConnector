@@ -23,8 +23,9 @@ public class UnreadCommentsViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		ITreeContentProvider provider = (ITreeContentProvider) ((AbstractTreeViewer) viewer).getContentProvider();
+		Object[] roots = provider.getElements(viewer.getInput());
 
-		return haveUnreadCommentAsLeaf(provider, element);
+		return roots == parentElement || haveUnreadCommentAsLeaf(provider, element);
 	}
 
 	private boolean haveUnreadCommentAsLeaf(ITreeContentProvider provider, Object parentElement) {
