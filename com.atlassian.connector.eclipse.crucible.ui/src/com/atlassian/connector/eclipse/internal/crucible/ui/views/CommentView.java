@@ -155,6 +155,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			explorerView.getViewer().removeSelectionChangedListener(this);
 		}
 
+		getSite().getPage().removePartListener(linkWithReviewExplorerListener);
+
 		if (toolkit != null) {
 			toolkit.dispose();
 			toolkit = null;
