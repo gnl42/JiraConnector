@@ -421,9 +421,11 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				setErrorMessage(e.getCause().getMessage());
 			}
 			StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		} catch(InterruptedException e) {
+			// job interrupted by user so ignore it
 		} catch (Exception e) {
 			setErrorMessage(e.getMessage() != null ? e.getMessage() : "Exception:  " + e.getClass().getName());
-			StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID, "Failed to update task repository details", e));
 		} finally {
 			sourceRepositoryCombo.getControl().setEnabled(true);
 			taskRepositoryCombo.getControl().setEnabled(taskRepositoryEnabled);
