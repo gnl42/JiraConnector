@@ -204,10 +204,10 @@
 		<antcall target="mirror-helper">
 			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
 		</antcall>
-		<antcall target="mirror-helper">
+		<!--antcall target="mirror-helper">
 			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
 			<param name="featureId" value="org.eclipse.mylyn.jira_feature"/>
-		</antcall>
+		</antcall-->
 		<!--
 		<antcall target="mirror-helper">
 			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
