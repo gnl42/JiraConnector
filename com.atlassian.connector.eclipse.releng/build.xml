@@ -46,10 +46,6 @@
 			<param name="update.feature" value="org.eclipse.mylyn_feature"/>
 			<param name="update.site" value="${mylyn.site}/e${build.target}"/>
 		</antcall>
-		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.jira_feature"/>
-			<param name="update.site" value="${mylyn-extras.site}"/>
-		</antcall>
 	</target>
 	
 	<target name="pack" depends="init">
@@ -287,7 +283,7 @@
 			<add>
 				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/"/>
 				<repository location="http://download.eclipse.org/tools/mylyn/update/e3.4/"/>
-				<repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/>
+				<!--repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/-->
 				<repository location="http://subclipse.tigris.org/update_1.6.x/"/>
 				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
 				<!--<repository location="http://update.atlassian.com/eclipse/clover/"/>-->
