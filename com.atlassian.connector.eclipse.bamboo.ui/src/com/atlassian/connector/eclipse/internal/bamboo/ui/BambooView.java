@@ -487,6 +487,9 @@ public class BambooView extends ViewPart {
 	}
 
 	private void fillLink(Set<TaskRepository> repositories) {
+		if (link.isDisposed()) {
+			return;
+		}
 		if (repositories == null || repositories.isEmpty()) {
 			link.setText(NLS.bind("No Bamboo repositories defined, <a>{0}</a>...", CREATE_A_NEW_REPOSITORY_LINK));
 		} else {
