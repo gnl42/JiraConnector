@@ -51,6 +51,7 @@
       <import plugin="org.eclipse.mylyn.monitor.ui"/>
       <import plugin="org.eclipse.mylyn.monitor.core"/>
       <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
+      <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
    </requires>
 
    <plugin
@@ -125,6 +126,13 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.directclickthrough.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

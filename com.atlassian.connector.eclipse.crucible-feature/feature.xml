@@ -52,6 +52,7 @@
       <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
       <import plugin="org.apache.axis"/>
       <import plugin="javax.xml.rpc"/>
+      <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
    </requires>
 
    <plugin
@@ -161,6 +162,13 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.directclickthrough.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
