@@ -11,32 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.eclipse.core.runtime.IBundleGroup;
-import org.eclipse.core.runtime.IBundleGroupProvider;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
-import org.eclipse.mylyn.monitor.core.InteractionEvent;
-import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +24,30 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
+import org.eclipse.mylyn.monitor.core.InteractionEvent;
+import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+
+import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -124,15 +122,12 @@ public final class UsageDataUploadJob extends Job {
 
 	private void logInstalledFeatures(InteractionEventLogger log) {
 		Map<String, String> featureToVersion = new HashMap<String, String>();
-		for (IBundleGroupProvider provider : Platform.getBundleGroupProviders()) {
-			for (IBundleGroup bundleGroup : provider.getBundleGroups()) {
-				for (Bundle bundle : bundleGroup.getBundles()) {
-					final String symbolicName = bundle.getSymbolicName();
-					if (symbolicName.startsWith(ECLIPSE_CONNECTOR_NAMESPACE)) {
-						featureToVersion.put(symbolicName.substring(ECLIPSE_CONNECTOR_NAMESPACE.length()),
-								bundle.getHeaders().get(Constants.BUNDLE_VERSION).toString());
-					}
-				}
+		for (Bundle bundle : UiUsageMonitorPlugin.getDefault().getBundle().getBundleContext().getBundles()) {
+			final String symbolicName = bundle.getSymbolicName();
+			if (symbolicName.startsWith(ECLIPSE_CONNECTOR_NAMESPACE)) {
+				featureToVersion.put(symbolicName.substring(ECLIPSE_CONNECTOR_NAMESPACE.length()), bundle.getHeaders()
+						.get(Constants.BUNDLE_VERSION)
+						.toString());
 			}
 		}
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
