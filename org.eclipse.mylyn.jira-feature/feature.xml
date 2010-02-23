@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
     Copyright (c) 2009 Tasktop Technologies and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +9,10 @@
     Contributors:
          Tasktop Technologies - initial API and implementation
  -->
-
 <feature
       id="org.eclipse.mylyn.jira_feature"
       label="%featureName"
-      version="3.3.99.qualifier"
+      version="3.4.0"
       provider-name="%providerName"
       plugin="org.eclipse.mylyn">
 
@@ -28,10 +28,6 @@
       %license
    </license>
 
-   <url>
-      <update label="%updateSiteName" url="http://download.eclipse.org/tools/mylyn/update/extras"/>
-   </url>
-
    <requires>
       <import feature="com.atlassian.connector.eclipse.jira" version="2.0.0.qualifier" match="greaterOrEqual"/>
    </requires>
@@ -40,14 +36,14 @@
          id="org.eclipse.mylyn.jira.ui"
          download-size="0"
          install-size="0"
-         version="3.3.99.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylyn.jira.core"
          download-size="0"
          install-size="0"
-         version="3.3.99.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

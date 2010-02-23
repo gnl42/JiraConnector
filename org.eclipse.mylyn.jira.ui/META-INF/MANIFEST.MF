@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.mylyn.jira.ui;singleton:=true
-Bundle-Version: 3.3.99.qualifier
+Bundle-Version: 3.4.0
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.mylyn.jira.core;bundle-version="[3.0.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
