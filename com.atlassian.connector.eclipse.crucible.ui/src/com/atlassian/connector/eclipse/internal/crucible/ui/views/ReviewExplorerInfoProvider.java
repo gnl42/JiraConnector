@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfoProvider;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.swt.widgets.Composite;
@@ -40,17 +41,21 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							}
 
 							public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
-								tooltip.addIconAndLabel(composite, null, "Revisions:", true);
+								if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
+									tooltip.addIconAndLabel(composite, null, "Revisions:", true);
 
-								VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
-								VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
+									VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
+									VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
 
-								String details = newFile.getRevision();
-								if (oldFile != null && oldFile.getRevision().length() != 0) {
-									details += '-' + oldFile.getRevision();
+									String details = newFile.getRevision();
+									if (oldFile != null && oldFile.getRevision().length() != 0) {
+										details += '-' + oldFile.getRevision();
+									}
+
+									tooltip.addIconAndLabel(composite, null, "[" + details + "]");
+								} else if (fileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
+									tooltip.addIconAndLabel(composite, null, "Pre-commit review item");
 								}
-
-								tooltip.addIconAndLabel(composite, null, "[" + details + "]");
 							}
 						};
 					}
