@@ -46,5 +46,7 @@ Export-Package: com.atlassian.connector.eclipse.crucible.ui.preferences,
  com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.notifications;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.operations;x-internal:=true,
- com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
+ com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.decoration;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.views;x-internal:=true
 Bundle-Vendor: Atlassian
