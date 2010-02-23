@@ -36,6 +36,7 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.OpenAndLinkWithEditorHelper;
 import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
+import com.atlassian.connector.eclipse.ui.commons.CustomToolTip;
 import com.atlassian.connector.eclipse.ui.util.SelectionUtil;
 import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
@@ -71,6 +72,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -284,6 +287,16 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				null);
 		viewer.setLabelProvider(styledLabelProvider);
 		viewer.setComparator(new ReviewTreeComparator());
+
+		final CustomToolTip toolTip = new CustomToolTip(viewer.getControl());
+		toolTip.setInfoProvider(new ReviewExplorerInfoProvider());
+
+		viewer.getTree().addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				toolTip.hide();
+			}
+		});
 
 		openAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(viewer) {
 			protected void activate(ISelection selection) {

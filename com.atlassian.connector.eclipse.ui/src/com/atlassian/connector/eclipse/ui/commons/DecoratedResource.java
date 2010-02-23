@@ -11,9 +11,15 @@
 
 package com.atlassian.connector.eclipse.ui.commons;
 
-import org.eclipse.core.resources.IResource;
+import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfo;
 
-public class DecoratedResource {
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
+
+public class DecoratedResource implements ICustomToolTipInfo {
 
 	private final String decorationText;
 
@@ -22,6 +28,8 @@ public class DecoratedResource {
 	private final IResource resource;
 
 	private final String tooltipText;
+
+	private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
 	public DecoratedResource(IResource resource, boolean upToDate, String decorationText, String tooltipText) {
 		this.resource = resource;
@@ -79,6 +87,23 @@ public class DecoratedResource {
 			return false;
 		}
 		return true;
+	}
+
+	public Image getImage() {
+		return workbenchLabelProvider.getImage(resource);
+	}
+
+	public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
+		tooltip.addIconAndLabel(composite, getImage(), getResource().getName(), true);
+
+		String detailsText = getTooltipText();
+		if (detailsText != null) {
+			tooltip.addIconAndLabel(composite, null, detailsText);
+		}
+	}
+
+	public boolean isContainer() {
+		return resource instanceof IContainer;
 	}
 
 }

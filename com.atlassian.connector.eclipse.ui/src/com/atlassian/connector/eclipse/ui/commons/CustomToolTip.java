@@ -12,9 +12,9 @@
 
 package com.atlassian.connector.eclipse.ui.commons;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
+import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfo;
+import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfoProvider;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +57,13 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class CustomToolTip extends GradientToolTip {
 
-//	private final static int MAX_TEXT_WIDTH = 300;
-
 	private final static int MAX_WIDTH = 600;
 
 	private final static int X_SHIFT = PlatformUtil.getToolTipXShift();
 
 	private final static int Y_SHIFT = 1;
 
-	private DecoratedResource currentTipElement;
+	private ICustomToolTipInfo currentTipElement;
 
 	private final List<CustomToolTipListener> listeners = new ArrayList<CustomToolTipListener>();
 
@@ -78,9 +75,9 @@ public class CustomToolTip extends GradientToolTip {
 
 	private final Color titleColor;
 
-	private final WorkbenchLabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
-
 	private final boolean showForDirectories;
+
+	private ICustomToolTipInfoProvider infoProvider;
 
 	public CustomToolTip(Control control) {
 		this(control, false);
@@ -92,6 +89,10 @@ public class CustomToolTip extends GradientToolTip {
 		this.showForDirectories = showForDirectories;
 		setShift(new Point(1, 1));
 		titleColor = TasksUiPlugin.getDefault().getFormColors(control.getDisplay()).getColor(IFormColors.TITLE);
+	}
+
+	public void setInfoProvider(ICustomToolTipInfoProvider provider) {
+		infoProvider = provider;
 	}
 
 	public void dispose() {
@@ -115,31 +116,6 @@ public class CustomToolTip extends GradientToolTip {
 		listeners.remove(listener);
 	}
 
-	private DecoratedResource getResourceElement(Object hoverObject) {
-		if (hoverObject instanceof Widget) {
-			Object data = ((Widget) hoverObject).getData();
-			if (data != null) {
-				if (data instanceof DecoratedResource) {
-					return (DecoratedResource) data;
-				} else if (data instanceof IResource) {
-					return new DecoratedResource((IResource) data);
-				} else if (data instanceof IAdaptable) {
-					IResource resource = (IResource) ((IAdaptable) data).getAdapter(IResource.class);
-					return new DecoratedResource(resource);
-				}
-			}
-		}
-		return null;
-	}
-
-	private String getTitleText(DecoratedResource decoratedResource) {
-		return decoratedResource.getResource().getName();
-	}
-
-	private String getDetailsText(DecoratedResource decoratedResource) {
-		return decoratedResource.getTooltipText();
-	}
-
 	@Override
 	public Point getLocation(Point tipSize, Event event) {
 		Widget widget = getTipWidget(event);
@@ -150,10 +126,6 @@ public class CustomToolTip extends GradientToolTip {
 			}
 		}
 		return super.getLocation(tipSize, event);//control.toDisplay(event.x + xShift, event.y + yShift);
-	}
-
-	private Image getImage(IResource resource) {
-		return workbenchLabelProvider.getImage(resource);
 	}
 
 	protected Widget getTipWidget(Event event) {
@@ -193,6 +165,7 @@ public class CustomToolTip extends GradientToolTip {
 
 	@Override
 	protected boolean shouldCreateToolTip(Event event) {
+		assert infoProvider != null;
 		currentTipElement = null;
 
 		if (super.shouldCreateToolTip(event)) {
@@ -200,9 +173,11 @@ public class CustomToolTip extends GradientToolTip {
 			if (tipWidget != null) {
 				Rectangle bounds = getBounds(tipWidget);
 				if (bounds != null && contains(bounds.x, bounds.y)) {
-					DecoratedResource decoratedResource = getResourceElement(tipWidget);
-					if (showForDirectories || !(decoratedResource.getResource() instanceof IContainer)) {
-						currentTipElement = decoratedResource;
+					ICustomToolTipInfo decoratedResource = infoProvider.getToolTipInfo(tipWidget);
+					if (decoratedResource != null) {
+						if (showForDirectories || !decoratedResource.isContainer()) {
+							currentTipElement = decoratedResource;
+						}
 					}
 				}
 			}
@@ -230,12 +205,7 @@ public class CustomToolTip extends GradientToolTip {
 
 		Composite composite = createToolTipContentAreaComposite(parent);
 
-		addIconAndLabel(composite, getImage(currentTipElement.getResource()), getTitleText(currentTipElement), true);
-
-		String detailsText = getDetailsText(currentTipElement);
-		if (detailsText != null) {
-			addIconAndLabel(composite, null, detailsText);
-		}
+		currentTipElement.createToolTipArea(this, composite);
 
 		visible = true;
 
@@ -260,11 +230,11 @@ public class CustomToolTip extends GradientToolTip {
 		return text;
 	}
 
-	protected void addIconAndLabel(Composite parent, Image image, String text) {
+	public void addIconAndLabel(Composite parent, Image image, String text) {
 		addIconAndLabel(parent, image, text, false);
 	}
 
-	protected void addIconAndLabel(Composite parent, Image image, String text, boolean bold) {
+	public void addIconAndLabel(Composite parent, Image image, String text, boolean bold) {
 		Label imageLabel = new Label(parent, SWT.NONE);
 		imageLabel.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
 		imageLabel.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));

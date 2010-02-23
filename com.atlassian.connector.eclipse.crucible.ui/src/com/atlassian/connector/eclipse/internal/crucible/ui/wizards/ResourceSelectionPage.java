@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.ITreeViewModeSettingProvider;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
+import com.atlassian.connector.eclipse.ui.viewers.DecoratedResourceInfoProvider;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
@@ -145,6 +146,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 		resourceSelectionTree.getTreeViewer().getTree().setToolTipText("");
 		final CustomToolTip toolTip = new CustomToolTip(resourceSelectionTree.getTreeViewer().getControl());
+		toolTip.setInfoProvider(DecoratedResourceInfoProvider.getInstance());
 
 		resourceSelectionTree.getTreeViewer().getTree().addFocusListener(new FocusAdapter() {
 			@Override
