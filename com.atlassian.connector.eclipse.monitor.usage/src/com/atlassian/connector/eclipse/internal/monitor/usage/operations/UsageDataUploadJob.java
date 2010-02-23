@@ -11,19 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -45,15 +37,25 @@ import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class UsageDataUploadJob extends Job {
 
 	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt"; //$NON-NLS-1$
+
+	private static final String ECLIPSE_CONNECTOR_NAMESPACE = "com.atlassian.connector.eclipse.";
 
 	private final boolean ifTimeElapsed;
 
@@ -125,10 +127,10 @@ public final class UsageDataUploadJob extends Job {
 		for (IBundleGroupProvider provider : Platform.getBundleGroupProviders()) {
 			for (IBundleGroup bundleGroup : provider.getBundleGroups()) {
 				for (Bundle bundle : bundleGroup.getBundles()) {
-					if (bundle.getSymbolicName().startsWith("com.atlassian.connector.eclipse.")) {
-						featureToVersion.put(bundle.getSymbolicName(), bundle.getHeaders()
-								.get(Constants.BUNDLE_VERSION)
-								.toString());
+					final String symbolicName = bundle.getSymbolicName();
+					if (symbolicName.startsWith(ECLIPSE_CONNECTOR_NAMESPACE)) {
+						featureToVersion.put(symbolicName.substring(ECLIPSE_CONNECTOR_NAMESPACE.length()),
+								bundle.getHeaders().get(Constants.BUNDLE_VERSION).toString());
 					}
 				}
 			}
