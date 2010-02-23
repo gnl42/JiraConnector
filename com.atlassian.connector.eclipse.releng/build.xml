@@ -70,11 +70,6 @@
 			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
 			<param name="to" value="${build.site}"/>
 		</antcall>
-		<antcall target="mirror-helper">
-			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
-			<param name="featureId" value="org.eclipse.mylyn.jira_feature"/>
-			<param name="to" value="${build.site}"/>
-		</antcall>
 
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml"/>
 		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
