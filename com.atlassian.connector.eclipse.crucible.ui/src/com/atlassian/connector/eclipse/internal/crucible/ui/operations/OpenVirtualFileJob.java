@@ -35,7 +35,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.UrlUtil;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -58,7 +57,6 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -147,7 +145,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		final CrucibleFileInfo fileInfo = crucibleFile.getCrucibleFileInfo();
 		final VersionedVirtualFile virtualFile = crucibleFile.getSelectedFile();
 
-		final IResource[] workspaceReviewItem = { null };
+		IResource workspaceReviewItem = null;
 
 		// if it's SCM first try to open IResource locally
 		if (fileInfo.getRepositoryType().equals(RepositoryType.SCM)) {
@@ -156,11 +154,11 @@ public class OpenVirtualFileJob extends JobWithStatus {
 					TaskRepositoryUtil.getScmRepositoryMappings(repository), fileInfo.getRepositoryName());
 
 			if (mapping != null) {
-				workspaceReviewItem[0] = TeamUiUtils.findResourceForPath(mapping.getKey(), virtualFile.getUrl(),
+				workspaceReviewItem = TeamUiUtils.findResourceForPath(mapping.getKey(), virtualFile.getUrl(),
 						submonitor.newChild(1));
-				if (workspaceReviewItem[0] != null) {
-					if (TeamUiUtils.isInSync(workspaceReviewItem[0], virtualFile.getRevision())) {
-						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem[0]);
+				if (workspaceReviewItem != null) {
+					if (TeamUiUtils.isInSync(workspaceReviewItem, virtualFile.getRevision())) {
+						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
 
 						if (editor != null) {
 							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
@@ -174,8 +172,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 						IStatus.WARNING,
 						CrucibleUiPlugin.PLUGIN_ID,
 						NLS.bind(
-								"There's no mapping for Crucible repository {0}. Review item will be downloaded from Crucible.",
-								fileInfo.getRepositoryName())));
+						"There's no mapping for Crucible repository {0}. Review item will be downloaded from Crucible.",
+						fileInfo.getRepositoryName())));
 			}
 			submonitor.worked(1);
 		}
@@ -185,85 +183,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
 
-		client.execute(new RemoteOperation<Void, CrucibleServerFacade2>(
-				submonitor.newChild(1, SubMonitor.SUPPRESS_NONE), taskRepository) {
-			@Override
-			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-					throws RemoteApiException, ServerPasswordNotProvidedException {
-				final SubMonitor submonitor = SubMonitor.convert(monitor, "Download file from Crucible", 2);
-				final VersionedVirtualFile virtualFile = crucibleFile.getSelectedFile();
-
-				if (virtualFile.getContentUrl() == null) {
-					contentUrlMissingPopup();
-					return null;
-				}
-
-				final byte[] file = getContent(virtualFile.getContentUrl(), server.getSession(serverCfg),
-						serverCfg.getUrl());
-				submonitor.worked(1);
-
-				if (file == null) {
-					contentUrlMissingPopup();
-					return null;
-				}
-
-				final File localCopy;
-				try {
-					localCopy = createTempFile(virtualFile.getName(), file);
-					submonitor.worked(1);
-				} catch (IOException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage()));
-					return null;
-				}
-
-				// we've downloaded review item, but let's check if by any chance it has the same content as local resource
-				// and in this case let's open the local one
-				if (workspaceReviewItem[0] != null) {
-					try {
-						if (FileUtils.contentEquals(localCopy, workspaceReviewItem[0].getRawLocation().toFile())) {
-							IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem[0]);
-
-							if (editor != null) {
-								CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
-										review, crucibleFile, comment);
-								return null;
-							}
-						}
-					} catch (IOException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Failed to compare local resources. Falling back to Crucible remote review item.", e));
-					} catch (CoreException e) {
-						StatusHandler.log(e.getStatus());
-					}
-				}
-
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						try {
-							String editorId = getEditorId(PlatformUI.getWorkbench(), virtualFile.getName());
-							IEditorPart editor = PlatformUI.getWorkbench()
-									.getActiveWorkbenchWindow()
-									.getActivePage()
-									.openEditor(
-											new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
-													crucibleFile, file, localCopy)), editorId);
-
-							if (editor != null) {
-								CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
-										review, crucibleFile, comment);
-							} else {
-								StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
-										"Requested file opened in external editor"));
-							}
-						} catch (PartInitException e) {
-							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-									"Failed to initialize editor", e));
-						}
-					}
-				});
-				return null;
-			}
-		});
+		client.execute(new FileContentFetchingFromCrucibleOperation(submonitor.newChild(1, SubMonitor.SUPPRESS_NONE),
+				taskRepository, workspaceReviewItem));
 	}
 
 	private IEditorPart openEditor(final CrucibleFile crucibleFile2, final IResource iResource) throws CoreException {
@@ -295,11 +216,99 @@ public class OpenVirtualFileJob extends JobWithStatus {
 	public static void contentUrlMissingPopup() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				MessageDialog.openError(
-						WorkbenchUtil.getShell(),
-						"Unable to open review item",
-						"Crucible did not return review item content URL. Probably you're using Crucible 1.6.x which doesn't support direct access to review items. Please upgrade to Crucible 2.x.");
+				MessageDialog
+						.openError(
+								WorkbenchUtil.getShell(),
+								"Unable to open review item",
+								"Crucible did not return review item content URL. Probably you're using Crucible 1.6.x which doesn't support direct access to review items. Please upgrade to Crucible 2.x.");
 			}
 		});
+	}
+
+	private final class FileContentFetchingFromCrucibleOperation extends RemoteOperation<Void, CrucibleServerFacade2> {
+		private final IResource workspaceReviewItem;
+
+		private FileContentFetchingFromCrucibleOperation(IProgressMonitor monitor, TaskRepository taskRepository,
+				IResource workspaceReviewItem) {
+			super(monitor, taskRepository);
+			this.workspaceReviewItem = workspaceReviewItem;
+		}
+
+		@Override
+		public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+				throws RemoteApiException, ServerPasswordNotProvidedException {
+			final SubMonitor submonitor = SubMonitor.convert(monitor, "Download file from Crucible", 2);
+			final VersionedVirtualFile virtualFile = crucibleFile.getSelectedFile();
+
+			if (virtualFile.getContentUrl() == null) {
+				contentUrlMissingPopup();
+				return null;
+			}
+
+			final byte[] file = getContent(virtualFile.getContentUrl(), server.getSession(serverCfg),
+					serverCfg.getUrl());
+			submonitor.worked(1);
+
+			if (file == null) {
+				contentUrlMissingPopup();
+				return null;
+			}
+
+			final File localCopy;
+			try {
+				localCopy = createTempFile(virtualFile.getName(), file);
+				submonitor.worked(1);
+			} catch (IOException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage()));
+				return null;
+			}
+
+			// we've downloaded review item, but let's check if by any chance it has the same content as local resource
+			// and in this case let's open the local one
+			if (workspaceReviewItem != null) {
+				try {
+					if (FileUtils.contentEquals(localCopy, workspaceReviewItem.getRawLocation().toFile())) {
+						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
+
+						if (editor != null) {
+							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
+									review, crucibleFile, comment);
+							return null;
+						}
+					}
+				} catch (IOException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Failed to compare local resources. Falling back to Crucible remote review item.", e));
+				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
+				}
+			}
+
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						String editorId = getEditorId(PlatformUI.getWorkbench(), virtualFile.getName());
+						IEditorPart editor = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage()
+								.openEditor(
+								new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
+								crucibleFile, file, localCopy)), editorId);
+
+						if (editor != null) {
+							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
+									review, crucibleFile, comment);
+						} else {
+							StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
+									"Requested file opened in external editor"));
+						}
+					} catch (PartInitException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Failed to initialize editor", e));
+					}
+				}
+			});
+			return null;
+		}
 	}
 }
