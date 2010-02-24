@@ -39,6 +39,7 @@ plugin@com.atlassian.connector.eclipse.help=SVN,trunk,https://studio.atlassian.c
 plugin@com.atlassian.connector.eclipse.directclickthrough.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.directclickthrough.ui
 plugin@com.atlassian.connector.eclipse.monitor.usage=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.monitor.usage
 plugin@com.atlassian.connector.eclipse.team.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.team.ui
+plugin@com.atlassian.connector.eclipse.team.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.team.tests
 plugin@org.eclipse.mylyn.jira.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.eclipse.mylyn.jira.core
 plugin@org.eclipse.mylyn.jira.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.eclipse.mylyn.jira.ui
 plugin@org.eclipse.mylyn.jira.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.eclipse.mylyn.jira.tests
