@@ -30,6 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -228,10 +229,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		date = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().applyTo(date);
 
-		createLabelControl(toolkit, header, "Revisions:");
-		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(revisions);
-
 		readState = createLabelControl(toolkit, header, "");
 		GridDataFactory.fillDefaults().applyTo(readState);
 
@@ -254,6 +251,10 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		defectClassification = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		defectClassification.setToolTipText("Defect Classification");
 		GridDataFactory.fillDefaults().applyTo(defectClassification);
+
+		createLabelControl(toolkit, header, "Applies to revisions:");
+		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().applyTo(revisions);
 
 		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
@@ -424,7 +425,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 				if (activeComment instanceof VersionedComment) {
 					final Map<String, IntRanges> lines = ((VersionedComment) activeComment).getLineRanges();
-					revisions.setText(lines != null ? lines.keySet().toString() : "none");
+					revisions.setText(lines != null ? StringUtils.join(lines.keySet(), ", ") : "none");
 				} else {
 					revisions.setText("none");
 				}
