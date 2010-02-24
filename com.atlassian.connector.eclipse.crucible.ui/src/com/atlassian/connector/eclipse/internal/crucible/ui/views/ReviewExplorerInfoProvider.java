@@ -21,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
 
@@ -42,7 +43,8 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 							public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
 								if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
-									tooltip.addIconAndLabel(composite, null, "Revisions:", true);
+									tooltip.addIconAndLabel(composite, null, "Post-commit review item for revisions:",
+											true);
 
 									VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
 									VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
@@ -52,7 +54,7 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 										details += '-' + oldFile.getRevision();
 									}
 
-									tooltip.addIconAndLabel(composite, null, "[" + details + "]");
+									tooltip.addIconAndLabel(composite, null, details);
 								} else if (fileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
 									tooltip.addIconAndLabel(composite, null, "Pre-commit review item");
 								}
@@ -68,11 +70,16 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 						public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
 							Map<String, IntRanges> ranges = comment.getLineRanges();
-							if (ranges != null && ranges.keySet() != null) {
-								tooltip.addIconAndLabel(composite, null, "Associated with revisions:", true);
-								tooltip.addIconAndLabel(composite, null, ranges.keySet().toString());
-							} else {
-								tooltip.addIconAndLabel(composite, null, "File Comment", true);
+							if (ranges == null || ranges.keySet() == null) {
+								tooltip.addIconAndLabel(composite, null, "General File Comment", true);
+								return;
+							}
+
+							for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
+								tooltip.addIconAndLabel(composite, null, NLS.bind(
+										"File comment for lines {0}-{1} for revision: {2}\n", new Object[] {
+												range.getValue().getTotalMin(), range.getValue().getTotalMax(),
+												range.getKey() }), true);
 							}
 						}
 					};
