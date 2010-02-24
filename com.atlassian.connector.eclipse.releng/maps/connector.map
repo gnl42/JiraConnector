@@ -66,5 +66,5 @@ plugin@javax.activation,1.1.0=GET,http://eclipse.unixheads.org/tools/orbit/downl
 ! Mylyn's plugins that are required during release
 !**************************************************
 plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests.util
-plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
-plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap
+plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.commons.soap=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap
