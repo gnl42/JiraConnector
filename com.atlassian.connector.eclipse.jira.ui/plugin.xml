@@ -54,6 +54,51 @@
             repositoryKind="jira"
             label="Apache"
             urlRepository="http://issues.apache.org/jira/"/>
+      <repository addAutomatically="true"
+			label="Atlassian Integrations Support" 
+			repositoryKind="jira" 
+			urlRepository="https://studio.atlassian.com/" />
    </extension>
 
+   <extension
+         point="org.eclipse.mylyn.tasks.bugs.support">
+	    <category description="Community supported open source projects"
+			id="org.eclipse.mylyn.tasks.bugs.openSource" name="Open Source Community"
+			weight="900" />
+      <provider
+            categoryId="org.eclipse.mylyn.tasks.bugs.openSource"
+            description="Support for Atlassian Integrations"
+            icon="atlassian_icon-32.png"
+            id="com.atlassian.connector.eclipse.ui.atlassian"
+            name="Atlassian"
+            url="http://support.atlassian.com/">
+      </provider>
+      <product
+            featureId="com.atlassian.connector.eclipse"
+            id="com.atlassian.connector"
+            name="Atlassian Connector for Eclipse"
+            providerId="com.atlassian.connector.eclipse.ui.atlassian"
+            url="http://www.atlassian.com/software/ideconnector/eclipse.jsp">
+      </product>
+      <mapping
+            namespace="com.atlassian.connector"
+            productId="com.atlassian.connector">
+         <repository
+               kind="jira"
+               url="https://studio.atlassian.com/">
+         </repository>
+         <property
+               name="product"
+               value="PLE">
+         </property>         
+      </mapping>
+      <mapping
+            namespace="com.atlassian.connector.commons"
+            productId="com.atlassian.connector">
+         <property
+               name="product"
+               value="ACC">
+         </property>
+      </mapping>
+   </extension>
 </plugin>
