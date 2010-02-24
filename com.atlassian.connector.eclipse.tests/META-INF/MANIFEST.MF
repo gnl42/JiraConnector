@@ -19,6 +19,7 @@ Require-Bundle:
  com.atlassian.connector.eclipse.fisheye.ui,
  com.atlassian.connector.commons.tests.dependencies,
  com.atlassian.connector.eclipse.jira.tests,
+ com.atlassian.connector.eclipse.team.tests,
  org.junit
 Export-Package: com.atlassian.connector.eclipse;x-internal:=true
 Bundle-Vendor: Atlassian

@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
-
 import org.eclipse.core.resources.IResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +39,10 @@ public class TeamUiResourceManager {
 	@NotNull
 	public Set<ITeamUiResourceConnector> getTeamConnectors() {
 		return teamConnectors;
+	}
+
+	public void addTeamConnector(ITeamUiResourceConnector teamConnector) {
+		teamConnectors.add(teamConnector);
 	}
 
 	/**

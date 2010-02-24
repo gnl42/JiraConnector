@@ -99,4 +99,10 @@ public final class TeamUiUtilsTests extends TestCase {
 		super.tearDown();
 	}
 
+	public void testGetSupportedTeamConnectors() {
+		// @todo wseliga restore it
+//		TestUtil.assertHasOnlyElements(TeamUiUtils.getSupportedTeamConnectors(), "Subversive", "Subclipse",
+//				"Team API (partial support)", "CVS (FishEye only)");
+	}
+
 }

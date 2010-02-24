@@ -16,6 +16,7 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -94,20 +95,38 @@ public final class TeamUiUtils {
 		return true;
 	}
 
+	@Nullable
 	public static IResource findResourceForPath(String repoUrl, String filePath, IProgressMonitor monitor) {
 		IPath path = new Path(filePath);
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+		if (resource == null && repoUrl != null) {
+			for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+				final ScmRepository scmRepo = getApplicableRepository(project);
+				if (scmRepo != null) {
+					if (repoUrl.startsWith(scmRepo.getRootPath())) {
+						final IResource member = findResourceForPath2(project, filePath);
+						if (member != null) {
+							return member;
+						}
+					}
+				}
+			}
+		}
+
 		if (resource == null) {
-			return findResourceForPath2(filePath);
+			return findResourceForPath2(ResourcesPlugin.getWorkspace().getRoot(), filePath);
 		}
 		return resource;
 	}
 
-	private static IResource findResourceForPath2(String filePath) {
+	public static String findMatching(String projectScmPath, String filePath) {
+		return null;
+	}
+
+	private static IResource findResourceForPath2(IContainer location, String filePath) {
 		if (filePath == null || filePath.length() <= 0) {
 			return null;
 		}
-		IContainer location = ResourcesPlugin.getWorkspace().getRoot();
 
 		IPath path = new Path(filePath);
 		IResource resource = null;

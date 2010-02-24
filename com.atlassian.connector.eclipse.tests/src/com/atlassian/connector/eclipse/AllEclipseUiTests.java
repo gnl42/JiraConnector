@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse;
 
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtilsTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -23,7 +25,7 @@ public final class AllEclipseUiTests {
 
 		TestSuite suite = new TestSuite("Tests for Eclipse UI");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(TeamUiUtilsTest.class);
+		suite.addTestSuite(TeamUiUtilsTests.class);
 
 		// $JUnit-END$
 		return suite;

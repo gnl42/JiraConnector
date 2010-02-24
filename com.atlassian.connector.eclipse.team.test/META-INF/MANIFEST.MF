@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Test UI Tests
-Bundle-SymbolicName: com.atlassian.connector.eclipse.team.test;singleton:=true
+Bundle-SymbolicName: com.atlassian.connector.eclipse.team.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
@@ -26,3 +26,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  org.jetbrains.annotations;resolution:=optional
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: com.atlassian.connector.eclipse.team.ui;x-friends:="com.atlassian.connector.eclipse.tests"
