@@ -13,7 +13,6 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 
@@ -47,6 +46,8 @@ public class ComponentFilter implements Filter, Serializable {
 	}
 
 	public ComponentFilter copy() {
-		return new ComponentFilter(Arrays.copyOf(components, components.length), containsNone);
+		Component[] copy = new Component[components.length];
+		System.arraycopy(components, 0, copy, 0, components.length);
+		return new ComponentFilter(copy, containsNone);
 	}
 }

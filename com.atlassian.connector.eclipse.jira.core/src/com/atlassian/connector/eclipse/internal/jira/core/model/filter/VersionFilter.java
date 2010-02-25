@@ -13,7 +13,6 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 
@@ -56,8 +55,9 @@ public class VersionFilter implements Filter, Serializable {
 
 	public VersionFilter copy() {
 		if (versions != null) {
-			return new VersionFilter(Arrays.copyOf(versions, versions.length), hasNoneVersion, releasedVersions,
-					unreleasedVersions);
+			Version[] copy = new Version[versions.length];
+			System.arraycopy(versions, 0, copy, 0, versions.length);
+			return new VersionFilter(copy, hasNoneVersion, releasedVersions, unreleasedVersions);
 		}
 
 		return new VersionFilter(versions, hasNoneVersion, releasedVersions, unreleasedVersions);
