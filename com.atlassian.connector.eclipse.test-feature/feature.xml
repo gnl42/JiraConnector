@@ -41,6 +41,10 @@
          id="com.atlassian.connector.commons"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.mylyn.test_feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.junit"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
@@ -128,20 +132,6 @@
 
    <plugin
          id="org.eclipse.mylyn.tests.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.resources.tests"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.java.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
