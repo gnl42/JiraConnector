@@ -412,16 +412,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			if (selectionContainsAll) {
 				workingCopy.setReportedInVersionFilter(null);
-			} else if (selectionContainsNone) {
-				workingCopy.setReportedInVersionFilter(new VersionFilter(new Version[0]));
-			} else if (selectionContainsReleased || selectionContainsUnreleased) {
-				workingCopy.setReportedInVersionFilter(new VersionFilter(selectionContainsReleased,
-						selectionContainsUnreleased));
-			} else if (selectedVersions.size() > 0) {
-				workingCopy.setReportedInVersionFilter(new VersionFilter(
-						selectedVersions.toArray(new Version[selectedVersions.size()])));
 			} else {
-				workingCopy.setReportedInVersionFilter(null);
+				workingCopy.setReportedInVersionFilter(new VersionFilter(
+						selectedVersions.toArray(new Version[selectedVersions.size()]), selectionContainsNone,
+						selectionContainsReleased, selectionContainsUnreleased));
 			}
 		}
 
@@ -453,16 +447,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			if (selectionContainsAll) {
 				workingCopy.setFixForVersionFilter(null);
-			} else if (selectionContainsNone) {
-				workingCopy.setFixForVersionFilter(new VersionFilter(new Version[0]));
-			} else if (selectionContainsReleased || selectionContainsUnreleased) {
-				workingCopy.setFixForVersionFilter(new VersionFilter(selectionContainsReleased,
-						selectionContainsUnreleased));
-			} else if (selectedVersions.size() > 0) {
-				workingCopy.setFixForVersionFilter(new VersionFilter(
-						selectedVersions.toArray(new Version[selectedVersions.size()])));
 			} else {
-				workingCopy.setFixForVersionFilter(null);
+				workingCopy.setFixForVersionFilter(new VersionFilter(
+						selectedVersions.toArray(new Version[selectedVersions.size()]), selectionContainsNone,
+						selectionContainsReleased, selectionContainsUnreleased));
 			}
 		}
 
@@ -488,13 +476,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			if (selectionContainsAll) {
 				workingCopy.setComponentFilter(null);
-			} else if (selectedComponents.size() > 0) {
-				workingCopy.setComponentFilter(new ComponentFilter(
-						selectedComponents.toArray(new Component[selectedComponents.size()])));
-			} else if (selectionContainsNone) {
-				workingCopy.setComponentFilter(new ComponentFilter(new Component[0]));
 			} else {
-				workingCopy.setComponentFilter(null);
+				workingCopy.setComponentFilter(new ComponentFilter(
+						selectedComponents.toArray(new Component[selectedComponents.size()]), selectionContainsNone));
 			}
 		}
 
@@ -1627,38 +1611,47 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		if (workingCopy.getFixForVersionFilter() != null) {
+
+			List<Object> versions = new ArrayList<Object>();
+
 			if (workingCopy.getFixForVersionFilter().hasNoVersion()) {
-				fixFor.setSelection(new StructuredSelection(new Object[] { NO_FIX_VERSION }));
-			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()
-					&& workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }),
-						true);
-			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(RELEASED_VERSION), true);
-			} else if (workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(UNRELEASED_VERSION), true);
-			} else {
-				fixFor.setSelection(new StructuredSelection(workingCopy.getFixForVersionFilter().getVersions()), true);
+				versions.add(NO_FIX_VERSION);
 			}
+			if (workingCopy.getFixForVersionFilter().isReleasedVersions()) {
+				versions.add(RELEASED_VERSION);
+			}
+			if (workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
+				versions.add(UNRELEASED_VERSION);
+			}
+			if (workingCopy.getFixForVersionFilter().getVersions() != null) {
+				versions.addAll(Arrays.asList(workingCopy.getFixForVersionFilter().getVersions()));
+			}
+
+			fixFor.setSelection(new StructuredSelection(versions), true);
 		} else {
 			fixFor.setSelection(new StructuredSelection(ANY_FIX_VERSION), true);
 		}
 
 		if (workingCopy.getReportedInVersionFilter() != null) {
+
+			List<Object> versions = new ArrayList<Object>();
+
 			if (workingCopy.getReportedInVersionFilter().hasNoVersion()) {
-				reportedIn.setSelection(new StructuredSelection(new Object[] { NO_REPORTED_VERSION }), true);
-			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()
-					&& workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }),
-						true);
-			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(RELEASED_VERSION), true);
-			} else if (workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(UNRELEASED_VERSION), true);
-			} else {
-				reportedIn.setSelection(
-						new StructuredSelection(workingCopy.getReportedInVersionFilter().getVersions()), true);
+				versions.add(NO_REPORTED_VERSION);
 			}
+			if (workingCopy.getReportedInVersionFilter().isReleasedVersions()) {
+				versions.add(RELEASED_VERSION);
+			}
+			if (workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
+				versions.add(UNRELEASED_VERSION);
+			}
+
+			if (workingCopy.getReportedInVersionFilter().getVersions() != null) {
+				versions.addAll(Arrays.asList(workingCopy.getReportedInVersionFilter().getVersions()));
+			}
+
+			reportedIn.setSelection(new StructuredSelection(versions), true);
+
 		} else {
 			reportedIn.setSelection(new StructuredSelection(ANY_REPORTED_VERSION), true);
 		}
@@ -1672,11 +1665,17 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		if (workingCopy.getComponentFilter() != null) {
+			List<Object> components = new ArrayList<Object>();
 			if (workingCopy.getComponentFilter().hasNoComponent()) {
-				components.setSelection(new StructuredSelection(NO_COMPONENT), true);
-			} else {
-				components.setSelection(new StructuredSelection(workingCopy.getComponentFilter().getComponents()), true);
+				components.add(NO_COMPONENT);
 			}
+
+			if (workingCopy.getComponentFilter().getComponents() != null) {
+				components.addAll(Arrays.asList(workingCopy.getComponentFilter().getComponents()));
+			}
+
+			this.components.setSelection(new StructuredSelection(components), true);
+
 		} else {
 			components.setSelection(new StructuredSelection(ANY_COMPONENT), true);
 		}

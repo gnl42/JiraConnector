@@ -13,6 +13,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 
@@ -28,20 +29,13 @@ public class VersionFilter implements Filter, Serializable {
 
 	private final boolean releasedVersions;
 
-	public VersionFilter(Version[] versions) {
-		if (versions == null) {
-			throw new IllegalArgumentException();
-		}
+	private final boolean hasNoneVersion;
 
+	public VersionFilter(Version[] versions, boolean none, boolean released, boolean unreleased) {
 		this.versions = versions;
-		this.unreleasedVersions = false;
-		this.releasedVersions = false;
-	}
-
-	public VersionFilter(boolean released, boolean unreleased) {
-		versions = null;
 		this.releasedVersions = released;
 		this.unreleasedVersions = unreleased;
+		this.hasNoneVersion = none;
 	}
 
 	public boolean isReleasedVersions() {
@@ -53,19 +47,20 @@ public class VersionFilter implements Filter, Serializable {
 	}
 
 	public boolean hasNoVersion() {
-		return versions != null && versions.length == 0;
+		return this.hasNoneVersion;
 	}
 
 	public Version[] getVersions() {
 		return this.versions;
 	}
 
-	VersionFilter copy() {
-		if (this.versions != null) {
-			return new VersionFilter(this.versions);
+	public VersionFilter copy() {
+		if (versions != null) {
+			return new VersionFilter(Arrays.copyOf(versions, versions.length), hasNoneVersion, releasedVersions,
+					unreleasedVersions);
 		}
 
-		return new VersionFilter(this.releasedVersions, this.unreleasedVersions);
+		return new VersionFilter(versions, hasNoneVersion, releasedVersions, unreleasedVersions);
 	}
 
 	/*
@@ -75,19 +70,25 @@ public class VersionFilter implements Filter, Serializable {
 	 */
 	@Override
 	public String toString() {
-		if (versions == null) {
-			if (isReleasedVersions()) {
-				return "<released versions>"; //$NON-NLS-1$
-			}
 
-			if (isUnreleasedVersions()) {
-				return "<unreleased versions>"; //$NON-NLS-1$
-			}
+		StringBuilder sb = new StringBuilder();
+
+		if (isReleasedVersions()) {
+			sb.append("<released versions>"); //$NON-NLS-1$
+		}
+
+		if (isUnreleasedVersions()) {
+			sb.append("<unreleased versions>"); //$NON-NLS-1$
 		}
 
 		if (hasNoVersion()) {
-			return "<no version>"; //$NON-NLS-1$
+			sb.append("<no version>"); //$NON-NLS-1$
 		}
-		return "<specified versions>"; //$NON-NLS-1$
+
+		if (versions != null && versions.length > 0) {
+			sb.append("<specified versions>"); //$NON-NLS-1$
+		}
+
+		return sb.toString();
 	}
 }

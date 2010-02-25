@@ -13,6 +13,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 
@@ -22,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
  * components. If you are looking for issues with any component, don't add a component filter.
  * 
  * @see com.gbst.jira.core.model.filter.ProjectFilter
- * 
  * @author Brock Janiczak
  */
 public class ComponentFilter implements Filter, Serializable {
@@ -30,8 +30,11 @@ public class ComponentFilter implements Filter, Serializable {
 
 	private final Component[] components;
 
-	public ComponentFilter(Component[] components) {
+	private final boolean containsNone;
+
+	public ComponentFilter(Component[] components, boolean containsNone) {
 		assert (components != null);
+		this.containsNone = containsNone;
 		this.components = components;
 	}
 
@@ -40,10 +43,10 @@ public class ComponentFilter implements Filter, Serializable {
 	}
 
 	public boolean hasNoComponent() {
-		return components.length == 0;
+		return containsNone;
 	}
 
-	ComponentFilter copy() {
-		return new ComponentFilter(this.components);
+	public ComponentFilter copy() {
+		return new ComponentFilter(Arrays.copyOf(components, components.length), containsNone);
 	}
 }

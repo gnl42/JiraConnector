@@ -132,9 +132,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 
 		filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(projects));
-		filter.setComponentFilter(new ComponentFilter(components));
-		filter.setFixForVersionFilter(new VersionFilter(true, true));
-		filter.setReportedInVersionFilter(new VersionFilter(true, true));
+		filter.setComponentFilter(new ComponentFilter(components, true));
+		filter.setFixForVersionFilter(new VersionFilter(fixVersions, true, true, true));
+		filter.setReportedInVersionFilter(new VersionFilter(repoVersions, true, true, true));
 		filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes));
 		filter.setStatusFilter(new StatusFilter(statuses));
 		filter.setResolutionFilter(new ResolutionFilter(resolutions));

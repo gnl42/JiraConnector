@@ -24,7 +24,6 @@ import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest;
 import com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiStandaloneTest;
 import com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiTest;
-import com.atlassian.connector.eclipse.jira.tests.ui.WdhmUtilTest;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 
 /**
@@ -45,7 +44,6 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		suite.addTestSuite(JiraConnectorUiTest.class);
-		suite.addTestSuite(WdhmUtilTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
 			fixture.createSuite(suite);

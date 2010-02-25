@@ -129,7 +129,7 @@ public class JiraFilterTest extends TestCase {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(new Project[] { issue2.getProject() }));
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
-		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
+		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents(), false));
 
 		// run query query to verify component filter is used 
 		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
@@ -147,6 +147,15 @@ public class JiraFilterTest extends TestCase {
 		taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
 		assertEquals("Expected issue2, if issue1 is returned the component filter was ignored", issue2.getSummary(),
 				taskMapping.getSummary());
+
+		// query for issues without component as well
+		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents(), true));
+		query = JiraTestUtil.createQuery(repository, filter);
+		hitCollector = new JiraTestResultCollector();
+		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
+		connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals("Expected issue2 and issue1 (query for issues without component as well)", 2,
+				hitCollector.results.size());
 	}
 
 	public void testCustomQueryWrongLocale() throws Exception {

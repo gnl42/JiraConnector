@@ -131,9 +131,9 @@ public class JiraCustomQueryTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(projects));
-		filter.setComponentFilter(new ComponentFilter(components));
-		filter.setFixForVersionFilter(new VersionFilter(fixVersions));
-		filter.setReportedInVersionFilter(new VersionFilter(repoVersions));
+		filter.setComponentFilter(new ComponentFilter(components, true));
+		filter.setFixForVersionFilter(new VersionFilter(fixVersions, true, true, true));
+		filter.setReportedInVersionFilter(new VersionFilter(repoVersions, true, true, true));
 		filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes));
 		filter.setStatusFilter(new StatusFilter(statuses));
 		filter.setResolutionFilter(new ResolutionFilter(resolutions));
@@ -206,16 +206,23 @@ public class JiraCustomQueryTest extends TestCase {
 		assertEquals(2, components2.length);
 		assertEquals(components[0].getId(), components2[0].getId());
 		assertEquals(components[1].getId(), components2[1].getId());
+		assertTrue(filter2.getComponentFilter().hasNoComponent());
 
 		Version[] repoVersions2 = filter2.getReportedInVersionFilter().getVersions();
 		assertEquals(2, repoVersions2.length);
 		assertEquals(repoVersions[0].getId(), repoVersions2[0].getId());
 		assertEquals(repoVersions[1].getId(), repoVersions2[1].getId());
+		assertTrue(filter2.getReportedInVersionFilter().hasNoVersion());
+		assertTrue(filter2.getReportedInVersionFilter().isReleasedVersions());
+		assertTrue(filter2.getReportedInVersionFilter().isUnreleasedVersions());
 
 		Version[] fixVersions2 = filter2.getFixForVersionFilter().getVersions();
 		assertEquals(2, fixVersions2.length);
 		assertEquals(fixVersions[0].getId(), fixVersions2[0].getId());
 		assertEquals(fixVersions[1].getId(), fixVersions2[1].getId());
+		assertTrue(filter2.getFixForVersionFilter().hasNoVersion());
+		assertTrue(filter2.getFixForVersionFilter().isUnreleasedVersions());
+		assertTrue(filter2.getFixForVersionFilter().isReleasedVersions());
 
 		IssueType[] issueTypes2 = filter2.getIssueTypeFilter().getIsueTypes();
 		assertEquals(2, issueTypes2.length);

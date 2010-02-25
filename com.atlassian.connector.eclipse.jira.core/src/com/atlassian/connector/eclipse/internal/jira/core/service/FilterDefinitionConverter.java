@@ -203,6 +203,8 @@ public class FilterDefinitionConverter {
 			Set<Component> components = new LinkedHashSet<Component>();
 			Set<Version> versions = new LinkedHashSet<Version>();
 
+			boolean hasNoComponent = false;
+
 			for (Project project : projects) {
 				if (!project.hasDetails()) {
 					continue;
@@ -214,11 +216,16 @@ public class FilterDefinitionConverter {
 							components.add(component);
 						}
 					}
+
+					if (componentId.equals(COMPONENT_NONE)) {
+						hasNoComponent = true;
+					}
 				}
 				versions.addAll(Arrays.asList(project.getVersions()));
 			}
 			if (!componentIds.isEmpty()) {
-				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()])));
+				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()]),
+						hasNoComponent));
 			}
 
 			Version[] projectVersions = versions.toArray(new Version[versions.size()]);
@@ -335,26 +342,24 @@ public class FilterDefinitionConverter {
 		for (String fixForId : fixForIds) {
 			if (fixForId.equals(VERSION_NONE)) {
 				hasNoVersions = true;
-			} else if (fixForId.equals(VERSION_RELEASED)) {
+			}
+			if (fixForId.equals(VERSION_RELEASED)) {
 				hasReleasedVersions = true;
-			} else if (fixForId.equals(VERSION_UNRELEASED)) {
+			}
+			if (fixForId.equals(VERSION_UNRELEASED)) {
 				hasUnreleasedVersions = true;
-			} else {
-				for (Version projectVersion : projectVersions) {
-					if (projectVersion.getId().equals(fixForId)) {
-						fixForversions.add(projectVersion);
-					}
+			}
+
+			for (Version projectVersion : projectVersions) {
+				if (projectVersion.getId().equals(fixForId)) {
+					fixForversions.add(projectVersion);
 				}
 			}
 		}
-		if (!fixForversions.isEmpty()) {
-			return new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()]));
-		} else if (hasNoVersions) {
-			return new VersionFilter(new Version[0]);
-		} else if (hasReleasedVersions || hasUnreleasedVersions) {
-			return new VersionFilter(hasReleasedVersions, hasUnreleasedVersions);
-		}
-		return null;
+
+		return new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()]), hasNoVersions,
+				hasReleasedVersions, hasUnreleasedVersions);
+
 	}
 
 	private DateFilter createDateFilter(Map<String, List<String>> params, String key) {
@@ -427,7 +432,8 @@ public class FilterDefinitionConverter {
 		if (componentFilter != null) {
 			if (componentFilter.hasNoComponent()) {
 				addParameter(sb, COMPONENT_KEY, COMPONENT_NONE);
-			} else {
+			}
+			if (componentFilter.getComponents() != null) {
 				for (Component component : componentFilter.getComponents()) {
 					addParameter(sb, COMPONENT_KEY, component.getId());
 				}
