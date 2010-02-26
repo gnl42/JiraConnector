@@ -51,7 +51,6 @@ public class CrucibleAnnotationHoverInput {
 	}
 
 	public List<CrucibleCommentAnnotation> getCrucibleAnnotations() {
-
 		return annotations;
 	}
 }

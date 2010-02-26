@@ -9,9 +9,6 @@
 		<pageFactory class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleEditorPageFactory" id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
 		</pageFactory>
 	</extension>
-	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
-		<specification annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation" colorPreferenceKey="comment_color" colorPreferenceValue="255,231,198" contributesToHeader="true" highlightPreferenceKey="comment_highlight" highlightPreferenceValue="true" icon="/icons/obj16/crucible.png" includeOnPreferencePage="true" isGoToNextNavigationTarget="true" isGoToNextNavigationTargetKey="comment_isGoToNextNavigationTargetKey" isGoToPreviousNavigationTarget="true" isGoToPreviousNavigationTargetKey="commet_isGoToPreviousNavigationTargetKey" label="Active Review Comments" overviewRulerPreferenceKey="comment_overviewRuler" overviewRulerPreferenceValue="true" presentationLayer="0" showInNextPrevDropdownToolbarAction="true" showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction" textPreferenceKey="comment_text" textPreferenceValue="true" textStylePreferenceKey="comment_stylePreferences" textStylePreferenceValue="BOX" verticalRulerPreferenceKey="comment_verticalRuler" verticalRulerPreferenceValue="true" />
-	</extension>
 
 	<!-- Menus -->
 	<extension point="org.eclipse.ui.popupMenus">		
@@ -65,15 +62,42 @@
 			</visibility>
 		</objectContribution>
 	</extension>
+	
 	<extension point="org.eclipse.ui.editors.annotationTypes">
-		<type markerType="com.atlassian.connector.eclipse.crucible.ui.com.atlassian.connector.eclipse.cruicible.ui.comment.marker" name="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation">
-		</type>
+		<type name="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation"/>
 	</extension>
-	<extension id="com.atlassian.connector.eclipse.cruicible.ui.comment.marker" point="org.eclipse.core.resources.markers">
+	
+	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation" 
+			colorPreferenceKey="comment_color" 
+			colorPreferenceValue="255,231,198" 
+			contributesToHeader="true" 
+			highlightPreferenceKey="comment_highlight" 
+			highlightPreferenceValue="true" 
+			icon="/icons/obj16/crucible.png" 
+			includeOnPreferencePage="true" 
+			isGoToNextNavigationTarget="true" 
+			isGoToNextNavigationTargetKey="comment_isGoToNextNavigationTargetKey" 
+			isGoToPreviousNavigationTarget="true" 
+			isGoToPreviousNavigationTargetKey="commet_isGoToPreviousNavigationTargetKey" 
+			label="Active Review Comments" 
+			overviewRulerPreferenceKey="comment_overviewRuler" 
+			overviewRulerPreferenceValue="true" 
+			presentationLayer="0" 
+			showInNextPrevDropdownToolbarAction="true" 
+			showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction" 
+			textPreferenceKey="comment_text" 
+			textPreferenceValue="true" 
+			textStylePreferenceKey="comment_stylePreferences" 
+			textStylePreferenceValue="BOX" 
+			verticalRulerPreferenceKey="comment_verticalRuler" 
+			verticalRulerPreferenceValue="true" />
 	</extension>
-
+	
 	<extension point="org.eclipse.ui.preferencePages">
-		<page category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage" class="com.atlassian.connector.eclipse.crucible.ui.preferences.CruciblePreferencePage" id="com.atlassian.connector.eclipse.crucible.ui.CruciblePreferencePage" name="Crucible">
+		<page category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage" 
+			class="com.atlassian.connector.eclipse.crucible.ui.preferences.CruciblePreferencePage" 
+			id="com.atlassian.connector.eclipse.crucible.ui.CruciblePreferencePage" name="Crucible">
 		</page>
 	</extension>
 	<extension point="org.eclipse.core.runtime.preferences">
@@ -142,5 +166,20 @@
                type="com.atlassian.connector.eclipse.ui.commons.IEditorResource">
          </adapter>
       </factory>
-   </extension>   
+   </extension>
+   
+	<extension point="org.eclipse.ui.workbench.texteditor.rulerColumns">
+		<column id="com.atlassian.connector.eclipse.crucible.ui.editor.annotationRuler" name="Crucible Comments"
+			class="com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler.CommentAnnotationRulerColumn"
+			enabled="false"
+			global="true"
+			includeInMenu="true">
+			
+			<placement gravity="1.0">
+				<!--<after id="org.eclipse.ui.editors.columns.annotations"/> -->
+			</placement>
+			
+			<targetClass class="org.eclipse.ui.texteditor.AbstractDecoratedTextEditor" />
+		</column>
+	</extension>   
 </plugin>

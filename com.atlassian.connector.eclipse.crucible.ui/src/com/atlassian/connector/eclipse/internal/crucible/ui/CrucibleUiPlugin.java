@@ -89,7 +89,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(crucibleNotificationManager);
 
 		// TODO determine if we should be doing this differently and not through mylyn
-		MonitorUi.addWindowPartListener(crucibleEditorTracker);
+		// FIXME: MonitorUi.addWindowPartListener(crucibleEditorTracker);
 		editorLinkWithReviewSelectionListener = new LinkEditorWithActiveReviewSelectionListener();
 		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
 

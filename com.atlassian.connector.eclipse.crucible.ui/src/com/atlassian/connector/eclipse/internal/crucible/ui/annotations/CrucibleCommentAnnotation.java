@@ -24,7 +24,7 @@ import org.eclipse.jface.text.source.Annotation;
  * @author Shawn Minto
  */
 public class CrucibleCommentAnnotation extends Annotation {
-	private static final String COMMENT_ANNOTATION_ID = "com.atlassian.connector.eclipse.cruicible.ui.comment.annotation";
+	public static final String COMMENT_ANNOTATION_ID = "com.atlassian.connector.eclipse.cruicible.ui.comment.annotation";
 
 	private final Position position;
 

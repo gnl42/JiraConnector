@@ -35,6 +35,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.UrlUtil;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -57,6 +58,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -161,8 +163,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
 
 						if (editor != null) {
-							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
-									review, crucibleFile, comment);
+							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);
 							return;
 						}
 					}
@@ -172,8 +173,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 						IStatus.WARNING,
 						CrucibleUiPlugin.PLUGIN_ID,
 						NLS.bind(
-						"There's no mapping for Crucible repository {0}. Review item will be downloaded from Crucible.",
-						fileInfo.getRepositoryName())));
+								"There's no mapping for Crucible repository {0}. Review item will be downloaded from Crucible.",
+								fileInfo.getRepositoryName())));
 			}
 			submonitor.worked(1);
 		}
@@ -216,11 +217,10 @@ public class OpenVirtualFileJob extends JobWithStatus {
 	public static void contentUrlMissingPopup() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				MessageDialog
-						.openError(
-								WorkbenchUtil.getShell(),
-								"Unable to open review item",
-								"Crucible did not return review item content URL. Probably you're using Crucible 1.6.x which doesn't support direct access to review items. Please upgrade to Crucible 2.x.");
+				MessageDialog.openError(
+						WorkbenchUtil.getShell(),
+						"Unable to open review item",
+						"Crucible did not return review item content URL. Probably you're using Crucible 1.6.x which doesn't support direct access to review items. Please upgrade to Crucible 2.x.");
 			}
 		});
 	}
@@ -271,8 +271,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
 
 						if (editor != null) {
-							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
-									review, crucibleFile, comment);
+							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);
 							return null;
 						}
 					}
@@ -292,15 +291,11 @@ public class OpenVirtualFileJob extends JobWithStatus {
 								.getActiveWorkbenchWindow()
 								.getActivePage()
 								.openEditor(
-								new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
-								crucibleFile, file, localCopy)), editorId);
+										new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(crucibleFile,
+												file, localCopy)), editorId);
 
 						if (editor != null) {
-							CrucibleUiUtil.attachCrucibleAnnotation(editor, CrucibleUiUtil.getCrucibleTask(review),
-									review, crucibleFile, comment);
-						} else {
-							StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
-									"Requested file opened in external editor"));
+							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);
 						}
 					} catch (PartInitException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
