@@ -13,8 +13,12 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -25,10 +29,12 @@ import org.eclipse.jface.text.source.AbstractRulerColumn;
 import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -40,13 +46,15 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.internal.texteditor.PropertyEventDispatcher;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.rulers.IContributedRulerColumn;
 import org.eclipse.ui.texteditor.rulers.RulerColumnDescriptor;
 
 import java.util.List;
 
-public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements IContributedRulerColumn {
+public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements IContributedRulerColumn,
+		IReviewActivationListener {
 
 	/** The contribution descriptor. */
 	private RulerColumnDescriptor fDescriptor;
@@ -60,6 +68,8 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 	private ISourceViewer fViewer;
 
 	private PropertyEventDispatcher fDispatcher;
+
+	private IDocumentProvider fDocumentProvider;
 
 	public CommentAnnotationRulerColumn() {
 		setTextInset(10);
@@ -83,6 +93,7 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 
 	public void setEditor(ITextEditor editor) {
 		fEditor = editor;
+		fDocumentProvider = fEditor.getDocumentProvider();
 	}
 
 	public ITextEditor getEditor() {
@@ -116,14 +127,6 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 	}
 
 	public List<CrucibleCommentAnnotation> getAnnotations(int startLine) {
-		if (fEditor.getEditorInput() instanceof ICrucibleFileProvider) {
-			annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),
-					fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput()),
-					((ICrucibleFileProvider) fEditor.getEditorInput()).getCrucibleFile(), CrucibleUiPlugin.getDefault()
-							.getActiveReviewManager()
-							.getActiveReview());
-		}
-
 		try {
 			int offset = fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput()).getLineOffset(startLine);
 			return annotationModel == null ? null : annotationModel.getAnnotationsForOffset(offset);
@@ -203,22 +206,49 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 			fViewer.setDocument(fViewer.getDocument(), new AnnotationModel());
 		}
 
-		initialize();
-
-		/*
 		fViewer.getAnnotationModel().addAnnotationModelListener(new IAnnotationModelListener() {
 			public void modelChanged(IAnnotationModel model) {
-				if (annotationModel == null) {
-					if (fEditor.getEditorInput() instanceof ICrucibleFileProvider) {
-						annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),
-								fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput()),
-								((ICrucibleFileProvider) fEditor.getEditorInput()).getCrucibleFile(),
-								CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-					}
-				}
+				reviewActivated(CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask(),
+						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 			}
-		});*/
+		});
 
+		initialize();
+
+		CrucibleUiPlugin.getDefault().getActiveReviewManager().addReviewActivationListener(this);
 		return super.createControl(parentRuler, parentControl);
+	}
+
+	public void reviewActivated(ITask task, Review review) {
+		annotationModel = null;
+		if (fEditor.getEditorInput() instanceof ICrucibleFileProvider) {
+			ICrucibleFileProvider fileProvider = (ICrucibleFileProvider) fEditor.getEditorInput();
+			CrucibleFile file = fileProvider.getCrucibleFile();
+
+			CrucibleFileInfo currentFileInfo = review.getFileByPermId(file.getCrucibleFileInfo().getPermId());
+
+			annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),
+					fDocumentProvider.getDocument(fEditor.getEditorInput()), new CrucibleFile(currentFileInfo,
+							file.isOldFile()), review);
+		}
+
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				redraw();
+			}
+		});
+	}
+
+	public void reviewDeactivated(ITask task, Review review) {
+		annotationModel = null;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				redraw();
+			}
+		});
+	}
+
+	public void reviewUpdated(ITask task, Review review) {
+		reviewActivated(task, review);
 	}
 }
