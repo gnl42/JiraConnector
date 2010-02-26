@@ -13,20 +13,13 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
-import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.LinkEditorWithActiveReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -50,13 +43,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static CrucibleUiPlugin plugin;
 
-	private CrucibleEditorTracker crucibleEditorTracker;
-
 	private ActiveReviewManager activeReviewManager;
 
 	private CrucibleNotificationProvider crucibleNotificationManager;
-
-	private LinkEditorWithActiveReviewSelectionListener editorLinkWithReviewSelectionListener;
 
 	private SwitchingPerspectiveReviewActivationListener switchingPerspectivesListener;
 
@@ -77,8 +66,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		TasksUi.getRepositoryManager().addListener(CrucibleCorePlugin.getRepositoryConnector().getClientManager());
 
-		crucibleEditorTracker = new CrucibleEditorTracker();
-
 		switchingPerspectivesListener = new SwitchingPerspectiveReviewActivationListener();
 		activeReviewManager = new ActiveReviewManager(true);
 		activeReviewManager.addReviewActivationListener(switchingPerspectivesListener);
@@ -88,26 +75,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		crucibleNotificationManager = new CrucibleNotificationProvider();
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(crucibleNotificationManager);
 
-		// TODO determine if we should be doing this differently and not through mylyn
-		// FIXME: MonitorUi.addWindowPartListener(crucibleEditorTracker);
-		editorLinkWithReviewSelectionListener = new LinkEditorWithActiveReviewSelectionListener();
-		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
-
 		plugin.getPreferenceStore().setDefault(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW,
 				MessageDialogWithToggle.PROMPT);
-
-		// PLE-516 we want to make sure that we init CrucibleEditorTracker only when this bundle is really started
-		// as it otherwise may cause class loading problems (another thread attempts to load classes from not started bundle)
-		// unfortunately this implementation does not guarantee 100%, but it's really unlikely that the problem will occur
-		// i.e. other plugins seem to use such approach and it works for them
-		UIJob job = new UIJob("Initializing Crucible editor annonation support") {
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				crucibleEditorTracker.init();
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
 	}
 
 	/*
@@ -120,12 +89,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		crucibleNotificationManager = null;
 
 		disableActiveReviewManager();
-
-		MonitorUi.removeWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
-		MonitorUi.removeWindowPartListener(crucibleEditorTracker);
-		crucibleEditorTracker.dispose();
-		crucibleEditorTracker = null;
-		editorLinkWithReviewSelectionListener = null;
 
 		activeReviewManager.dispose();
 		activeReviewManager = null;

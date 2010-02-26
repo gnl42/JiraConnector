@@ -15,7 +15,6 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -24,6 +23,7 @@ import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -44,8 +44,6 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -54,6 +52,7 @@ import org.eclipse.ui.internal.texteditor.AnnotationColumn;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -122,8 +121,8 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			}
 
 			/**
-			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText will not
-			 * contain the whole text anymore, so our line numbering is off
+			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText will
+			 * not contain the whole text anymore, so our line numbering is off
 			 * 
 			 * @param event
 			 * @return
@@ -164,7 +163,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						// log error since we assume the initial text contains all slaveTexts.
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Could not find text offset for annotation highlighting"
-								+ " - current text not contained in initial text."));
+										+ " - current text not contained in initial text."));
 					}
 				}
 				return 0;
@@ -225,15 +224,6 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						createVerticalRuler(newInput, sourceViewerClazz);
 						// createOverviewRuler(newInput, sourceViewerClazz);
 						createHighlighting(sourceViewerClazz);
-
-						sourceViewer.getTextWidget().addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseDown(MouseEvent e) {
-								// ignore
-								int offset = ((TextSelection) sourceViewer.getSelection()).getOffset();
-								CrucibleUiUtil.highlightAnnotationInRichEditor(offset, crucibleAnnotationModel);
-							}
-						});
 					} catch (Throwable t) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Error attaching Crucible annotation model", t));

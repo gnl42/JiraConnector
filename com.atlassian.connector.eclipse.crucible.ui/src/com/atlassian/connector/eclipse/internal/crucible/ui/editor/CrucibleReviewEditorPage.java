@@ -27,18 +27,16 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeRev
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -92,8 +90,8 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.themes.IThemeManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -221,10 +219,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	private ISelectionProvider selectionProviderAdapter;
 
 	private Control highlightedControl;
-
-	private CrucibleFileInfo selectedCrucibleFile;
-
-	private VersionedComment selectedComment;
 
 	private Color selectionColor;
 
@@ -419,11 +413,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				}
 
 				CommonUiUtil.setMenu(editorComposite, editorComposite.getMenu());
-
-				if (selectedComment != null && selectedCrucibleFile != null) {
-					selectAndReveal(selectedCrucibleFile, selectedComment, false);
-				}
-
 			} finally {
 				setReflow(true);
 				reflow(true);
@@ -451,11 +440,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			}
 
 			CommonUiUtil.setMenu(editorComposite, editorComposite.getMenu());
-
-			if (selectedComment != null && selectedCrucibleFile != null) {
-				selectAndReveal(selectedCrucibleFile, selectedComment, true);
-			}
-
 		} finally {
 			setReflow(true);
 			reflow(false);
@@ -829,50 +813,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		});
 		job.schedule(delay);
 		setBusy(true);
-	}
-
-	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment, boolean reveal) {
-		this.selectedCrucibleFile = crucibleFile;
-		this.selectedComment = comment;
-		if (selectedCrucibleFile == null || selectedComment == null) {
-			this.selectedCrucibleFile = null;
-			this.selectedComment = null;
-			setHighlightedPart(null);
-		}
-	}
-
-	public void setHighlightedPart(ExpandablePart<?, ?> part) {
-		if (highlightedControl != null) {
-			setControlHighlighted(highlightedControl, false);
-			highlightedControl = null;
-		}
-
-		if (part != null) {
-			Section highlightedSection = part.getSection();
-			if (highlightedSection != null) {
-				Control client = highlightedSection.getClient();
-				if (client != null) {
-					setControlHighlighted(client, true);
-					highlightedControl = client;
-				}
-			}
-		}
-
-	}
-
-	private void setControlHighlighted(Control client, boolean shouldHighlight) {
-		if (toolkit != null && !client.isDisposed() && selectionColor != null) {
-			if (shouldHighlight) {
-				client.setBackground(selectionColor);
-			} else {
-				client.setBackground(toolkit.getColors().getBackground());
-			}
-			if (client instanceof Composite) {
-				for (Control child : ((Composite) client).getChildren()) {
-					setControlHighlighted(child, shouldHighlight);
-				}
-			}
-		}
 	}
 
 	public Color getColorIncoming() {

@@ -22,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -49,7 +50,7 @@ public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 
 	private CrucibleFileInfo crucibleFileInfo;
 
-	private final List<IReviewAction> customActions;
+	private final List<IAction> customActions;
 
 	private Composite composite;
 
@@ -59,7 +60,7 @@ public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 		super(comment, review);
 		this.versionedComment = comment;
 		this.crucibleFileInfo = crucibleFileInfo;
-		customActions = new ArrayList<IReviewAction>();
+		customActions = MiscUtil.buildArrayList();
 	}
 
 	@Override
@@ -160,7 +161,7 @@ public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 
 		reviewActions.clear();
 
-		for (IReviewAction customAction : customActions) {
+		for (IAction customAction : customActions) {
 			ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 			textHyperlink.setText(" ");
 			textHyperlink.setEnabled(false);
@@ -178,7 +179,7 @@ public class VersionedCommentPart extends AbstractCommentPart<CommentPart> {
 		return actions;
 	}
 
-	public void addCustomAction(IReviewAction action) {
+	public void addAction(IAction action) {
 		customActions.add(action);
 	}
 
