@@ -70,7 +70,7 @@
 	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
 		<specification annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation" 
 			colorPreferenceKey="comment_color" 
-			colorPreferenceValue="255,231,198" 
+			colorPreferenceValue="29,72,120" 
 			contributesToHeader="true" 
 			highlightPreferenceKey="comment_highlight" 
 			highlightPreferenceValue="true" 
