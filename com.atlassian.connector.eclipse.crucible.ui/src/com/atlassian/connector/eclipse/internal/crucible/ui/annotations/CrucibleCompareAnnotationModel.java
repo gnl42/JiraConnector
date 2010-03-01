@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler.CommentAnnotationRulerColumn;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -27,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextInputListener;
@@ -37,18 +39,24 @@ import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
+import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.text.source.OverviewRuler;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.internal.texteditor.AnnotationColumn;
+import org.eclipse.ui.internal.texteditor.PropertyEventDispatcher;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
@@ -90,8 +98,43 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		private final class ColoringLineBackgroundListener implements LineBackgroundListener {
 			private final StyledText styledText;
 
+			private Color colorCommented;
+
+			private PropertyEventDispatcher fDispatcher;
+
 			private ColoringLineBackgroundListener(StyledText styledText) {
 				this.styledText = styledText;
+				initialize();
+			}
+
+			private void updateCommentedColor(AnnotationPreference pref, IPreferenceStore store) {
+				if (pref != null) {
+					RGB rgb = CommentAnnotationRulerColumn.getColorFromAnnotationPreference(store, pref);
+					colorCommented = getSharedColors().getColor(rgb);
+				}
+			}
+
+			private void initialize() {
+				final IPreferenceStore store = EditorsUI.getPreferenceStore();
+				if (store == null) {
+					return;
+				}
+
+				AnnotationPreferenceLookup lookup = EditorsUI.getAnnotationPreferenceLookup();
+				final AnnotationPreference commentedPref = lookup.getAnnotationPreference(CrucibleCommentAnnotation.COMMENT_ANNOTATION_ID);
+
+				updateCommentedColor(commentedPref, store);
+
+				fDispatcher = new PropertyEventDispatcher(store);
+
+				if (commentedPref != null) {
+					fDispatcher.addPropertyChangeListener(commentedPref.getColorPreferenceKey(),
+							new IPropertyChangeListener() {
+								public void propertyChange(PropertyChangeEvent event) {
+									updateCommentedColor(commentedPref, store);
+								}
+							});
+				}
 			}
 
 			public void lineGetBackground(LineBackgroundEvent event) {
@@ -114,7 +157,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 					if (lineNr >= startLine && lineNr <= endLine) {
 						AnnotationPreference pref = new AnnotationPreferenceLookup().getAnnotationPreference(annotation);
 						if (pref.getHighlightPreferenceValue()) {
-							event.lineBackground = new Color(Display.getDefault(), pref.getColorPreferenceValue());
+							event.lineBackground = colorCommented;
 						}
 					}
 				}
@@ -569,6 +612,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			return false;
 		}
 		return true;
+	}
+
+	private ISharedTextColors getSharedColors() {
+		return EditorsUI.getSharedTextColors();
 	}
 
 }

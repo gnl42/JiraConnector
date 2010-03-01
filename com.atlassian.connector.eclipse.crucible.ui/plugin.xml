@@ -70,7 +70,7 @@
 	<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
 		<specification annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation" 
 			colorPreferenceKey="comment_color" 
-			colorPreferenceValue="29,72,120" 
+			colorPreferenceValue="62,153,255" 
 			contributesToHeader="true" 
 			highlightPreferenceKey="comment_highlight" 
 			highlightPreferenceValue="true" 
@@ -170,8 +170,9 @@
    
 	<extension point="org.eclipse.ui.workbench.texteditor.rulerColumns">
 		<column id="com.atlassian.connector.eclipse.crucible.ui.editor.annotationRuler" name="Crucible Comments"
+			icon="/icons/obj16/crucible.png"
 			class="com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler.CommentAnnotationRulerColumn"
-			enabled="false"
+			enabled="true"
 			global="true"
 			includeInMenu="true">
 			

@@ -135,15 +135,11 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 		return null;
 	}
 
-	private IPreferenceStore getPreferenceStore() {
-		return EditorsUI.getPreferenceStore();
-	}
-
 	private ISharedTextColors getSharedColors() {
 		return EditorsUI.getSharedTextColors();
 	}
 
-	private static RGB getColorFromAnnotationPreference(IPreferenceStore store, AnnotationPreference pref) {
+	public static RGB getColorFromAnnotationPreference(IPreferenceStore store, AnnotationPreference pref) {
 		String key = pref.getColorPreferenceKey();
 		RGB rgb = null;
 		if (store.contains(key)) {
@@ -170,7 +166,7 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 	 * Initializes the given line number ruler column from the preference store.
 	 */
 	private void initialize() {
-		final IPreferenceStore store = getPreferenceStore();
+		final IPreferenceStore store = EditorsUI.getPreferenceStore();
 		if (store == null) {
 			return;
 		}
