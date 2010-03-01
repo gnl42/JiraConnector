@@ -101,7 +101,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 	}
 
 	public boolean canFinish() {
-		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() != null;
+		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() == null;
 	}
 
 	private Collection<TaskRepository> getCrucible21Repos(final WizardPage page) {

@@ -16,42 +16,28 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewAndTaskListJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySelectionWizard;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
-import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Shell;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -148,66 +134,10 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
-	@SuppressWarnings("restriction")
 	protected void openReviewWizard(final ResourceEditorBean selection, final ITeamUiResourceConnector connector,
 			boolean isPostCommit, final Shell shell) {
 
-		if (isPostCommit) {
-			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
-				@Override
-				protected IWizard createWizard(TaskRepository taskRepository) {
-					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
-							ReviewWizard.Type.ADD_SCM_RESOURCES, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
-					wizard.setRoots(Arrays.asList(selection.getResource()));
-					wizard.setFilesCommentData(Arrays.asList(selection));
-					return wizard;
-				}
-			};
-
-			WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new CrucibleRepositorySelectionWizard(
-					selectRepositoryPage));
-			wd.setBlockOnOpen(true);
-			wd.open();
-
-		} else {
-			Collection<UploadItem> uploadItems;
-			try {
-				uploadItems = connector.getUploadItemsForResources(new IResource[] { selection.getResource() },
-						new NullProgressMonitor());
-			} catch (CoreException e) {
-				handleError(shell, "Cannot create UploadItem for '" + selection.getResource().getName() + "'.");
-				return;
-			}
-
-			final List<UploadItem> items = new ArrayList<UploadItem>(uploadItems);
-
-			SelectCrucibleRepositoryPage selectRepositoryPage = new SelectCrucibleRepositoryPage(
-					SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
-				@Override
-				protected IWizard createWizard(TaskRepository taskRepository) {
-					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
-							ReviewWizard.Type.ADD_UPLOAD_ITEMS, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
-
-					wizard.setUploadItems(items);
-					wizard.setFilesCommentData(Arrays.asList(selection));
-					return wizard;
-				}
-			};
-
-			// skip repository selection wizard page if there is only one repository on the list
-			List<TaskRepository> taskRepositories = selectRepositoryPage.getTaskRepositories();
-			WizardDialog wd = null;
-			if (taskRepositories.size() != 1) {
-				wd = new WizardDialog(shell, new RepositorySelectionWizard(selectRepositoryPage));
-			} else {
-				ReviewWizard wizard = new ReviewWizard(taskRepositories.get(0), MiscUtil.buildHashSet(
-						ReviewWizard.Type.ADD_UPLOAD_ITEMS, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
-				wizard.setUploadItems(items);
-				wd = new WizardDialog(shell, wizard);
-			}
-			wd.setBlockOnOpen(true);
-			wd.open();
-		}
+		openReviewWizard(Arrays.asList(selection.getResource()), isPostCommit, shell);
 	}
 
 	protected void openReviewWizard(final List<IResource> resources, boolean isCrucible21Required, Shell shell) {
