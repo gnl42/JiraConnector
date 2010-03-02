@@ -84,7 +84,7 @@
 			overviewRulerPreferenceKey="comment_overviewRuler" 
 			overviewRulerPreferenceValue="true" 
 			presentationLayer="0" 
-			showInNextPrevDropdownToolbarAction="true" 
+			showInNextPrevDropdownToolbarAction="false" 
 			showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction" 
 			textPreferenceKey="comment_text" 
 			textPreferenceValue="true" 
