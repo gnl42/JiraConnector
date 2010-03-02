@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
 
 public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -45,9 +46,19 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 	@Override
 	protected Control createContents(Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NULL);
-		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(false, false).applyTo(composite);
-		GridLayoutFactory.fillDefaults().numColumns(1).margins(5, 0).spacing(0, 0).applyTo(composite);
-		final Label label = new Label(composite, SWT.CENTER);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(composite);
+		GridLayoutFactory.fillDefaults().numColumns(1).spacing(0, 0).applyTo(composite);
+
+		final Composite white = new Composite(composite, SWT.NULL);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(white);
+		GridLayoutFactory.fillDefaults().numColumns(1).spacing(0, 0).applyTo(white);
+		white.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+
+		final Composite center = new Composite(white, SWT.NULL);
+		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, true).applyTo(center);
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(5, 0).spacing(0, 0).applyTo(center);
+
+		final Label label = new Label(center, SWT.CENTER);
 		final Image image = AtlassianLogo.getImage(AtlassianLogo.ATLASSIAN_LOGO);
 		label.setImage(image);
 
@@ -56,11 +67,12 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 				label);
 
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+		center.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
 		// OK, when we cannot just embed the browser, then
 		// we can always build something decent manually:
 
-		final Composite nestedComposite = new Composite(composite, SWT.NONE);
+		final Composite nestedComposite = new Composite(center, SWT.NONE);
 		nestedComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(4, 0).applyTo(nestedComposite);
 		GridDataFactory.fillDefaults()
@@ -112,6 +124,10 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		createButton(buttonBar, "Visit Forum", "http://forums.atlassian.com/forum.jspa?forumID=124&start=0");
 		createButton(buttonBar, "Request Support", "https://support.atlassian.com/browse/ECSP");
 		createButton(buttonBar, "Report Bug", "https://studio.atlassian.com/browse/PLE");
+		if (AtlassianBundlesInfo.isOnlyJiraInstalled()) {
+			createButton(buttonBar, "Install Bamboo, Crucible && FishEye Integration",
+					"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector");
+		}
 
 		return composite;
 	}
