@@ -2,6 +2,15 @@
 <?eclipse version="3.0"?>
 <plugin>
 
+   <extension
+         name="%startupAndShutdown.name"
+         point="org.eclipse.ui.startup">
+      <startup
+            class="com.atlassian.connector.eclipse.internal.branding.ui.FastStartup">
+      </startup>
+   </extension>   
+    
+
    <extension point="org.eclipse.ui.preferencePages">
       <page
             class="com.atlassian.connector.eclipse.internal.branding.ui.preferences.AtlassianPreferencePage"
@@ -9,5 +18,21 @@
             name="Atlassian Connector">
       </page>
    </extension>
+   
+   <extension point="org.eclipse.ui.popupMenus">
+        <viewerContribution
+		    id="com.atlassian.connector.eclipse.branding.ui.contribution"
+            targetID="org.eclipse.mylyn.tasks.ui.views.repositories">
+      		<action
+		      	class="com.atlassian.connector.eclipse.internal.ui.viewers.InstallIntegrationsFromRepositoriesViewerAction"
+	        	id="com.atlassian.connector.eclipse.actions.installIntegrationsFromRepositoriesViewerAction"
+	        	label="%InstallIntegrationsFromRepositoriesViewerAction.label"
+	        	menubarPath="org.eclipse.mylyn.tasks.ui.views.repositories"/>
+	        <visibility>
+				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="true"/>
+	        </visibility>
+      </viewerContribution>
+   </extension>
+   
    
 </plugin>

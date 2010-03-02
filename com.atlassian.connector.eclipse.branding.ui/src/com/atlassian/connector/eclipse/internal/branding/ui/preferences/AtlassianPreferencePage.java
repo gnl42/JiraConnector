@@ -1,14 +1,10 @@
 package com.atlassian.connector.eclipse.internal.branding.ui.preferences;
 
-import java.net.URL;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.FontRegistry;
-import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,12 +20,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 
 public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -87,7 +82,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				openUrl(e.text);
+				WorkbenchUtil.openUrl(e.text);
 			}
 		});
 		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).hint(logoWidth, SWT.DEFAULT).applyTo(link);
@@ -126,7 +121,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		createButton(buttonBar, "Report Bug", "https://studio.atlassian.com/browse/PLE");
 		if (AtlassianBundlesInfo.isOnlyJiraInstalled()) {
 			createButton(buttonBar, "Install Bamboo, Crucible && FishEye Integration",
-					"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector");
+					IBrandingConstants.INSTALLATION_GUIDE_URL);
 		}
 
 		return composite;
@@ -142,7 +137,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				openUrl(e.text);
+				WorkbenchUtil.openUrl(e.text);
 			}
 
 		});
@@ -156,19 +151,9 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		helpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				openUrl(url);
+				WorkbenchUtil.openUrl(url);
 			}
 		});
-	}
-
-	private void openUrl(String url) {
-		try {
-			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
-			support.getExternalBrowser().openURL(new URL(url));
-		} catch (Exception e) {
-			StatusHandler.fail(new Status(IStatus.ERROR, AtlassianBrandingPlugin.ID_PLUGIN,
-					"Could not open URL in an external browser [" + url + "]", e)); //$NON-NLS-1$
-		}
 	}
 
 	public AtlassianPreferencePage() {

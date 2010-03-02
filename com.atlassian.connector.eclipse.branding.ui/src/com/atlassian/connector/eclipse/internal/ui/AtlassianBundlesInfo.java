@@ -36,14 +36,6 @@ public class AtlassianBundlesInfo {
 	}
 
 	public static boolean isOnlyJiraInstalled() {
-		final String[] keys = new String[] { "crucible.", "fisheye.", "bamboo." };
-		for (Map.Entry<String, String> entry : getAllInstalledBundles().entrySet()) {
-			for (String key : keys) {
-				if (entry.getKey().startsWith(key)) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return Boolean.valueOf(System.getProperty(IBrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY));
 	}
 }
