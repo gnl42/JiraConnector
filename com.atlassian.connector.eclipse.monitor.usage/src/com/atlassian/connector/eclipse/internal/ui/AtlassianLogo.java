@@ -1,51 +1,39 @@
 /*******************************************************************************
- * Copyright (c) 2009 Atlassian and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Atlassian - initial API and implementation
- ******************************************************************************/
+ *     Tasktop Technologies - initial API and implementation
+ *******************************************************************************/
 
-package com.atlassian.connector.eclipse.ui;
+package com.atlassian.connector.eclipse.internal.ui;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
 /**
  * Common class for getting and creating images
  * 
  * @author sminto
  */
-public final class AtlassianImages {
+public final class AtlassianLogo {
 
 	private static ImageRegistry imageRegistry;
 
-	private static final URL BASE_URL = AtlassianUiPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL BASE_URL = UiUsageMonitorPlugin.getDefault().getBundle().getEntry("/icons/");
 
-	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
+	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
 
-	private static final String T_OVR = "ovr16"; //$NON-NLS-1$
-
-	private static final String T_ECL = "elcl16";
-
-	public static final ImageDescriptor IMG_FLAT_MODE = create(T_OBJ, "flatLayout.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor IMG_TREE_MODE = create(T_OBJ, "treeLayout.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor IMG_COMPRESSED_FOLDER_MODE = create(T_OBJ, "compressedLayout.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor IMG_FILE_CHANGED = create(T_OVR, "fileChanged_ov.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor IMG_LINK_WITH_EDITOR = create(T_ECL, "synced.gif"); //$NON-NLS-1$
-
-	private AtlassianImages() {
+	private AtlassianLogo() {
 	}
 
 	private static ImageDescriptor create(String prefix, String name) {
