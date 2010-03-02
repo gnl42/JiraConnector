@@ -71,6 +71,7 @@
       <import feature="org.eclipse.mylyn.jira_feature" version="3.3.99" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
       <import plugin="javax.servlet"/>
+      <import plugin="com.atlassian.connector.eclipse.branding.ui"/>
    </requires>
 
    <plugin
@@ -82,6 +83,13 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.jira.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="com.atlassian.connector.eclipse.branding.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

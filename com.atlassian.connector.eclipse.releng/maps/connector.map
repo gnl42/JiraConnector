@@ -21,6 +21,7 @@ plugin@com.atlassian.connector.eclipse.core=SVN,trunk,https://studio.atlassian.c
 plugin@com.atlassian.connector.eclipse.bamboo.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo.core
 plugin@com.atlassian.connector.eclipse.bamboo.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo.tests
 plugin@com.atlassian.connector.eclipse.bamboo.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo.ui
+plugin@com.atlassian.connector.eclipse.branding.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.branding.ui
 plugin@com.atlassian.connector.eclipse.crucible.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible.core
 plugin@com.atlassian.connector.eclipse.crucible.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible.tests
 plugin@com.atlassian.connector.eclipse.crucible.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible.ui

@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
+package com.atlassian.connector.eclipse.internal.branding.ui.preferences;
 
 import java.net.URL;
 
@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
 
 public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -150,14 +150,14 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 			IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
 			support.getExternalBrowser().openURL(new URL(url));
 		} catch (Exception e) {
-			StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.fail(new Status(IStatus.ERROR, AtlassianBrandingPlugin.ID_PLUGIN,
 					"Could not open URL in an external browser [" + url + "]", e)); //$NON-NLS-1$
 		}
 	}
 
 	public AtlassianPreferencePage() {
 		noDefaultAndApplyButton();
-		setPreferenceStore(UiUsageMonitorPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(AtlassianBrandingPlugin.getDefault().getPreferenceStore());
 	}
 
 	/* (non-Javadoc)
