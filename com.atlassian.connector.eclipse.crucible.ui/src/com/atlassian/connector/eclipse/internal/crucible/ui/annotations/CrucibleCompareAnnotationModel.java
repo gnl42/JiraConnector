@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCo
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler.CommentAnnotationRulerColumn;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -73,7 +72,7 @@ import java.util.Map;
  * @author Thomas Ehrnhoefer
  */
 @SuppressWarnings("restriction")
-public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
+public class CrucibleCompareAnnotationModel {
 
 	private static SourceViewer getSourceViewer(MergeSourceViewer sourceViewer) {
 		if (SourceViewer.class.isInstance(sourceViewer)) {

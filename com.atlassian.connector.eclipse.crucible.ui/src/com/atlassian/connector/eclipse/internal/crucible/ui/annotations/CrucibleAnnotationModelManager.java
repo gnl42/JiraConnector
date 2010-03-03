@@ -13,9 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -240,12 +240,13 @@ public final class CrucibleAnnotationModelManager {
 
 	public static void update(CompareEditor editor, Review activeReview) {
 		IEditorInput editorInput = editor.getEditorInput();
-		if (editorInput instanceof IAnnotationCompareInput) {
+		if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 			if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || activeReview == null
 					|| CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != activeReview) {
 				return;
 			}
-			((IAnnotationCompareInput) editorInput).getAnnotationModelToAttach().updateCrucibleFile(activeReview);
+			((CrucibleFileInfoCompareEditorInput) editorInput).getAnnotationModelToAttach().updateCrucibleFile(
+					activeReview);
 		}
 	}
 

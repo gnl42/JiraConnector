@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCompareAnnotationModel;
-import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -70,8 +69,8 @@ public class CompareVirtualFilesJob extends JobWithStatus {
 					return null;
 				}
 
-				final ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(fileInfo, review,
-						comment);
+				final CrucibleCompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(fileInfo,
+						review, comment);
 
 				byte[] oldContent = OpenVirtualFileJob.getContent(oldFile.getContentUrl(),
 						server.getSession(serverCfg), serverCfg.getUrl());

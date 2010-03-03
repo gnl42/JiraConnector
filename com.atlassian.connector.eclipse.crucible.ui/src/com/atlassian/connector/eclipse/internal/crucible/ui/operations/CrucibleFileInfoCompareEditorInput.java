@@ -11,9 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCompareAnnotationModel;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
-import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
-import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 
@@ -44,7 +43,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput implements IAnnotationCompareInput {
+public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput {
 
 	static class ByteArrayInput implements ITypedElement, IStreamContentAccessor {
 
@@ -80,12 +79,12 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput imple
 
 	private final byte[] content2;
 
-	private final ICompareAnnotationModel annotationModel;
+	private final CrucibleCompareAnnotationModel annotationModel;
 
 	private final CrucibleFileInfo fileInfo;
 
 	public CrucibleFileInfoCompareEditorInput(CrucibleFileInfo fileInfo, byte[] content1, byte[] content2,
-			ICompareAnnotationModel annotationModel, CompareConfiguration compareConfiguration) {
+			CrucibleCompareAnnotationModel annotationModel, CompareConfiguration compareConfiguration) {
 		super(compareConfiguration);
 		this.content1 = content1;
 		this.content2 = content2;
@@ -114,7 +113,7 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput imple
 	}
 
 	private static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,
-			ICompareAnnotationModel annotationModel) {
+			CrucibleCompareAnnotationModel annotationModel) {
 
 		// FIXME: hack
 		if (contentViewer instanceof TextMergeViewer) {
@@ -172,7 +171,7 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput imple
 		}
 	}
 
-	public ICompareAnnotationModel getAnnotationModelToAttach() {
+	public CrucibleCompareAnnotationModel getAnnotationModelToAttach() {
 		return annotationModel;
 	}
 

@@ -41,10 +41,5 @@ Export-Package:
    com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.team.test,
    com.atlassian.connector.eclipse.directclickthrough.ui",
- com.atlassian.connector.eclipse.team.ui.exceptions,
- com.atlassian.connector.eclipse.ui;
-  x-friends:="com.atlassian.connector.eclipse.crucible.ui,
-   com.atlassian.connector.eclipse.subclipse.ui,
-   com.atlassian.connector.eclipse.subversive.ui,
-   com.atlassian.connector.eclipse.perforce.ui,
-   com.atlassian.connector.eclipse.fisheye.ui"
+ com.atlassian.connector.eclipse.team.ui.exceptions
+
