@@ -128,9 +128,14 @@ public class CrucibleFileInfoCompareEditorInput extends CompareEditorInput {
 				declaredField.setAccessible(true);
 				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
-				annotationModel.attachToViewer(fLeft, fRight);
+				annotationModel.attachToViewer(textMergeViewer, fLeft, fRight);
 				annotationModel.focusOnComment();
 				annotationModel.registerContextMenu();
+
+				Method setActiveViewer = clazz.getDeclaredMethod("setActiveViewer", MergeSourceViewer.class,
+						boolean.class);
+				setActiveViewer.setAccessible(true);
+				setActiveViewer.invoke(textMergeViewer, fRight, true);
 
 				hackGalileo(contentViewer, textMergeViewer, fLeft, fRight);
 			} catch (Throwable t) {

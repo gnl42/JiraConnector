@@ -230,7 +230,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private Action linkWithEditorAction;
 
-	private final TextSelectionToReviewItemListener linkEditorSelectionToTreeListener = new TextSelectionToReviewItemListener();;
+	private final TextSelectionToReviewItemListener linkEditorSelectionToTreeListener = new TextSelectionToReviewItemListener();
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };

@@ -24,6 +24,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -404,9 +405,9 @@ public class CrucibleCompareAnnotationModel {
 						StyledText widget = sourceViewer.getTextWidget();
 						try {
 							widget.setRedraw(false);
-							sourceViewer.revealRange(offset, length);
-							sourceViewer.setSelectedRange(offset, 0);
-							// widget.setFocus();
+							//sourceViewer.revealRange(offset, length);
+							//sourceViewer.setSelectedRange(offset, 0);
+							sourceViewer.setSelection(new TextSelection(offset, length), true);
 						} finally {
 							widget.setRedraw(true);
 						}
@@ -460,6 +461,12 @@ public class CrucibleCompareAnnotationModel {
 
 	private final VersionedComment commentToFocus;
 
+	private TextMergeViewer fMergeViewer;
+
+	private MergeSourceViewer fRightSourceViewer;
+
+	private MergeSourceViewer fLeftSourceViewer;
+
 	public CrucibleCompareAnnotationModel(CrucibleFileInfo crucibleFile, Review review, VersionedComment commentToFocus) {
 		super();
 		this.review = review;
@@ -470,7 +477,12 @@ public class CrucibleCompareAnnotationModel {
 		this.commentToFocus = commentToFocus;
 	}
 
-	public void attachToViewer(final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
+	public void attachToViewer(final TextMergeViewer viewer, final MergeSourceViewer fLeft,
+			final MergeSourceViewer fRight) {
+		fMergeViewer = viewer;
+		fLeftSourceViewer = fLeft;
+		fRightSourceViewer = fRight;
+
 		/*
 		 * only create listeners if they are not already existing
 		 */
@@ -557,16 +569,31 @@ public class CrucibleCompareAnnotationModel {
 			CrucibleFile rightFile = rightAnnotationModel.getCrucibleFile();
 			VersionedVirtualFile virtualRight = rightFile.getSelectedFile();
 
+			MergeSourceViewer focusViewer = null;
 			Map<String, IntRanges> lineRanges = commentToFocus.getLineRanges();
 			if (lineRanges != null) {
 				IntRanges range;
 				if ((range = lineRanges.get(virtualLeft.getRevision())) != null) {
 					// get the correct listener (new file is left)
 					leftViewerListener.focusOnLines(range);
+					focusViewer = fLeftSourceViewer;
 				} else if ((range = lineRanges.get(virtualRight.getRevision())) != null) {
 					rightViewerListener.focusOnLines(range);
+					focusViewer = fRightSourceViewer;
 				}
+				setActiveViewer(focusViewer);
 			}
+		}
+	}
+
+	private void setActiveViewer(MergeSourceViewer focusViewer) {
+		try {
+			Method setActiveViewer = TextMergeViewer.class.getDeclaredMethod("setActiveViewer",
+					MergeSourceViewer.class, boolean.class);
+			setActiveViewer.setAccessible(true);
+			setActiveViewer.invoke(fMergeViewer, focusViewer, true);
+		} catch (Exception e) {
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to activate viewer", e));
 		}
 	}
 
