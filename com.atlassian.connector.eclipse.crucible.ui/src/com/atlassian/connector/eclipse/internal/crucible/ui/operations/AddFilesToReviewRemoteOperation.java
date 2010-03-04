@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
+import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
 import com.atlassian.theplugin.commons.crucible.api.model.SvnRepository;
@@ -70,39 +71,39 @@ public final class AddFilesToReviewRemoteOperation extends CrucibleRemoteOperati
 
 		if (fixPaths) {
 			Set<RevisionData> fixedRevision = MiscUtil.buildHashSet();
-			Map<String, SvnRepository> crucibleRepositories = MiscUtil.buildHashMap();
+			Map<String, Repository> repositories = MiscUtil.buildHashMap();
 
 			for (RevisionData revision : files) {
-				if (!crucibleRepositories.containsKey(revision.getSource())) {
-					SvnRepository crucibleRepository = server.getRepository(serverCfg, revision.getSource());
+				if (!repositories.containsKey(revision.getSource())) {
+					Repository crucibleRepository = server.getRepository(serverCfg, revision.getSource());
 					if (crucibleRepository == null) {
 						throw new RemoteApiException("Adding file to review failed. Cannot get repository data for "
 								+ revision.getSource());
 					}
-					crucibleRepositories.put(revision.getSource(), crucibleRepository);
+					repositories.put(revision.getSource(), crucibleRepository);
 				}
 
-				SvnRepository crucibleRepository = crucibleRepositories.get(revision.getSource());
-
+				Repository repository = repositories.get(revision.getSource());
 				String filePath = revision.getPath();
 
-				if (filePath.startsWith(crucibleRepository.getUrl())) {
-					filePath = filePath.substring(crucibleRepository.getUrl().length());
+				if (repository instanceof SvnRepository) {
+					SvnRepository svnRepo = (SvnRepository) repository;
+					if (filePath.startsWith(svnRepo.getUrl())) {
+						filePath = filePath.substring(svnRepo.getUrl().length());
+					}
+
+					filePath = StringUtil.removePrefixSlashes(filePath);
+					String cruPath = StringUtil.removePrefixSlashes(svnRepo.getPath());
+					if (filePath.startsWith(cruPath)) {
+						filePath = filePath.substring(svnRepo.getPath().length());
+					}
 				}
 
 				filePath = StringUtil.removePrefixSlashes(filePath);
-				String cruPath = StringUtil.removePrefixSlashes(crucibleRepository.getPath());
-				if (filePath.startsWith(cruPath)) {
-					filePath = filePath.substring(crucibleRepository.getPath().length());
-				}
-
-				filePath = StringUtil.removePrefixSlashes(filePath);
-
 				fixedRevision.add(new RevisionData(revision.getSource(), filePath, revision.getRevisions()));
 			}
 
-			final BasicReview basicReview = session.addRevisionsToReviewItems(review.getPermId(), fixedRevision);
-			return getFullReview(basicReview, session);
+			return getFullReview(session.addRevisionsToReviewItems(review.getPermId(), fixedRevision), session);
 		}
 
 		return getFullReview(session.addRevisionsToReviewItems(review.getPermId(), files), session);

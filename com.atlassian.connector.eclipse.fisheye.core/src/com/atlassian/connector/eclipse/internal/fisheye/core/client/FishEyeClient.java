@@ -33,7 +33,8 @@ import java.util.Collection;
  * 
  * @author Wojciech Seliga
  */
-public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2> {
+public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2> implements IUpdateRepositoryData,
+		IClientDataProvider {
 
 	private final FishEyeClientData clientData;
 

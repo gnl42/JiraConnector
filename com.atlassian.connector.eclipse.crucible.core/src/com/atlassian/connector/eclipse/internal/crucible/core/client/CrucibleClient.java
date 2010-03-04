@@ -20,6 +20,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.IClientDataProvider;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.IUpdateRepositoryData;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
@@ -54,7 +56,8 @@ import java.util.List;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga
  */
-public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade2> {
+public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade2> implements IUpdateRepositoryData,
+		IClientDataProvider {
 
 	private final CrucibleClientData clientData;
 

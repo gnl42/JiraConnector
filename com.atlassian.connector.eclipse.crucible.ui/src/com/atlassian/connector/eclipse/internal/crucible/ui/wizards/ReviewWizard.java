@@ -444,7 +444,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 						resourceSelectionPage.getTeamResourceConnector(), resources));
 				if (!result.isOK()) {
 					StatusHandler.log(result);
-					setErrorMessage(result.getMessage());
+					if (result.getMessage().contains("does not exist in source")) {
+						setErrorMessage("Unable to find file in repository, probably your repository mapping is wrong. "
+								+ result.getMessage());
+					} else {
+						setErrorMessage(result.getMessage());
+					}
+
 					return false;
 				}
 			}
