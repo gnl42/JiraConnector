@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+	<extensionContent id="com.atlassian.connector.eclipse" name="Atlassian Connector for Eclipse"
+		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
+		<group id="content-group" style-id="content-group">
+			<link label="Atlassian Connector for Eclipse"
+				url="http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse+-+v1.1+Release+Notes?eclipse-welcome"
+				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
+				<text>
+					Find out how the latest Atlassian Connector can streamline your development activities. Note: Install the connector's Subclipse or Subversive option (but not both) to fully integrate your FishEye repository insight and Crucible code reviews into your IDE.
+				</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>
+

@@ -1,0 +1,7 @@
+a#atlassian-eclipse-connector-overview img {
+	background-image: url(../../images/topiclabel/ov_atlassian48.png);
+}
+
+a#atlassian-eclipse-connector-overview:hover img {
+	background-image: url(../../images/topiclabel/ov_atlassian48_hover.png);
+}
