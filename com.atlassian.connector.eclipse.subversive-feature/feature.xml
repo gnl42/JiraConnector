@@ -4,7 +4,7 @@
       label="%featureName"
       version="2.0.0.qualifier"
       provider-name="%providerName"
-      plugin="com.atlassian.connector.eclipse.ui">
+      plugin="com.atlassian.connector.eclipse.branding.ui">
 
    <description url="http://atlassian.com">
       %description
@@ -45,11 +45,11 @@
          version="0.0.0"
          unpack="false"/>
 
-
    <plugin
          id="com.atlassian.connector.eclipse.subversive.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 </feature>

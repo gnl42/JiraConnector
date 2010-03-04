@@ -6,20 +6,6 @@
       </initializer>
    </extension>
   
-	<!-- intro page -->
-	
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="$nl$/intro/overviewExtensionContent.xml">
-      </configExtension>
-      <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="$nl$/intro/whatsnewExtensionContent.xml">
-      </configExtension>
-   </extension>
-   
    <extension
          point="org.eclipse.ui.startup">
       <startup

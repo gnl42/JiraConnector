@@ -14,7 +14,7 @@
       label="%featureName"
       version="3.4.0"
       provider-name="%providerName"
-      plugin="org.eclipse.mylyn">
+      plugin="com.atlassian.connector.eclipse.branding.ui">
 
    <description url="http://www.atlassian.com/software/jira">
       %description
