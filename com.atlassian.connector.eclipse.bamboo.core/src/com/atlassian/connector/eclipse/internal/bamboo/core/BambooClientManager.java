@@ -103,7 +103,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	}
 
 	private void configureHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
-		clientCallback.initializeHostConfiguration(location, serverCfg);
+		clientCallback.updateHostConfiguration(location, serverCfg);
 	}
 
 	@Override

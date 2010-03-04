@@ -19,10 +19,10 @@ import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
@@ -45,14 +45,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
 	private final Map<String, ConnectionCfg> locations = new HashMap<String, ConnectionCfg>();
 
-	private final MultiThreadedHttpConnectionManager connectionManager;
-
-	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
-
 	public HttpSessionCallbackImpl() {
-		this.connectionManager = new MultiThreadedHttpConnectionManager();
-		WebUtil.addConnectionManager(connectionManager);
-		idleConnectionTimeoutThread.start();
 		userAgent = AtlassianCorePlugin.PRODUCT_NAME + "/" + AtlassianCorePlugin.getDefault().getVersion();
 	}
 
@@ -90,9 +83,9 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 			httpClients.put(serverCfg, httpClient);
 			locations.put(location.getUrl(), serverCfg);
+			WebUtil.addConnectionManager(httpClient.getHttpConnectionManager());
 		}
 		setupHttpClient(location, httpClient);
-		idleConnectionTimeoutThread.addConnectionManager(httpClient.getHttpConnectionManager());
 	}
 
 	private void setupHttpClient(AbstractWebLocation location, HttpClient httpClient) {
@@ -102,35 +95,18 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		httpClient.getParams().setAuthenticationPreemptive(true);
 	}
 
-	/**
-	 * Similar to updateHostConfiguration. Only difference is that it doesn't set idle connection timeout.
-	 * 
-	 * @param location
-	 * @param serverCfg
-	 * @return
-	 */
-	public synchronized HttpClient initializeHostConfiguration(AbstractWebLocation location, ConnectionCfg serverCfg) {
-		HttpClient httpClient = httpClients.get(serverCfg);
-		if (httpClient == null) {
-			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
-			httpClients.put(serverCfg, httpClient);
-			locations.put(location.getUrl(), serverCfg);
-		}
-		setupHttpClient(location, httpClient);
-		return httpClient;
-	}
-
 	@Override
 	protected void finalize() throws Throwable {
-		WebUtil.removeConnectionManager(connectionManager);
 		for (HttpClient httpClient : httpClients.values()) {
 			shutdown(httpClient);
 		}
+		httpClients.clear();
 	}
 
 	public void shutdown(HttpClient httpClient) {
-		((MultiThreadedHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
-		idleConnectionTimeoutThread.removeConnectionManager(httpClient.getHttpConnectionManager());
+		HttpConnectionManager mgr = httpClient.getHttpConnectionManager();
+		WebUtil.removeConnectionManager(mgr);
+		((MultiThreadedHttpConnectionManager) mgr).shutdown();
 	}
 
 	public void clear() {
