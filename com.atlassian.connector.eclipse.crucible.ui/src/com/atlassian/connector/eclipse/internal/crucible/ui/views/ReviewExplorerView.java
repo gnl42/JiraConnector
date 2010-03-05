@@ -437,6 +437,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private void createMenu() {
 		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
 		mgr.add(showUnreadOnlyAction);
+		mgr.add(new Separator());
+		mgr.add(linkWithEditorAction);
 	}
 
 	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
@@ -563,7 +565,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
-		linkWithEditorAction = new Action("Link with Editor", IAction.AS_CHECK_BOX) {
+		linkWithEditorAction = new Action("&Link with Editor", IAction.AS_CHECK_BOX) {
 			{
 				setImageDescriptor(AtlassianImages.IMG_LINK_WITH_EDITOR);
 				setChecked(isLinkingEnabled());
