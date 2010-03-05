@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc link_to="../org.eclipse.mylyn.doc/doc/toc.xml#monitor" label="Monitor">
-	<topic label="Monitor" href="doc/index.html">
-		<topic label="UBC User Study" href="doc/study-info.html"/>
-	</topic>
-</toc>
