@@ -108,6 +108,7 @@ public class JiraWebSession {
 				if (httpClient == null) {
 					httpClient = new HttpClient(WebUtil.getConnectionManager());
 					WebUtil.configureHttpClient(httpClient, "JiraConnector"); //$NON-NLS-1$
+					httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
 				}
 				if (doLogin) {
 					reauthenticate = false;
@@ -242,7 +243,6 @@ public class JiraWebSession {
 
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
-			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			login.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
 			login.addParameter("os_username", credentials.getUserName()); //$NON-NLS-1$
 			login.addParameter("os_password", credentials.getPassword()); //$NON-NLS-1$
