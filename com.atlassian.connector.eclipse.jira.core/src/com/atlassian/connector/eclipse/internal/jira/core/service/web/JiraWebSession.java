@@ -108,7 +108,7 @@ public class JiraWebSession {
 				if (httpClient == null) {
 					httpClient = new HttpClient(WebUtil.getConnectionManager());
 					WebUtil.configureHttpClient(httpClient, "JiraConnector"); //$NON-NLS-1$
-					httpClient.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
+					httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 				}
 				if (doLogin) {
 					reauthenticate = false;
