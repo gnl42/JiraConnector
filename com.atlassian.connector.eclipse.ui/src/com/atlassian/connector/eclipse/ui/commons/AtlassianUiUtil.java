@@ -37,6 +37,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public final class AtlassianUiUtil {
 
+	public static final String CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION = "org.eclipse.mylyn.wikitext.tasks.ui.editor.confluenceTaskEditorExtension";
+
 	private AtlassianUiUtil() {
 	}
 

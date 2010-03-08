@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -44,13 +45,17 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewReference;
@@ -85,7 +90,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	private Object currentSelection;
 
-	private Text message;
+//	private Text message;
 
 	private Label author;
 
@@ -133,6 +138,10 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	};
 
 	private Label revisions;
+
+	private RichTextEditor editor;
+
+	private ITask task;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -256,8 +265,21 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().applyTo(revisions);
 
-		message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
+//		Text message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+//		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
+
+//		TaskEditorExtensions.setTaskEditorExtensionId(repository,
+//				"org.eclipse.mylyn.wikitext.tasks.ui.editor.confluenceTaskEditorExtension");
+//		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+//		if (extension != null) {
+//			editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
+//			editor.setReadOnly(true);
+////			editor.setText(crucibleReview.getDescription());
+//			editor.createControl(detailsComposite, toolkit);
+//
+////			detailsComposite.setClient(editor.getControl());
+//		}
+
 		return detailsComposite;
 	}
 
@@ -331,7 +353,10 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	@Override
 	public void setFocus() {
-		message.setFocus();
+//		message.setFocus();
+		if (editor != null) {
+			editor.getControl().setFocus();
+		}
 	}
 
 	@Nullable
@@ -370,6 +395,9 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	}
 
 	private void updateViewer() {
+
+//		repository;
+
 		if (currentSelection instanceof Comment) {
 			Comment activeComment = (Comment) currentSelection;// findActiveComment((Comment) currentSelection);
 
@@ -430,7 +458,19 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 					revisions.setText("none");
 				}
 
-				message.setText(activeComment.getMessage());
+//				message.setText(activeComment.getMessage());
+
+//				if (editor != null) {
+////					editor
+//					editor.setText("");
+//					editor.setText(activeComment.getMessage());
+////				editor.showEditor();
+//					editor.showPreview();
+//					editor.getViewer().getTextWidget().setBackground(
+//							new Color(editor.getControl().getDisplay(), 255, 255, 255));
+//				}
+
+				setText(activeComment.getMessage());
 
 				header.layout();
 
@@ -444,6 +484,35 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		stackComposite.layout();
 	}
 
+	@SuppressWarnings("restriction")
+	private void setText(String text) {
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+				task.getRepositoryUrl());
+
+		if (toolkit != null) {
+			// TODO jj check if the extension can be found dynamically
+			TaskEditorExtensions.setTaskEditorExtensionId(repository,
+					AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
+			AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+			if (extension != null) {
+				if (editor != null) {
+					editor.getControl().dispose();
+				}
+				editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
+				editor.setReadOnly(false);
+				editor.setText(text);
+				editor.createControl(detailsComposite, toolkit);
+				editor.showPreview();
+				editor.getViewer().getTextWidget().setBackground(null);
+
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
+
+				detailsComposite.layout();
+			}
+		}
+
+	}
+
 	public void reviewActivated(ITask task, Review review) {
 		reviewUpdated(task, review);
 	}
@@ -451,17 +520,17 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	public void reviewDeactivated(ITask task, Review review) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				message.setText(NO_COMMENT_SELECTED);
+				stackLayout.topControl = linkComposite;
+				stackComposite.layout();
 			}
 		});
 	}
 
-	public void reviewUpdated(ITask task, final Review review) {
+	public void reviewUpdated(final ITask task, final Review review) {
+		this.task = task;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				if (message != null) {
-					updateViewer();
-				}
+				updateViewer();
 			}
 		});
 	}

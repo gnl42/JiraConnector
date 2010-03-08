@@ -23,6 +23,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -54,7 +55,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -132,7 +136,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 							StatusHandler.log(status);
 							crucibleEditor.getEditor()
 									.setMessage("Error while setting reviewers. See Error Log for details.",
-									IMessageProvider.ERROR);
+											IMessageProvider.ERROR);
 						}
 						return Status.OK_STATUS;
 					}
@@ -361,28 +365,43 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		toolkit.paintBordersFor(parentComposite);
 	}
 
+	@SuppressWarnings("restriction")
 	private void createStatementOfObjectivesSection(final FormToolkit toolkit) {
 		Section objectivesSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(objectivesSection);
 		objectivesSection.setText("Statement of Objectives");
 
-		Text descriptionText = createText(toolkit, objectivesSection, crucibleReview.getDescription(), null, true,
-				!newReview);
+		// TODO jj remove commented code
+//		Text descriptionText = createText(toolkit, objectivesSection, crucibleReview.getDescription(), null, true,
+//				!newReview);
+//
+//		descriptionText.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent e) {
+//				String modifiedName = ((Text) e.widget).getText();
+//				if (modifiedName.equals(crucibleReview.getDescription())) {
+//					changedAttributes.remove(ReviewAttributeType.OBJECTIVE);
+//				} else {
+//					changedAttributes.put(ReviewAttributeType.OBJECTIVE, modifiedName);
+//				}
+//				crucibleEditor.attributesModified();
+//			}
+//		});
+//		
+//		objectivesSection.setClient(descriptionText);
 
-		descriptionText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String modifiedName = ((Text) e.widget).getText();
-				if (modifiedName.equals(crucibleReview.getDescription())) {
-					changedAttributes.remove(ReviewAttributeType.OBJECTIVE);
-				} else {
-					changedAttributes.put(ReviewAttributeType.OBJECTIVE, modifiedName);
-				}
-				crucibleEditor.attributesModified();
-			}
-		});
+		TaskRepository repository = crucibleEditor.getEditor().getTaskEditorInput().getTaskRepository();
 
-		objectivesSection.setClient(descriptionText);
+		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
+		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+		if (extension != null) {
+			RichTextEditor editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
+			editor.setReadOnly(true);
+			editor.setText(crucibleReview.getDescription());
+			editor.createControl(objectivesSection, toolkit);
+
+			objectivesSection.setClient(editor.getControl());
+		}
 	}
 
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
