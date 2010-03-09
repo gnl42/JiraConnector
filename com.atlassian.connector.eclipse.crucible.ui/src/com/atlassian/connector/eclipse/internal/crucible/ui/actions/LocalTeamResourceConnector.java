@@ -69,14 +69,16 @@ public class LocalTeamResourceConnector extends AbstractTeamUiConnector {
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
 		final List<IResource> result = MiscUtil.buildArrayList();
 		if (filter == State.SF_ALL || filter == State.SF_UNVERSIONED) {
+			IResourceVisitor visitor = new IResourceVisitor() {
+				public boolean visit(IResource resource) throws CoreException {
+					result.add(resource);
+					return true;
+				}
+			};
+
 			for (IResource root : roots) {
 				try {
-					root.accept(new IResourceVisitor() {
-						public boolean visit(IResource resource) throws CoreException {
-							result.add(resource);
-							return true;
-						}
-					});
+					root.accept(visitor);
 				} catch (CoreException e) {
 					StatusHandler.log(e.getStatus());
 				}
