@@ -139,6 +139,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	private Label revisions;
 
+	@SuppressWarnings("restriction")
 	private RichTextEditor editor;
 
 	private ITask task;
@@ -268,18 +269,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 //		Text message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 //		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
 
-//		TaskEditorExtensions.setTaskEditorExtensionId(repository,
-//				"org.eclipse.mylyn.wikitext.tasks.ui.editor.confluenceTaskEditorExtension");
-//		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-//		if (extension != null) {
-//			editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
-//			editor.setReadOnly(true);
-////			editor.setText(crucibleReview.getDescription());
-//			editor.createControl(detailsComposite, toolkit);
-//
-////			detailsComposite.setClient(editor.getControl());
-//		}
-
 		return detailsComposite;
 	}
 
@@ -351,6 +340,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	}
 
+	@SuppressWarnings("restriction")
 	@Override
 	public void setFocus() {
 //		message.setFocus();
@@ -395,8 +385,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	}
 
 	private void updateViewer() {
-
-//		repository;
 
 		if (currentSelection instanceof Comment) {
 			Comment activeComment = (Comment) currentSelection;// findActiveComment((Comment) currentSelection);
@@ -460,16 +448,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 //				message.setText(activeComment.getMessage());
 
-//				if (editor != null) {
-////					editor
-//					editor.setText("");
-//					editor.setText(activeComment.getMessage());
-////				editor.showEditor();
-//					editor.showPreview();
-//					editor.getViewer().getTextWidget().setBackground(
-//							new Color(editor.getControl().getDisplay(), 255, 255, 255));
-//				}
-
 				setText(activeComment.getMessage());
 
 				header.layout();
@@ -490,7 +468,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				task.getRepositoryUrl());
 
 		if (toolkit != null) {
-			// TODO jj check if the extension can be found dynamically
 			TaskEditorExtensions.setTaskEditorExtensionId(repository,
 					AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
 			AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
@@ -510,7 +487,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				detailsComposite.layout();
 			}
 		}
-
 	}
 
 	public void reviewActivated(ITask task, Review review) {
