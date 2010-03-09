@@ -75,6 +75,7 @@ import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Map;
 
+@SuppressWarnings("restriction")
 public class CommentView extends ViewPart implements ISelectionChangedListener, ISelectionListener,
 		IReviewActivationListener {
 
@@ -139,7 +140,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	private Label revisions;
 
-	@SuppressWarnings("restriction")
 	private RichTextEditor editor;
 
 	private ITask task;
@@ -340,7 +340,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public void setFocus() {
 //		message.setFocus();
@@ -462,7 +461,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		stackComposite.layout();
 	}
 
-	@SuppressWarnings("restriction")
 	private void setText(String text) {
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
 				task.getRepositoryUrl());
@@ -471,21 +469,23 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			TaskEditorExtensions.setTaskEditorExtensionId(repository,
 					AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
 			AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-			if (extension != null) {
-				if (editor != null) {
-					editor.getControl().dispose();
-				}
-				editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
-				editor.setReadOnly(false);
-				editor.setText(text);
-				editor.createControl(detailsComposite, toolkit);
-				editor.showPreview();
-				editor.getViewer().getTextWidget().setBackground(null);
-
-				GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
-
-				detailsComposite.layout();
+			if (editor != null) {
+				editor.getControl().dispose();
 			}
+			editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
+			if (extension != null) {
+				editor.setReadOnly(false);
+			} else {
+				editor.setReadOnly(true);
+			}
+			editor.setText(text);
+			editor.createControl(detailsComposite, toolkit);
+			editor.showPreview();
+			editor.getViewer().getTextWidget().setBackground(null);
+
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
+
+			detailsComposite.layout();
 		}
 	}
 

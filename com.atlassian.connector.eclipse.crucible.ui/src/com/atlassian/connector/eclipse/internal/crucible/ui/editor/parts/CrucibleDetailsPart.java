@@ -372,36 +372,16 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(objectivesSection);
 		objectivesSection.setText("Statement of Objectives");
 
-		// TODO jj remove commented code
-//		Text descriptionText = createText(toolkit, objectivesSection, crucibleReview.getDescription(), null, true,
-//				!newReview);
-//
-//		descriptionText.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				String modifiedName = ((Text) e.widget).getText();
-//				if (modifiedName.equals(crucibleReview.getDescription())) {
-//					changedAttributes.remove(ReviewAttributeType.OBJECTIVE);
-//				} else {
-//					changedAttributes.put(ReviewAttributeType.OBJECTIVE, modifiedName);
-//				}
-//				crucibleEditor.attributesModified();
-//			}
-//		});
-//		
-//		objectivesSection.setClient(descriptionText);
-
 		TaskRepository repository = crucibleEditor.getEditor().getTaskEditorInput().getTaskRepository();
 
 		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
 		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-		if (extension != null) {
-			RichTextEditor editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
-			editor.setReadOnly(true);
-			editor.setText(crucibleReview.getDescription());
-			editor.createControl(objectivesSection, toolkit);
+		RichTextEditor editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
+		editor.setReadOnly(true);
+		editor.setText(crucibleReview.getDescription());
+		editor.createControl(objectivesSection, toolkit);
 
-			objectivesSection.setClient(editor.getControl());
-		}
+		objectivesSection.setClient(editor.getControl());
 	}
 
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
