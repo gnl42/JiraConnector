@@ -14,8 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector.State;
 import com.atlassian.connector.eclipse.ui.actions.AbstractResourceAction;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
@@ -49,35 +47,18 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 	@Override
 	protected void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell) {
 
-		// TODO allow to create review for projects not undev vcs
-
-		if (!TeamUiUtils.checkTeamConnectors()) {
-			// no connectors at all
-			return;
-		}
-
 		final Set<ITeamUiResourceConnector> connectors = new HashSet<ITeamUiResourceConnector>();
 
-		// svn support only
 		for (ResourceEditorBean resourceBean : selection) {
 			ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
 					.getTeamResourceManager()
 					.getTeamConnector(resourceBean.getResource());
 
-			String message = null;
-
-			if (connector == null) {
-				message = "Cannot find Atlassian SCM Integration for '" + resourceBean.getResource().getName() + "'.";
-			} else if (connector.getType() != TeamConnectorType.SVN) {
-				message = "Cannot create review from non Subversion resource. Only Subversion is supported.";
+			if (connector != null) {
+				connectors.add(connector);
+			} else {
+				connectors.add(new LocalTeamResourceConnector());
 			}
-
-			if (message != null) {
-				MessageDialog.openInformation(shell, CrucibleUiPlugin.PLUGIN_ID, message);
-				return;
-			}
-
-			connectors.add(connector);
 		}
 
 		if (connectors.size() > 1) {
@@ -116,7 +97,6 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 		}
 
 		openReviewWizard(selection, connector, isPostCommit, shell);
-
 	}
 
 	protected abstract void openReviewWizard(ResourceEditorBean selection, ITeamUiResourceConnector connector,
@@ -158,7 +138,7 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						openReviewWizard(resourcesList, isCrucible21Required[0], shell);
+						openReviewWizard(teamConnector, resourcesList, isCrucible21Required[0], shell);
 					}
 				});
 
@@ -197,6 +177,7 @@ public abstract class AbstractReviewFromResourcesAction extends AbstractResource
 		MessageDialog.openInformation(shell, CrucibleUiPlugin.PLUGIN_ID, message);
 	}
 
-	protected abstract void openReviewWizard(final List<IResource> resources, boolean isCrucible21Required, Shell shell);
+	protected abstract void openReviewWizard(final ITeamUiResourceConnector teamConnector,
+			final List<IResource> resources, boolean isCrucible21Required, Shell shell);
 
 }

@@ -184,6 +184,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private SelectChangesetsFromCruciblePage addChangeSetsFromCruciblePage;
 
+	private ITeamUiResourceConnector selectedWorkspaceTeamConnector;
+
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
@@ -287,7 +289,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		// mixed review
 		if (types.contains(Type.ADD_RESOURCES)) {
-			resourceSelectionPage = new ResourceSelectionPage(getTaskRepository(), selectedWorkspaceResources);
+			resourceSelectionPage = new ResourceSelectionPage(getTaskRepository(), selectedWorkspaceTeamConnector,
+					selectedWorkspaceResources);
 			addPage(resourceSelectionPage);
 		}
 
@@ -667,9 +670,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		this.preselectedLogEntries = logEntries;
 	}
 
-	public void setRoots(List<IResource> list) {
+	public void setRoots(ITeamUiResourceConnector teamConnector, List<IResource> list) {
 		this.selectedWorkspaceResources.clear();
 		this.selectedWorkspaceResources.addAll(list);
+		this.selectedWorkspaceTeamConnector = teamConnector;
 	}
 
 	public void setUploadItems(List<UploadItem> uploadItems) {

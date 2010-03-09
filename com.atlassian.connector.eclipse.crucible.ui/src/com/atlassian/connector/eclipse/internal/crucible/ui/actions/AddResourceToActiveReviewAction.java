@@ -54,14 +54,17 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 
 		private ResourceSelectionPage resourceSelectionPage;
 
-		private AddResourceToActiveReviewWizard(List<IResource> resources) {
+		private final ITeamUiResourceConnector teamConnector;
+
+		private AddResourceToActiveReviewWizard(ITeamUiResourceConnector teamConnector, List<IResource> resources) {
 			this.resources = resources;
+			this.teamConnector = teamConnector;
 		}
 
 		@Override
 		public void addPages() {
 			resourceSelectionPage = new ResourceSelectionPage(
-					CrucibleUiUtil.getCrucibleTaskRepository(getActiveReview()), resources);
+					CrucibleUiUtil.getCrucibleTaskRepository(getActiveReview()), teamConnector, resources);
 			addPage(resourceSelectionPage);
 		}
 
@@ -137,12 +140,13 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 	protected void openReviewWizard(final ResourceEditorBean selection, final ITeamUiResourceConnector connector,
 			boolean isPostCommit, final Shell shell) {
 
-		openReviewWizard(Arrays.asList(selection.getResource()), isPostCommit, shell);
+		openReviewWizard(connector, Arrays.asList(selection.getResource()), isPostCommit, shell);
 	}
 
-	protected void openReviewWizard(final List<IResource> resources, boolean isCrucible21Required, Shell shell) {
+	protected void openReviewWizard(final ITeamUiResourceConnector teamConnector, final List<IResource> resources,
+			boolean isCrucible21Required, Shell shell) {
 		WizardDialog wd = null;
-		Wizard wizard = new AddResourceToActiveReviewWizard(resources);
+		Wizard wizard = new AddResourceToActiveReviewWizard(teamConnector, resources);
 		wd = new WizardDialog(shell, wizard);
 		wd.setBlockOnOpen(true);
 		wd.open();

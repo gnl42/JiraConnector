@@ -11,9 +11,14 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class AbstractTeamUiConnector implements ITeamUiResourceConnector {
 	public static String getResourcePathWithProjectName(IResource resource) {
@@ -25,4 +30,19 @@ public abstract class AbstractTeamUiConnector implements ITeamUiResourceConnecto
 	protected static final byte[] DELETED_ITEM = "[--item deleted--]".getBytes();
 
 	protected static final byte[] EMPTY_ITEM = "[--item is empty--]".getBytes();
+
+	protected byte[] getResourceContent(InputStream is) {
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		try {
+			IOUtils.copy(is, out);
+			return out.toByteArray();
+		} catch (IOException e) {
+			return new byte[0];
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(out);
+		}
+	}
+
 }

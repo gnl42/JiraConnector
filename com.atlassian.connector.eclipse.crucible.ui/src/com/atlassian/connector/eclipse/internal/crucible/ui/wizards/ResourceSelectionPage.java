@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.ui.commons.CustomToolTip;
@@ -63,7 +62,7 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	private final Collection<String> scmPaths = new ArrayList<String>();
 
-	private ITeamUiResourceConnector teamConnector;
+	private final ITeamUiResourceConnector teamConnector;
 
 	private final TaskRepository taskRepository;
 
@@ -71,24 +70,15 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 
 	private ResourceSelectionTree resourceSelectionTree;
 
-	public ResourceSelectionPage(@NotNull TaskRepository taskRepository, @NotNull List<IResource> roots) {
+	public ResourceSelectionPage(@NotNull TaskRepository taskRepository,
+			@NotNull ITeamUiResourceConnector teamConnector, @NotNull List<IResource> roots) {
 		super("Add Resources to Review");
 		this.taskRepository = taskRepository;
 		setTitle("Add Resources to Review");
 		setDescription("Add selected resources to Review. Modified or unversioned resources will be added as pre-commit review items.");
 
 		this.roots.addAll(roots);
-
-		if (roots.size() > 0) {
-			// we support only single SCM integration selection in the wizard
-			// other resources will be ignored
-			final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
-					.getTeamResourceManager()
-					.getTeamConnector(roots.get(0));
-			if (teamConnector != null) {
-				this.teamConnector = teamConnector;
-			}
-		}
+		this.teamConnector = teamConnector;
 	}
 
 	public List<DecoratedResource> getSelection() {

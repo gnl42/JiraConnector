@@ -54,7 +54,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 				protected IWizard createWizard(TaskRepository taskRepository) {
 					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
 							ReviewWizard.Type.ADD_SCM_RESOURCES, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
-					wizard.setRoots(Arrays.asList(selection.getResource()));
+					wizard.setRoots(connector, Arrays.asList(selection.getResource()));
 					wizard.setFilesCommentData(Arrays.asList(selection));
 					return wizard;
 				}
@@ -107,7 +107,8 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 		}
 	}
 
-	protected void openReviewWizard(final List<IResource> resources, boolean isCrucible21Required, Shell shell) {
+	protected void openReviewWizard(final ITeamUiResourceConnector teamConnector, final List<IResource> resources,
+			boolean isCrucible21Required, Shell shell) {
 
 		if (isCrucible21Required) {
 			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
@@ -115,7 +116,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 				protected IWizard createWizard(TaskRepository taskRepository) {
 					ReviewWizard wizard = new ReviewWizard(taskRepository,
 							MiscUtil.buildHashSet(ReviewWizard.Type.ADD_RESOURCES));
-					wizard.setRoots(resources);
+					wizard.setRoots(teamConnector, resources);
 					return wizard;
 				}
 			};
@@ -132,7 +133,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 				protected IWizard createWizard(TaskRepository taskRepository) {
 					ReviewWizard wizard = new ReviewWizard(taskRepository,
 							MiscUtil.buildHashSet(ReviewWizard.Type.ADD_RESOURCES));
-					wizard.setRoots(resources);
+					wizard.setRoots(teamConnector, resources);
 					return wizard;
 				}
 			};
@@ -145,7 +146,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 			} else {
 				ReviewWizard reviewWizard = new ReviewWizard(taskRepositories.get(0),
 						MiscUtil.buildHashSet(ReviewWizard.Type.ADD_RESOURCES));
-				reviewWizard.setRoots(resources);
+				reviewWizard.setRoots(teamConnector, resources);
 				wd = new WizardDialog(shell, reviewWizard);
 			}
 			wd.setBlockOnOpen(true);

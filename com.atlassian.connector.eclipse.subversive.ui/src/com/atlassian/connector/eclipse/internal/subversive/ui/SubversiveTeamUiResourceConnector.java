@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -66,9 +65,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -425,20 +421,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 					"Can't get container members", e));
-		}
-	}
-
-	private byte[] getResourceContent(InputStream is) {
-		final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		try {
-			IOUtils.copy(is, out);
-			return out.toByteArray();
-		} catch (IOException e) {
-			return new byte[0];
-		} finally {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(out);
 		}
 	}
 
