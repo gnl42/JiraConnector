@@ -91,6 +91,13 @@ public class JiraConnectorUiStandaloneTest extends TestCase {
 		assertEquals(new Region(3, 7), result[0].getHyperlinkRegion());
 		assertEquals("PRONE-1", ((TaskHyperlink) result[0]).getTaskId());
 
+		result = findHyperlinks(repository, projects, "(PRONE-1)", -1, 0);
+		assertNotNull(result);
+		assertEquals(1, result.length);
+
+		result = findHyperlinks(repository, projects, " PRONE-1", -1, 0);
+		assertNotNull(result);
+		assertEquals(1, result.length);
 	}
 
 	private IHyperlink[] findHyperlinks(TaskRepository repository, Project[] projects, String text, int index,

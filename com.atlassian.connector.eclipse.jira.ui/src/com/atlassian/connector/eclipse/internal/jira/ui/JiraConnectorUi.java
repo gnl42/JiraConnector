@@ -58,7 +58,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	/**
 	 * Public for testing only.
 	 */
-	public static Pattern TASK_PATTERN = Pattern.compile("(^|\\s)(([A-Z]+)-\\d+)"); //$NON-NLS-1$
+	public static Pattern TASK_PATTERN = Pattern.compile("(^|[\\s\\(\\)])(([A-Z]+)-\\d+)"); //$NON-NLS-1$
 
 	public enum JiraTaskKind {
 		BUG, FEATURE, STORY, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
