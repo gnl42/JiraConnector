@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -93,8 +94,8 @@ public class CrucibleReviewersPart {
 				singleReviewersComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(
 						reviewer.isCompleted() ? 3 : 2).spacing(0, 0).margins(0, 0).create());
 
-				Text text = createReadOnlyText(toolkit, singleReviewersComposite, reviewer.getDisplayName(), null,
-						false);
+				Text text = createReadOnlyText(toolkit, singleReviewersComposite,
+						CrucibleUiUtil.getDisplayNameOrUsername(reviewer), null, false);
 				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(text);
 				text.setBackground(parent.getBackground());
 
