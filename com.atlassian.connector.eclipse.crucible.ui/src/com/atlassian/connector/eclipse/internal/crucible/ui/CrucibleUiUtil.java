@@ -411,4 +411,9 @@ public final class CrucibleUiUtil {
 		return null;
 	}
 
+	public static String getDisplayNameOrUsername(User user) {
+		return user.getDisplayName() == null || "".equals(user.getDisplayName()) ? user.getUsername()
+				: user.getDisplayName();
+	}
+
 }
