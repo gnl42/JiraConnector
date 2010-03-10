@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewExplorerView;
+import com.atlassian.connector.eclipse.internal.crucible.ui.views.UnreadCommentsViewerFilter;
 import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -20,6 +22,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.team.internal.ui.Utils;
@@ -28,6 +31,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -39,12 +43,15 @@ import java.util.ResourceBundle;
 public class CommentNavigationAction extends Action {
 	private final boolean isNext;
 
-	private final AbstractTreeViewer viewer;
+	private final ReviewExplorerView reviewExplorerView;
+
+	private final TreeViewer viewer;
 
 	private static final String ACTION_BUNDLE = "com.atlassian.connector.eclipse.internal.crucible.ui.actions.actions";
 
-	public CommentNavigationAction(AbstractTreeViewer viewer, IViewSite viewSite, boolean next) {
-		this.viewer = viewer;
+	public CommentNavigationAction(ReviewExplorerView view, IViewSite viewSite, boolean next) {
+		this.reviewExplorerView = view;
+		this.viewer = reviewExplorerView.getViewer();
 		this.isNext = next;
 		IActionBars bars = viewSite.getActionBars();
 		if (next) {
@@ -133,8 +140,18 @@ public class CommentNavigationAction extends Action {
 	 * @return the filter list of children
 	 */
 	private Object[] filter(AbstractTreeViewer viewer, Object parentElementOrTreePath, Object[] elements) {
-		ViewerFilter[] filters = viewer.getFilters();
-		if (filters != null) {
+		List<ViewerFilter> filters;
+		if (viewer.getFilters() != null) {
+			filters = Arrays.asList(viewer.getFilters());
+		} else {
+			filters = MiscUtil.buildArrayList();
+		}
+
+		if (reviewExplorerView.isFocusedOnUnreadComments()) {
+			filters.add(new UnreadCommentsViewerFilter());
+		}
+
+		if (filters.size() > 0) {
 			ArrayList<Object> filtered = new ArrayList<Object>(elements.length);
 			for (Object element : elements) {
 				boolean add = true;
@@ -152,5 +169,4 @@ public class CommentNavigationAction extends Action {
 		}
 		return elements;
 	}
-
 }

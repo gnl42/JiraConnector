@@ -68,7 +68,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
@@ -283,8 +282,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
 		viewer.setContentProvider(new ReviewContentProvider());
 		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
-				new ReviewExplorerLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(),
-				null);
+				new ReviewExplorerLabelProvider(this), PlatformUI.getWorkbench()
+						.getDecoratorManager()
+						.getLabelDecorator(), null);
 		viewer.setLabelProvider(styledLabelProvider);
 		viewer.setComparator(new ReviewTreeComparator());
 
@@ -547,21 +547,18 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		viewer.getControl().setFocus();
 	}
 
-	public void createActions() {
-		showUnreadOnlyAction = new Action("Show unread comments only", IAction.AS_CHECK_BOX) {
-			private final ViewerFilter filter = new UnreadCommentsViewerFilter();
+	public boolean isFocusedOnUnreadComments() {
+		return showUnreadOnlyAction != null && showUnreadOnlyAction.isChecked();
+	}
 
+	public void createActions() {
+		showUnreadOnlyAction = new Action("Focus on unread comments only", IAction.AS_CHECK_BOX) {
 			{
 				setImageDescriptor(CommonImages.FILTER_COMPLETE);
 			}
 
 			public void run() {
-				if (isChecked()) {
-					viewer.addFilter(filter);
-					viewer.expandAll();
-				} else {
-					viewer.removeFilter(filter);
-				}
+				viewer.refresh();
 			};
 		};
 
@@ -644,8 +641,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	public void createToolbar() {
 		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(viewer, getViewSite(), false);
-		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(viewer, getViewSite(), true);
+		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(this, getViewSite(), false);
+		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(this, getViewSite(), true);
 
 		mgr.add(expandAll);
 		mgr.add(collapseAll);

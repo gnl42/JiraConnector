@@ -1,20 +1,19 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
-import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.FileType;
-import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -24,6 +23,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabelProvider implements
 		IStyledLabelProvider {
+
+	private static final String READ_COLOR_KEY = "Review Explorer Read Comment Color";
+
+	private final ReviewExplorerView reviewExplorerView;
+
+	public ReviewExplorerLabelProvider(ReviewExplorerView view) {
+		this.reviewExplorerView = view;
+		JFaceResources.getColorRegistry().put(READ_COLOR_KEY, new RGB(100, 100, 100));
+	}
 
 	public String getText(Object element) {
 		return getStyledText(element).toString();
@@ -37,7 +45,7 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 					|| comment.getReadState().equals(ReadState.LEAVE_UNREAD)) {
 				return CommonFonts.BOLD;
 			}
-			if (comment.isDraft()) {
+			if (comment.isDraft() || reviewExplorerView.isFocusedOnUnreadComments()) {
 				return CommonFonts.ITALIC;
 			}
 		}
@@ -62,6 +70,9 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 				headerText = msg.substring(0, ReviewExplorerView.COMMENT_PREVIEW_LENGTH) + "...";
 			} else {
 				headerText = msg;
+			}
+			if (reviewExplorerView.isFocusedOnUnreadComments() && !comment.isEffectivelyUnread()) {
+				return new StyledString(headerText, StyledString.createColorRegistryStyler(READ_COLOR_KEY, null));
 			}
 			return new StyledString(headerText);
 		}
@@ -90,11 +101,6 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 			}
 		}
 
-		// StringBuilder revisionString = getRevisionInfo(file);
-		// if (revisionString.length() > 0) {
-		// styledString.append("  ");
-		// styledString.append(revisionString.toString(), StyledString.DECORATIONS_STYLER);
-		// }
 		return styledString;
 	}
 
@@ -121,60 +127,12 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 
 	private Image getImage(final CrucibleFileInfo cfi) {
 		IEditorRegistry fEditorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
-		final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor()
-				.getName());
+		final ImageDescriptor imageDescriptor = fEditorRegistry.getImageDescriptor(cfi.getFileDescriptor().getName());
 
 		// we want to leave some space for defect decorations (which are nicer and more readable when
 		// applied besides the main icon, so we use the trick with images by shifting them a little bit
 		// thus we use OffsettingCompositeImageDescriptor
 		return CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(imageDescriptor, null));
-		// return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 	}
 
-	private StringBuilder getRevisionInfo(CrucibleFileInfo file) {
-
-		final VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-		final VersionedVirtualFile newFileDescriptor = file.getFileDescriptor();
-
-		boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
-				&& oldFileDescriptor.getRevision().length() > 0;
-		boolean oldFileHasUrl = oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
-				&& oldFileDescriptor.getUrl().length() > 0;
-
-		boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
-				&& newFileDescriptor.getRevision().length() > 0;
-		boolean newFileHasUrl = newFileDescriptor != null && newFileDescriptor.getUrl() != null
-				&& newFileDescriptor.getUrl().length() > 0;
-
-		FileType filetype = file.getFileType();
-
-		StringBuilder revisionString = new StringBuilder();
-
-		// if repository type is uploaded or patch, display alternative for now since we cannot open the file yet
-		if (file.getRepositoryType() == RepositoryType.PATCH) {
-			revisionString.append("Part of a Patch");
-		} else if (file.getRepositoryType() == RepositoryType.UPLOAD) {
-			revisionString.append("Pre-commit");
-		} else {
-			// if file is deleted or not a file, do not include any revisions
-			// (we need a local resource to retrieve the old revision from SVN, which we do not have)
-			if (file.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
-				revisionString.append("N/A ");
-			} else {
-				if (oldFileHasUrl && oldFileHasRevision) {
-					revisionString.append(oldFileDescriptor.getRevision());
-				}
-				if (oldFileHasRevision) {
-					if (newFileHasRevision) {
-						revisionString.append("-");
-					}
-				}
-
-				if (newFileHasUrl && newFileHasRevision && file.getCommitType() != CommitType.Deleted) {
-					revisionString.append(newFileDescriptor.getRevision());
-				}
-			}
-		}
-		return revisionString;
-	}
 }
