@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,6 +28,7 @@ import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoryLabelProvider;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,11 +47,37 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 	protected TaskRepository selectedRepository;
 
-	private Collection<TaskRepository> crucible21Repos;
+	private final Collection<TaskRepository> crucible21Repos = MiscUtil.buildArrayList();
 
 	public SelectCrucible21RepositoryPage() {
 		super(ENABLED_CRUCIBLE_REPOSITORY_FILTER);
 		setDescription("Add new repositories using the Task Repositories view.\nOnly Crucible 2.1 or newer supports current operation.");
+	}
+
+	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+
+		// we need our own label provider to mark not matching repos as not clickable instead of hide them
+		getViewer().setLabelProvider(
+				new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider(crucible21Repos)));
+
+		getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.getFirstElement() instanceof TaskRepository) {
+					selectedRepository = (TaskRepository) selection.getFirstElement();
+					if (crucible21Repos.contains(selectedRepository)) {
+						setPageComplete(true);
+					} else {
+						setPageComplete(false);
+					}
+				} else {
+					setPageComplete(false);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -68,28 +97,8 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 			// retrieve Crucible repos version and filter list of available repos in the wizard
 			final WizardPage page = this;
 
-			crucible21Repos = getCrucible21Repos(page);
-
-			// we need our own label provider to mark not matching repos as not clickable instead of hide them
-			getViewer().setLabelProvider(
-					new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider(crucible21Repos)));
-
-			getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-
-				public void selectionChanged(SelectionChangedEvent event) {
-					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-					if (selection.getFirstElement() instanceof TaskRepository) {
-						selectedRepository = (TaskRepository) selection.getFirstElement();
-						if (crucible21Repos.contains(selectedRepository)) {
-							setPageComplete(true);
-						} else {
-							setPageComplete(false);
-						}
-					} else {
-						setPageComplete(false);
-					}
-				}
-			});
+			crucible21Repos.clear();
+			crucible21Repos.addAll(getCrucible21Repos(page));
 
 			getViewer().setInput(getCrucibeTaskRepositories());
 		}
