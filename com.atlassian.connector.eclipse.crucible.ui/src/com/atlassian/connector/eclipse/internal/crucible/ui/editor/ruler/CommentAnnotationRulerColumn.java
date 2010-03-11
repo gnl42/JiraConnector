@@ -223,9 +223,11 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 
 			CrucibleFileInfo currentFileInfo = review.getFileByPermId(file.getCrucibleFileInfo().getPermId());
 
-			annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),
-					fDocumentProvider.getDocument(fEditor.getEditorInput()), new CrucibleFile(currentFileInfo,
-							file.isOldFile()), review);
+			if (currentFileInfo != null) {
+				annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),
+						fDocumentProvider.getDocument(fEditor.getEditorInput()), new CrucibleFile(currentFileInfo,
+								file.isOldFile()), review);
+			}
 		}
 
 		Display.getDefault().asyncExec(new Runnable() {

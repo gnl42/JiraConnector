@@ -36,6 +36,8 @@ import java.util.Collection;
 
 public class MarkCommentsReadJob extends JobWithStatus {
 
+	public static final long DEFAULT_DELAY_INTERVAL = 3 * 1000; // wait 3 seconds before marking the comment as read
+
 	private final Review review;
 
 	private final Collection<Comment> comments;
@@ -59,7 +61,6 @@ public class MarkCommentsReadJob extends JobWithStatus {
 
 		try {
 			client.execute(new RemoteOperation<Void, CrucibleServerFacade2>(submonitor.newChild(1), taskRepository) {
-				@SuppressWarnings("deprecation")
 				@Override
 				public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws RemoteApiException, ServerPasswordNotProvidedException {

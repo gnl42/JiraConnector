@@ -11,6 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.MarkCommentsReadJob;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
+import com.atlassian.theplugin.commons.util.MiscUtil;
+
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -23,6 +29,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Shell;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A custom control to display on hover, or delegates to the default control to display if we aren't dealing with a
@@ -38,10 +48,11 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	private final CrucibleInformationControlCreator informationControlCreator;
 
+	private Job markAsReadJob;
+
 	@SuppressWarnings("restriction")
 	public CrucibleInformationControl(Shell parent, CrucibleInformationControlCreator crucibleInformationControlCreator) {
 		super(parent, new HTMLTextPresenter(true));
-//		super(parent, true);
 		this.informationControlCreator = crucibleInformationControlCreator;
 		commentPopupDialog = new CrucibleCommentPopupDialog(parent, SWT.NO_FOCUS | SWT.ON_TOP);
 		// Force create early so that listeners can be added at all times with API.
@@ -70,14 +81,52 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 		return input != null || super.hasContents();
 	}
 
+	private void runMarkCommentAsReadJob(CrucibleAnnotationHoverInput input) {
+		List<CrucibleCommentAnnotation> annotations = input.getCrucibleAnnotations();
+		if (annotations == null || annotations.size() == 0) {
+			return;
+		}
+
+		Set<Comment> comments = MiscUtil.buildHashSet();
+		for (CrucibleCommentAnnotation annotation : annotations) {
+			comments.addAll(getUnreadComments(annotation.getVersionedComment()));
+		}
+
+		if (comments.size() > 0) {
+			markAsReadJob = new MarkCommentsReadJob(comments.iterator().next().getReview(), comments, true);
+			markAsReadJob.schedule(MarkCommentsReadJob.DEFAULT_DELAY_INTERVAL);
+		}
+	}
+
+	private Collection<? extends Comment> getUnreadComments(Comment comment) {
+		Set<Comment> result = MiscUtil.buildHashSet();
+		if (comment.getReadState().equals(ReadState.UNREAD)) {
+			result.add(comment);
+		}
+		for (Comment reply : comment.getReplies()) {
+			result.addAll(getUnreadComments(reply));
+		}
+		return result;
+	}
+
+	private void cancelMarkCommentAsReadJob() {
+		if (markAsReadJob != null) {
+			markAsReadJob.cancel();
+			markAsReadJob = null;
+		}
+	}
+
 	@Override
 	public void setVisible(boolean visible) {
+		cancelMarkCommentAsReadJob();
+
 		if (input instanceof String) {
 			setInformation((String) input);
 			super.setVisible(visible);
 		} else if (input instanceof CrucibleAnnotationHoverInput) {
 			if (visible) {
 				commentPopupDialog.open();
+				runMarkCommentAsReadJob((CrucibleAnnotationHoverInput) input);
 			} else {
 				commentPopupDialog.getShell().setVisible(false);
 			}
@@ -88,6 +137,8 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	@Override
 	public void dispose() {
+		cancelMarkCommentAsReadJob();
+
 		commentPopupDialog.dispose();
 		commentPopupDialog = null;
 	}

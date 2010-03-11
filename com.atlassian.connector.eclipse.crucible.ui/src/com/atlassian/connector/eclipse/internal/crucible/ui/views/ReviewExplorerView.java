@@ -279,7 +279,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				return a.equals(b);
 			}
 		});
-		viewer.addSelectionChangedListener(new MarkCommentsReadSelectionListener());
 		viewer.setContentProvider(new ReviewContentProvider());
 		final DecoratingStyledCellLabelProvider styledLabelProvider = new DecoratingStyledCellLabelProvider(
 				new ReviewExplorerLabelProvider(this), PlatformUI.getWorkbench()

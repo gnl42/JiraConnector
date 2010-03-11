@@ -23,15 +23,18 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCom
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.MarkCommentsReadJob;
 import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -91,8 +94,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	private Object currentSelection;
 
-//	private Text message;
-
 	private Label author;
 
 	private Label date;
@@ -138,11 +139,29 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		}
 	};
 
+	private final IPartListener2 markCommentAsReadListener = new PartListenerAdapter() {
+		public void partHidden(IWorkbenchPartReference partRef) {
+			if (partRef.getPart(true) instanceof CommentView) {
+				cancelMarkCommentAsReadJob();
+			}
+		};
+
+		public void partVisible(IWorkbenchPartReference partRef) {
+			if (partRef.getPart(true) instanceof CommentView) {
+				if (currentSelection instanceof Comment) {
+					runMarkCommentAsReadJob((Comment) currentSelection);
+				}
+			}
+		};
+	};
+
 	private Label revisions;
 
 	private RichTextEditor editor;
 
 	private ITask task;
+
+	private Job markAsReadJob;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -153,10 +172,14 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			reviewActivated(mgr.getActiveTask(), mgr.getActiveReview());
 		}
 		mgr.addReviewActivationListener(this);
+
+		getSite().getPage().addPartListener(markCommentAsReadListener);
 	}
 
 	@Override
 	public void dispose() {
+		cancelMarkCommentAsReadJob();
+
 		ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 
 		for (IReviewActivationListener listener : reviewActivationListeners) {
@@ -171,6 +194,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		}
 
 		getSite().getPage().removePartListener(linkWithReviewExplorerListener);
+		getSite().getPage().removePartListener(markCommentAsReadListener);
 
 		if (toolkit != null) {
 			toolkit.dispose();
@@ -266,9 +290,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().applyTo(revisions);
 
-//		Text message = toolkit.createText(detailsComposite, "", SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-//		GridDataFactory.fillDefaults().grab(true, true).applyTo(message);
-
 		return detailsComposite;
 	}
 
@@ -329,7 +350,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			}
 		});
 
-		// in the end register all aditional activation listeners
+		// in the end register all additional activation listeners
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		for (IReviewActivationListener listener : reviewActivationListeners) {
 			if (mgr.isReviewActive()) {
@@ -342,7 +363,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 	@Override
 	public void setFocus() {
-//		message.setFocus();
 		if (editor != null) {
 			editor.getControl().setFocus();
 		}
@@ -374,19 +394,31 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			return;
 		}
 
+		Object previousSelection = currentSelection;
 		currentSelection = null;
 
 		if (selection instanceof IStructuredSelection) {
 			currentSelection = ((IStructuredSelection) selection).getFirstElement();
 		}
 
+		if (previousSelection != null && !previousSelection.equals(currentSelection)) {
+			cancelMarkCommentAsReadJob();
+		}
+
 		updateViewer();
+	}
+
+	private void cancelMarkCommentAsReadJob() {
+		if (markAsReadJob != null) {
+			markAsReadJob.cancel();
+			markAsReadJob = null;
+		}
 	}
 
 	private void updateViewer() {
 
 		if (currentSelection instanceof Comment) {
-			Comment activeComment = (Comment) currentSelection;// findActiveComment((Comment) currentSelection);
+			Comment activeComment = (Comment) currentSelection;
 
 			if (activeComment != null) {
 				if (activeComment.getReadState().equals(Comment.ReadState.READ)) {
@@ -396,6 +428,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 						|| activeComment.getReadState().equals(Comment.ReadState.LEAVE_UNREAD)) {
 					readState.setText("Unread");
 					readState.setFont(CommonFonts.BOLD);
+					runMarkCommentAsReadJob(activeComment);
 				} else {
 					readState.setText("");
 					readState.setFont(null);
@@ -445,8 +478,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 					revisions.setText("none");
 				}
 
-//				message.setText(activeComment.getMessage());
-
 				setText(activeComment.getMessage());
 
 				header.layout();
@@ -459,6 +490,16 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 		stackLayout.topControl = linkComposite;
 		stackComposite.layout();
+	}
+
+	private void runMarkCommentAsReadJob(Comment activeComment) {
+		if (getSite().getWorkbenchWindow().getActivePage().isPartVisible(this)) {
+			if (activeComment.getReadState().equals(ReadState.UNREAD)) {
+				markAsReadJob = new MarkCommentsReadJob(activeComment.getReview(),
+						MiscUtil.buildArrayList(activeComment), true);
+				markAsReadJob.schedule(MarkCommentsReadJob.DEFAULT_DELAY_INTERVAL);
+			}
+		}
 	}
 
 	private void setText(String text) {
@@ -514,4 +555,5 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	public void selectionChanged(SelectionChangedEvent event) {
 		selectionChanged(this, event.getSelection());
 	}
+
 }
