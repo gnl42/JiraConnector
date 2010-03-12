@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
-import java.util.UUID;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import java.util.UUID;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -29,6 +29,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED);
+
+		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY,
+				UiUsageMonitorPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS);
 
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, true);
 
