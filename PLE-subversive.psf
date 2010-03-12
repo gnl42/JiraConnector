@@ -1,48 +1,316 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <psf version="2.0">
 <provider id="org.eclipse.team.cvs.core.cvsnature">
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/com.sun.syndication,com.sun.syndication,v0_9"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.activation,javax.activation,v1_1_0_geronimo"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.mail,javax.mail,v1_4_0_geronimo"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.servlet,javax.servlet,v2_5"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.wsdl,javax.wsdl,v1_6_2"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.xml.bind,javax.xml.bind,v2_0"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.xml.rpc,javax.xml.rpc,v1_1_0"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.xml.soap,javax.xml.soap,v1_2_0"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.axis,org.apache.axis,v1_4_0"/>
 <project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.codec,org.apache.commons.codec,v1_3"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.discovery,org.apache.commons.discovery,v0_2_0"/>
 <project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.httpclient,org.apache.commons.httpclient,v3_1_0"/>
 <project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.io,org.apache.commons.io,v1_4"/>
 <project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.lang,org.apache.commons.lang,v2_3"/>
-<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/javax.servlet,javax.servlet,v2_5"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.commons.logging,org.apache.commons.logging,v1_0_4"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.ws.commons.util,org.apache.ws.commons.util,v1_0"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.apache.xmlrpc,org.apache.xmlrpc,v3_0_0"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn,org.eclipse.mylyn"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn-feature,org.eclipse.mylyn-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn-site,org.eclipse.mylyn-site"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla-feature,org.eclipse.mylyn.bugzilla-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.core,org.eclipse.mylyn.bugzilla.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.ide,org.eclipse.mylyn.bugzilla.ide"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.tests,org.eclipse.mylyn.bugzilla.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.ui,org.eclipse.mylyn.bugzilla.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.commons.core,org.eclipse.mylyn.commons.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.commons.net,org.eclipse.mylyn.commons.net"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap,org.eclipse.mylyn.commons.soap"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests,org.eclipse.mylyn.commons.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.commons.ui,org.eclipse.mylyn.commons.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.context-feature,org.eclipse.mylyn.context-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.context.core,org.eclipse.mylyn.context.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.context.tests,org.eclipse.mylyn.context.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.context.ui,org.eclipse.mylyn.context.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.discovery.core,org.eclipse.mylyn.discovery.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.discovery.tests,org.eclipse.mylyn.discovery.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.extras-sdk-feature,org.eclipse.mylyn.extras-sdk-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.help.ui,org.eclipse.mylyn.help.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.ide-feature,org.eclipse.mylyn.ide-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.ide.ant,org.eclipse.mylyn.ide.ant"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.ide.tests,org.eclipse.mylyn.ide.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.ide.ui,org.eclipse.mylyn.ide.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.java-feature,org.eclipse.mylyn.java-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.java.tasks,org.eclipse.mylyn.java.tasks"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.java.tests,org.eclipse.mylyn.java.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.java.ui,org.eclipse.mylyn.java.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.monitor.core,org.eclipse.mylyn.monitor.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.monitor.reports,org.eclipse.mylyn.monitor.reports"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.monitor.tests,org.eclipse.mylyn.monitor.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.monitor.ui,org.eclipse.mylyn.monitor.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.monitor.usage,org.eclipse.mylyn.monitor.usage"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.oslc.core,org.eclipse.mylyn.oslc.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.oslc.tests,org.eclipse.mylyn.oslc.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.oslc.ui,org.eclipse.mylyn.oslc.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.pde.ui,org.eclipse.mylyn.pde.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.releng,org.eclipse.mylyn.releng"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests,org.eclipse.mylyn.resources.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.resources.ui,org.eclipse.mylyn.resources.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.dev,org.eclipse.mylyn.sandbox.dev"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.tests,org.eclipse.mylyn.sandbox.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.ui,org.eclipse.mylyn.sandbox.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tasks.bugs,org.eclipse.mylyn.tasks.bugs"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tasks.core,org.eclipse.mylyn.tasks.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tasks.tests,org.eclipse.mylyn.tasks.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tasks.ui,org.eclipse.mylyn.tasks.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.team.cvs,org.eclipse.mylyn.team.cvs"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.team.tests,org.eclipse.mylyn.team.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.team.ui,org.eclipse.mylyn.team.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.test-feature,org.eclipse.mylyn.test-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tests,org.eclipse.mylyn.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.tests.util,org.eclipse.mylyn.tests.util"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.trac.core,org.eclipse.mylyn.trac.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.trac.tests,org.eclipse.mylyn.trac.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.trac.ui,org.eclipse.mylyn.trac.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.trac.wiki,org.eclipse.mylyn.trac.wiki"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.web.tasks,org.eclipse.mylyn.web.tasks"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext-feature,org.eclipse.mylyn.wikitext-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.confluence.core,org.eclipse.mylyn.wikitext.confluence.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.confluence.ui,org.eclipse.mylyn.wikitext.confluence.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.core,org.eclipse.mylyn.wikitext.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.help.sdk,org.eclipse.mylyn.wikitext.help.sdk"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.help.ui,org.eclipse.mylyn.wikitext.help.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.mediawiki.core,org.eclipse.mylyn.wikitext.mediawiki.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.mediawiki.ui,org.eclipse.mylyn.wikitext.mediawiki.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.sdk-feature,org.eclipse.mylyn.wikitext.sdk-feature"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.tasks.ui,org.eclipse.mylyn.wikitext.tasks.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.tests,org.eclipse.mylyn.wikitext.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.textile.core,org.eclipse.mylyn.wikitext.textile.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.textile.ui,org.eclipse.mylyn.wikitext.textile.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.tracwiki.core,org.eclipse.mylyn.wikitext.tracwiki.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.tracwiki.ui,org.eclipse.mylyn.wikitext.tracwiki.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.twiki.core,org.eclipse.mylyn.wikitext.twiki.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.twiki.ui,org.eclipse.mylyn.wikitext.twiki.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.ui,org.eclipse.mylyn.wikitext.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.core,org.eclipse.mylyn.xplanner.core"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.tests,org.eclipse.mylyn.xplanner.tests"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.ui,org.eclipse.mylyn.xplanner.ui"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/eclipse,org.eclipse.test.performance,org.eclipse.test.performance"/>
+<project reference="1.0,:pserver:dev.eclipse.org:/cvsroot/tools,org.eclipse.orbit/org.jdom,org.jdom,v1_0"/>
 </provider>
 <provider id="org.eclipse.team.svn.core.svnnature">
-<project reference="1.0.1,https://studio.atlassian.com/svn/ACC/trunk/com.atlassian.connector.buildtools,com.atlassian.connector.buildtools,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/ACC/trunk/com.atlassian.connector.commons,com.atlassian.connector.commons,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.commons.tests.dependencies,com.atlassian.connector.commons.tests.dependencies,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse-feature,com.atlassian.connector.eclipse-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo-feature,com.atlassian.connector.eclipse.bamboo-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.tests,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.core,com.atlassian.connector.eclipse.bamboo.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.ui,com.atlassian.connector.eclipse.bamboo.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.core,com.atlassian.connector.eclipse.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible-feature,com.atlassian.connector.eclipse.crucible-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.core,com.atlassian.connector.eclipse.crucible.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.tests,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.crucible.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye-feature,com.atlassian.connector.eclipse.fisheye-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.core,com.atlassian.connector.eclipse.fisheye.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.tests,com.atlassian.connector.eclipse.fisheye.tests,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.ui,com.atlassian.connector.eclipse.fisheye.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.dependencies-feature,com.atlassian.connector.eclipse.dependencies-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.releng,com.atlassian.connector.eclipse.releng,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs-feature,com.atlassian.connector.eclipse.cvs-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs.ui,com.atlassian.connector.eclipse.cvs.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs.core,com.atlassian.connector.eclipse.cvs.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive-feature,com.atlassian.connector.eclipse.subversive-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive.ui,com.atlassian.connector.eclipse.subversive.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive.core,com.atlassian.connector.eclipse.subversive.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.test-feature,com.atlassian.connector.eclipse.test-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.tests,com.atlassian.connector.eclipse.tests,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.ui,com.atlassian.connector.eclipse.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.help,com.atlassian.connector.eclipse.help,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.thoughtworks.xstream,com.thoughtworks.xstream,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.jdom_jaxen,org.jdom_jaxen,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.jetbrains.annotations,org.jetbrains.annotations,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.joda.time,org.joda.time,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse-feature,com.atlassian.connector.eclipse.subclipse-feature,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse.ui,com.atlassian.connector.eclipse.subclipse.ui,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
-<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse.core,com.atlassian.connector.eclipse.subclipse.core,0015e00b0dc7001d1567a3c361689480;https://studio.atlassian.com/svn/PLE;https://studio.atlassian.com/svn/PLE;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/ACC/trunk/com.atlassian.connector.buildtools,com.atlassian.connector.buildtools,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/ACC/trunk/com.atlassian.connector.commons,com.atlassian.connector.commons,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.commons-feature,com.atlassian.connector.commons-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.commons.tests.dependencies,com.atlassian.connector.commons.tests.dependencies,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse-feature,com.atlassian.connector.eclipse-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo-feature,com.atlassian.connector.eclipse.bamboo-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.core,com.atlassian.connector.eclipse.bamboo.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.bamboo.ui,com.atlassian.connector.eclipse.bamboo.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.branding.ui,com.atlassian.connector.eclipse.branding.ui,20a918901dea001e1a7bc3424b27af6c;https://studio.atlassian.com/svn;https://studio.atlassian.com/svn;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.core,com.atlassian.connector.eclipse.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible-feature,com.atlassian.connector.eclipse.crucible-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.core,com.atlassian.connector.eclipse.crucible.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.crucible.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs-feature,com.atlassian.connector.eclipse.cvs-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs.core,com.atlassian.connector.eclipse.cvs.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.cvs.ui,com.atlassian.connector.eclipse.cvs.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.dependencies-feature,com.atlassian.connector.eclipse.dependencies-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.directclickthrough.ui,com.atlassian.connector.eclipse.directclickthrough.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye-feature,com.atlassian.connector.eclipse.fisheye-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.core,com.atlassian.connector.eclipse.fisheye.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.tests,com.atlassian.connector.eclipse.fisheye.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.fisheye.ui,com.atlassian.connector.eclipse.fisheye.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.help,com.atlassian.connector.eclipse.help,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.jira-feature,com.atlassian.connector.eclipse.jira-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.jira.core,com.atlassian.connector.eclipse.jira.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.jira.tests,com.atlassian.connector.eclipse.jira.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.monitor-feature,com.atlassian.connector.eclipse.monitor-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.monitor.usage,com.atlassian.connector.eclipse.monitor.usage,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.perforce-feature,com.atlassian.connector.eclipse.perforce-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.perforce.core,com.atlassian.connector.eclipse.perforce.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.perforce.ui,com.atlassian.connector.eclipse.perforce.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.releng,com.atlassian.connector.eclipse.releng,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse-feature,com.atlassian.connector.eclipse.subclipse-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive-feature,com.atlassian.connector.eclipse.subversive-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive.core,com.atlassian.connector.eclipse.subversive.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subversive.ui,com.atlassian.connector.eclipse.subversive.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.team.tests,com.atlassian.connector.eclipse.team.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.team.ui,com.atlassian.connector.eclipse.team.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.test-feature,com.atlassian.connector.eclipse.test-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.tests,com.atlassian.connector.eclipse.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.ui,com.atlassian.connector.eclipse.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/com.thoughtworks.xstream,com.thoughtworks.xstream,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.eclipse.mylyn.jira-feature,org.eclipse.mylyn.jira-feature,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.eclipse.mylyn.jira.core,org.eclipse.mylyn.jira.core,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.eclipse.mylyn.jira.tests,org.eclipse.mylyn.jira.tests,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.eclipse.mylyn.jira.ui,org.eclipse.mylyn.jira.ui,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.jdom_jaxen,org.jdom_jaxen,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.jetbrains.annotations,org.jetbrains.annotations,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
+<project reference="1.0.1,https://studio.atlassian.com/svn/PLE/trunk/org.joda.time,org.joda.time,208327220dc7001d1567a3c361689480;https://studio.atlassian.com/svn/ACC;https://studio.atlassian.com/svn/ACC;branches;tags;trunk;true;2c54a935-e501-0410-bc05-97a93f6bca70;https://studio.atlassian.com/svn;;false;&lt;https://studio.atlassian.com:443&gt; Subversion Repository;;22"/>
 </provider>
+<workingSets editPageId="org.eclipse.ui.resourceWorkingSetPage" id="1259595937405_1" label="ACE" name="ACE">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.test-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.jira.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.team.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.branding.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.bamboo.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.jira.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.fisheye.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.bamboo.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.perforce-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.fisheye.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subversive.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.team.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.cvs.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.jira.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.httpclient" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.servlet" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.io" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subclipse.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.crucible.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subclipse.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.jetbrains.annotations" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.cvs-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.jira.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.bamboo-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.commons-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.joda.time" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subversive.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.crucible.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.bamboo.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.codec" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.jira-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.releng" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.fisheye.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.thoughtworks.xstream" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.commons" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.monitor.usage" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.commons.tests.dependencies" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.help" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.cvs.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.perforce.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.fisheye-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.perforce.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.jira.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.jira.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.dependencies-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subversive-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.crucible-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.crucible.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.jira-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.directclickthrough.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.lang" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.subclipse-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.buildtools" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.jdom_jaxen" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.atlassian.connector.eclipse.monitor-feature" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.ui.resourceWorkingSetPage" id="1259597787909_3" label="Mylyn" name="Mylyn">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.bugzilla.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.sandbox.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.activation" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.discovery.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.discovery.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.ide.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.commons.soap" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.xml.bind" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.ws.commons.util" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.commons.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tasks.bugs" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.bugzilla.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.xml.soap" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.oslc.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.bugzilla.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.mail" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.xplanner.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.team.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.twiki.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.monitor.reports" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.trac.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.help.sdk" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.logging" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.java.tasks" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.commons.discovery" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.ide.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.axis" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.test-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.oslc.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.java-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.test.performance" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.xplanner.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tasks.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.confluence.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tests.util" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.monitor.usage" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.trac.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.web.tasks" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.monitor.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/com.sun.syndication" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.discovery.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.tracwiki.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.java.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.context-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.mediawiki.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.textile.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.bugzilla-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn-site" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.extras-sdk-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.context.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.help.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.sdk-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.commons.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.trac.wiki" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.jdom" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.sandbox.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.resources.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.resources.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.ide.ant" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.team.cvs" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.commons.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.confluence.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.sandbox.dev" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.oslc.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.java.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.team.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.apache.xmlrpc" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.ide-feature" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.pde.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.monitor.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tasks.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.releng" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.help.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.tracwiki.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.wsdl" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.commons.net" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/javax.xml.rpc" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.mediawiki.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.twiki.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.tasks.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.tasks.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.context.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.wikitext.textile.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.context.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.bugzilla.ide" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.trac.ui" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.xplanner.tests" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.eclipse.mylyn.monitor.tests" type="4"/>
+</workingSets>
 </psf>
