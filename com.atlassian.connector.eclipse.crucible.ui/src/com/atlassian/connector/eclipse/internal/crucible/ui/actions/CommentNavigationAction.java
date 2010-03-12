@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewExplorerView;
-import com.atlassian.connector.eclipse.internal.crucible.ui.views.UnreadCommentsViewerFilter;
 import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -31,7 +30,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -89,22 +87,80 @@ public class CommentNavigationAction extends Action {
 		}
 
 		ViewerComparator comparator = viewer.getComparator();
-		if (currentComment != null) {
-			for (int i = 0, s = comments.size(); i < s; ++i) {
-				if (comparator.compare(viewer, comments.get(i), currentComment) == 0) {
-					if (isNext) {
-						currentComment = comments.get(i + 1 >= comments.size() ? 0 : i + 1);
-					} else {
-						currentComment = comments.get(i - 1 < 0 ? (comments.size() - 1) : i - 1);
+		if (currentComment == null) {
+			currentComment = comments.get(isNext ? comments.size() - 1 : 0);
+		}
+
+		int start = 0;
+		for (int i = 0, s = comments.size(); i < s; ++i) {
+			if (comparator.compare(viewer, comments.get(i), currentComment) == 0) {
+				start = i;
+				break;
+			}
+		}
+
+		Comment matching = null;
+		if (isNext) {
+			for (int i = start + 1, s = comments.size(); i < s; ++i) {
+				if (reviewExplorerView.isFocusedOnUnreadComments()) {
+					if (comments.get(i).isEffectivelyUnread()) {
+						matching = comments.get(i);
 					}
+				} else {
+					matching = comments.get(i);
+				}
+				if (matching != null) {
 					break;
 				}
 			}
+
+			if (matching == null) {
+				for (int i = 0; i < start; ++i) {
+					if (reviewExplorerView.isFocusedOnUnreadComments()) {
+						if (comments.get(i).isEffectivelyUnread()) {
+							matching = comments.get(i);
+						}
+					} else {
+						matching = comments.get(i);
+					}
+					if (matching != null) {
+						break;
+					}
+				}
+			}
 		} else {
-			currentComment = comments.get(isNext ? 0 : (comments.size() - 1));
+			for (int i = start - 1; i >= 0; --i) {
+				if (reviewExplorerView.isFocusedOnUnreadComments()) {
+					if (comments.get(i).isEffectivelyUnread()) {
+						matching = comments.get(i);
+					}
+				} else {
+					matching = comments.get(i);
+				}
+				if (matching != null) {
+					break;
+				}
+			}
+			if (matching == null) {
+				for (int i = comments.size() - 1; i > start; --i) {
+					if (reviewExplorerView.isFocusedOnUnreadComments()) {
+						if (comments.get(i).isEffectivelyUnread()) {
+							matching = comments.get(i);
+						}
+					} else {
+						matching = comments.get(i);
+					}
+					if (matching != null) {
+						break;
+					}
+				}
+			}
+
 		}
 
-		TreeViewerUtil.setSelection(viewer, currentComment);
+		if (matching != null) {
+			TreeViewerUtil.setSelection(viewer, matching);
+		}
 	}
 
 	private List<Comment> prepareListOfComments() {
@@ -142,13 +198,9 @@ public class CommentNavigationAction extends Action {
 	private Object[] filter(AbstractTreeViewer viewer, Object parentElementOrTreePath, Object[] elements) {
 		List<ViewerFilter> filters;
 		if (viewer.getFilters() != null) {
-			filters = Arrays.asList(viewer.getFilters());
+			filters = MiscUtil.buildArrayList(viewer.getFilters());
 		} else {
 			filters = MiscUtil.buildArrayList();
-		}
-
-		if (reviewExplorerView.isFocusedOnUnreadComments()) {
-			filters.add(new UnreadCommentsViewerFilter());
 		}
 
 		if (filters.size() > 0) {
