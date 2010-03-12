@@ -101,9 +101,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 	}
 
 	private static File createTempFile(String fileName, byte[] content) throws IOException {
-		String baseName = FilenameUtils.getBaseName(fileName);
 		String extention = FilenameUtils.getExtension(fileName);
-		File retVal = File.createTempFile(baseName, "." + extention, CrucibleUiPlugin.getDefault()
+		File retVal = File.createTempFile("openVirtualFileJob", "." + extention, CrucibleUiPlugin.getDefault()
 				.getStateLocation()
 				.toFile());
 		retVal.deleteOnExit();
