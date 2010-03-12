@@ -67,8 +67,6 @@ public abstract class ExpandablePart<T extends Comment, V extends ExpandablePart
 
 	private IReviewActionListener actionListener;
 
-	private FormToolkit formToolkit;
-
 	private ToolBarManager toolBarManager;
 
 	private Label annotationImageLabel;
@@ -89,9 +87,6 @@ public abstract class ExpandablePart<T extends Comment, V extends ExpandablePart
 	}
 
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
-
-		this.formToolkit = toolkit;
-
 		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT;
 		if (canExpand()) {
 			style |= ExpandableComposite.TWISTIE;

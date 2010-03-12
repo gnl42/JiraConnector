@@ -325,8 +325,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		customCombos.put(customField, comboViewer);
 	}
 
-	public void addComment() {
-
+	protected void addComment() {
 		try {
 			newComment = commentText.getText();
 			processFields();
@@ -348,7 +347,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-
 		saveButton = createButton(parent, IDialogConstants.CLIENT_ID + 2, SAVE_LABEL, false);
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			@Override

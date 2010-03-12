@@ -56,10 +56,8 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 	private static CrucibleCommentPopupDialog currentPopupDialog;
 
-	@SuppressWarnings("deprecation")
 	public CrucibleCommentPopupDialog(Shell parent, int shellStyle) {
-		//TODO e3.4
-		super(parent, shellStyle, false, false, false, false, null, null);
+		super(parent, shellStyle, false, false, false, false, false, null, null);
 	}
 
 	@Override
