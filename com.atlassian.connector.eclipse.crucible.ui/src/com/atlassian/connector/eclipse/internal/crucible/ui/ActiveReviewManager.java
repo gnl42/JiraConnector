@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -162,6 +163,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 				fireReviewActivated(activeTask, activeReview);
 			} else {
 				this.activeReview = cachedReview;
+				CrucibleAnnotationModelManager.updateAllOpenEditors(activeReview);
 				fireReviewUpdated(activeTask, activeReview);
 			}
 		}
