@@ -57,7 +57,9 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		crucibleFile = null;
 		file = null;
 
-		// TODO jj check action for compare editor
+		// TODO jj check action for compare editor\
+
+		// TODO jj file is in review in different version
 
 //		//the following only applies if it is the action from the extension point
 		if (action.isEnabled() && isEnabled()) {

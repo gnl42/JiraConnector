@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.LocalTeamResourceConnector;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
@@ -49,37 +50,36 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 
 			ITeamUiResourceConnector connector = TeamUiUtils.getTeamConnector(resource);
 
-			if (connector != null) {
-				DecoratedResource decoratedResource = TeamUiUtils.getDecoratedResource(resource, connector);
-				if (decoratedResource != null) {
+			if (connector == null) {
+				connector = new LocalTeamResourceConnector();
+			}
 
-					// TODO jj check if monitor works fine (use submonitor if needed)
-					monitor.beginTask("Adding selected file to the review", IProgressMonitor.UNKNOWN);
+			DecoratedResource decoratedResource = TeamUiUtils.getDecoratedResource(resource, connector);
+			if (decoratedResource != null) {
 
-					JobWithStatus job = new AddDecoratedResourcesToReviewJob(review, connector,
-							Arrays.asList(decoratedResource));
-					job.run(monitor);
+				// TODO jj check if monitor works fine (use submonitor if needed)
+				monitor.beginTask("Adding selected file to the review", IProgressMonitor.UNKNOWN);
 
-					if (!job.getStatus().isOK()) {
-						reportError(job.getStatus().getMessage(), job.getStatus().getException());
-						return;
-					}
+				JobWithStatus job = new AddDecoratedResourcesToReviewJob(review, connector,
+						Arrays.asList(decoratedResource));
+				job.run(monitor);
 
-					CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-							getTaskRepository());
+				if (!job.getStatus().isOK()) {
+					reportError(job.getStatus().getMessage(), job.getStatus().getException());
+					return;
+				}
 
-					try {
-						review = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(review), true,
-								monitor);
-					} catch (CoreException e) {
-						reportError(e.getMessage(), e);
-					}
-				} else {
-					reportError("Cannot determine SCM details for resource", null);
+				CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
+						getTaskRepository());
+
+				try {
+					review = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(review), true,
+							monitor);
+				} catch (CoreException e) {
+					reportError(e.getMessage(), e);
 				}
 			} else {
-				// TODO jj check files not under version control
-				reportError("Cannot find Atlassian SCM integration for selected resource", null);
+				reportError("Cannot determine SCM details for resource. Your SCM is probably not supported.", null);
 			}
 		}
 
