@@ -20,6 +20,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListene
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
@@ -39,6 +41,8 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	private IReviewActionListener actionListener;
 
+	private IResource file;
+
 	public AddGeneralCommentToFileAction() {
 		super("Create General File Comment...");
 	}
@@ -47,10 +51,15 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		//if file and review are already set, don't bother
-		if (crucibleFile != null && review != null) {
-			return;
-		}
-		//the following only applies if it is the action from the extension point
+//		if (crucibleFile != null && review != null) {
+//			return;
+//		}
+		crucibleFile = null;
+		file = null;
+
+		// TODO jj check action for compare editor
+
+//		//the following only applies if it is the action from the extension point
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
@@ -60,15 +69,32 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 				}
 				if (crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
-					action.setEnabled(true);
-					setEnabled(true);
+					return;
+				}
+			} else if (getReview() != null && editorInput != null) {
+
+				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
+
+				if (resource instanceof IFile) {
+					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
+					if (cruFile != null) {
+						crucibleFile = cruFile;
+					} else {
+						file = resource;
+					}
+				} else {
+					action.setEnabled(false);
+					setEnabled(false);
 					return;
 				}
 			}
 		}
-		action.setEnabled(false);
-		setEnabled(false);
-		crucibleFile = null;
+
+		if (crucibleFile == null && file == null) {
+			action.setEnabled(false);
+			setEnabled(false);
+		}
+
 	}
 
 	@Override
@@ -127,6 +153,11 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	public void setReview(Review review) {
 		this.review = review;
+	}
+
+	@Override
+	protected IResource getResource() {
+		return file;
 	}
 
 }

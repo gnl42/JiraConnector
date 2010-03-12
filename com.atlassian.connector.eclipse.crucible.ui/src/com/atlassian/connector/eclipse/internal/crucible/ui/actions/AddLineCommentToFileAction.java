@@ -21,6 +21,8 @@ import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
@@ -44,6 +46,8 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 
 	private ICrucibleCompareSourceViewer crucibleCompareSourceViewer;
 
+	private IResource file;
+
 	public AddLineCommentToFileAction() {
 		super("Create Line Comment...");
 	}
@@ -63,6 +67,10 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
+
+		selectedRange = null;
+		crucibleFile = null;
+
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
@@ -75,16 +83,37 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 				}
 				if (selectedRange != null && crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
-					action.setEnabled(true);
-					setEnabled(true);
+					return;
+				}
+			} else if (getReview() != null && editorInput != null) {
+
+				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
+
+				if (resource instanceof IFile) {
+					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
+					if (cruFile != null) {
+						crucibleFile = cruFile;
+					} else {
+						file = resource;
+					}
+
+					if (crucibleCompareSourceViewer == null) {
+						getJavaEditorSelection(selection);
+					} else {
+						selectedRange = crucibleCompareSourceViewer.getSelection();
+					}
+				} else {
+					action.setEnabled(false);
+					setEnabled(false);
 					return;
 				}
 			}
 		}
-		action.setEnabled(false);
-		setEnabled(false);
-		selectedRange = null;
-		crucibleFile = null;
+
+		if (crucibleFile == null && file == null) {
+			action.setEnabled(false);
+			setEnabled(false);
+		}
 	}
 
 	@Override
@@ -102,11 +131,9 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	private void getJavaEditorSelection(ISelection selection) {
 		IEditorPart editorPart = getActiveEditor();
 		IEditorInput editorInput = getEditorInputFromSelection(selection);
-		if (editorPart != null && editorInput instanceof ICrucibleFileProvider) {
+		if (editorPart != null) {
 			selectedRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
-			if (selectedRange != null) {
-				crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
-			} else {
+			if (selectedRange == null) {
 				StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
 						"Editor is not an ITextEditor or there's no text selection available."));
 			}
@@ -136,5 +163,10 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 		} else {
 			return selectedRange;
 		}
+	}
+
+	@Override
+	protected IResource getResource() {
+		return file;
 	}
 }

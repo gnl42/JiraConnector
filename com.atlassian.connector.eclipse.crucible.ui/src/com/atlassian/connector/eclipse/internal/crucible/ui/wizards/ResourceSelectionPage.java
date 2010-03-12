@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
-import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.commons.CustomToolTip;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree;
@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -53,8 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
-
-	private static final String PRE_COMMIT_EXPLANATION = " and will be added to the review in pre-commit mode.";
 
 	private final List<IResource> roots = new ArrayList<IResource>();
 
@@ -171,38 +168,14 @@ public class ResourceSelectionPage extends AbstractCrucibleWizardPage {
 					if (resource instanceof IFile) {
 
 						// collect all scmPaths in order to find missing mappings
-						if (teamConnector.isResourceAcceptedByFilter(resource,
-								ITeamUiResourceConnector.State.SF_VERSIONED)
-								&& !teamConnector.isResourceAcceptedByFilter(resource,
-										ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-							try {
-								LocalStatus status = teamConnector.getLocalRevision(resource);
-								if (status.getScmPath() != null && status.getScmPath().length() > 0) {
-									scmPaths.add(teamConnector.getLocalRevision(resource.getProject()).getScmPath());
-								}
-							} catch (CoreException e) {
-								// resource is probably not under version control
-								// skip
-							}
+						String path = TeamUiUtils.getScmPath(resource, teamConnector);
+						if (path != null) {
+							scmPaths.add(path);
 						}
 
-						if (teamConnector.isResourceAcceptedByFilter(resource,
-								ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is unversioned" + PRE_COMMIT_EXPLANATION));
-						} else if (teamConnector.isResourceAcceptedByFilter(resource,
-								ITeamUiResourceConnector.State.SF_IGNORED)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file is ignored in version control" + PRE_COMMIT_EXPLANATION));
-						} else if (teamConnector.isResourceAcceptedByFilter(resource,
-								ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
-							resourcesToShow.add(new DecoratedResource(resource, false, "pre-commit",
-									"This file has been added or changed locally" + PRE_COMMIT_EXPLANATION));
-						} else if (teamConnector.isResourceAcceptedByFilter(resource,
-								ITeamUiResourceConnector.State.SF_VERSIONED)) {
-							resourcesToShow.add(new DecoratedResource(resource, true, "", "This file is up to date."));
-						} else {
-							// ignore the resource
+						DecoratedResource dr = TeamUiUtils.getDecoratedResource(resource, teamConnector);
+						if (dr != null) {
+							resourcesToShow.add(dr);
 						}
 					}
 				}

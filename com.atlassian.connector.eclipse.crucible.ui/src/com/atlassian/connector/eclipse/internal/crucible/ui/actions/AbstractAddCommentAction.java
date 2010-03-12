@@ -16,11 +16,12 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddFileAddCommentDialog;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
@@ -49,6 +50,7 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 		LineRange commentLines = getSelectedRange();
 		CrucibleFile reviewItem = getCrucibleFile();
 		Comment parentComment = getParentComment();
+		IResource resource = getResource();
 
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
@@ -58,7 +60,7 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 			return;
 		}
 
-		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(),
+		CrucibleAddFileAddCommentDialog commentDialog = new CrucibleAddFileAddCommentDialog(WorkbenchUtil.getShell(),
 				getDialogTitle(), review, getTaskKey(), getTaskId(), getTaskRepository(), client);
 		if (reviewItem != null) {
 			commentDialog.setReviewItem(reviewItem);
@@ -69,8 +71,14 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 		if (commentLines != null) {
 			commentDialog.setCommentLines(commentLines);
 		}
+
+		if (reviewItem == null && parentComment == null && resource != null) {
+			commentDialog.setResource(resource);
+		}
 		commentDialog.open();
 	}
+
+	protected abstract IResource getResource();
 
 	protected abstract String getDialogTitle();
 

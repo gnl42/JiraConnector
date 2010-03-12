@@ -103,7 +103,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		}
 	}
 
-	private final Review review;
+	private Review review;
 
 	private final String shellTitle;
 
@@ -325,7 +325,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		customCombos.put(customField, comboViewer);
 	}
 
-	protected void addComment() {
+	public boolean addComment() {
 		try {
 			newComment = commentText.getText();
 			processFields();
@@ -334,15 +334,16 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		} catch (InvocationTargetException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			setErrorMessage("Unable to add the comment to the review");
-			return;
+			return false;
 		} catch (InterruptedException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			setErrorMessage("Unable to add the comment to the review");
-			return;
+			return false;
 		}
 
 		setReturnCode(Window.OK);
 		close();
+		return true;
 	}
 
 	@Override
@@ -403,4 +404,9 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 	public void setCommentLines(LineRange commentLines2) {
 		this.commentLines = commentLines2;
 	}
+
+	protected void setReview(Review review) {
+		this.review = review;
+	}
+
 }

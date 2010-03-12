@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
+import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareEditorInput;
@@ -230,6 +231,49 @@ public final class TeamUiUtils {
 		res.addAll(defaultConnector.getRepositories(monitor));
 		return res;
 
+	}
+
+	public static DecoratedResource getDecoratedResource(IResource resource, ITeamUiResourceConnector connector) {
+
+		final String PRE_COMMIT_EXPLANATION = " and will be added to the review in pre-commit mode.";
+
+		if (connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_UNVERSIONED)) {
+			return new DecoratedResource(resource, false, "pre-commit", "This file is unversioned"
+					+ PRE_COMMIT_EXPLANATION);
+		} else if (connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_IGNORED)) {
+			return new DecoratedResource(resource, false, "pre-commit", "This file is ignored in version control"
+					+ PRE_COMMIT_EXPLANATION);
+		} else if (connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
+			return new DecoratedResource(resource, false, "pre-commit", "This file has been added or changed locally"
+					+ PRE_COMMIT_EXPLANATION);
+		} else if (connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_VERSIONED)) {
+			return new DecoratedResource(resource, true, "", "This file is up to date.");
+		} else {
+			// ignore the resource
+		}
+
+		return null;
+	}
+
+	public static String getScmPath(IResource resource, ITeamUiResourceConnector connector) {
+		if (connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_VERSIONED)
+				&& !connector.isResourceAcceptedByFilter(resource, ITeamUiResourceConnector.State.SF_ANY_CHANGE)) {
+			try {
+				LocalStatus status = connector.getLocalRevision(resource);
+				if (status.getScmPath() != null && status.getScmPath().length() > 0) {
+					return connector.getLocalRevision(resource.getProject()).getScmPath();
+				}
+			} catch (CoreException e) {
+				// resource is probably not under version control
+				// skip
+			}
+		}
+
+		return null;
+	}
+
+	public static ITeamUiResourceConnector getTeamConnector(IResource resource) {
+		return AtlassianTeamUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(resource);
 	}
 
 }

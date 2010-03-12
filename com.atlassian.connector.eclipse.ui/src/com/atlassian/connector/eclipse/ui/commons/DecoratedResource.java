@@ -39,7 +39,7 @@ public class DecoratedResource implements ICustomToolTipInfo {
 	}
 
 	public DecoratedResource(IResource parent) {
-		// treat the resource us up-to-date (may need to be changed later)
+		// treat the resource as up-to-date (may need to be changed later)
 		this(parent, true, "", "");
 	}
 
