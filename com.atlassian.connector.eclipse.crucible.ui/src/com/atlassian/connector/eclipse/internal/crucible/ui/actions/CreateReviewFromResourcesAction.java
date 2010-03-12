@@ -100,6 +100,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 				ReviewWizard wizard = new ReviewWizard(taskRepositories.get(0), MiscUtil.buildHashSet(
 						ReviewWizard.Type.ADD_UPLOAD_ITEMS, ReviewWizard.Type.ADD_COMMENT_TO_FILE));
 				wizard.setUploadItems(items);
+				wizard.setFilesCommentData(Arrays.asList(selection));
 				wd = new WizardDialog(shell, wizard);
 			}
 			wd.setBlockOnOpen(true);
