@@ -86,7 +86,6 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 					return;
 				}
 			} else if (getReview() != null && editorInput != null) {
-
 				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
 
 				if (resource instanceof IFile) {
