@@ -437,7 +437,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				if (activeComment.isDraft()) {
 					draftIcon.setImage(CrucibleImages.getImage(CrucibleImages.COMMENT_EDIT));
 					draft.setText("Draft");
-					// draft.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 				} else {
 					draftIcon.setImage(null);
 					draft.setText("");
@@ -477,6 +476,11 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				} else {
 					revisions.setText("none");
 				}
+
+				// fix for PLE-1011 - if RichTextEditor is on a visible composite it will grab focus
+				// so we hide the composite for which we add RTE so it doesn't grab the focus
+				stackLayout.topControl = linkComposite;
+				stackComposite.layout();
 
 				setText(activeComment.getMessage());
 
