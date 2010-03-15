@@ -21,6 +21,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentA
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
@@ -30,15 +31,19 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -54,14 +59,13 @@ import java.util.Map;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> extends
-		ExpandablePart<Comment, V> {
+public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> extends ExpandablePart<Comment, V> {
 
 	protected Comment comment;
 
 //	protected final CrucibleFile crucibleFile;
 
-	protected Text commentTextComposite;
+	protected Control commentTextComposite;
 
 	protected SizeCachingComposite sectionClient;
 
@@ -217,31 +221,36 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 		return text;
 	}
 
-	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value) {
+	@SuppressWarnings("restriction")
+	private Control createReadOnlyText(FormToolkit toolkit, Composite composite, String value) {
 
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
 
-		final Text text = new Text(composite, style);
-		text.setFont(JFaceResources.getDefaultFont());
-		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
-		text.setText(value);
-		toolkit.adapt(text, true, true);
+		ITask task = CrucibleUiUtil.getCrucibleTask(crucibleReview);
+
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+				task.getRepositoryUrl());
+
+		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
+		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+
+		final RichTextEditor editor = new RichTextEditor(repository, style, null, extension);
+		editor.setReadOnly(true);
+		editor.setText(value);
+		editor.createControl(composite, toolkit);
 
 		// HACK: this is to make sure that we can't have multiple things highlighted
-		text.addFocusListener(new FocusListener() {
+		editor.getViewer().getTextWidget().addFocusListener(new FocusListener() {
 
 			public void focusGained(FocusEvent e) {
-				// ignore
-
 			}
 
 			public void focusLost(FocusEvent e) {
-				text.setSelection(0);
+				editor.getViewer().getTextWidget().setSelection(0);
 			}
-
 		});
 
-		return text;
+		return editor.getControl();
 	}
 
 	@Override
