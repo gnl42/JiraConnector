@@ -70,6 +70,3 @@ plugin@javax.activation,1.1.0=GET,http://eclipse.unixheads.org/tools/orbit/downl
 plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests.util
 plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
 plugin@org.eclipse.mylyn.commons.soap=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap
-
-feature@org.tigris.subversion.subclipse.mylyn=GET,http://subclipse.tigris.org/update_1.6.x/features/org.tigris.subversion.subclipse.mylyn_3.0.0.jar,unpack=true
-feature@org.eclipse.team.svn.mylyn=GET,http://download.eclipse.org/technology/subversive/0.7/update-site/features/org.eclipse.team.svn.mylyn_0.7.8.I20091023-1300.jar,unpack=true
