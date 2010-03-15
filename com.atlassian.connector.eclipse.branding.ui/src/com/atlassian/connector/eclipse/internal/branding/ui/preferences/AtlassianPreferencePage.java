@@ -121,7 +121,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		createButton(buttonBar, "Report Bug", "https://studio.atlassian.com/browse/PLE");
 		if (AtlassianBundlesInfo.isOnlyJiraInstalled()) {
 			createButton(buttonBar, "Install Bamboo, Crucible && FishEye Integration",
-					IBrandingConstants.INSTALLATION_GUIDE_URL);
+					IBrandingConstants.INTEGRATIONS_GUIDE_URL);
 		}
 
 		return composite;

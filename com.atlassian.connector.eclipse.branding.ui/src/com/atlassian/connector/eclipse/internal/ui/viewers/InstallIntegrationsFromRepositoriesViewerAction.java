@@ -27,7 +27,7 @@ public class InstallIntegrationsFromRepositoriesViewerAction implements IViewAct
 	}
 
 	public void run(IAction action) {
-		WorkbenchUtil.openUrl(IBrandingConstants.INSTALLATION_GUIDE_URL);
+		WorkbenchUtil.openUrl(IBrandingConstants.INTEGRATIONS_GUIDE_URL);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
