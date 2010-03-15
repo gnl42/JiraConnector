@@ -23,7 +23,15 @@
 			<param name="update.site" value="${subclipse.site}"/>
 		</antcall>
 		<antcall target="install-bundle">
+			<param name="update.feature" value="org.tigris.subversion.subclipse.mylyn.feature"/>
+			<param name="update.site" value="${subclipse.site}"/>
+		</antcall>
+		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.team.svn"/>
+			<param name="update.site" value="${subversive.site}"/>
+		</antcall>
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.team.svn.mylyn"/>
 			<param name="update.site" value="${subversive.site}"/>
 		</antcall>
 		
