@@ -23,16 +23,19 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -87,7 +90,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 					operation.setParentComment(parentComment);
 
 					try {
-						client.execute(operation);
+						fireCommentCreatedEvent(client.execute(operation));
 					} catch (CoreException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Unable to post Comment", e));
@@ -102,6 +105,8 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 		}
 	}
+
+	private final Set<ICommentCreatedListener> commentListeners = MiscUtil.buildHashSet();
 
 	private Review review;
 
@@ -407,6 +412,24 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	protected void setReview(Review review) {
 		this.review = review;
+	}
+
+	public void addCommentCreatedListener(ICommentCreatedListener listener) {
+		commentListeners.add(listener);
+	}
+
+	public void remoteCommentCreatedListener(ICommentCreatedListener listener) {
+		commentListeners.remove(listener);
+	}
+
+	protected void fireCommentCreatedEvent(final Comment comment) {
+		for (final ICommentCreatedListener listener : commentListeners) {
+			SafeRunner.run(new SafeRunnable() {
+				public void run() throws Exception {
+					listener.commentCreated(comment);
+				}
+			});
+		}
 	}
 
 }

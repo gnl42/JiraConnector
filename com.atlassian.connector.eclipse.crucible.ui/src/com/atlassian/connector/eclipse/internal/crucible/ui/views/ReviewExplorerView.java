@@ -30,6 +30,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PublishAllDr
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -134,7 +135,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				IEditorInput editorInput = ((IEditorPart) part).getEditorInput();
 				TextSelection textSelection = (TextSelection) selection;
 				int start = textSelection.getStartLine() + 1; // lines are counted from 0, but Crucible counts them from 1
-				int end = textSelection.getEndLine() + 1;
 
 				if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 					CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
@@ -204,6 +204,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private AddGeneralCommentToActiveReviewAction addGeneralCommentAction;
 
 	private Action showUnreadOnlyAction;
+
+	private Comment focusOnComment;
+
+	private final ICommentCreatedListener commentCreatedListener = new ICommentCreatedListener() {
+		public void commentCreated(Comment comment) {
+			ReviewExplorerView.this.focusOnComment = comment;
+		}
+	};
 
 	private final IPartListener2 linkWithEditorListener = new PartListenerAdapter() {
 		public void partInputChanged(IWorkbenchPartReference partRef) {
@@ -468,24 +476,26 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			} else {
 				viewer.setExpandedElements(previouslyExpandedElements);
 			}
-			// this simple trick (thanks to properly working equals on permIds) refreshes selection, when
-			// the old selection now points to an outdated review model element (e.g. a review comment which has been changed)
-			viewer.setSelection(currentSelection);
+
+			if (focusOnComment == null) {
+				// this simple trick (thanks to properly working equals on permIds) refreshes selection, when
+				// the old selection now points to an outdated review model element (e.g. a review comment which has been changed)
+				viewer.setSelection(currentSelection);
+			} else {
+				TreeViewerUtil.setSelection(getViewer(), focusOnComment);
+				focusOnComment = null;
+			}
 		} else {
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
 		review = newReview;
-		// this is needed too to let this action enable/disable itself when there are no draft comments
-		publishAllDraftsAction.reviewUpdated(review);
 		if (newReview == null) {
 			setContentDescription("");
 		} else {
 			setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
 					newReview.getPermId().getId(), newReview.getFiles().size(),
 					newReview.getNumberOfVersionedComments() }));
-
 		}
-
 	}
 
 	@Override
@@ -573,7 +583,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		};
 
-		addFileCommentAction = new AddFileCommentAction("Add File Comment", "Add File Comment");
+		addFileCommentAction = new AddFileCommentAction(commentCreatedListener);
 		viewer.addSelectionChangedListener(addFileCommentAction);
 
 		openOldAction = new OpenVirtualFileAction(true);
@@ -585,7 +595,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		compareAction = new CompareVirtualFilesAction();
 		viewer.addSelectionChangedListener(compareAction);
 
-		replyToCommentAction = new ReplyToCommentAction();
+		replyToCommentAction = new ReplyToCommentAction(commentCreatedListener);
 		viewer.addSelectionChangedListener(replyToCommentAction);
 
 		editCommentAction = new EditCommentAction();
@@ -601,6 +611,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		collapseAll = new CollapseAllAction(viewer);
 
 		publishAllDraftsAction = new PublishAllDraftCommentsAction();
+		reviewActivationListeners.add(publishAllDraftsAction);
 
 		expandSelected = new ExpandCollapseSelectionAction(viewer, true);
 		collapseSelected = new ExpandCollapseSelectionAction(viewer, false);
@@ -622,7 +633,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
-		addGeneralCommentAction = new AddGeneralCommentToActiveReviewAction();
+		addGeneralCommentAction = new AddGeneralCommentToActiveReviewAction(commentCreatedListener);
 		reviewActivationListeners.add(addGeneralCommentAction);
 
 		openEditorAction = new EditActiveTaskAction();

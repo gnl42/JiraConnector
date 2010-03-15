@@ -20,12 +20,14 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewTreeNode;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -35,6 +37,7 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Action to add a general file comment to the active review
@@ -48,6 +51,8 @@ public class AddFileCommentAction extends BaseSelectionListenerAction {
 	private Review review;
 
 	private CrucibleFileInfo fileInfo;
+
+	private final ICommentCreatedListener commentCreatedListener;
 
 	@Override
 	public void run() {
@@ -65,14 +70,19 @@ public class AddFileCommentAction extends BaseSelectionListenerAction {
 		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(), getText(),
 				review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
 
+		if (commentCreatedListener != null) {
+			commentDialog.addCommentCreatedListener(commentCreatedListener);
+		}
+
 		commentDialog.setReviewItem(new CrucibleFile(fileInfo, true));
 		commentDialog.open();
 	}
 
-	public AddFileCommentAction(String text, String tooltipText) {
-		super(text);
+	public AddFileCommentAction(@Nullable ICommentCreatedListener listener) {
+		super("Add File Comment");
 		setEnabled(false);
-		setToolTipText(tooltipText);
+		setToolTipText("Add File Comment");
+		this.commentCreatedListener = listener;
 	}
 
 	@Override
