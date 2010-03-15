@@ -465,8 +465,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 					for (ResourceEditorBean resourceEditor : versionedCommentsToAdd) {
-						CrucibleFile crucibleFile = CrucibleUiUtil.getCrucibleFileFromResource(
+						CrucibleFile crucibleFile = CrucibleUiUtil.getCruciblePostCommitFile(
 								resourceEditor.getResource(), crucibleReview);
+						if (crucibleFile == null) {
+							crucibleFile = CrucibleUiUtil.getCruciblePreCommitFile(resourceEditor.getResource(),
+									crucibleReview);
+						}
 						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(getTaskRepository(),
 								crucibleReview, client, crucibleFile, commentText, monitor);
 						operation.setCommentLines(resourceEditor.getLineRange());

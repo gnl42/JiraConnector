@@ -357,7 +357,31 @@ public final class CrucibleUiUtil {
 		}
 	}
 
+	/**
+	 * Gets file form review (both pre- or post-commit)
+	 * 
+	 * @param resource
+	 * @param review
+	 * @return
+	 */
 	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review) {
+		CrucibleFile cruFile = getCruciblePostCommitFile(resource, review);
+
+		if (cruFile != null) {
+			return cruFile;
+		}
+
+		return getCruciblePreCommitFile(resource, review);
+	}
+
+	/**
+	 * Gets post-commit file form review
+	 * 
+	 * @param resource
+	 * @param review
+	 * @return
+	 */
+	public static CrucibleFile getCruciblePostCommitFile(IResource resource, Review review) {
 		if (review == null || !(resource instanceof IFile)) {
 			return null;
 		}
@@ -389,10 +413,24 @@ public final class CrucibleUiUtil {
 			// ignore
 		}
 
-		return getCruciblePreCommitFile(file, review);
+		return null;
 	}
 
-	private static CrucibleFile getCruciblePreCommitFile(IFile file, Review review) {
+	/**
+	 * Gets pre-commit file form review
+	 * 
+	 * @param resource
+	 * @param review
+	 * @return
+	 */
+	public static CrucibleFile getCruciblePreCommitFile(IResource resource, Review review) {
+
+		if (review == null || !(resource instanceof IFile)) {
+			return null;
+		}
+
+		IFile file = (IFile) resource;
+
 		String localFileUrl = StringUtil.removeLeadingAndTrailingSlashes(file.getFullPath().toString());
 
 		Set<CrucibleFileInfo> reviewFiles = review.getFiles();

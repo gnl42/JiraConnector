@@ -50,14 +50,9 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		//if file and review are already set, don't bother
-//		if (crucibleFile != null && review != null) {
-//			return;
-//		}
+
 		crucibleFile = null;
 		file = null;
-
-		// TODO jj check action for compare editor\
 
 		// TODO jj file is in review in different version
 
@@ -78,12 +73,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
 
 				if (resource instanceof IFile) {
-					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
-					if (cruFile != null) {
-						crucibleFile = cruFile;
-					} else {
-						file = resource;
-					}
+					file = resource;
 				} else {
 					action.setEnabled(false);
 					setEnabled(false);

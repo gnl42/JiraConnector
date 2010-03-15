@@ -89,12 +89,8 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
 
 				if (resource instanceof IFile) {
-					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
-					if (cruFile != null) {
-						crucibleFile = cruFile;
-					} else {
-						file = resource;
-					}
+
+					file = resource;
 
 					if (crucibleCompareSourceViewer == null) {
 						getJavaEditorSelection(selection);

@@ -57,7 +57,15 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 			DecoratedResource decoratedResource = TeamUiUtils.getDecoratedResource(resource, connector);
 			if (decoratedResource != null) {
 
-				// TODO jj check if monitor works fine (use submonitor if needed)
+				// try to find file in the review
+				// TODO jj add support for pre-commit files (content compare required) 
+				CrucibleFile cruFile = CrucibleUiUtil.getCruciblePostCommitFile(resource, review);
+				if (cruFile != null) {
+					// file is already in the review
+					setReviewItem(cruFile);
+					return;
+				}
+
 				monitor.beginTask("Adding selected file to the review", IProgressMonitor.UNKNOWN);
 
 				JobWithStatus job = new AddDecoratedResourcesToReviewJob(review, connector,
@@ -120,7 +128,7 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 	@Override
 	public boolean addComment() {
 
-		// add file to review first
+		// add file to review first if needed
 		if (resource != null) {
 			try {
 				run(true, false, new AddFileToReviewRunable());
@@ -135,6 +143,7 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 			}
 
 			// get CrucibleFile for added file from fresh review
+			// TODO jj we should compare content here as we can have two the same pre-commit files in review
 			CrucibleFile reviewItem = CrucibleUiUtil.getCrucibleFileFromResource(resource, review);
 
 			if (reviewItem == null) {
