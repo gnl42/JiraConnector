@@ -38,8 +38,6 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor ADD_COMMENT = create(T_OBJ, "pin_addcomment.png"); //$NON-NLS-1$
 
-	public static final ImageDescriptor ADD_GENERAL_COMMENT = create(T_OBJ, "pin_add_general_comment.png"); //$NON-NLS-1$
-
 	public static final ImageDescriptor ABANDON = create(T_OBJ, "pin_abandon.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor SUMMARIZE = create(T_OBJ, "pin_summarise.png"); //$NON-NLS-1$
@@ -87,6 +85,8 @@ public final class CrucibleImages {
 	public static final ImageDescriptor OVR_ADDED = create(OVR, "added.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor PUBLISH_DRAFT_COMMENTS = create(T_OBJ, "ico_comment_toggle_read.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor ADD_FILE_COMMENT = create(T_OBJ, "pin_filecomment.png"); //$NON-NLS-1$
 
 	/**
 	 * this icon is borrowed from org.eclipse.ui (access scope is there internal, so I don't want to have compilation warning

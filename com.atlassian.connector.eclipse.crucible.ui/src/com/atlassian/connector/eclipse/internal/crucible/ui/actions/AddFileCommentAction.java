@@ -87,7 +87,7 @@ public class AddFileCommentAction extends BaseSelectionListenerAction {
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return CrucibleImages.ADD_COMMENT;
+		return CrucibleImages.ADD_FILE_COMMENT;
 	}
 
 	@Override

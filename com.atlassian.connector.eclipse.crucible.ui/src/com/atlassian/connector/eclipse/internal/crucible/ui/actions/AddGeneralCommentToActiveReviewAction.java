@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -78,7 +77,7 @@ public class AddGeneralCommentToActiveReviewAction extends Action implements IRe
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return CrucibleImages.ADD_GENERAL_COMMENT;
+		return CrucibleImages.ADD_COMMENT;
 	}
 
 	public void reviewActivated(final ITask task, final Review review) {
