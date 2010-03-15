@@ -194,6 +194,8 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			}
 		});
 
+		createAdditionalControl(composite);
+
 		commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
@@ -239,6 +241,9 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		applyDialogFont(composite);
 		return composite;
 		//CHECKSTYLE:MAGIC:ON
+	}
+
+	protected void createAdditionalControl(Composite composite) {
 	}
 
 	@Override

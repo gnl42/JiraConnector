@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.ui;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +45,9 @@ public final class AtlassianImages {
 	public static final ImageDescriptor IMG_FILE_CHANGED = create(T_OVR, "fileChanged_ov.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor IMG_LINK_WITH_EDITOR = create(T_ECL, "synced.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor IMG_ECLIPSE_INFO = AbstractUIPlugin.imageDescriptorFromPlugin(
+			"org.eclipse.ui.views.log", "$nl$/icons/obj16/info_st_obj.gif");
 
 	private AtlassianImages() {
 	}
@@ -76,6 +80,9 @@ public final class AtlassianImages {
 	}
 
 	public static Image getImage(ImageDescriptor imageDescriptor) {
+		if (imageDescriptor == null) {
+			return null;
+		}
 		ImageRegistry registry = getImageRegistry();
 
 		Image image = registry.get("" + imageDescriptor.hashCode());

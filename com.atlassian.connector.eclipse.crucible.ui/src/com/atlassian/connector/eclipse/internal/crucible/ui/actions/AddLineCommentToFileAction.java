@@ -90,7 +90,14 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 
 				if (resource instanceof IFile) {
 
-					file = resource;
+					// try to find file in the review
+					// TODO jj add support for pre-commit files (content compare required) 
+					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
+					if (cruFile != null) {
+						crucibleFile = cruFile;
+					} else {
+						file = resource;
+					}
 
 					if (crucibleCompareSourceViewer == null) {
 						getJavaEditorSelection(selection);

@@ -54,9 +54,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		crucibleFile = null;
 		file = null;
 
-		// TODO jj file is in review in different version
-
-//		//the following only applies if it is the action from the extension point
+		//the following only applies if it is the action from the extension point
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
@@ -73,7 +71,12 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 				IResource resource = (IResource) editorInput.getAdapter(IResource.class);
 
 				if (resource instanceof IFile) {
-					file = resource;
+					CrucibleFile cruFile = CrucibleUiUtil.getCrucibleFileFromResource(resource, getReview());
+					if (cruFile != null) {
+						crucibleFile = cruFile;
+					} else {
+						file = resource;
+					}
 				} else {
 					action.setEnabled(false);
 					setEnabled(false);
