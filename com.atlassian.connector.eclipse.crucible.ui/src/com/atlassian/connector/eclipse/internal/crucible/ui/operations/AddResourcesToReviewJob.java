@@ -68,7 +68,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 	@Override
 	protected void runImpl(IProgressMonitor monitor) {
-		SubMonitor submonitor = SubMonitor.convert(monitor, resources.length * 2 + 100);
+		SubMonitor submonitor = SubMonitor.convert(monitor, "Adding resources to review", resources.length * 2 + 100);
 
 		if (resources.length == 0) {
 			return;
