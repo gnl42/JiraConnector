@@ -40,7 +40,8 @@
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.apache.commons.logging"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import feature="org.eclipse.mylyn.wikitext_feature" version="1.3.0" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
