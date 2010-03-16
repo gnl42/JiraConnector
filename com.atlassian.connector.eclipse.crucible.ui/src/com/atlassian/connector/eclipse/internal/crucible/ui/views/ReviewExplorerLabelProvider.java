@@ -45,7 +45,7 @@ public class ReviewExplorerLabelProvider extends AbstractCrucibleReviewItemLabel
 					|| comment.getReadState().equals(ReadState.LEAVE_UNREAD)) {
 				return CommonFonts.BOLD;
 			}
-			if (comment.isDraft() || reviewExplorerView.isFocusedOnUnreadComments()) {
+			if (comment.isDraft()) {
 				return CommonFonts.ITALIC;
 			}
 		}
