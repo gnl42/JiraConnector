@@ -405,7 +405,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
 				Label ll = toolkit.createLabel(titleComposite, visibleTo.getValue());
 				ll.setToolTipText(Messages.JiraCommetVisibleTooltip);
-				ll.setForeground(toolkit.getColors().createColor("com.atlassian.connector.jira.red", 150, 20, 20)); //$NON-NLS-1$
+//				ll.setForeground(toolkit.getColors().createColor("com.atlassian.connector.jira.black", 0, 0, 0)); //$NON-NLS-1$
 				ll.setBackground(null);
 			}
 		}
