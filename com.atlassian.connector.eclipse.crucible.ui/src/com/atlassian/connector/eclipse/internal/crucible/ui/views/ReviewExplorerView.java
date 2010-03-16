@@ -30,7 +30,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PublishAllDr
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -47,6 +46,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommentNotification;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
@@ -204,14 +206,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private AddGeneralCommentToActiveReviewAction addGeneralCommentAction;
 
 	private Action showUnreadOnlyAction;
-
-	private Comment focusOnComment;
-
-	private final ICommentCreatedListener commentCreatedListener = new ICommentCreatedListener() {
-		public void commentCreated(Comment comment) {
-			ReviewExplorerView.this.focusOnComment = comment;
-		}
-	};
 
 	private final IPartListener2 linkWithEditorListener = new PartListenerAdapter() {
 		public void partInputChanged(IWorkbenchPartReference partRef) {
@@ -477,18 +471,31 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				viewer.setExpandedElements(previouslyExpandedElements);
 			}
 
+			Comment focusOnComment = null;
+			if (review != null) {
+				ReviewDifferenceProducer diffProducer = new ReviewDifferenceProducer(review, newReview);
+				List<CrucibleNotification> differences = diffProducer.getDiff();
+				for (CrucibleNotification diff : differences) {
+					if (diff instanceof NewCommentNotification) {
+						focusOnComment = ((NewCommentNotification) diff).getComment();
+						break;
+					}
+				}
+			}
+
 			if (focusOnComment == null) {
 				// this simple trick (thanks to properly working equals on permIds) refreshes selection, when
 				// the old selection now points to an outdated review model element (e.g. a review comment which has been changed)
 				viewer.setSelection(currentSelection);
 			} else {
 				TreeViewerUtil.setSelection(getViewer(), focusOnComment);
-				focusOnComment = null;
 			}
 		} else {
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
+
 		review = newReview;
+
 		if (newReview == null) {
 			setContentDescription("");
 		} else {
@@ -583,7 +590,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		};
 
-		addFileCommentAction = new AddFileCommentAction(commentCreatedListener);
+		addFileCommentAction = new AddFileCommentAction();
 		viewer.addSelectionChangedListener(addFileCommentAction);
 
 		openOldAction = new OpenVirtualFileAction(true);
@@ -595,7 +602,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		compareAction = new CompareVirtualFilesAction();
 		viewer.addSelectionChangedListener(compareAction);
 
-		replyToCommentAction = new ReplyToCommentAction(commentCreatedListener);
+		replyToCommentAction = new ReplyToCommentAction();
 		viewer.addSelectionChangedListener(replyToCommentAction);
 
 		editCommentAction = new EditCommentAction();
@@ -633,7 +640,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			};
 		};
 
-		addGeneralCommentAction = new AddGeneralCommentToActiveReviewAction(commentCreatedListener);
+		addGeneralCommentAction = new AddGeneralCommentToActiveReviewAction();
 		reviewActivationListeners.add(addGeneralCommentAction);
 
 		openEditorAction = new EditActiveTaskAction();

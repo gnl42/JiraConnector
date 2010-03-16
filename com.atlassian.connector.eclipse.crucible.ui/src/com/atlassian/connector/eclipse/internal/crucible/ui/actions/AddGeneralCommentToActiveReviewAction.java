@@ -19,8 +19,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -30,7 +30,6 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Action to add a general file comment to the active review
@@ -42,8 +41,6 @@ import org.jetbrains.annotations.Nullable;
 public class AddGeneralCommentToActiveReviewAction extends Action implements IReviewActivationListener {
 
 	private Review review;
-
-	private final ICommentCreatedListener createdCommentListener;
 
 	@Override
 	public void run() {
@@ -61,18 +58,13 @@ public class AddGeneralCommentToActiveReviewAction extends Action implements IRe
 		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(), getText(),
 				review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
 
-		if (createdCommentListener != null) {
-			commentDialog.addCommentCreatedListener(createdCommentListener);
-		}
-
 		commentDialog.open();
 	}
 
-	public AddGeneralCommentToActiveReviewAction(@Nullable ICommentCreatedListener listener) {
+	public AddGeneralCommentToActiveReviewAction() {
 		super("Add General Comment To Active Review");
 		setEnabled(false);
 		setToolTipText("Add General Comment To Active Review");
-		this.createdCommentListener = listener;
 	}
 
 	@Override

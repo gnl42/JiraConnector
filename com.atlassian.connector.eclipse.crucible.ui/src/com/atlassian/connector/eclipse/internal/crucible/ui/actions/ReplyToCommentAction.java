@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ICommentCreatedListener;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -34,7 +33,6 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Action to reply to a comment
@@ -51,16 +49,9 @@ public class ReplyToCommentAction extends BaseSelectionListenerAction implements
 
 	private IReviewActionListener actionListener;
 
-	private final ICommentCreatedListener commentCreatedListener;
-
 	public ReplyToCommentAction() {
-		this(null);
-	}
-
-	public ReplyToCommentAction(@Nullable ICommentCreatedListener listener) {
 		super(REPLY_TO_COMMENT);
 		setEnabled(false);
-		this.commentCreatedListener = listener;
 	}
 
 	@Override
@@ -82,10 +73,6 @@ public class ReplyToCommentAction extends BaseSelectionListenerAction implements
 
 		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(),
 				REPLY_TO_COMMENT, review, task.getTaskKey(), task.getTaskId(), taskRepository, client);
-
-		if (commentCreatedListener != null) {
-			commentDialog.addCommentCreatedListener(commentCreatedListener);
-		}
 
 		commentDialog.setParentComment((Comment) getStructuredSelection().getFirstElement());
 		commentDialog.open();
