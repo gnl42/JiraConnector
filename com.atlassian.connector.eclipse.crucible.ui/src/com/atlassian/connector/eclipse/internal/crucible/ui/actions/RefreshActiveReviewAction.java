@@ -27,6 +27,7 @@ public class RefreshActiveReviewAction extends BaseSelectionListenerAction imple
 		super("Refresh");
 		setImageDescriptor(CommonImages.REFRESH);
 		setToolTipText("Refresh Active Review");
+		setEnabled(false);
 	}
 
 	@Override
