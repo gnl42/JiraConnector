@@ -14,10 +14,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
@@ -47,10 +45,10 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonTextSupport;
 import org.eclipse.mylyn.internal.tasks.ui.editors.Messages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor.State;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor.StateChangedEvent;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor.StateChangedListener;
+import org.eclipse.mylyn.internal.wikitext.tasks.ui.editor.ConfluenceMarkupTaskEditorExtension;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractRenderingEngine;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
@@ -223,17 +221,13 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 		createAdditionalControl(composite);
 
-		final TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
-		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
-
-		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-		//
-		String contextId = extension.getEditorContextId();
+		final AbstractTaskEditorExtension extension = new ConfluenceMarkupTaskEditorExtension();
+		final String contextId = extension.getEditorContextId();
 
 		contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
 		commentContext = contextService.activateContext(contextId, new ActiveShellExpression(getShell()));
 
-		commentText = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, contextService, extension);
+		commentText = new RichTextEditor(taskRepository, SWT.MULTI | SWT.BORDER, contextService, extension);
 		final MarkupParser markupParser = new MarkupParser();
 		final MarkupLanguage markupLanguage = ServiceLocator.getInstance().getMarkupLanguage("Confluence");
 		if (markupLanguage != null) {
@@ -256,18 +250,13 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		commentText.setReadOnly(false);
 		commentText.setSpellCheckingEnabled(true);
 
-		// ---- toolbar
+		// creating toolbar - must be created before actually commentText widget is created, to stay on top
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		fillToolBar(toolBarManager, commentText);
 
-		// TODO toolBarManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
 		if (toolBarManager.getSize() > 0) {
 			Composite toolbarComposite = toolkit.createComposite(composite);
-			GridDataFactory.fillDefaults()
-					.grab(false, false)
-					.hint(SWT.DEFAULT, SWT.DEFAULT)
-					.align(SWT.END, SWT.FILL)
+			GridDataFactory.fillDefaults().grab(false, false).hint(SWT.DEFAULT, SWT.DEFAULT).align(SWT.END, SWT.FILL)
 					.applyTo(toolbarComposite);
 			toolbarComposite.setBackground(null);
 			RowLayout rowLayout = new RowLayout();
@@ -279,13 +268,10 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			toolbarComposite.setLayout(rowLayout);
 
 			toolBarManager.createControl(toolbarComposite);
-			// section.clientVerticalSpacing = 0;
-			// section.descriptionVerticalSpacing = 0;
-			// section.setTextClient(toolbarComposite);
 		}
+		// end of toolbar creation stuff
 
 		// auto-completion support
-
 		commentText.createControl(composite, toolkit);
 		IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
 		if (handlerService != null) {
@@ -314,49 +300,15 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			}
 		});
 
-		// commentText.addStateChangedListener(new StateChangedListener() {
-		// public void stateChanged(StateChangedEvent event) {
-		// try {
-		// ignoreToggleEvents = true;
-		// toggleEditAction.setChecked(event.state == State.EDITOR || event.state == State.DEFAULT);
-		// } finally {
-		// ignoreToggleEvents = false;
-		// }
-		// }
-		// });
-
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(commentText.getControl());
 
-		// commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 100;
 		textGridData.widthHint = 500;
-		// commentText.getEditorViewer().
-
-		// commentText.addModifyListener(new ModifyListener() {
-		//
-		// public void modifyText(ModifyEvent e) {
-		// boolean enabled = false;
-		// if (commentText != null && commentText.getText().trim().length() > 0) {
-		// enabled = true;
-		// }
-		//
-		// if (saveButton != null && !saveButton.isDisposed()
-		// && (parentComment == null || !parentComment.isDraft())) {
-		// saveButton.setEnabled(enabled);
-		// }
-		//
-		// if (saveDraftButton != null && !saveDraftButton.isDisposed()) {
-		// saveDraftButton.setEnabled(enabled);
-		// }
-		// }
-		//
-		// });
 		commentText.getControl().setLayoutData(textGridData);
 		commentText.getControl().forceFocus();
 
-		// CHECKSTYLE:MAGIC:OFF
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		// create buttons according to (implicit) reply type
 		int nrOfCustomFields = 0;
@@ -373,7 +325,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 		applyDialogFont(composite);
 		return composite;
-		// CHECKSTYLE:MAGIC:ON
 	}
 
 	private void fillToolBar(ToolBarManager manager, final RichTextEditor editor) {
