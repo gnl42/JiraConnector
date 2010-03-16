@@ -255,6 +255,7 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	}
 
+	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new CrucibleInformationControlCreator();
 	}
