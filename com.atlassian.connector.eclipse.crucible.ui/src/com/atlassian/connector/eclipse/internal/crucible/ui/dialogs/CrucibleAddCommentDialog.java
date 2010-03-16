@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -77,8 +76,6 @@ import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.services.IServiceLocator;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -114,7 +111,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 					} catch (CoreException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Unable to post Comment", e));
-						throw e; //rethrow exception so dialog stays open and displays error message
+						throw e; // rethrow exception so dialog stays open and displays error message
 					}
 					client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 				}
@@ -172,8 +169,6 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private Button saveDraftButton;
 
-	private final IServiceLocator serviceLocator;
-
 	private CommonTextSupport textSupport;
 
 	private IContextService contextService;
@@ -187,7 +182,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 	protected boolean ignoreToggleEvents;
 
 	public CrucibleAddCommentDialog(Shell parentShell, String shellTitle, Review review, String taskKey, String taskId,
-			TaskRepository taskRepository, CrucibleClient client, IServiceLocator serviceLocator) {
+			TaskRepository taskRepository, CrucibleClient client) {
 		super(parentShell);
 		this.shellTitle = shellTitle;
 		this.review = review;
@@ -195,14 +190,13 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		this.taskId = taskId;
 		this.taskRepository = taskRepository;
 		this.client = client;
-		this.serviceLocator = serviceLocator;
 		customCombos = new HashMap<CustomFieldDef, ComboViewer>();
 		customFieldSelections = new HashMap<String, CustomField>();
 	}
 
 	@Override
 	protected Control createPageControls(Composite parent) {
-		//CHECKSTYLE:MAGIC:OFF
+		// CHECKSTYLE:MAGIC:OFF
 		getShell().setText(shellTitle);
 		setTitle(shellTitle);
 
@@ -212,7 +206,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			setMessage("Reply to a comment from: " + parentComment.getAuthor().getDisplayName());
 		}
 
-		//CHECKSTYLE:MAGIC:OFF
+		// CHECKSTYLE:MAGIC:OFF
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
@@ -233,29 +227,34 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
 
 		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-//
+		//
 		String contextId = extension.getEditorContextId();
 
 		contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
 		commentContext = contextService.activateContext(contextId, new ActiveShellExpression(getShell()));
 
 		commentText = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, contextService, extension);
+		final MarkupParser markupParser = new MarkupParser();
+		final MarkupLanguage markupLanguage = ServiceLocator.getInstance().getMarkupLanguage("Confluence");
+		if (markupLanguage != null) {
+			commentText.setRenderingEngine(new AbstractRenderingEngine() {
+
+				@Override
+				public String renderAsHtml(TaskRepository repository, String text, IProgressMonitor monitor)
+						throws CoreException {
+
+					markupParser.setMarkupLanguage(markupLanguage);
+					String htmlContent = markupParser.parseToHtml(text);
+					return htmlContent;
+				}
+			});
+		} else {
+			StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
+							"Unable to locate Confluence MarkupLanguage. Browser preview will not be possible"));
+		}
+
 		commentText.setReadOnly(false);
 		commentText.setSpellCheckingEnabled(true);
-		commentText.setRenderingEngine(new AbstractRenderingEngine() {
-
-			@Override
-			public String renderAsHtml(TaskRepository repository, String text, IProgressMonitor monitor)
-					throws CoreException {
-
-				MarkupParser markupParser = new MarkupParser();
-				final MarkupLanguage markupLanguage = ServiceLocator.getInstance().getMarkupLanguage("Confluence");
-
-				markupParser.setMarkupLanguage(markupLanguage);
-				String htmlContent = markupParser.parseToHtml(text);
-				return htmlContent;
-			}
-		});
 
 		// ---- toolbar
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
@@ -280,9 +279,9 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			toolbarComposite.setLayout(rowLayout);
 
 			toolBarManager.createControl(toolbarComposite);
-//			section.clientVerticalSpacing = 0;
-//			section.descriptionVerticalSpacing = 0;
-//			section.setTextClient(toolbarComposite);
+			// section.clientVerticalSpacing = 0;
+			// section.descriptionVerticalSpacing = 0;
+			// section.setTextClient(toolbarComposite);
 		}
 
 		// auto-completion support
@@ -315,53 +314,53 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			}
 		});
 
-//		commentText.addStateChangedListener(new StateChangedListener() {
-//			public void stateChanged(StateChangedEvent event) {
-//				try {
-//					ignoreToggleEvents = true;
-//					toggleEditAction.setChecked(event.state == State.EDITOR || event.state == State.DEFAULT);
-//				} finally {
-//					ignoreToggleEvents = false;
-//				}
-//			}
-//		});
+		// commentText.addStateChangedListener(new StateChangedListener() {
+		// public void stateChanged(StateChangedEvent event) {
+		// try {
+		// ignoreToggleEvents = true;
+		// toggleEditAction.setChecked(event.state == State.EDITOR || event.state == State.DEFAULT);
+		// } finally {
+		// ignoreToggleEvents = false;
+		// }
+		// }
+		// });
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(commentText.getControl());
 
-//		commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+		// commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 100;
 		textGridData.widthHint = 500;
-		//commentText.getEditorViewer().
+		// commentText.getEditorViewer().
 
-//		commentText.addModifyListener(new ModifyListener() {
-//
-//			public void modifyText(ModifyEvent e) {
-//				boolean enabled = false;
-//				if (commentText != null && commentText.getText().trim().length() > 0) {
-//					enabled = true;
-//				}
-//
-//				if (saveButton != null && !saveButton.isDisposed()
-//						&& (parentComment == null || !parentComment.isDraft())) {
-//					saveButton.setEnabled(enabled);
-//				}
-//
-//				if (saveDraftButton != null && !saveDraftButton.isDisposed()) {
-//					saveDraftButton.setEnabled(enabled);
-//				}
-//			}
-//
-//		});
+		// commentText.addModifyListener(new ModifyListener() {
+		//
+		// public void modifyText(ModifyEvent e) {
+		// boolean enabled = false;
+		// if (commentText != null && commentText.getText().trim().length() > 0) {
+		// enabled = true;
+		// }
+		//
+		// if (saveButton != null && !saveButton.isDisposed()
+		// && (parentComment == null || !parentComment.isDraft())) {
+		// saveButton.setEnabled(enabled);
+		// }
+		//
+		// if (saveDraftButton != null && !saveDraftButton.isDisposed()) {
+		// saveDraftButton.setEnabled(enabled);
+		// }
+		// }
+		//
+		// });
 		commentText.getControl().setLayoutData(textGridData);
 		commentText.getControl().forceFocus();
 
-		//CHECKSTYLE:MAGIC:OFF
+		// CHECKSTYLE:MAGIC:OFF
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		// create buttons according to (implicit) reply type
 		int nrOfCustomFields = 0;
-		if (parentComment == null) { //"defect button" needed if new comment
+		if (parentComment == null) { // "defect button" needed if new comment
 			Composite compositeCustomFields = new Composite(composite, SWT.NONE);
 			compositeCustomFields.setLayout(new GridLayout(1, false));
 			createDefectButton(compositeCustomFields);
@@ -374,7 +373,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 		applyDialogFont(composite);
 		return composite;
-		//CHECKSTYLE:MAGIC:ON
+		// CHECKSTYLE:MAGIC:ON
 	}
 
 	private void fillToolBar(ToolBarManager manager, final RichTextEditor editor) {
@@ -408,7 +407,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			});
 			manager.add(toggleEditAction);
 		}
-		if (/*toggleEditAction == null && */editor.hasBrowser()) {
+		if (/* toggleEditAction == null && */editor.hasBrowser()) {
 			toggleBrowserAction = new Action("", SWT.TOGGLE) { //$NON-NLS-1$
 				@Override
 				public void run() {
@@ -441,10 +440,10 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			});
 			manager.add(toggleBrowserAction);
 		}
-//		if (!getEditor().isReadOnly()) {
-//			manager.add(getMaximizePartAction());
-//		}
-//		super.fillToolBar(manager);
+		// if (!getEditor().isReadOnly()) {
+		// manager.add(getMaximizePartAction());
+		// }
+		// super.fillToolBar(manager);
 	}
 
 	@Override
@@ -481,7 +480,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	protected void processFields() {
 		newComment = commentText.getText();
-		if (defect) { //process custom field selection only when defect is selected
+		if (defect) { // process custom field selection only when defect is selected
 			for (CustomFieldDef field : customCombos.keySet()) {
 				CustomFieldValue customValue = (CustomFieldValue) customCombos.get(field).getElementAt(
 						customCombos.get(field).getCombo().getSelectionIndex());
@@ -524,7 +523,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				defect = !defect;
-				//toggle combos
+				// toggle combos
 				for (CustomFieldDef field : customCombos.keySet()) {
 					customCombos.get(field).getCombo().setEnabled(defect);
 				}
@@ -583,7 +582,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			}
 		});
 		saveButton.setEnabled(false);
-		if (!edit) { //if it is a new reply, saving as draft is possible
+		if (!edit) { // if it is a new reply, saving as draft is possible
 			saveDraftButton = createButton(parent, IDialogConstants.CLIENT_ID + 2, DRAFT_LABEL, false);
 			saveDraftButton.addSelectionListener(new SelectionAdapter() {
 				@Override
