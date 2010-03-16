@@ -27,6 +27,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentA
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PublishAllDraftCommentsAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RefreshActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
@@ -232,6 +233,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private Action linkWithEditorAction;
 
 	private final TextSelectionToReviewItemListener linkEditorSelectionToTreeListener = new TextSelectionToReviewItemListener();
+
+	private RefreshActiveReviewAction refreshReviewAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
@@ -590,6 +593,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		};
 
+		refreshReviewAction = new RefreshActiveReviewAction();
+		reviewActivationListeners.add(refreshReviewAction);
+
 		addFileCommentAction = new AddFileCommentAction();
 		viewer.addSelectionChangedListener(addFileCommentAction);
 
@@ -671,6 +677,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(nextCommentAction);
 		mgr.add(new Separator());
 		mgr.add(openEditorAction);
+		mgr.add(refreshReviewAction);
 		mgr.add(showCommentsViewAction);
 		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);

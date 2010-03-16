@@ -67,17 +67,17 @@ public class PublishAllDraftCommentsAction extends BaseSelectionListenerAction i
 	}
 
 	public void reviewActivated(ITask task, Review review) {
-		reviewUpdated(task, review);
-	}
-
-	public void reviewDeactivated(ITask task, Review review) {
-		reviewUpdated(task, review);
-	}
-
-	public void reviewUpdated(ITask task, Review review) {
 		this.review = review;
 		setEnabled(review != null
 				&& review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts() > 0);
+	}
+
+	public void reviewDeactivated(ITask task, Review review) {
+		setEnabled(false);
+	}
+
+	public void reviewUpdated(ITask task, Review review) {
+		reviewActivated(task, review);
 	}
 
 }

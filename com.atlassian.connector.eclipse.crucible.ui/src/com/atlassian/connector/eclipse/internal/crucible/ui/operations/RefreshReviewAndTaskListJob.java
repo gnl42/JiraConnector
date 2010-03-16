@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 
 public class RefreshReviewAndTaskListJob extends CrucibleReviewChangeJob {
 
@@ -33,9 +34,17 @@ public class RefreshReviewAndTaskListJob extends CrucibleReviewChangeJob {
 
 	@Override
 	protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+		SubMonitor submonitor = SubMonitor.convert(monitor, "Retrieving Crucible Review", 2);
+
+		// check if repositoryData is initialized
+		if (client.getClientData() == null || client.getClientData().getCachedUsers().size() == 0
+				|| client.getClientData().getCachedProjects().size() == 0) {
+
+			client.updateRepositoryData(submonitor.newChild(1), getTaskRepository());
+		}
+
 		// hack to trigger task list synchronization
-		client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(reviewId), true, monitor);
+		client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(reviewId), true, submonitor.newChild(1));
 		return Status.OK_STATUS;
 	}
-
 }
