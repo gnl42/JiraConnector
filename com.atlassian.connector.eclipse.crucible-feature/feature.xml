@@ -41,6 +41,9 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.apache.commons.logging"/>
       <import feature="org.eclipse.mylyn.wikitext_feature" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.wikitext.core" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.wikitext.tasks.ui" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.wikitext.confluence.core" version="1.2.0" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
