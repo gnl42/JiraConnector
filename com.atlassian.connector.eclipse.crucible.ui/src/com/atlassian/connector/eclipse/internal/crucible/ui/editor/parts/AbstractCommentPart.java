@@ -59,6 +59,7 @@ import java.util.Map;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> extends ExpandablePart<Comment, V> {
 
 	protected Comment comment;
@@ -221,7 +222,6 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 		return text;
 	}
 
-	@SuppressWarnings("restriction")
 	private Control createReadOnlyText(FormToolkit toolkit, Composite composite, String value) {
 
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
