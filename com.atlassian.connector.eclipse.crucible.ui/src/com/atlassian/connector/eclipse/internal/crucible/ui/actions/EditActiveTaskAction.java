@@ -28,6 +28,7 @@ public class EditActiveTaskAction extends Action implements IReviewActivationLis
 		setImageDescriptor(CommonImages.BROWSER_OPEN_TASK);
 		setText("Open Active Task");
 		setToolTipText("Open Active Task Editor");
+		setEnabled(false);
 	}
 
 	public void run() {
