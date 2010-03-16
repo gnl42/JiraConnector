@@ -60,11 +60,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Dialog shown to the user when they add a comment to a review
@@ -86,7 +82,7 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 				monitor.beginTask("Updating comment", IProgressMonitor.UNKNOWN);
 
 				try {
-					client.execute(new UpdateCommentRemoteOperation(taskRepository, review, prepareNewComment(comment,
+					client.execute(new UpdateCommentRemoteOperation(taskRepository, getReview(), prepareNewComment(comment,
 							shouldPostIfDraft), monitor));
 				} catch (CoreException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unable to update comment",
@@ -102,15 +98,9 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 		}
 	}
 
-	private final Review review;
-
 	private final Comment comment;
 
 	private final String shellTitle;
-
-	private final String taskKey;
-
-	private final String taskId;
 
 	private final CrucibleClient client;
 
@@ -120,17 +110,11 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 
 	private static final String DRAFT_LABEL = "Update && &Post";
 
-	private final HashMap<CustomFieldDef, ComboViewer> customCombos;
-
-	private final HashMap<String, CustomField> customFieldSelections;
-
 	private FormToolkit toolkit;
 
 	private boolean defect;
 
 	private String newComment;
-
-	private Button defectButton;
 
 	private Button updateButton;
 
@@ -138,19 +122,14 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 
 	public CrucibleEditCommentDialog(Shell parentShell, String shellTitle, Review review, Comment comment,
 			String taskKey, String taskId, TaskRepository taskRepository, CrucibleClient client) {
-		super(parentShell, taskRepository);
+		super(parentShell, taskRepository, review, taskKey, taskId);
 		this.shellTitle = shellTitle;
-		this.review = review;
 		if (comment == null) {
 			throw new IllegalArgumentException("Comment must not be null");
 		}
 		this.comment = comment;
-		this.taskKey = taskKey;
-		this.taskId = taskId;
 		this.client = client;
 		this.defect = comment.isDefectRaised();
-		customCombos = new HashMap<CustomFieldDef, ComboViewer>();
-		customFieldSelections = new HashMap<String, CustomField>();
 	}
 
 	private Comment prepareNewComment(Comment oldComment, boolean shouldPostIfDraft) {
@@ -261,22 +240,6 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 		}
 	}
 
-	@Override
-	protected Collection<? extends Control> getDisableableControls() {
-		Set<Control> controls = new HashSet<Control>(super.getDisableableControls());
-		if (customCombos.size() > 0) {
-			for (ComboViewer viewer : customCombos.values()) {
-				controls.add(viewer.getControl());
-			}
-		}
-
-		if (defectButton != null) {
-			controls.add(defectButton);
-		}
-
-		return controls;
-	}
-
 	protected void processFields() {
 		newComment = commentText.getText();
 		customFieldSelections.clear();
@@ -295,6 +258,7 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 	}
 
 	private int addCustomFields(Composite parent) {
+		final Review review = getReview();
 		if (review == null) {
 			return 0;
 		}
@@ -433,20 +397,4 @@ public class CrucibleEditCommentDialog extends AbstractCrucibleCommentDialog {
 				});
 	}
 
-	public void cancelUpdateComment() {
-		setReturnCode(Window.CANCEL);
-		close();
-	}
-
-	public String getTaskKey() {
-		return taskKey;
-	}
-
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public TaskRepository getTaskRepository() {
-		return taskRepository;
-	}
 }

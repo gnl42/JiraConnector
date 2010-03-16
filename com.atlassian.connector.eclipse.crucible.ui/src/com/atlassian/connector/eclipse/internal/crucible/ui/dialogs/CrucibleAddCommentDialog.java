@@ -17,7 +17,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
@@ -52,11 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Dialog shown to the user when they add a comment to a review
@@ -73,7 +68,7 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 				monitor.beginTask("Adding comment", IProgressMonitor.UNKNOWN);
 				if (newComment.length() > 0) {
 
-					AddCommentRemoteOperation operation = new AddCommentRemoteOperation(taskRepository, review, client,
+					AddCommentRemoteOperation operation = new AddCommentRemoteOperation(taskRepository, getReview(), client,
 							crucibleFile, newComment, monitor);
 					operation.setDefect(defect);
 					operation.setDraft(draft);
@@ -98,13 +93,7 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 		}
 	}
 
-	private Review review;
-
 	private final String shellTitle;
-
-	private final String taskKey;
-
-	private final String taskId;
 
 	private final CrucibleClient client;
 
@@ -122,10 +111,6 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 
 	private final boolean edit = false;
 
-	private final HashMap<CustomFieldDef, ComboViewer> customCombos;
-
-	private final HashMap<String, CustomField> customFieldSelections;
-
 	private FormToolkit toolkit;
 
 	private boolean draft = false;
@@ -134,22 +119,15 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 
 	private String newComment;
 
-	private Button defectButton;
-
 	private Button saveButton;
 
 	private Button saveDraftButton;
 
 	public CrucibleAddCommentDialog(Shell parentShell, String shellTitle, Review review, String taskKey, String taskId,
 			TaskRepository taskRepository, CrucibleClient client) {
-		super(parentShell, taskRepository);
+		super(parentShell, taskRepository, review, taskKey, taskId);
 		this.shellTitle = shellTitle;
-		this.review = review;
-		this.taskKey = taskKey;
-		this.taskId = taskId;
 		this.client = client;
-		customCombos = new HashMap<CustomFieldDef, ComboViewer>();
-		customFieldSelections = new HashMap<String, CustomField>();
 	}
 
 	@Override
@@ -222,22 +200,6 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 	protected void createAdditionalControl(Composite composite) {
 	}
 
-	@Override
-	protected Collection<? extends Control> getDisableableControls() {
-		Set<Control> controls = new HashSet<Control>(super.getDisableableControls());
-		if (customCombos.size() > 0) {
-			for (ComboViewer viewer : customCombos.values()) {
-				controls.add(viewer.getControl());
-			}
-		}
-
-		if (defectButton != null) {
-			controls.add(defectButton);
-		}
-
-		return controls;
-	}
-
 	protected void processFields() {
 		newComment = commentText.getText();
 		if (defect) { // process custom field selection only when defect is selected
@@ -255,15 +217,15 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 	}
 
 	private int addCustomFields(Composite parent) {
-		if (review == null) {
+		if (getReview() == null) {
 			return 0;
 		}
 		List<CustomFieldDef> customFields = CrucibleCorePlugin.getDefault().getReviewCache().getMetrics(
-				review.getMetricsVersion());
+				getReview().getMetricsVersion());
 		if (customFields == null) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					"Metrics are for review version are not cached: " + review.getMetricsVersion() + " "
-							+ review.getName(), null));
+					"Metrics are for review version are not cached: " + getReview().getMetricsVersion() + " "
+							+ getReview().getName(), null));
 			return 0;
 		} else {
 			for (CustomFieldDef customField : customFields) {
@@ -362,19 +324,6 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 				});
 	}
 
-	public void cancelAddComment() {
-		setReturnCode(Window.CANCEL);
-		close();
-	}
-
-	public String getTaskKey() {
-		return taskKey;
-	}
-
-	public String getTaskId() {
-		return taskId;
-	}
-
 	public void setReviewItem(CrucibleFile reviewItem) {
 		this.crucibleFile = reviewItem;
 	}
@@ -385,10 +334,6 @@ public class CrucibleAddCommentDialog extends AbstractCrucibleCommentDialog {
 
 	public void setCommentLines(LineRange commentLines2) {
 		this.commentLines = commentLines2;
-	}
-
-	protected void setReview(Review review) {
-		this.review = review;
 	}
 
 }

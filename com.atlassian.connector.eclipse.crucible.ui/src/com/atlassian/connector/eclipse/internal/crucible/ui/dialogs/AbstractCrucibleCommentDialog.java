@@ -13,6 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -20,6 +23,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonTextSupport;
@@ -38,7 +43,9 @@ import org.eclipse.mylyn.wikitext.core.util.ServiceLocator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ActiveShellExpression;
 import org.eclipse.ui.PlatformUI;
@@ -46,8 +53,25 @@ import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.jetbrains.annotations.Nullable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
+
+	private final String taskKey;
+
+	private final String taskId;
+
+	private Review review;
+
+	protected final HashMap<CustomFieldDef, ComboViewer> customCombos;
+
+	protected final HashMap<String, CustomField> customFieldSelections;
+
+	protected Button defectButton;
 
 	protected CommonTextSupport textSupport;
 	protected IContextService contextService;
@@ -58,9 +82,24 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 	protected RichTextEditor commentText;
 	protected final TaskRepository taskRepository;
 
-	public AbstractCrucibleCommentDialog(Shell parentShell, TaskRepository taskRepository) {
+	public AbstractCrucibleCommentDialog(Shell parentShell, TaskRepository taskRepository, Review review,
+			String taskKey, String taskId) {
 		super(parentShell);
 		this.taskRepository = taskRepository;
+		this.review = review;
+		this.taskKey = taskKey;
+		this.taskId = taskId;
+		customCombos = new HashMap<CustomFieldDef, ComboViewer>();
+		customFieldSelections = new HashMap<String, CustomField>();
+	}
+
+	@Nullable
+	public Review getReview() {
+		return review;
+	}
+
+	protected void setReview(Review review) {
+		this.review = review;
 	}
 
 	protected void createWikiTextControl(Composite composite, FormToolkit toolkit) {
@@ -202,6 +241,22 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 	}
 
 	@Override
+	protected Collection<? extends Control> getDisableableControls() {
+		Set<Control> controls = new HashSet<Control>(super.getDisableableControls());
+		if (customCombos.size() > 0) {
+			for (ComboViewer viewer : customCombos.values()) {
+				controls.add(viewer.getControl());
+			}
+		}
+
+		if (defectButton != null) {
+			controls.add(defectButton);
+		}
+
+		return controls;
+	}
+
+	@Override
 	public boolean close() {
 		if (contextService != null && commentContext != null) {
 			contextService.deactivateContext(commentContext);
@@ -216,6 +271,19 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 
 	public TaskRepository getTaskRepository() {
 		return taskRepository;
+	}
+
+	public void cancelUpdateComment() {
+		setReturnCode(Window.CANCEL);
+		close();
+	}
+
+	public String getTaskKey() {
+		return taskKey;
+	}
+
+	public String getTaskId() {
+		return taskId;
 	}
 
 }
