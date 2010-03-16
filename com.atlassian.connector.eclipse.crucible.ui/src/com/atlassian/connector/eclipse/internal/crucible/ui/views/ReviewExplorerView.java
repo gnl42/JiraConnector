@@ -52,7 +52,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommen
 import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -98,7 +97,6 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -488,7 +486,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 			if (focusOnComment == null) {
 				// this simple trick (thanks to properly working equals on permIds) refreshes selection, when
-				// the old selection now points to an outdated review model element (e.g. a review comment which has been changed)
+				// the old selection now points to an outdated review model element (e.g. a review comment which has been
+				// changed)
 				viewer.setSelection(currentSelection);
 			} else {
 				TreeViewerUtil.setSelection(getViewer(), focusOnComment);
@@ -681,8 +680,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(showCommentsViewAction);
 		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);
-		mgr.add(publishAllDraftsAction);
 		mgr.add(addFileCommentAction);
+		mgr.add(publishAllDraftsAction);
 		mgr.add(new Separator());
 		mgr.add(openOldAction);
 		mgr.add(openNewAction);
