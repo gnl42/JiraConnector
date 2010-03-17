@@ -48,7 +48,7 @@
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.mylyn.wikitext_feature"/>
-			<param name="update.site" value="${mylyn-extras.site}/e${build.target}"/>
+			<param name="update.site" value="${mylyn.site}/e${build.target}"/>
 		</antcall>
 			
 	</target>
