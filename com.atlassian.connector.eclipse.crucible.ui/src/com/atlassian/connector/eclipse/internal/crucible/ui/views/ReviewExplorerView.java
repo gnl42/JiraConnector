@@ -52,6 +52,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommen
 import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -97,6 +98,7 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -139,6 +141,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 				if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 					CrucibleFileInfo fileInfo = ((CrucibleFileInfoCompareEditorInput) editorInput).getCrucibleFileInfo();
+					fileInfo = review.getFileByPermId(fileInfo.getPermId());
 
 					if (focusMatchingComment(fileInfo, fileInfo.getOldFileDescriptor().getRevision(), start)
 							|| focusMatchingComment(fileInfo, fileInfo.getFileDescriptor().getRevision(), start)) {
@@ -150,7 +153,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					CrucibleFile crucibleFile = ((ICrucibleFileProvider) editorInput).getCrucibleFile();
 					String revision = crucibleFile.getSelectedFile().getRevision();
 
-					if (focusMatchingComment(crucibleFile.getCrucibleFileInfo(), revision, start)) {
+					if (focusMatchingComment(review.getFileByPermId(crucibleFile.getCrucibleFileInfo().getPermId()),
+							revision, start)) {
 						return;
 					}
 				}
