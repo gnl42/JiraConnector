@@ -26,17 +26,15 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-
 import java.util.Collection;
 
 public class MarkCommentsReadJob extends JobWithStatus {
 
-	public static final long DEFAULT_DELAY_INTERVAL = 3 * 1000; // wait 3 seconds before marking the comment as read
+	public static final long DEFAULT_DELAY_INTERVAL = 2 * 1000; // wait 2 seconds before marking the comment as read
 
 	private final Review review;
 
