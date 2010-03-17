@@ -72,5 +72,10 @@ plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.ecli
 plugin@org.eclipse.mylyn.commons.soap=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap
 plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tests
 plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
-
+plugin@org.eclipse.mylyn.resources.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.ui
+plugin@org.eclipse.mylyn.ide.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.ui
+plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.tests
+plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
+plugin@org.eclipse.mylyn.pde.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.pde.ui
+plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
 
