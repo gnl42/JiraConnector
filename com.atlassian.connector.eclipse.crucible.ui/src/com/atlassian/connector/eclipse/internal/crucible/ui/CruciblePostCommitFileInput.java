@@ -26,8 +26,8 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import java.net.URI;
 
-public class CruciblePostCommitFileInput implements /*IFileEditorInput,*/IPathEditorInput, IURIEditorInput,
-		IPersistableElement, ICrucibleFileProvider {
+public class CruciblePostCommitFileInput implements /*for for PLE-1039 IFileEditorInput,*/IPathEditorInput,
+		IURIEditorInput, IPersistableElement, ICrucibleFileProvider {
 
 	private final CrucibleFile crucibleFile;
 
