@@ -13,9 +13,7 @@ package com.atlassian.connector.eclipse.internal.ui;
 
 public interface IBrandingConstants {
 
-	String INSTALLATION_GUIDE_URL = "http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector";
-
-	String INTEGRATIONS_GUIDE_URL = "http://confluence.atlassian.com/display/IDEPLUGIN/More+Atlassian+Integrations+for+Eclipse";
+	String INTEGRATIONS_GUIDE_URL = "http://www.atlassian.com/software/ideconnector/eclipse.jsp?src=jiraconnector";
 
 	String JIRA_INSTALLED_SYSTEM_PROPERTY = "com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled";
 

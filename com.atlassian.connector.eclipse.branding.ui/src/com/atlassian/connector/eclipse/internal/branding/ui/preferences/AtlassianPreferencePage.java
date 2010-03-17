@@ -1,5 +1,10 @@
 package com.atlassian.connector.eclipse.internal.branding.ui.preferences;
 
+import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -20,11 +25,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
-import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
-import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
-import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
-import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 
 public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
@@ -115,7 +115,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		buttonBar.setLayout(new RowLayout());
 
 		createButton(buttonBar, "On-line Help",
-				"http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Eclipse+Connector");
+				"http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse");
 		createButton(buttonBar, "Visit Forum", "http://forums.atlassian.com/forum.jspa?forumID=124&start=0");
 		createButton(buttonBar, "Request Support", "https://support.atlassian.com/browse/ECSP");
 		createButton(buttonBar, "Report Bug", "https://studio.atlassian.com/browse/PLE");
