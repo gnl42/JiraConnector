@@ -330,26 +330,6 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		removeCommentAction = new RemoveCommentAction();
 		postDraftCommentAction = new PostDraftCommentAction();
 
-		getViewSite().getPage().addSelectionListener(new ISelectionListener() {
-			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-				if (!(part instanceof ReviewExplorerView)) {
-					return;
-				}
-
-				if (selection instanceof IStructuredSelection) {
-					replyToCommentAction.selectionChanged((IStructuredSelection) selection);
-					editCommentAction.selectionChanged((IStructuredSelection) selection);
-					removeCommentAction.selectionChanged((IStructuredSelection) selection);
-					postDraftCommentAction.selectionChanged((IStructuredSelection) selection);
-				} else {
-					replyToCommentAction.selectionChanged(StructuredSelection.EMPTY);
-					editCommentAction.selectionChanged(StructuredSelection.EMPTY);
-					removeCommentAction.selectionChanged(StructuredSelection.EMPTY);
-					postDraftCommentAction.selectionChanged(StructuredSelection.EMPTY);
-				}
-			}
-		});
-
 		// in the end register all additional activation listeners
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		for (IReviewActivationListener listener : reviewActivationListeners) {
@@ -392,6 +372,18 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (!(part instanceof ReviewExplorerView) && part != this) {
 			return;
+		}
+
+		if (selection instanceof IStructuredSelection) {
+			replyToCommentAction.selectionChanged((IStructuredSelection) selection);
+			editCommentAction.selectionChanged((IStructuredSelection) selection);
+			removeCommentAction.selectionChanged((IStructuredSelection) selection);
+			postDraftCommentAction.selectionChanged((IStructuredSelection) selection);
+		} else {
+			replyToCommentAction.selectionChanged(StructuredSelection.EMPTY);
+			editCommentAction.selectionChanged(StructuredSelection.EMPTY);
+			removeCommentAction.selectionChanged(StructuredSelection.EMPTY);
+			postDraftCommentAction.selectionChanged(StructuredSelection.EMPTY);
 		}
 
 		Object previousSelection = currentSelection;
