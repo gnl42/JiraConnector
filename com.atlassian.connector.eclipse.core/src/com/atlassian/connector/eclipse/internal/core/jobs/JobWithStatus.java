@@ -41,6 +41,11 @@ public abstract class JobWithStatus extends Job {
 	@Override
 	@NotNull
 	public IStatus run(IProgressMonitor monitor) {
+		if (monitor != null && monitor.isCanceled()) {
+			setStatus(Status.CANCEL_STATUS);
+			return Status.CANCEL_STATUS;
+		}
+
 		try {
 			runImpl(monitor);
 			return Status.OK_STATUS;

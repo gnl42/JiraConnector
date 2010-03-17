@@ -386,21 +386,16 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 			postDraftCommentAction.selectionChanged(StructuredSelection.EMPTY);
 		}
 
-		Object previousSelection = currentSelection;
 		currentSelection = null;
-
 		if (selection instanceof IStructuredSelection) {
 			currentSelection = ((IStructuredSelection) selection).getFirstElement();
 		}
 
-		if (previousSelection != null && !previousSelection.equals(currentSelection)) {
-			cancelMarkCommentAsReadJob();
-		}
-
+		cancelMarkCommentAsReadJob();
 		updateViewer();
 	}
 
-	private void cancelMarkCommentAsReadJob() {
+	private synchronized void cancelMarkCommentAsReadJob() {
 		if (markAsReadJob != null) {
 			markAsReadJob.cancel();
 			markAsReadJob = null;
@@ -488,9 +483,10 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		stackComposite.layout();
 	}
 
-	private void runMarkCommentAsReadJob(Comment activeComment) {
+	private synchronized void runMarkCommentAsReadJob(Comment activeComment) {
 		if (getSite().getWorkbenchWindow().getActivePage().isPartVisible(this)) {
 			if (activeComment.getReadState().equals(ReadState.UNREAD)) {
+				cancelMarkCommentAsReadJob();
 				markAsReadJob = new MarkCommentsReadJob(activeComment.getReview(),
 						MiscUtil.buildArrayList(activeComment), true);
 				markAsReadJob.schedule(MarkCommentsReadJob.DEFAULT_DELAY_INTERVAL);
