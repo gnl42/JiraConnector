@@ -35,7 +35,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -55,7 +54,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -86,6 +84,7 @@ public final class CrucibleUiUtil {
 		return null;
 	}
 
+	@Nullable
 	public static TaskRepository getCrucibleTaskRepository(Review review) {
 		if (review != null) {
 			String repositoryUrl = review.getServerUrl();
@@ -101,6 +100,7 @@ public final class CrucibleUiUtil {
 		return connector.getClientManager().getClient(getCrucibleTaskRepository(review));
 	}
 
+	@Nullable
 	public static ITask getCrucibleTask(Review review) {
 		if (review != null) {
 			TaskRepository taskRepository = getCrucibleTaskRepository(review);
@@ -147,11 +147,9 @@ public final class CrucibleUiUtil {
 
 	public static String getCurrentUsername(TaskRepository repository) {
 		/*
-		String currentUser = CrucibleCorePlugin.getRepositoryConnector()
-				.getClientManager()
-				.getClient(repository)
-				.getUserName();
-		*/
+		 * String currentUser = CrucibleCorePlugin.getRepositoryConnector() .getClientManager() .getClient(repository)
+		 * .getUserName();
+		 */
 		return repository.getUserName();
 	}
 
@@ -199,7 +197,7 @@ public final class CrucibleUiUtil {
 	public static void checkAndRequestReviewActivation(Review review) {
 		Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 		if (activeReview == null || !activeReview.getPermId().equals(review.getPermId())) {
-			//review activation
+			// review activation
 			boolean activate = false;
 			ActivateReview pref = CrucibleUiPlugin.getActivateReviewPreference();
 			if (pref.equals(ActivateReview.ALWAYS)) {

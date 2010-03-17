@@ -11,40 +11,60 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.jetbrains.annotations.Nullable;
 
 public class RefreshReviewJob extends CrucibleReviewChangeJob {
 
-	private final String reviewId;
+	private final ITask task;
 
-	public RefreshReviewJob(Review review) {
-		super("Refresh Active Review", CrucibleUiUtil.getCrucibleTaskRepository(review), false, false);
-		this.reviewId = review.getPermId().getId();
+	public RefreshReviewJob(ITask task, TaskRepository taskRepository) {
+		super("Retrieving Crucible Review " + task.getTaskKey(), taskRepository);
+		this.task = task;
+	}
+
+	@Nullable
+	public static RefreshReviewJob createForReview(Review review) {
+		final ITask mytask = CrucibleUiUtil.getCrucibleTask(review);
+		if (mytask == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Cannot find corresponding Mylyn task for review [" + review.getPermId() + "]. Refresh will fail"));
+			return null;
+		}
+
+		final TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(review);
+		if (taskRepository == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Cannot find corresponding Mylyn task repository for review [" + review.getPermId()
+							+ "]. Refresh will fail"));
+			return null;
+		}
+		return new RefreshReviewJob(mytask, taskRepository);
+
 	}
 
 	@Override
 	protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-		SubMonitor submonitor = SubMonitor.convert(monitor, "Retrieving Crucible Review", 2);
-
 		// check if repositoryData is initialized
 		if (client.getClientData() == null || client.getClientData().getCachedUsers().size() == 0
 				|| client.getClientData().getCachedProjects().size() == 0) {
-
-			client.updateRepositoryData(submonitor.newChild(1), getTaskRepository());
+			monitor.subTask("Updating Repository Data");
+			client.updateRepositoryData(monitor, getTaskRepository());
 		}
+		monitor.subTask("Retrieving Crucible Review");
 
-		// hack to trigger task list synchronization
-		client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(reviewId), true, submonitor.newChild(1));
+		client.getReview(getTaskRepository(), task.getTaskId(), true, monitor);
 		return Status.OK_STATUS;
 	}
-}
+};

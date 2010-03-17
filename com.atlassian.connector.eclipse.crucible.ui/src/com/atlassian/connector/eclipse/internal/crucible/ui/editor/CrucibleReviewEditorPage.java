@@ -36,7 +36,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -91,7 +90,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.themes.IThemeManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -363,7 +361,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				// check if repositoryData is initialized
 				if (client.getClientData() == null || client.getClientData().getCachedUsers().size() == 0
 						|| client.getClientData().getCachedProjects().size() == 0) {
-					monitor.subTask("Updateing Repository Data");
+					monitor.subTask("Updating Repository Data");
 					client.updateRepositoryData(monitor, getTaskRepository());
 				}
 				monitor.subTask("Retrieving Crucible Review");

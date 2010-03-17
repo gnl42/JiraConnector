@@ -22,7 +22,6 @@ import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -35,7 +34,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Shell;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +80,10 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 					setErrorMessage(result.getMessage());
 					return false;
 				} else {
-					runJobInContainer(new RefreshReviewJob(review));
+					final RefreshReviewJob job = RefreshReviewJob.createForReview(review);
+					if (job != null) {
+						runJobInContainer(job);
+					}
 				}
 			}
 
