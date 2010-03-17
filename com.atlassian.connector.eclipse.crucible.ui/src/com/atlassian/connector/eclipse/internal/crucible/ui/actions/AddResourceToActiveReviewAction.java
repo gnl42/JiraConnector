@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewAndTaskListJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ResourceSelectionPage;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
@@ -82,7 +82,7 @@ public class AddResourceToActiveReviewAction extends AbstractReviewFromResources
 					setErrorMessage(result.getMessage());
 					return false;
 				} else {
-					runJobInContainer(new RefreshReviewAndTaskListJob(review));
+					runJobInContainer(new RefreshReviewJob(review));
 				}
 			}
 

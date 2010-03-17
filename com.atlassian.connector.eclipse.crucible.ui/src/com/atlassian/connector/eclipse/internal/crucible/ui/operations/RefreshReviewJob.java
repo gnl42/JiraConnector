@@ -23,12 +23,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 
-public class RefreshReviewAndTaskListJob extends CrucibleReviewChangeJob {
+public class RefreshReviewJob extends CrucibleReviewChangeJob {
 
 	private final String reviewId;
 
-	public RefreshReviewAndTaskListJob(Review review) {
-		super("Refresh Task List", CrucibleUiUtil.getCrucibleTaskRepository(review), true, false);
+	public RefreshReviewJob(Review review) {
+		super("Refresh Active Review", CrucibleUiUtil.getCrucibleTaskRepository(review), false, false);
 		this.reviewId = review.getPermId().getId();
 	}
 

@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewAndTaskListJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewJob;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -32,7 +32,7 @@ public class RefreshActiveReviewAction extends BaseSelectionListenerAction imple
 
 	@Override
 	public void run() {
-		RefreshReviewAndTaskListJob job = new RefreshReviewAndTaskListJob(review);
+		RefreshReviewJob job = new RefreshReviewJob(review);
 		job.schedule();
 	}
 
