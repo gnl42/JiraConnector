@@ -78,4 +78,5 @@ plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.
 plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
 plugin@org.eclipse.mylyn.pde.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.pde.ui
 plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
+plugin@org.eclipse.mylyn.java.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.ui
 
