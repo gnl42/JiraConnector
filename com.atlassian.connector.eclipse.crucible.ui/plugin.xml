@@ -94,6 +94,7 @@
 			verticalRulerPreferenceValue="true" />
 	</extension>
 	
+<!-- no preferences for Crucible
 	<extension point="org.eclipse.ui.preferencePages">
 		<page category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage" 
 			class="com.atlassian.connector.eclipse.crucible.ui.preferences.CruciblePreferencePage" 
@@ -104,7 +105,7 @@
 		<initializer class="com.atlassian.connector.eclipse.crucible.ui.preferences.PreferenceInitializer">
 		</initializer>
 	</extension>
-	
+-->	
 	<extension point="org.eclipse.ui.views">
 		<category
 			id="com.atlassian.connector.eclipse.ui.category" name="Atlassian">

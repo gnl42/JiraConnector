@@ -51,8 +51,6 @@ public class CompareVirtualFilesJob extends JobWithStatus {
 
 	@Override
 	protected void runImpl(IProgressMonitor monitor) throws CoreException {
-		CrucibleUiUtil.checkAndRequestReviewActivation(review);
-
 		TaskRepository taskRepository = getTaskRepository();
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);

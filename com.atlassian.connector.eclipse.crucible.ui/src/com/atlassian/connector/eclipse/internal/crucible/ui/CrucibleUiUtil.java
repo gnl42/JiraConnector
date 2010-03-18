@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
@@ -192,36 +191,6 @@ public final class CrucibleUiUtil {
 			}
 		}
 		return false;
-	}
-
-	public static void checkAndRequestReviewActivation(Review review) {
-		Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-		if (activeReview == null || !activeReview.getPermId().equals(review.getPermId())) {
-			// review activation
-			boolean activate = false;
-			ActivateReview pref = CrucibleUiPlugin.getActivateReviewPreference();
-			if (pref.equals(ActivateReview.ALWAYS)) {
-				activate = true;
-			} else if (pref.equals(ActivateReview.NEVER)) {
-				activate = false;
-			} else {
-				// Ask the user whether to switch
-				String message = "Review comments will only be visible in editors if the corresponding review is active.";
-				if (activeReview != null) {
-					message += "\nIf you don't activate the review you can see comments related to other active review.";
-				}
-				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(null, "Activate Review",
-						message + "\n\nWould you like to activate this review?", "Remember my decision", false,
-						CrucibleUiPlugin.getDefault().getPreferenceStore(),
-						CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW);
-
-				activate = m.getReturnCode() == IDialogConstants.YES_ID || m.getReturnCode() == IDialogConstants.OK_ID;
-			}
-			if (activate) {
-				ITask task = CrucibleUiUtil.getCrucibleTask(review);
-				TasksUi.getTaskActivityManager().activateTask(task);
-			}
-		}
 	}
 
 	public static Set<User> getCachedUsers(Review review) {

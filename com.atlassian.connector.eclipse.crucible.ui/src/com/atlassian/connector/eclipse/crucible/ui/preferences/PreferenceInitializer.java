@@ -11,11 +11,7 @@
 
 package com.atlassian.connector.eclipse.crucible.ui.preferences;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiConstants;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -24,8 +20,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = CrucibleUiPlugin.getDefault().getPreferenceStore();
-		store.setDefault(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW, ActivateReview.PROMPT.getKey());
+//		IPreferenceStore store = CrucibleUiPlugin.getDefault().getPreferenceStore();
+//		store.setDefault(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW, ActivateReview.PROMPT.getKey());
 	}
 
 }

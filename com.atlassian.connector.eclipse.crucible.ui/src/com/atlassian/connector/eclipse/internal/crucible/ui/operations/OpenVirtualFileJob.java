@@ -139,8 +139,6 @@ public class OpenVirtualFileJob extends JobWithStatus {
 
 	@Override
 	protected void runImpl(IProgressMonitor monitor) throws CoreException {
-		CrucibleUiUtil.checkAndRequestReviewActivation(review);
-
 		final SubMonitor submonitor = SubMonitor.convert(monitor, 2);
 
 		final CrucibleFileInfo fileInfo = crucibleFile.getCrucibleFileInfo();

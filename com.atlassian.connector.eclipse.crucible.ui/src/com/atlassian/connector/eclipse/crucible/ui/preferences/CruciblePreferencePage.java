@@ -11,11 +11,9 @@
 
 package com.atlassian.connector.eclipse.crucible.ui.preferences;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -32,14 +30,14 @@ public class CruciblePreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		final RadioGroupFieldEditor reviewActivation = new RadioGroupFieldEditor(
-				CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW,
-				"Activate Review when opening a file from within the Review Editor", 3, new String[][] {
-						{ ActivateReview.ALWAYS.getLabel(), ActivateReview.ALWAYS.getKey() },
-						{ ActivateReview.NEVER.getLabel(), ActivateReview.NEVER.getKey() },
-						{ ActivateReview.PROMPT.getLabel(), ActivateReview.PROMPT.getKey() } }, getFieldEditorParent(),
-				true);
-		addField(reviewActivation);
+//		final RadioGroupFieldEditor reviewActivation = new RadioGroupFieldEditor(
+//				CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW,
+//				"Activate Review when opening a file from within the Review Editor", 3, new String[][] {
+//						{ ActivateReview.ALWAYS.getLabel(), ActivateReview.ALWAYS.getKey() },
+//						{ ActivateReview.NEVER.getLabel(), ActivateReview.NEVER.getKey() },
+//						{ ActivateReview.PROMPT.getLabel(), ActivateReview.PROMPT.getKey() } }, getFieldEditorParent(),
+//				true);
+//		addField(reviewActivation);
 	}
 
 }

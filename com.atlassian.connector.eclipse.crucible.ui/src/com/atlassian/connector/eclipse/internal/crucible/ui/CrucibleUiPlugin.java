@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
@@ -126,14 +125,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		if (activeReviewManager != null) {
 			TasksUi.getTaskActivityManager().addActivationListener(activeReviewManager);
 		}
-	}
-
-	public static ActivateReview getActivateReviewPreference() {
-
-		ActivateReview ret = ActivateReview.getObjectFromKey(plugin.getPreferenceStore().getString(
-				CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW));
-
-		return ret != null ? ret : ActivateReview.PROMPT;
 	}
 
 	public boolean getPreviousChangesetReviewSelection() {

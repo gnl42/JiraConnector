@@ -20,6 +20,7 @@ import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -37,7 +38,7 @@ public class BackgroundJobReviewAction extends AbstractListenableReviewAction {
 
 	private final String jobMessage;
 
-	private RemoteCrucibleOperation remoteOperation;
+	private final RemoteCrucibleOperation remoteOperation;
 
 	private final boolean reloadReview;
 
@@ -46,9 +47,8 @@ public class BackgroundJobReviewAction extends AbstractListenableReviewAction {
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
-	public BackgroundJobReviewAction(String text, Review review, Shell shell,
-			String jobMessage, ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation,
-			boolean reloadReview) {
+	public BackgroundJobReviewAction(String text, Review review, Shell shell, String jobMessage,
+			ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation, boolean reloadReview) {
 		super(text);
 		this.review = review;
 		this.shell = shell;
@@ -63,10 +63,6 @@ public class BackgroundJobReviewAction extends AbstractListenableReviewAction {
 	@Override
 	protected Review getReview() {
 		return review;
-	}
-
-	protected void updateReview(Review updatedReview) {
-		this.review = updatedReview;
 	}
 
 	public void run(IAction action) {
@@ -92,10 +88,5 @@ public class BackgroundJobReviewAction extends AbstractListenableReviewAction {
 		});
 		setEnabled(false);
 		remoteOperationJob.schedule();
-	}
-
-	protected void setRemoteOperation(RemoteCrucibleOperation remoteCrucibleOperation) {
-		this.remoteOperation = remoteCrucibleOperation;
-
 	}
 }
