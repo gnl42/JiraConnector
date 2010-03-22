@@ -24,6 +24,7 @@ import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.perforce.team.core.PerforceTeamProvider;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -280,9 +281,9 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 		if (!isEnabled()) {
 			return false;
 		}
-		// check if project is associated with Subversive Team provider, 
+		// check if project is associated with Perforce Team provider, 
 		// if we don't test it asRepositoryResource will throw RuntimeException
-		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), SVNTeamPlugin.NATURE_ID);
+		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), PerforceTeamProvider.ID);
 		if (provider != null) {
 			return true;
 		}

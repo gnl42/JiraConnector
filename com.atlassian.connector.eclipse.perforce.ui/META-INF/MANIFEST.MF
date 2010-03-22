@@ -21,7 +21,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.svn.core,
  org.eclipse.team.svn.ui,
  org.apache.commons.io,
- org.jetbrains.annotations;resolution:=optional
+ org.jetbrains.annotations;resolution:=optional,
+ com.perforce.team.core,
+ com.perforce.team.ui,
+ com.perforce.p4wsad,
+ com.perforce.p4api
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.perforce.ui;x-internal:=true
 Bundle-Vendor: Atlassian
