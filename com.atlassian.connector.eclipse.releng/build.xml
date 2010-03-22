@@ -26,6 +26,10 @@
 			<param name="update.feature" value="org.eclipse.team.svn"/>
 			<param name="update.site" value="${subversive.site}"/>
 		</antcall>
+		<antcall target="install-bundle">
+			<param name="update.feature" value="com.perforce.p4wsad"/>
+			<param name="update.site" value="${perforce.site}"/>
+		</antcall>
 		
 		<!-- only keep mylyn map that corresponds to current target -->
 		<delete>
