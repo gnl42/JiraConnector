@@ -13,6 +13,7 @@
 package com.atlassian.connector.eclipse.internal.perforce.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,10 +23,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.team.core.RepositoryProvider;
 import org.jetbrains.annotations.NotNull;
 
 import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.perforce.team.core.PerforceTeamProvider;
 import com.perforce.team.core.p4java.IP4Container;
+import com.perforce.team.core.p4java.IP4File;
+import com.perforce.team.core.p4java.IP4Folder;
 import com.perforce.team.core.p4java.IP4Resource;
 import com.perforce.team.core.p4java.P4Workspace;
 
@@ -118,11 +123,15 @@ public final class FileUtility {
 		if (folder != null && folder instanceof IP4Container) {
 			IP4Resource[] scmResources = ((IP4Container) folder).members();
 			if (scmResources != null) {
-				IResource[] resources = new IResource[scmResources.length];
+				List<IResource> resources = MiscUtil.buildArrayList();
 				for(int i = 0, s = scmResources.length; i < s; ++i) {
-					resources[i] = scmResources[i].getResource();
+					if (scmResources[i] instanceof IP4File) {
+						resources.add(((IP4File)scmResources[i]).getLocalFileForLocation());
+					} else if (scmResources[i] instanceof IP4Folder) {
+						resources.addAll(Arrays.asList(((IP4Folder) scmResources[i]).getLocalContainers()));
+					}
 				}
-				return resources;
+				return resources.toArray(new IResource[resources.size()]);
 			}
 		}
 		return new IResource[0];
@@ -136,4 +145,13 @@ public final class FileUtility {
 		return parent == null ? false : FileUtility.isP4Internals(parent);
 	}
 
+	public static boolean isManagedByPerforce(IResource resource) {
+		// check if project is associated with Perforce Team provider, 
+		// if we don't test it asRepositoryResource will throw RuntimeException
+		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), PerforceTeamProvider.ID);
+		if (provider != null) {
+			return true;
+		}
+		return false;
+	}
 }

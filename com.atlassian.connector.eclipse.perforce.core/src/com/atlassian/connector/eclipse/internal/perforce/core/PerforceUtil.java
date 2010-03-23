@@ -1,35 +1,12 @@
 package com.atlassian.connector.eclipse.internal.perforce.core;
 
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.svn.core.SVNTeamPlugin;
-import org.eclipse.team.svn.core.connector.SVNRevision;
-import org.eclipse.team.svn.core.resource.IRepositoryFile;
-import org.eclipse.team.svn.core.resource.IRepositoryLocation;
-import org.eclipse.team.svn.core.resource.IRepositoryResource;
-import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
-import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 public final class PerforceUtil {
 	
 	private PerforceUtil() {
 		// ignore
 	}
 
+	/*
 	public static IRepositoryLocation getRepositoryLocation(String url) {
 		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
 		IRepositoryLocation bestMatch = null;
@@ -44,7 +21,7 @@ public final class PerforceUtil {
 			}
 		}
 		return bestMatch;
-	}
+	}*/
 	
 	/**
 	 * 
@@ -53,6 +30,7 @@ public final class PerforceUtil {
 	 * @param monitor
 	 * @return
 	 */
+	/*
 	public static IResource getLocalResourceFromFilePath(final String repoUrl, final String path, IProgressMonitor monitor) {
 		SubMonitor submonitor = SubMonitor.convert(monitor);
 		
@@ -68,7 +46,7 @@ public final class PerforceUtil {
 			if (!project.isOpen() || RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID) == null) {
 				continue; 
 			}
-			final IRepositoryResource repositoryResource = SVNRemoteStorage.instance().asRepositoryResource(project);
+			final IP4Resource repositoryResource = P4Workspace.getWorkspace().getResource(project);
 			if (repositoryResource == null) {
 				continue;
 			}
@@ -118,10 +96,11 @@ public final class PerforceUtil {
 
 		StatusHandler.log(new Status(IStatus.WARNING, AtlassianPerforceCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
 		return null;
-	}
+	}*/
 
+	/*
 	@Nullable
-	public static IRepositoryFile getSvnRemoteFile(@NotNull String repoUrl, @NotNull String filePath, @NotNull SVNRevision fileRevision,
+	public static IP4File getSvnRemoteFile(@NotNull String repoUrl, @NotNull String filePath, @NotNull SVNRevision fileRevision,
 			@Nullable final IProgressMonitor monitor) {
 		
 		IRepositoryLocation repository = getRepositoryLocation(repoUrl);
@@ -129,6 +108,6 @@ public final class PerforceUtil {
 			return new SVNRepositoryFile(repository, repoUrl + '/' + filePath, fileRevision);
 		}
 		return null;
-	}
+	}*/
 
 }
