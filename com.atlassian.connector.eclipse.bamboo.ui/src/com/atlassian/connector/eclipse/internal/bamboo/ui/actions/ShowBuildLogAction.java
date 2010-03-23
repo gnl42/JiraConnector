@@ -98,13 +98,20 @@ public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerActio
 						} else {
 							try {
 								showConsole(console);
-								messageStream.print(buildLog);
+								if (!messageStream.isClosed()) {
+									messageStream.print(buildLog.length() > 0 ? buildLog : "Build log is empty.");
+								} else {
+									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+											"Cannot print to console message stream."));
+								}
 							} finally {
 								try {
-									messageStream.close();
+									if (!messageStream.isClosed()) {
+										messageStream.close();
+									}
 								} catch (IOException e) {
 									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-											"Failed to close console message stream"));
+											"Failed to close console message stream.", e));
 								}
 							}
 						}
@@ -161,6 +168,7 @@ public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerActio
 			}
 			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			consoleManager.removeConsoles(new IConsole[] { console });
+			buildLogConsoles.remove(build);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					MessageDialog.openError(null, getText(), "Retrieving build logs for " + build.getPlanKey() + "-"
