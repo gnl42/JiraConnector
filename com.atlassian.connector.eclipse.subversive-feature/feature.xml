@@ -25,17 +25,23 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="com.atlassian.connector.eclipse.team.ui"/>
       <import plugin="org.eclipse.mylyn.commons.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="com.atlassian.connector.eclipse.crucible" version="2.0.0.qualifier" match="equivalent"/>
-      <import plugin="org.eclipse.team.svn"/>
       <import plugin="org.eclipse.team.svn.core"/>
       <import plugin="org.eclipse.team.svn.ui"/>
+      <import feature="com.atlassian.connector.eclipse.crucible" version="2.1.0.qualifier" match="equivalent"/>
       <import feature="org.eclipse.team.svn" version="0.7.8" match="compatible"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.mylyn.commons.net"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.jface"/>
    </requires>
 
    <plugin
