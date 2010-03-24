@@ -11,9 +11,11 @@
 package com.atlassian.connector.eclipse.internal.perforce.ui;
 
 import com.perforce.p4java.core.file.FileSpecOpStatus;
+
 import com.perforce.team.core.p4java.IP4File;
 import com.perforce.team.core.p4java.IP4Resource;
 import com.perforce.team.core.p4java.P4Workspace;
+import com.perforce.team.ui.IgnoredFiles;
 
 import org.eclipse.core.resources.IResource;
 
