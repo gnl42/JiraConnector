@@ -82,7 +82,6 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 				} catch (CoreException e) {
 					reportError(e.getMessage(), e);
 				}
-
 				reviewItem = CrucibleUiUtil.getCrucibleFileFromResource(resource, review, monitor);
 
 			} else {
