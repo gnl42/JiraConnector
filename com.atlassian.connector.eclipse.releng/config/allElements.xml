@@ -35,6 +35,10 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.perforce" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.subversive" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -71,6 +75,10 @@
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.crucible" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.perforce" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
@@ -111,6 +119,9 @@
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.dependencies">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.perforce">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.subclipse">
