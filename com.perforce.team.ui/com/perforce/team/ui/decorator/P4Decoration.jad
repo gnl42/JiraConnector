@@ -1,0 +1,103 @@
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   P4Decoration.java
+
+package com.perforce.team.ui.decorator;
+
+import com.perforce.team.ui.PerforceUIPlugin;
+import java.util.Map;
+import org.eclipse.jface.preference.IPreferenceStore;
+
+public class P4Decoration
+{
+
+    public P4Decoration()
+    {
+    }
+
+    public static String decorateFile(Map variables)
+    {
+        return decorate(PerforceUIPlugin.getPlugin().getPreferenceStore().getString("com.perforce.team.ui.preferences.FILE_DECORATION_TEXT"), variables).toString();
+    }
+
+    public static String decorateProject(Map variables)
+    {
+        return decorate(PerforceUIPlugin.getPlugin().getPreferenceStore().getString("com.perforce.team.ui.preferences.PROJECT_DECORATION_TEXT"), variables).toString();
+    }
+
+    public static StringBuilder decorate(String format, Map variables)
+    {
+        StringBuilder output;
+        boolean containsName;
+label0:
+        {
+            output = new StringBuilder();
+            int length = format.length();
+            int start = -1;
+            int end = length;
+            containsName = false;
+            do
+            {
+                end = format.indexOf('{', start);
+                if(end <= -1)
+                    break;
+                output.append(format.substring(start + 1, end));
+                start = format.indexOf('}', end);
+                if(start > -1)
+                {
+                    String key = format.substring(end + 1, start);
+                    String optionalPrefix = null;
+                    String optionalSuffix = null;
+                    int optionStart = key.indexOf('[');
+                    if(optionStart > -1)
+                    {
+                        int optionEnd = key.lastIndexOf(']');
+                        if(optionEnd > -1)
+                        {
+                            optionalPrefix = key.substring(0, optionStart);
+                            optionalSuffix = key.substring(optionEnd + 1);
+                            key = key.substring(optionStart + 1, optionEnd);
+                        }
+                    }
+                    if(!containsName && key.equals("name"))
+                        containsName = true;
+                    String value = (String)variables.get(key);
+                    if(value != null)
+                    {
+                        if(optionalPrefix != null)
+                            output.append(optionalPrefix);
+                        output.append(value);
+                        if(optionalSuffix != null)
+                            output.append(optionalSuffix);
+                    }
+                } else
+                {
+                    output.append(format.substring(end, length));
+                    break label0;
+                }
+            } while(true);
+            output.append(format.substring(start + 1, length));
+        }
+        if(!containsName)
+        {
+            String name = (String)variables.get("name");
+            if(name != null)
+                output.append((new StringBuilder(" ")).append(name).toString());
+        }
+        return output;
+    }
+
+    public static final String NAME_VARIABLE = "name";
+    public static final String CLIENT_VARIABLE = "client";
+    public static final String USER_VARIABLE = "user";
+    public static final String SERVER_VARIABLE = "server";
+    public static final String CHARSET_VARIABLE = "charset";
+    public static final String HAVE_VARIABLE = "have";
+    public static final String HEAD_VARIABLE = "head";
+    public static final String OFFLINE_VARIABLE = "offline";
+    public static final String TYPE_VARIABLE = "type";
+    public static final String ACTION_VARIABLE = "action";
+    public static final String OUTGOING_CHANGE_VARIABLE = "outgoing_change_flag";
+    public static final String UNADDED_CHANGE_VARIABLE = "not_under_version_control";
+}

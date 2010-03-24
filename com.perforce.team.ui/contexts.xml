@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+   
+<!-- ********************************** -->
+<!-- Preferences (General) Dialog 	-->
+<!-- ********************************** -->	
+
+	<context  id="pref_new_open_add" >
+		<description>If enabled, new workspace files are automatically opened for add.</description>
+	</context>
+
+	<context  id="pref_markers_enabled" >
+		<description>If enabled, displays markers indicating files you have added to the project but have not added to Perforce.</description>
+	</context>
+
+	<context  id="pref_open_default" >
+		<description>If disabled, files are automatically opened in the default changelist. If enabled, a dialog is displayed, enabling you to choose the changelist. To move files among changelists, drag and drop them in the Pending Changelist pane (Window>Show View>Perforce Pending Changelists).</description>
+	</context>
+	
+	<context  id="pref_refactor_support" >
+		<description>When enabled, performs Perforce operations in conjunction with file-based workbench operations such as delete, edit, and rename/refactor. In Perforce, renaming is accomplished by deleting a file and integrating it to a new file, to preserve file ancestry.</description>
+	</context>
+	
+	<context  id="pref_delete_project_files" >
+		<description>When enabled, opens files for deletion from the depot when you delete them from your workspace.</description>
+	</context>
+	
+	<context  id="pref_use_search_path" >
+		<description>Specifies that the location of the p4 executable is found using the current search path.</description>
+	</context>
+	
+	<context  id="pref_use_location" >
+		<description>Allows the location of the p4 executable to be specified.</description>
+	</context>
+	
+	<context  id="pref_location_text" >
+		<description>Specifies the full path to the p4 executable.</description>
+	</context>
+	
+	<context  id="pref_location_browse" >
+		<description>Browse directories to specify the location of the p4 executable.</description>
+	</context>
+	
+<!-- ********************************** -->
+<!-- Preferences (Jobs) Dialog 			-->
+<!-- ********************************** -->	
+
+	<context id="pref_all_jobs_radio" >
+		<description>Specifies that all open jobs are retrieved from the Perforce server.</description>
+	</context>
+	
+	<context id="pref_max_jobs_radio" >
+		<description>Limits the number of jobs retrieved from the Perforce server (huge job retrievals can affect performance).</description>
+	</context>
+	
+	<context id="pref_max_jobs_text" >
+		<description>Specifies the maximum number of jobs to retrieve.</description>
+	</context>
+	
+<!-- ********************************** -->
+<!-- Preferences (Changelists) Dialog 	-->
+<!-- ********************************** -->	
+
+	<context id="pref_all_changelists_radio" >
+		<description>Specifies that all submitted changelists are retrieved from the Perforce server.</description>
+	</context>
+	
+	<context id="pref_max_changelists_radio" >
+		<description>Limits the number of submitted changelists retrieved from the Perforce server (huge changelist retrievals can affect performance).</description>
+	</context>
+	
+	<context id="pref_max_changelists_text" >
+		<description>Specifies the maximum number of submitted changelists to retrieve at one time.</description>
+	</context>
+	
+<!-- ********************************** -->
+<!-- Preferences (Console) Dialog 		-->
+<!-- ********************************** -->	
+	<context  id="pref_console_command_colour" >
+		<description>Commands sent to the Perforce server are displayed in this color in the Perforce Console pane.</description>
+	</context>
+	
+	<context  id="pref_console_message_colour" >
+		<description>Informative messages from the Perforce server are displayed in this color in the Perforce Console pane.</description>
+	</context>
+	
+	<context  id="pref_console_error_colour" >
+		<description>Error messages from the Perforce server are displayed in this color in the Perforce Console pane.</description>
+	</context>
+	
+	<context  id="pref_console_font" >
+		<description>All text in the Perforce Console pane is displayed using this font.</description>
+	</context>
+	
+<!-- ****************************************** -->
+<!-- Preferences (Label Decorations) Dialog     -->
+<!-- ****************************************** -->	
+
+	<context  id="pref_file_revision" >
+		<description>Display the revision number in your workspace and the latest revision in the depot</description>
+	</context>
+
+	<context  id="pref_file_type" >
+		<description>Display the Perforce file type.</description>
+	</context>
+
+	<context  id="pref_file_action" >
+		<description>Display the action, if any, currently being performed on the file.</description>
+	</context>
+	
+	<context  id="pref_project_port" >
+		<description>Display the host and port for the Perforce server configured for this project.</description>
+	</context>
+
+	<context  id="pref_project_client" >
+		<description>Display the Perforce client specification configured for this project.</description>
+	</context>	
+	
+	<context  id="pref_project_user" >
+		<description>Display the Perforce user configured for this project.</description>
+	</context>
+		
+	<context  id="pref_ignored_resources">
+		<description>If this option is selected then all resources contained in a .p4ignore file will be decorated.</description>
+	</context>
+	
+	<context  id="pref_open_icon" >
+		<description>Specifies the location where the "open" icon is displayed.</description>
+	</context>
+
+	<context  id="pref_sync_icon" >
+		<description>Specifies the location where the "sync" icon is displayed.</description>
+	</context>
+	
+	<context  id="pref_not_sync_icon" >
+		<description>Specifies the location where the "not synced" icon is displayed.</description>
+	</context>	
+	
+	<context  id="pref_unresolved_icon" >
+		<description>Specifies the location where the "unresolved" icon is displayed.</description>
+	</context>	
+	
+	<context  id="pref_lock_icon" >
+		<description>Specifies the location where the "lock" icon is displayed.</description>
+	</context>
+	
+	<context  id="pref_other_icon" >
+		<description>Specifies the location where the "open in other workspace" icon is displayed.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Console View 		  				-->
+<!-- ********************************** -->
+ 	<context  id="console_view" >
+		<description>This pane displays the commands sent to the Perforce Server. For details about the commands, refer to the Perforce Command Reference.</description>
+	</context>
+
+	<context  id="console_clear" >
+		<description>'Clear' deletes the contents of the Status pane.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- File History View 				-->
+<!-- ********************************** 	-->
+ 	<context  id="history_view" >
+		<description>The revision history pane displays the changes you have submitted to Perforce for the selected file. The Changelist number is assigned by Perforce to group related changes.</description>
+		<topic href="revision_history.html"  label="Revision History"></topic>
+	</context>
+	
+	<context  id="history_refresh" >
+		<description>'Refresh' retrieves the latest file history information from the Perforce Server and updates the display.</description>
+	</context>	
+	
+<!-- **********************************	-->
+<!-- Pending Changelist View 			-->
+<!-- **********************************	-->
+ 	<context  id="pending_view" >
+		<description>This pane lists Perforce changelists that have not been submitted to the depot. The files in these changelists are being changed by you or other users.</description>
+	</context>
+
+	<context  id="pending_refresh" >
+		<description>'Refresh' retrieves the latest file status information from the Perforce Server and updates the display.</description>
+	</context>	
+
+	<context  id="pending_new_changelist" >
+		<description>'New Changelist' creates a numbered changelist. If files are open in the default changelist, the files are moved to the new numbered changelist.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Submitted Changelist View 			-->
+<!-- **********************************	-->
+ 	<context  id="submitted_view" >
+		<description>This pane lists Perforce changelists that have been submitted to the depot.</description>
+	</context>
+	
+	<context  id="submitted_refresh" >
+		<description>'Refresh' retrieves the latest changelist information from the Perforce Server and updates the display.</description>
+	</context>
+	
+	<context   id="submitted_delete" >
+		<description>Delete selected entry from the list of submitted changelist filters.</description>
+	</context>	
+	
+<!-- **********************************	-->
+<!-- Depot View 						-->
+<!-- **********************************	-->
+ 	<context  id="depot_view" >
+		<description>The depot pane enables you to browse the contents of a Perforce server.</description>
+	</context>
+
+	<context  id="depot_refresh" >
+		<description>'Refresh' retrieves the latest file status information from the Perforce Server and updates the display.</description>
+	</context>				
+	
+<!-- **********************************	-->
+<!-- Job View 							-->
+<!-- **********************************	-->	
+	<context   id="job_view_filter" >
+		<description>Specify search criteria to list specific jobs (example: ReportedDate>=2004/01/01). </description>
+	</context>
+	
+	<context   id="job_view_delete" >
+		<description>Delete selected entry from the list of job filters.</description>
+	</context>
+	
+	<context   id="job_view_job_list" >
+		<description>List of jobs that you can attach to the changelist you are submitting.</description>
+	</context>
+	
+	<context   id="job_view_job_desc" >
+		<description>Full description of selected job.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- File Menu actions 				-->
+<!-- **********************************	-->
+ 	<context  id="action_sync_head" >
+		<description>'Sync to Head' copies the most recent file revisions from the depot to your computer.</description>
+	</context>
+
+	<context  id="action_add" >
+		<description>'Add to Source Control' opens the project files for add in a Perforce changelist. When you submit the changelist, the files are added to the depot.</description>
+	</context>
+	
+	<context  id="action_ignore" >
+		<description>'Add to .p4ignore' adds a file to the list of files ignored by P4WSAD.</description>
+	</context>
+
+	<context  id="action_edit" >
+		<description>'Edit' opens a file for edit in a Perforce changelist. When you submit the changelist, the file containing your changes is submitted to the depot</description>
+	</context>
+
+	<context  id="action_delete" >
+		<description>>'Delete' opens a file for delete in a Perforce changelist. When you submit the changelist, the head revision of the file is marked 'deleted' in the depot. Note that previous revisions of the file remain in the depot.</description>
+	</context>
+
+	<context  id="action_revert" >
+		<description>'Revert' discards changes you have made to the selected file(s) and removes them from the changelist.</description>
+	</context>
+
+	<context  id="action_show_history" >
+		<description>'Revision History' displays the revision history for the selected project in the Perforce Revision History pane.</description>
+	</context>
+
+	<context  id="action_refresh" >
+		<description>'Refresh' retrieves the latest file status information from the Perforce Server and update the display.</description>
+	</context>
+
+	<context  id="action_remove" >
+		<description>'Remove from Client' removes the project files from workspace (the files remain in the Perforce depot, if previously added).</description>
+	</context>
+	
+	<context  id="action_recover_deleted" >
+		<description>'Recover Deleted File' recovers a file using the current revision on the Client or using the next to last revision if no revision on Client.</description>
+	</context>
+
+	<context  id="action_diff_depot" >
+		<description>'Diff File(s) Against Depot' enables you to see the changes you have made to the file after you opened it for edit.</description>
+	</context>
+
+	<context  id="action_file_type" >
+		<description>'Change File Type' enables you to specify the Perforce file type assigned to the file. The file type enables Perforce determine how to store files and whether files can be diffed.</description>
+		<topic href="filetypes.html"  label="File Types"></topic>
+	</context>
+	
+	<context  id="action_lock" >
+		<description>Prevent all other users from submitting changes to this file.</description>
+	</context>
+	
+	<context  id="action_unlock" >
+		<description>Re-enable users to submit changes to this file.</description>
+	</context>
+
+	<context  id="action_interactive_resolve" >
+		<description>'Resolve Interactively' displays a dialog containing the various resolve options, enabling you to decide precisely how to resolve the file.</description>
+	</context>
+
+	<context  id="action_manual_resolve" >
+		<description>'Manual Resolve' opens the Eclipse merge editor that allows the user to merge changes manually.</description>
+	</context>
+
+	<context  id="action_auto_resolve" >
+		<description>'Auto Resolve' displays a dialog listing simple resolve options. If you need to combine your changes with changes made by other users, use a merge program instead of these simple options.</description>
+	</context>
+
+	<context  id="action_schedule_resolve" >
+		<description>'Schedule For Resolve' notifies the Perforce Server that a conflict exists for the specified file. For example, if the file has been edited by you and another user simultaneously, the file needs to be resolved to determine which changes are to be retained. Refer to the Perforce Users Guide for details.</description>
+	</context>
+	
+	<context  id="action_replace_head" >
+		<description>Copies the most recent file revisions from the depot to your computer.</description>
+	</context>
+	
+	<context  id="action_replace_other" >
+		<description>Copies a specific revision of the file from the depot to your computer.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Changelist Menu actions 			-->
+<!-- **********************************	-->
+	<context  id="action_submit" >
+		<description>'Submit' sends your changed files to the Perforce Server for storage in the depot.</description>
+	</context>	
+
+	<context  id="action_revert_unchanged" >
+		<description>'Revert Unchanged Files' closes files that you opened but did not change. </description>
+	</context>
+	
+	<context  id="action_add_job_fix" >
+		<description>'Add Job Fix' enables you to close a job when the changelist is submitted.</description>
+	</context>
+
+	<context  id="action_edit_spec" >
+		<description>'Edit Spec' displays the changelist, enabling you to revise the description and choose which files to submit.</description>
+	</context>
+
+	<context  id="action_delete_change" >
+		<description>'Delete Empty Changelist' deletes a Perforce changelist that contains no files.</description>
+	</context>
+	
+	<context  id="action_move_change" >
+		<description>Move selected file to a different changelist.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Job Fix Menu actions 				-->
+<!-- **********************************	-->
+	<context  id="action_unfix_job" >
+		<description>'Unfix Job' removes a job that was previously attached to a changelist.</description>
+	</context>	
+	
+<!-- **********************************	-->
+<!-- Project Menu actions 			-->
+<!-- **********************************	-->
+ 	<context  id="action_unmanage" >
+		<description>'Unmanage' removes Perforce as the configured source code management tool for the project. Note that any checked-in files remain in the depot, and any pending changelists are not deleted.</description>
+	</context>	
+	
+	 <context  id="action_work_online" >
+		<description>Attempt to reconnect with Perforce server after having been offline.</description>
+	</context>
+	
+	 <context  id="action_authentication" >
+		<description>View authentication settings and status</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Share Project Dialog 			-->
+<!-- ********************************** -->
+	
+	<context  id="share_project_recent" >
+		<description>Lists recently used Perforce server hosts and ports.</description>
+	</context>
+		
+	<context  id="share_project_port" >
+		<description>Specify the host and port of the computer where the Perforce Server is running in the format host:port.</description>
+	</context>	
+	
+	<context  id="share_project_user" >
+		<description>Specify your Perforce user name</description>
+	</context>	
+	
+	<context  id="share_project_client" >
+		<description>Specify the name of the client workspace where your Websphere projects reside.</description>
+	</context>
+	
+	<context  id="share_project_password" >
+		<description>The password for the Perforce user configured for this project.</description>
+	</context>
+	
+	<context  id="share_project_charset" >
+		<description>The character set used by your client computer. DO NOT SET unless connecting to a server that is running in UNICODE mode!</description>
+	</context>
+	
+	<context  id="share_project_test_connection" >
+		<description>Test the Perforce server connection settings specified on this dialog.</description>
+	</context>
+	
+<!-- ********************************** -->
+<!-- Add/Edit/Delete Dialog 			-->
+<!-- ********************************** -->	
+	<context  id="add_edit_delete_changes" >
+		<description>This dialog enables you to choose files to open and specify the changelist in which they are opened. Use changelists to group changes to related files. When you submit a changelist, all the changed files are sent to the depot as a group.
+		</description>
+	</context>	
+
+	<context  id="add_edit_delete_files" >
+		<description>This file is open for add, edit, or delete. Uncheck it if you do not want to submit it in this changelist.</description>
+	</context>	
+	
+<!-- ********************************** -->
+<!-- Check Consistency Dialog 			-->
+<!-- ********************************** -->	
+	<context  id="check_consistency_changes" >
+		<description>Choose the changelist into which the selected files will be opened.</description>
+	</context>	
+
+	<context  id="check_consistency_diff_files" >
+		<description>This list shows all unopened files that are different to the revision in the depot. The selected files will be opened for edit.</description>
+	</context>
+	
+	<context  id="check_consistency_missing_files" >
+		<description>This list shows all unopened files that are missing from the client workspace. The selected files will be opened for delete.</description>
+	</context>
+	
+	<context  id="check_consistency_new_files" >
+		<description>This list shows all files that are not under Perforce control. The list excludes files that are ignored. The selected files will be opened for add.</description>
+	</context>		
+	
+<!-- ********************************** -->
+<!-- Auto-resolve Dialog 				-->
+<!-- ********************************** -->
+ 	<context  id="auto_resolve_selected_files" >
+ 		<description>Resolve only the files you selected in the changelist pane.
+		</description>
+		<topic href="resolving.html"  label="Resolving Files"></topic>
+ 	</context>	
+
+	<context  id="auto_resolve_all_files" >
+		<description>Resolve all files in the changelist.</description>
+	</context>	
+
+	<context  id="auto_resolve_accept_theirs" >
+		<description>Accept the latest version in the depot and disregard your changes.</description>
+	</context>	
+
+	<context  id="auto_resolve_accept_yours" >
+		<description>Check your changes in, superseding the changes made to the latest version in the depot.</description>
+	</context>	
+
+	<context  id="auto_resolve_safe_auto" >
+		<description>If either your file or their file (but not both files) are different from the base file, accept the differing version of the file as the head revision. If both files are different from base file, do not perform a resolve on this file. </description>
+	</context>	
+
+	<context  id="auto_resolve_auto" >
+		<description>If their file is identical to the base file, accept your file as the head revision. If your file is identical to the base file, accept their file as the head revision. If your file and their file are both different from the base file, but there are no conflicts between yours and their file, accept a merge of the two files as the head revision. Otherwise, if there are conflicts between your file and their file, do not perform resolve on this file. </description>
+	</context>	
+
+	<context  id="auto_resolve_conflict" >
+		<description>Accept the merged file as the head revision regardless of the status of yours and their files. If conflicts are found in the two file versions, the conflicts are marked and retained. The file must then be edited manually to eliminate the conflicts. </description>
+	</context>	
+
+	<context  id="auto_resolve_reresolve" >
+		<description>Schedule already-resolved files to be resolved again.</description>
+	</context>	
+
+	<context  id="auto_resolve_text_merge" >
+		<description>Enable the use of the textual merge tool on any binary files scheduled for resolve.</description>
+ 	</context>
+ 	
+<!-- ********************************** -->
+<!-- Submit\Change Spec Dialog 			-->
+<!-- ********************************** -->	
+ 	<context  id="change_spec_description" >
+ 		<description>This form enables you to describe the changes you have made to the files you are submitting. Verify that the files you want to submit are checked in the Files list.</description>
+ 	</context>
+
+	<context  id="change_spec_files" >
+		<description>Check only the files you want to submit in this changelist.</description>
+	</context>
+	
+	<context  id="change_spec_reopen" >
+		<description>Check if you want to submit files and immediately reopen them for edit.</description>
+	</context>
+	
+	<context  id="change_spec_jobs" >
+		<description>change_spec_jobs</description>
+	</context>
+	
+	<context  id="change_spec_add_jobs" >
+		<description>Display a list of jobs you can attach to the changelist. The selected jobs are fixed (closed) when you submit the changelist.</description>
+	</context>
+	
+	<context  id="change_spec_select_all" >
+		<description>Select (check) all files in changelist for submission.</description>
+	</context>
+	
+	<context  id="change_spec_deselect_all" >
+		<description>Deselect (uncheck) all files in changelist to prevent submission.</description>
+	</context>
+	
+<!-- ********************************** -->
+<!-- File Type Dialog 					-->
+<!-- ********************************** -->
+ 	<context  id="file_type_text" >
+ 		<description>A file that contains ASCII text. </description>
+ 	</context>	
+
+	<context  id="file_type_binary" >
+		<description>A non-text file </description>
+	</context>
+
+	<context  id="file_type_symlink" >
+		<description>A symbolic link</description>
+	</context>
+
+	<context  id="file_type_unicode" >
+		<description>A file containing Unicode characters. Use only with Perforce servers in international mode.</description>
+	</context>
+
+	<context  id="file_type_resource" >
+		<description>Macintosh resource file</description>
+	</context>
+
+	<context  id="file_type_apple" >
+		<description>Dual-fork Macintosh file</description>
+	</context>
+	
+	<context  id="file_type_exec" >	
+		<description>Execute bit is set in workspace when you sync file (for programs stored in Perforce)</description>
+	</context>
+
+	<context  id="file_type_writeable" >
+		<description>Keep file writaeble after submit (by default, files are set to read-only)</description>
+	</context>
+
+	<context  id="file_type_keyword" >
+		<description>Expand any RCS keywords when file is submitted (for text files)</description>
+	</context>
+
+	<context  id="file_type_only" >
+		<description>Expand only the $Id and $Header RCS keywords</description>
+	</context>
+
+	<context  id="file_type_preserve" >
+		<description>Do not change file modification time when submitting or syncing</description>
+	</context>
+
+	<context  id="file_type_multiple" >
+		<description>Do not allow more than one user to open the file</description>
+	</context>
+	
+	<context  id="file_type_default" >
+		<description>Store the file using Perforce defaults for compression and delta or full revision</description>
+	</context>
+
+	<context  id="file_type_compressed" > 
+		<description>Store the full compressed version of each file revision (binary files)</description>
+	</context>
+
+	<context  id="file_type_delta" >
+		<description>Store RCS deltas (text files)</description>
+	</context>
+
+	<context  id="file_type_full" >
+		<description>Server stores full file per revision (use for Postscript and other textual formats that would otherwise be stored as deltas)</description>
+	</context>
+
+	<context  id="file_type_single" >	
+		<description>Store only the most recent revision of a file.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Revert Unchanged Dialog 			-->
+<!-- **********************************	-->
+ 	<context  id="revert_unchanged_files" >	
+		<description>This dialog enables you to remove unchanged files from a changelist. Reverting unchanged files helps keep changelists small and avoids creating unnecessary revisions in the depot. </description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Test Connection Dialog 			-->
+<!-- **********************************	-->
+	<context  id="test_connection_results" >	
+		<description>Displays the results of testing the connection to the Perforce Server.</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Move changelists Dialog 			-->
+<!-- **********************************	-->
+	<context  id="move_change_changelists" >	
+		<description>move_change_changelists</description>
+	</context>
+	
+<!-- **********************************	-->
+<!-- Authorization Dialog 				-->
+<!-- **********************************	-->
+	<context  id="auth_remember_password" >	
+		<description>auth_remember_password</description>
+	</context>
+	
+	<context  id="auth_use_login" >	
+		<description>auth_use_login</description>
+	</context>
+						
+</contexts>

@@ -1,0 +1,1729 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<extension-point id="timelapse" name="Time-lapse View" schema="schema/timelapse.exsd"/>
+<!-- New/Import wizard contributions -->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category name="Perforce" id="com.perforce.team.ui.newWizards">
+      </category>
+      <wizard
+            icon="icons/perforce/small_p4.gif"
+            category="com.perforce.team.ui.newWizards"
+            name="Projects from Perforce"
+            class="com.perforce.team.ui.project.ExistingProjectWizard"
+            project="true"
+            id="com.perforce.team.ui.newExistingProjects">
+            <description> 
+              Import existings projects from a Perforce server
+            </description>
+      </wizard>
+      <wizard
+            icon="icons/views/server_connection.png"
+            category="com.perforce.team.ui.newWizards"
+            name="Perforce Connection"
+            class="com.perforce.team.ui.connection.ConnectionWizard"
+            project="false"
+            id="com.perforce.team.ui.newConnection">
+            <description> 
+              Create a new Perforce connection
+            </description>
+      </wizard>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category name="Perforce" id="com.perforce.team.ui.importWizards">
+      </category>
+      <wizard
+            icon="icons/perforce/small_p4.gif"
+            name="Projects from Perforce"
+            class="com.perforce.team.ui.project.ExistingProjectWizard"
+            category="com.perforce.team.ui.importWizards"
+            id="com.perforce.team.ui.importWizards">
+            <description> 
+              Import existing projects from a Perforce server
+          </description>
+      </wizard>
+   </extension>
+<!-- Synchronize view contribution -->
+	<extension
+         point="org.eclipse.team.ui.synchronizeParticipants">
+		<participant
+            name="Perforce"
+            icon="icons/perforce/p4.gif"
+            class="com.perforce.team.ui.synchronize.PerforceSynchronizeParticipant"
+            id="com.perforce.synchronize.participant">
+		</participant>
+	</extension>
+	<extension
+         point="org.eclipse.team.ui.synchronizeWizards">
+      <wizard
+            class="com.perforce.team.ui.synchronize.PerforceSynchronizeWizard"
+            name="Perforce"
+            description="Synchronize resources with their associated Perforce server"
+            icon="icons/perforce/p4.gif"
+            id="com.perforce.team.ui.synchronize.wizard"/>
+   </extension>
+<!-- Sharing Wizard -->
+   <extension
+         point="org.eclipse.team.ui.configurationWizards">
+      <wizard
+            name="Perforce"
+            icon="icons/perforce/p4.gif"
+            class="com.perforce.team.ui.ConfigWizard"
+            id="com.perforce.team.ui.ConfigWizard">
+      </wizard>
+   </extension>
+<!-- Popup Menu -->
+<!-- Universal action groups 
+		
+		group1 - Sync/Refresh actions
+		- Sync Actions
+		- Synchronize view Actions
+		- Refresh action
+
+		group2 - File actions
+		- Open for add/edit/delete
+		- Submit
+		- Resolve
+		- Revert
+		
+		group3 - Advanced file actions / file information actions
+		- Diff
+		- File information
+		- File history
+		- Integrate
+		- Label
+		
+		group4 - Attribute actions
+		- Change file attributes
+		- Lock
+		- Unlock
+		
+		group5 - Advanced Actions
+		- .p4ignore
+		- Revision graph
+		- Time-Lapse view
+		- Check consistency 
+
+--> 
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="com.perforce.team.ui.IResourceContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=com.perforce.team.core.PerforceTeamProvider">
+         </filter>
+         
+		<action
+				label="%ReplaceOtherAction.label"
+				helpContextId="com.perforce.team.ui.action_replace_other"
+				tooltip="%ReplaceOtherAction.tooltip"
+				menubarPath="replaceWithMenu/replaceWithGroup"
+				class="com.perforce.team.ui.p4java.actions.SyncRevisionAction"
+				id="com.perforce.team.ui.replace_other">
+		</action> 
+		
+		<action
+				label="%ReplaceHeadAction.label"
+				helpContextId="com.perforce.team.ui.action_replace_head"
+				tooltip="%ReplaceHeadAction.tooltip"
+				menubarPath="replaceWithMenu/replaceWithGroup"
+				class="com.perforce.team.ui.p4java.actions.SyncAction"
+				id="com.perforce.team.ui.replace_head">
+		</action> 
+         
+         <action
+               label="%RemoveAction.label"
+               helpContextId="com.perforce.team.ui.action_remove"
+               tooltip="%RemoveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RemoveAction"
+               menubarPath="team.main/group1"
+               definitionId="com.perforce.team.ui.commands.remove"
+               id="com.perforce.team.ui.remove">
+         </action>
+         
+          <action
+               label="%RefreshAction.label"
+               helpContextId="com.perforce.team.ui.action_refresh"
+               icon="icons/normal/refresh.gif"
+               tooltip="%RefreshAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RefreshAction"
+               menubarPath="team.main/group1"
+               definitionId="com.perforce.team.ui.commands.refresh"
+               id="com.perforce.team.ui.refresh">
+         </action>
+        
+         <action
+               label="%SyncRevAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_rev"
+               tooltip="%SyncRevAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncRevisionAction"
+               menubarPath="team.main/group1"
+               definitionId="com.perforce.team.ui.commands.syncrev"
+               id="com.perforce.team.ui.syncrev">
+         </action>
+         
+         <action
+               label="%SyncAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_head"
+               tooltip="%SyncAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncAction"
+               menubarPath="team.main/group1"
+               definitionId="com.perforce.team.ui.commands.sync"
+               icon="icons/normal/sync.gif"
+               overrideActionId="org.eclipse.team.ui.applyPatch"
+               id="com.perforce.team.ui.sync">
+         </action>
+         
+          <action
+               label="%SubmitAction.label"
+               helpContextId="com.perforce.team.ui.action_submit"
+               tooltip="%Submit.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SubmitAction"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.submit"
+               icon="icons/normal/submit.gif"
+               id="com.perforce.team.ui.actions.submit">
+         </action>
+         
+          <action
+               label="Shelve..."
+               helpContextId="com.perforce.team.ui.action_shelve"
+               tooltip="Shelve selected file(s)"
+               class="com.perforce.team.ui.shelve.ShelveAction"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.shelve"
+               icon="icons/normal/shelve.png"
+               id="com.perforce.team.ui.actions.shelve">
+         </action>
+         
+         <action
+               label="%RevertUnchangedAction.label"
+               helpContextId="com.perforce.team.ui.action_revert_unchanged"
+               tooltip="%RevertUnchangedAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertUnchangedAction"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.revert_unchanged"
+               id="com.perforce.team.ui.revertunchanged">
+         </action>
+         
+          <action
+               label="%RevertAction.label"
+               helpContextId="com.perforce.team.ui.action_revert"
+               tooltip="%RevertAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertAction"
+               icon="icons/normal/revert.png"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.revert"
+               id="com.perforce.team.ui.actions.revert">
+         </action>
+         
+          <action
+               label="%AutoResolveAction.label"
+               helpContextId="com.perforce.team.ui.action_auto_resolve"
+               tooltip="%AutoResolveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ResolveAction"
+               icon="icons/normal/resolve.png"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.autoresolve"
+               id="com.perforce.team.ui.actions.resolve">
+         </action>
+         
+		 <action
+               label="%DeleteAction.label"
+               helpContextId="com.perforce.team.ui.action_delete"
+               tooltip="%DeleteAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.DeleteAction"
+               icon="icons/normal/delete.png"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.delete"
+               id="com.perforce.team.ui.actions.delete">
+         </action>
+		
+		 <action
+               label="%AddAction.label"
+               helpContextId="com.perforce.team.ui.action_add"
+               tooltip="%AddAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.AddAction"
+               icon="icons/normal/add.png"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.add"
+               id="com.perforce.team.ui.actions.add">
+         </action>         
+
+         <action
+               label="%EditAction.label"
+               helpContextId="com.perforce.team.ui.action_edit"
+               tooltip="%EditAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.EditAction"
+               icon="icons/normal/checkout.png"
+               menubarPath="team.main/group2"
+               definitionId="com.perforce.team.ui.commands.edit"
+               id="com.perforce.team.ui.actions.edit">
+         </action>    
+    
+          <action
+               label="%UnlockAction.label"
+               helpContextId="com.perforce.team.ui.action_unlock"
+               tooltip="%UnlockAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.UnlockAction"
+               menubarPath="team.main/group4"
+               icon="icons/normal/unlock.png"
+               definitionId="com.perforce.team.ui.commands.unlock"
+               id="com.perforce.team.ui.actions.unlock">
+         </action>
+         
+         <action
+               label="%LockAction.label"
+               helpContextId="com.perforce.team.ui.action_lock"
+               tooltip="%LockAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.LockAction"
+               menubarPath="team.main/group4"
+               icon="icons/normal/lock.png"
+               definitionId="com.perforce.team.ui.commands.lock"
+               id="com.perforce.team.ui.actions.lock">
+         </action>   
+               
+         <action
+               label="%FileTypeAction.label"
+               helpContextId="com.perforce.team.ui.action_file_type"
+               tooltip="%FileTypeAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ChangeFiletypeAction"
+               menubarPath="team.main/group4"
+               definitionId="com.perforce.team.ui.commands.filetype"
+               id="com.perforce.team.ui.actions.filetype" />
+        
+         <action
+         	label="%LabelAction.label"
+         	tooltip="%LabelAction.tooltip"
+         	class="com.perforce.team.ui.p4java.actions.LabelFilesAction"
+         	icon="icons/views/label.png"
+         	menubarPath="team.main/group3"
+         	definitionId="com.perforce.team.ui.commands.label"
+         	id="com.perforce.team.ui.actions.label" />
+         	
+         <action
+         	label="%IntegrateAction.label"
+         	tooltip="Integrate selection"
+         	class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+         	icon="icons/normal/branch.png"
+         	menubarPath="team.main/group3"
+         	definitionId="com.perforce.team.ui.commands.integrate"
+         	id="com.perforce.team.ui.actions.integrate" />
+         	
+         <action
+               label="%ShowHistoryAction.label"
+               helpContextId="com.perforce.team.ui.action_show_history"
+               tooltip="%ShowHistoryAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ShowHistoryAction"
+               icon="icons/views/history.gif"
+               menubarPath="team.main/group3"
+               definitionId="com.perforce.team.ui.commands.showhistory"
+               overrideActionId="org.eclipse.team.ui.showLocalHistory"
+               id="com.perforce.team.ui.actions.showhistory">
+         </action>
+         
+          <action
+			   label="%DiffDepotAction.label"
+			   helpContextId="com.perforce.team.ui.action_diff_depot"
+               tooltip="%DiffDepotAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.DiffDepotAction"
+               icon="icons/normal/diff.png"
+               menubarPath="team.main/group3"
+               definitionId="com.perforce.team.ui.commands.diffdepot"
+               id="com.perforce.team.ui.diffdepot">
+         </action>
+        
+         <action
+               label="%ScheduleResolveAction.label"
+               helpContextId="com.perforce.team.ui.action_schedule_resolve"
+               tooltip="%ScheduleResolveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ScheduleResolveAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.actions.scheduleresolve">
+         </action>
+         
+         <action
+				label="%CheckConsistencyAction.label"
+				helpContextId="com.perforce.team.ui.action_check_consistency"
+				tooltip="%CheckConsistencyAction.tooltip"
+				menubarPath="team.main/group5"
+				icon="icons/normal/check_consistency.png"
+				class="com.perforce.team.ui.p4java.actions.CheckConsistencyAction"
+				definitionId="com.perforce.team.ui.commands.check_consistency"
+				id="com.perforce.team.ui.check_consistency">
+		 </action> 
+         
+          <action
+               label="%AddIgnoreAction.label"
+               helpContextId="com.perforce.team.ui.action_add_ignore"
+               tooltip="%AddIgnore.tooltip"
+               class="com.perforce.team.ui.p4java.actions.AddIgnoreAction"
+               menubarPath="team.main/group5"
+               definitionId="com.perforce.team.ui.commands.add_ignore"
+               id="com.perforce.team.ui.actions.add_ignore">
+         </action>
+         
+         <action
+				label="Synchronize with Depot"
+				helpContextId="com.perforce.team.ui.action_sync_depot"
+				tooltip="Sychronize with the depot using the Synchronize view"
+				icon="icons/views/synchronize.gif"
+				menubarPath="team.main/group1"
+				class="com.perforce.team.ui.p4java.actions.TeamSynchronizeAction"
+				id="com.perforce.team.ui.team_synchronize">
+		</action>
+		
+        <action
+               class="com.perforce.team.ui.p4java.actions.DiffPreviousAction"
+               helpContextId="com.perforce.team.ui.action_diff_previous"
+               id="com.perforce.team.ui.compare.diffprevious"
+               label="%ComparePreviousAction.label"
+               menubarPath="compareWithMenu/compareWithGroup"
+               tooltip="%ComparePreviousAction.tooltip">
+        </action>
+        <action
+				label="%CompareDepotAction.label"
+				helpContextId="com.perforce.team.ui.action_diff_depot"
+				tooltip="%CompareDepotAction.tooltip"
+				menubarPath="compareWithMenu/compareWithGroup"
+				icon="icons/normal/diff.png"
+				class="com.perforce.team.ui.p4java.actions.DiffDepotAction"
+				id="com.perforce.team.ui.compare">
+		</action>
+		<action
+               class="com.perforce.team.ui.p4java.actions.DiffHaveAction"
+               helpContextId="com.perforce.team.ui.action_diff_have"
+               id="com.perforce.team.ui.compare.diffhave"
+               label="%CompareHaveAction.label"
+               menubarPath="compareWithMenu/compareWithGroup"
+               tooltip="%CompareHaveAction.tooltip">
+        </action> 
+      </objectContribution>
+      <objectContribution
+            objectClass="com.perforce.team.core.p4java.IP4Connection"
+            id="com.perforce.team.core.p4java.IP4Connection">
+         <action
+               label="%AuthenticationAction.label"
+               helpContextId="com.perforce.team.ui.action_authentication"
+               tooltip="%AuthenticationAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.AuthenticationAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.actions.authentication" />
+         <action
+               label="%WorkOnlineAction.label"
+               helpContextId="com.perforce.team.ui.action_work_online"
+               tooltip="%WorkOnlineAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.WorkOnlineAction"
+               icon="icons/views/server_connection.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.workonline">
+         </action>
+        <action
+         	label="%EditClientAction.label"
+         	tooltip="%EditClientAction.tooltip"
+         	class="com.perforce.team.ui.p4java.actions.EditClientAction"
+         	icon="icons/perforce/workspace.png"
+         	menubarPath="perforce.group1"
+            id="com.perforce.team.ui.edit_client" />
+         <action
+               label="%ServerPropertiesAction.label"
+               helpContextId="com.perforce.team.ui.action_server_properties"
+               tooltip="%ServerPropertiesAction.tooltip"
+               class="com.perforce.team.ui.actions.ServerPropertiesAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.actions.serverproperties" />
+         <action
+               label="%ServerInfo.label"
+               tooltip="%ServerInfo.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ServerInfoAction"
+               icon="icons/normal/properties.gif"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.server_info" />
+         <action
+         	label="Integrate Branches..."
+         	tooltip="Integrate Branches..."
+         	enablesFor="1"
+         	class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+         	icon="icons/normal/branch.png"
+         	menubarPath="perforce.group3"
+         	id="com.perforce.team.ui.actions.integrate" />
+         <action
+               class="com.perforce.team.ui.p4java.actions.WorkOfflineAction"
+               helpContextId="com.perforce.team.ui.action_work_offline"
+               id="com.perforce.team.ui.workoffline"
+               label="%WorkOfflineAction.label"
+               menubarPath="perforce.group2"
+               icon="icons/views/server_connection_offline.png"
+               tooltip="%WorkOfflineAction.tooltip">
+         </action>
+         <action
+         	label="Share Projects..."
+         	tooltip="Share Projects..."
+         	enablesFor="1"
+         	class="com.perforce.team.ui.p4java.actions.ShareProjectsAction"
+         	menubarPath="perforce.group3"
+         	id="com.perforce.team.ui.actions.share_projects" />
+      </objectContribution>
+      <objectContribution
+            objectClass="com.perforce.team.core.p4java.IP4Job"
+            id="com.perforce.team.core.p4java.IP4Job">
+         <action
+               label="%UnfixJobAction.label"
+               helpContextId="com.perforce.team.ui.action_unfix_job"
+               tooltip="%UnfixJobAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.UnfixJobAction"
+               menubarPath="perforce.group1"
+               icon="icons/normal/delete.gif"
+               id="com.perforce.team.ui.unfix_job">
+         </action>
+         <action
+               class="com.perforce.team.ui.p4java.actions.EditJobAction"
+               helpContextId="com.perforce.team.ui.action_edit_job"
+               id="com.perforce.team.ui.editjob"
+               label="Edit Job..."
+               menubarPath="perforce.group1"
+               tooltip="Edit Job...">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="com.perforce.team.core.p4java.IP4Branch"
+            id="com.perforce.team.core.p4java.IP4Branch">
+         <action
+               class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+               helpContextId="com.perforce.team.ui.action_integrate_branch"
+               id="com.perforce.team.ui.integratebranch"
+               label="Integrate..."
+               menubarPath="perforce.group1"
+               tooltip="Integrate Branch...">
+         </action>
+         <action
+               class="com.perforce.team.ui.branches.EditBranchAction"
+               helpContextId="com.perforce.team.ui.action_edit_branch"
+               id="com.perforce.team.ui.editbranch"
+               label="Edit Branch..."
+               menubarPath="perforce.group1"
+               tooltip="Edit Branch...">
+         </action>
+      </objectContribution>
+      
+      <objectContribution
+            objectClass="com.perforce.team.core.p4java.IP4Folder"
+            id="com.perforce.team.core.p4java.IP4Folder">
+         
+         <action
+               label="%RemoveAction.label"
+               helpContextId="com.perforce.team.ui.action_remove"
+               tooltip="%RemoveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RemoveAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.remove">
+         </action>
+         
+          <action
+               label="%SyncRevAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_rev"
+               tooltip="%SyncRevAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncRevisionAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.syncrev">
+         </action>
+         
+         <action
+               label="%SyncAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_head"
+               tooltip="%SyncAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncAction"
+               icon="icons/normal/sync.gif"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.sync" />
+         
+         <action
+               label="%RevertUnchangedAction.label"
+               helpContextId="com.perforce.team.ui.action_revert_unchanged"
+               tooltip="%RevertUnchangedAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertUnchangedAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.revertunchanged" />
+         
+         <action
+               label="%RevertAction.label"
+               helpContextId="com.perforce.team.ui.action_revert"
+               tooltip="%RevertAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertAction"
+               icon="icons/normal/revert.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.revert2" />
+
+         <action
+               label="%DeleteAction.label"
+               helpContextId="com.perforce.team.ui.action_delete"
+               tooltip="%DeleteAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.DeleteAction"
+               icon="icons/normal/delete.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.delete" />
+
+         <action
+               label="%EditAction.label"
+               helpContextId="com.perforce.team.ui.action_edit"
+               tooltip="%EditAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.EditAction"
+               icon="icons/normal/checkout.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.edit" />
+         
+          <action
+         	label="%LabelAction.label"
+         	tooltip="%LabelAction.tooltip"
+         	class="com.perforce.team.ui.p4java.actions.LabelFilesAction"
+         	icon="icons/views/label.png"
+         	menubarPath="perforce.group3"
+         	id="com.perforce.team.ui.actions.label" />
+         	
+         <action
+               class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+               icon="icons/normal/branch.png"
+               id="com.perforce.team.ui.actions.integrate"
+               label="%IntegrateAction.label"
+               menubarPath="perforce.group3"
+               tooltip="%IntegrateAction.tooltip" />
+               
+         <action
+               label="%CheckoutProjectAction.label"
+               helpContextId="com.perforce.team.ui.action_checkout_project"
+               tooltip="%CheckoutProjectAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ImportProjectAction"
+               icon="icons/normal/import.gif"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.actions.checkoutproject" />
+         
+      </objectContribution>
+      
+      <objectContribution
+			objectClass="com.perforce.team.core.p4java.IP4PendingChangelist"
+			id="com.perforce.team.core.p4java.IP4PendingChangelist">
+         <action
+               label="%SubmitAction.label"
+               helpContextId="com.perforce.team.ui.action_submit"
+               tooltip="%SubmitAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SubmitAction"
+               icon="icons/normal/submit.gif"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.submit" />
+               
+         <action
+               label="%ShelveAction.label"
+               helpContextId="com.perforce.team.ui.action_shelve"
+               tooltip="%ShelveAction.tooltip"
+               class="com.perforce.team.ui.shelve.ShelveChangelistAction"
+               icon="icons/normal/shelve.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.shelve" />
+         
+         <action
+               label="%RevertUnchangedAction.label"
+               helpContextId="com.perforce.team.ui.action_revert_unchanged"
+               tooltip="%RevertUnchangedAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertUnchangedAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.revertunchanged" />      
+               
+         <action
+               label="%RevertAllAction.label"
+               helpContextId="com.perforce.team.ui.action_revert_all"
+               tooltip="%RevertAllAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertAllAction"
+               menubarPath="perforce.group2"
+               icon="icons/normal/revert.png"
+               id="com.perforce.team.ui.revertall" />
+               
+          <action
+               label="%AutoResolveAction.label"
+               helpContextId="com.perforce.team.ui.action_auto_resolve"
+               tooltip="%AutoResolveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ChangelistResolveAction"
+               icon="icons/normal/resolve.png"
+               menubarPath="perforce.group2"
+               definitionId="com.perforce.team.ui.commands.resolvechangelist"
+               id="com.perforce.team.ui.actions.resolvechangelist" />
+         
+         <action
+               label="%DeleteChangeAction.label"
+               helpContextId="com.perforce.team.ui.action_delete_change"
+               tooltip="%DeleteChangeAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.DeleteChangelistAction"
+               icon="icons/normal/delete.gif"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.deletechange" />
+         <action
+               label="%NewChangeAction.label"
+               helpContextId="com.perforce.team.ui.action_new_change"
+               tooltip="%NewChangeAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.NewChangelistAction"
+               menubarPath="perforce.group5"
+               icon="icons/normal/new_changelist.gif"
+               id="com.perforce.team.ui.newchange" />
+         <action
+               label="%EditSpecAction.label"
+               helpContextId="com.perforce.team.ui.action_edit_spec"
+               tooltip="%EditSpecAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.EditChangelistAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.editspec" />
+         <action
+               label="%AddJobFixAction.label"
+               helpContextId="com.perforce.team.ui.action_add_job_fix"
+               tooltip="%AddJobFixAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.FixJobAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.addjobfix" />
+      </objectContribution>
+      <objectContribution
+			objectClass="com.perforce.team.core.p4java.IP4ShelvedChangelist"
+			id="com.perforce.team.core.p4java.IP4ShelvedChangelist">
+         <action
+               label="Update..."
+               helpContextId="com.perforce.team.ui.action_update_shelve"
+               tooltip="Update Shelved Changelist"
+               class="com.perforce.team.ui.shelve.UpdateShelveAction"
+               icon="icons/views/shelve.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.updateshelve" />
+               
+          <action
+               label="Unshelve..."
+               helpContextId="com.perforce.team.ui.action_unshelve"
+               tooltip="Unshelve files"
+               class="com.perforce.team.ui.shelve.UnshelveAction"
+               icon="icons/normal/unshelve.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.unshelve" />
+      </objectContribution>
+      <objectContribution
+			objectClass="com.perforce.team.core.p4java.IP4ShelveFile"
+			id="com.perforce.team.core.p4java.IP4ShelveFile">
+        <action
+               label="Unshelve..."
+               helpContextId="com.perforce.team.ui.action_unshelve"
+               tooltip="Unshelve files"
+               class="com.perforce.team.ui.shelve.UnshelveAction"
+               icon="icons/normal/unshelve.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.unshelve" />
+        <action
+               label="Open in Editor"
+               helpContextId="com.perforce.team.ui.action_open_in_editor_shelve_file"
+               tooltip="Open in Editor"
+               class="com.perforce.team.ui.shelve.OpenEditorAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.openeditorshelvefile" />
+        <action
+               label="Delete Shelved Files..."
+               helpContextId="com.perforce.team.ui.action_delete_shelve_file"
+               tooltip="Delete Shelved Files"
+               class="com.perforce.team.ui.shelve.DeleteShelveFileAction"
+               icon="icons/normal/delete.gif"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.deleteshelvefile" />
+        <action
+               label="Compare with Head Revision"
+               helpContextId="com.perforce.team.ui.action_diff_head_shelve_file"
+               tooltip="Compare with Head Revision"
+               class="com.perforce.team.ui.shelve.DiffShelveHeadAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.diffheadshelvefile" />
+        <action
+               label="%CompareShelveHaveAction.label"
+               helpContextId="com.perforce.team.ui.action_diff_have_shelve_file"
+               tooltip="%CompareShelveHaveAction.tooltip"
+               class="com.perforce.team.ui.shelve.DiffShelveHaveAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.diffhaveshelvefile" />
+        <action
+               label="Compare with Local Revision"
+               helpContextId="com.perforce.team.ui.action_diff_local_shelve_file"
+               tooltip="Compare with Local Revision"
+               class="com.perforce.team.ui.shelve.DiffShelveLocalAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.difflocalshelvefile" />
+      </objectContribution>
+      <objectContribution
+			objectClass="org.eclipse.core.resources.IFile"
+			id="com.perforce.team.ui.IFileContributions"
+    	    adaptable="true">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=com.perforce.team.core.PerforceTeamProvider">
+         </filter>
+		
+		 <action
+				label="Shelved Version..."
+				helpContextId="com.perforce.team.ui.action_replace_shelve"
+				tooltip="Replace with a shelved version"
+				menubarPath="replaceWithMenu/replaceWithGroup"
+				icon="icons/normal/unshelve.png"
+				class="com.perforce.team.ui.shelve.UnshelveFileAction"
+				id="com.perforce.team.ui.replace_shelve">
+		</action>
+		
+		<action
+               class="com.perforce.team.ui.shelve.DiffShelveAction"
+               helpContextId="com.perforce.team.ui.action_diff_shelve"
+               id="com.perforce.team.ui.compare.diffshelve"
+               label="Shelved Version..."
+               icon="icons/views/shelve.png"
+               menubarPath="compareWithMenu/compareWithGroup"
+               tooltip="Compare with a shelved version...">
+        </action>
+			
+         <action
+               label="%TimeLapseView.label"
+               helpContextId="com.perforce.team.ui.time_lapse_view"
+               tooltip="%TimeLapseView.tooltip"
+               icon="icons/normal/time_lapse.png"
+               class="com.perforce.team.ui.timelapse.TimeLapseAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.time_lapse_view" />
+         <action
+               label="%RevisionGraph.label"
+               helpContextId="com.perforce.team.ui.revision_graph"
+               tooltip="%RevisionGraph.tooltip"
+               class="com.perforce.team.ui.p4v.P4VRevisionGraphAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.revision_graph" />
+      </objectContribution>
+      <objectContribution
+			objectClass="com.perforce.team.core.p4java.IP4File"
+			id="com.perforce.team.core.p4java.IP4File">
+			
+		 <action
+				label="Unshelve..."
+				helpContextId="com.perforce.team.ui.action_replace_shelve"
+				tooltip="Unshelve a shelved version"
+				menubarPath="perforce.group2"
+				icon="icons/normal/unshelve.png"
+				class="com.perforce.team.ui.shelve.UnshelveFileAction"
+				id="com.perforce.team.ui.replace_shelve">
+		 </action>
+			
+         <action
+               label="%SubmitAction.label"
+               helpContextId="com.perforce.team.ui.action_submit"
+               tooltip="%SubmitAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SubmitAction"
+               icon="icons/normal/submit.gif"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.submit" />
+               
+         <action
+               label="Shelve..."
+               helpContextId="com.perforce.team.ui.action_shelve"
+               tooltip="Shelve selected file(s)"
+               class="com.perforce.team.ui.shelve.ShelveAction"
+               menubarPath="perforce.group2"
+               icon="icons/normal/shelve.png"
+               id="com.perforce.team.ui.actions.shelve">
+         </action>
+      
+         <action
+               label="%RemoveAction.label"
+               helpContextId="com.perforce.team.ui.action_remove"
+               tooltip="%RemoveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RemoveAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.remove" />
+               
+          <action
+               label="%RecoverDeletedAction.label"
+               helpContextId="com.perforce.team.ui.action_recover_deleted"
+               tooltip="%RecoverDeletedAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RecoverDeletedAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.recover_deleted" />
+               
+          <action
+               label="%SyncRevAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_rev"
+               tooltip="%SyncRevAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncRevisionAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.syncrev" />
+         
+         <action
+               label="%SyncAction.label"
+               helpContextId="com.perforce.team.ui.action_sync_head"
+               tooltip="%SyncAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.SyncAction"
+               icon="icons/normal/sync.gif"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.sync" />
+               
+         <action
+               label="%RevertUnchangedAction.label"
+               helpContextId="com.perforce.team.ui.action_revert_unchanged"
+               tooltip="%RevertUnchangedAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertUnchangedAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.revertunchanged">
+         </action>      
+         
+         <action
+               label="%RevertAction.label"
+               helpContextId="com.perforce.team.ui.action_revert"
+               tooltip="%RevertAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.RevertAction"
+               menubarPath="perforce.group2"
+               icon="icons/normal/revert.png"
+               id="com.perforce.team.ui.actions.revert" />
+               
+         <action
+               label="%AutoResolveAction.label"
+               helpContextId="com.perforce.team.ui.action_auto_resolve"
+               tooltip="%AutoResolveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ResolveAction"
+               icon="icons/normal/resolve.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.autoresolve" />
+         
+         <action
+               label="%MoveChangeAction.label"
+               helpContextId="com.perforce.team.ui.action_move_change"
+               tooltip="%MoveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.MoveToAnotherChangelistAction"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.movechange" />
+         
+         <action
+               label="%DeleteAction.label"
+               helpContextId="com.perforce.team.ui.action_delete"
+               tooltip="%DeleteAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.DeleteAction"
+               icon="icons/normal/delete.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.delete" />
+
+         <action
+               label="%EditAction.label"
+               helpContextId="com.perforce.team.ui.action_edit"
+               tooltip="%EditAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.EditAction"
+               icon="icons/normal/checkout.png"
+               menubarPath="perforce.group2"
+               id="com.perforce.team.ui.actions.edit" />
+         
+         <action
+         	label="%LabelAction.label"
+         	tooltip="%LabelAction.tooltip"
+         	class="com.perforce.team.ui.p4java.actions.LabelFilesAction"
+         	icon="icons/views/label.png"
+         	menubarPath="perforce.group3"
+         	id="com.perforce.team.ui.actions.label" />
+         	
+         <action
+         	label="%IntegrateAction.label"
+         	tooltip="%IntegrateAction.tooltip"
+         	class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+         	icon="icons/normal/branch.png"
+         	menubarPath="perforce.group3"
+         	id="com.perforce.team.ui.actions.integrate" />
+         
+         <action
+               label="%ShowHistoryAction.label"
+               helpContextId="com.perforce.team.ui.action_show_history"
+               tooltip="%ShowHistoryAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ShowHistoryAction"
+               icon="icons/views/history.gif"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.actions.showhistory" />
+               
+         <action
+               label="%FileInformation.label"
+               helpContextId="com.perforce.team.ui.action_file_properties"
+               tooltip="%FileInformation.tooltip"
+               class="com.perforce.team.ui.p4java.actions.FilePropertiesAction"
+               icon="icons/normal/properties.gif"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.actions.fileproperties" 
+               enablesFor="1" />
+         <action
+			   label="%DiffDepotAction.label"
+			   helpContextId="com.perforce.team.ui.action_diff_depot"
+               tooltip="%DiffDepotAction.tooltip"
+               icon="icons/normal/diff.png"
+               class="com.perforce.team.ui.p4java.actions.DiffDepotAction"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.diffdepot" />
+               
+          <action
+               label="%UnlockAction.label"
+               helpContextId="com.perforce.team.ui.action_unlock"
+               tooltip="%UnlockAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.UnlockAction"
+               menubarPath="perforce.group4"
+               icon="icons/normal/unlock.png"
+               id="com.perforce.team.ui.actions.unlock" />
+         
+         <action
+               label="%LockAction.label"
+               helpContextId="com.perforce.team.ui.action_lock"
+               tooltip="%LockAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.LockAction"
+               icon="icons/normal/lock.png"
+               menubarPath="perforce.group4"
+               id="com.perforce.team.ui.actions.lock" />
+         
+          <action
+               label="%FileTypeAction.label"
+               helpContextId="com.perforce.team.ui.action_file_type"
+               tooltip="%FileTypeAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ChangeFiletypeAction"
+               menubarPath="perforce.group4"
+               id="com.perforce.team.ui.actions.filetype" />
+
+  		<action
+               label="%TimeLapseView.label"
+               helpContextId="com.perforce.team.ui.time_lapse_view"
+               tooltip="%TimeLapseView.tooltip"
+               class="com.perforce.team.ui.timelapse.TimeLapseAction"
+               icon="icons/normal/time_lapse.png"
+               menubarPath="perforce.group5"
+               id="com.perforce.team.ui.time_lapse_view" />         
+
+         <action
+               label="%ScheduleResolveAction.label"
+               helpContextId="com.perforce.team.ui.action_schedule_resolve"
+               tooltip="%ScheduleResolveAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ScheduleResolveAction"
+               menubarPath="perforce.group5"
+               id="com.perforce.team.ui.actions.scheduleresolve" />
+       
+         <action
+               label="%RevisionGraph.label"
+               helpContextId="com.perforce.team.ui.revision_graph"
+               tooltip="%RevisionGraph.tooltip"
+               class="com.perforce.team.ui.p4v.P4VRevisionGraphAction"
+               menubarPath="perforce.group5"
+               id="com.perforce.team.ui.revision_graph" />
+         
+      </objectContribution>
+      
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="com.perforce.team.ui.ProjectContributions">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=com.perforce.team.core.PerforceTeamProvider">
+         </filter>
+         <action
+               label="%UnmanageAction.label"
+               helpContextId="com.perforce.team.ui.action_unmanage"
+               tooltip="%UnmanageAction.tooltip"
+               class="com.perforce.team.ui.actions.UnmanageAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.unmanage" />
+        <action
+               label="%WorkOnlineAction.label"
+               helpContextId="com.perforce.team.ui.action_work_online"
+               tooltip="%WorkOnlineAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.WorkOnlineAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.workonline" />
+        <action
+               label="%AuthenticationAction.label"
+               helpContextId="com.perforce.team.ui.action_authentication"
+               tooltip="%AuthenticationAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.AuthenticationAction"
+               menubarPath="team.main/group5"
+               id="com.perforce.team.ui.authentication" />
+      </objectContribution>
+   </extension>
+<!-- Marker Resolutions -->
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            markerType="com.perforce.team.core.perforceadd"
+            class="com.perforce.team.ui.markers.PerforceResolutionGenerator">
+      </markerResolutionGenerator>
+   </extension>
+<!-- Decorator -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            label="Perforce"
+            state="true"
+            class="com.perforce.team.ui.decorator.PerforceDecorator"
+            id="com.perforce.team.ui.decorator.PerforceDecorator">
+         <description>
+            Shows Perforce specific information on resources in projects under Perforce control. Information includes the version number and file type etc.
+         </description>
+         <enablement>
+            <objectClass
+                  name="org.eclipse.core.resources.IResource">
+            </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
+<!-- Views -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Perforce"
+            id="com.perforce.team.ui.perforceviews">
+      </category>
+      <view
+            name="P4 Pending Changelists"
+            icon="icons/views/pending_changelist.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.PendingView"
+            id="com.perforce.team.ui.PendingChangelistView">
+      </view>
+      <view
+            name="P4 Submitted Changelists"
+            icon="icons/perforce/submitted.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.SubmittedView"
+            id="com.perforce.team.ui.SubmittedChangelistView">
+      </view>
+      <view
+            name="P4 Revision History [deprecated]"
+            icon="icons/views/history.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.HistoryView"
+            id="com.perforce.team.ui.HistoryView">
+      </view>
+      <view
+            name="P4 Log Console"
+            icon="icons/views/log.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.ConsoleView"
+            id="com.perforce.team.ui.ConsoleView">
+      </view>
+      <view
+            name="P4 Jobs"
+            icon="icons/views/job.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.JobView"
+            id="com.perforce.team.ui.JobView">
+      </view>
+      <view
+            name="P4 Connections"
+            icon="icons/views/server_connection.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.views.DepotView"
+            id="com.perforce.team.ui.DepotView">
+      </view>
+      <view
+            name="P4 Labels"
+            icon="icons/views/label.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.labels.LabelsView"
+            id="com.perforce.team.ui.LabelsView">
+      </view>
+      
+      <view
+            name="P4 Branches"
+            icon="icons/normal/branch.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.branches.BranchesView"
+            id="com.perforce.team.ui.BranchesView">
+      </view>
+      
+      <view
+            name="P4 Shelved Changes"
+            icon="icons/views/shelve.png"
+            category="com.perforce.team.ui.perforceviews"
+            class="com.perforce.team.ui.shelve.ShelveView"
+            id="com.perforce.team.ui.ShelveView">
+      </view>
+   </extension>
+
+<!-- Actionset definitions -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Perforce"
+            description="Perforce Action Set"
+            visible="false"
+            id="com.perforce.team.ui.PerforceActionSet">
+            
+      <menu
+           label="Perforce"
+           path="additions"
+           id="perforce.main">
+      <separator
+           name="group1">
+      </separator>
+      <separator
+           name="group2">
+      </separator>
+      <separator
+           name="group3">
+      </separator> 
+      <separator
+           name="group4">
+      </separator>
+      <separator
+           name="group5">
+      </separator>
+      <separator
+           name="group6">
+      </separator>
+      <separator
+           name="group7">
+      </separator>
+      <separator
+           name="group8">
+      </separator>        
+      </menu>
+      
+      <action
+           label="%RemoveAction.label"
+           helpContextId="com.perforce.team.ui.action_remove"
+           tooltip="%RemoveAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.RemoveAction"
+           menubarPath="perforce.main/group1"
+           id="com.perforce.team.ui.remove">
+      </action>
+      
+      <action
+           label="%SyncRevAction.label"
+           helpContextId="com.perforce.team.ui.action_sync_rev"
+           tooltip="%SyncRevAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.SyncRevisionAction"
+           menubarPath="perforce.main/group1"
+           id="com.perforce.team.ui.syncrev">
+      </action>
+           
+      <action
+           label="%SyncAction.label"
+           helpContextId="com.perforce.team.ui.action_sync_head"
+           tooltip="%SyncAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.SyncAction"
+           icon="icons/normal/sync.gif"
+           menubarPath="perforce.main/group1"
+           id="com.perforce.team.ui.sync">
+      </action>
+      
+      <action
+           label="%DeleteAction.label"
+           helpContextId="com.perforce.team.ui.action_delete"
+           tooltip="%DeleteAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.DeleteAction"
+           icon="icons/normal/delete.png"
+           menubarPath="perforce.main/group2"
+           id="com.perforce.team.ui.actions.delete">
+      </action>
+      
+	  <action
+           label="%AddAction.label"
+           helpContextId="com.perforce.team.ui.action_add"
+           definitionId="com.perforce.team.ui.commands.add"
+           tooltip="%AddAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.AddAction"
+           menubarPath="perforce.main/group2"
+           icon="icons/normal/add.png"
+           id="com.perforce.team.ui.actions.add">
+      </action>         
+
+      <action
+           label="%EditAction.label"
+           helpContextId="com.perforce.team.ui.action_edit"
+           tooltip="%EditAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.EditAction"
+           icon="icons/normal/checkout.png"
+           menubarPath="perforce.main/group2"
+           id="com.perforce.team.ui.actions.edit">
+      </action> 
+      
+      <action
+           label="%RevertAction.label"
+           helpContextId="com.perforce.team.ui.action_revert"
+           tooltip="%RevertAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.RevertAction"
+           menubarPath="perforce.main/group2"
+           icon="icons/normal/revert.png"
+           id="com.perforce.team.ui.actions.revert2">
+      </action>
+      
+      <action
+           label="%AddIgnoreAction.label"
+           helpContextId="com.perforce.team.ui.action_add_ignore"
+           definitionId="com.perforce.team.ui.commands.add_ignore"
+           tooltip="%AddIgnore.tooltip"
+           class="com.perforce.team.ui.p4java.actions.AddIgnoreAction"
+           menubarPath="perforce.main/group5"
+           id="com.perforce.team.ui.actions.add_ignore">
+      </action>      
+
+      <action
+		   label="%DiffDepotAction.label"
+		   helpContextId="com.perforce.team.ui.action_diff_depot"
+		   tooltip="%DiffDepotAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.DiffDepotAction"
+           icon="icons/normal/diff.png"
+           menubarPath="perforce.main/group3"
+           id="com.perforce.team.ui.diffdepot">
+      </action>
+        
+	  <action
+           label="%ShowHistoryAction.label"
+           helpContextId="com.perforce.team.ui.action_show_history"
+           tooltip="%ShowHistoryAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.ShowHistoryAction"
+           icon="icons/views/history.gif"
+           menubarPath="perforce.main/group3"
+           id="com.perforce.team.ui.actions.showhistory">
+      </action>
+      
+      <action
+           label="%UnlockAction.label"
+           helpContextId="com.perforce.team.ui.action_unlock"
+           tooltip="%UnlockAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.UnlockAction"
+           icon="icons/normal/unlock.png"
+           menubarPath="perforce.main/group4"
+           id="com.perforce.team.ui.actions.unlock">
+      </action>
+         
+      <action
+           label="%LockAction.label"
+           helpContextId="com.perforce.team.ui.action_lock"
+           tooltip="%LockAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.LockAction"
+           icon="icons/normal/lock.png"
+           menubarPath="perforce.main/group4"
+           id="com.perforce.team.ui.actions.lock">
+      </action>   
+               
+      <action
+           label="%FileTypeAction.label"
+           helpContextId="com.perforce.team.ui.action_file_type"
+           tooltip="%FileTypeAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.ChangeFiletypeAction"
+           menubarPath="perforce.main/group4"
+           id="com.perforce.team.ui.actions.filetype">
+      </action>
+
+      <action
+           label="%SubmitAction.label"
+           helpContextId="com.perforce.team.ui.action_submit"
+           definitionId="com.perforce.team.ui.commands.submit"
+           tooltip="%Submit.tooltip"
+           class="com.perforce.team.ui.p4java.actions.SubmitAction"
+           icon="icons/normal/submit.gif"
+           menubarPath="perforce.main/group2"
+           id="com.perforce.team.ui.actions.submit">
+      </action>
+        
+      <action
+		   label="%CheckConsistencyAction.label"
+		   helpContextId="com.perforce.team.ui.action_check_consistency"
+		   definitionId="com.perforce.team.ui.commands.check_consistency"
+		   tooltip="%CheckConsistencyAction.tooltip"
+		   menubarPath="perforce.main/group5"
+		   icon="icons/normal/check_consistency.png"
+		   class="com.perforce.team.ui.p4java.actions.CheckConsistencyAction"
+		   id="com.perforce.team.ui.check_consistency">
+	  </action> 
+        
+      <action
+           label="%RefreshAction.label"
+           helpContextId="com.perforce.team.ui.action_refresh"
+           definitionId="com.perforce.team.ui.commands.refresh"
+           tooltip="%RefreshAction.tooltip"
+           class="com.perforce.team.ui.p4java.actions.RefreshAction"
+           menubarPath="perforce.main/group1"
+           id="com.perforce.team.ui.refresh">
+      </action>
+
+      </actionSet>
+   </extension>
+
+<!-- Action definitions -->
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="%PerforceActionSet.categoryName"
+            description="%PerforceActionSet.description"
+            id="com.perforce.team.ui.commands">
+      </category>
+      
+      <command
+            name="%SubmitAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%SubmitAction.tooltip"
+            id="com.perforce.team.ui.commands.submit">
+      </command>
+      
+      <command
+            name="%CheckConsistencyAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%CheckConsistencyAction.tooltip"
+            id="com.perforce.team.ui.commands.check_consistency">
+      </command>
+      
+      <command
+            name="%RefreshAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%RefreshAction.tooltip"
+            id="com.perforce.team.ui.commands.refresh">
+      </command>
+      
+      <command
+            name="%UnlockAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%UnlockAction.tooltip"
+            id="com.perforce.team.ui.commands.unlock">
+      </command>
+      
+      <command
+            name="%LockAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%LockAction.tooltip"
+            id="com.perforce.team.ui.commands.lock">
+      </command>
+      
+      <command
+            name="%FileTypeAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%FileTypeAction.tooltip"
+            id="com.perforce.team.ui.commands.filetype">
+      </command>
+      
+      <command
+            name="%DiffDepotAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%DiffDepotAction.tooltip"
+            id="com.perforce.team.ui.commands.diffdepot">
+      </command>
+      
+      <command
+            name="%ShowHistoryAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%ShowHistoryAction.tooltip"
+            id="com.perforce.team.ui.commands.showhistory">
+      </command>   
+      
+      <command
+            name="%AddIgnoreAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%AddIgnoreAction.tooltip"
+            id="com.perforce.team.ui.commands.add_ignore">
+      </command>       
+
+      <command
+            name="%RevertAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%RevertAction.tooltip"
+            id="com.perforce.team.ui.commands.revert">
+      </command>
+      
+      <command
+            name="%RevertUnchangedAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%RevertUnchangedAction.tooltip"
+            id="com.perforce.team.ui.commands.revert_unchanged">
+      </command>  
+      
+      <command
+            name="%AddAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%AddAction.tooltip"
+            id="com.perforce.team.ui.commands.add">
+      </command> 
+      
+      <command
+            name="%EditAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%EditAction.tooltip"
+            id="com.perforce.team.ui.commands.edit">
+      </command> 
+      
+      <command
+            name="%DeleteAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%DeleteAction.tooltip"
+            id="com.perforce.team.ui.commands.delete">
+      </command> 
+      
+      <command
+            name="%RemoveAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%RemoveAction.tooltip"
+            id="com.perforce.team.ui.commands.remove">
+      </command> 
+      
+      <command
+            name="%SyncRevAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%SyncRevAction.tooltip"
+            id="com.perforce.team.ui.commands.syncrev">
+      </command> 
+      
+      <command
+            name="%SyncAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%SyncAction.tooltip"
+            id="com.perforce.team.ui.commands.sync">
+      </command>
+      
+      <command
+      		name="%IntegrateAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%IntegrateAction.tooltip"
+      		id="com.perforce.team.ui.commands.integrate">
+      </command> 
+      
+      <command
+      		name="%AutoResolveAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%AutoResolveAction.tooltip"
+      		id="com.perforce.team.ui.commands.autoresolve">
+      </command>
+      <command
+      		name="%AutoResolveAction.label"
+            categoryId="com.perforce.team.ui.commands"
+            description="%AutoResolveChangelistAction.tooltip"
+      		id="com.perforce.team.ui.commands.resolvechangelist">
+      </command>
+      <command
+            categoryId="com.perforce.team.ui.commands"
+            description="%LabelAction.tooltip"
+            id="com.perforce.team.ui.commands.label"
+            name="%LabelAction.label">
+      </command>
+        
+   </extension>
+   
+<!-- Preference pages -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Perforce"
+            category="org.eclipse.team.ui.TeamPreferences"
+            class="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            id="com.perforce.team.ui.dialogs.GeneralPreferencesDialog">
+      </page>
+      <page
+            name="Console"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.dialogs.ConsolePreferencesDialog"
+            id="com.perforce.team.ui.dialogs.ConsolePreferencesDialog">
+      </page>
+      <page
+            name="Label Decorations"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.preferences.decorators.LabelPreviewPreferencePage"
+            id="com.perforce.team.ui.dialogs.DecorationsPreferencesDialog">
+      </page>
+      <page
+            name="Jobs"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.dialogs.JobsPreferencesDialog"
+            id="com.perforce.team.ui.dialogs.JobsPreferencesDialog">
+      </page>
+      <page
+            name="Changelists"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.dialogs.ChangesPreferencesDialog"
+            id="com.perforce.team.ui.dialogs.ChangesPreferencesDialog">
+      </page>
+      <page
+            name="Editor"
+            category="com.perforce.team.ui.dialogs.ChangesPreferencesDialog"
+            class="com.perforce.team.ui.p4java.dialogs.ChangelistEditorPreferencePage"
+            id="com.perforce.team.ui.dialogs.ChangelistEditorPreferencePage">
+      </page>
+      <page
+            name="Templates"
+            category="com.perforce.team.ui.dialogs.ChangesPreferencesDialog"
+            class="com.perforce.team.ui.p4java.dialogs.DescriptionTemplatesPreferencePage"
+            id="com.perforce.team.ui.dialogs.DescriptionTemplatesPreferencePage">
+      </page>
+       <page
+            name="Labels"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.labels.LabelsPreferencePage"
+            id="com.perforce.team.ui.labels.LabelsPreferencePage">
+      </page>
+      <page
+            name="External Tools"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.preferences.ExternalToolsPreferencePage"
+            id="com.perforce.team.ui.preferences.ExternalToolsPreferencePage">
+      </page>
+      <page
+            name="Advanced"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.preferences.AdvancedPreferencePage"
+            id="com.perforce.team.ui.preferences.AdvancedPreferencePage">
+      </page>
+      <page
+            name="Time-lapse"
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.timelapse.TimeLapsePreferencePage"
+            id="com.perforce.team.ui.timelapse.TimeLapsePreferencePage">
+      </page>
+      <page
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.branches.BranchesPreferencePage"
+            id="com.perforce.team.ui.branches.BranchesPreferencePage"
+            name="Branches">
+      </page>
+      <page
+            category="com.perforce.team.ui.dialogs.GeneralPreferencesDialog"
+            class="com.perforce.team.ui.shelve.ShelvePreferencePage"
+            id="com.perforce.team.ui.shelve.ShelvePreferencePage"
+            name="Shelved Changes">
+      </page>
+   </extension>
+   
+<!-- Property pages -->
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            name="Perforce"
+            class="com.perforce.team.ui.dialogs.ProjectPropertiesDialog"
+            id="com.perforce.team.ui.dialogs.ProjectPropertiesDialog">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=com.perforce.team.core.PerforceTeamProvider">
+         </filter>
+      </page>
+      <page
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            name="Perforce"
+            class="com.perforce.team.ui.dialogs.FilePropertiesDialog"
+            id="com.perforce.team.ui.dialogs.FilePropertiesDialog">
+         <filter
+               name="projectPersistentProperty"
+               value="org.eclipse.team.core.repository=com.perforce.team.core.PerforceTeamProvider">
+         </filter>
+      </page>
+      <page
+            objectClass="com.perforce.team.core.p4java.IP4File"
+            adaptable="true"
+            name="Perforce"
+            class="com.perforce.team.ui.dialogs.FilePropertiesDialog"
+            id="com.perforce.team.ui.dialogs.FilePropertiesDialog" />
+   </extension>
+   
+<!-- Perforce Perspective -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perforce"
+            icon="icons/perforce/p4.gif"
+            class="com.perforce.team.ui.PerforcePerspective"
+            id="com.perforce.team.ui.perforcePerspective">
+      </perspective>
+   </extension>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension 
+         targetID="com.perforce.team.ui.perforcePerspective"> 
+         <viewShortcut id="com.perforce.team.ui.PendingChangelistView"/> 
+         <viewShortcut id="com.perforce.team.ui.SubmittedChangelistView"/> 
+         <viewShortcut id="com.perforce.team.ui.ConsoleView"/> 
+         <viewShortcut id="org.eclipse.team.ui.GenericHistoryView"/> 
+         <viewShortcut id="com.perforce.team.ui.JobView"/>
+         <viewShortcut id="com.perforce.team.ui.DepotView"/>
+         <viewShortcut id="org.eclipse.team.sync.views.SynchronizeView"/>
+         <viewShortcut id="com.perforce.team.ui.LabelsView"/>
+         <viewShortcut id="com.perforce.team.ui.BranchesView"/>
+         <viewShortcut
+               id="com.perforce.team.ui.ShelveView">
+         </viewShortcut>
+      </perspectiveExtension> 
+   </extension>
+   
+<!-- Console Font -->
+   <extension
+         point="org.eclipse.ui.fontDefinitions">
+      <fontDefinition
+            label="P4 Console Font"
+            defaultsTo="org.eclipse.jface.textfont"
+            id="com.perforce.team.ui.consoleFont">
+         <description>
+            The font for the P4 Console View.
+         </description>
+      </fontDefinition>
+   </extension>
+   
+<!-- Project sets --> 
+
+<!-- Help contexts -->
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   
+	<extension point="org.eclipse.core.runtime.adapters">
+		<factory 
+			class="com.perforce.team.ui.P4FileAdapterFactory" 
+			adaptableType="com.perforce.team.core.p4java.IP4File">
+			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+			<adapter type="org.eclipse.ui.views.properties.IPropertySource"/>
+		</factory>
+  <factory
+        adaptableType="org.eclipse.team.core.RepositoryProvider"
+        class="com.perforce.team.ui.P4FileAdapterFactory">
+     <adapter
+           type="org.eclipse.team.ui.history.IHistoryPageSource">
+     </adapter>
+  </factory>
+	</extension>
+   
+<!-- Help TOC  -->
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            extradir="topics"
+            file="perforcetoc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.team.core.repository">
+      <repository
+            typeClass="com.perforce.team.ui.PerforceProjectProviderType"
+            class="com.perforce.team.ui.UITeamProvider"
+            id="com.perforce.team.core.PerforceTeamProvider"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.perforce.team.ui.PerforcePreferenceInitializer">
+      </initializer>
+   </extension>
+
+<!-- P4 Workspace -->
+	<extension point="com.perforce.team.core.workspace">
+		<configurer class="com.perforce.team.ui.P4WorkspaceConfigurer" />
+	</extension>
+ <extension
+       point="org.eclipse.ui.workbench.texteditor.quickDiffReferenceProvider">
+    <referenceprovider
+          class="com.perforce.team.ui.editor.HaveQuickDiffProvider"
+          id="com.perforce.team.ui.have_provider"
+          label="Perforce Have Revision">
+    </referenceprovider>
+    <referenceprovider
+          class="com.perforce.team.ui.editor.HeadQuickDiffProvider"
+          id="com.perforce.team.ui.head_provider"
+          label="Perforce Head Revision">
+    </referenceprovider>
+ </extension>
+
+</plugin>

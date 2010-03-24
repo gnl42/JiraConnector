@@ -1,0 +1,268 @@
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   IgnoredFiles.java
+
+package com.perforce.team.ui;
+
+import com.perforce.team.core.PerforceProviderPlugin;
+import com.perforce.team.core.p4java.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+
+// Referenced classes of package com.perforce.team.ui:
+//            PerforceUIPlugin, PerforceStringMatcher, Messages, P4UIUtils
+
+public class IgnoredFiles
+{
+
+    public IgnoredFiles()
+    {
+    }
+
+    public static IFile[] filterAddFiles(IFile files[])
+    {
+        List list = new ArrayList();
+        for(int i = 0; i < files.length; i++)
+        {
+            try
+            {
+                files[i].deleteMarkers("com.perforce.team.core.perforceadd", false, 0);
+            }
+            catch(CoreException _ex) { }
+            if(!PerforceProviderPlugin.isIgnoredHint(files[i]))
+                list.add(files[i]);
+        }
+
+        files = (IFile[])list.toArray(new IFile[list.size()]);
+        return removeIgnoredFiles(files);
+    }
+
+    public static IFile[] removeIgnoredFiles(IFile files[])
+    {
+        ArrayList list = new ArrayList();
+        for(int i = 0; i < files.length; i++)
+            if(!isIgnored(files[i]))
+                list.add(files[i]);
+
+        return (IFile[])list.toArray(new IFile[list.size()]);
+    }
+
+    public static boolean isIgnored(IResource resource)
+    {
+        return isIgnored(resource.getFullPath(), resource.getParent());
+    }
+
+    public static void addIgnore(IResource resource)
+    {
+        if(resource.getType() == 8)
+            return;
+        updateDecorations = true;
+        IContainer container = resource.getParent();
+        if(container == null || container.getType() == 8)
+            return;
+        final IFile ignore = container.getFile(P4IGNORE);
+        if(ignore != null)
+        {
+            String path = (new StringBuilder(String.valueOf(resource.getName()))).append("\n").toString();
+            try
+            {
+                if(!ignore.exists())
+                    ignore.create(new ByteArrayInputStream(path.getBytes()), false, null);
+                else
+                    ignore.appendContents(new ByteArrayInputStream(path.getBytes()), false, false, null);
+            }
+            catch(CoreException _ex)
+            {
+                PerforceUIPlugin.syncExec(new Runnable() {
+
+                    public void run()
+                    {
+                        while(PerforceUIPlugin.getDisplay().readAndDispatch()) ;
+                        String msg = (new StringBuilder(String.valueOf(Messages.getString("IgnoredFiles.01")))).append(ignore.getFullPath()).append(Messages.getString("IgnoredFiles.02")).append(Messages.getString("IgnoredFiles.03")).append(Messages.getString("IgnoredFiles.04")).toString();
+                        MessageDialog errdlg = new MessageDialog(P4UIUtils.getDialogShell(), Messages.getString("IgnoredFiles.06"), null, msg, 1, new String[] {
+                            Messages.getString("IgnoredFiles.05")
+                        }, 0);
+                        errdlg.open();
+                        IgnoredFiles.updateDecorations = false;
+                    }
+
+                    private final IFile val$ignore;
+
+            
+            {
+                ignore = ifile;
+                super();
+            }
+                });
+            }
+        }
+        if(updateDecorations)
+        {
+            IP4Resource p4Resource = P4Workspace.getWorkspace().getResource(resource);
+            P4Event event = createIgnoredEvent(p4Resource);
+            P4Workspace.getWorkspace().notifyListeners(event);
+        }
+    }
+
+    private static P4Event createIgnoredEvent(IP4Resource resource)
+    {
+        P4Event event = new P4Event(resource, resource) {
+
+            public IResource[] getLocalResources()
+            {
+                if(resource instanceof IP4Container)
+                {
+                    final List localResources = new ArrayList();
+                    IContainer locals[] = ((IP4Folder)resource).getLocalContainers();
+                    IContainer aicontainer[];
+                    int j = (aicontainer = locals).length;
+                    for(int i = 0; i < j; i++)
+                    {
+                        IContainer localFolder = aicontainer[i];
+                        if(localFolder != null)
+                        {
+                            localResources.add(localFolder);
+                            try
+                            {
+                                localFolder.accept(new IResourceVisitor() {
+
+                                    public boolean visit(IResource resource)
+                                        throws CoreException
+                                    {
+                                        localResources.add(resource);
+                                        return true;
+                                    }
+
+                                    final _cls2 this$1;
+                                    private final List val$localResources;
+
+                    
+                    {
+                        this$1 = _cls2.this;
+                        localResources = list;
+                        super();
+                    }
+                                });
+                            }
+                            catch(CoreException e)
+                            {
+                                PerforceProviderPlugin.logError(e);
+                            }
+                        }
+                    }
+
+                    return (IResource[])localResources.toArray(new IResource[0]);
+                } else
+                {
+                    return super.getLocalResources();
+                }
+            }
+
+            private final IP4Resource val$resource;
+
+            
+            {
+                resource = ip4resource;
+                super($anonymous0, $anonymous1);
+            }
+        };
+        return event;
+    }
+
+    private static boolean isIgnored(IPath path, IContainer container)
+    {
+        boolean found = false;
+        if(container == null || container.getType() == 8)
+            return false;
+        IFile ignore = container.getFile(P4IGNORE);
+        if(ignore != null && ignore.exists())
+            try
+            {
+                String name = path.lastSegment();
+                boolean tryAgain = true;
+                InputStream contents;
+                for(contents = null; contents == null && tryAgain && ignore.exists();)
+                    try
+                    {
+                        contents = ignore.getContents();
+                        tryAgain = false;
+                    }
+                    catch(CoreException _ex)
+                    {
+                        PerforceProviderPlugin.log(new Status(1, "com.perforce.p4api", 1, (new StringBuilder("Refreshing .p4ignore file '")).append(ignore.getFullPath()).append("'").toString(), null));
+                        try
+                        {
+                            ignore.refreshLocal(0, null);
+                            tryAgain = true;
+                        }
+                        catch(CoreException _ex2)
+                        {
+                            tryAgain = false;
+                        }
+                    }
+
+                if(contents != null)
+                    found = matchNames(contents, name);
+            }
+            catch(IOException _ex)
+            {
+                PerforceProviderPlugin.log(new Status(2, "com.perforce.p4api", 2, (new StringBuilder("Error reading .p4ignore file '")).append(ignore.getFullPath()).append("'").toString(), null));
+            }
+        if(!found)
+        {
+            IContainer parent = container.getParent();
+            if(parent.getType() == 8)
+                return false;
+            else
+                return isIgnored(path.removeLastSegments(1), parent);
+        } else
+        {
+            return true;
+        }
+    }
+
+    private static boolean matchNames(InputStream contents, String name)
+        throws IOException
+    {
+        boolean found = false;
+        BufferedReader input = new BufferedReader(new InputStreamReader(contents));
+        if(input != null)
+        {
+            do
+            {
+                String line = input.readLine();
+                if(line == null)
+                    break;
+                line = line.trim();
+                if(line.contains("*") || line.contains("?"))
+                {
+                    PerforceStringMatcher matcher = new PerforceStringMatcher(line, false, false);
+                    if(!matcher.match(name))
+                        continue;
+                    found = true;
+                    break;
+                }
+                if(!line.equals(name))
+                    continue;
+                found = true;
+                break;
+            } while(true);
+            input.close();
+        }
+        return found;
+    }
+
+    private static final Path P4IGNORE = new Path(".p4ignore");
+    private static final String IGNORE_WILDCARD = "*";
+    private static final String IGNORE_CHARACTER = "?";
+    private static final int CANCEL_IGNORE = 0;
+    private static boolean updateDecorations = true;
+
+
+}

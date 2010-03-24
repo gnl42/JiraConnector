@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<toc label="Perforce SCM"> 
+	<topic label="Introduction to Perforce" href="topics/basics.html"/>  
+	<topic label="Putting a Project under Perforce Control" href="topics/adding.html"/> 
+	<topic label="Changing a Project's Perforce Settings and Working Offline" href="topics/changesettings.html"/>   
+	<topic label="Retrieving a Project from Perforce" href="topics/sync.html"/>  
+	<topic label="Displaying File Status and History" href="topics/revision_history.html"/>  
+	<topic label="Checking a Project Out" href="topics/checkout.html"/>  
+	<topic label="Checking in Changes (Working with Changelists)" href="topics/checkin.html"/>  
+	<topic label="Working with Jobs" href="topics/jobs.html"/>  
+	<topic label="Team Development and Resolving Conflicting Changes" href="topics/resolving.html"/>  
+	<topic label="Removing a Project from Perforce Control" href="topics/removing.html"/>  
+	<topic label="Deleting a Project from Your Workspace" href="topics/deleteprojws.html"/>  
+	<topic label="Deleting a Project from the Depot" href="topics/deleteprojp4.html"/>  
+	<topic label="Setting Preferences" href="topics/preferences.html"/>  
+<topic label="Reference">  
+	<topic label="Perforce File Types" href="topics/filetypes.html"/>  
+	<topic label="Glossary" href="topics/glossary.html"/>  
+</topic> 
+</toc>

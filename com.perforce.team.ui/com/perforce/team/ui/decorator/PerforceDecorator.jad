@@ -1,0 +1,526 @@
+// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   PerforceDecorator.java
+
+package com.perforce.team.ui.decorator;
+
+import com.perforce.p4java.core.file.FileAction;
+import com.perforce.team.core.*;
+import com.perforce.team.core.p4java.*;
+import com.perforce.team.ui.*;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
+import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IWorkbench;
+
+// Referenced classes of package com.perforce.team.ui.decorator:
+//            P4Decoration, IconCache
+
+public class PerforceDecorator extends LabelProvider
+    implements ILabelDecorator, IProjectSettingsChangeListener, IPropertyChangeListener, IP4Listener
+{
+
+    private static String removeTrailingWhitespace(StringBuilder str)
+    {
+        int i;
+        for(i = str.length() - 1; i > -1 && Character.isWhitespace(str.charAt(i)); i--);
+        if(i == -1)
+            return null;
+        else
+            return str.substring(0, i + 1);
+    }
+
+    public static void suspendDecoration()
+    {
+        PerforceDecorator decorator = getActivePerforceDecorator();
+        if(decorator != null)
+            decorator.suspendDecoration = true;
+    }
+
+    public static void unsuspendDecoration()
+    {
+        PerforceDecorator decorator = getActivePerforceDecorator();
+        if(decorator != null)
+            decorator.suspendDecoration = false;
+    }
+
+    private String decorateText(IP4File file, String text, boolean ignored)
+    {
+        return decorateText(file, text, false, false, ignored);
+    }
+
+    private String getIncomingAction(IP4File file)
+    {
+        String headAction = null;
+        FileAction action = file.getHeadAction();
+        if(action != null)
+            headAction = action.toString().toLowerCase();
+        return headAction;
+    }
+
+    private String decorateText(IP4File file, String text, boolean showChangelist, boolean showIncoming, boolean ignored)
+    {
+        Map bindings = new HashMap();
+        if(file.getHeadRevision() > 0)
+        {
+            bindings.put("have", Integer.toString(file.getHaveRevision()));
+            bindings.put("head", Integer.toString(file.getHeadRevision()));
+        } else
+        if(!ignored && !file.isOpened())
+            bindings.put("not_under_version_control", unaddedChangeFlag);
+        String type = file.getOpenedType();
+        if(type == null)
+            type = file.getHeadType();
+        if(type != null)
+            bindings.put("type", type);
+        if(file.isOpened() && file.openedByOwner())
+            bindings.put("outgoing_change_flag", outgoingChangeFlag);
+        FileAction action = file.getAction();
+        String actionText = action == null ? null : action.toString().toLowerCase();
+        if(action == null)
+            if(showIncoming)
+                actionText = getIncomingAction(file);
+            else
+            if(P4File.isActionDelete(file.getHeadAction()))
+                if(file.getHaveRevision() == 0)
+                    actionText = "-deleted-";
+                else
+                    actionText = "-head rev deleted-";
+        if(actionText != null)
+            bindings.put("action", actionText);
+        bindings.put("name", text);
+        StringBuilder decorated = P4Decoration.decorate(fileDecoration, bindings);
+        if(showChangelist)
+        {
+            int id = file.getChangelistId();
+            if(id == 0)
+                decorated.append(" <Changelist: Default>");
+            else
+            if(id > 0)
+            {
+                addChangelist(decorated, id);
+            } else
+            {
+                id = file.getHeadChange();
+                if(id > 0)
+                    addChangelist(decorated, id);
+            }
+        }
+        return removeTrailingWhitespace(decorated);
+    }
+
+    private void addChangelist(StringBuilder buffer, int id)
+    {
+        buffer.append(" <Changelist: #");
+        buffer.append(id);
+        buffer.append('>');
+    }
+
+    private String decorateText(String name, IP4Connection connection)
+    {
+        String decorated = name;
+        if(connection != null)
+        {
+            ConnectionParameters params = connection.getParameters();
+            Map bindings = new HashMap();
+            bindings.put("server", params.getPort());
+            bindings.put("client", params.getClient());
+            bindings.put("user", params.getUser());
+            bindings.put("charset", params.getCharsetNoNone());
+            bindings.put("name", name);
+            if(connection.isOffline())
+                bindings.put("offline", "*Offline*");
+            decorated = P4Decoration.decorate(projectDecoration, bindings).toString();
+        }
+        return decorated;
+    }
+
+    protected String decorateIgnoredResource(String text)
+    {
+        return (new StringBuilder(String.valueOf(text))).append(" ").append(ignoredText).toString();
+    }
+
+    public PerforceDecorator()
+    {
+        fileDecoration = "";
+        projectDecoration = "";
+        outgoingChangeFlag = "";
+        ignoredText = "";
+        unaddedChangeFlag = "";
+        showChangelists = false;
+        iconCache = new IconCache();
+        suspendDecoration = false;
+        resourceDecorator = true;
+        init();
+    }
+
+    protected void fireLabelProviderChanged(final LabelProviderChangedEvent event)
+    {
+        Object listeners[] = getListeners();
+        for(int i = 0; i < listeners.length; i++)
+            if(listeners[i] instanceof ILabelProviderListener)
+            {
+                final ILabelProviderListener l = (ILabelProviderListener)listeners[i];
+                SafeRunnable.run(new SafeRunnable() {
+
+                    public void run()
+                    {
+                        l.labelProviderChanged(event);
+                    }
+
+                    final PerforceDecorator this$0;
+                    private final ILabelProviderListener val$l;
+                    private final LabelProviderChangedEvent val$event;
+
+            
+            {
+                this$0 = PerforceDecorator.this;
+                l = ilabelproviderlistener;
+                event = labelproviderchangedevent;
+                super();
+            }
+                });
+            }
+
+    }
+
+    public PerforceDecorator(boolean resourceDecorator)
+    {
+        fileDecoration = "";
+        projectDecoration = "";
+        outgoingChangeFlag = "";
+        ignoredText = "";
+        unaddedChangeFlag = "";
+        showChangelists = false;
+        iconCache = new IconCache();
+        suspendDecoration = false;
+        this.resourceDecorator = resourceDecorator;
+        init();
+    }
+
+    public static PerforceDecorator getActivePerforceDecorator()
+    {
+        IDecoratorManager manager = PerforceUIPlugin.getPlugin().getWorkbench().getDecoratorManager();
+        if(manager.getEnabled("com.perforce.team.ui.decorator.PerforceDecorator"))
+            return (PerforceDecorator)manager.getLabelDecorator("com.perforce.team.ui.decorator.PerforceDecorator");
+        else
+            return null;
+    }
+
+    public void dispose()
+    {
+        super.dispose();
+        iconCache.clear();
+        if(resourceDecorator)
+            PerforceProviderPlugin.removeProjectSettingsChangeListener(this);
+        P4ConnectionManager.getManager().removeListener(this);
+        IPreferenceStore store = PerforceUIPlugin.getPlugin().getPreferenceStore();
+        store.removePropertyChangeListener(this);
+    }
+
+    public void projectSettingsChanged(IProject project, ConnectionParameters params)
+    {
+        resourceStateChanged(new IResource[] {
+            project
+        });
+    }
+
+    private boolean isValidPref(String property)
+    {
+        return "pref_file_format".equals(property) || "pref_project_format".equals(property) || "pref_ignored_text".equals(property) || "pref_file_open_icon".equals(property) || "pref_file_sync_icon".equals(property) || "pref_file_sync2_icon".equals(property) || "pref_file_unresolved_icon".equals(property) || "pref_file_lock_icon".equals(property) || "pref_mark_unmanaged".equals(property) || "pref_file_other_icon".equals(property) || "com.perforce.team.ui.preferences.IGNORED_DECORATION".equals(property) || "pref_ignored_icon".equals(property) || "com.perforce.team.ui.preferences.SHOW_CHANGELIST_IN_SYNC_VIEW".equals(property) || "com.perforce.team.ui.preferences.PROJECT_DECORATION_TEXT".equals(property) || "com.perforce.team.ui.preferences.FILE_DECORATION_TEXT".equals(property) || "com.perforce.team.ui.preferences.OUTGOING_CHANGE_DECORATION".equals(property) || "pref_local_only_icon".equals(property);
+    }
+
+    public void propertyChange(PropertyChangeEvent event)
+    {
+        if(isValidPref(event.getProperty()))
+        {
+            iconCache.clear();
+            getPreferences();
+            fireLabelProviderChanged(new LabelProviderChangedEvent(this));
+        }
+    }
+
+    public void resourceStateChanged(final IResource resources[])
+    {
+        boolean gotFolder = false;
+        for(int i = 0; i < resources.length; i++)
+        {
+            int type = resources[i].getType();
+            if(type == 4 || type == 2)
+                gotFolder = true;
+        }
+
+        final boolean gotFolder2 = gotFolder;
+        PerforceUIPlugin.getDisplay().asyncExec(new Runnable() {
+
+            public void run()
+            {
+                if(gotFolder2)
+                    fireLabelProviderChanged(new LabelProviderChangedEvent(PerforceDecorator.this));
+                else
+                    fireLabelProviderChanged(new LabelProviderChangedEvent(PerforceDecorator.this, resources));
+            }
+
+            final PerforceDecorator this$0;
+            private final boolean val$gotFolder2;
+            private final IResource val$resources[];
+
+            
+            {
+                this$0 = PerforceDecorator.this;
+                gotFolder2 = flag;
+                resources = airesource;
+                super();
+            }
+        });
+    }
+
+    public Image decorateImage(Image image, Object o)
+    {
+        if(suspendDecoration || image == null)
+            return null;
+        IResource resource = PerforceProviderPlugin.getResource(o);
+        boolean managedFile = resource != null;
+        if(resource instanceof IProject)
+            image = iconCache.getProjectImage(image, (IProject)resource);
+        else
+        if(o instanceof IP4File)
+        {
+            IP4File p4Resource = (IP4File)o;
+            image = iconCache.getImage(image, p4Resource, managedFile, false);
+        } else
+        if(o instanceof IFile)
+        {
+            com.perforce.team.core.p4java.IP4Resource p4Resource = P4ConnectionManager.getManager().asyncGetResource((IFile)o);
+            if(p4Resource instanceof IP4File)
+            {
+                boolean ignored = iconCache.ignoredLocation > 0 && IgnoredFiles.isIgnored((IFile)o);
+                image = iconCache.getImage(image, (IP4File)p4Resource, managedFile, ignored);
+            }
+        } else
+        if(o instanceof IP4PendingChangelist)
+            image = iconCache.getImage(image, (IP4PendingChangelist)o);
+        else
+        if(o instanceof IP4ShelveFile)
+            image = iconCache.getImage((IP4ShelveFile)o);
+        else
+        if(o instanceof IAdaptable)
+        {
+            IP4File file = (IP4File)((IAdaptable)o).getAdapter(com/perforce/team/core/p4java/IP4File);
+            if(file != null)
+                image = iconCache.getImage(image, file, managedFile, false);
+        }
+        return image;
+    }
+
+    public String decorateProject(String text, IProject project)
+    {
+        String decorated = null;
+        PerforceTeamProvider provider = PerforceProviderPlugin.getPerforceProviderFor(project);
+        if(provider != null)
+            decorated = getProjectText(text, project);
+        return decorated;
+    }
+
+    public String decorateSyncElement(String text, ISynchronizeModelElement element)
+    {
+        IResource resource = element.getResource();
+        if(resource instanceof IFile)
+        {
+            com.perforce.team.core.p4java.IP4Resource p4Resource = P4ConnectionManager.getManager().asyncGetResource(resource);
+            if(p4Resource instanceof IP4File)
+                return getFileText(text, (IP4File)p4Resource, showChangelists, true);
+        } else
+        if(resource instanceof IProject)
+            return decorateProject(text, (IProject)resource);
+        return null;
+    }
+
+    public String decorateResource(String text, IResource resource)
+    {
+        String decorated = null;
+        boolean ignored = decorateIgnored && PerforceTeamProvider.getPerforceProvider(resource) != null && IgnoredFiles.isIgnored(resource);
+        if(resource instanceof IFile)
+        {
+            com.perforce.team.core.p4java.IP4Resource p4Resource = P4ConnectionManager.getManager().asyncGetResource(resource);
+            if(p4Resource instanceof IP4File)
+                decorated = getFileText(text, (IP4File)p4Resource, ignored);
+        }
+        if(ignored)
+            decorated = decorateIgnoredResource(text);
+        return decorated;
+    }
+
+    public String decorateConnection(String text, IP4Connection connection)
+    {
+        return connection.isOffline() ? (new StringBuilder(String.valueOf(text))).append(" [Offline]").toString() : null;
+    }
+
+    public String decorateShelvedFile(String text, IP4ShelveFile shelvedFile)
+    {
+        IP4File file = shelvedFile.getFile();
+        Map bindings = new HashMap();
+        bindings.put("have", Integer.toString(file.getHaveRevision()));
+        String type = file.getOpenedType();
+        if(type == null)
+            type = file.getHeadType();
+        if(type != null)
+            bindings.put("type", type);
+        FileAction action = file.getAction();
+        String actionText = action == null ? null : action.toString().toLowerCase();
+        if(action == null && P4File.isActionDelete(file.getHeadAction()))
+            if(file.getHaveRevision() == 0)
+                actionText = "-deleted-";
+            else
+                actionText = "-head rev deleted-";
+        if(actionText != null)
+            bindings.put("action", actionText);
+        bindings.put("name", text);
+        StringBuilder decorated = P4Decoration.decorate(fileDecoration, bindings);
+        return removeTrailingWhitespace(decorated);
+    }
+
+    public String decorateText(String text, Object o)
+    {
+        if(text != null && !suspendDecoration)
+        {
+            String decorated = null;
+            if(o instanceof IP4File)
+                decorated = getFileText(text, (IP4File)o);
+            else
+            if(o instanceof IP4Connection)
+            {
+                decorated = decorateConnection(text, (IP4Connection)o);
+            } else
+            {
+                if(o instanceof IProject)
+                    return decorateProject(text, (IProject)o);
+                if(o instanceof IResource)
+                    decorated = decorateResource(text, (IResource)o);
+                else
+                if(o instanceof ISynchronizeModelElement)
+                    decorated = decorateSyncElement(text, (ISynchronizeModelElement)o);
+                else
+                if(o instanceof IP4ShelveFile)
+                    decorated = decorateShelvedFile(text, (IP4ShelveFile)o);
+                else
+                if(o instanceof IAdaptable)
+                {
+                    IP4File file = (IP4File)((IAdaptable)o).getAdapter(com/perforce/team/core/p4java/IP4File);
+                    if(file != null)
+                        decorated = getFileText(text, file);
+                }
+            }
+            if(decorated != null)
+                return decorated;
+        }
+        return null;
+    }
+
+    protected String getProjectText(String text, IProject project)
+    {
+        IP4Connection connection = P4ConnectionManager.getManager().getConnection(project, false);
+        if(connection != null)
+            text = getConnectionText(text, connection);
+        return text;
+    }
+
+    protected String getConnectionText(String text, IP4Connection connection)
+    {
+        return decorateText(text, connection);
+    }
+
+    public String getFileText(String text, IP4File file)
+    {
+        return getFileText(text, file, false);
+    }
+
+    public String getFileText(String text, IP4File file, boolean ignored)
+    {
+        return decorateText(file, text, ignored);
+    }
+
+    public String getFileText(String text, IP4File file, boolean showChangelist, boolean showIncoming)
+    {
+        return decorateText(file, text, showChangelist, showIncoming, false);
+    }
+
+    private void postLabelEvent(final LabelProviderChangedEvent event)
+    {
+        PerforceUIPlugin.asyncExec(new Runnable() {
+
+            public void run()
+            {
+                fireLabelProviderChanged(event);
+            }
+
+            final PerforceDecorator this$0;
+            private final LabelProviderChangedEvent val$event;
+
+            
+            {
+                this$0 = PerforceDecorator.this;
+                event = labelproviderchangedevent;
+                super();
+            }
+        });
+    }
+
+    protected void append(StringBuffer buffer, String text, String sep)
+    {
+        if(buffer.length() > 0)
+            buffer.append(sep);
+        buffer.append(text);
+    }
+
+    private void init()
+    {
+        getPreferences();
+        if(resourceDecorator)
+            PerforceProviderPlugin.addProjectSettingsChangeListener(this);
+        P4ConnectionManager.getManager().addListener(this);
+        IPreferenceStore store = PerforceUIPlugin.getPlugin().getPreferenceStore();
+        store.addPropertyChangeListener(this);
+    }
+
+    private void getPreferences()
+    {
+        IPreferenceStore store = PerforceUIPlugin.getPlugin().getPreferenceStore();
+        decorateIgnored = store.getBoolean("pref_ignored_text");
+        projectDecoration = store.getString("com.perforce.team.ui.preferences.PROJECT_DECORATION_TEXT");
+        fileDecoration = store.getString("com.perforce.team.ui.preferences.FILE_DECORATION_TEXT");
+        outgoingChangeFlag = store.getString("com.perforce.team.ui.preferences.OUTGOING_CHANGE_DECORATION");
+        unaddedChangeFlag = store.getString("com.perforce.team.ui.preferences.UNADDED_CHANGE_DECORATION");
+        ignoredText = store.getString("com.perforce.team.ui.preferences.IGNORED_DECORATION");
+        showChangelists = store.getBoolean("com.perforce.team.ui.preferences.SHOW_CHANGELIST_IN_SYNC_VIEW");
+    }
+
+    public void resoureChanged(P4Event event)
+    {
+        if(resourceDecorator)
+            postLabelEvent(new LabelProviderChangedEvent(this, event.getLocalResources()));
+        else
+            postLabelEvent(new LabelProviderChangedEvent(this, event.getResources()));
+    }
+
+    public static final String ID = "com.perforce.team.ui.decorator.PerforceDecorator";
+    protected boolean decorateIgnored;
+    protected String fileDecoration;
+    protected String projectDecoration;
+    protected String outgoingChangeFlag;
+    protected String ignoredText;
+    protected String unaddedChangeFlag;
+    protected boolean showChangelists;
+    protected IconCache iconCache;
+    private boolean resourceDecorator;
+    private boolean suspendDecoration;
+}
