@@ -10,7 +10,7 @@
  *    Gabor Liptak - Speedup Pattern's usage
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.perforce.core;
+package com.atlassian.connector.eclipse.internal.perforce.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;

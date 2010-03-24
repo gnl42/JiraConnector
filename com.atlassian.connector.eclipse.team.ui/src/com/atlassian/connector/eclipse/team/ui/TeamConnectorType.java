@@ -15,5 +15,5 @@ package com.atlassian.connector.eclipse.team.ui;
  * @author Jacek Jaroczynski
  */
 public enum TeamConnectorType {
-	SVN, CVS, NONE
+	SVN, CVS, NONE, PERFORCE
 }
