@@ -11,9 +11,9 @@
 package com.atlassian.connector.eclipse.internal.perforce.ui;
 
 import com.perforce.p4java.core.file.FileSpecOpStatus;
-
 import com.perforce.team.core.p4java.IP4File;
 import com.perforce.team.core.p4java.IP4Resource;
+import com.perforce.team.core.p4java.P4File;
 import com.perforce.team.core.p4java.P4Workspace;
 import com.perforce.team.ui.IgnoredFiles;
 
@@ -76,17 +76,74 @@ public interface IStateFilter {
 		}
 	};
 
-	public static final IStateFilter SF_ANY_CHANGE = SF_ALL;
+	public static final IStateFilter SF_ANY_CHANGE = new AbstractStateFilter() {
+		@Override
+		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return local instanceof IP4File && ((IP4File) local).isOpened() && ((IP4File) local).openedByOwner();
+		}
 
-	public static final IStateFilter SF_UNVERSIONED = SF_ALL;
+		@Override
+		public boolean allowsRecursionImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return true;
+		}
+	};
 
-	public static final IStateFilter SF_VERSIONED = SF_ALL;
+	// FIXME: 
+	public static final IStateFilter SF_ADDED = new AbstractStateFilter() {
+		@Override
+		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return !IgnoredFiles.isIgnored(resource) && local instanceof IP4File
+					&& P4File.isActionAdd(((IP4File) local).getAction());
+		}
+
+		@Override
+		public boolean allowsRecursionImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return true;
+		}
+	};
+
+	public static final IStateFilter SF_UNVERSIONED = new AbstractStateFilter() {
+		@Override
+		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return !IgnoredFiles.isIgnored(resource) && local instanceof IP4File && !((IP4File) local).isOpened();
+		}
+
+		@Override
+		public boolean allowsRecursionImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return true;
+		}
+	};
+
+	public static final IStateFilter SF_VERSIONED = new AbstractStateFilter() {
+		@Override
+		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return !SF_UNVERSIONED.accept(local);
+		}
+
+		@Override
+		public boolean allowsRecursionImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return true;
+		}
+	};
 
 	public static final IStateFilter SF_IGNORED = new AbstractStateFilter() {
 
 		@Override
 		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
 			return IgnoredFiles.isIgnored(resource) || IStateFilter.SF_UNVERSIONED.accept(resource, state);
+		}
+
+		@Override
+		public boolean allowsRecursionImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return true;
+		}
+	};
+
+	public static final IStateFilter SF_DELETED = new AbstractStateFilter() {
+		@Override
+		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
+			return local instanceof IP4File && P4File.isActionDelete(((IP4File) local).getHeadAction())
+					&& ((IP4File) local).getHaveRevision() == 0;
 		}
 
 		@Override
