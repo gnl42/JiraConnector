@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -100,7 +101,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		return null;
 	}
 
-	private static File createTempFile(String fileName, byte[] content) throws IOException {
+	public static File createTempFile(String fileName, byte[] content) throws IOException {
 		String extention = FilenameUtils.getExtension(fileName);
 		File retVal = File.createTempFile("openVirtualFileJob", "." + extention, CrucibleUiPlugin.getDefault()
 				.getStateLocation()
@@ -212,7 +213,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 	}
 
 	public static void contentUrlMissingPopup() {
-		Display.getDefault().asyncExec(new Runnable() {
+		AtlassianUiUtil.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				MessageDialog.openError(
 						WorkbenchUtil.getShell(),

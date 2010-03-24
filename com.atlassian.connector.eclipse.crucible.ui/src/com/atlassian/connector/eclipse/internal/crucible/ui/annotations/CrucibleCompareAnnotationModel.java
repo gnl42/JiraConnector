@@ -423,9 +423,7 @@ public class CrucibleCompareAnnotationModel {
 					&& addGeneralCommentAction == null) {
 				addLineCommentAction = new AddLineCommentToFileAction(this, crucibleAnnotationModel.getCrucibleFile());
 				addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
-				addGeneralCommentAction = new AddGeneralCommentToFileAction();
-				addGeneralCommentAction.setCrucibleFile(crucibleAnnotationModel.getCrucibleFile());
-				addGeneralCommentAction.setReview(review);
+				addGeneralCommentAction = new AddGeneralCommentToFileAction(crucibleAnnotationModel.getCrucibleFile());
 
 				if (sourceViewer != null) {
 					sourceViewer.addSelectionChangedListener(addLineCommentAction);

@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -35,7 +36,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -82,25 +82,16 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 				} catch (CoreException e) {
 					reportError(e.getMessage(), e);
 				}
+
+				reviewItem = CrucibleUiUtil.getCrucibleFileFromResource(resource, review, monitor);
+
 			} else {
 				reportError("Cannot determine SCM details for resource. Your SCM is probably not supported.", null);
 			}
 		}
 
 		private void reportError(final String message, final Throwable exception) {
-			Display d = getShell().getDisplay();
-
-			if (d == null) {
-				d = Display.getCurrent();
-			}
-
-			if (d == null) {
-				d = Display.getDefault();
-			}
-
-			if (d == null) {
-				d = WorkbenchUtil.getShell().getDisplay();
-			}
+			Display d = AtlassianUiUtil.getDisplay(getShell());
 			d.asyncExec(new Runnable() {
 				public void run() {
 					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, message, exception));
@@ -108,12 +99,13 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 				}
 			});
 		}
-
 	}
 
-	private IResource resource;
-
 	private Review review;
+
+	private CrucibleFile reviewItem;
+
+	private IResource resource;
 
 	public CrucibleAddFileAddCommentDialog(Shell shell, String dialogTitle, Review review, String taskKey,
 			String taskId, TaskRepository taskRepository, CrucibleClient client) {
@@ -130,21 +122,17 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 				run(true, false, new AddFileToReviewRunable());
 			} catch (InvocationTargetException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-				setErrorMessage("Unable to add file to the review");
+				setErrorMessage("Unable to add file to the review.");
 				return false;
 			} catch (InterruptedException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-				setErrorMessage("Unable to add file to the review");
+				setErrorMessage("Unable to add file to the review.");
 				return false;
 			}
 
-			// get CrucibleFile for added file from fresh review
-			// TODO jj we should compare content here as we can have two the same pre-commit files in review
-			CrucibleFile reviewItem = CrucibleUiUtil.getCrucibleFileFromResource(resource, review);
-
 			if (reviewItem == null) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Adding file to review failed."));
-				setErrorMessage("Unable to add file to the review");
+				setErrorMessage("Unable to determine CrucibleFile.");
 				return false;
 			}
 
@@ -193,5 +181,4 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 	public void setResource(IResource resource) {
 		this.resource = resource;
 	}
-
 }

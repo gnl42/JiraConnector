@@ -11,12 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.OpenVirtualFileJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.util.EditorUtil;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -33,15 +37,17 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -53,9 +59,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -176,11 +187,15 @@ public final class CrucibleUiUtil {
 
 	public static boolean isFilePartOfActiveReview(CrucibleFile crucibleFile) {
 		Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-		if (activeReview == null || crucibleFile == null || crucibleFile.getCrucibleFileInfo() == null
+		return isFilePartOfReview(crucibleFile, activeReview);
+	}
+
+	public static boolean isFilePartOfReview(CrucibleFile crucibleFile, Review review) {
+		if (review == null || crucibleFile == null || crucibleFile.getCrucibleFileInfo() == null
 				|| crucibleFile.getCrucibleFileInfo().getFileDescriptor() == null) {
 			return false;
 		}
-		for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+		for (CrucibleFileInfo fileInfo : review.getFiles()) {
 			if (fileInfo != null
 					&& fileInfo.getFileDescriptor() != null
 					&& fileInfo.getFileDescriptor().getUrl().equals(
@@ -325,20 +340,27 @@ public final class CrucibleUiUtil {
 	}
 
 	/**
-	 * Gets file form review (both pre- or post-commit)
+	 * Gets file from review (both pre- or post-commit)
 	 * 
 	 * @param resource
 	 * @param review
 	 * @return
 	 */
-	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review) {
-		CrucibleFile cruFile = getCruciblePostCommitFile(resource, review);
+	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review, IProgressMonitor monitor) {
+		CrucibleFile cruFile = getCruciblePostCommitFile(resource, review, monitor);
 
 		if (cruFile != null) {
 			return cruFile;
 		}
 
-		return getCruciblePreCommitFile(resource, review);
+		try {
+			return getCruciblePreCommitFile(resource, review, monitor);
+		} catch (CoreException e) {
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PRODUCT_NAME,
+					"Cannot find pre-commit file for selected resource.", e));
+		}
+
+		return null;
 	}
 
 	/**
@@ -348,7 +370,7 @@ public final class CrucibleUiUtil {
 	 * @param review
 	 * @return
 	 */
-	public static CrucibleFile getCruciblePostCommitFile(IResource resource, Review review) {
+	public static CrucibleFile getCruciblePostCommitFile(IResource resource, Review review, IProgressMonitor monitor) {
 		if (review == null || !(resource instanceof IFile)) {
 			return null;
 		}
@@ -389,8 +411,10 @@ public final class CrucibleUiUtil {
 	 * @param resource
 	 * @param review
 	 * @return
+	 * @throws CoreException
 	 */
-	public static CrucibleFile getCruciblePreCommitFile(IResource resource, Review review) {
+	public static CrucibleFile getCruciblePreCommitFile(final IResource resource, Review review,
+			IProgressMonitor monitor) throws CoreException {
 
 		if (review == null || !(resource instanceof IFile)) {
 			return null;
@@ -400,16 +424,64 @@ public final class CrucibleUiUtil {
 
 		String localFileUrl = StringUtil.removeLeadingAndTrailingSlashes(file.getFullPath().toString());
 
-		Set<CrucibleFileInfo> reviewFiles = review.getFiles();
+		List<CrucibleFile> matchingFiles = new ArrayList<CrucibleFile>();
 
-		for (CrucibleFileInfo cruFile : reviewFiles) {
+		for (CrucibleFileInfo cruFile : review.getFiles()) {
 			String newFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getFileDescriptor().getUrl());
 			String oldFileUrl = StringUtil.removeLeadingAndTrailingSlashes(cruFile.getOldFileDescriptor().getUrl());
 
 			if (newFileUrl != null && newFileUrl.equals(localFileUrl)) {
-				return new CrucibleFile(cruFile, false);
+				matchingFiles.add(new CrucibleFile(cruFile, false));
 			} else if (oldFileUrl != null && oldFileUrl.equals(localFileUrl)) {
-				return new CrucibleFile(cruFile, true);
+				matchingFiles.add(new CrucibleFile(cruFile, true));
+			}
+		}
+
+		if (matchingFiles.size() > 0) {
+			CrucibleClient client = CrucibleUiUtil.getClient(review);
+			TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
+
+			for (final CrucibleFile cruFile : matchingFiles) {
+				final String url = cruFile.getSelectedFile().getContentUrl();
+				if (url == null || url.length() == 0) {
+					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PRODUCT_NAME,
+							"Cannot find pre-commit file for selected resource. Matching review item content url is empty"));
+					continue;
+				}
+				Boolean ret = client.execute(new RemoteOperation<Boolean, CrucibleServerFacade2>(monitor, repository) {
+
+					@Override
+					public Boolean run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+							throws RemoteApiException, ServerPasswordNotProvidedException {
+
+						final byte[] content = OpenVirtualFileJob.getContent(url, server.getSession(serverCfg),
+								serverCfg.getUrl());
+
+						if (content == null) {
+							return false;
+						}
+
+						File localFile;
+						try {
+							localFile = OpenVirtualFileJob.createTempFile(cruFile.getSelectedFile().getName(), content);
+
+							if (FileUtils.contentEquals(localFile, resource.getRawLocation().toFile())) {
+								return true;
+							}
+						} catch (IOException e) {
+							StatusHandler.log(new Status(
+									IStatus.ERROR,
+									CrucibleUiPlugin.PRODUCT_NAME,
+									"Cannot create local temporary file. Canno compare selected resource with review item.",
+									e));
+						}
+						return false;
+					}
+				}, true);
+
+				if (ret) {
+					return cruFile;
+				}
 			}
 		}
 
