@@ -19,9 +19,6 @@ import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.util.MiscUtil;
-import com.perforce.p4java.core.file.FileSpecOpStatus;
-import com.perforce.team.core.p4java.IP4File;
 import com.perforce.team.core.p4java.IP4Resource;
 import com.perforce.team.core.p4java.P4Workspace;
 
@@ -82,6 +79,7 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources, IProgressMonitor monitor)
 			throws CoreException {
+		/*
 		List<UploadItem> items = MiscUtil.buildArrayList();
 		for (IResource resource : resources) {
 			if (resource.getType() != IResource.FILE) {
@@ -109,7 +107,8 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 						newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
-		return items;
+		return items;*/
+		throw new UnsupportedOperationException();
 	}
 
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
