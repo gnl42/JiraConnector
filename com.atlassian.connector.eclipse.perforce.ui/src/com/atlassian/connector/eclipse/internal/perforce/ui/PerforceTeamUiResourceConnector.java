@@ -17,20 +17,32 @@ import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.perforce.p4java.exception.P4JavaException;
+import com.perforce.team.core.p4java.IP4Connection;
 import com.perforce.team.core.p4java.IP4File;
 import com.perforce.team.core.p4java.IP4Resource;
 import com.perforce.team.core.p4java.P4Workspace;
+import com.perforce.team.ui.P4ConnectionManager;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IEditorInput;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +54,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 /**
- * Connector to handle connecting to a CVS repository
+ * Connector to handle connecting to a Perforce repository
  * 
  * @author Pawel Niewiadomski
  * @author Wojciech Seliga
@@ -61,15 +73,73 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
-		throw new UnsupportedOperationException();
-	}
-
-	protected ScmRepository getRepository(String url, IProgressMonitor monitor) {
-		throw new UnsupportedOperationException();
+		List<ScmRepository> scms = MiscUtil.buildArrayList();
+		P4ConnectionManager mgr = P4ConnectionManager.getManager();
+		IP4Connection[] cons = mgr.getConnections();
+		if (cons != null) {
+			for (IP4Connection con : cons) {
+				try {
+					scms.add(new ScmRepository(getScmPath(con), con.getClientName(), this));
+				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
+				}
+			}
+		}
+		return scms;
 	}
 
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
-		throw new UnsupportedOperationException();
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+		if (isResourceManagedBy(resource) && resource.getType() == IResource.FILE) {
+			try {
+				final IP4Resource scmResource = P4Workspace.getWorkspace().getResource(resource);
+				final IP4File scmFile = (IP4File) (scmResource instanceof IP4File ? scmResource : null);
+				if (scmResource == null) {
+					return null;
+				}
+
+				if (IStateFilter.SF_UNVERSIONED.accept(scmResource)) {
+					return LocalStatus.makeUnversioned();
+				}
+
+				if (IStateFilter.SF_IGNORED.accept(scmResource)) {
+					return LocalStatus.makeIngored();
+				}
+
+				String mimeTypeProp = null;
+				if (scmFile != null) {
+					mimeTypeProp = scmFile.getOpenedType() != null ? scmFile.getOpenedType() : scmFile.getHeadType();
+				}
+				boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
+
+				if (IStateFilter.SF_ADDED.accept(scmResource)) {
+					return LocalStatus.makeAdded(getScmPath(scmResource), isBinary);
+				}
+
+				return LocalStatus.makeVersioned(getScmPath(scmResource),
+						scmFile != null ? String.valueOf(scmFile.getHeadChange()) : null,
+						scmFile != null ? String.valueOf(scmFile.getHeadChange()) : null,
+						scmFile != null ? scmFile.isOpened() : false, isBinary);
+			} catch (RuntimeException e) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
+						"Cannot determine local revision for [" + resource.getName() + "]", e));
+			}
+		}
+
+		return null;
+	}
+
+	private String getScmPath(IP4Resource scmResource) throws CoreException {
+		try {
+			return "p4://" + scmResource.getClient().getServer().getServerInfo().getServerAddress()
+					+ scmResource.getActionPath();
+		} catch (P4JavaException e) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID,
+					"Failed to get server address", e));
+		}
 	}
 
 	public ScmRepository getApplicableRepository(IResource resource) {
@@ -99,7 +169,7 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(scmResource) || IStateFilter.SF_ADDED.accept(scmResource)
 					|| IStateFilter.SF_IGNORED.accept(scmResource)) {
-				byte[] newContent = getResourceContent(scmResource.getHaveContents());
+				byte[] newContent = getResourceContent((IFile) resource);
 				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (IStateFilter.SF_DELETED.accept(scmResource)) {
 				items.add(new UploadItem(fileName, getResourceContent(scmResource.getHeadContents()), DELETED_ITEM));
@@ -141,15 +211,78 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {
-		throw new UnsupportedOperationException();
+		IP4File localFile = (IP4File) P4Workspace.getWorkspace().getResource(file);
+		if (localFile != null && !IStateFilter.SF_ANY_CHANGE.accept(localFile)) {
+			String fileUrl;
+			try {
+				fileUrl = getScmPath(localFile);
+			} catch (CoreException e) {
+				return null;
+			}
+			String revision = String.valueOf(localFile.getHaveRevision());
+			if (fileUrl != null && revision != null) {
+				return getCrucibleFileFromReview(activeReview, fileUrl, revision);
+			}
+		}
+		return null;
 	}
 
 	public CrucibleFile getCrucibleFileFromReview(Review activeReview, String fileUrl, String revision) {
-		throw new UnsupportedOperationException();
+		for (CrucibleFileInfo file : activeReview.getFiles()) {
+			VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+			VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+			String newFileUrl = null;
+			String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
+			if (newAbsoluteUrl != null) {
+				newFileUrl = newAbsoluteUrl;
+			}
+
+			String oldFileUrl = null;
+			String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
+			if (oldAbsoluteUrl != null) {
+				oldFileUrl = oldAbsoluteUrl;
+			}
+			if ((newFileUrl != null && newFileUrl.equals(fileUrl))
+					|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
+				if (revision.equals(fileDescriptor.getRevision())) {
+					return new CrucibleFile(file, false);
+				}
+				if (revision.equals(oldFileDescriptor.getRevision())) {
+					return new CrucibleFile(file, true);
+				}
+				return null;
+			}
+		}
+		return null;
 	}
 
-	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IEditorInput editorInput) {
-		throw new UnsupportedOperationException();
+	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
+		//TODO might need some performance tweak, but works for now for M2
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+			if (!isResourceManagedBy(project)) {
+				continue;
+			}
+
+			try {
+				IPath fileIPath = new Path(fileDescriptor.getUrl());
+				IResource resource = project.findMember(fileIPath);
+				while (!fileIPath.isEmpty() && resource == null) {
+					fileIPath = fileIPath.removeFirstSegments(1);
+					resource = project.findMember(fileIPath);
+				}
+				if (resource == null) {
+					continue;
+				}
+
+				IP4Resource projectResource = P4Workspace.getWorkspace().getResource(resource);
+				if (projectResource instanceof IP4File && getScmPath(projectResource).endsWith(fileDescriptor.getUrl())) {
+					return getScmPath(projectResource);
+				}
+			} catch (Exception e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianPerforceUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			}
+		}
+		return null;
 	}
 
 	private IStateFilter getStateFilter(State filter) {

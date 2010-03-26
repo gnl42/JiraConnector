@@ -48,15 +48,16 @@ public interface IStateFilter {
 		}
 
 		public boolean allowsRecursion(IP4Resource resource) {
-			return resource instanceof IP4File
-					&& FileUtility.isManagedByPerforce(((IP4File) resource).getLocalFileForLocation())
-					&& this.allowsRecursionImpl(null, ((IP4File) resource).getLocalFileForLocation(),
-							((IP4File) resource).getStatus());
+			if (resource instanceof IP4File) {
+				return this.allowsRecursionImpl(null, ((IP4File) resource).getLocalFileForLocation(),
+						((IP4File) resource).getStatus());
+			} else {
+				return true;
+			}
 		}
 
 		public boolean allowsRecursion(IResource resource, FileSpecOpStatus state) {
-			return state != null && FileUtility.isManagedByPerforce(resource.getProject())
-					&& this.allowsRecursionImpl(null, resource, state);
+			return FileUtility.isManagedByPerforce(resource) && this.allowsRecursionImpl(null, resource, state);
 		}
 
 		protected abstract boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state);
@@ -105,7 +106,7 @@ public interface IStateFilter {
 	public static final IStateFilter SF_UNVERSIONED = new AbstractStateFilter() {
 		@Override
 		protected boolean acceptImpl(IP4Resource local, IResource resource, FileSpecOpStatus state) {
-			return !IgnoredFiles.isIgnored(resource) && local instanceof IP4File && !((IP4File) local).isOpened();
+			return state.equals(FileSpecOpStatus.UNKNOWN);
 		}
 
 		@Override

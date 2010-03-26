@@ -261,7 +261,9 @@ public final class TeamUiUtils {
 			try {
 				LocalStatus status = connector.getLocalRevision(resource);
 				if (status.getScmPath() != null && status.getScmPath().length() > 0) {
-					return connector.getLocalRevision(resource.getProject()).getScmPath();
+					LocalStatus projectStatus = connector.getLocalRevision(resource.getProject());
+					return projectStatus != null && projectStatus.getScmPath() != null ? projectStatus.getScmPath()
+							: status.getScmPath();
 				}
 			} catch (CoreException e) {
 				// resource is probably not under version control
