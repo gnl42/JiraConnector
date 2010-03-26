@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -43,7 +42,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.ui.IEditorInput;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
@@ -143,7 +141,22 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	public ScmRepository getApplicableRepository(IResource resource) {
-		throw new UnsupportedOperationException();
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+
+		if (!isResourceManagedBy(resource)) {
+			return null;
+		}
+
+		final IP4Resource repositoryLocation = P4Workspace.getWorkspace().getResource(resource);
+		try {
+			return new ScmRepository(getScmPath(repositoryLocation), getScmPath(repositoryLocation),
+					repositoryLocation.getClient().getName(), this);
+		} catch (CoreException e) {
+			return null;
+		}
 	}
 
 	public String getName() {
@@ -198,16 +211,22 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return FileUtility.isManagedByPerforce(resource);
 	}
 
-	public TeamConnectorType getType() {
-		return TeamConnectorType.PERFORCE;
-	}
-
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		throw new UnsupportedOperationException();
-	}
-
 	public boolean canHandleFile(IFile file) {
-		throw new UnsupportedOperationException();
+		final IProject project = file.getProject();
+		if (project == null) {
+			return false;
+		}
+
+		if (!isResourceManagedBy(file)) {
+			return false;
+		}
+
+		IP4Resource localFile = P4Workspace.getWorkspace().getResource(file);
+		if (localFile != null && !IStateFilter.SF_ANY_CHANGE.accept(localFile)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public CrucibleFile getCrucibleFileFromReview(Review activeReview, IFile file) {

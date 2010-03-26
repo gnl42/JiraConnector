@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.team.ui.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -60,9 +59,6 @@ import org.eclipse.team.svn.core.utility.FileUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
 import org.eclipse.team.svn.ui.preferences.SVNTeamPreferences;
-import org.eclipse.team.svn.ui.repository.RepositoryFileEditorInput;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -283,20 +279,6 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
 		// if we don't test it asRepositoryResource will throw RuntimeException
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), SVNTeamPlugin.NATURE_ID);
 		if (provider != null) {
-			return true;
-		}
-		return false;
-	}
-
-	public TeamConnectorType getType() {
-		return TeamConnectorType.SVN;
-	}
-
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		if (editorInput instanceof FileEditorInput) {
-			final IFile file = ((FileEditorInput) editorInput).getFile();
-			return canHandleFile(file);
-		} else if (editorInput instanceof RepositoryFileEditorInput) {
 			return true;
 		}
 		return false;

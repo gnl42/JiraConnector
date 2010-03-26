@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.IEditorInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,12 +82,6 @@ public interface ITeamUiResourceConnector {
 	String getName();
 
 	/**
-	 * 
-	 * @return type of the connector
-	 */
-	TeamConnectorType getType();
-
-	/**
 	 * Returns true if specified roots include recursively resources matching given filter
 	 * 
 	 * @param roots
@@ -120,8 +113,6 @@ public interface ITeamUiResourceConnector {
 	 *         {@link ITeamUiResourceConnector} is disabled returns false without checking the resource
 	 */
 	boolean isResourceManagedBy(IResource resource);
-
-	boolean canHandleEditorInput(IEditorInput editorInput);
 
 	boolean canHandleFile(IFile file);
 

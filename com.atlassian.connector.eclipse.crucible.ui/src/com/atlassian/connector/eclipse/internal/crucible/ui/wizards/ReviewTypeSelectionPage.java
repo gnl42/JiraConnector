@@ -128,12 +128,11 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 			showScmRelatedWarning(
 					buttonComp,
 					"You don't have any SCM integration installed for Atlassian Connector for Eclipse. "
-							+ "You need to install one of Subversion integrations to be able to create reviews. "
+							+ "You need to install at least Subversion or Perforce integration to be able to create reviews. "
 							+ "<A href=\"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector\">"
 							+ "Check installation guide for details</A>. "
-							+ "\n\nIf you need <A href=\"https://studio.atlassian.com/browse/PLE-523\">Perforce</A> "
-							+ "or <A href=\"https://studio.atlassian.com/browse/PLE-728\">CVS</A>"
-							+ " integration help us prioritize our backlog by voting for them.");
+							+ "\n\nIf you need <A href=\"https://studio.atlassian.com/browse/PLE-728\">CVS</A>"
+							+ " integration help us prioritize our backlog by voting for it.");
 		} else {
 			final int[] repoCount = { 0 };
 			final IRunnableWithProgress getRepositories = new IRunnableWithProgress() {
