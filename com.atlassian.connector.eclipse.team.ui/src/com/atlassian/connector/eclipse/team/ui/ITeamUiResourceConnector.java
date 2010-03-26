@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * Interface for Team connectors for opening files in the local workspace
@@ -40,20 +39,6 @@ public interface ITeamUiResourceConnector {
 	};
 
 	boolean isEnabled();
-
-	/**
-	 * @param repositoryUrl
-	 *            The repository URL to get changesets from
-	 * @param limit
-	 *            The amount of revisions to retrieve (if 0 download all of them, implementations may not support this
-	 *            operation)
-	 * @return latest changesets
-	 * @throws CoreException
-	 *             on any error
-	 */
-	@NotNull
-	SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Return local revision status. Maybe called from UI thread.

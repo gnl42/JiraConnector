@@ -17,6 +17,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector2;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -573,13 +575,19 @@ public class SelectScmChangesetsPage extends AbstractCrucibleWizardPage {
 		IRunnableWithProgress getChangesets = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
-					SortedSet<ICustomChangesetLogEntry> retrieved = repository.getTeamResourceConnector()
-							.getLatestChangesets(repository.getScmPath(), numberToRetrieve, monitor);
+					ITeamUiResourceConnector tc = repository.getTeamResourceConnector();
+					if (tc instanceof ITeamUiResourceConnector2) {
+						SortedSet<ICustomChangesetLogEntry> retrieved = ((ITeamUiResourceConnector2) tc).getLatestChangesets(
+								repository.getScmPath(), numberToRetrieve, monitor);
 
-					if (availableLogEntries.containsKey(repository) && availableLogEntries.get(repository) != null) {
-						availableLogEntries.get(repository).addAll(retrieved);
+						if (availableLogEntries.containsKey(repository) && availableLogEntries.get(repository) != null) {
+							availableLogEntries.get(repository).addAll(retrieved);
+						} else {
+							availableLogEntries.put(repository, retrieved);
+						}
 					} else {
-						availableLogEntries.put(repository, retrieved);
+						status[0] = new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"This repository is managed by SCM integration that's compatible only with Crucible 2.x");
 					}
 				} catch (CoreException e) {
 					status[0] = e.getStatus();

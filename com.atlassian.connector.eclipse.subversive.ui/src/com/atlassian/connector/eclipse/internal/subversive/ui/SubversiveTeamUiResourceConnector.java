@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector2;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -74,7 +75,7 @@ import java.util.TreeSet;
  * @author Pawel Niewiadomski
  * @author Wojciech Seliga
  */
-public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector {
+public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector implements ITeamUiResourceConnector2 {
 
 	public boolean isEnabled() {
 		return true;

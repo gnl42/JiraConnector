@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.perforce.ui;
 
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -49,7 +48,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * Connector to handle connecting to a Perforce repository
@@ -61,13 +59,6 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 
 	public boolean isEnabled() {
 		return true;
-	}
-
-	@NotNull
-	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException {
-
-		throw new UnsupportedOperationException();
 	}
 
 	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
