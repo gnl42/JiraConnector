@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -25,7 +24,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -41,12 +39,10 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
-import org.eclipse.ui.IEditorInput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 
 /**
@@ -87,19 +83,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 				"Not implemented yet for CVS."));
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
-			throws CoreException {
-		// @todo implement it
-		Assert.isNotNull(files);
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
-				"Not implemented yet for CVS."));
-	}
-
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		// @todo implement it
-		return false;
-	}
-
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
 		final IProject project = resource.getProject();
 		if (project == null) {
@@ -138,10 +121,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 
 	public String getName() {
 		return "CVS (FishEye only)";
-	}
-
-	public TeamConnectorType getType() {
-		return TeamConnectorType.CVS;
 	}
 
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {

@@ -39,9 +39,6 @@ import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.internal.ui.history.FileRevisionEditorInput;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.Bundle;
@@ -199,10 +196,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 		return "Team API (partial support)";
 	}
 
-	public TeamConnectorType getType() {
-		return TeamConnectorType.NONE;
-	}
-
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		return false;
 	}
@@ -254,12 +247,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 			}
 		}
 		return null;
-	}
-
-	@SuppressWarnings("restriction")
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		// we cannot deal with remote files since they are team provider specific
-		return editorInput instanceof FileEditorInput || editorInput instanceof FileRevisionEditorInput;
 	}
 
 	@Nullable

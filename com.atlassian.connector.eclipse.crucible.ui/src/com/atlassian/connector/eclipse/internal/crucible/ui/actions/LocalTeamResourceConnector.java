@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -29,7 +28,6 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.ui.IEditorInput;
 
 import java.util.Collection;
 import java.util.List;
@@ -55,10 +53,6 @@ public class LocalTeamResourceConnector extends AbstractTeamUiConnector {
 	}
 
 	public String getName() {
-		throw new NotImplementedException();
-	}
-
-	public TeamConnectorType getType() {
 		throw new NotImplementedException();
 	}
 
@@ -110,10 +104,6 @@ public class LocalTeamResourceConnector extends AbstractTeamUiConnector {
 
 	public boolean isResourceManagedBy(IResource resource) {
 		return true;
-	}
-
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		throw new NotImplementedException();
 	}
 
 	public boolean canHandleFile(IFile file) {

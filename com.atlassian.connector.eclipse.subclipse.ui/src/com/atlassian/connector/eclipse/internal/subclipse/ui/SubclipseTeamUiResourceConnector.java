@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
-import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -272,10 +271,6 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		return NAME;
 	}
 
-	public TeamConnectorType getType() {
-		return TeamConnectorType.SVN;
-	}
-
 	public boolean isResourceManagedBy(IResource resource) {
 		if (!isEnabled()) {
 			return false;
@@ -377,16 +372,6 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		default:
 			throw new IllegalStateException("Unhandled IStateFilter");
 		}
-	}
-
-	public boolean canHandleEditorInput(IEditorInput editorInput) {
-		if (editorInput instanceof FileEditorInput) {
-			IFile file = ((FileEditorInput) editorInput).getFile();
-			return canHandleFile(file);
-		} else if (editorInput instanceof RemoteFileEditorInput) {
-			return true;
-		}
-		return false;
 	}
 
 	public boolean canHandleFile(IFile file) {
