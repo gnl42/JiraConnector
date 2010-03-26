@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
@@ -31,17 +30,11 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
 
 public class LocalTeamResourceConnector extends AbstractTeamUiConnector {
 
 	public boolean isEnabled() {
 		return true;
-	}
-
-	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException {
-		throw new NotImplementedException();
 	}
 
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {

@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.cvs.ui;
 
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
-import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
@@ -26,8 +25,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
@@ -43,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * Connector to handle connecting to a CVS repository
@@ -73,14 +69,6 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 			res.add(new ScmRepository(repo.getLocation(true), name, this));
 		}
 		return res;
-	}
-
-	@NotNull
-	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException {
-		// @todo implement it
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
-				"Not implemented yet for CVS."));
 	}
 
 	public LocalStatus getLocalRevision(IResource resource) throws CoreException {

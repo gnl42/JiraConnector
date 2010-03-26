@@ -47,7 +47,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * A default team resource provider that just uses the limited Eclipse team API
@@ -63,13 +62,6 @@ public class DefaultTeamUiResourceConnector extends AbstractTeamUiConnector {
 	public boolean isEnabled() {
 		// the default one is always enabled
 		return true;
-	}
-
-	@NotNull
-	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException {
-		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianTeamUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
 
 	public IFileRevision getFileRevision(IResource resource, String revisionString, IProgressMonitor monitor) {
