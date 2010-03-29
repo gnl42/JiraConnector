@@ -835,6 +835,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		if (input instanceof ICrucibleFileProvider && part instanceof ITextEditor) {
 			EditorUtil.selectAndReveal((ITextEditor) part, parent, ((ICrucibleFileProvider) input).getCrucibleFile()
 					.getSelectedFile());
+			return;
 		}
 
 		if (input instanceof IFileEditorInput && part instanceof ITextEditor) {
@@ -843,6 +844,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			if (fromEditor != null) {
 				EditorUtil.selectAndReveal((ITextEditor) part, parent, fromEditor.getSelectedFile());
 			}
+			return;
 		}
 
 		if (part instanceof CompareEditor) {
