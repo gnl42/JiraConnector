@@ -14,10 +14,11 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CommentNavigationAction;
@@ -83,6 +84,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
@@ -156,6 +158,20 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					if (focusMatchingComment(review.getFileByPermId(crucibleFile.getCrucibleFileInfo().getPermId()),
 							revision, start)) {
 						return;
+					}
+				}
+
+				if (editorInput instanceof IFileEditorInput) {
+					CrucibleFile crucibleFile = CrucibleUiUtil.getCruciblePostCommitFile(
+							((IFileEditorInput) editorInput).getFile(), review);
+
+					if (crucibleFile != null) {
+						String revision = crucibleFile.getSelectedFile().getRevision();
+
+						if (focusMatchingComment(
+								review.getFileByPermId(crucibleFile.getCrucibleFileInfo().getPermId()), revision, start)) {
+							return;
+						}
 					}
 				}
 			}
@@ -819,6 +835,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		if (input instanceof ICrucibleFileProvider && part instanceof ITextEditor) {
 			EditorUtil.selectAndReveal((ITextEditor) part, parent, ((ICrucibleFileProvider) input).getCrucibleFile()
 					.getSelectedFile());
+		}
+
+		if (input instanceof IFileEditorInput && part instanceof ITextEditor) {
+			CrucibleFile fromEditor = CrucibleUiUtil.getCruciblePostCommitFile(((IFileEditorInput) input).getFile(),
+					CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+			if (fromEditor != null) {
+				EditorUtil.selectAndReveal((ITextEditor) part, parent, fromEditor.getSelectedFile());
+			}
 		}
 
 		if (part instanceof CompareEditor) {

@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.CrucibleFileInfoCompareEditorInput;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -117,6 +120,13 @@ public final class EditorUtil {
 		}
 		if (input instanceof CrucibleFileInfoCompareEditorInput) {
 			if (fileInfo.equals(((CrucibleFileInfoCompareEditorInput) input).getCrucibleFileInfo())) {
+				return true;
+			}
+		}
+		if (input instanceof IFileEditorInput) {
+			CrucibleFile fromEditor = CrucibleUiUtil.getCruciblePostCommitFile(((IFileEditorInput) input).getFile(),
+					CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+			if (fileInfo.equals(fromEditor.getCrucibleFileInfo())) {
 				return true;
 			}
 		}

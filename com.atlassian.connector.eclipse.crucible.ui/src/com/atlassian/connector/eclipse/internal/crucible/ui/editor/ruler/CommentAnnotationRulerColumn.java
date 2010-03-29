@@ -22,7 +22,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
@@ -230,7 +229,7 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 
 		if (fEditor.getEditorInput() instanceof IFileEditorInput) {
 			IFileEditorInput input = (IFileEditorInput) fEditor.getEditorInput();
-			file = CrucibleUiUtil.getCrucibleFileFromResource(input.getFile(), review, new NullProgressMonitor());
+			file = CrucibleUiUtil.getCruciblePostCommitFile(input.getFile(), review);
 		}
 
 		if (file != null) {

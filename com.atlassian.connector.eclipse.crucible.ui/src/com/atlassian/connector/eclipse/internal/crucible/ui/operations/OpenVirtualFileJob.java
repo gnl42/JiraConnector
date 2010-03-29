@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePostCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -59,6 +58,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -157,8 +157,9 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				workspaceReviewItem = TeamUiUtils.findResourceForPath(mapping.getKey(), virtualFile.getUrl(),
 						submonitor.newChild(1));
 				if (workspaceReviewItem != null) {
-					if (TeamUiUtils.isInSync(workspaceReviewItem, virtualFile.getRevision())) {
-						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
+					if (TeamUiUtils.isInSync(workspaceReviewItem, virtualFile.getRevision())
+							&& workspaceReviewItem.getType() == IResource.FILE) {
+						IEditorPart editor = editLocalFile(crucibleFile, (IFile) workspaceReviewItem);
 
 						if (editor != null) {
 							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);
@@ -186,7 +187,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				taskRepository, workspaceReviewItem));
 	}
 
-	private IEditorPart openEditor(final CrucibleFile crucibleFile2, final IResource iResource) throws CoreException {
+	private IEditorPart editLocalFile(final CrucibleFile crucibleFile2, final IFile iResource) throws CoreException {
 		final IEditorPart[] part = new IEditorPart[1];
 		final CoreException[] exception = new CoreException[1];
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
@@ -195,7 +196,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 					final String editorId = getEditorId(PlatformUI.getWorkbench(), crucibleFile2.getSelectedFile()
 							.getName());
 					part[0] = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-							new CruciblePostCommitFileInput(crucibleFile2, (IFile) iResource), editorId);
+							new FileEditorInput(iResource), editorId);
 				} catch (CoreException e) {
 					exception[0] = e;
 				}
@@ -266,7 +267,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 			if (workspaceReviewItem != null) {
 				try {
 					if (FileUtils.contentEquals(localCopy, workspaceReviewItem.getRawLocation().toFile())) {
-						IEditorPart editor = openEditor(crucibleFile, workspaceReviewItem);
+						IEditorPart editor = editLocalFile(crucibleFile, (IFile) workspaceReviewItem);
 
 						if (editor != null) {
 							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);

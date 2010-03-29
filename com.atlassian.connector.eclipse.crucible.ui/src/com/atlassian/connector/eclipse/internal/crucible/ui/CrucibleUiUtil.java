@@ -347,7 +347,7 @@ public final class CrucibleUiUtil {
 	 * @return
 	 */
 	public static CrucibleFile getCrucibleFileFromResource(IResource resource, Review review, IProgressMonitor monitor) {
-		CrucibleFile cruFile = getCruciblePostCommitFile(resource, review, monitor);
+		CrucibleFile cruFile = getCruciblePostCommitFile(resource, review);
 
 		if (cruFile != null) {
 			return cruFile;
@@ -370,7 +370,7 @@ public final class CrucibleUiUtil {
 	 * @param review
 	 * @return
 	 */
-	public static CrucibleFile getCruciblePostCommitFile(IResource resource, Review review, IProgressMonitor monitor) {
+	public static CrucibleFile getCruciblePostCommitFile(IResource resource, Review review) {
 		if (review == null || !(resource instanceof IFile)) {
 			return null;
 		}
