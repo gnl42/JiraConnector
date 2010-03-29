@@ -11,9 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
@@ -21,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
@@ -42,6 +44,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.internal.texteditor.PropertyEventDispatcher;
 import org.eclipse.ui.texteditor.AnnotationPreference;
@@ -217,11 +220,21 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 
 	public void reviewActivated(ITask task, Review review) {
 		annotationModel = null;
+		CrucibleFileInfo currentFileInfo = null;
+		CrucibleFile file = null;
+
 		if (fEditor.getEditorInput() instanceof ICrucibleFileProvider) {
 			ICrucibleFileProvider fileProvider = (ICrucibleFileProvider) fEditor.getEditorInput();
-			CrucibleFile file = fileProvider.getCrucibleFile();
+			file = fileProvider.getCrucibleFile();
+		}
 
-			CrucibleFileInfo currentFileInfo = review.getFileByPermId(file.getCrucibleFileInfo().getPermId());
+		if (fEditor.getEditorInput() instanceof IFileEditorInput) {
+			IFileEditorInput input = (IFileEditorInput) fEditor.getEditorInput();
+			file = CrucibleUiUtil.getCrucibleFileFromResource(input.getFile(), review, new NullProgressMonitor());
+		}
+
+		if (file != null) {
+			currentFileInfo = review.getFileByPermId(file.getCrucibleFileInfo().getPermId());
 
 			if (currentFileInfo != null) {
 				annotationModel = new CrucibleAnnotationModel(fEditor, fEditor.getEditorInput(),

@@ -187,7 +187,9 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 	@Override
 	public void addDisposeListener(DisposeListener listener) {
 		super.addDisposeListener(listener);
-		commentPopupDialog.addDisposeListener(listener);
+		if (commentPopupDialog != null) {
+			commentPopupDialog.addDisposeListener(listener);
+		}
 	}
 
 	@Override
