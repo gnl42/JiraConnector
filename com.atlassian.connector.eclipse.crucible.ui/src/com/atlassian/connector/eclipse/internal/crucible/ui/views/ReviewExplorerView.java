@@ -832,29 +832,28 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		VersionedComment parent = ReviewModelUtil.getParentVersionedComment(comment);
 		IEditorInput input = part.getEditorInput();
 
-		if (input instanceof ICrucibleFileProvider && part instanceof ITextEditor) {
-			EditorUtil.selectAndReveal((ITextEditor) part, parent, ((ICrucibleFileProvider) input).getCrucibleFile()
-					.getSelectedFile());
-			return;
-		}
-
-		if (input instanceof IFileEditorInput && part instanceof ITextEditor) {
-			CrucibleFile fromEditor = CrucibleUiUtil.getCruciblePostCommitFile(((IFileEditorInput) input).getFile(),
-					CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-			if (fromEditor != null) {
-				EditorUtil.selectAndReveal((ITextEditor) part, parent, fromEditor.getSelectedFile());
+		if (part instanceof ITextEditor) {
+			if (input instanceof ICrucibleFileProvider) {
+				EditorUtil.selectAndReveal((ITextEditor) part, parent,
+						((ICrucibleFileProvider) input).getCrucibleFile().getSelectedFile());
 			}
-			return;
-		}
 
-		if (part instanceof CompareEditor) {
+			if (input instanceof IFileEditorInput) {
+				CrucibleFile fromEditor = CrucibleUiUtil.getCruciblePostCommitFile(
+						((IFileEditorInput) input).getFile(), CrucibleUiPlugin.getDefault()
+								.getActiveReviewManager()
+								.getActiveReview());
+				if (fromEditor != null) {
+					EditorUtil.selectAndReveal((ITextEditor) part, parent, fromEditor.getSelectedFile());
+				}
+			}
+		} else if (part instanceof CompareEditor) {
 			IEditorInput editorInput = part.getEditorInput();
 			if (editorInput instanceof CrucibleFileInfoCompareEditorInput) {
 				CrucibleFileInfoCompareEditorInput compareInput = (CrucibleFileInfoCompareEditorInput) editorInput;
 				compareInput.getAnnotationModelToAttach().focusOnComment(parent);
 			}
 		}
-
 	}
 
 	public boolean isLinkingEnabled() {
