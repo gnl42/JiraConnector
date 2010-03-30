@@ -52,6 +52,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.rulers.IContributedRulerColumn;
 import org.eclipse.ui.texteditor.rulers.RulerColumnDescriptor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -206,8 +207,12 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 
 		fViewer.getAnnotationModel().addAnnotationModelListener(new IAnnotationModelListener() {
 			public void modelChanged(IAnnotationModel model) {
-				reviewActivated(CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask(),
-						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				if (CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive()) {
+					reviewActivated(CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask(),
+							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				} else {
+					reviewDeactivated(null, null);
+				}
 			}
 		});
 
@@ -249,7 +254,10 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 		});
 	}
 
-	public void reviewDeactivated(ITask task, Review review) {
+	/**
+	 * task and review might be null when called internally
+	 */
+	public void reviewDeactivated(@Nullable ITask task, @Nullable Review review) {
 		annotationModel = null;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
