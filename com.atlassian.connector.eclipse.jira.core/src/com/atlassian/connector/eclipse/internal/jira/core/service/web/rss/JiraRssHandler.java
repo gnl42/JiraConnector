@@ -255,6 +255,9 @@ public class JiraRssHandler extends DefaultHandler {
 	// intentionally not static: SimpleDateFormat is not thread safe
 	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
 
+	// Date format used by JIRA 4.1
+	private final SimpleDateFormat XML_DATE_FORMAT_41 = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z", Locale.US); //$NON-NLS-1$
+
 	// intentionally not static: SimpleDateFormat is not thread safe
 	//private final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 
@@ -831,10 +834,16 @@ public class JiraRssHandler extends DefaultHandler {
 			return null;
 		}
 		try {
-			return XML_DATE_FORMAT.parse(value);
-		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value //$NON-NLS-1$
-					+ "\"", e)); //$NON-NLS-1$
+			// JIRA 4.1 uses new date format
+			return XML_DATE_FORMAT_41.parse(value);
+		} catch (ParseException e0) {
+			try {
+				return XML_DATE_FORMAT.parse(value);
+			} catch (ParseException e) {
+				StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+						"Error parsing date: \"" + value //$NON-NLS-1$
+								+ "\"", e)); //$NON-NLS-1$
+			}
 			return null;
 		}
 	}
