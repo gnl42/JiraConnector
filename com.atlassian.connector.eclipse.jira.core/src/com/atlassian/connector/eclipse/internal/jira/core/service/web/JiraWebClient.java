@@ -654,7 +654,6 @@ public class JiraWebClient {
 			if (response == null) {
 				throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			System.out.print(response);
 
 			StringReader reader = new StringReader(response);
 			try {
