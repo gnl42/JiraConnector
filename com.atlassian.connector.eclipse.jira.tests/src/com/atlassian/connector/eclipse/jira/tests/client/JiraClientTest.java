@@ -26,8 +26,6 @@ import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.tests.util.TestUtil;
 import org.eclipse.mylyn.tests.util.TestUtil.Credentials;
 import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
-import org.junit.Assert;
-import org.junit.matchers.JUnitMatchers;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
@@ -87,11 +85,10 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, startOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			Assert.assertThat(
-					e.getMessage(),
-					JUnitMatchers.either(
-							JUnitMatchers.containsString("It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue "))
-							.or(JUnitMatchers.containsString("Workflow Action Invalid")));
+			assertTrue(e.getMessage()
+					.contains(
+							"It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue ")
+					|| e.getMessage().equals("Workflow Action Invalid"));
 		}
 
 		String stopOperation = JiraTestUtil.getOperation(client, issue.getKey(), "stop");
@@ -101,11 +98,10 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, stopOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			Assert.assertThat(
-					e.getMessage(),
-					JUnitMatchers.either(
-							JUnitMatchers.containsString("It seems that you have tried to perform a workflow operation (Stop Progress) that is not valid for the current state of this issue "))
-							.or(JUnitMatchers.containsString("Workflow Action Invalid")));
+			assertTrue(e.getMessage()
+					.contains(
+							"It seems that you have tried to perform a workflow operation (Stop Progress) that is not valid for the current state of this issue ")
+					|| e.getMessage().equals("Workflow Action Invalid"));
 		}
 		client.advanceIssueWorkflow(issue, startOperation, null, null);
 	}
@@ -129,8 +125,7 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			Assert.assertThat(e.getMessage(), JUnitMatchers.either(JUnitMatchers.containsString(resolveMsg)).or(
-					JUnitMatchers.containsString("Workflow Action Invalid")));
+			assertTrue(e.getMessage().contains(resolveMsg) || e.getMessage().equals("Workflow Action Invalid"));
 		}
 
 		// have to get "close" operation after resolving issue
@@ -144,19 +139,17 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			Assert.assertThat(e.getMessage(), JUnitMatchers.either(JUnitMatchers.containsString(resolveMsg)).or(
-					JUnitMatchers.containsString("Workflow Action Invalid")));
+			assertTrue(e.getMessage().contains(resolveMsg) || e.getMessage().equals("Workflow Action Invalid"));
 		}
 
 		try {
 			client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			Assert.assertThat(
-					e.getMessage(),
-					JUnitMatchers.either(
-							JUnitMatchers.containsString("It seems that you have tried to perform a workflow operation (Close Issue) that is not valid for the current state of this issue "))
-							.or(JUnitMatchers.containsString("Workflow Action Invalid")));
+			assertTrue(e.getMessage()
+					.contains(
+							"It seems that you have tried to perform a workflow operation (Close Issue) that is not valid for the current state of this issue ")
+					|| e.getMessage().equals("Workflow Action Invalid"));
 		}
 
 		String reopenOperation = JiraTestUtil.getOperation(client, issue.getKey(), "reopen");
