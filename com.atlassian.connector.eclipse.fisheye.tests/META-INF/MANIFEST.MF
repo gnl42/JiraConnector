@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.tests;singleton:=tr
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit,
+Require-Bundle: org.junit4,
  com.atlassian.connector.eclipse.fisheye.core,
  com.atlassian.connector.eclipse.fisheye.ui
 Export-Package: com.atlassian.connector.eclipse.internal.fisheye.tests;x-internal:=true

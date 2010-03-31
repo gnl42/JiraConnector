@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Jira Tests
 Bundle-SymbolicName: org.eclipse.mylyn.jira.tests
 Bundle-Version: 0.0.0
-Require-Bundle: org.junit, 
+Require-Bundle: org.junit4, 
  org.eclipse.mylyn.jira.core,
  org.eclipse.mylyn.jira.ui
 Export-Package: org.eclipse.mylyn.jira.tests;x-internal:=true
