@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
@@ -82,7 +83,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 	}
 
 	private void initialize() {
-		setText("Show Test Results");
+		setText(BambooConstants.SHOW_TEST_RESULTS_ACTION_LABEL);
 		setImageDescriptor(BambooImages.JUNIT);
 	}
 

@@ -567,7 +567,7 @@ public class BambooView extends ViewPart {
 
 		openInBrowserAction = new OpenInBrowserAction();
 		openInBrowserAction.setEnabled(false);
-		openInBrowserAction.setText("Open with Browser");
+		openInBrowserAction.setText(BambooConstants.OPEN_WITH_BROWSER_ACTION_LABEL);
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 		buildViewer.addSelectionChangedListener(openInBrowserAction);
 

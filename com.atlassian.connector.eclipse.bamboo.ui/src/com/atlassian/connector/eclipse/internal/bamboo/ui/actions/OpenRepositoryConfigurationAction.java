@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -34,7 +35,7 @@ public class OpenRepositoryConfigurationAction extends BaseSelectionListenerActi
 
 	private void initialize() {
 		setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
-		setText("Properties...");
+		setText(BambooConstants.OPEN_REPOSITORY_PROPERTIES_ACTION_LABEL);
 		setToolTipText("Open the repository configuration");
 	}
 

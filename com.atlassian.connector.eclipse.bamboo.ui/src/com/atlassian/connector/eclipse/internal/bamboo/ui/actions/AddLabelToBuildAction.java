@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
@@ -30,7 +31,7 @@ public class AddLabelToBuildAction extends EclipseBambooBuildSelectionListenerAc
 	}
 
 	private void inititalize() {
-		setText("Add Label to Build...");
+		setText(BambooConstants.ADD_LABEL_TO_BUILD_ACTION_LABEL);
 		setToolTipText("Add Label to Build");
 		setImageDescriptor(BambooImages.LABEL);
 	}

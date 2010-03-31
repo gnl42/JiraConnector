@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
@@ -66,7 +67,7 @@ public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerActio
 	}
 
 	private void initialize() {
-		setText("Show Build Log");
+		setText(BambooConstants.SHOW_BUILD_LOG_ACTION_LABEL);
 		setImageDescriptor(BambooImages.CONSOLE);
 	}
 

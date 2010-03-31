@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditor;
@@ -37,7 +38,7 @@ public class OpenBambooEditorAction extends EclipseBambooBuildSelectionListenerA
 	}
 
 	private void initialize() {
-		setText("Open");
+		setText(BambooConstants.OPEN_BUILD_ACTION_LABEL);
 	}
 
 	@Override

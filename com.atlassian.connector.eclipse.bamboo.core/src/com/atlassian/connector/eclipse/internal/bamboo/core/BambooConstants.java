@@ -36,6 +36,24 @@ public final class BambooConstants {
 
 	public static final String PREFERENCE_BUILD_SOUND = "pref_sound_build_failed";
 
+	public static final String OPEN_REPOSITORY_PROPERTIES_ACTION_LABEL = "Properties...";
+
+	public static final String ADD_COMMENT_TO_BUILD_ACTION_LABEL = "Add Comment to Build...";
+
+	public static final String ADD_LABEL_TO_BUILD_ACTION_LABEL = "Add Label to Build...";
+
+	public static final String SHOW_TEST_RESULTS_ACTION_LABEL = "Show Test Results";
+
+	public static final String OPEN_WITH_BROWSER_ACTION_LABEL = "Open with Browser";
+
+	public static final String SHOW_BUILD_LOG_ACTION_LABEL = "Show Build Log";
+
+	public static final String RUN_BUILD_ACTION_TOOLTIP = "Run Build on Server";
+
+	public static final String RUN_BUILD_ACTION_LABEL = "Run Build";
+
+	public static final String OPEN_BUILD_ACTION_LABEL = "Open";
+
 	private BambooConstants() {
 	}
 }

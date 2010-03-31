@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
@@ -46,8 +47,8 @@ public class RunBuildAction extends EclipseBambooBuildSelectionListenerAction {
 	}
 
 	private void initialize() {
-		setText("Run Build");
-		setToolTipText("Run Build on Server");
+		setText(BambooConstants.RUN_BUILD_ACTION_LABEL);
+		setToolTipText(BambooConstants.RUN_BUILD_ACTION_TOOLTIP);
 		setImageDescriptor(BambooImages.RUN_BUILD);
 	}
 
