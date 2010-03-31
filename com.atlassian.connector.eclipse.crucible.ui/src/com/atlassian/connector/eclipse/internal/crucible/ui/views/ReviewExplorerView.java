@@ -165,7 +165,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					CrucibleFile crucibleFile = CrucibleUiUtil.getCruciblePostCommitFile(
 							((IFileEditorInput) editorInput).getFile(), review);
 
-					if (crucibleFile != null) {
+					if (crucibleFile != null && crucibleFile.getSelectedFile() != null) {
 						String revision = crucibleFile.getSelectedFile().getRevision();
 
 						if (focusMatchingComment(

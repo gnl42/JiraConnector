@@ -126,7 +126,7 @@ public final class EditorUtil {
 		if (input instanceof IFileEditorInput) {
 			CrucibleFile fromEditor = CrucibleUiUtil.getCruciblePostCommitFile(((IFileEditorInput) input).getFile(),
 					CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-			if (fileInfo.equals(fromEditor.getCrucibleFileInfo())) {
+			if (fromEditor != null && fileInfo.equals(fromEditor.getCrucibleFileInfo())) {
 				return true;
 			}
 		}
