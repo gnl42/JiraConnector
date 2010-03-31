@@ -13,21 +13,18 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.service.web;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.swing.text.html.HTML.Tag;
-
+import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
+import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -44,28 +41,28 @@ import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylyn.commons.net.HtmlTag;
-
-import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
-import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
-import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
+import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
+import javax.swing.text.html.HTML.Tag;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-// TODO look at creation Operation classes to perform each of these actions 
+// TODO look at creation Operation classes to perform each of these actions
 // TODO extract field names into constants
 public class JiraWebClient {
 
@@ -88,6 +85,7 @@ public class JiraWebClient {
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
+				prepareSecurityToken(post);
 				post.addParameter("comment", comment); //$NON-NLS-1$
 				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				post.addParameter("id", issue.getId()); //$NON-NLS-1$
@@ -119,6 +117,7 @@ public class JiraWebClient {
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
+				prepareSecurityToken(post);
 				post.addParameter("summary", issue.getSummary()); //$NON-NLS-1$
 				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$
 				if (issue.getPriority() != null) {
@@ -209,6 +208,7 @@ public class JiraWebClient {
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
+				prepareSecurityToken(post);
 
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user)); //$NON-NLS-1$
 
@@ -238,6 +238,7 @@ public class JiraWebClient {
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); //$NON-NLS-1$
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
+				prepareSecurityToken(post);
 
 				post.addParameter("id", issue.getId()); //$NON-NLS-1$
 				post.addParameter("action", actionKey); //$NON-NLS-1$
@@ -292,6 +293,7 @@ public class JiraWebClient {
 				attachFileURLBuffer.append("/secure/AttachFile.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
+				prepareSecurityToken(post);
 
 				List<PartBase> parts = new ArrayList<PartBase>();
 
@@ -417,6 +419,12 @@ public class JiraWebClient {
 		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue, monitor); //$NON-NLS-1$
 	}
 
+	private void prepareSecurityToken(PostMethod post) {
+		// this one is required as of JIRA 4.1
+		// see http://confluence.atlassian.com/display/JIRA/Form+Token+Handling#FormTokenHandling-Scripting
+		post.setRequestHeader("X-Atlassian-Token", "no-check"); //$NON-NLS-1$//$NON-NLS-2$
+	}
+
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	private String createIssue(final String url, final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		final String[] issueKey = new String[1];
@@ -428,6 +436,7 @@ public class JiraWebClient {
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
+				prepareSecurityToken(post);
 
 				post.addParameter("pid", issue.getProject().getId()); //$NON-NLS-1$
 				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$
@@ -491,7 +500,7 @@ public class JiraWebClient {
 						handleErrorMessage(post);
 					} else {
 						final Header locationHeader = post.getResponseHeader("location"); //$NON-NLS-1$
-						// parse issue key from issue URL 
+						// parse issue key from issue URL
 						String location = locationHeader.getValue();
 						int i = location.lastIndexOf("/"); //$NON-NLS-1$
 						if (i != -1) {
@@ -499,7 +508,7 @@ public class JiraWebClient {
 						} else {
 							throw new JiraException(
 									"The server redirected to an unexpected location while creating an issue: " //$NON-NLS-1$
-											+ location);
+									+ location);
 						}
 					}
 				} finally {
