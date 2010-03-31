@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Class to manage cached reviews for access by models other than the editor (i.e. annotations)
@@ -38,7 +39,7 @@ public class ReviewCache {
 	private final Map<Integer, List<CustomFieldDef>> metricsMap;
 
 	public ReviewCache() {
-		cachedReviews = new HashMap<String, Map<String, CrucibleCachedReview>>();
+		cachedReviews = new WeakHashMap<String, Map<String, CrucibleCachedReview>>();
 		cacheListeners = new HashSet<IReviewCacheListener>();
 		metricsMap = new HashMap<Integer, List<CustomFieldDef>>();
 	}
