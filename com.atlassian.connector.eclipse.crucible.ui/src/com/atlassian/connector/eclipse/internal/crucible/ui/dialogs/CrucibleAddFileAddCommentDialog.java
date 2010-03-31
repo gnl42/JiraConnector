@@ -59,7 +59,7 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 				connector = new LocalTeamResourceConnector();
 			}
 
-			DecoratedResource decoratedResource = TeamUiUtils.getDecoratedResource(resource, connector);
+			decoratedResource = TeamUiUtils.getDecoratedResource(resource, connector);
 			if (decoratedResource != null) {
 
 				monitor.beginTask("Adding selected file to the review", IProgressMonitor.UNKNOWN);
@@ -106,6 +106,8 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 
 	private IResource resource;
 
+	private DecoratedResource decoratedResource;
+
 	public CrucibleAddFileAddCommentDialog(Shell shell, String dialogTitle, Review review, String taskKey,
 			String taskId, TaskRepository taskRepository, CrucibleClient client) {
 		super(shell, dialogTitle, review, taskKey, taskId, taskRepository, client);
@@ -148,7 +150,7 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 
 		// add comment
 		boolean ok = super.addComment();
-		if (ok && resource != null) {
+		if (ok && resource != null && decoratedResource != null && !decoratedResource.isUpToDate()) {
 			MessageDialog.openInformation(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
 					"Please reopen the file in Review Explorer in order to see comment annotation.");
 		}
