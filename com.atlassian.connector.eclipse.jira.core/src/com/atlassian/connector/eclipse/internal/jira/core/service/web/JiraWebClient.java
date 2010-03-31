@@ -13,18 +13,21 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.service.web;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
-import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
-import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.text.html.HTML.Tag;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -41,21 +44,21 @@ import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.commons.net.HtmlTag;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
-import javax.swing.text.html.HTML.Tag;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.eclipse.mylyn.commons.net.HtmlTag;
+
+import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
+import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
 
 /**
  * @author Brock Janiczak
@@ -508,7 +511,7 @@ public class JiraWebClient {
 						} else {
 							throw new JiraException(
 									"The server redirected to an unexpected location while creating an issue: " //$NON-NLS-1$
-									+ location);
+											+ location);
 						}
 					}
 				} finally {
@@ -651,6 +654,7 @@ public class JiraWebClient {
 			if (response == null) {
 				throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+			System.out.print(response);
 
 			StringReader reader = new StringReader(response);
 			try {

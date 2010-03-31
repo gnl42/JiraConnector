@@ -46,6 +46,15 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 				return text.substring(start + 8, stop);
 			}
 		}
+
+		// JIRA 4.1 puts some errors into <li>xxx</li>
+		start = text.indexOf("<li>"); //$NON-NLS-1$
+		if (start != -1) {
+			int stop = text.indexOf("</li>", start + 4); //$NON-NLS-1$
+			if (stop != -1) {
+				return text.substring(start + 4, stop);
+			}
+		}
 		return null;
 	}
 
