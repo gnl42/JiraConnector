@@ -19,8 +19,10 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddChangesetToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddPatchToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CommentNavigationAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVirtualFilesAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
@@ -254,6 +256,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private RefreshActiveReviewAction refreshReviewAction;
 
+	private AddChangesetToActiveReviewAction addChangesetAction;
+
+	private AddPatchToActiveReviewAction addPatchAction;
+
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
 
@@ -458,6 +464,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	private void createMenu() {
 		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
+		mgr.add(addChangesetAction);
+		mgr.add(addPatchAction);
+		mgr.add(new Separator());
 		mgr.add(showUnreadOnlyAction);
 		mgr.add(new Separator());
 		mgr.add(linkWithEditorAction);
@@ -670,6 +679,12 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		openEditorAction = new EditActiveTaskAction();
 		reviewActivationListeners.add(openEditorAction);
+
+		addChangesetAction = new AddChangesetToActiveReviewAction();
+		reviewActivationListeners.add(addChangesetAction);
+
+		addPatchAction = new AddPatchToActiveReviewAction();
+		reviewActivationListeners.add(addPatchAction);
 
 		// in the end register all additional activation listeners
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
