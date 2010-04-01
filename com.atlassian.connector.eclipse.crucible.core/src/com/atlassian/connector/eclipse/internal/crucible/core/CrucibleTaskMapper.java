@@ -30,6 +30,7 @@ public class CrucibleTaskMapper extends TaskMapper {
 		super(taskData);
 	}
 
+	@Override
 	public void setTaskKey(String key) {
 		setValue(TaskAttribute.TASK_KEY, key);
 	}

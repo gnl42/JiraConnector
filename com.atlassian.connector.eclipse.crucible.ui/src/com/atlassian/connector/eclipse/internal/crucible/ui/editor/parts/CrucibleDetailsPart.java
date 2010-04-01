@@ -31,7 +31,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -71,7 +70,7 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
+import org.joda.time.DateTime;
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Set;
@@ -186,7 +185,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
-		//CHECKSTYLE:MAGIC:OFF
+		// CHECKSTYLE:MAGIC:OFF
 
 		parentComposite = new Composite(parent, SWT.NONE);
 		toolkit.adapt(parentComposite);
@@ -295,7 +294,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		for (Control c : parentComposite.getChildren()) {
 			c.dispose();
-			//TODO disposing not necessary, simply updating labels and a re-layout should be sufficient; low priority though
+			// TODO disposing not necessary, simply updating labels and a re-layout should be sufficient; low priority though
 		}
 		parentComposite.setMenu(null);
 
@@ -320,7 +319,9 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewTitleText);
 
 		Composite statusComp = toolkit.createComposite(parentComposite);
-		statusComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(4).spacing(10, 0).create());
+		final DateTime dueDate = crucibleReview.getDueDate();
+		final int numColumns = 2 * (dueDate != null ? 3 : 2);
+		statusComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).spacing(10, 0).create());
 		Text stateText = createReadOnlyText(toolkit, statusComp, crucibleReview.getState().getDisplayName(), "State: ",
 				false);
 		GridDataFactory.fillDefaults().applyTo(stateText);
@@ -328,6 +329,13 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		Text openSinceText = createReadOnlyText(toolkit, statusComp, DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
 				DateFormat.SHORT).format(crucibleReview.getCreateDate()), "Open Since: ", false);
 		GridDataFactory.fillDefaults().applyTo(openSinceText);
+
+		if (dueDate != null) {
+			final Text dueDateText = createReadOnlyText(toolkit, statusComp, DateFormat.getDateTimeInstance(
+					DateFormat.MEDIUM,
+					DateFormat.SHORT).format(crucibleReview.getDueDate().toDate()), "Due Date: ", false);
+			GridDataFactory.fillDefaults().applyTo(dueDateText);
+		}
 
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(statusComp);
 
@@ -360,7 +368,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		reviewersSection.setClient(participantsComp);
 
 		createStatementOfObjectivesSection(toolkit);
-		//CHECKSTYLE:MAGIC:ON
+		// CHECKSTYLE:MAGIC:ON
 
 		toolkit.paintBordersFor(parentComposite);
 	}

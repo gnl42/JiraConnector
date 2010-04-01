@@ -302,4 +302,10 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 			clientManager.writeCache();
 		}
 	}
+
+	@Override
+	public boolean hasRepositoryDueDate(TaskRepository taskRepository, ITask task, TaskData taskData) {
+		return task.getDueDate() != null;
+	}
+
 }

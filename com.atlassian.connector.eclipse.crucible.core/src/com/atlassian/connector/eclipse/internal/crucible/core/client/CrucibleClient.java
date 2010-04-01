@@ -45,6 +45,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -216,6 +217,10 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		mapper.setOwner(owner);
 		mapper.setCompletionDate(closeDate);
 		mapper.setTaskUrl(CrucibleUtil.getReviewUrl(taskRepository.getUrl(), id));
+		final DateTime dueDate = review.getDueDate();
+		if (dueDate != null) {
+			mapper.setDueDate(dueDate.toDate());
+		}
 
 		TaskAttribute hasChangedAttribute = taskData.getRoot().createAttribute(
 				CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
