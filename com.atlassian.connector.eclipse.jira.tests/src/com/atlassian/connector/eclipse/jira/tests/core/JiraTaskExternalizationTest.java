@@ -30,7 +30,7 @@ import org.eclipse.mylyn.tests.util.TestFixture;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 /**
@@ -53,7 +53,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	protected void setUp() throws Exception {
 		JiraTestUtil.setUp();
 		taskList = TasksUiPlugin.getTaskList();
-		repository = JiraTestUtil.init(JiraTestConstants.JIRA_LATEST_URL);
+		repository = JiraTestUtil.init(JiraFixture.current().getRepositoryUrl());
 		TestFixture.resetTaskList();
 	}
 

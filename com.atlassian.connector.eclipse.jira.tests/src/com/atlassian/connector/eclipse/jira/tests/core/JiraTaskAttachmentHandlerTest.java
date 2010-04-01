@@ -30,7 +30,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnecto
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskAttachmentHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 /**
@@ -65,7 +65,7 @@ public class JiraTaskAttachmentHandlerTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_LATEST_URL);
+		attachFile(JiraFixture.current().getRepositoryUrl());
 	}
 
 	private void attachFile(String url) throws Exception {

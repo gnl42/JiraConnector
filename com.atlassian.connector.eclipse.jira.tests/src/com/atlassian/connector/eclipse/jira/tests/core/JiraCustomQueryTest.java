@@ -46,7 +46,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 import com.atlassian.connector.eclipse.jira.tests.util.MockJiraClient;
 
@@ -271,7 +271,7 @@ public class JiraCustomQueryTest extends TestCase {
 	}
 
 	public void testGetFilterDefinitionUnresolvedResolution() {
-		String repositoryUrl = JiraTestConstants.JIRA_LATEST_URL;
+		String repositoryUrl = JiraFixture.current().getRepositoryUrl();
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET,
 				new SimpleDateFormat(JiraConfiguration.DEFAULT_DATE_PATTERN, Locale.US));

@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.atlassian.connector.eclipse.team.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
- org.junit4,
+ org.junit,
  com.atlassian.connector.commons.tests.dependencies,
  org.eclipse.mylyn.java.tests,
  org.eclipse.mylyn.resources.tests,

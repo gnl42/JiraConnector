@@ -42,7 +42,7 @@
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.junit4"/>
+      <import plugin="org.junit"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.ui"/>
       <import plugin="com.atlassian.connector.eclipse.ui"/>

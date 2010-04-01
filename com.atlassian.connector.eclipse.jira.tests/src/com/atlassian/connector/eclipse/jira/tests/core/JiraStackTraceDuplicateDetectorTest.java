@@ -30,7 +30,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraSearchHandler;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 /**
@@ -59,7 +59,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	public void testStackTraceInDescription() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));
@@ -72,7 +72,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	public void testStackTraceInComment() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));
@@ -118,5 +118,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 			}
 		}
 		fail("Duplicated task not found " + issue.getId() + " : " + issue.getKey());
+	}
+
+	private String jiraUrl() {
+		return JiraFixture.current().getRepositoryUrl();
 	}
 }

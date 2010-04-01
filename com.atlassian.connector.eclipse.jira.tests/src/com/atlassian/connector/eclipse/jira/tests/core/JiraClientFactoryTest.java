@@ -34,7 +34,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -57,7 +57,11 @@ public class JiraClientFactoryTest extends TestCase {
 	}
 
 	public void testValidate39() throws Exception {
-		validate(JiraTestConstants.JIRA_LATEST_URL);
+		validate(jiraUrl());
+	}
+
+	private String jiraUrl() {
+		return JiraFixture.current().getRepositoryUrl();
 	}
 
 	public void testValidate() throws Exception {
@@ -99,7 +103,7 @@ public class JiraClientFactoryTest extends TestCase {
 
 	public void testChangeCredentials() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_LATEST_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, jiraUrl());
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		clientFactory.repositoryRemoved(repository);
@@ -139,7 +143,7 @@ public class JiraClientFactoryTest extends TestCase {
 
 	public void testCharacterEncoding() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_LATEST_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, jiraUrl());
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		assertFalse(JiraUtil.getCharacterEncodingValidated(repository));

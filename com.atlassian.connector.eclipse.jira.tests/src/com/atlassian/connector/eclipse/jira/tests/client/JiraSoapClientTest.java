@@ -27,7 +27,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteWorklog;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.soap.JiraSoapService;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 /**
@@ -56,7 +56,7 @@ public class JiraSoapClientTest extends TestCase {
 //	}
 
 	public void testGetWorklogs() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.ADMIN);
+		init(JiraFixture.current().getRepositoryUrl(), PrivilegeLevel.ADMIN);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 		System.err.println(issue.getUrl());

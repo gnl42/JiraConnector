@@ -25,7 +25,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
 /**
@@ -51,7 +51,7 @@ public class JiraConnectorUiTest extends TestCase {
 	}
 
 	public void testFindHyperlinks() throws Exception {
-		TaskRepository repository = JiraTestUtil.init(JiraTestConstants.JIRA_LATEST_URL);
+		TaskRepository repository = JiraTestUtil.init(JiraFixture.current().getRepositoryUrl());
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraTestUtil.refreshDetails(client);
 

@@ -57,7 +57,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.jira.tests.util.JiraTestConstants;
+import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 import com.atlassian.connector.eclipse.jira.tests.util.MockJiraClient;
 import com.atlassian.connector.eclipse.jira.tests.util.MockJiraClientFactory;
@@ -112,7 +112,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testGetTaskData() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testUpdateTask");
 		issue.setEstimate(600);
@@ -139,7 +139,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testGetTaskDataWhenProjectIsMissingDetails() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testUpdateTask");
 		issue.setEstimate(600);
@@ -239,7 +239,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testUpdateTaskCustomFields() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		Date today = new SimpleDateFormat("dd/MMM/yy", Locale.ENGLISH).parse("1/Jun/06");
 		String dueDate = JiraUtil.dateToString(today);
@@ -316,7 +316,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testGetTaskDataSubTasks() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, "testSubTask");
 
@@ -340,7 +340,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataSubTask() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, "testUpdateSubTask");
 		JiraIssue subTaskIssue = JiraTestUtil.newSubTask(client, parentIssue, "testUpdateSubTaskChild");
@@ -357,7 +357,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testInitializeSubTask() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, "testInitializeSubTask");
 		TaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
@@ -374,7 +374,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testSecurityLevelNoLevelsDefined() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
 		issue = JiraTestUtil.createIssue(client, issue);
@@ -384,7 +384,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testUpdateSecurityLevel() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		// test security level is set to none for new issues
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
@@ -427,7 +427,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testSetSecurityLevelToNone() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
 		issue.setProject(client.getCache().getProjectByKey("SECURITY"));
@@ -449,7 +449,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataCreateTaskWithSecurityLevel() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		// initialize task data
 		JiraTestUtil.refreshDetails(client);
@@ -483,7 +483,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	 * Verifies that cached operations are refreshed from the repository when the status of an issue changes.
 	 */
 	public void testCachedOperationsAfterChangingState() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testChangeState");
 
@@ -519,7 +519,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testReadOnly() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.GUEST);
+		init(jiraUrl(), PrivilegeLevel.GUEST);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testReadOnly");
 
@@ -539,7 +539,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		setUp();
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+		init(jiraUrl(), PrivilegeLevel.USER);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
@@ -559,7 +559,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testClosedIssueNotEditable() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testEditClosed");
 
@@ -582,7 +582,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testInitializeTaskDataNoProject() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
 				repository.getRepositoryUrl(), "");
 		boolean res = dataHandler.initializeTaskData(repository, data, null, null);
@@ -590,7 +590,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testInitializeTaskDataWithProjectName() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraTestUtil.refreshDetails(client);
 		final Project project = JiraTestUtil.getProject(client, JiraTestUtil.PROJECT1);
 		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
@@ -606,7 +606,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testInitializeTaskDataWithProjectKey() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraTestUtil.refreshDetails(client);
 		final Project project = JiraTestUtil.getProject(client, JiraTestUtil.PROJECT1);
 		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
@@ -647,7 +647,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataChangeDescription() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -662,7 +662,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataAddComment() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testCommentPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -679,7 +679,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataStartProgress() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWorkfPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -692,7 +692,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataStartProgressChangeDescription() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrWorkfPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -709,7 +709,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataStartProgressAddComment() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testCommentWorkfPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -729,7 +729,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataStartProgressAddCommentChangeDescription() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrCommentWorkfPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -753,7 +753,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	public void testPostTaskDataStartProgressChangeAttributes() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL);
+		init(jiraUrl());
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWorkfAndOtherAttrPostTaskDataTask");
 		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
 
@@ -811,7 +811,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	 * Adds a comment to a task which user doesn't have edit permission for.
 	 */
 	public void testPostTaskDataCommentWithoutEditPermission() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+		init(jiraUrl(), PrivilegeLevel.USER);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWithoutEditPermission");
 
@@ -831,7 +831,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		setUp();
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.READ_ONLY);
+		init(jiraUrl(), PrivilegeLevel.READ_ONLY);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
@@ -863,7 +863,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	 * Reassigns a task for which the user does not have edit permissions for.
 	 */
 	public void testPostTaskDataAssignWithoutEditPermission() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+		init(jiraUrl(), PrivilegeLevel.USER);
 
 		Credentials userCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWithoutEditPermission");
@@ -876,7 +876,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		setUp();
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.READ_ONLY);
+		init(jiraUrl(), PrivilegeLevel.READ_ONLY);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 
@@ -889,6 +889,10 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(userCredentials.username, taskData.getRoot()
 				.getAttribute(JiraAttribute.USER_ASSIGNED.id())
 				.getValue());
+	}
+
+	private String jiraUrl() {
+		return JiraFixture.current().getRepositoryUrl();
 	}
 
 }

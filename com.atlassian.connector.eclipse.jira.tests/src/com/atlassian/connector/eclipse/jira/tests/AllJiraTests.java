@@ -35,18 +35,19 @@ public class AllJiraTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Tests for com.atlassian.connector.eclipse.jira.tests");
 		suite.addTest(AllJiraHeadlessStandaloneTests.suite());
-		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraConnectorUiStandaloneTest.class);
-		suite.addTestSuite(JiraClientFactoryTest.class);
-		suite.addTestSuite(JiraTaskExternalizationTest.class);
-		suite.addTestSuite(JiraRepositoryConnectorTest.class);
-		suite.addTestSuite(JiraTaskAttachmentHandlerTest.class);
-		suite.addTestSuite(JiraTaskDataHandlerTest.class);
-		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
-		suite.addTestSuite(JiraConnectorUiTest.class);
+
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
 			fixture.createSuite(suite);
+			fixture.add(JiraCustomQueryTest.class);
+			fixture.add(JiraClientFactoryTest.class);
+			fixture.add(JiraTaskExternalizationTest.class);
+			fixture.add(JiraRepositoryConnectorTest.class);
+			fixture.add(JiraTaskAttachmentHandlerTest.class);
+			fixture.add(JiraTaskDataHandlerTest.class);
+			fixture.add(JiraStackTraceDuplicateDetectorTest.class);
+			fixture.add(JiraConnectorUiTest.class);
 			fixture.add(JiraFilterTest.class);
 			fixture.done();
 		}

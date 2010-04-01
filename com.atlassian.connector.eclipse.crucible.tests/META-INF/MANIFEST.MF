@@ -4,7 +4,7 @@ Bundle-Name: Atlassian Connector for Eclipse Crucible Tests
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
-Require-Bundle: org.junit4,
+Require-Bundle: org.junit,
  org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.crucible.core,
  org.eclipse.mylyn.tasks.core,
