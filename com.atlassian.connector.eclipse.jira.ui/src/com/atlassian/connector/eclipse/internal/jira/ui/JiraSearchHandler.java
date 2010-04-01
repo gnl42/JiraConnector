@@ -57,7 +57,7 @@ public class JiraSearchHandler extends AbstractSearchHandler {
 		// because I don't have a progress monitor here, I can not easily fetch JIRA version (it may be not yet cached)
 		// so I assume the worst and apply the solution (not perfect but good enough) which should
 		// work with all supported JIRA versions
-		StringTokenizer t = new StringTokenizer(searchString, " :\n\t()"); //$NON-NLS-1$
+		StringTokenizer t = new StringTokenizer(searchString, " :\n\t()$"); //$NON-NLS-1$
 		while (t.hasMoreTokens() && sb.length() < MAX_LENGTH - 20) {
 			if (sb.length() > 0) {
 				sb.append(" AND "); //$NON-NLS-1$
