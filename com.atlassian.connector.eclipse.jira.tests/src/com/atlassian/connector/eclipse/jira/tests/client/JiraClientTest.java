@@ -12,6 +12,11 @@
 
 package com.atlassian.connector.eclipse.jira.tests.client;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.io.File;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -85,10 +90,11 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, startOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			assertTrue(e.getMessage()
-					.contains(
-							"It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue ")
-					|| e.getMessage().equals("Workflow Action Invalid"));
+			assertThat(
+					e.getMessage(),
+					either(
+							containsString("It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue ")).or(
+							equalTo("Workflow Action Invalid")));
 		}
 
 		String stopOperation = JiraTestUtil.getOperation(client, issue.getKey(), "stop");
@@ -98,10 +104,11 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, stopOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertTrue(e.getMessage()
-					.contains(
-							"It seems that you have tried to perform a workflow operation (Stop Progress) that is not valid for the current state of this issue ")
-					|| e.getMessage().equals("Workflow Action Invalid"));
+			assertThat(
+					e.getMessage(),
+					either(
+							containsString("It seems that you have tried to perform a workflow operation (Stop Progress) that is not valid for the current state of this issue ")).or(
+							equalTo("Workflow Action Invalid")));
 		}
 		client.advanceIssueWorkflow(issue, startOperation, null, null);
 	}
@@ -125,7 +132,7 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			assertTrue(e.getMessage().contains(resolveMsg) || e.getMessage().equals("Workflow Action Invalid"));
+			assertThat(e.getMessage(), either(containsString(resolveMsg)).or(equalTo("Workflow Action Invalid")));
 		}
 
 		// have to get "close" operation after resolving issue
@@ -139,17 +146,18 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
-			assertTrue(e.getMessage().contains(resolveMsg) || e.getMessage().equals("Workflow Action Invalid"));
+			assertThat(e.getMessage(), either(containsString(resolveMsg)).or(equalTo("Workflow Action Invalid")));
 		}
 
 		try {
 			client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertTrue(e.getMessage()
-					.contains(
-							"It seems that you have tried to perform a workflow operation (Close Issue) that is not valid for the current state of this issue ")
-					|| e.getMessage().equals("Workflow Action Invalid"));
+			assertThat(
+					e.getMessage(),
+					either(
+							containsString("It seems that you have tried to perform a workflow operation (Close Issue) that is not valid for the current state of this issue ")).or(
+							equalTo("Workflow Action Invalid")));
 		}
 
 		String reopenOperation = JiraTestUtil.getOperation(client, issue.getKey(), "reopen");
