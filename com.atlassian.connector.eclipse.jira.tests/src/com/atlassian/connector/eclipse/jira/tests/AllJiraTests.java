@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryServerUnrelatedTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest;
@@ -36,6 +37,7 @@ public class AllJiraTests {
 		TestSuite suite = new TestSuite("Tests for com.atlassian.connector.eclipse.jira.tests");
 		suite.addTest(AllJiraHeadlessStandaloneTests.suite());
 		suite.addTestSuite(JiraConnectorUiStandaloneTest.class);
+		suite.addTestSuite(JiraClientFactoryServerUnrelatedTest.class);
 
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {

@@ -32,7 +32,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 
@@ -62,43 +61,6 @@ public class JiraClientFactoryTest extends TestCase {
 
 	private String jiraUrl() {
 		return JiraFixture.current().getRepositoryUrl();
-	}
-
-	public void testValidate() throws Exception {
-		// invalid URL		
-		try {
-			clientFactory.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"),
-					null);
-			fail("Expected exception");
-		} catch (JiraServiceUnavailableException e) {
-		}
-
-		// not found		
-		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/not-found", "user", "password"),
-					null);
-			fail("Expected exception");
-		} catch (JiraServiceUnavailableException e) {
-			assertEquals("No JIRA repository found at location.", e.getMessage());
-		}
-
-		// RPC not enabled
-		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user",
-					"password"), null);
-			fail("Expected exception");
-		} catch (JiraServiceUnavailableException e) {
-			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
-		}
-
-		// HTTP error
-		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-proxy-error", "user",
-					"password"), null);
-			fail("Expected exception");
-		} catch (JiraServiceUnavailableException e) {
-			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
-		}
 	}
 
 	public void testChangeCredentials() throws Exception {
