@@ -101,4 +101,12 @@
          </property>
       </mapping>
    </extension>
+   
+   <extension
+          point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
+       <taskRepositoryPageContribution
+       		 id="com.atlassian.connector.eclipse.jira.ui.googleAppsExtensionSettings"
+             class="com.atlassian.connector.eclipse.internal.jira.ui.wizards.GoogleAppsExtensionSettingsContribution">
+       </taskRepositoryPageContribution>
+    </extension>
 </plugin>

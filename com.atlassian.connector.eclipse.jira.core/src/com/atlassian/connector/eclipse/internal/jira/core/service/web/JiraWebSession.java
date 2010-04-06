@@ -233,7 +233,8 @@ public class JiraWebSession {
 	private HostConfiguration login(HttpClient httpClient, IProgressMonitor monitor) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
-		String url = baseUrl + "/login.jsp"; //$NON-NLS-1$
+		//String url = baseUrl + "/login.jsp"; //$NON-NLS-1$
+		String url = baseUrl + "/secure/Dashboard.jspa"; //$NON-NLS-1$
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (credentials == null) {
