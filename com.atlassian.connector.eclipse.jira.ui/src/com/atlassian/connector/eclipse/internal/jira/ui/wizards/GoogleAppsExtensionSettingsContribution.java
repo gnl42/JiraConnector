@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Label;
 public class GoogleAppsExtensionSettingsContribution extends AbstractTaskRepositoryPageContribution {
 
 	public GoogleAppsExtensionSettingsContribution() {
-		super("Studio integrated with Google Apps", "Learn how to use Studio integrated with Google Apps");
+		super(Messages.GoogleAppsExtensionSettingsContribution_title, Messages.GoogleAppsExtensionSettingsContribution_description);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class GoogleAppsExtensionSettingsContribution extends AbstractTaskReposit
 
 		Label label = new Label(parent, SWT.WRAP);
 		GridDataFactory.fillDefaults().grab(true, true).hint(500, SWT.DEFAULT).applyTo(label);
-		label.setText("If you want to use JIRA Studio integrated with Google Apps please login to JIRA first and setup the password in your profile. Your Google Apps password will not work with JIRA.");
+		label.setText(Messages.GoogleAppsExtensionSettingsContribution_help_message);
 
 		return parent;
 	}

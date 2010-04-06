@@ -25,6 +25,12 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+	public static String GoogleAppsExtensionSettingsContribution_title;
+
+	public static String GoogleAppsExtensionSettingsContribution_description;
+
+	public static String GoogleAppsExtensionSettingsContribution_help_message;
+
 	public static String JiraFilterDefinitionPage_Add_search_filters_to_define_query;
 
 	public static String JiraFilterDefinitionPage_All_Projects;
