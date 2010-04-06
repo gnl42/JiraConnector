@@ -45,7 +45,6 @@
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
@@ -57,6 +56,7 @@
       <import plugin="org.eclipse.mylyn.tasks.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.tests" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.2.0" match="compatible"/>
@@ -161,6 +161,13 @@
 
    <plugin
          id="org.eclipse.mylyn.context.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
+    <plugin
+         id="org.eclipse.mylyn.context.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
