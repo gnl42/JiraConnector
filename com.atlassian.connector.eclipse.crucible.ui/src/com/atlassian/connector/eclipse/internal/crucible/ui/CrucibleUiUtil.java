@@ -472,7 +472,7 @@ public final class CrucibleUiUtil {
 							StatusHandler.log(new Status(
 									IStatus.ERROR,
 									CrucibleUiPlugin.PRODUCT_NAME,
-									"Cannot create local temporary file. Canno compare selected resource with review item.",
+									"Cannot create local temporary file. Cannot compare selected resource with review item.",
 									e));
 						}
 						return false;
