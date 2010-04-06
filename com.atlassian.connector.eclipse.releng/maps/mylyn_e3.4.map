@@ -53,6 +53,7 @@ plugin@org.eclipse.mylyn.sandbox.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse
 plugin@org.eclipse.mylyn.sandbox.dev=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.dev
 plugin@org.eclipse.mylyn.tasks.bugs=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.bugs
 plugin@org.eclipse.mylyn.tasks.core=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.core
+plugin@org.eclipse.mylyn.tasks.search=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.search
 plugin@org.eclipse.mylyn.tasks.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.ui
 plugin@org.eclipse.mylyn.team.cvs=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.cvs
 plugin@org.eclipse.mylyn.team.ui=e_3_6_m_3_3_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.ui
