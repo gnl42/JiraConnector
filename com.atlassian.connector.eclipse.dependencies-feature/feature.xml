@@ -72,6 +72,7 @@
       <import plugin="org.eclipse.mylyn.wikitext.twiki.ui" version="1.2.0" match="equivalent"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.mylyn.tasks.search"/>
+      <import plugin="org.eclipse.mylyn.java.tests"/>
    </requires>
 
    <plugin
@@ -283,9 +284,15 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.mylyn.tasks.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin id="org.eclipse.mylyn.java.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
