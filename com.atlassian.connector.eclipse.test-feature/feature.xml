@@ -45,17 +45,76 @@
       <import plugin="org.junit"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.ui"/>
-      <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="com.atlassian.connector.eclipse.core"/>
+      <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.core"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.ui"/>
-      <import plugin="com.atlassian.connector.eclipse.jira.core"/>
-      <import plugin="com.atlassian.connector.eclipse.jira.ui"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.core"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui"/>
+      <import plugin="com.atlassian.connector.eclipse.jira.core"/>
+      <import plugin="com.atlassian.connector.eclipse.jira.ui"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.soap" version="3.2.0.I20090529" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core"/>
+      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.mylyn.commons.net"/>
+      <import plugin="com.atlassian.connector.eclipse.team.ui"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.mylyn.commons.core"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.jdt.junit"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.mylyn.context.core"/>
+      <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.search"/>
+      <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="javax.xml.soap" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.net"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.mylyn.commons.ui"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.resources.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.ide.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.pde.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.api.tools.ui"/>
+      <import plugin="org.eclipse.mylyn.java.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.pde"/>
+      <import plugin="org.eclipse.pde.core"/>
+      <import plugin="org.eclipse.ui.navigator.resources"/>
    </requires>
 
    <plugin
