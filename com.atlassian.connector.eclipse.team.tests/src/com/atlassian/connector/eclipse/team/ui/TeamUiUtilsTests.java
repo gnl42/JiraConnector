@@ -86,6 +86,7 @@ public final class TeamUiUtilsTests extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		cleanupWorkspace();
 		project = new TestJavaProject(this.getClass().getSimpleName());
 		nonJavaProject = new TestProject(this.getClass().getSimpleName() + "nonJava");
 
@@ -93,11 +94,15 @@ public final class TeamUiUtilsTests extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		cleanupWorkspace();
+		super.tearDown();
+	}
+
+	private void cleanupWorkspace() throws CoreException {
 		ResourceTestUtil.deleteProject(project.getProject());
 		ResourceTestUtil.deleteProject(nonJavaProject.getProject());
 
 		AbstractJavaContextTest.waitForAutoBuild();
-		super.tearDown();
 	}
 
 	public void testGetSupportedTeamConnectors() {
