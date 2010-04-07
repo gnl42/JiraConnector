@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.mylyn.java.tests.AbstractJavaContextTest;
+import org.eclipse.mylyn.java.tests.ContentOutlineRefreshTest;
 import org.eclipse.mylyn.java.tests.TestJavaProject;
 import org.eclipse.mylyn.java.tests.TestProject;
 import org.eclipse.mylyn.resources.tests.ResourceTestUtil;
@@ -37,6 +38,8 @@ public final class TeamUiUtilsTests extends TestCase {
 	private TestProject nonJavaProject;
 
 	public void testFindResourceForPath() throws CoreException, UnsupportedEncodingException {
+		new ContentOutlineRefreshTest();
+
 		final IPackageFragment p1 = project.createPackage("p1");
 		final IType type1 = project.createType(p1, "Type1.java", "public class Type1 { }");
 		final IType type2 = project.createType(p1, "Type2.java", "public class Type2 { }");
