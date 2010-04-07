@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.jira.tests.client.JiraRssHandlerTest;
 import com.atlassian.connector.eclipse.jira.tests.client.JiraWebClientTest;
 import com.atlassian.connector.eclipse.jira.tests.core.FilterDefinitionConverterTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientCacheTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraTimeFormatTest;
 import com.atlassian.connector.eclipse.jira.tests.model.ComponentFilterTest;
 import com.atlassian.connector.eclipse.jira.tests.model.JiraVersionTest;
@@ -43,6 +44,7 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(WdhmUtilTest.class);
 		suite.addTestSuite(VersionFilterTest.class);
 		suite.addTestSuite(ComponentFilterTest.class);
+		suite.addTestSuite(JiraCommentDateComparatorTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
 			fixture.createSuite(suite);

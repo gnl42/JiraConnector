@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,6 +91,20 @@ import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue
  * @since 3.0
  */
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
+
+	/**
+	 * Public for testing
+	 */
+	public static final class CommentDateComparator implements Comparator<Comment> {
+		public int compare(Comment o1, Comment o2) {
+			if (o1 != null && o2 != null) {
+				if (o1.getCreated() != null && o2.getCreated() != null) {
+					return o1.getCreated().compareTo(o2.getCreated());
+				}
+			}
+			return 0;
+		}
+	}
 
 	private static final String CONTEXT_ATTACHEMENT_FILENAME = "mylyn-context.zip"; //$NON-NLS-1$
 
@@ -509,7 +524,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private void addComments(TaskData data, JiraIssue jiraIssue, JiraClient client) {
 		int i = 1;
-		for (Comment comment : jiraIssue.getComments()) {
+
+		// ensure that the comments are in the correct order for display in the task editor
+		// fix fpr PLE-953
+		List<Comment> comments = new ArrayList<Comment>(Arrays.asList(jiraIssue.getComments()));
+		Collections.sort(comments, new CommentDateComparator());
+
+		for (Comment comment : comments) {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_COMMENT + i);
 			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
 			taskComment.setAuthor(getPerson(data, client, comment.getAuthor(), null));
