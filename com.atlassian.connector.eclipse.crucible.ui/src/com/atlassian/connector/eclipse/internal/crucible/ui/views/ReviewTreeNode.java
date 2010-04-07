@@ -13,8 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public class ReviewTreeNode {
@@ -69,11 +71,13 @@ public class ReviewTreeNode {
 				continue;
 			}
 			if (((ReviewTreeNode) child).pathToken.equals(path[0])) {
-				// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
-				final String[] allButFirst = new String[path.length - 1];
-				System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
-				((ReviewTreeNode) child).add(allButFirst, aCfi);
-				return;
+				if (path.length > 1) {
+					// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
+					final String[] allButFirst = new String[path.length - 1];
+					System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
+					((ReviewTreeNode) child).add(allButFirst, aCfi);
+					return;
+				}
 			}
 		}
 		ReviewTreeNode newChild = new ReviewTreeNode(this, path[0]);

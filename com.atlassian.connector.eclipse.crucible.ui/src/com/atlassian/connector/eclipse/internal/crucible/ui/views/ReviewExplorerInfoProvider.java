@@ -42,21 +42,21 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							}
 
 							public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
+
+								VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
+								VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
+
+								String details = newFile.getRevision();
+								if (oldFile != null && oldFile.getRevision().length() != 0) {
+									details += '-' + oldFile.getRevision();
+								}
+
 								if (fileInfo.getRepositoryType() == RepositoryType.SCM) {
 									tooltip.addIconAndLabel(composite, null, "Post-commit review item for revisions:",
 											true);
-
-									VersionedVirtualFile newFile = fileInfo.getFileDescriptor();
-									VersionedVirtualFile oldFile = fileInfo.getOldFileDescriptor();
-
-									String details = newFile.getRevision();
-									if (oldFile != null && oldFile.getRevision().length() != 0) {
-										details += '-' + oldFile.getRevision();
-									}
-
 									tooltip.addIconAndLabel(composite, null, details);
 								} else if (fileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
-									tooltip.addIconAndLabel(composite, null, "Pre-commit review item");
+									tooltip.addIconAndLabel(composite, null, "Pre-commit review item (" + details + ")");
 								}
 							}
 						};
