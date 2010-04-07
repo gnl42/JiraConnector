@@ -70,14 +70,12 @@ public class ReviewTreeNode {
 			if (!(child instanceof ReviewTreeNode)) {
 				continue;
 			}
-			if (((ReviewTreeNode) child).pathToken.equals(path[0])) {
-				if (path.length > 1) {
-					// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
-					final String[] allButFirst = new String[path.length - 1];
-					System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
-					((ReviewTreeNode) child).add(allButFirst, aCfi);
-					return;
-				}
+			if (((ReviewTreeNode) child).pathToken.equals(path[0]) && path.length > 1) {
+				// there is no Arrays.copyOfRange in Java 1.5, so we are using this approach
+				final String[] allButFirst = new String[path.length - 1];
+				System.arraycopy(path, 1, allButFirst, 0, allButFirst.length);
+				((ReviewTreeNode) child).add(allButFirst, aCfi);
+				return;
 			}
 		}
 		ReviewTreeNode newChild = new ReviewTreeNode(this, path[0]);
