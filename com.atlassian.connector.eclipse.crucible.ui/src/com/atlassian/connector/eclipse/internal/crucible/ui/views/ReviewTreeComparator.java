@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
@@ -34,6 +35,14 @@ public class ReviewTreeComparator extends ViewerComparator {
 		boolean isE1Dir = e1 instanceof ReviewTreeNode;
 		boolean isE2Dir = e2 instanceof ReviewTreeNode;
 		if (isE1Dir && isE2Dir) {
+			ReviewTreeNode node1 = (ReviewTreeNode) e1;
+			ReviewTreeNode node2 = (ReviewTreeNode) e2;
+
+			if (node1.getCrucibleFileInfo() != null && node2.getCrucibleFileInfo() != null) {
+				return node1.getCrucibleFileInfo().getPermId().getId().compareTo(
+						node2.getCrucibleFileInfo().getPermId().getId());
+			}
+
 			return super.compare(aViewer, e1, e2);
 		} else if (!isE1Dir && !isE2Dir) {
 
