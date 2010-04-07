@@ -53,14 +53,10 @@
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui"/>
       <import plugin="com.atlassian.connector.eclipse.jira.core"/>
       <import plugin="com.atlassian.connector.eclipse.jira.ui"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.core"/>
       <import plugin="com.atlassian.connector.commons"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.mylyn.commons.net"/>
       <import plugin="com.atlassian.connector.eclipse.team.ui"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui"/>
@@ -83,9 +79,8 @@
       <import plugin="javax.xml.soap" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
+      
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.mylyn.commons.ui"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.debug"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
@@ -93,6 +88,13 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core"/>
+      <import plugin="org.eclipse.mylyn.commons.net"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.ui"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
@@ -101,17 +103,19 @@
       <import plugin="org.eclipse.mylyn.resources.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.ide.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.java.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.java.tests" version="3.3.0" match="compatible"/>
+            
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
       <import plugin="com.ibm.icu"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.pde.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.api.tools.ui"/>
-      <import plugin="org.eclipse.mylyn.java.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.pde"/>
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.eclipse.ui.navigator.resources"/>
