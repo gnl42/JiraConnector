@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("restriction")
 public final class TeamUiUtilsTests extends TestCase {
 	private TestJavaProject project;
 
