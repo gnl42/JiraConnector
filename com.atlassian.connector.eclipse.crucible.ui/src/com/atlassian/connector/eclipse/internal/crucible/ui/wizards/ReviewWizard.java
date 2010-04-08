@@ -32,6 +32,7 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -263,7 +264,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 						try {
 							LocalStatus status = teamConnector.getLocalRevision(resource);
 							if (status.getScmPath() != null && status.getScmPath().length() > 0) {
-								String scmPath = teamConnector.getLocalRevision(resource.getProject()).getScmPath();
+								String scmPath = TeamUiUtils.getScmPath(resource, teamConnector);
 
 								if (TaskRepositoryUtil.getMatchingSourceRepository(
 										TaskRepositoryUtil.getScmRepositoryMappings(getTaskRepository()), scmPath) == null) {
