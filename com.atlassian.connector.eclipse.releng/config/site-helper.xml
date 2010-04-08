@@ -98,6 +98,11 @@
 			<include name="org.jdom*.jar"/>				
 			<include name="org.joda.time*.jar"/>				
 		</fileset>
+		
+		<!-- perforce -->
+		<fileset dir="${buildDirectory}/plugins" id="com.perforce.p4java">
+			<include name="com.perforce.p4java*.jar"/>
+		</fileset>
 
 		<mkdir dir="${buildDirectory}/site/plugins"/>
 		<copy todir="${buildDirectory}/site/plugins">
