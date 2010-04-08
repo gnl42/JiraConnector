@@ -171,7 +171,6 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 		textGridData.heightHint = 100;
 		textGridData.widthHint = 500;
 		commentText.getControl().setLayoutData(textGridData);
-		commentText.getControl().forceFocus();
 	}
 
 	protected void fillToolBar(ToolBarManager manager, final RichTextEditor editor) {
