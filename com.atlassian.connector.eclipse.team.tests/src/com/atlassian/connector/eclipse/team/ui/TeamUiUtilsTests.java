@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.mylyn.java.tests.AbstractJavaContextTest;
-import org.eclipse.mylyn.java.tests.AllJavaTests;
 import org.eclipse.mylyn.java.tests.TestJavaProject;
 import org.eclipse.mylyn.java.tests.TestProject;
 import org.eclipse.mylyn.resources.tests.ResourceTestUtil;
@@ -33,8 +32,6 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("restriction")
 public final class TeamUiUtilsTests extends TestCase {
-	private final AllJavaTests test = new AllJavaTests();
-
 	private TestJavaProject project;
 
 	private TestProject nonJavaProject;
