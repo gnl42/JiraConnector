@@ -23,9 +23,12 @@ public class Startup implements IStartup {
 		if (javaTests.getState() != Bundle.ACTIVE) {
 			try {
 				javaTests.start();
+				System.err.println("Bundle org.eclipse.mylyn.java.tests activated.");
 			} catch (BundleException e) {
 				e.printStackTrace();
 			}
+		} else {
+			System.err.println("Bundle org.eclipse.mylyn.java.tests already active.");
 		}
 	}
 
