@@ -86,10 +86,9 @@ public final class TeamUiUtilsTests extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		cleanupWorkspace();
+
 		project = new TestJavaProject(this.getClass().getSimpleName());
 		nonJavaProject = new TestProject(this.getClass().getSimpleName() + "nonJava");
-
 	}
 
 	@Override
