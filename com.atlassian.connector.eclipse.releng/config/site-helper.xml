@@ -115,6 +115,7 @@
 			<fileset refid="org.mortbay.jetty" />
 			<fileset refid="com.sun.syndication" />
 			<fileset refid="com.thoughtworks.xstream" />
+			<fileset refid="com.perforce.p4java" />
 		</copy>
 	</target>
 	
