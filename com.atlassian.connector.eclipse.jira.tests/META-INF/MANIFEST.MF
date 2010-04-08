@@ -18,8 +18,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.tests.util,
  org.apache.axis;bundle-version="1.4.0",
  org.eclipse.mylyn.commons.tests,
- org.eclipse.mylyn.commons.soap,
- org.eclipse.mylyn.tasks.search
+ org.eclipse.mylyn.commons.soap
 Export-Package: com.atlassian.connector.eclipse.jira.tests;x-friends:="com.atlassian.connector.eclipse.tests",
  com.atlassian.connector.eclipse.jira.tests.client;x-internal:=true,
  com.atlassian.connector.eclipse.jira.tests.core;x-internal:=true,
