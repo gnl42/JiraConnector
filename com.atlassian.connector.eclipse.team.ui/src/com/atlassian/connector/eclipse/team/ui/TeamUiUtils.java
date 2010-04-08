@@ -65,8 +65,8 @@ public final class TeamUiUtils {
 		LocalStatus status;
 		try {
 			status = getLocalRevision(resource);
-			return (status != null && (status.getRevision().equals(revision) || status.getLastChangedRevision().equals(
-					revision)));
+			return (status != null && !status.isDirty() && (status.getRevision().equals(revision) || status.getLastChangedRevision()
+					.equals(revision)));
 		} catch (CoreException e) {
 			return false;
 		}

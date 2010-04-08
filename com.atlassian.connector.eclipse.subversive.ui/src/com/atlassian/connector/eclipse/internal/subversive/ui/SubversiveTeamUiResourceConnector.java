@@ -196,8 +196,8 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector i
 				final SVNChangeStatus status = SVNUtility.getSVNInfoForNotConnected(resource);
 
 				return LocalStatus.makeVersioned(svnResource.getUrl(), String.valueOf(status.revision),
-						String.valueOf(status.lastChangedRevision),
-						localResource.getChangeMask() != ILocalResource.NO_MODIFICATION, isBinary);
+						String.valueOf(status.lastChangedRevision), IStateFilter.SF_ANY_CHANGE.accept(localResource),
+						isBinary);
 			} catch (RuntimeException e) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 						"Cannot determine local revision for [" + resource.getName() + "]", e));
