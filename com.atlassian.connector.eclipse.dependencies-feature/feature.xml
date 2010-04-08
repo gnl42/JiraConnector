@@ -55,8 +55,7 @@
       <import plugin="org.eclipse.mylyn.wikitext.confluence.core" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.wikitext.textile.core" version="1.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.wikitext.textile.ui" version="1.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.search" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.java.tests" version="3.3.0" match="compatible"/>
+      <!--import plugin="org.eclipse.mylyn.tasks.search" version="3.3.0" match="compatible"/-->
       
       <import plugin="javax.mail"/>
       <import plugin="javax.activation"/>
@@ -270,11 +269,11 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   <!--plugin
          id="org.eclipse.mylyn.tasks.search"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/-->
                   
 </feature>
