@@ -30,14 +30,6 @@
 			<param name="update.feature" value="com.perforce.p4wsad"/>
 			<param name="update.site" value="${perforce.site}"/>
 		</antcall>
-		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.ajdt"/>
-			<param name="update.site" value="${ajdt.site}"/>
-		</antcall>
-		<antcall target="install-bundle">
-			<param name="update.feature" value="ch.epfl.lamp.sdt"/>
-			<param name="update.site" value="${scala.site}"/>
-		</antcall>
 		
 		<!-- only keep mylyn map that corresponds to current target -->
 		<delete>
