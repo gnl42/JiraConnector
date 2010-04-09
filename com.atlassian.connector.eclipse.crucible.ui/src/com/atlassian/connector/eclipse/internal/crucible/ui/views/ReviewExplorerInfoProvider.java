@@ -31,7 +31,7 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 	public ICustomToolTipInfo getToolTipInfo(Object hoverObject) {
 		if (hoverObject instanceof Widget) {
-			Object data = ((Widget) hoverObject).getData();
+			final Object data = ((Widget) hoverObject).getData();
 			if (data != null) {
 				if (data instanceof ReviewTreeNode) {
 					final CrucibleFileInfo fileInfo = ((ReviewTreeNode) data).getCrucibleFileInfo();
@@ -90,7 +90,9 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 						}
 
 						public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
-							tooltip.addIconAndLabel(composite, null, "General Comment", true);
+							tooltip.addIconAndLabel(composite, null,
+									((Comment) data).getParentComment() != null ? "Comment Reply" : "General Comment",
+									true);
 						}
 					};
 
