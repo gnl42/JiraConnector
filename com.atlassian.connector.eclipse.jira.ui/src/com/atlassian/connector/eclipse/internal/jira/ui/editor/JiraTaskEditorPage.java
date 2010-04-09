@@ -119,6 +119,9 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 					attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
 					return attributeEditor;
 				}
+				if (IJiraConstants.TYPE_NUMBER.equals(type)) {
+					return new NumberAttributeEditor(getModel(), taskAttribute);
+				}
 				return super.createEditor(type, taskAttribute);
 			}
 		};

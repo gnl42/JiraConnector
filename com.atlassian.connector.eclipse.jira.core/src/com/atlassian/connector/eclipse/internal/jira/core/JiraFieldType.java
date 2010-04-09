@@ -25,7 +25,7 @@ public enum JiraFieldType {
 
 	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATE), //$NON-NLS-1$
 
-	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float"), //$NON-NLS-1$
+	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float", IJiraConstants.TYPE_NUMBER), //$NON-NLS-1$
 
 	GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker"), //$NON-NLS-1$
 

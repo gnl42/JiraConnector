@@ -65,4 +65,6 @@ public class IJiraConstants {
 
 	public static final String COMMENT_SECURITY_LEVEL = "task.common.comment.level"; //$NON-NLS-1$
 
+	public static final String TYPE_NUMBER = "type_number"; //$NON-NLS-1$
+
 }

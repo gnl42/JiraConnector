@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -54,6 +55,7 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,12 +76,19 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 	protected Button defectButton;
 
 	protected CommonTextSupport textSupport;
+
 	protected IContextService contextService;
+
 	protected IContextActivation commentContext;
+
 	private Action toggleEditAction;
+
 	private Action toggleBrowserAction;
+
 	protected boolean ignoreToggleEvents;
+
 	protected RichTextEditor commentText;
+
 	protected final TaskRepository taskRepository;
 
 	public AbstractCrucibleCommentDialog(Shell parentShell, TaskRepository taskRepository, Review review,
@@ -126,7 +135,7 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 			});
 		} else {
 			StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
-							"Unable to locate Confluence MarkupLanguage. Browser preview will not be possible"));
+					"Unable to locate Confluence MarkupLanguage. Browser preview will not be possible"));
 		}
 
 		commentText.setReadOnly(false);
@@ -138,7 +147,10 @@ public abstract class AbstractCrucibleCommentDialog extends ProgressDialog {
 
 		if (toolBarManager.getSize() > 0) {
 			Composite toolbarComposite = toolkit.createComposite(composite);
-			GridDataFactory.fillDefaults().grab(false, false).hint(SWT.DEFAULT, SWT.DEFAULT).align(SWT.END, SWT.FILL)
+			GridDataFactory.fillDefaults()
+					.grab(false, false)
+					.hint(SWT.DEFAULT, SWT.DEFAULT)
+					.align(SWT.END, SWT.FILL)
 					.applyTo(toolbarComposite);
 			toolbarComposite.setBackground(null);
 			RowLayout rowLayout = new RowLayout();
