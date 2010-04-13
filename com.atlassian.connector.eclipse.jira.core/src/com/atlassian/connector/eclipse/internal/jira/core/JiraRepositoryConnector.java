@@ -13,16 +13,19 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,20 +46,15 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
-
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Mik Kersten
@@ -201,7 +199,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 						monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
-						// only load old task data from if necessary 
+						// only load old task data from if necessary
 						if (hasChanged(task, issue)) {
 							TaskData oldTaskData = null;
 							if (session.getTaskDataManager() != null) {
@@ -226,7 +224,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					// didn't see any new changes
 					session.setNeedsPerformQueries(false);
 				} else {
-					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
+					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries
 					if (lastUpdate != null) {
 						JiraUtil.setLastUpdate(repository, lastUpdate);
 					}
@@ -265,7 +263,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return null;
 		}
 
-		// use local time to determine time difference to last sync  
+		// use local time to determine time difference to last sync
 		long nowTime = now.getTime();
 		long lastSyncTime = lastSyncDate.getTime();
 
@@ -299,7 +297,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		FilterDefinition changedFilter = new FilterDefinition();
 		// need to use RelativeDateRangeFilter since the granularity of DateRangeFilter is days
-		// whereas this allows us to use minutes 
+		// whereas this allows us to use minutes
 		long minutes = (now.getTime() - lastSyncDate.getTime()) / (60 * 1000) + 1;
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, -minutes));
 		// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
@@ -374,14 +372,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public static boolean isCompleted(TaskData taskData) {
-		if (JiraUtil.getCompletedBasedOnResolution(taskData.getAttributeMapper().getTaskRepository())) {
-			TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
-			return attribute != null && attribute.getValue().length() > 0;
-		} else {
-			TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
-			return attribute != null
-					&& (ID_STATUS_RESOLVED.equals(attribute.getValue()) || ID_STATUS_CLOSED.equals(attribute.getValue()));
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
+		final boolean isResolved = attribute != null && attribute.getValue().length() > 0;
+		if (isResolved) {
+			return true;
 		}
+		// for backward compatibility we are also checking the status
+		TaskAttribute status = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
+		return status != null
+					&& (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
 	}
 
 	public static boolean isClosed(JiraIssue issue) {
@@ -425,7 +424,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, ITask task, IProgressMonitor monitor)
 			throws CoreException {
 		final String projectId = task.getAttribute(JiraAttribute.PROJECT.id());
-		if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
+		if (projectId != null && !"".equals(projectId)) {
 			try {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 				client.getCache().refreshProjectDetails(projectId, monitor);
@@ -441,11 +440,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getTaskIdPrefix() {
-		return "issue"; //$NON-NLS-1$
+		return "issue";
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
-		return "".equals(assignee) ? UNASSIGNED_USER : assignee; //$NON-NLS-1$
+		return "".equals(assignee) ? UNASSIGNED_USER : assignee;
 	}
 
 	private void trace(IStatus status) {
@@ -614,7 +613,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		public void start() {
-			// ignore			
+			// ignore
 		}
 
 	}

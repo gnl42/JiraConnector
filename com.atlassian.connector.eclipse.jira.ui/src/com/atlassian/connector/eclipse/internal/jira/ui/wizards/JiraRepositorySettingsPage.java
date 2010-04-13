@@ -12,15 +12,13 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.wizards;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,13 +60,15 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.
@@ -83,8 +83,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private boolean characterEncodingValidated;
 
 	private Button autoRefreshConfigurationButton;
-
-	private Button useResolutionButton;
 
 	private Spinner workDaysPerWeekSpinner;
 
@@ -156,15 +154,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		autoRefreshConfigurationButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_the_repository_configuration_will_be_periodically_updated);
 		if (repository != null) {
 			autoRefreshConfigurationButton.setSelection(JiraUtil.getAutoRefreshConfiguration(repository));
-		}
-
-		label = new Label(parent, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Completed_tasks);
-		useResolutionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		useResolutionButton.setText(Messages.JiraRepositorySettingsPage_Based_on_resolution);
-		useResolutionButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_an_issue_is_considered_completed_if_it_has_a_resolution);
-		if (repository != null) {
-			useResolutionButton.setSelection(JiraUtil.getCompletedBasedOnResolution(repository));
 		}
 
 		label = new Label(parent, SWT.NONE);
@@ -348,7 +337,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		JiraUtil.setConfiguration(repository, configuration);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
-		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
 		JiraUtil.setLinkedTasksAsSubtasks(repository, linkedTasksAsSubtasksButton.getSelection());
 		JiraUtil.setWorkDaysPerWeek(repository, workDaysPerWeekSpinner.getSelection());
 		JiraUtil.setWorkHoursPerDay(repository, workHoursPerDaySpinner.getSelection());

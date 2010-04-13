@@ -11,23 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
-
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
@@ -40,6 +23,21 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Steffen Pingel
@@ -65,8 +63,6 @@ public class JiraUtil {
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration"; //$NON-NLS-1$
 
 	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate"; //$NON-NLS-1$
-
-	private static final String COMPLETED_BASED_ON_RESOLUTION = "jira.completedBasedOnResolution"; //$NON-NLS-1$
 
 	private static final String WORK_HOURS_PER_DAY = "jira.workHoursPerDay"; //$NON-NLS-1$
 
@@ -111,10 +107,6 @@ public class JiraUtil {
 
 	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
 		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
-	}
-
-	public static boolean getCompletedBasedOnResolution(TaskRepository taskRepository) {
-		return Boolean.parseBoolean(taskRepository.getProperty(COMPLETED_BASED_ON_RESOLUTION));
 	}
 
 	public static boolean getCompression(TaskRepository taskRepository) {
@@ -243,10 +235,6 @@ public class JiraUtil {
 
 	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
 		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
-	}
-
-	public static void setCompletedBasedOnResolution(TaskRepository taskRepository, boolean completion) {
-		taskRepository.setProperty(COMPLETED_BASED_ON_RESOLUTION, String.valueOf(completion));
 	}
 
 	public static void setCompression(TaskRepository taskRepository, boolean compression) {

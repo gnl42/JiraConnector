@@ -177,10 +177,6 @@ public class Messages extends NLS {
 
 	public static String JiraRepositorySettingsPage_Automatically;
 
-	public static String JiraRepositorySettingsPage_Based_on_resolution;
-
-	public static String JiraRepositorySettingsPage_Completed_tasks;
-
 	public static String JiraRepositorySettingsPage_Compression;
 
 	public static String JiraRepositorySettingsPage_Date_Picker_Format;
@@ -190,8 +186,6 @@ public class Messages extends NLS {
 	public static String JiraRepositorySettingsPage_Enabled;
 
 	public static String JiraRepositorySettingsPage_Follow_redirects;
-
-	public static String JiraRepositorySettingsPage_If_checked_an_issue_is_considered_completed_if_it_has_a_resolution;
 
 	public static String JiraRepositorySettingsPage_If_checked_linked_tasks_show_as_subtasks_in_the_task_list;
 
