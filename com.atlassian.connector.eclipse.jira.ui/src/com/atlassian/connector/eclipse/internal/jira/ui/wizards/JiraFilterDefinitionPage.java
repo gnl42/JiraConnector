@@ -709,38 +709,28 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		{
-			SashForm cc = new SashForm(c, SWT.HORIZONTAL);
-			GridData gd_sashForm = new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1);
-			gd_sashForm.heightHint = 200;
-			gd_sashForm.widthHint = 650;
-			cc.setLayoutData(gd_sashForm);
+			Composite cc = new Composite(c, SWT.NONE);
+			GridDataFactory.fillDefaults()
+					.align(SWT.FILL, SWT.FILL)
+					.grab(true, true)
+					.hint(650, 200)
+					.span(3, 1)
+					.applyTo(cc);
+			GridLayoutFactory.fillDefaults().numColumns(2).applyTo(cc);
 
 			{
-				Composite comp = new Composite(cc, SWT.NONE);
-				GridLayout gridLayout = new GridLayout(1, false);
-				gridLayout.marginWidth = 0;
-				comp.setLayout(gridLayout);
-
-				Label label = new Label(comp, SWT.NONE);
+				Label label = new Label(cc, SWT.NONE);
 				label.setText(Messages.JiraFilterDefinitionPage_Project);
-				createProjectsViewer(comp);
 			}
 
 			{
-				Composite comp = new Composite(cc, SWT.NONE);
-				GridLayout gridLayout = new GridLayout();
-				gridLayout.marginHeight = 0;
-				gridLayout.marginWidth = 0;
-				comp.setLayout(gridLayout);
-
-				Label typeLabel = new Label(comp, SWT.NONE);
+				Label typeLabel = new Label(cc, SWT.NONE);
 				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				typeLabel.setText(Messages.JiraFilterDefinitionPage_Type);
-
-				createIssueTypesViewer(comp);
 			}
 
-			cc.setWeights(new int[] { 1, 1 });
+			createProjectsViewer(cc);
+			createIssueTypesViewer(cc);
 		}
 
 		createUpdateButton(c);
