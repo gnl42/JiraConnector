@@ -18,8 +18,8 @@ import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.TextStyle;
@@ -47,7 +47,6 @@ public abstract class AbstractCrucibleReviewItemLabelProvider extends ColumnLabe
 
 	protected Image getImage(final Comment comment) {
 		final String avatarUrl = comment.getAuthor().getAvatarUrl();
-		//			final Image image = CrucibleImages.getImage(CrucibleImages.DEFAULT_AVATAR);
 		final Image image = CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(
 				CrucibleImages.DEFAULT_AVATAR, null));
 		if (avatarUrl != null) {
@@ -59,8 +58,6 @@ public abstract class AbstractCrucibleReviewItemLabelProvider extends ColumnLabe
 				return image;
 			}
 		} else {
-			//				return CrucibleImages.getImage(new MyCompositeImageDescriptor(CrucibleImages.DEFAULT_AVATAR,
-			//						comment.isDefectRaised() ? CommonImages.PRIORITY_1 : null));
 			return image;
 		}
 	}
