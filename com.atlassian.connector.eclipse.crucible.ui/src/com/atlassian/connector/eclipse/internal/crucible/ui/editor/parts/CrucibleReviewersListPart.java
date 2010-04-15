@@ -53,8 +53,8 @@ public class CrucibleReviewersListPart {
 		this.reviewers = reviewers;
 	}
 
-	public Composite createControl(FormToolkit toolkit, Composite parent, final IAction contributedAction) {
-		return createControl(toolkit, parent, "Reviewers:   ", contributedAction);
+	public Composite createControl(FormToolkit toolkit, Composite parent) {
+		return createControl(toolkit, parent, "Reviewers:   ");
 	}
 
 	public Composite createControl(FormToolkit toolkit, Composite parent, String labelText) {

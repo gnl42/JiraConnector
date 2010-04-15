@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -261,16 +262,12 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		}
 		parentComposite.setMenu(null);
 
-		boolean hasModifyFilesAction = false;
-		Set<CrucibleAction> actions = crucibleReview.getActions();
-		if (actions != null && actions.contains(CrucibleAction.MODIFY_FILES)) {
-			hasModifyFilesAction = true;
-		}
-
 		reviewersSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(reviewersSection);
 		reviewersSection.setText("Participants");
+
+		setSection(toolkit, reviewersSection);
 
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
@@ -291,7 +288,7 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		reviewersPartComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewersPartComp);
 
-		createReviewersPart(toolkit, reviewersPartComp, hasModifyFilesAction);
+		createReviewersPart(toolkit, reviewersPartComp);
 
 		reviewersSection.setClient(participantsComp);
 
@@ -300,23 +297,17 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		toolkit.paintBordersFor(parentComposite);
 	}
 
-	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
+	private void createReviewersPart(final FormToolkit toolkit, final Composite parent) {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersComp);
 		}
 
-		if (canEditReviewers) {
-			setReviewersAction = new SetReviewersAction();
-			setReviewersAction.setToolTipText("Add/Remove Reviewers");
-			setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
-		}
-
 		Set<Reviewer> reviewers = crucibleReview.getReviewers();
 		CrucibleReviewersListPart crucibleReviewersPart = new CrucibleReviewersListPart(reviewers);
 		crucibleReviewersPart.setMenu(parent.getMenu());
-		reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
+		reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp);
 	}
 
 	@Override
@@ -333,4 +324,23 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 	public void setFocus() {
 		reviewersSection.setFocus();
 	}
+
+	@Override
+	protected void fillToolBar(ToolBarManager toolBarManager) {
+		boolean hasModifyFilesAction = false;
+		Set<CrucibleAction> actions = crucibleReview.getActions();
+		if (actions != null && actions.contains(CrucibleAction.MODIFY_FILES)) {
+			hasModifyFilesAction = true;
+		}
+
+		if (hasModifyFilesAction) {
+			setReviewersAction = new SetReviewersAction();
+			setReviewersAction.setToolTipText("Add/Remove Reviewers");
+			setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
+
+			toolBarManager.add(setReviewersAction);
+		}
+
+	}
+
 }
