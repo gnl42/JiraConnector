@@ -106,7 +106,8 @@
           point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
        <taskRepositoryPageContribution
        		 id="com.atlassian.connector.eclipse.jira.ui.googleAppsExtensionSettings"
-             class="com.atlassian.connector.eclipse.internal.jira.ui.wizards.GoogleAppsExtensionSettingsContribution">
+             class="com.atlassian.connector.eclipse.internal.jira.ui.wizards.GoogleAppsExtensionSettingsContribution"
+             connectorKind="jira">
        </taskRepositoryPageContribution>
     </extension>
 </plugin>
