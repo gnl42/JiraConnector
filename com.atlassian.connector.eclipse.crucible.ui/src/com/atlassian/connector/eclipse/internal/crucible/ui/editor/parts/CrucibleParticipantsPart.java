@@ -23,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -31,6 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -54,14 +54,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -70,8 +65,7 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.joda.time.DateTime;
-import java.text.DateFormat;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -80,7 +74,7 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  */
-public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
+public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 	private final class SetReviewersAction extends Action {
 
@@ -162,8 +156,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private boolean newReview;
 
-	private Text reviewTitleText;
-
 	private Composite reviewersPart;
 
 	@Override
@@ -192,42 +184,13 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		parentComposite.setLayout(GridLayoutFactory.fillDefaults()
 				.spacing(10, 10)
 				.equalWidth(true)
-				.numColumns(2)
+				.numColumns(1)
 				.create());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(parentComposite);
 
 		updateControl(this.crucibleReview, parent, toolkit);
 
 		return parentComposite;
-	}
-
-	private Text createReadOnlyText(FormToolkit toolkit, Composite parent, String value, String labelString,
-			boolean isMultiline) {
-		return createText(toolkit, parent, value, labelString, isMultiline, true);
-	}
-
-	private Text createText(FormToolkit toolkit, Composite parent, String value, String labelString,
-			boolean isMultiline, boolean isReadOnly) {
-
-		if (labelString != null) {
-			createLabelControl(toolkit, parent, labelString);
-		}
-		int style = SWT.FLAT;
-		if (isReadOnly) {
-			style |= SWT.READ_ONLY;
-		} else {
-			style |= SWT.BORDER;
-		}
-		if (isMultiline) {
-			style |= SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL;
-		}
-		Text text = new Text(parent, style);
-		text.setFont(JFaceResources.getDefaultFont());
-		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
-		text.setText(value);
-		toolkit.adapt(text, true, true);
-
-		return text;
 	}
 
 	private Label createLabelControl(FormToolkit toolkit, Composite parent, String labelString) {
@@ -304,41 +267,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			hasModifyFilesAction = true;
 		}
 
-		reviewTitleText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, !newReview);
-		reviewTitleText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				String modifiedName = ((Text) e.widget).getText();
-				if (modifiedName.equals(crucibleReview.getName())) {
-					changedAttributes.remove(ReviewAttributeType.TITLE);
-				} else {
-					changedAttributes.put(ReviewAttributeType.TITLE, modifiedName);
-				}
-				crucibleEditor.attributesModified();
-			}
-		});
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewTitleText);
-
-		Composite statusComp = toolkit.createComposite(parentComposite);
-		final DateTime dueDate = crucibleReview.getDueDate();
-		final int numColumns = 2 * (dueDate != null ? 3 : 2);
-		statusComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).spacing(10, 0).create());
-		Text stateText = createReadOnlyText(toolkit, statusComp, crucibleReview.getState().getDisplayName(), "State: ",
-				false);
-		GridDataFactory.fillDefaults().applyTo(stateText);
-
-		Text openSinceText = createReadOnlyText(toolkit, statusComp, DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-				DateFormat.SHORT).format(crucibleReview.getCreateDate()), "Open Since: ", false);
-		GridDataFactory.fillDefaults().applyTo(openSinceText);
-
-		if (dueDate != null) {
-			final Text dueDateText = createReadOnlyText(toolkit, statusComp, DateFormat.getDateTimeInstance(
-					DateFormat.MEDIUM,
-					DateFormat.SHORT).format(crucibleReview.getDueDate().toDate()), "Due Date: ", false);
-			GridDataFactory.fillDefaults().applyTo(dueDateText);
-		}
-
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(statusComp);
-
 		reviewersSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(reviewersSection);
@@ -367,29 +295,9 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		reviewersSection.setClient(participantsComp);
 
-		createStatementOfObjectivesSection(toolkit);
 		// CHECKSTYLE:MAGIC:ON
 
 		toolkit.paintBordersFor(parentComposite);
-	}
-
-	@SuppressWarnings("restriction")
-	private void createStatementOfObjectivesSection(final FormToolkit toolkit) {
-		Section objectivesSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
-				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(objectivesSection);
-		objectivesSection.setText("Statement of Objectives");
-
-		TaskRepository repository = crucibleEditor.getEditor().getTaskEditorInput().getTaskRepository();
-
-		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
-		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-		RichTextEditor editor = new RichTextEditor(repository, SWT.MULTI, null, extension);
-		editor.setReadOnly(true);
-		editor.setText(crucibleReview.getDescription());
-		editor.createControl(objectivesSection, toolkit);
-
-		objectivesSection.setClient(editor.getControl());
 	}
 
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
@@ -406,7 +314,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		}
 
 		Set<Reviewer> reviewers = crucibleReview.getReviewers();
-		CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
+		CrucibleReviewersListPart crucibleReviewersPart = new CrucibleReviewersListPart(reviewers);
 		crucibleReviewersPart.setMenu(parent.getMenu());
 		reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
 	}
@@ -423,6 +331,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	public void setFocus() {
-		reviewTitleText.setFocus();
+		reviewersSection.setFocus();
 	}
 }

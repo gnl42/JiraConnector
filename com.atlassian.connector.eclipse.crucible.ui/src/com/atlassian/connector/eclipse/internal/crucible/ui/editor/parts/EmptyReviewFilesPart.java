@@ -60,7 +60,6 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	public Control createControl(final Composite parent, final FormToolkit toolkit) {
-
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 		commentsSection = toolkit.createSection(parent, style);
 		commentsSection.setText(getSectionTitle());
@@ -103,8 +102,8 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 		Label t = toolkit.createLabel(parentComposite,
 				"You need to activate this task to see review files and comments. "
-				+ "You will be automatically switched to Crucible Review Perspective. "
-				+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
+						+ "You will be automatically switched to Crucible Review Perspective. "
+						+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
 				SWT.WRAP);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);

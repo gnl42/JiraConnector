@@ -16,7 +16,7 @@ import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersListPart;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -153,7 +153,7 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 
 		boolean hasCompletedReviewers = false;
 		if (completedReviewers.size() > 0) {
-			new CrucibleReviewersPart(completedReviewers).createControl(null, draftComp, COMPLETED_REVIEWS_INFO);
+			new CrucibleReviewersListPart(completedReviewers).createControl(null, draftComp, COMPLETED_REVIEWS_INFO);
 			hasCompletedReviewers = true;
 		}
 
@@ -162,12 +162,12 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
 			}
-			new CrucibleReviewersPart(openReviewers).createControl(null, draftComp, OPEN_REVIEWS_WARNING);
+			new CrucibleReviewersListPart(openReviewers).createControl(null, draftComp, OPEN_REVIEWS_WARNING);
 			Label labelControl = new Label(draftComp, SWT.WRAP);
 			labelControl.setText(OTHER_DRAFTS_WARNING);
 			if (hasOthersDrafts) {
 				Set<Reviewer> othersDrafts = getOthersDrafts();
-				new CrucibleReviewersPart(othersDrafts).createControl(null, draftComp, "Reviewers with draft comments:");
+				new CrucibleReviewersListPart(othersDrafts).createControl(null, draftComp, "Reviewers with draft comments:");
 			}
 		}
 

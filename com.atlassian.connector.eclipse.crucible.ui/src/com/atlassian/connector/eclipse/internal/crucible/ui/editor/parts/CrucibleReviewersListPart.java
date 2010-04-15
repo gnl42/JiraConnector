@@ -42,13 +42,13 @@ import java.util.Set;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleReviewersPart {
+public class CrucibleReviewersListPart {
 
 	private final Set<Reviewer> reviewers;
 
 	private Menu menu;
 
-	public CrucibleReviewersPart(Set<Reviewer> reviewers) {
+	public CrucibleReviewersListPart(Set<Reviewer> reviewers) {
 		super();
 		this.reviewers = reviewers;
 	}

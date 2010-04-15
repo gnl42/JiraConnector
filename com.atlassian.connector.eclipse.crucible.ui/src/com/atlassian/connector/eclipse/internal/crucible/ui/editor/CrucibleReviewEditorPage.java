@@ -25,7 +25,9 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompleteReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleDetailsPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleObjectivesPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleParticipantsPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleTitleAndStatePart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.EmptyReviewFilesPart;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -36,6 +38,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -90,6 +93,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.themes.IThemeManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -453,8 +457,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void createFormParts() {
-		focusablePart = new CrucibleDetailsPart();
+		focusablePart = new CrucibleTitleAndStatePart();
 		parts.add(focusablePart);
+		parts.add(new CrucibleParticipantsPart());
+		parts.add(new CrucibleObjectivesPart());
 		parts.add(new EmptyReviewFilesPart());
 	}
 
