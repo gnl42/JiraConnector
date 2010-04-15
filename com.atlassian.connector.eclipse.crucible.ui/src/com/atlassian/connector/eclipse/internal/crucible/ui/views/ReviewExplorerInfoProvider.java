@@ -20,11 +20,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Widget;
-
 import java.util.Map;
 
 public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
@@ -77,8 +75,8 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 							for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
 								tooltip.addIconAndLabel(composite, null, NLS.bind(
-										"File comment for lines {0}-{1} for revision: {2}\n", new Object[] {
-												range.getValue().getTotalMin(), range.getValue().getTotalMax(),
+										"File comment for " + getLineInfo(range.getValue()) + " for revision: {0}\n",
+										new Object[] {
 												range.getKey() }), true);
 							}
 						}
@@ -101,4 +99,13 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 		}
 		return null;
 	}
+
+	private static String getLineInfo(IntRanges intRanges) {
+		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
+			return "line " + intRanges.getTotalMin();
+		} else {
+			return "lines " + intRanges.toNiceString();
+		}
+	}
+
 }
