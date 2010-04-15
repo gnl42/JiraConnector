@@ -14,13 +14,37 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.wizards;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ComponentFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.CurrentUserFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueTypeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.NobodyFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.PriorityFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ProjectFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ResolutionFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.SpecificUserFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.StatusFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserInGroupFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.service.FilterDefinitionConverter;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.WdhmUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -64,6 +88,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -72,37 +97,13 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
-import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ComponentFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.CurrentUserFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueTypeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.NobodyFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.PriorityFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ProjectFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ResolutionFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.SpecificUserFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.StatusFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserInGroupFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.service.FilterDefinitionConverter;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
-import com.atlassian.connector.eclipse.internal.jira.ui.WdhmUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Brock Janiczak
@@ -112,6 +113,7 @@ import com.atlassian.connector.eclipse.internal.jira.ui.WdhmUtil;
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
  * @author Jacek Jaroczynski
+ * @author Wojciech Seliga
  */
 public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
@@ -713,7 +715,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			GridDataFactory.fillDefaults()
 					.align(SWT.FILL, SWT.FILL)
 					.grab(true, true)
-					.hint(650, 200)
+					.hint(650, 130)
 					.span(3, 1)
 					.applyTo(cc);
 			GridLayoutFactory.fillDefaults().numColumns(2).applyTo(cc);
@@ -735,7 +737,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 		createUpdateButton(c);
 
-		ExpandableComposite textSection = createExpandableComposite(c, "Text Search");
+		ExpandableComposite textSection = createExpandableComposite(c, "Text Search", false);
 		Composite textComposite = new Composite(textSection, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(textComposite);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(textComposite);
@@ -743,19 +745,20 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		createTextSearchContents(textComposite);
 		textSection.setExpanded(inSearchContainer());
 
-		ExpandableComposite issueDetailsSection = createExpandableComposite(c, "Issue Details");
+		ExpandableComposite issueDetailsSection = createExpandableComposite(c, "Issue Details", true);
+
 		final Composite detailsComposite = new Composite(issueDetailsSection, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(detailsComposite);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(detailsComposite);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(detailsComposite);
 		issueDetailsSection.setClient(detailsComposite);
 		createIssueDetailsContents(detailsComposite);
 		issueDetailsSection.setExpanded(!inSearchContainer());
 
-		ExpandableComposite projectDetailsSection = createExpandableComposite(c, "Components / Versions");
+		ExpandableComposite projectDetailsSection = createExpandableComposite(c, "Components / Versions", true);
 		createProjectDetailsContents(projectDetailsSection);
 		projectDetailsSection.setExpanded(!inSearchContainer());
 
-		ExpandableComposite datesSection = createExpandableComposite(c, "Dates and Times");
+		ExpandableComposite datesSection = createExpandableComposite(c, "Dates and Times", false);
 		final Composite datesComposite = new Composite(datesSection, SWT.NONE);
 		GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(datesComposite);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(datesComposite);
@@ -767,42 +770,41 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	}
 
 	private void createProjectDetailsContents(ExpandableComposite projectDetailsComposite) {
+		SashForm cc = new SashForm(projectDetailsComposite, SWT.HORIZONTAL);
+		GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(cc);
 		{
-			SashForm cc = new SashForm(projectDetailsComposite, SWT.HORIZONTAL);
-			{
-				Composite comp = new Composite(cc, SWT.NONE);
-				GridLayout gridLayout = new GridLayout(1, false);
-				gridLayout.marginWidth = 0;
-				comp.setLayout(gridLayout);
+			Composite comp = new Composite(cc, SWT.NONE);
+			GridLayout gridLayout = new GridLayout(1, false);
+			gridLayout.marginWidth = 0;
+			comp.setLayout(gridLayout);
 
-				new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_Fix_For);
-				createFixForViewer(comp);
-			}
-
-			{
-				Composite comp = new Composite(cc, SWT.NONE);
-				GridLayout gridLayout = new GridLayout(1, false);
-				gridLayout.marginWidth = 0;
-				comp.setLayout(gridLayout);
-
-				new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_In_Components);
-				createComponentsViewer(comp);
-			}
-
-			{
-				Composite comp = new Composite(cc, SWT.NONE);
-				GridLayout gridLayout = new GridLayout(1, false);
-				gridLayout.marginWidth = 0;
-				comp.setLayout(gridLayout);
-
-				Label label = new Label(comp, SWT.NONE);
-				label.setText(Messages.JiraFilterDefinitionPage_Reported_In);
-				createReportedInViewer(comp);
-			}
-
-			cc.setWeights(new int[] { 1, 1, 1 });
-			projectDetailsComposite.setClient(cc);
+			new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_Fix_For);
+			createFixForViewer(comp);
 		}
+
+		{
+			Composite comp = new Composite(cc, SWT.NONE);
+			GridLayout gridLayout = new GridLayout(1, false);
+			gridLayout.marginWidth = 0;
+			comp.setLayout(gridLayout);
+
+			new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_In_Components);
+			createComponentsViewer(comp);
+		}
+
+		{
+			Composite comp = new Composite(cc, SWT.NONE);
+			GridLayout gridLayout = new GridLayout(1, false);
+			gridLayout.marginWidth = 0;
+			comp.setLayout(gridLayout);
+
+			Label label = new Label(comp, SWT.NONE);
+			label.setText(Messages.JiraFilterDefinitionPage_Reported_In);
+			createReportedInViewer(comp);
+		}
+
+		cc.setWeights(new int[] { 1, 1, 1 });
+		projectDetailsComposite.setClient(cc);
 	}
 
 	private void createTextSearchContents(Composite c) {
@@ -976,7 +978,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 		{
 			SashForm cc = new SashForm(c, SWT.NONE);
-			GridDataFactory.fillDefaults().span(3, 1).applyTo(cc);
+			GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(cc);
 
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
@@ -1252,21 +1254,41 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 	}
 
-	private ExpandableComposite createExpandableComposite(final Composite parentControl, String title) {
+	private void adjustLayoutData(Control control, boolean shouldGrabVertical) {
+		GridDataFactory.fillDefaults()
+				.indent(0, 5)
+				.grab(true, shouldGrabVertical)
+				.span(3, SWT.DEFAULT)
+				.applyTo(control);
+	}
+
+	private ExpandableComposite createExpandableComposite(final Composite parentControl, String title,
+			final boolean shouldGrabVertical) {
 		final ExpandableComposite section = new ExpandableComposite(parentControl, ExpandableComposite.TWISTIE
-				| ExpandableComposite.CLIENT_INDENT | ExpandableComposite.COMPACT);
+				| ExpandableComposite.CLIENT_INDENT | ExpandableComposite.COMPACT) {
+
+			@Override
+			public void setExpanded(boolean expanded) {
+				adjustLayoutData(this, expanded && shouldGrabVertical);
+				super.setExpanded(expanded);
+			}
+
+		};
 		section.clientVerticalSpacing = 0;
 		section.setBackground(parentControl.getBackground());
 		section.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
 		section.addExpansionListener(new ExpansionAdapter() {
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
+				if (shouldGrabVertical) {
+					adjustLayoutData(section, e.getState());
+				}
 				parentControl.layout(true);
 				getControl().getShell().pack();
 			}
 		});
 		section.setText(title);
-		GridDataFactory.fillDefaults().indent(0, 5).grab(true, false).span(3, SWT.DEFAULT).applyTo(section);
+		adjustLayoutData(section, false);
 		return section;
 	}
 
