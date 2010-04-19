@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
@@ -59,6 +60,9 @@ import com.atlassian.theplugin.commons.util.StringUtil;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -766,15 +770,25 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void reviewActivated(ITask task, final Review newReview) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (viewer != null) {
-					setReview(newReview);
-				} else {
-					initializeWith = newReview;
-				}
+		CrucibleClient client = CrucibleUiUtil.getClient(newReview);
+		Job downloadAvatars = client.getDownloadAvatarsJob(CrucibleUiUtil.getCrucibleTaskRepository(newReview),
+				newReview);
+		downloadAvatars.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						if (viewer != null) {
+							setReview(newReview);
+						} else {
+							initializeWith = newReview;
+						}
+					}
+				});
 			}
 		});
+		downloadAvatars.setPriority(Job.INTERACTIVE);
+		downloadAvatars.schedule();
 	}
 
 	public static ReviewTreeNode[] compactReviewFiles(Review review) {

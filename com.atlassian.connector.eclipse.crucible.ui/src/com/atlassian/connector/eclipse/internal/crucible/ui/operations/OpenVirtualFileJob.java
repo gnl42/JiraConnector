@@ -179,7 +179,7 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		}
 
 		// failed to open local file so let's download it from Crucible
-		TaskRepository taskRepository = getTaskRepository();
+		TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
 
@@ -207,10 +207,6 @@ public class OpenVirtualFileJob extends JobWithStatus {
 			throw exception[0];
 		}
 		return part[0];
-	}
-
-	private TaskRepository getTaskRepository() {
-		return CrucibleUiUtil.getCrucibleTaskRepository(review);
 	}
 
 	public static void contentUrlMissingPopup() {

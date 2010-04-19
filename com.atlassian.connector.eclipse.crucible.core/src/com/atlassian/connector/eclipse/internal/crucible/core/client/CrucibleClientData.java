@@ -17,12 +17,14 @@ import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -42,8 +44,9 @@ public class CrucibleClientData implements Serializable {
 
 	private CrucibleVersionInfo versionInfo;
 
-	public CrucibleClientData() {
+	private transient Map<String, byte[]> avatars;
 
+	public CrucibleClientData() {
 	}
 
 	public boolean hasData() {
@@ -96,6 +99,18 @@ public class CrucibleClientData implements Serializable {
 	@Nullable
 	public CrucibleVersionInfo getVersionInfo() {
 		return versionInfo;
+	}
+
+	public void addAvatar(@NotNull User user, @NotNull byte[] avatar) {
+		if (avatars == null) {
+			avatars = MiscUtil.buildHashMap();
+		}
+		avatars.put(user.getUsername(), avatar);
+	}
+
+	@Nullable
+	public byte[] getAvatar(@NotNull User user) {
+		return avatars != null ? avatars.get(user.getUsername()) : null;
 	}
 
 }
