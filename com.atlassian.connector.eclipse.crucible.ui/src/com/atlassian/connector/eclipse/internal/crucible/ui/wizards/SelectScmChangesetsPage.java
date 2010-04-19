@@ -294,7 +294,7 @@ public class SelectScmChangesetsPage extends AbstractCrucibleWizardPage {
 					if (sourceRepository == null) {
 						mappingButton.setMissingMapping(entry.getRepository().getScmPath());
 						setErrorMessage(NLS.bind("SCM repository path {0} is not mapped to Crucible repository.",
-								entry.getRepository().getScmPath()));
+								scmPath));
 						allFine = false;
 						break;
 					}
