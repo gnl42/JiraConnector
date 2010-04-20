@@ -170,6 +170,12 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 			final IP4File scmResource = (IP4File) P4Workspace.getWorkspace().getResource(resource);
 			final String fileName = getResourcePathWithProjectName(resource);
 
+			StatusHandler.log(new Status(IStatus.INFO, AtlassianPerforceUiPlugin.PLUGIN_ID, String.format(
+					"SF_UNVERSIONED %s; SF_ADDED %s; SF_INGORED %s; SF_DELETED %s; SF_ANY_CHANGE %s",
+					IStateFilter.SF_UNVERSIONED.accept(scmResource), IStateFilter.SF_ADDED.accept(scmResource),
+					IStateFilter.SF_IGNORED.accept(scmResource), IStateFilter.SF_DELETED.accept(scmResource),
+					IStateFilter.SF_ANY_CHANGE.accept(scmResource))));
+
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(scmResource) || IStateFilter.SF_ADDED.accept(scmResource)
 					|| IStateFilter.SF_IGNORED.accept(scmResource)) {
