@@ -29,6 +29,7 @@ import java.util.List;
 import javax.swing.text.html.HTML.Tag;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -44,14 +45,15 @@ import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylyn.commons.net.HtmlTag;
+import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
@@ -422,10 +424,10 @@ public class JiraWebClient {
 		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue, monitor); //$NON-NLS-1$
 	}
 
-	private void prepareSecurityToken(PostMethod post) {
+	private void prepareSecurityToken(HttpMethod method) {
 		// this one is required as of JIRA 4.1
 		// see http://confluence.atlassian.com/display/JIRA/Form+Token+Handling#FormTokenHandling-Scripting
-		post.setRequestHeader("X-Atlassian-Token", "no-check"); //$NON-NLS-1$//$NON-NLS-2$
+		method.setRequestHeader("X-Atlassian-Token", "no-check"); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
@@ -537,10 +539,22 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
-				urlBuffer.append("?watch=").append(Boolean.toString(watch)); //$NON-NLS-1$
+				String version = client.getCache().getServerInfo(monitor).getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
+					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
+					urlBuffer.append("&watch=").append(watch ? "watch" : "unwatch"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				} else {
+					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+					urlBuffer.append("?watch=").append(Boolean.toString(watch)); //$NON-NLS-1$
+				}
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
+
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+					prepareSecurityToken(head);
+				}
+
 				try {
 					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
@@ -569,10 +583,21 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
-				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				String version = client.getCache().getServerInfo(monitor).getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
+					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
+					urlBuffer.append("&vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				} else {
+					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+					urlBuffer.append("?vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+					prepareSecurityToken(head);
+				}
+
 				try {
 					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {

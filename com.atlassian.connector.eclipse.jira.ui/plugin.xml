@@ -110,4 +110,42 @@
              connectorKind="jira">
        </taskRepositoryPageContribution>
     </extension>
+    
+    <extension point="org.eclipse.ui.popupMenus">
+        <viewerContribution
+		    id="org.eclipse.mylyn.tasks.ui.views.tasks"
+            targetID="org.eclipse.mylyn.tasks.ui.views.tasks">
+      		<action
+		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.WatchAction"
+	        	id="com.atlassian.connector.eclipse.jira.ui.actions.WatchAction"
+	        	label="%Action.Watch.label"
+	        	menubarPath="additions"/>
+	        <action
+		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.VoteAction"
+	        	id="com.atlassian.connector.eclipse.jira.ui.actions.VoteAction"
+	        	label="%Action.Vote.label"
+	        	menubarPath="additions"/>
+	        <visibility>
+				<systemProperty name="com.atlassian.connector.eclipse.jira.ui.issue.selected" value="true"/>
+			</visibility>
+      </viewerContribution>
+   </extension>
+    
+   <extension point="org.eclipse.ui.popupMenus">
+        <viewerContribution
+		    id="org.eclipse.mylyn.tasks.ui.editors.task"
+            targetID="org.eclipse.mylyn.tasks.ui.editors.task">
+      		<action
+		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.WatchAction"
+	        	id="com.atlassian.connector.eclipse.jira.ui.actions.WatchAction"
+	        	label="%Action.Watch.label"
+	        	menubarPath="additions"/>
+	        <action
+		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.VoteAction"
+	        	id="com.atlassian.connector.eclipse.jira.ui.actions.VoteAction"
+	        	label="%Action.Vote.label"
+	        	menubarPath="additions"/>
+      </viewerContribution>
+   </extension>
+    
 </plugin>

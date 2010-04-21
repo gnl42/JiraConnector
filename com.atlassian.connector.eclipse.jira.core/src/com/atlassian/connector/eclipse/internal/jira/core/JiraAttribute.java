@@ -98,7 +98,9 @@ public enum JiraAttribute {
 	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, Messages.JiraAttribute_URL),
 
 	PROJECT_ROLES(IJiraConstants.ATTRIBUTE_PROJECT_ROLES, JiraFieldType.SELECT, Messages.JiraAttribute_Viewable_by,
-			true, false);
+			true, false),
+
+	VOTES(IJiraConstants.ATTRIBUTE_VOTES, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Votes, true, true);
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {

@@ -324,7 +324,8 @@ public class JiraIssue implements Serializable {
 	 * @return <code>true</code> if it is valid for <code>user</code> to vote for the issue
 	 */
 	public boolean canUserVote(String user) {
-		return (this.getResolution() == null) && !(user.equals(this.getReporter()));
+		return (this.getResolution() == null || this.getResolution().getId() == null || "".equals(this.getResolution() //$NON-NLS-1$
+				.getId())) && !(user.equals(this.getReporter()));
 	}
 
 	public void setHasVote(boolean hasVote) {

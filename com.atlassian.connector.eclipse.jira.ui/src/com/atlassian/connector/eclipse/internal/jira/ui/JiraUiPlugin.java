@@ -27,7 +27,9 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
  */
 public class JiraUiPlugin extends AbstractUIPlugin {
 
-	public static final String ID_PLUGIN = "org.eclipse.mylyn.jira.ui"; //$NON-NLS-1$
+	public static final String ID_PLUGIN = "com.atlassian.connector.eclipse.jira.ui"; //$NON-NLS-1$
+
+	public static final String PRODUCT_NAME = "Atlassian JIRA Connector"; //$NON-NLS-1$
 
 	private static JiraUiPlugin instance;
 

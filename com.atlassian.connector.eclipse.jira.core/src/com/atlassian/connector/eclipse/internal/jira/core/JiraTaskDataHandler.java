@@ -319,6 +319,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				projectRoles.putOption(projectRole.getName(), projectRole.getName());
 			}
 		}
+
+		createAttribute(data, JiraAttribute.VOTES);
 	}
 
 	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
@@ -486,6 +488,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			setAttributeValue(data, JiraAttribute.ENVIRONMENT, jiraIssue.getEnvironment());
 		} else {
 			removeAttribute(data, JiraAttribute.ENVIRONMENT);
+		}
+
+		if (jiraIssue.getVotes() > 0) {
+			setAttributeValue(data, JiraAttribute.VOTES, Integer.toString(jiraIssue.getVotes()));
+		} else {
+			removeAttribute(data, JiraAttribute.VOTES);
 		}
 
 		addAttributeValue(data, JiraAttribute.PROJECT_ROLES, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
@@ -1009,7 +1017,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					client.getCache().refreshDetails(monitor);
 				}
 
-				JiraIssue issue = buildJiraIssue(taskData, client);
+				JiraIssue issue = buildJiraIssue(taskData);
 				if (taskData.isNew()) {
 					if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
 						issue = client.createSubTask(issue, monitor);
@@ -1281,7 +1289,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return (value == null) ? true : !Boolean.parseBoolean(value);
 	}
 
-	private JiraIssue buildJiraIssue(TaskData taskData, JiraClient client) {
+	public static JiraIssue buildJiraIssue(TaskData taskData) {
 		JiraIssue issue = new JiraIssue();
 		issue.setId(taskData.getTaskId());
 		issue.setKey(getAttributeValue(taskData, JiraAttribute.ISSUE_KEY));
@@ -1388,16 +1396,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return Boolean.parseBoolean(typeAttribute.getMetaData().getValue(IJiraConstants.META_SUB_TASK_TYPE));
 	}
 
-	private TaskAttribute getAttribute(TaskData taskData, JiraAttribute key) {
+	private static TaskAttribute getAttribute(TaskData taskData, JiraAttribute key) {
 		return taskData.getRoot().getAttribute(key.id());
 	}
 
-	private String getAttributeValue(TaskData taskData, JiraAttribute key) {
+	private static String getAttributeValue(TaskData taskData, JiraAttribute key) {
 		TaskAttribute attribute = taskData.getRoot().getAttribute(key.id());
 		return (attribute != null) ? attribute.getValue() : null;
 	}
 
-	private Date getDateValue(TaskData data, JiraAttribute key) {
+	private static Date getDateValue(TaskData data, JiraAttribute key) {
 		TaskAttribute attribute = data.getRoot().getAttribute(key.id());
 		return (attribute != null) ? data.getAttributeMapper().getDateValue(attribute) : null;
 	}

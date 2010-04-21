@@ -55,8 +55,27 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}.setPath(ID_PART_ATTRIBUTES + "/" + PATH_PLANNING)); //$NON-NLS-1$
 		}
 
-		// remove comments part
+		// replace summary part
 		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
+		while (iter.hasNext()) {
+			TaskEditorPartDescriptor part = iter.next();
+			if (part.getId().equals(ID_PART_SUMMARY)) {
+				parts.remove(part);
+
+				// add JIRA specific summary part (with votes number)
+				parts.add(new TaskEditorPartDescriptor(ID_PART_SUMMARY) {
+					@Override
+					public AbstractTaskEditorPart createPart() {
+						return new JiraTaskEditorSummaryPart();
+					}
+				}.setPath(part.getPath()));
+
+				break;
+			}
+		}
+
+		// remove comments part
+		iter = parts.iterator();
 		while (iter.hasNext()) {
 			TaskEditorPartDescriptor part = iter.next();
 			if (part.getId().equals(ID_PART_COMMENTS)) {
