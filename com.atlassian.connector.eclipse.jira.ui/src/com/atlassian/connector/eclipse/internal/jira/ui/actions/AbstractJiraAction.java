@@ -81,6 +81,11 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 			for (Object element : selection.toList()) {
 				if (!(element instanceof ITask)) {
 					return false;
+				} else {
+					ITask task = (ITask) element;
+					if (!task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+						return false;
+					}
 				}
 			}
 		} else {
@@ -119,11 +124,9 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 	}
 
 	public void init(IViewPart view) {
-		// ignore
 	}
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		// ignore
 	}
 
 	protected JiraIssue getIssue(AbstractTask task) throws CoreException {
