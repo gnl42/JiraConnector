@@ -145,6 +145,9 @@
 	        	id="com.atlassian.connector.eclipse.jira.ui.actions.VoteAction"
 	        	label="%Action.Vote.label"
 	        	menubarPath="additions"/>
+	        <visibility>
+				<systemProperty name="com.atlassian.connector.eclipse.jira.ui.issue.selected" value="true"/>
+			</visibility>
       </viewerContribution>
    </extension>
     
