@@ -149,8 +149,9 @@
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
 		<property name="publish.name" value="e${build.target}"/>
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/${version}"/>
-		
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
+	
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" verbose="true"
+			passphrase="${build.publish.passphrase}"
 			trust="true" command="mkdir -p &quot;${publish.path}/${publish.name}.tmp&quot;" timeout="5000"
 			knownhosts="tools/known_hosts"/>
 
@@ -166,11 +167,11 @@
 		</scp>
 		
 		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
-			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000"
+			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000" passphrase="${build.publish.passphrase}" 
 			knownhosts="tools/known_hosts"/>
 
 		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
-			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000"
+			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000" passphrase="${build.publish.passphrase}" 
 			knownhosts="tools/known_hosts"/>
 	</target>
 
