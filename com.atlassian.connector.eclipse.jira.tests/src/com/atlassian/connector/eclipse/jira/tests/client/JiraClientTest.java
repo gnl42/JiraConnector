@@ -497,6 +497,21 @@ public class JiraClientTest extends TestCase {
 		assertFalse(issue.isWatched());
 	}
 
+	public void testVoteUnvoteIssue() throws Exception {
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testVoteUnvote");
+
+		assertEquals(0, issue.getVotes());
+		assertFalse(issue.canUserVote(client.getUserName()));
+
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
+		client.voteIssue(issue, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+		assertEquals(1, issue.getVotes());
+		client.unvoteIssue(issue, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+		assertEquals(0, issue.getVotes());
+	}
+
 	public void testBasicAuth() throws Exception {
 		basicAuth(JiraFixture.ENTERPRISE_3_13_BASIC_AUTH.getRepositoryUrl());
 	}
