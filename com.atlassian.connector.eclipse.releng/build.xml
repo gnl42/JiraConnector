@@ -165,12 +165,14 @@
 			keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 		</scp>
 		
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
-			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000" passphrase="${build.publish.passphrase}" 
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}"
+			passphrase="${build.publish.passphrase}" 
+			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000" 
 			knownhosts="tools/known_hosts"/>
 
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
-			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000" passphrase="${build.publish.passphrase}" 
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}"
+			passphrase="${build.publish.passphrase}" 
+			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000" 
 			knownhosts="tools/known_hosts"/>
 	</target>
 
