@@ -105,12 +105,12 @@ public class CrucibleClientData implements Serializable {
 		if (avatars == null) {
 			avatars = MiscUtil.buildHashMap();
 		}
-		avatars.put(user.getUsername(), avatar);
+		avatars.put(user.getAvatarUrl(), avatar);
 	}
 
 	@Nullable
 	public byte[] getAvatar(@NotNull User user) {
-		return avatars != null ? avatars.get(user.getUsername()) : null;
+		return avatars != null ? avatars.get(user.getAvatarUrl()) : null;
 	}
 
 }

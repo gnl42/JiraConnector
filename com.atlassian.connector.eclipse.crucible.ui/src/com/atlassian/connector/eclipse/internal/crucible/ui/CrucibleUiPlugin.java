@@ -48,6 +48,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	private SwitchingPerspectiveReviewActivationListener switchingPerspectivesListener;
 
+	private AvatarImages avatarImages;
+
 	/**
 	 * The constructor
 	 */
@@ -68,6 +70,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		switchingPerspectivesListener = new SwitchingPerspectiveReviewActivationListener();
 		activeReviewManager = new ActiveReviewManager(true);
 		activeReviewManager.addReviewActivationListener(switchingPerspectivesListener);
+
+		avatarImages = new AvatarImages();
 
 		enableActiveReviewManager();
 
@@ -91,6 +95,10 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		activeReviewManager.dispose();
 		activeReviewManager = null;
+
+		avatarImages.dispose();
+		avatarImages = null;
+
 		plugin = null;
 		super.stop(context);
 
@@ -173,5 +181,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 			section = dialogSettings.addNewSection(name);
 		}
 		return section;
+	}
+
+	public AvatarImages getAvatarsCache() {
+		return this.avatarImages;
 	}
 }

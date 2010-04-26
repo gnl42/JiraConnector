@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 import com.atlassian.connector.commons.crucible.api.model.ReviewModelUtil;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
@@ -50,6 +51,7 @@ import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommentNotification;
@@ -770,24 +772,45 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void reviewActivated(ITask task, final Review newReview) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				if (viewer != null) {
+					setReview(newReview);
+				} else {
+					initializeWith = newReview;
+				}
+			}
+		});
+
+		// now let's download images then we'll update tree viewer
 		CrucibleClient client = CrucibleUiUtil.getClient(newReview);
-		Job downloadAvatars = client.getDownloadAvatarsJob(CrucibleUiUtil.getCrucibleTaskRepository(newReview),
+		Job downloadAvatars = client.createDownloadAvatarsJob(CrucibleUiUtil.getCrucibleTaskRepository(newReview),
 				newReview);
 		downloadAvatars.addJobChangeListener(new JobChangeAdapter() {
 			@Override
-			public void done(IJobChangeEvent event) {
+			public void done(final IJobChangeEvent event) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						if (viewer != null) {
-							setReview(newReview);
-						} else {
-							initializeWith = newReview;
+						DownloadAvatarsJob job = ((DownloadAvatarsJob) event.getJob());
+
+						for (Map.Entry<User, byte[]> avatar : job.getAvatars().entrySet()) {
+							CrucibleUiPlugin.getDefault().getAvatarsCache().addAvatar(avatar.getKey(),
+									avatar.getValue());
+						}
+
+						Object[] nodes = viewer.getExpandedElements();
+						if (nodes != null) {
+							for (Object node : nodes) {
+								if (node instanceof Comment) {
+									viewer.refresh(node, true);
+								}
+							}
 						}
 					}
 				});
 			}
 		});
-		downloadAvatars.setPriority(Job.INTERACTIVE);
+		downloadAvatars.setPriority(Job.DECORATE);
 		downloadAvatars.schedule();
 	}
 

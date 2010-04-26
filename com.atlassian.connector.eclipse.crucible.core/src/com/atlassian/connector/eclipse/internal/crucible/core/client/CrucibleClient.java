@@ -297,7 +297,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		return false;
 	}
 
-	public DownloadAvatarsJob getDownloadAvatarsJob(TaskRepository taskRepository, Review review) {
+	public DownloadAvatarsJob createDownloadAvatarsJob(TaskRepository taskRepository, Review review) {
 		return new DownloadAvatarsJob(this, taskRepository, review);
 	}
 }

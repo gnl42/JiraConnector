@@ -20,7 +20,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,6 +30,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import java.util.Map;
 
 public class DownloadAvatarsJob extends Job {
 
@@ -37,11 +41,17 @@ public class DownloadAvatarsJob extends Job {
 
 	private final TaskRepository taskRepository;
 
+	private final Map<User, byte[]> avatars = MiscUtil.buildHashMap();
+
 	public DownloadAvatarsJob(CrucibleClient client, TaskRepository taskRepository, Review r) {
 		super("Download avatars");
 		this.review = r;
 		this.client = client;
 		this.taskRepository = taskRepository;
+	}
+
+	public Map<User, byte[]> getAvatars() {
+		return avatars;
 	}
 
 	@Override
@@ -73,13 +83,15 @@ public class DownloadAvatarsJob extends Job {
 	}
 
 	private void getUserAvatar(CrucibleSession session, ConnectionCfg serverCfg, User user) throws RemoteApiException {
-		if (user.getAvatarUrl() != null) {
+		if (!StringUtils.isBlank(user.getAvatarUrl())) {
 			if (client.getClientData().getAvatar(user) == null) {
-				byte[] avatar = session.getFileContent(user.getAvatarUrl() + "%3Fs%3D16&s=16", true);
+				byte[] avatar = session.getFileContent(user.getAvatarUrl(), true);
 				if (avatar != null && avatar.length > 0) {
 					client.getClientData().addAvatar(user, avatar);
 				}
 			}
+
+			avatars.put(user, client.getClientData().getAvatar(user));
 		}
 	}
 };

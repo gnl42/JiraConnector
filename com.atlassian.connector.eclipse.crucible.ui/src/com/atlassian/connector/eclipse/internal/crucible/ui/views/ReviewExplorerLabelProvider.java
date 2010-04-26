@@ -1,15 +1,13 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -19,15 +17,11 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 /**
  * A simple label provider
@@ -104,22 +98,10 @@ public class ReviewExplorerLabelProvider extends ColumnLabelProvider implements 
 	protected Image getImage(final Comment comment) {
 		final Image defaultAvatar = CrucibleImages.getImage(new OffsettingCompositeImageDescriptor(
 				CrucibleImages.DEFAULT_AVATAR, null));
-		CrucibleClient client = CrucibleUiUtil.getClient(comment.getReview());
-		if (client != null) {
-			CrucibleClientData clientData = client.getClientData();
-			if (clientData != null) {
-				final byte[] avatar = clientData.getAvatar(comment.getAuthor());
-				if (avatar != null) {
-					InputStream is = new ByteArrayInputStream(avatar);
-					try {
-						return CrucibleImages.getImage(ImageDescriptor.createFromImageData(new ImageData(is)));
-					} finally {
-						IOUtils.closeQuietly(is);
-					}
-				}
-			}
-		}
-		return defaultAvatar;
+		final Image userAvatar = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar(comment.getAuthor(),
+				AvatarSize.SMALL);
+
+		return userAvatar != null ? userAvatar : defaultAvatar;
 	}
 
 	private Image getImage(final CrucibleFileInfo cfi) {
