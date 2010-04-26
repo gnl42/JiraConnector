@@ -54,37 +54,6 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 
 	public AbstractJiraAction(String text) {
 		super(text);
-
-//		final IPartListener editorListener = new IPartListener() {
-//
-//			public void partActivated(IWorkbenchPart part) {
-//				if (part == targetEditor) {
-//					System.out.println("hura");
-//				} else {
-//					System.out.println("dupa");
-//				}
-//			}
-//
-//			public void partBroughtToTop(IWorkbenchPart part) {
-//			}
-//
-//			public void partClosed(IWorkbenchPart part) {
-//				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
-//			}
-//
-//			public void partDeactivated(IWorkbenchPart part) {
-//				if (part == targetEditor) {
-//					System.out.println(">>> hura");
-//				} else {
-//					System.out.println(">>> dupa");
-//				}
-//			}
-//
-//			public void partOpened(IWorkbenchPart part) {
-//			}
-//		};
-
-//		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener);
 	}
 
 	public void run(IAction action) {
@@ -106,26 +75,6 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 
 	protected abstract void doAction(List<IJiraTask> tasks);
 
-//	@Override
-//	protected boolean updateSelection(IStructuredSelection selection) {
-//		if (!selection.isEmpty()) {
-//			for (Object element : selection.toList()) {
-//				if (!(element instanceof ITask)) {
-//					return false;
-//				} else {
-//					ITask task = (ITask) element;
-//					if (!task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-//						return false;
-//					}
-//				}
-//			}
-//		} else {
-//			return false;
-//		}
-//
-//		return true;
-//	}
-
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			this.selection = (IStructuredSelection) selection;
@@ -133,23 +82,6 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 			this.selection = StructuredSelection.EMPTY;
 		}
 	}
-
-//	private void updateVisibility(ISelection selection) {
-//
-//		Iterator<?> iter = this.getStructuredSelection().iterator();
-//		while (iter.hasNext()) {
-//			Object sel = iter.next();
-//			if (sel instanceof ITask) {
-//				ITask task = (ITask) sel;
-//				if (task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-//					System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "true"); //$NON-NLS-1$
-//					return;
-//				}
-//
-//			}
-//		}
-//		System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "false"); //$NON-NLS-1$
-//	}
 
 	public void init(IViewPart view) {
 	}

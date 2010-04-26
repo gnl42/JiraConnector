@@ -27,14 +27,11 @@ import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 /**
  * @author Jacek Jaroczynski
  */
-@SuppressWarnings("restriction")
 public class WatchAction extends AbstractJiraAction {
 
 	public WatchAction() {
 		super("Watch Action"); //$NON-NLS-1$
 	}
-
-	// TODO jj move action in the context menu up
 
 	@Override
 	protected void doAction(final List<IJiraTask> tasks) {

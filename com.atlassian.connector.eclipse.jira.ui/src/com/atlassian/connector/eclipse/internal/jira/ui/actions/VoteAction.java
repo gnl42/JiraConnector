@@ -31,7 +31,6 @@ import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 /**
  * @author Jacek Jaroczynski
  */
-@SuppressWarnings("restriction")
 public class VoteAction extends AbstractJiraAction {
 
 	public VoteAction() {

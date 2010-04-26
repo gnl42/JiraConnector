@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 /**
  * @author Jacek Jaroczynski
  */
-@SuppressWarnings("restriction")
 public class JiraTaskAdapterFactory implements IAdapterFactory {
 
 	private static final class JiraTask implements IJiraTask {
