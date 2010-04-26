@@ -114,7 +114,7 @@
 
    <extension point="org.eclipse.ui.popupMenus">
    <objectContribution 
-   		id="com.atlassian.connector.eclipse.crucible.ui.objectContributionxxx" 
+   		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution" 
    		objectClass="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask"
    		adaptable="true">
 			<action
