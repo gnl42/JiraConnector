@@ -41,9 +41,9 @@ public class JiraFixture extends TestFixture {
 
 	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0 };
 
-	public static JiraFixture DEFAULT = ENTERPRISE_3_13;
+//	public static JiraFixture DEFAULT = ENTERPRISE_3_13;
 
-//	public static JiraFixture DEFAULT = ENTERPRISE_4_0;
+	public static JiraFixture DEFAULT = ENTERPRISE_4_0;
 
 	private static JiraFixture current;
 
