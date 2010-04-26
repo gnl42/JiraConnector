@@ -63,6 +63,48 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 		instance = this;
 		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
 		TasksUi.getRepositoryManager().addListener(JiraClientFactory.getDefault());
+
+//		final IPartListener listener = new IPartListener() {
+//
+//			public void partOpened(IWorkbenchPart part) {
+//				System.out.println("dupa"); //$NON-NLS-1$
+//			}
+//
+//			public void partDeactivated(IWorkbenchPart part) {
+//				// ignore
+//
+//			}
+//
+//			public void partClosed(IWorkbenchPart part) {
+//				// ignore
+//
+//			}
+//
+//			public void partBroughtToTop(IWorkbenchPart part) {
+//				// ignore
+//
+//			}
+//
+//			public void partActivated(IWorkbenchPart part) {
+//				// ignore
+//
+//			}
+//		};
+//		getWorkbench().getActiveWorkbenchWindow().addPageListener(new IPageListener() {
+//
+//			public void pageOpened(IWorkbenchPage page) {
+//				page.addPartListener(listener);
+//			}
+//
+//			public void pageClosed(IWorkbenchPage page) {
+//				page.removePartListener(listener);
+//			}
+//
+//			public void pageActivated(IWorkbenchPage page) {
+//				// ignore
+//
+//			}
+//		});
 	}
 
 	@Override

@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -38,11 +37,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraConstants;
+import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 /**
@@ -52,18 +50,51 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 public abstract class AbstractJiraAction extends BaseSelectionListenerAction implements IViewActionDelegate,
 		IEditorActionDelegate {
 
+	private IStructuredSelection selection;
+
 	public AbstractJiraAction(String text) {
 		super(text);
+
+//		final IPartListener editorListener = new IPartListener() {
+//
+//			public void partActivated(IWorkbenchPart part) {
+//				if (part == targetEditor) {
+//					System.out.println("hura");
+//				} else {
+//					System.out.println("dupa");
+//				}
+//			}
+//
+//			public void partBroughtToTop(IWorkbenchPart part) {
+//			}
+//
+//			public void partClosed(IWorkbenchPart part) {
+//				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().removePartListener(this);
+//			}
+//
+//			public void partDeactivated(IWorkbenchPart part) {
+//				if (part == targetEditor) {
+//					System.out.println(">>> hura");
+//				} else {
+//					System.out.println(">>> dupa");
+//				}
+//			}
+//
+//			public void partOpened(IWorkbenchPart part) {
+//			}
+//		};
+
+//		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(editorListener);
 	}
 
 	public void run(IAction action) {
-		if (this.getStructuredSelection() != null && !this.getStructuredSelection().isEmpty()) {
-			List<AbstractTask> tasks = new ArrayList<AbstractTask>();
-			Iterator<?> iter = this.getStructuredSelection().iterator();
+		if (this.selection != null && !this.selection.isEmpty()) {
+			List<IJiraTask> tasks = new ArrayList<IJiraTask>();
+			Iterator<?> iter = this.selection.iterator();
 			while (iter.hasNext()) {
 				Object sel = iter.next();
-				if (sel instanceof ITask) {
-					tasks.add((AbstractTask) sel);
+				if (sel instanceof IJiraTask) {
+					tasks.add((IJiraTask) sel);
 				}
 			}
 
@@ -73,55 +104,52 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 		}
 	}
 
-	protected abstract void doAction(List<AbstractTask> tasks);
+	protected abstract void doAction(List<IJiraTask> tasks);
 
-	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		if (!selection.isEmpty()) {
-			for (Object element : selection.toList()) {
-				if (!(element instanceof ITask)) {
-					return false;
-				} else {
-					ITask task = (ITask) element;
-					if (!task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-						return false;
-					}
-				}
-			}
-		} else {
-			return false;
-		}
-
-		return true;
-	}
+//	@Override
+//	protected boolean updateSelection(IStructuredSelection selection) {
+//		if (!selection.isEmpty()) {
+//			for (Object element : selection.toList()) {
+//				if (!(element instanceof ITask)) {
+//					return false;
+//				} else {
+//					ITask task = (ITask) element;
+//					if (!task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+//						return false;
+//					}
+//				}
+//			}
+//		} else {
+//			return false;
+//		}
+//
+//		return true;
+//	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
-			selectionChanged((IStructuredSelection) selection);
+			this.selection = (IStructuredSelection) selection;
 		} else {
-			selectionChanged(StructuredSelection.EMPTY);
+			this.selection = StructuredSelection.EMPTY;
 		}
-		action.setEnabled(isEnabled());
-
-		updateVisibility(selection);
 	}
 
-	private void updateVisibility(ISelection selection) {
-
-		Iterator<?> iter = this.getStructuredSelection().iterator();
-		while (iter.hasNext()) {
-			Object sel = iter.next();
-			if (sel instanceof ITask) {
-				ITask task = (ITask) sel;
-				if (task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-					System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "true"); //$NON-NLS-1$
-					return;
-				}
-
-			}
-		}
-		System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "false"); //$NON-NLS-1$
-	}
+//	private void updateVisibility(ISelection selection) {
+//
+//		Iterator<?> iter = this.getStructuredSelection().iterator();
+//		while (iter.hasNext()) {
+//			Object sel = iter.next();
+//			if (sel instanceof ITask) {
+//				ITask task = (ITask) sel;
+//				if (task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+//					System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "true"); //$NON-NLS-1$
+//					return;
+//				}
+//
+//			}
+//		}
+//		System.setProperty(JiraConstants.ISSUE_SELECTED_SYSTEM_PROPERTY, "false"); //$NON-NLS-1$
+//	}
 
 	public void init(IViewPart view) {
 	}
@@ -129,7 +157,7 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 	}
 
-	protected JiraIssue getIssue(AbstractTask task) throws CoreException {
+	protected JiraIssue getIssue(ITask task) throws CoreException {
 		TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
 		return JiraTaskDataHandler.buildJiraIssue(taskData);
 	}
@@ -158,5 +186,4 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 			}
 		});
 	}
-
 }

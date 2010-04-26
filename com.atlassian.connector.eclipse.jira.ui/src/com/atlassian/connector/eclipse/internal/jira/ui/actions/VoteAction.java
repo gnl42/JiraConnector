@@ -20,12 +20,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.ui.PlatformUI;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 
 /**
  * @author Jacek Jaroczynski
@@ -38,7 +39,7 @@ public class VoteAction extends AbstractJiraAction {
 	}
 
 	@Override
-	protected void doAction(final List<AbstractTask> tasks) {
+	protected void doAction(final List<IJiraTask> tasks) {
 
 		Job voteJob = new Job(Messages.JiraConnectorUiActions_Vote) {
 
@@ -49,7 +50,9 @@ public class VoteAction extends AbstractJiraAction {
 
 				List<String> cannotVote = new ArrayList<String>();
 
-				for (AbstractTask task : tasks) {
+				for (IJiraTask jiraTask : tasks) {
+
+					ITask task = jiraTask.getTask();
 
 					monitor.setTaskName(Messages.JiraConnectorUiActions_Voting_for_issue + task.getTaskKey());
 

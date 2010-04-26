@@ -18,10 +18,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 
 /**
  * @author Jacek Jaroczynski
@@ -36,7 +37,7 @@ public class WatchAction extends AbstractJiraAction {
 	// TODO jj move action in the context menu up
 
 	@Override
-	protected void doAction(final List<AbstractTask> tasks) {
+	protected void doAction(final List<IJiraTask> tasks) {
 
 		Job voteJob = new Job(Messages.JiraConnectorUiActions_Watch) {
 
@@ -45,7 +46,9 @@ public class WatchAction extends AbstractJiraAction {
 
 				monitor.beginTask(Messages.JiraConnectorUiActions_Watch, tasks.size());
 
-				for (AbstractTask task : tasks) {
+				for (IJiraTask jiraTask : tasks) {
+
+					ITask task = jiraTask.getTask();
 
 					monitor.setTaskName(Messages.JiraConnectorUiActions_Starting_to_watch_issue + task.getTaskKey());
 
