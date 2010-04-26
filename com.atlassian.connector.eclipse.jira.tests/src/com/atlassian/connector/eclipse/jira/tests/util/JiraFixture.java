@@ -37,7 +37,7 @@ public class JiraFixture extends TestFixture {
 			"3.13.5", "360", "Enterprise/BasicAuth");
 
 	public static JiraFixture ENTERPRISE_4_0 = new JiraFixture(getServerUrl("jira-enterprise-4.1"), //
-			"4.1", "466", "Enterprise");
+			"4.1", "522", "Enterprise");
 
 	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0 };
 
