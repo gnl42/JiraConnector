@@ -504,6 +504,7 @@ public class JiraClientTest extends TestCase {
 		assertFalse(issue.canUserVote(client.getUserName()));
 
 		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
+		assertTrue(issue.canUserVote(client.getUserName()));
 		client.voteIssue(issue, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(1, issue.getVotes());
