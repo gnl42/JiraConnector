@@ -111,7 +111,7 @@
        </taskRepositoryPageContribution>
     </extension>
 
-
+<!--
    <extension point="org.eclipse.ui.popupMenus">
    <objectContribution 
    		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution" 
@@ -140,5 +140,6 @@
          </adapter>
       </factory>
    </extension>
+-->
 
 </plugin>
