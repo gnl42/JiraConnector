@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import org.eclipse.core.runtime.Assert;
@@ -381,7 +382,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			return null;
 		}
 
-		Review review = new Review(taskRepository.getUrl(), project.getKey(), author, null);
+		Review review = new Review(ReviewType.REVIEW, taskRepository.getUrl(), project.getKey(), author, null);
 
 		if (titleText != null) {
 			review.setName(titleText.getText());
