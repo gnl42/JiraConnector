@@ -15,6 +15,10 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.console.JavaCompilationErrorTracker;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.console.JavaExceptionTracker;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.console.JavaNativeTracker;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.console.JavaStackTraceTracker;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -146,6 +150,15 @@ public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerActio
 					}
 				};
 
+				try {
+					Class.forName("org.eclipse.jdt.internal.debug.ui.console.JavaStackTraceHyperlink");
+					buildLogConsole.addPatternMatchListener(new JavaStackTraceTracker());
+					buildLogConsole.addPatternMatchListener(new JavaExceptionTracker());
+					buildLogConsole.addPatternMatchListener(new JavaNativeTracker());
+					buildLogConsole.addPatternMatchListener(new JavaCompilationErrorTracker());
+				} catch (ClassNotFoundException e) {
+					// JDT is missing, that's ok
+				}
 			}
 			buildLogConsoles.put(build, buildLogConsole);
 			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
