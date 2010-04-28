@@ -33,8 +33,10 @@ public final class AvatarImages implements IDisposable {
 	private static ImageRegistry imageRegistry;
 
 	public void dispose() {
-		imageRegistry.dispose();
-		imageRegistry = null;
+		if (imageRegistry != null) {
+			imageRegistry.dispose();
+			imageRegistry = null;
+		}
 	}
 
 	private static ImageRegistry getImageRegistry() {
