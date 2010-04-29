@@ -16,11 +16,11 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddChangesetToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
@@ -58,7 +58,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommen
 import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -108,7 +107,6 @@ import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -282,9 +280,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 	@Nullable
 	public TreeViewer getViewer() {
-		if (viewer == null) {
-			return null;
-		}
 		return viewer;
 	}
 
@@ -379,7 +374,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		getSite().setSelectionProvider(viewer);
 		getSite().getPage().addPostSelectionListener(linkEditorSelectionToTreeListener);
-		setReview(initializeWith);
+		setReviewImpl(initializeWith);
 		setLinkingEnabled(linkingEnabled);
 	}
 
@@ -492,7 +487,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		return nodes;
 	}
 
-	private void setReview(Review newReview) {
+	private void setReviewImpl(Review newReview) {
 		if (newReview != null) {
 			final ReviewTreeNode[] newInput = reviewToTreeNodes(newReview);
 			final Object[] previouslyExpandedElements = viewer.getExpandedElements();
@@ -772,10 +767,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void reviewActivated(ITask task, final Review newReview) {
+		setReview(newReview);
+	}
+
+	private void setReview(final Review newReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (viewer != null) {
-					setReview(newReview);
+					setReviewImpl(newReview);
 				} else {
 					initializeWith = newReview;
 				}
@@ -829,13 +828,13 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	public void reviewDeactivated(ITask task, Review aReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				setReview(null);
+				setReviewImpl(null);
 			}
 		});
 	}
 
 	public void reviewUpdated(ITask task, Review aReview) {
-		reviewActivated(task, aReview);
+		setReview(aReview);
 	}
 
 	public void setLinkingEnabled(boolean enabled) {
