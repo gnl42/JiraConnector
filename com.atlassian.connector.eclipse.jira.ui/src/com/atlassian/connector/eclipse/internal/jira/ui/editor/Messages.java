@@ -49,6 +49,9 @@ public class Messages extends NLS {
 	public static String WorkLogPart_Work_Log;
 
 	public static String WorkLogPart_Worked;
+
+	public static String WorkLogPart_Auto_Filled;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

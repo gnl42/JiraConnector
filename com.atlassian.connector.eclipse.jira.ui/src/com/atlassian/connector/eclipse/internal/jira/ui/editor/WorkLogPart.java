@@ -31,6 +31,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -63,6 +65,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
+import com.atlassian.connector.eclipse.internal.jira.ui.WdhmUtil;
 
 /**
  * @author Steffen Pingel
@@ -293,7 +296,13 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		GridDataFactory.fillDefaults().grab(true, false).align(SWT.LEFT, SWT.CENTER).applyTo(createNewWorkLog);
 		createNewWorkLog.setSelection(includeWorklog);
 		newWorkLogSection.setExpanded(includeWorklog);
+
+		final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
+				JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
+				JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()));
+
 		createNewWorkLog.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("restriction")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (e.getSource().equals(createNewWorkLog)) {
@@ -301,6 +310,23 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 					addWorkLogToModel();
 					includeWorklog = createNewWorkLog.getSelection();
 					setSubmitWorklog();
+
+					if (createNewWorkLog.getSelection() && MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
+						long time = TasksUiPlugin.getTaskActivityManager()
+								.getElapsedTime(getTaskEditorPage().getTask());
+
+						String wdhmTime = WdhmUtil.generateJiraLogTimeString(time);
+						if (wdhmTime != null && wdhmTime.length() > 0) {
+							timeSpentText.setText(wdhmTime);
+
+							StringBuilder tooltip = new StringBuilder(timeSpendTooltip);
+
+							tooltip.append("\n\n"); //$NON-NLS-1$
+							tooltip.append(NLS.bind(Messages.WorkLogPart_Auto_Filled, wdhmTime));
+
+							timeSpentText.setToolTipText(tooltip.toString());
+						}
+					}
 				}
 			}
 		});
@@ -315,13 +341,12 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		timeSpentText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				setTimeSpendDecorator();
-
+				timeSpentText.setToolTipText(timeSpendTooltip);
 				addWorkLogToModel();
 			}
 		});
-		timeSpentText.setToolTipText(NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
-				JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
-				JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository())));
+
+		timeSpentText.setToolTipText(timeSpendTooltip);
 		GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(
 				timeSpentText);
 
