@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -62,7 +61,7 @@ public class AddGeneralCommentToActiveReviewAction extends Action implements IRe
 	}
 
 	public AddGeneralCommentToActiveReviewAction() {
-		super("Add General Comment To Active Review");
+		super("Add General Comment");
 		setEnabled(false);
 		setToolTipText("Add General Comment To Active Review");
 	}

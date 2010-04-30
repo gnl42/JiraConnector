@@ -13,10 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
 public class ReviewTreeNode {
@@ -59,6 +57,19 @@ public class ReviewTreeNode {
 	@NotNull
 	public List<Object> getChildren() {
 		return children;
+	}
+
+	/**
+	 * Should be used only for refreshing CFI which is the same (modulo comments) that the former CFI
+	 * 
+	 * @param crucibleFileInfo
+	 */
+	public void setCrucibleFileInfo(@NotNull CrucibleFileInfo crucibleFileInfo) {
+		if (crucibleFileInfo.equals(cfi)) {
+			this.cfi = crucibleFileInfo; // this makes sense, as equals() above does not take into consideration child comments
+		} else {
+			throw new IllegalArgumentException("App logic exception: new CFI is different than the current one");
+		}
 	}
 
 	void add(String[] path, CrucibleFileInfo aCfi) {
