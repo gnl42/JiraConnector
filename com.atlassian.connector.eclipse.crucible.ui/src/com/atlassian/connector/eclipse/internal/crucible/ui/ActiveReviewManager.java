@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -34,7 +33,8 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
-
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +56,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 		void reviewDeactivated(ITask task, Review review);
 
-		void reviewUpdated(ITask task, Review review);
+		void reviewUpdated(ITask task, Review review, Collection<CrucibleNotification> differences);
 	};
 
 	private static final long ACTIVE_REVIEW_POLLING_INTERVAL = 120000L;
@@ -105,9 +105,10 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		}
 	}
 
-	private synchronized void fireReviewUpdated(final ITask task, final Review review) {
+	private synchronized void fireReviewUpdated(final ITask task, final Review review,
+			Collection<CrucibleNotification> differences) {
 		for (final IReviewActivationListener l : activationListeners) {
-			l.reviewUpdated(task, review);
+			l.reviewUpdated(task, review, differences);
 		}
 	}
 
@@ -128,7 +129,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		if (cachedReview == null) {
 			scheduleDownloadJob(task);
 		} else {
-			activeReviewUpdated(cachedReview, task);
+			activeReviewUpdated(cachedReview, task, Collections.<CrucibleNotification> emptyList());
 		}
 
 		if (increasedRefresh) {
@@ -156,7 +157,8 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		// ignore
 	}
 
-	private synchronized void activeReviewUpdated(Review cachedReview, ITask task) {
+	private synchronized void activeReviewUpdated(Review cachedReview, ITask task,
+			Collection<CrucibleNotification> differences) {
 		if (activeTask != null && task != null && activeTask.equals(task)) {
 			if (activeReview == null) {
 				this.activeReview = cachedReview;
@@ -164,7 +166,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			} else {
 				this.activeReview = cachedReview;
 				CrucibleAnnotationModelManager.updateAllOpenEditors(activeReview);
-				fireReviewUpdated(activeTask, activeReview);
+				fireReviewUpdated(activeTask, activeReview, differences);
 			}
 		}
 	}
@@ -253,7 +255,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	public void reviewAdded(String repositoryUrl, String taskId, Review review) {
 		if (activeTask != null) {
 			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
-				activeReviewUpdated(review, activeTask);
+				activeReviewUpdated(review, activeTask, Collections.<CrucibleNotification> emptyList());
 			}
 		}
 	}
@@ -262,7 +264,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			List<CrucibleNotification> differences) {
 		if (activeTask != null) {
 			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
-				activeReviewUpdated(review, activeTask);
+				activeReviewUpdated(review, activeTask, differences);
 			}
 		}
 	}
