@@ -39,9 +39,10 @@ public class JiraFixture extends TestFixture {
 	public static JiraFixture ENTERPRISE_4_0 = new JiraFixture(getServerUrl("jira-enterprise-4.1"), //
 			"4.1.1", "522", "Enterprise");
 
-	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0 };
+	public static JiraFixture SNAPSHOT = new JiraFixture(getServerUrl("jira-enterprise-snapshot"), //
+			"4.2", "551", "Enterprise");
 
-//	public static JiraFixture DEFAULT = ENTERPRISE_3_13;
+	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0 /*, SNAPSHOT */};
 
 	public static JiraFixture DEFAULT = ENTERPRISE_4_0;
 
