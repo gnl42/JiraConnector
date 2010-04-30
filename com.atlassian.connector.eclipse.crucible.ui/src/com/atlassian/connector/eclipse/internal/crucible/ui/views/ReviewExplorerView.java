@@ -57,9 +57,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.AbstractCommentNotification;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
-import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotificationType;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommentNotification;
-import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 import org.eclipse.compare.internal.CompareEditor;
@@ -397,7 +395,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		getSite().setSelectionProvider(viewer);
 		getSite().getPage().addPostSelectionListener(linkEditorSelectionToTreeListener);
-		setReviewImpl(initializeWith, true);
+		setReviewImpl(initializeWith, true, Collections.<CrucibleNotification> emptyList());
 		setLinkingEnabled(linkingEnabled);
 	}
 
@@ -506,7 +504,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		return nodes;
 	}
 
-	private void setReviewImpl(Review newReview, boolean isFullRebuild) {
+	private void setReviewImpl(Review newReview, boolean isFullRebuild, Collection<CrucibleNotification> differences) {
 		if (newReview != null) {
 
 			final ISelection currentSelection = viewer.getSelection();
@@ -526,8 +524,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 			Comment focusOnComment = null;
 			if (review != null) {
-				ReviewDifferenceProducer diffProducer = new ReviewDifferenceProducer(review, newReview);
-				List<CrucibleNotification> differences = diffProducer.getDiff();
 				for (CrucibleNotification diff : differences) {
 					if (diff instanceof NewCommentNotification) {
 						focusOnComment = ((NewCommentNotification) diff).getComment();
@@ -790,18 +786,18 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void reviewActivated(ITask task, final Review newReview) {
-		setReview(newReview, true);
+		setReview(newReview, true, Collections.<CrucibleNotification> emptyList());
 	}
 
-	private void setReview(final Review newReview, final boolean isFullRebuild) {
+	private void setReview(final Review newReview, final boolean isFullRebuild,
+			final Collection<CrucibleNotification> differences) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (viewer != null) {
-					System.out.println("A:" + System.currentTimeMillis());
-					boolean isFull = isFullRebuild || !refreshIncrementallyViewer(newReview);
-					System.out.println("F:" + System.currentTimeMillis());
-					setReviewImpl(newReview, isFull);
-					System.out.println("G:" + System.currentTimeMillis());
+					// check if we need to perform full review (when requested explicitly or we
+					// cannot handle incremental refresh (with tree compacting it's pretty hard when files are changed)
+					boolean isFull = isFullRebuild || !refreshIncrementallyViewer(newReview, differences);
+					setReviewImpl(newReview, isFull, differences);
 				} else {
 					initializeWith = newReview;
 				}
@@ -848,6 +844,26 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		downloadAvatars.schedule();
 	}
 
+	/**
+	 * Uses linear search (potentially very slow), but in fact, when I tested in on a review with 1700 files, it was able to
+	 * find random {@link CrucibleFileInfo} in 50 - 100 ms. More than good enough.
+	 * 
+	 * So I decided not to keep a separate map {@link CrucibleFileInfo} -> {@link ReviewTreeNode}
+	 * 
+	 * @param cfi
+	 * @return a node with {@link CrucibleFileInfo} similar to the argument (the same root info, but perhaps different comments)
+	 */
+	private ReviewTreeNode findReviewTreeNode(@NotNull CrucibleFileInfo cfi) {
+		ReviewTreeNode[] model = getCurrentModel();
+		for (ReviewTreeNode reviewTreeNode : model) {
+			final ReviewTreeNode matchingNode = findReviewTreeNode(cfi, reviewTreeNode);
+			if (matchingNode != null) {
+				return matchingNode;
+			}
+		}
+		return null;
+	}
+
 	private ReviewTreeNode findReviewTreeNode(@NotNull CrucibleFileInfo cfi, ReviewTreeNode rootNode) {
 		if (rootNode.getCrucibleFileInfo() != null
 				&& rootNode.getCrucibleFileInfo().equals(cfi)) {
@@ -861,18 +877,6 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				if (matchingNode != null) {
 					return matchingNode;
 				}
-			}
-		}
-		return null;
-
-	}
-
-	private ReviewTreeNode findReviewTreeNode(@NotNull CrucibleFileInfo cfi) {
-		ReviewTreeNode[] model = getCurrentModel();
-		for (ReviewTreeNode reviewTreeNode : model) {
-			final ReviewTreeNode matchingNode = findReviewTreeNode(cfi, reviewTreeNode);
-			if (matchingNode != null) {
-				return matchingNode;
 			}
 		}
 		return null;
@@ -893,36 +897,55 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	public void reviewDeactivated(ITask task, Review aReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				setReviewImpl(null, true);
+				setReviewImpl(null, true, null);
 			}
 		});
 	}
 
-	private boolean canHandleIncrementalRefresh(List<CrucibleNotification> differences) {
+	private boolean canHandleIncrementalRefresh(Collection<CrucibleNotification> differences) {
 		for (CrucibleNotification diff : differences) {
-			if (diff.getType() == CrucibleNotificationType.NEW_REVIEW_ITEM
-					|| diff.getType() == CrucibleNotificationType.REMOVED_REVIEW_ITEM) {
+			switch (diff.getType()) {
+			// these require full refresh
+			case EXCEPTION_RAISED:
+			case NEW_REVIEW:
+			case NEW_REVIEW_ITEM:
+			case NOT_VISIBLE_REVIEW:
+			case REMOVED_REVIEW_ITEM:
+			default:
 				return false;
+				// continue - these can be handled incrementally
+			case REVIEW_DATA_CHANGED:
+			case PROJECT_CHANGED:
+			case NAME_CHANGED:
+			case COMMENT_READ_UNREAD_STATE_CHANGED:
+			case AUTHOR_CHANGED:
+			case DUE_DATE_CHANGED:
+			case NEW_COMMENT:
+			case REMOVED_COMMENT:
+			case REVIEWERS_CHANGED:
+			case REVIEWER_COMPLETED:
+			case REVIEW_COMPLETED:
+			case REVIEW_STATE_CHANGED:
+			case STATEMENT_OF_OBJECTIVES_CHANGED:
+			case SUMMARY_CHANGED:
+			case MODERATOR_CHANGED:
+			case UPDATED_COMMENT:
+				break;
 			}
 		}
 		return true;
 	}
 
-	public void reviewUpdated(ITask task, Review aReview) {
-		setReview(aReview, false);
+	public void reviewUpdated(ITask task, Review aReview,
+			Collection<CrucibleNotification> differences) {
+		setReview(aReview, false, differences);
 	}
 
-	private boolean refreshIncrementallyViewer(Review aReview) {
+	private boolean refreshIncrementallyViewer(Review aReview, Collection<CrucibleNotification> differences) {
 		if (aReview != null) {
-			ReviewDifferenceProducer diffProducer = new ReviewDifferenceProducer(review, aReview);
-			System.out.println("C:" + System.currentTimeMillis());
-			final List<CrucibleNotification> differences = diffProducer.getDiff();
-			System.out.println("D:" + System.currentTimeMillis());
 			if (!canHandleIncrementalRefresh(differences)) {
 				return false;
 			}
-			System.out.println("E:" + System.currentTimeMillis());
-
 			final ReviewTreeNode[] currentInput = getCurrentModel();
 			final GeneralCommentsNode generalCommentsNode = (currentInput[0] instanceof GeneralCommentsNode)
 					? (GeneralCommentsNode) currentInput[0] : null;
@@ -932,6 +955,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					final Comment comment = ((AbstractCommentNotification) diff).getComment();
 					final VersionedComment parentVerComment = ReviewModelUtil.getParentVersionedComment(comment);
 					if (parentVerComment != null) {
+						// in this case let's refresh entire node with given files and all its children
 						final ReviewTreeNode treeNode = findReviewTreeNode(parentVerComment.getCrucibleFileInfo());
 						final CrucibleFileInfo fileByPermId = aReview.getFileByPermId(parentVerComment.getCrucibleFileInfo()
 								.getPermId());
@@ -943,23 +967,12 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 						getViewer().refresh(treeNode);
 						return true;
 					} else {
-						// it's a general comment or reply to a general comment
+						// it's a general comment or reply to a general comment - let's refresh all general comments
 						generalCommentsNode.setReview(aReview);
 						getViewer().refresh(generalCommentsNode);
 						return true;
 
 					}
-					// } else if (diff.getType() == CrucibleNotificationType.REMOVED_COMMENT) {
-					// final Comment comment = ((RemovedCommentNotification) diff).getComment();
-					// if (comment instanceof GeneralComment) {
-					// final GeneralComment generalComment = (GeneralComment) comment;
-					// generalCommentsNode.setReview(aReview);
-					// getViewer().refresh(generalCommentsNode);
-					// } else {
-					// return false;
-					// }
-				} else {
-					return false;
 				}
 			}
 		}

@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -29,6 +30,7 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
+import java.util.Collection;
 
 /**
  * Action to add a general file comment to the active review
@@ -71,16 +73,16 @@ public class AddGeneralCommentToActiveReviewAction extends Action implements IRe
 		return CrucibleImages.ADD_COMMENT;
 	}
 
-	public void reviewActivated(final ITask task, final Review review) {
+	public void reviewActivated(final ITask task, final Review aReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				AddGeneralCommentToActiveReviewAction.this.review = review;
+				AddGeneralCommentToActiveReviewAction.this.review = aReview;
 				setEnabled(AddGeneralCommentToActiveReviewAction.this.review != null);
 			}
 		});
 	}
 
-	public void reviewDeactivated(ITask task, Review review) {
+	public void reviewDeactivated(ITask task, Review aReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				AddGeneralCommentToActiveReviewAction.this.review = null;
@@ -89,8 +91,8 @@ public class AddGeneralCommentToActiveReviewAction extends Action implements IRe
 		});
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
-		reviewActivated(task, review);
-	};
+	public void reviewUpdated(ITask task, Review aReview, Collection<CrucibleNotification> differences) {
+		reviewActivated(task, aReview);
+	}
 
 }

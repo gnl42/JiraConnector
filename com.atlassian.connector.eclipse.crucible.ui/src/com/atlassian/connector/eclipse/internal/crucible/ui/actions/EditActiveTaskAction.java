@@ -13,12 +13,13 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import org.eclipse.jface.action.Action;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.widgets.Display;
+import java.util.Collection;
 
 public class EditActiveTaskAction extends Action implements IReviewActivationListener {
 
@@ -53,8 +54,8 @@ public class EditActiveTaskAction extends Action implements IReviewActivationLis
 		});
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
+	public void reviewUpdated(ITask task, Review review, Collection<CrucibleNotification> differences) {
 		reviewActivated(task, review);
-	};
+	}
 
 }

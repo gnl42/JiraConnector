@@ -31,8 +31,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
@@ -73,7 +73,6 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.jetbrains.annotations.Nullable;
-
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Map;
@@ -522,11 +521,16 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		}
 	}
 
-	public void reviewActivated(ITask task, Review review) {
-		reviewUpdated(task, review);
+	public void reviewActivated(ITask aTask, Review aReview) {
+		this.task = aTask;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				updateViewer();
+			}
+		});
 	}
 
-	public void reviewDeactivated(ITask task, Review review) {
+	public void reviewDeactivated(ITask aTask, Review aReview) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				stackLayout.topControl = linkComposite;
@@ -535,13 +539,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		});
 	}
 
-	public void reviewUpdated(final ITask task, final Review review) {
-		this.task = task;
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				updateViewer();
-			}
-		});
+	public void reviewUpdated(ITask aTask, Review aReview, Collection<CrucibleNotification> differences) {
+		reviewActivated(aTask, aReview);
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {

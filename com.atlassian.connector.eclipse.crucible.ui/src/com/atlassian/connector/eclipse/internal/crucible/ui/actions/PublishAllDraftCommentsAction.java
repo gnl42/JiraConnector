@@ -17,15 +17,16 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.jetbrains.annotations.Nullable;
+import java.util.Collection;
 
 /**
  * @author Wojciech Seliga
@@ -66,18 +67,18 @@ public class PublishAllDraftCommentsAction extends BaseSelectionListenerAction i
 		return DESCRIPTION;
 	}
 
-	public void reviewActivated(ITask task, Review review) {
-		this.review = review;
-		setEnabled(review != null
-				&& review.getNumberOfGeneralCommentsDrafts() + review.getNumberOfVersionedCommentsDrafts() > 0);
+	public void reviewActivated(ITask task, Review aReview) {
+		this.review = aReview;
+		setEnabled(aReview != null
+				&& aReview.getNumberOfGeneralCommentsDrafts() + aReview.getNumberOfVersionedCommentsDrafts() > 0);
 	}
 
-	public void reviewDeactivated(ITask task, Review review) {
+	public void reviewDeactivated(ITask task, Review aReview) {
 		setEnabled(false);
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
-		reviewActivated(task, review);
+	public void reviewUpdated(ITask task, Review aReview, Collection<CrucibleNotification> differences) {
+		reviewActivated(task, aReview);
 	}
 
 }

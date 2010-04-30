@@ -11,16 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.ruler;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -53,7 +53,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.rulers.IContributedRulerColumn;
 import org.eclipse.ui.texteditor.rulers.RulerColumnDescriptor;
 import org.jetbrains.annotations.Nullable;
-
+import java.util.Collection;
 import java.util.List;
 
 public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements IContributedRulerColumn,
@@ -175,7 +175,8 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 		}
 
 		AnnotationPreferenceLookup lookup = EditorsUI.getAnnotationPreferenceLookup();
-		final AnnotationPreference commentedPref = lookup.getAnnotationPreference(CrucibleCommentAnnotation.COMMENT_ANNOTATION_ID);
+		final AnnotationPreference commentedPref = lookup
+				.getAnnotationPreference(CrucibleCommentAnnotation.COMMENT_ANNOTATION_ID);
 
 		updateCommentedColor(commentedPref, store);
 
@@ -266,7 +267,8 @@ public class CommentAnnotationRulerColumn extends AbstractRulerColumn implements
 		});
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
+	public void reviewUpdated(ITask task, Review review, Collection<CrucibleNotification> differences) {
 		reviewActivated(task, review);
 	}
+
 }

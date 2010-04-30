@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -27,6 +27,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import java.util.Collection;
 
 /**
  * 
@@ -104,7 +105,7 @@ public class SwitchingPerspectiveReviewActivationListener implements IReviewActi
 		});
 	}
 
-	public void reviewUpdated(ITask task, Review review) {
+	public void reviewUpdated(ITask task, Review review, Collection<CrucibleNotification> differences) {
 		// do nothing
 	}
 
