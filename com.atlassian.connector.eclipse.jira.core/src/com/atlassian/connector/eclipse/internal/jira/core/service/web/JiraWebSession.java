@@ -29,7 +29,6 @@ import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -144,15 +143,19 @@ public class JiraWebSession {
 	private boolean isAuthenticated(HttpClient httpClient, HostConfiguration hostConfiguration, IProgressMonitor monitor)
 			throws JiraException {
 		String url = baseUrl + "/secure/UpdateUserPreferences!default.jspa"; //$NON-NLS-1$
-		HeadMethod method = new HeadMethod(url);
+		GetMethod method = new GetMethod(url);
 		method.setFollowRedirects(false);
 
 		try {
 			int statusCode = WebUtil.execute(httpClient, hostConfiguration, method, monitor);
-			return statusCode == HttpStatus.SC_OK;
+
+			if (statusCode == HttpStatus.SC_OK) {
+				return !method.getResponseBodyAsString().contains("/login.jsp?os_destination"); //$NON-NLS-1$
+			}
 		} catch (IOException e) {
 			throw new JiraException(e);
 		}
+		return false;
 	}
 
 	private boolean isAuthenticationFailure(JiraException e) {
