@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 
 import com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest;
 import com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest;
+import com.atlassian.connector.eclipse.jira.tests.client.JiraRssClientTest;
 import com.atlassian.connector.eclipse.jira.tests.client.JiraRssHandlerTest;
 import com.atlassian.connector.eclipse.jira.tests.client.JiraWebClientTest;
 import com.atlassian.connector.eclipse.jira.tests.core.FilterDefinitionConverterTest;
@@ -50,6 +51,7 @@ public class AllJiraHeadlessStandaloneTests {
 			fixture.createSuite(suite);
 			fixture.add(JiraClientTest.class);
 			fixture.add(JiraWebClientTest.class);
+			fixture.add(JiraRssClientTest.class);
 			fixture.done();
 		}
 		return suite;

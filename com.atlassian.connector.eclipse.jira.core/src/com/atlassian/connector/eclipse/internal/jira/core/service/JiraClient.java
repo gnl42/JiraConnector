@@ -190,8 +190,8 @@ public class JiraClient {
 	 * 
 	 * @param issue
 	 *            Prototype issue used to create the new issue
-	 * @return A fully populated {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue} containing the details of
-	 *         the new issue
+	 * @return A fully populated {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue} containing
+	 *         the details of the new issue
 	 */
 	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		String issueKey = webClient.createIssue(issue, monitor);
@@ -484,8 +484,8 @@ public class JiraClient {
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
 	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user
-	 * to vote for an issue this method will do nothing.
+	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not
+	 * valid for the user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to remove vote from
@@ -511,8 +511,8 @@ public class JiraClient {
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
 	 * not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user
-	 * to vote for an issue this method will do nothing.
+	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not
+	 * valid for the user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to vote for
@@ -564,5 +564,14 @@ public class JiraClient {
 	public synchronized void purgeSession() {
 		webSession.purgeSession();
 		soapClient.purgeSession();
+	}
+
+	/**
+	 * For testing only.
+	 * 
+	 * @return
+	 */
+	public JiraWebSession getWebSession() {
+		return webSession;
 	}
 }
