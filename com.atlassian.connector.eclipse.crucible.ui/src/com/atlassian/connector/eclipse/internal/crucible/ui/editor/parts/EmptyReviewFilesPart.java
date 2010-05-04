@@ -11,18 +11,29 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiConstants;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -107,6 +118,21 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 				SWT.WRAP);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
+
+		Button btn = toolkit.createButton(parentComposite, "Show review files", SWT.PUSH);
+		btn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TasksUi.getTaskActivityManager().activateTask(crucibleEditor.getTask());
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+							CrucibleUiConstants.REVIEW_EXPLORER_VIEW);
+				} catch (PartInitException e1) {
+					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Failed to show Review Explorer View", e1));
+				}
+			}
+		});
 
 		return parentComposite;
 	}

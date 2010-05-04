@@ -28,4 +28,6 @@ public final class CrucibleUiConstants {
 
 	public static final String PREFERENCE_RESOURCE_TREE_VIEW_MODE = "prefs_resources_tree_view_mode";
 
+	public static final String REVIEW_EXPLORER_VIEW = "com.atlassian.connector.eclipse.crucible.ui.explorerView";
+
 }
