@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
@@ -28,10 +27,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -39,7 +38,6 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import java.util.Collection;
 
 /**
@@ -119,8 +117,11 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
 
-		Button btn = toolkit.createButton(parentComposite, "Show review files", SWT.PUSH);
-		btn.addSelectionListener(new SelectionAdapter() {
+		Link link = new Link(parentComposite, SWT.NONE);
+		link.setText("<a>Show review files</a>");
+		link.setToolTipText("Activates this review (if not already active) "
+				+ "and focuses on Review Explorer view populated with review files.");
+		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				TasksUi.getTaskActivityManager().activateTask(crucibleEditor.getTask());
