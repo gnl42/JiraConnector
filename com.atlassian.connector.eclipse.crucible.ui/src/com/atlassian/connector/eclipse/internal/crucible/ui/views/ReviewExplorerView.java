@@ -494,25 +494,27 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(linkWithEditorAction);
 	}
 
-	private ReviewTreeNode[] reviewToTreeNodes(final Review newReview) {
-		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new GeneralCommentsNode(null, "General Comments", -1, newReview),
+	private ReviewTreeNode[] reviewToTreeNodes(/* final Review newReview */) {
+		ReviewTreeNode[] nodes = new ReviewTreeNode[] { new GeneralCommentsNode(null, "General Comments", -1, review),
 				new ReviewTreeNode(null, "Files") {
 					public List<Object> getChildren() {
-						return Arrays.<Object> asList((Object[]) compactReviewFiles(newReview));
+						return Arrays.<Object> asList((Object[]) compactReviewFiles(review));
 					};
 				} };
 		return nodes;
 	}
 
-	private void setReviewImpl(Review newReview, boolean isFullRebuild, Collection<CrucibleNotification> differences) {
-		if (newReview != null) {
+	private void setReviewImpl(Review aReview, boolean isFullRebuild, Collection<CrucibleNotification> differences) {
+		final Review oldReview = review;
+		review = aReview;
+		if (review != null) {
 
 			final ISelection currentSelection = viewer.getSelection();
 			if (isFullRebuild) {
-				final ReviewTreeNode[] newInput = reviewToTreeNodes(newReview);
+				final ReviewTreeNode[] newInput = reviewToTreeNodes(/* newReview */);
 				final Object[] previouslyExpandedElements = viewer.getExpandedElements();
 				viewer.setInput(newInput);
-				if (review == null || !review.equals(newReview)) {
+				if (oldReview == null || !oldReview.equals(review)) {
 					final ArrayList<Object> expandedElements = MiscUtil.<Object> buildArrayList();
 					fillExpandedElements(expandedElements, Arrays.asList(newInput));
 					viewer.setExpandedElements(expandedElements.subList(0,
@@ -523,7 +525,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 
 			Comment focusOnComment = null;
-			if (review != null) {
+			if (oldReview != null) {
 				for (CrucibleNotification diff : differences) {
 					if (diff instanceof NewCommentNotification) {
 						focusOnComment = ((NewCommentNotification) diff).getComment();
@@ -544,14 +546,12 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			viewer.setInput(NO_ACTIVE_REVIEW);
 		}
 
-		review = newReview;
-
-		if (newReview == null) {
+		if (review == null) {
 			setContentDescription("");
 		} else {
 			setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
-					newReview.getPermId().getId(), newReview.getFiles().size(),
-					newReview.getNumberOfVersionedComments() }));
+					review.getPermId().getId(), review.getFiles().size(),
+					review.getNumberOfVersionedComments() }));
 		}
 	}
 
@@ -818,23 +818,20 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						final DownloadAvatarsJob job = ((DownloadAvatarsJob) event.getJob());
+						boolean isNewAvatarAvailable = false;
 
 						for (Map.Entry<User, byte[]> avatar : job.getAvatars().entrySet()) {
 							final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
 							synchronized (avatarsCache) {
-								if (avatarsCache.getAvatar(avatar.getKey(), AvatarSize.ORIGINAL) != null) {
+								if (avatarsCache.getAvatar(avatar.getKey(), AvatarSize.ORIGINAL) == null) {
 									avatarsCache.addAvatar(avatar.getKey(), avatar.getValue());
+									isNewAvatarAvailable = true;
 								}
 							}
 						}
-
-						Object[] nodes = viewer.getExpandedElements();
-						if (nodes != null) {
-							for (Object node : nodes) {
-								if (node instanceof Comment) {
-									viewer.refresh(node, true);
-								}
-							}
+						if (isNewAvatarAvailable) {
+							// update just whole viewer (takes <200 ms for huge reviews (1500 files) AND fully expanded trees
+							viewer.refresh(true);
 						}
 					}
 				});
@@ -957,6 +954,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					if (parentVerComment != null) {
 						// in this case let's refresh entire node with given files and all its children
 						final ReviewTreeNode treeNode = findReviewTreeNode(parentVerComment.getCrucibleFileInfo());
+
 						final CrucibleFileInfo fileByPermId = aReview.getFileByPermId(parentVerComment.getCrucibleFileInfo()
 								.getPermId());
 						if (fileByPermId == null) {

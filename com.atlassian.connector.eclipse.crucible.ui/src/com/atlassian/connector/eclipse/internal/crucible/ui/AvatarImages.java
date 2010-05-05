@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -20,7 +19,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.services.IDisposable;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
