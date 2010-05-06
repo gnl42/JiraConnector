@@ -57,4 +57,3 @@ Export-Package: com.atlassian.connector.eclipse.crucible.ui.preferences,
  com.atlassian.connector.eclipse.internal.crucible.ui.views;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
 Bundle-Vendor: Atlassian
-Import-Package: org.apache.commons.collections.keyvalue, org.apache.commons.collections
