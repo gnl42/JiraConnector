@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditActiveTaskAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
@@ -94,6 +95,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	private Object currentSelection;
 
 	private Label author;
+	
+	private Label authorAvatar;
 
 	private Label date;
 
@@ -251,43 +254,45 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		// Comment text here
 
 		header = toolkit.createComposite(detailsComposite);
-		GridLayoutFactory.fillDefaults().numColumns(15).applyTo(header);
+		GridLayoutFactory.fillDefaults().numColumns(16).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
 		createLabelControl(toolkit, header, "Author:");
+		authorAvatar = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(authorAvatar);
 		author = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(author);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(author);
 
 		createLabelControl(toolkit, header, "Created:");
 		date = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(date);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(date);
 
 		readState = createLabelControl(toolkit, header, "");
-		GridDataFactory.fillDefaults().applyTo(readState);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(readState);
 
 		draftIcon = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(draftIcon);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).hint(15, SWT.DEFAULT).applyTo(draftIcon);
 
 		draft = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(draft);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(draft);
 
 		defectIcon = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().hint(15, SWT.DEFAULT).applyTo(defectIcon);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).hint(15, SWT.DEFAULT).applyTo(defectIcon);
 
 		defect = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(defect);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(defect);
 
 		defectRank = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		defectRank.setToolTipText("Defect Rank");
-		GridDataFactory.fillDefaults().applyTo(defectRank);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(defectRank);
 
 		defectClassification = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		defectClassification.setToolTipText("Defect Classification");
-		GridDataFactory.fillDefaults().applyTo(defectClassification);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(defectClassification);
 
 		createLabelControl(toolkit, header, "Applies to revisions:");
 		revisions = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
-		GridDataFactory.fillDefaults().applyTo(revisions);
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(revisions);
 
 		return detailsComposite;
 	}
@@ -453,6 +458,9 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 
 				author.setText(activeComment.getAuthor().getDisplayName());
 				author.setToolTipText(activeComment.getAuthor().getUsername());
+
+				authorAvatar.setImage(CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(activeComment.getAuthor(),
+						AvatarSize.LARGE));
 
 				date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
 

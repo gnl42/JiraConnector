@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.services.IDisposable;
+import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -63,8 +64,20 @@ public final class AvatarImages implements IDisposable {
 		return image;
 	}
 
+	@Nullable
 	public Image getAvatar(User author, AvatarSize size) {
 		return getImageRegistry().get(author.getAvatarUrl() + size.toString());
+	}
+
+	public Image getAvatar2(User author, AvatarSize size) {
+		if (author.getAvatarUrl() != null) {
+			final Image image = getImageRegistry().get(author.getAvatarUrl() + size.toString());
+			if (image != null) {
+				return image;
+			}
+		}
+		return CrucibleImages.getImage(size == AvatarSize.LARGE ? CrucibleImages.DEFAULT_AVATAR_LARGE :
+				CrucibleImages.DEFAULT_AVATAR);
 	}
 
 	public void addAvatar(User key, byte[] value) {
