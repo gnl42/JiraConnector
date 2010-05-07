@@ -76,8 +76,8 @@ public final class AvatarImages implements IDisposable {
 				return image;
 			}
 		}
-		return CrucibleImages.getImage(size == AvatarSize.LARGE ? CrucibleImages.DEFAULT_AVATAR_LARGE :
-				CrucibleImages.DEFAULT_AVATAR);
+		return CrucibleImages.getImage(size == AvatarSize.LARGE ? CrucibleImages.DEFAULT_AVATAR_LARGE
+				: CrucibleImages.DEFAULT_AVATAR);
 	}
 
 	public void addAvatar(User key, byte[] value) {
