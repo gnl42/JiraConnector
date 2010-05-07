@@ -18,10 +18,13 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompleteReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
@@ -38,7 +41,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -93,11 +95,11 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.themes.IThemeManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The rich editor for crucible reviews
@@ -358,6 +360,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
 			initiaizingLabel.setText("Initializing review editor...");
 		}
+
+		// this is needed to ensure that Image registry is initialized in UI Thread.
+		// later on images may be added to AvatarsCache in non-UI thread
+		CrucibleUiPlugin.getDefault().getAvatarsCache().init();
+
 		CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Retrieving Crucible Review "
 				+ getTask().getTaskKey(), getTaskRepository()) {
 			@Override
@@ -375,13 +382,23 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 						getTask().getRepositoryUrl(), getTask().getTaskId());
 
 				if (cachedReview == null || force) {
-
 					review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
-					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 				} else {
 					review = cachedReview;
-					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 				}
+				final DownloadAvatarsJob downloadAvatarsJob = new DownloadAvatarsJob(client, getTaskRepository(), review);
+				// executing it synchronously - directly
+				downloadAvatarsJob.downloadAvatarsIfMissing(monitor);
+				final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
+				for (Map.Entry<User, byte[]> avatar : downloadAvatarsJob.getAvatars().entrySet()) {
+					synchronized (avatarsCache) {
+						if (avatarsCache.getAvatar(avatar.getKey(), AvatarSize.LARGE) == null) {
+							avatarsCache.addAvatar(avatar.getKey(), avatar.getValue());
+						}
+					}
+				}
+
+				return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 			}
 		};
 		schedule(job, delay, force);

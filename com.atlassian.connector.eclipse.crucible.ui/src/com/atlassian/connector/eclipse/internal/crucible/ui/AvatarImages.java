@@ -37,6 +37,13 @@ public final class AvatarImages implements IDisposable {
 		}
 	}
 
+	public void init() {
+		assert Display.getCurrent() != null;
+		if (imageRegistry == null) {
+			imageRegistry = new ImageRegistry();
+		}
+	}
+
 	private static ImageRegistry getImageRegistry() {
 		if (imageRegistry == null) {
 			imageRegistry = new ImageRegistry();

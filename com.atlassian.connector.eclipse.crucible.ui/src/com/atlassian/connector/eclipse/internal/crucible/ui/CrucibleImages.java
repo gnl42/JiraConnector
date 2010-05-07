@@ -80,6 +80,8 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor DEFAULT_AVATAR = create(T_OBJ, "default_avatar.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor DEFAULT_AVATAR_LARGE = create(T_OBJ, "default_avatar-large.png"); //$NON-NLS-1$
+
 	public static final ImageDescriptor OVR_DELETED = create(OVR, "deleted.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor OVR_ADDED = create(OVR, "added.png"); //$NON-NLS-1$

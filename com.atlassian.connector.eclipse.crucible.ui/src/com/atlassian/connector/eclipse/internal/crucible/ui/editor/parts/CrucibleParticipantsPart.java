@@ -30,7 +30,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,6 +42,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -58,6 +58,8 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -66,7 +68,6 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import java.util.Collection;
 import java.util.Set;
 
@@ -157,7 +158,7 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 	private boolean newReview;
 
-	private Composite reviewersPart;
+	private Control reviewersPart;
 
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
@@ -271,33 +272,41 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
 		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
+
 		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
 
-		Control authorControl = createUserComboControl(toolkit, participantsComp, "Author: ",
-				crucibleReview.getAuthor(), !newReview, ReviewAttributeType.AUTHOR);
+		final ImageRegistry imageRegistry = new ImageRegistry();
+		participantsComp.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				imageRegistry.dispose();
+			}
+		});
+
+		Control authorControl = CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Author:");
+
+		final Composite authorComposite = CrucibleReviewersListPart.createParticipantComposite(toolkit, participantsComp,
+				crucibleReview.getAuthor(), false, false, imageRegistry);
+		authorComposite.setMenu(parent.getMenu());
+
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
 
 		if (crucibleReview.getModerator() != null) {
-			Control moderatorControl = createUserComboControl(toolkit, participantsComp, "Moderator: ",
-					crucibleReview.getModerator() == null ? crucibleReview.getAuthor() : crucibleReview.getModerator(),
-					!newReview, ReviewAttributeType.MODERATOR);
+			Control moderatorControl = CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Moderator:");
+			final Composite moderatorComposite = CrucibleReviewersListPart.createParticipantComposite(toolkit,
+					participantsComp, crucibleReview.getModerator(), false, false, imageRegistry);
+			moderatorComposite.setMenu(parent.getMenu());
 			GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 		}
 
-		Composite reviewersPartComp = toolkit.createComposite(participantsComp);
-		reviewersPartComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewersPartComp);
-
-		createReviewersPart(toolkit, reviewersPartComp);
+		CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Reviewers:");
+		createReviewersPart(toolkit, participantsComp, imageRegistry);
 
 		reviewersSection.setClient(participantsComp);
-
-		// CHECKSTYLE:MAGIC:ON
 
 		toolkit.paintBordersFor(parentComposite);
 	}
 
-	private void createReviewersPart(final FormToolkit toolkit, final Composite parent) {
+	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, ImageRegistry imageRegistry) {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
@@ -305,18 +314,18 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		}
 
 		Set<Reviewer> reviewers = crucibleReview.getReviewers();
-		CrucibleReviewersListPart crucibleReviewersPart = new CrucibleReviewersListPart(reviewers);
-		crucibleReviewersPart.setMenu(parent.getMenu());
-		reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp);
+		reviewersPart = CrucibleReviewersListPart.createControl(toolkit, reviewersComp, reviewers, imageRegistry, parent
+				.getMenu());
 	}
 
 	@Override
 	public void dispose() {
 		if (reviewersPart != null && !reviewersPart.isDisposed()) {
-			CommonUiUtil.setMenu(reviewersPart, null);
+			if (reviewersPart instanceof Composite) {
+				CommonUiUtil.setMenu((Composite) reviewersPart, null);
+			}
 			reviewersPart.dispose();
 		}
-
 		super.dispose();
 	}
 

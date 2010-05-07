@@ -29,15 +29,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -110,6 +116,8 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 
 	private String summaryString = "";
 
+	private ImageRegistry imageRegistry;
+
 	public CrucibleSummarizeReviewDialog(Shell parentShell, Review review, String userName, String taskKey,
 			String taskId, TaskRepository taskRepository, CrucibleClient client) {
 		super(parentShell, review, userName, taskRepository, taskKey, taskId, client, "&Summarize and Close");
@@ -120,6 +128,12 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 		getShell().setText("Summarize and Close");
 		setTitle("Summarize and Close Review");
 		setMessage("Provide an optional comment.");
+		imageRegistry = new ImageRegistry();
+		parent.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				imageRegistry.dispose();
+			}
+		});
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
@@ -144,6 +158,15 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 		Set<Reviewer> openReviewers = getOpenReviewers();
 		Set<Reviewer> completedReviewers = getCompletedReviewers();
 
+		if (openReviewers.size() > 0) {
+			final Composite draftsWarning = new Composite(composite, SWT.NONE);
+			draftsWarning.setLayout(new RowLayout());
+			Label imageControl = new Label(draftsWarning, SWT.NONE);
+			imageControl.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+			Label labelControl = new Label(draftsWarning, SWT.WRAP);
+			labelControl.setText(OTHER_DRAFTS_WARNING);
+		}
+
 		Composite draftComp = new Composite(composite, SWT.NONE);
 		GridLayout draftCompLayout = new GridLayout(1, false);
 		draftCompLayout.horizontalSpacing = 0;
@@ -153,7 +176,8 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 
 		boolean hasCompletedReviewers = false;
 		if (completedReviewers.size() > 0) {
-			new CrucibleReviewersListPart(completedReviewers).createControl(null, draftComp, COMPLETED_REVIEWS_INFO);
+			new Label(draftComp, SWT.NONE).setText(COMPLETED_REVIEWS_INFO);
+			CrucibleReviewersListPart.createControl(null, draftComp, completedReviewers, imageRegistry, null);
 			hasCompletedReviewers = true;
 		}
 
@@ -162,12 +186,14 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
 			}
-			new CrucibleReviewersListPart(openReviewers).createControl(null, draftComp, OPEN_REVIEWS_WARNING);
-			Label labelControl = new Label(draftComp, SWT.WRAP);
-			labelControl.setText(OTHER_DRAFTS_WARNING);
+
+			new Label(draftComp, SWT.NONE).setText(OPEN_REVIEWS_WARNING);
+			CrucibleReviewersListPart.createControl(null, draftComp, openReviewers, imageRegistry, null);
+
 			if (hasOthersDrafts) {
-				Set<Reviewer> othersDrafts = getOthersDrafts();
-				new CrucibleReviewersListPart(othersDrafts).createControl(null, draftComp, "Reviewers with draft comments:");
+				final Set<Reviewer> othersDrafts = getOthersDrafts();
+				new Label(draftComp, SWT.NONE).setText("Reviewers with draft comments:");
+				CrucibleReviewersListPart.createControl(null, draftComp, othersDrafts, imageRegistry, null);
 			}
 		}
 
@@ -236,4 +262,5 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 		setReturnCode(Window.OK);
 		close();
 	}
+
 }

@@ -54,8 +54,7 @@ public class DownloadAvatarsJob extends Job {
 		return avatars;
 	}
 
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus downloadAvatarsIfMissing(IProgressMonitor monitor) {
 		try {
 			client.execute(new RemoteOperation<Void, CrucibleServerFacade2>(monitor, taskRepository) {
 				@Override
@@ -80,6 +79,11 @@ public class DownloadAvatarsJob extends Job {
 		}
 
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	protected IStatus run(IProgressMonitor monitor) {
+		return downloadAvatarsIfMissing(monitor);
 	}
 
 	private void getUserAvatar(CrucibleSession session, ConnectionCfg serverCfg, User user) throws RemoteApiException {

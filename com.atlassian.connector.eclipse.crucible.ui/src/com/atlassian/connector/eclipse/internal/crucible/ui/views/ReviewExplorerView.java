@@ -819,9 +819,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 					public void run() {
 						final DownloadAvatarsJob job = ((DownloadAvatarsJob) event.getJob());
 						boolean isNewAvatarAvailable = false;
+						final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
 
 						for (Map.Entry<User, byte[]> avatar : job.getAvatars().entrySet()) {
-							final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
 							synchronized (avatarsCache) {
 								if (avatarsCache.getAvatar(avatar.getKey(), AvatarSize.ORIGINAL) == null) {
 									avatarsCache.addAvatar(avatar.getKey(), avatar.getValue());

@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.editor.AbstractFormPagePart;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
@@ -24,7 +23,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +38,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 	 * changable attributes in a review
 	 */
 	public enum ReviewAttributeType {
-		TITLE, OBJECTIVE, REVIEWERS, AUTHOR, MODERATOR, FILES;
+		TITLE, OBJECTIVE, REVIEWERS, FILES;
 	}
 
 	/*
