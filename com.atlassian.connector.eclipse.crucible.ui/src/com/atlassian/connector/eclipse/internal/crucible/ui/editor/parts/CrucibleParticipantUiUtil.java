@@ -43,8 +43,12 @@ import java.util.Set;
  * Form part that displays the details of a reviewer
  * 
  * @author Thomas Ehrnhoefer
+ * @author Wojciech Seliga
  */
-public class CrucibleReviewersListPart {
+public final class CrucibleParticipantUiUtil {
+
+	private CrucibleParticipantUiUtil() {
+	}
 
 	public static Label createLabel(FormToolkit toolkit, Composite parent, String labelText) {
 		Label reviewersLabel = createLabelControl(toolkit, parent, labelText);
@@ -52,18 +56,15 @@ public class CrucibleReviewersListPart {
 		return reviewersLabel;
 	}
 
-	public static Control createControl(FormToolkit toolkit, Composite parent, Set<Reviewer> reviewers,
+	public static Control createReviewersListComposite(FormToolkit toolkit, Composite parent, Set<Reviewer> reviewers,
 			ImageRegistry imageRegistry, @Nullable Menu menu) {
-		// CHECKSTYLE:MAGIC:OFF
-
-		// final Composite reviewersPartComposite = createComposite(toolkit, parent);
-		// reviewersPartComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).create());
 
 		if (reviewers.isEmpty()) {
-			// avoid blank gap on Linux
 			return createLabelControl(toolkit, parent, " ");
 		} else {
 			Composite reviewersComposite = createComposite(toolkit, parent, menu);
+			GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).grab(true, false).align(SWT.FILL, SWT.FILL).applyTo(
+					reviewersComposite);
 
 			RowLayout layout = new RowLayout();
 			layout.marginBottom = 0;
@@ -81,52 +82,8 @@ public class CrucibleReviewersListPart {
 				final Reviewer reviewer = iterator.next();
 				createParticipantComposite(toolkit, reviewersComposite, reviewer, reviewer.isCompleted(), iterator.hasNext(),
 						imageRegistry);
-				// final Composite singleReviewersComposite = createComposite(toolkit, reviewersComposite);
-				// singleReviewersComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(
-				// reviewer.isCompleted() ? 3 : 3).spacing(0, 0).margins(0, 0).create());
-				//
-				// final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
-				// synchronized (avatarsCache) {
-				// Image avatar = avatarsCache.getAvatar(reviewer, AvatarSize.LARGE);
-				// if (avatar == null) {
-				// avatar = CrucibleImages.getImage(CrucibleImages.DEFAULT_AVATAR_LARGE);
-				// }
-				//
-				// if (reviewer.isCompleted()) {
-				// Image overlayedAvatar = imageRegistry.get(reviewer.getUsername());
-				// if (overlayedAvatar == null) {
-				// overlayedAvatar = new DecorationOverlayIcon(avatar, CrucibleImages.REVIEWER_COMPLETE,
-				// IDecoration.BOTTOM_RIGHT).createImage();
-				// imageRegistry.put(reviewer.getUsername(), overlayedAvatar);
-				// }
-				// avatar = overlayedAvatar;
-				// }
-				//
-				// final Label imageLabel = createLabelControl(toolkit, singleReviewersComposite, "doesnotmatter");
-				// imageLabel.setImage(avatar);
-				// GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).indent(2, 0).applyTo(imageLabel);
-				// }
-				//
-				// Text text = createReadOnlyText(toolkit, singleReviewersComposite,
-				// CrucibleUiUtil.getDisplayNameOrUsername(reviewer), null, false);
-				// GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).applyTo(text);
-				// text.setBackground(parent.getBackground());
-				//
-				// // if (reviewer.isCompleted()) {
-				// // Label imageLabel = createLabelControl(toolkit, singleReviewersComposite, "doesnotmatter");
-				// // imageLabel.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
-				// // GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).indent(2, 0).applyTo(imageLabel);
-				// // }
-				//
-				// if (iterator.hasNext()) {
-				// Label label = createLabelControl(toolkit, singleReviewersComposite, ", ");
-				// GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).applyTo(label);
-				// label.setBackground(parent.getBackground());
-				// }
 
 			}
-			GridDataFactory.fillDefaults().hint(250, SWT.DEFAULT).grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(
-					reviewersComposite);
 			return reviewersComposite;
 		}
 	}

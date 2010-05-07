@@ -150,8 +150,6 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 	private Composite parentComposite;
 
-	private Composite reviewersComp;
-
 	private Section reviewersSection;
 
 	private IAction setReviewersAction;
@@ -188,6 +186,7 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 				.equalWidth(true)
 				.numColumns(1)
 				.create());
+		// CHECKSTYLE:MAGIC:ON
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(parentComposite);
 
 		updateControl(this.crucibleReview, parent, toolkit);
@@ -201,6 +200,7 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		return labelControl;
 	}
 
+	// this was introduced by Thomas but it's not used as remote API does not allow to edit the author and moderator
 	private Control createUserComboControl(FormToolkit toolkit, Composite parent, String labelString,
 			final User selectedUser, boolean readOnly, final ReviewAttributeType reviewAttributeType) {
 		if (labelString != null) {
@@ -265,13 +265,12 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 		reviewersSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(reviewersSection);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersSection);
 		reviewersSection.setText("Participants");
 
 		setSection(toolkit, reviewersSection);
 
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
 
 		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
 
@@ -282,40 +281,30 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 			}
 		});
 
-		Control authorControl = CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Author:");
+		Control authorControl = CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Author:");
 
-		final Composite authorComposite = CrucibleReviewersListPart.createParticipantComposite(toolkit, participantsComp,
+		final Composite authorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit, participantsComp,
 				crucibleReview.getAuthor(), false, false, imageRegistry);
 		authorComposite.setMenu(parent.getMenu());
 
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
 
 		if (crucibleReview.getModerator() != null) {
-			Control moderatorControl = CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Moderator:");
-			final Composite moderatorComposite = CrucibleReviewersListPart.createParticipantComposite(toolkit,
+			Control moderatorControl = CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Moderator:");
+			final Composite moderatorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit,
 					participantsComp, crucibleReview.getModerator(), false, false, imageRegistry);
 			moderatorComposite.setMenu(parent.getMenu());
 			GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 		}
 
-		CrucibleReviewersListPart.createLabel(toolkit, participantsComp, "Reviewers:");
-		createReviewersPart(toolkit, participantsComp, imageRegistry);
+		CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Reviewers:");
+		final Set<Reviewer> reviewers = crucibleReview.getReviewers();
+		reviewersPart = CrucibleParticipantUiUtil.createReviewersListComposite(toolkit, participantsComp, reviewers,
+				imageRegistry, participantsComp.getMenu());
 
 		reviewersSection.setClient(participantsComp);
 
 		toolkit.paintBordersFor(parentComposite);
-	}
-
-	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, ImageRegistry imageRegistry) {
-		if (reviewersComp == null || reviewersComp.isDisposed()) {
-			reviewersComp = toolkit.createComposite(parent);
-			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersComp);
-		}
-
-		Set<Reviewer> reviewers = crucibleReview.getReviewers();
-		reviewersPart = CrucibleReviewersListPart.createControl(toolkit, reviewersComp, reviewers, imageRegistry, parent
-				.getMenu());
 	}
 
 	@Override

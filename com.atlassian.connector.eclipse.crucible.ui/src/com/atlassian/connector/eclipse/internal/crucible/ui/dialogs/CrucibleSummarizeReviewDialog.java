@@ -16,7 +16,7 @@ import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersListPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleParticipantUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -177,7 +177,7 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 		boolean hasCompletedReviewers = false;
 		if (completedReviewers.size() > 0) {
 			new Label(draftComp, SWT.NONE).setText(COMPLETED_REVIEWS_INFO);
-			CrucibleReviewersListPart.createControl(null, draftComp, completedReviewers, imageRegistry, null);
+			CrucibleParticipantUiUtil.createReviewersListComposite(null, draftComp, completedReviewers, imageRegistry, null);
 			hasCompletedReviewers = true;
 		}
 
@@ -188,12 +188,12 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 			}
 
 			new Label(draftComp, SWT.NONE).setText(OPEN_REVIEWS_WARNING);
-			CrucibleReviewersListPart.createControl(null, draftComp, openReviewers, imageRegistry, null);
+			CrucibleParticipantUiUtil.createReviewersListComposite(null, draftComp, openReviewers, imageRegistry, null);
 
 			if (hasOthersDrafts) {
 				final Set<Reviewer> othersDrafts = getOthersDrafts();
 				new Label(draftComp, SWT.NONE).setText("Reviewers with draft comments:");
-				CrucibleReviewersListPart.createControl(null, draftComp, othersDrafts, imageRegistry, null);
+				CrucibleParticipantUiUtil.createReviewersListComposite(null, draftComp, othersDrafts, imageRegistry, null);
 			}
 		}
 
