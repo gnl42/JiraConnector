@@ -12,6 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
+import com.atlassian.connector.eclipse.internal.crucible.ui.util.CommentUiUtil;
 import com.atlassian.connector.eclipse.ui.commons.CustomToolTip;
 import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfo;
 import com.atlassian.connector.eclipse.ui.viewers.ICustomToolTipInfoProvider;
@@ -20,10 +23,13 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
@@ -60,7 +66,13 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 						};
 					}
 				} else if (data instanceof VersionedComment) {
+					assert Display.getCurrent() != null;
+
 					final VersionedComment comment = (VersionedComment) data;
+
+					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(comment.getAuthor(),
+							AvatarSize.LARGE);
+
 					return new ICustomToolTipInfo() {
 						public boolean isContainer() {
 							return false;
@@ -68,29 +80,84 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 						public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
 							Map<String, IntRanges> ranges = comment.getLineRanges();
+							tooltip.addIconAndLabel(composite, avatarImage, CommentUiUtil.getCommentInfoHeaderText(comment),
+									true);
 							if (ranges == null || ranges.keySet() == null) {
-								tooltip.addIconAndLabel(composite, null, "General File Comment", true);
+								tooltip.addIconAndLabel(composite, null, "General File Comment", false);
 								return;
 							}
 
-							for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
-								tooltip.addIconAndLabel(composite, null, NLS.bind(
-										"File comment for " + getLineInfo(range.getValue()) + " for revision: {0}\n",
-										new Object[] {
-												range.getKey() }), true);
+							final String infoText = getCompactedLineInfoText(ranges);
+							tooltip.addIconAndLabel(composite, null, infoText, false);
+						}
+
+						private boolean isSimpleInfoEnough(Map<String, IntRanges> ranges) {
+							if (ranges.size() <= 1) {
+								return true;
+							}
+							final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
+							final IntRanges lines = it.next().getValue();
+							while (it.hasNext()) {
+								if (!lines.equals(it.next().getValue())) {
+									return false;
+								}
+							}
+							return true;
+						}
+
+						private String getCompactedLineInfoText(Map<String, IntRanges> ranges) {
+
+							if (isSimpleInfoEnough(ranges)) {
+								final StringBuilder infoText = new StringBuilder("File comment for ");
+								final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
+								Entry<String, IntRanges> curEntry = it.next();
+								IntRanges lines = curEntry.getValue();
+								infoText.append(getLineInfo(lines));
+								if (it.hasNext()) {
+									infoText.append(" in revisions: ");
+								} else {
+									infoText.append(" in revision: ");
+								}
+
+								do {
+									infoText.append(curEntry.getKey());
+									if (it.hasNext()) {
+										infoText.append(", ");
+									} else {
+										break;
+									}
+									curEntry = it.next();
+								} while (true);
+								return infoText.toString();
+							} else {
+								final StringBuilder infoText = new StringBuilder("File comment for:\n");
+								for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
+									infoText.append("- ");
+									infoText.append(getLineInfo(range.getValue()));
+									infoText.append(" in revision: ");
+									infoText.append(range.getKey());
+									infoText.append("\n");
+								}
+								return infoText.toString();
 							}
 						}
 					};
 				} else if (data instanceof Comment) {
+					final Comment comment = (Comment) data;
+					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(comment.getAuthor(),
+							AvatarSize.LARGE);
 					return new ICustomToolTipInfo() {
 						public boolean isContainer() {
 							return false;
 						}
 
 						public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
-							tooltip.addIconAndLabel(composite, null,
-									((Comment) data).getParentComment() != null ? "Comment Reply" : "General Comment",
+							tooltip.addIconAndLabel(composite, avatarImage, CommentUiUtil.getCommentInfoHeaderText(comment),
 									true);
+
+							tooltip.addIconAndLabel(composite, null,
+									comment.getParentComment() != null ? "Comment Reply" : "General Comment",
+									false);
 						}
 					};
 

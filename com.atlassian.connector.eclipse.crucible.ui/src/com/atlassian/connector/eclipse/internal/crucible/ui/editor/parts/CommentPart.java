@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -26,7 +25,6 @@ public class CommentPart extends AbstractCommentPart<CommentPart> {
 
 	public CommentPart(Comment comment, Review crucibleReview) {
 		super(comment, crucibleReview);
-		// ignore
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class CommentPart extends AbstractCommentPart<CommentPart> {
 
 	@Override
 	protected Control update(Composite parentComposite, FormToolkit toolkit, Comment newComment, Review newReview) {
-		// TODO update the text 
+		// TODO update the text
 		if (!CrucibleUtil.areGeneralCommentsDeepEquals(newComment, comment)) {
 			this.comment = newComment;
 			Control createControl = createOrUpdateControl(parentComposite, toolkit);

@@ -107,7 +107,7 @@ public final class CrucibleParticipantUiUtil {
 				Image overlayedAvatar = imageRegistry.get(reviewer.getUsername());
 				if (overlayedAvatar == null) {
 					overlayedAvatar = new DecorationOverlayIcon(avatar, CrucibleImages.REVIEWER_COMPLETE,
-							IDecoration.BOTTOM_RIGHT).createImage();
+							IDecoration.BOTTOM_LEFT).createImage();
 					imageRegistry.put(reviewer.getUsername(), overlayedAvatar);
 				}
 				avatar = overlayedAvatar;
