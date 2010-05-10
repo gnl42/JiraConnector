@@ -27,9 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
@@ -87,60 +85,10 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 								return;
 							}
 
-							final String infoText = getCompactedLineInfoText(ranges);
+							final String infoText = CommentUiUtil.getCompactedLineInfoText(ranges);
 							tooltip.addIconAndLabel(composite, null, infoText, false);
 						}
 
-						private boolean isSimpleInfoEnough(Map<String, IntRanges> ranges) {
-							if (ranges.size() <= 1) {
-								return true;
-							}
-							final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
-							final IntRanges lines = it.next().getValue();
-							while (it.hasNext()) {
-								if (!lines.equals(it.next().getValue())) {
-									return false;
-								}
-							}
-							return true;
-						}
-
-						private String getCompactedLineInfoText(Map<String, IntRanges> ranges) {
-
-							if (isSimpleInfoEnough(ranges)) {
-								final StringBuilder infoText = new StringBuilder("File comment for ");
-								final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
-								Entry<String, IntRanges> curEntry = it.next();
-								IntRanges lines = curEntry.getValue();
-								infoText.append(getLineInfo(lines));
-								if (it.hasNext()) {
-									infoText.append(" in revisions: ");
-								} else {
-									infoText.append(" in revision: ");
-								}
-
-								do {
-									infoText.append(curEntry.getKey());
-									if (it.hasNext()) {
-										infoText.append(", ");
-									} else {
-										break;
-									}
-									curEntry = it.next();
-								} while (true);
-								return infoText.toString();
-							} else {
-								final StringBuilder infoText = new StringBuilder("File comment for:\n");
-								for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
-									infoText.append("- ");
-									infoText.append(getLineInfo(range.getValue()));
-									infoText.append(" in revision: ");
-									infoText.append(range.getKey());
-									infoText.append("\n");
-								}
-								return infoText.toString();
-							}
-						}
 					};
 				} else if (data instanceof Comment) {
 					final Comment comment = (Comment) data;
@@ -165,14 +113,6 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 			}
 		}
 		return null;
-	}
-
-	private static String getLineInfo(IntRanges intRanges) {
-		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
-			return "line " + intRanges.getTotalMin();
-		} else {
-			return "lines " + intRanges.toNiceString();
-		}
 	}
 
 }

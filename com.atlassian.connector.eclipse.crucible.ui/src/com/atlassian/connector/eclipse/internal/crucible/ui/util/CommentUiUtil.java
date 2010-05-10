@@ -11,11 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import java.text.DateFormat;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public final class CommentUiUtil {
 
@@ -73,4 +76,64 @@ public final class CommentUiUtil {
 		}
 		return headerText.toString();
 	}
+
+	public static boolean isSimpleInfoEnough(Map<String, IntRanges> ranges) {
+		if (ranges.size() <= 1) {
+			return true;
+		}
+		final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
+		final IntRanges lines = it.next().getValue();
+		while (it.hasNext()) {
+			if (!lines.equals(it.next().getValue())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static String getCompactedLineInfoText(Map<String, IntRanges> ranges) {
+
+		if (isSimpleInfoEnough(ranges)) {
+			final StringBuilder infoText = new StringBuilder("File comment for ");
+			final Iterator<Entry<String, IntRanges>> it = ranges.entrySet().iterator();
+			Entry<String, IntRanges> curEntry = it.next();
+			IntRanges lines = curEntry.getValue();
+			infoText.append(getLineInfo(lines));
+			if (it.hasNext()) {
+				infoText.append(" in revisions: ");
+			} else {
+				infoText.append(" in revision: ");
+			}
+
+			do {
+				infoText.append(curEntry.getKey());
+				if (it.hasNext()) {
+					infoText.append(", ");
+				} else {
+					break;
+				}
+				curEntry = it.next();
+			} while (true);
+			return infoText.toString();
+		} else {
+			final StringBuilder infoText = new StringBuilder("File comment for:\n");
+			for (Map.Entry<String, IntRanges> range : ranges.entrySet()) {
+				infoText.append("- ");
+				infoText.append(getLineInfo(range.getValue()));
+				infoText.append(" in revision: ");
+				infoText.append(range.getKey());
+				infoText.append("\n");
+			}
+			return infoText.toString();
+		}
+	}
+
+	public static String getLineInfo(IntRanges intRanges) {
+		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
+			return "line " + intRanges.getTotalMin();
+		} else {
+			return "lines " + intRanges.toNiceString();
+		}
+	}
+
 }
