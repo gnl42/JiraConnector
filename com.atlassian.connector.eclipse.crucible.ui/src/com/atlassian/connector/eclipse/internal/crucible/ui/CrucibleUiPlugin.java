@@ -13,7 +13,12 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
+import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.ui.commons.ResourceSelectionTree.TreeViewMode;
+
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -66,6 +71,18 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		plugin = this;
 
 		TasksUi.getRepositoryManager().addListener(CrucibleCorePlugin.getRepositoryConnector().getClientManager());
+
+		if (!getPreferenceStore().getBoolean(CrucibleUiConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
+			Job migrateJob = new MigrateToSecureStorageJob(CrucibleCorePlugin.CONNECTOR_KIND);
+			migrateJob.addJobChangeListener(new JobChangeAdapter() {
+				@Override
+				public void done(IJobChangeEvent event) {
+					super.done(event);
+					getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
+				}
+			});
+			migrateJob.schedule();
+		}
 
 		switchingPerspectivesListener = new SwitchingPerspectiveReviewActivationListener();
 		activeReviewManager = new ActiveReviewManager(true);

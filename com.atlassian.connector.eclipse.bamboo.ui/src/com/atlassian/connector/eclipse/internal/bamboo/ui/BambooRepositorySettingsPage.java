@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
+import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
 
@@ -147,6 +148,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	 * in the superclass)
 	 */
 	public TaskRepository applyToValidate(TaskRepository repository) {
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
 		return repository;
 	}

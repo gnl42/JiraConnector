@@ -4,6 +4,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManage
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -75,6 +76,7 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 	 * in the superclass)
 	 */
 	public TaskRepository applyToValidate(TaskRepository repository) {
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
 		return repository;
 	}

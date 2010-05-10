@@ -69,4 +69,6 @@ public class IJiraConstants {
 
 	public static final String TYPE_NUMBER = "type_number"; //$NON-NLS-1$
 
+	public static final String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done"; //$NON-NLS-1$
+
 }

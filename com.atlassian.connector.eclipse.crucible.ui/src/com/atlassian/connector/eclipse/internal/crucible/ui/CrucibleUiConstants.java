@@ -30,4 +30,6 @@ public final class CrucibleUiConstants {
 
 	public static final String REVIEW_EXPLORER_VIEW = "com.atlassian.connector.eclipse.crucible.ui.explorerView";
 
+	public static final String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done";
+
 }

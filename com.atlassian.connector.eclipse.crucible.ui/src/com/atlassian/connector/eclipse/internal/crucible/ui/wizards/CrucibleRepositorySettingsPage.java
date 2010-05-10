@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -166,6 +167,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 	@Override
 	public void applyTo(TaskRepository repository) {
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
 		CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleRepositoryConnector.updateFishEyeStatus(repository, fishEyeButton.getSelection());
