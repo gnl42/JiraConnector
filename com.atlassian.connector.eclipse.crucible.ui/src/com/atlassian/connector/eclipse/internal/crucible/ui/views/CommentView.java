@@ -95,7 +95,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	private Object currentSelection;
 
 	private Label author;
-	
+
 	private Label authorAvatar;
 
 	private Label date;
@@ -250,14 +250,13 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		Composite detailsComposite = toolkit.createComposite(stackComposite);
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(15, 15).applyTo(detailsComposite);
 
-		// Author | Date | Revisions | Draft | Defect | Defect type
+		// Avatar | Author | Date | Revisions | Draft | Defect | Defect type
 		// Comment text here
 
 		header = toolkit.createComposite(detailsComposite);
-		GridLayoutFactory.fillDefaults().numColumns(16).applyTo(header);
+		GridLayoutFactory.fillDefaults().numColumns(15).applyTo(header);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(header);
 
-		createLabelControl(toolkit, header, "Author:");
 		authorAvatar = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
 		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).applyTo(authorAvatar);
 		author = toolkit.createLabel(header, "", SWT.READ_ONLY | SWT.SINGLE);
