@@ -57,11 +57,11 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class CustomToolTip extends GradientToolTip {
 
-	private final static int MAX_WIDTH = 600;
+	private static final int MAX_WIDTH = 600;
 
-	private final static int X_SHIFT = PlatformUtil.getToolTipXShift();
+	private static final int X_SHIFT = PlatformUtil.getToolTipXShift();
 
-	private final static int Y_SHIFT = 1;
+	private static final int Y_SHIFT = 1;
 
 	private ICustomToolTipInfo currentTipElement;
 
