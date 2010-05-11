@@ -14,9 +14,11 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
@@ -26,10 +28,10 @@ import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
@@ -44,9 +46,9 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -64,7 +66,7 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 
 	protected Comment comment;
 
-//	protected final CrucibleFile crucibleFile;
+	// protected final CrucibleFile crucibleFile;
 
 	protected Control commentTextComposite;
 
@@ -73,7 +75,7 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 	public AbstractCommentPart(Comment comment, Review crucibleReview) {
 		super(crucibleReview);
 		this.comment = comment;
-//		this.crucibleFile = crucibleFile;
+		// this.crucibleFile = crucibleFile;
 	}
 
 	@Override
@@ -138,7 +140,7 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 
 	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
-		//CHECKSTYLE:MAGIC:OFF
+		// CHECKSTYLE:MAGIC:OFF
 		section.clientVerticalSpacing = 0;
 
 		sectionClient = new SizeCachingComposite(section, SWT.NONE);
@@ -153,13 +155,25 @@ public abstract class AbstractCommentPart<V extends ExpandablePart<Comment, V>> 
 
 		updateChildren(sectionClient, toolkit, false, comment.getReplies());
 
-		//CHECKSTYLE:MAGIC:ON
+		// CHECKSTYLE:MAGIC:ON
 		return sectionClient;
 	}
 
 	protected void createCommentArea(FormToolkit toolkit, Composite parentComposite) {
-		commentTextComposite = createReadOnlyText(toolkit, parentComposite, getCommentText());
-		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(commentTextComposite);
+		final Composite twoColumnComposite = new Composite(parentComposite, SWT.NONE);
+		twoColumnComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(twoColumnComposite);
+		toolkit.adapt(twoColumnComposite);
+
+		final Label avatarLabel = new Label(twoColumnComposite, SWT.NONE);
+		toolkit.adapt(avatarLabel, false, false);
+		avatarLabel.setImage(CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
+				comment.getAuthor(), AvatarSize.LARGE));
+
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.TOP).applyTo(avatarLabel);
+
+		commentTextComposite = createReadOnlyText(toolkit, twoColumnComposite, getCommentText());
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(commentTextComposite);
 	}
 
 	// TODO could be moved to a util method
