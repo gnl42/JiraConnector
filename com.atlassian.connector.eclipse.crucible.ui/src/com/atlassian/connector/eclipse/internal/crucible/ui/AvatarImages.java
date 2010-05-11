@@ -69,7 +69,7 @@ public final class AvatarImages implements IDisposable {
 		return getImageRegistry().get(author.getAvatarUrl() + size.toString());
 	}
 
-	public Image getAvatar2(User author, AvatarSize size) {
+	public Image getAvatarOrDefaultImage(User author, AvatarSize size) {
 		if (author.getAvatarUrl() != null) {
 			final Image image = getImageRegistry().get(author.getAvatarUrl() + size.toString());
 			if (image != null) {

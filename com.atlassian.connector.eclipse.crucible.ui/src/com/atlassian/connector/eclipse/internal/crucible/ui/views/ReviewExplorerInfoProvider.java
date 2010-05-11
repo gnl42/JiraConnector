@@ -68,8 +68,8 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 					final VersionedComment comment = (VersionedComment) data;
 
-					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(comment.getAuthor(),
-							AvatarSize.LARGE);
+					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
+							comment.getAuthor(), AvatarSize.LARGE);
 
 					return new ICustomToolTipInfo() {
 						public boolean isContainer() {
@@ -88,12 +88,12 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							final String infoText = CommentUiUtil.getCompactedLineInfoText(ranges);
 							tooltip.addIconAndLabel(composite, null, infoText, false);
 						}
-
+						
 					};
 				} else if (data instanceof Comment) {
 					final Comment comment = (Comment) data;
-					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(comment.getAuthor(),
-							AvatarSize.LARGE);
+					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
+							comment.getAuthor(), AvatarSize.LARGE);
 					return new ICustomToolTipInfo() {
 						public boolean isContainer() {
 							return false;

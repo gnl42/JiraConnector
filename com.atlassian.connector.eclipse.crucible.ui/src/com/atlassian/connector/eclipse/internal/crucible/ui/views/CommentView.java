@@ -458,8 +458,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				author.setText(activeComment.getAuthor().getDisplayName());
 				author.setToolTipText(activeComment.getAuthor().getUsername());
 
-				authorAvatar.setImage(CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatar2(activeComment.getAuthor(),
-						AvatarSize.LARGE));
+				authorAvatar.setImage(CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
+				activeComment.getAuthor(), AvatarSize.LARGE));
 
 				date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
 
