@@ -16,10 +16,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.equinox.security.storage.EncodingUtils;
-import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.tasks.core.ITasksCoreConstants;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -27,7 +26,6 @@ import org.eclipse.osgi.util.NLS;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.Set;
 
 public class MigrateToSecureStorageJob extends Job {
@@ -55,25 +53,22 @@ public class MigrateToSecureStorageJob extends Job {
 		if (repository.getProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE) == null
 				&& !repository.getUrl().equals("local")) { //$NON-NLS-1$
 			try {
-				Map<String, String> map = Platform.getAuthorizationInfo(new URL(repository.getUrl()), "", "Basic");//$NON-NLS-1$ //$NON-NLS-2$
-				if (map != null) {
-					ISecurePreferences securePreferences = SecurePreferencesFactory.getDefault().node(
-							ITasksCoreConstants.ID_PLUGIN);
-					securePreferences = securePreferences.node(EncodingUtils.encodeSlashes(repository.getUrl()));
-					for (String key : map.keySet()) {
-						String value = map.get(key);
-						if (value != null) {
-							securePreferences.put(key, value, key.endsWith(".password")); //$NON-NLS-1$
-						}
-					}
+				AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY);
+				boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY);
+
+				repository.setProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE, "true"); //$NON-NLS-1$
+
+				if (creds != null) {
 					try {
 						Platform.flushAuthorizationInfo(new URL(repository.getUrl()), "", "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
 					} catch (MalformedURLException ex) {
 						Platform.flushAuthorizationInfo(
 								new URL("http://eclipse.org/mylyn"), repository.getUrl(), "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+
+					repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);
 				}
-				repository.setProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE, "true"); //$NON-NLS-1$ 
+
 				return true;
 			} catch (Exception e) {
 				StatusHandler.log(new Status(IStatus.ERROR, ITasksCoreConstants.ID_PLUGIN, NLS.bind(
