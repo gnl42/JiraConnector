@@ -640,7 +640,16 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 		};
 
-		refreshReviewAction = new RefreshActiveReviewAction();
+		refreshReviewAction = new RefreshActiveReviewAction(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						viewer.refresh(true);
+					}
+				});
+			}
+		});
 		reviewActivationListeners.add(refreshReviewAction);
 
 		addFileCommentAction = new AddFileCommentAction();

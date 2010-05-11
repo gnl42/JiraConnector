@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.RefreshReviewJob;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -23,9 +24,11 @@ import java.util.Collection;
 public class RefreshActiveReviewAction extends BaseSelectionListenerAction implements IReviewActivationListener {
 
 	private Review review;
+	private final JobChangeAdapter jobChangeAdapter;
 
-	public RefreshActiveReviewAction() {
+	public RefreshActiveReviewAction(JobChangeAdapter jobChangeAdapter) {
 		super("Refresh");
+		this.jobChangeAdapter = jobChangeAdapter;
 		setImageDescriptor(CommonImages.REFRESH);
 		setToolTipText("Refresh Active Review");
 		setEnabled(false);
@@ -35,6 +38,9 @@ public class RefreshActiveReviewAction extends BaseSelectionListenerAction imple
 	public void run() {
 		final RefreshReviewJob job = RefreshReviewJob.createForReview(review);
 		if (job != null) {
+			if (jobChangeAdapter != null) {
+				job.addJobChangeListener(jobChangeAdapter);
+			}
 			job.schedule();
 		}
 	}
