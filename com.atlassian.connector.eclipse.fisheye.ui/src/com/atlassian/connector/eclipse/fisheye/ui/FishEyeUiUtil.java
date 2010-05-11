@@ -77,6 +77,9 @@ public final class FishEyeUiUtil {
 	@Nullable
 	public static FishEyeMappingConfiguration getConfiguration(@NotNull LocalStatus revisionInfo) throws CoreException {
 		for(TaskRepository repository : FishEyeUiUtil.getFishEyeAndCrucibleServers()) {
+			if (repository.isOffline()) {
+				continue;
+			}
 			Map.Entry<String, String> match = TaskRepositoryUtil.getMatchingSourceRepository(
 					TaskRepositoryUtil.getScmRepositoryMappings(repository), revisionInfo.getScmPath());
 			if (match != null) {
