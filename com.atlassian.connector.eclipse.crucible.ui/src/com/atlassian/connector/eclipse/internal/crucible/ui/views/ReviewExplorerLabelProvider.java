@@ -1,19 +1,18 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
+import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -22,6 +21,7 @@ import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A simple label provider
@@ -143,11 +143,7 @@ public class ReviewExplorerLabelProvider extends ColumnLabelProvider implements 
 			final String headerText;
 
 			String msg = comment.getMessage();
-			if (msg.length() > ReviewExplorerView.COMMENT_PREVIEW_LENGTH) {
-				headerText = msg.substring(0, ReviewExplorerView.COMMENT_PREVIEW_LENGTH) + "...";
-			} else {
-				headerText = msg;
-			}
+			headerText = getAbbreviatedCommentText(msg);
 			if (reviewExplorerView.isFocusedOnUnreadComments() && !comment.isEffectivelyUnread()) {
 				return new StyledString(headerText, StyledString.createColorRegistryStyler(READ_COLOR_KEY, null));
 			}
@@ -161,6 +157,27 @@ public class ReviewExplorerLabelProvider extends ColumnLabelProvider implements 
 		}
 
 		return element == null ? new StyledString("") : new StyledString(element.toString());
+	}
+
+	@Nullable
+	public static String getAbbreviatedCommentText(@Nullable String msg) {
+		if (msg == null) {
+			return null;
+		}
+		final int newlineIndex = msg.indexOf('\n');
+		if (newlineIndex != -1) {
+			String cutOffComment = msg.substring(Math.min(newlineIndex + 1, msg.length()));
+
+			msg = msg.substring(0, newlineIndex);
+			if (cutOffComment.trim().length() > 0) {
+				msg += "...";
+			}
+		}
+		if (msg.length() > ReviewExplorerView.COMMENT_PREVIEW_LENGTH) {
+			return msg.substring(0, ReviewExplorerView.COMMENT_PREVIEW_LENGTH) + "...";
+		} else {
+			return msg;
+		}
 	}
 
 }
