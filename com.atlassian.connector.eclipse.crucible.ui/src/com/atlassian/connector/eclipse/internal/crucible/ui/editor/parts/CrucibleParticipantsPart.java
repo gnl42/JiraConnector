@@ -287,14 +287,11 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 				crucibleReview.getAuthor(), false, false, imageRegistry);
 		authorComposite.setMenu(parent.getMenu());
 
-		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
-
 		if (crucibleReview.getModerator() != null) {
 			Control moderatorControl = CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Moderator:");
 			final Composite moderatorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit,
 					participantsComp, crucibleReview.getModerator(), false, false, imageRegistry);
 			moderatorComposite.setMenu(parent.getMenu());
-			GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 		}
 
 		CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Reviewers:");

@@ -52,7 +52,7 @@ public final class CrucibleParticipantUiUtil {
 
 	public static Label createLabel(FormToolkit toolkit, Composite parent, String labelText) {
 		Label reviewersLabel = createLabelControl(toolkit, parent, labelText);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(reviewersLabel);
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).applyTo(reviewersLabel);
 		return reviewersLabel;
 	}
 
@@ -72,7 +72,7 @@ public final class CrucibleParticipantUiUtil {
 			layout.marginRight = 0;
 			layout.marginLeft = 0;
 			layout.marginWidth = 0;
-			layout.spacing = 0;
+			layout.spacing = 3;
 			layout.wrap = true;
 			layout.fill = true;
 			reviewersComposite.setLayout(layout);
