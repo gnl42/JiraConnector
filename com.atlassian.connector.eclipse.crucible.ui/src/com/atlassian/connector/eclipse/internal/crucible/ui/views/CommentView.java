@@ -51,8 +51,6 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
@@ -533,39 +531,13 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	}
 
 	private void setCommentText(Comment comment) {
-		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
-				task.getRepositoryUrl());
-
 		if (toolkit != null) {
-			// TaskEditorExtensions.setTaskEditorExtensionId(repository,
-			// AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
-			// AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
 			if (scrolledComposite != null) {
 				scrolledComposite.dispose();
 				scrolledComposite = null;
 			}
-
-			// scrolledComposite = new Composite(detailsComposite, SWT.NONE);
-			// scrolledComposite.setLayout(new FillLayout());
-			// final Label label = new Label(detailsComposite, SWT.WRAP);
-			// label.setText(comment.getMessage());
-			// GridDataFactory.fillDefaults().grab(true, true).applyTo(label);
-
 			scrolledComposite = createScrolledWikiTextComment(toolkit, comment, detailsComposite);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(scrolledComposite);
-			// editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
-			// if (extension != null) {
-			// editor.setReadOnly(false);
-			// } else {
-			// editor.setReadOnly(true);
-			// }
-			// editor.setText(comment.getMessage());
-			// editor.createControl(detailsComposite, toolkit);
-			// editor.showPreview();
-			// editor.getViewer().getTextWidget().setBackground(null);
-
-			// GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
-
 			detailsComposite.layout();
 		}
 	}
