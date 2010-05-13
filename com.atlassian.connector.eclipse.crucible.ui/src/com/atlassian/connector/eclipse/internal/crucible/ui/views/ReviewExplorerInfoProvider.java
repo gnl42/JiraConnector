@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import java.util.Map;
@@ -69,39 +68,12 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							}
 						};
 					}
-				} else if (data instanceof VersionedComment) {
-					assert Display.getCurrent() != null;
-
-					final VersionedComment comment = (VersionedComment) data;
-
-					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
-							comment.getAuthor(), AvatarSize.LARGE);
-
-					return new ICustomToolTipInfo() {
-						public boolean isContainer() {
-							return false;
-						}
-
-						public void createToolTipArea(CustomToolTip tooltip, Composite composite) {
-							Map<String, IntRanges> ranges = comment.getLineRanges();
-							tooltip.addIconAndLabel(composite, avatarImage, CommentUiUtil.getCommentInfoHeaderText(comment),
-									true);
-							if (ranges == null || ranges.keySet() == null) {
-								tooltip.addIconAndLabel(composite, null, "General File Comment", false);
-								return;
-							}
-
-							final String infoText = CommentUiUtil.getCompactedLineInfoText(ranges);
-							tooltip.addIconAndLabel(composite, null, infoText, false);
-
-							createScrolledWikiTextComment(comment, composite);
-						}
-
-					};
 				} else if (data instanceof Comment) {
+					assert Display.getCurrent() != null;
 					final Comment comment = (Comment) data;
 					final Image avatarImage = CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
 							comment.getAuthor(), AvatarSize.LARGE);
+
 					return new ICustomToolTipInfo() {
 						public boolean isContainer() {
 							return false;
@@ -111,10 +83,24 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							tooltip.addIconAndLabel(composite, avatarImage, CommentUiUtil.getCommentInfoHeaderText(comment),
 									true);
 
-							tooltip.addIconAndLabel(composite, null,
-									comment.getParentComment() != null ? "Comment Reply" : "General Comment",
-									false);
-							createScrolledWikiTextComment(comment, composite);
+							if (data instanceof VersionedComment) {
+								VersionedComment versionedComment = (VersionedComment) data;
+								Map<String, IntRanges> ranges = versionedComment.getLineRanges();
+								if (ranges == null || ranges.keySet() == null) {
+									tooltip.addIconAndLabel(composite, null, "General File Comment", false);
+								} else {
+									final String infoText = CommentUiUtil.getCompactedLineInfoText(ranges);
+									tooltip.addIconAndLabel(composite, null, infoText, false);
+								}
+							} else {
+								tooltip.addIconAndLabel(composite, null,
+										comment.getParentComment() != null ? "Comment Reply" : "General Comment",
+										false);
+							}
+
+							ScrolledComposite scrolledComposite = createScrolledWikiTextComment(comment, composite);
+							GridDataFactory.fillDefaults().span(2, 1).applyTo(scrolledComposite);
+
 						}
 					};
 
@@ -124,7 +110,7 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 		return null;
 	}
 
-	private void createScrolledWikiTextComment(final Comment comment, Composite parent) {
+	private ScrolledComposite createScrolledWikiTextComment(final Comment comment, Composite parent) {
 		final int maxWidth = 600;
 		final int maxHeight = 500;
 		// scroll pane respecting maximum size
@@ -142,15 +128,14 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 				return size;
 			}
 		};
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(scrolledComposite);
 
 		final Composite scrolledContent = new Composite(scrolledComposite, SWT.NONE);
 		scrolledComposite.setContent(scrolledContent);
 		scrolledContent.setLayout(new FillLayout());
-		final Control wikiTextComponent = CommentUiUtil.createWikiTextControl(null, scrolledContent,
-					comment);
+		CommentUiUtil.createWikiTextControl(null, scrolledContent, comment);
 
 		scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		return scrolledComposite;
 	}
 
 }

@@ -14,11 +14,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
+import org.eclipse.mylyn.internal.wikitext.tasks.ui.editor.ConfluenceMarkupTaskEditorExtension;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -27,13 +26,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import java.text.DateFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * 
+ * @author Wojciech Seliga
+ */
 public final class CommentUiUtil {
 
 	private CommentUiUtil() {
@@ -150,7 +154,8 @@ public final class CommentUiUtil {
 		}
 	}
 
-	public static Control createWikiTextControl(FormToolkit toolkit, Composite parent, Comment comment) {
+	@SuppressWarnings("restriction")
+	public static RichTextEditor createWikiTextControl(FormToolkit toolkit, Composite parent, Comment comment) {
 
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
 
@@ -159,10 +164,11 @@ public final class CommentUiUtil {
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
 				task.getRepositoryUrl());
 
-		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
-		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+		final AbstractTaskEditorExtension extension = new ConfluenceMarkupTaskEditorExtension();
+		IContextService contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
 
-		final RichTextEditor editor = new RichTextEditor(repository, style, null, extension);
+		final RichTextEditor editor = new RichTextEditor(repository, style, contextService, extension);
+
 		editor.setReadOnly(true);
 		editor.setText(comment.getMessage());
 		editor.createControl(parent, toolkit);
@@ -178,7 +184,7 @@ public final class CommentUiUtil {
 			}
 		});
 
-		return editor.getControl();
+		return editor;
 	}
 
 }

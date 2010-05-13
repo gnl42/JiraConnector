@@ -25,8 +25,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ToggleCommentsLeaveUnreadAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.MarkCommentsReadJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.util.CommentUiUtil;
 import com.atlassian.connector.eclipse.ui.PartListenerAdapter;
-import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -50,13 +50,16 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -164,6 +167,8 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 	private ITask task;
 
 	private Job markAsReadJob;
+
+	private Composite scrolledComposite;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -459,7 +464,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				author.setToolTipText(activeComment.getAuthor().getUsername());
 
 				authorAvatar.setImage(CrucibleUiPlugin.getDefault().getAvatarsCache().getAvatarOrDefaultImage(
-				activeComment.getAuthor(), AvatarSize.LARGE));
+						activeComment.getAuthor(), AvatarSize.LARGE));
 
 				date.setText(DateFormat.getDateInstance().format(activeComment.getCreateDate()));
 
@@ -475,7 +480,7 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 				stackLayout.topControl = linkComposite;
 				stackComposite.layout();
 
-				setText(activeComment.getMessage());
+				setCommentText(activeComment);
 
 				header.layout();
 
@@ -500,29 +505,66 @@ public class CommentView extends ViewPart implements ISelectionChangedListener, 
 		}
 	}
 
-	private void setText(String text) {
+	private ScrolledComposite createScrolledWikiTextComment(FormToolkit toolkit, final Comment comment,
+			final Composite parent) {
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+
+		final Composite scrolledContent = new Composite(sc, SWT.NONE);
+		sc.setContent(scrolledContent);
+		toolkit.adapt(sc);
+		scrolledContent.setLayout(new FillLayout());
+		editor = CommentUiUtil.createWikiTextControl(toolkit, scrolledContent, comment);
+
+		// these incantations make wrapped component (WikiText here) respecting resizing actions
+		// and wrap if needed
+		sc.setExpandVertical(true);
+		sc.setExpandHorizontal(true);
+		sc.addControlListener(new ControlAdapter() {
+			public void controlResized(ControlEvent e) {
+				Rectangle r = sc.getClientArea();
+				sc.setMinSize(scrolledContent.computeSize(r.width,
+						SWT.DEFAULT));
+			}
+		});
+		// end of incantations
+		// this call instead did not cause the correct wrapping (longer texts were just cut)
+		// scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		return sc;
+	}
+
+	private void setCommentText(Comment comment) {
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
 				task.getRepositoryUrl());
 
 		if (toolkit != null) {
-			TaskEditorExtensions.setTaskEditorExtensionId(repository,
-					AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
-			AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
-			if (editor != null) {
-				editor.getControl().dispose();
+			// TaskEditorExtensions.setTaskEditorExtensionId(repository,
+			// AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
+			// AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+			if (scrolledComposite != null) {
+				scrolledComposite.dispose();
+				scrolledComposite = null;
 			}
-			editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
-			if (extension != null) {
-				editor.setReadOnly(false);
-			} else {
-				editor.setReadOnly(true);
-			}
-			editor.setText(text);
-			editor.createControl(detailsComposite, toolkit);
-			editor.showPreview();
-			editor.getViewer().getTextWidget().setBackground(null);
 
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
+			// scrolledComposite = new Composite(detailsComposite, SWT.NONE);
+			// scrolledComposite.setLayout(new FillLayout());
+			// final Label label = new Label(detailsComposite, SWT.WRAP);
+			// label.setText(comment.getMessage());
+			// GridDataFactory.fillDefaults().grab(true, true).applyTo(label);
+
+			scrolledComposite = createScrolledWikiTextComment(toolkit, comment, detailsComposite);
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(scrolledComposite);
+			// editor = new RichTextEditor(repository, SWT.MULTI | SWT.BORDER, null, extension);
+			// if (extension != null) {
+			// editor.setReadOnly(false);
+			// } else {
+			// editor.setReadOnly(true);
+			// }
+			// editor.setText(comment.getMessage());
+			// editor.createControl(detailsComposite, toolkit);
+			// editor.showPreview();
+			// editor.getViewer().getTextWidget().setBackground(null);
+
+			// GridDataFactory.fillDefaults().grab(true, true).applyTo(editor.getControl());
 
 			detailsComposite.layout();
 		}
