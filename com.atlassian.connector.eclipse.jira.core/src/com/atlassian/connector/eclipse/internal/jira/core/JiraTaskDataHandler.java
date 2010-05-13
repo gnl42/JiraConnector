@@ -120,7 +120,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String REASSIGN_OPERATION = "reassign"; //$NON-NLS-1$
 
-	private static final String STOP_PROGRESS_OPERATION = "301"; //$NON-NLS-1$
+	public static final String STOP_PROGRESS_OPERATION = "301"; //$NON-NLS-1$
+
+	public static final String START_PROGRESS_OPERATION = "4"; //$NON-NLS-1$	
 
 	private static final String LEAVE_OPERATION = "leave"; //$NON-NLS-1$
 
