@@ -16,16 +16,18 @@ import junit.framework.TestCase;
 public class ReviewExplorerLabelProviderTest extends TestCase {
 
 	public void testGetAbbreviatedCommentText() {
+		String newLine = System.getProperty("line.separator");
+
 		assertNull(ReviewExplorerLabelProvider.getAbbreviatedCommentText(null));
 		assertEquals("", ReviewExplorerLabelProvider.getAbbreviatedCommentText(""));
 		assertEquals("abc", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc"));
-		assertEquals("abc", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\n"));
-		assertEquals("abc...", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\nxyz"));
-		assertEquals("abc", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\n \t \n"));
-		assertEquals("abc  ", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc  \n      "));
-		assertEquals("something very very long 1234567890123456789012345...",
-				ReviewExplorerLabelProvider.
-				getAbbreviatedCommentText("something very very long 1234567890123456789012345678901234567890 ..."));
+		assertEquals("abc", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc" + newLine));
+		assertEquals("abc...", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc" + newLine + "xyz"));
+		assertEquals("abc", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc" + newLine + " \t " + newLine));
+		assertEquals("abc  ", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc  " + newLine + "      "));
+		assertEquals(
+				"something very very long 1234567890123456789012345...",
+				ReviewExplorerLabelProvider.getAbbreviatedCommentText("something very very long 1234567890123456789012345678901234567890 ..."));
 	}
 
 }

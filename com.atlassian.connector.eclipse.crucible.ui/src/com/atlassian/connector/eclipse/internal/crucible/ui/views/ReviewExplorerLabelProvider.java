@@ -7,6 +7,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
+
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -164,9 +165,10 @@ public class ReviewExplorerLabelProvider extends ColumnLabelProvider implements 
 		if (msg == null) {
 			return null;
 		}
-		final int newlineIndex = msg.indexOf('\n');
+		String newLine = System.getProperty("line.separator");
+		final int newlineIndex = msg.indexOf(newLine);
 		if (newlineIndex != -1) {
-			String cutOffComment = msg.substring(Math.min(newlineIndex + 1, msg.length()));
+			String cutOffComment = msg.substring(Math.min(newlineIndex + newLine.length(), msg.length()));
 
 			msg = msg.substring(0, newlineIndex);
 			if (cutOffComment.trim().length() > 0) {
