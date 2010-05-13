@@ -13,8 +13,22 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.util;
 
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
+import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorExtensions;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorExtension;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import java.text.DateFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -134,6 +148,37 @@ public final class CommentUiUtil {
 		} else {
 			return "lines " + intRanges.toNiceString();
 		}
+	}
+
+	public static Control createWikiTextControl(FormToolkit toolkit, Composite parent, Comment comment) {
+
+		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
+
+		ITask task = CrucibleUiUtil.getCrucibleTask(comment.getReview());
+
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+				task.getRepositoryUrl());
+
+		TaskEditorExtensions.setTaskEditorExtensionId(repository, AtlassianUiUtil.CONFLUENCE_WIKI_TASK_EDITOR_EXTENSION);
+		AbstractTaskEditorExtension extension = TaskEditorExtensions.getTaskEditorExtension(repository);
+
+		final RichTextEditor editor = new RichTextEditor(repository, style, null, extension);
+		editor.setReadOnly(true);
+		editor.setText(comment.getMessage());
+		editor.createControl(parent, toolkit);
+
+		// HACK: this is to make sure that we can't have multiple things highlighted
+		editor.getViewer().getTextWidget().addFocusListener(new FocusListener() {
+
+			public void focusGained(FocusEvent e) {
+			}
+
+			public void focusLost(FocusEvent e) {
+				editor.getViewer().getTextWidget().setSelection(0);
+			}
+		});
+
+		return editor.getControl();
 	}
 
 }

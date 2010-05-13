@@ -23,8 +23,14 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import java.util.Map;
@@ -87,8 +93,10 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 
 							final String infoText = CommentUiUtil.getCompactedLineInfoText(ranges);
 							tooltip.addIconAndLabel(composite, null, infoText, false);
+
+							createScrolledWikiTextComment(comment, composite);
 						}
-						
+
 					};
 				} else if (data instanceof Comment) {
 					final Comment comment = (Comment) data;
@@ -106,6 +114,7 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 							tooltip.addIconAndLabel(composite, null,
 									comment.getParentComment() != null ? "Comment Reply" : "General Comment",
 									false);
+							createScrolledWikiTextComment(comment, composite);
 						}
 					};
 
@@ -113,6 +122,35 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 			}
 		}
 		return null;
+	}
+
+	private void createScrolledWikiTextComment(final Comment comment, Composite parent) {
+		final int maxWidth = 600;
+		final int maxHeight = 500;
+		// scroll pane respecting maximum size
+		final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL
+					| SWT.V_SCROLL) {
+			public org.eclipse.swt.graphics.Point computeSize(int wHint, int hHint, boolean changed) {
+				final Point size = super.computeSize(wHint, hHint, changed);
+				if (size.x > maxWidth) {
+					final Point size2 = super.computeSize(maxWidth, SWT.DEFAULT, changed);
+					if (size2.y > maxHeight) {
+						return new Point(maxWidth, maxHeight);
+					}
+					return size2;
+				}
+				return size;
+			}
+		};
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(scrolledComposite);
+
+		final Composite scrolledContent = new Composite(scrolledComposite, SWT.NONE);
+		scrolledComposite.setContent(scrolledContent);
+		scrolledContent.setLayout(new FillLayout());
+		final Control wikiTextComponent = CommentUiUtil.createWikiTextControl(null, scrolledContent,
+					comment);
+
+		scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 }
