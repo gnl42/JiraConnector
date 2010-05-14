@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -171,7 +170,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 		if (!getModel().getTaskData().isNew()) {
 			StartWorkAction startWorkAction = new StartWorkAction(this);
-			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
+//			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
 		}
 	}

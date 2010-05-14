@@ -33,6 +33,13 @@ public class Messages extends NLS {
 	public static String JiraConnectorUiActions_Voting_for_issue;
 
 	public static String JiraConnectorUiActions_Watch;
+	public static String StartWorkAction_cannot_perform;
+
+	public static String StartWorkAction_disabled;
+
+	public static String StartWorkAction_start;
+
+	public static String StartWorkAction_stop;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

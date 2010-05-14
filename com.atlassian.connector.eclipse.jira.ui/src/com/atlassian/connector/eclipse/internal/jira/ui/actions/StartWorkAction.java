@@ -16,7 +16,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -26,40 +28,42 @@ import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobListener;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.TasksUiImages;
-import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
-public class StartWorkAction extends BaseSelectionListenerAction implements ITaskActivationListener {
+public class StartWorkAction extends Action implements ITaskActivationListener {
+
+	private static final String ID = "com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
 
 	private final JiraTaskEditorPage editorPage;
 
 	public StartWorkAction(JiraTaskEditorPage editorPage) {
-		// TODO jj add proper icon and externalize strings
-		super("Start Work");
+		super();
 		this.editorPage = editorPage;
-		setImageDescriptor(TasksUiImages.TASK_REPOSITORY_HISTORY);
-		setId("com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction");
+		setImageDescriptor(JiraImages.START_PROGRESS);
+		setId(ID);
+
 		update();
+
 		TasksUi.getTaskActivityManager().addActivationListener(this);
 	}
 
 	private void update() {
 		if (editorPage.isTaskInProgress()) {
 			setChecked(true);
-			setToolTipText("Stop Work");
+			setToolTipText(Messages.StartWorkAction_stop);
 		} else if (editorPage.isTaskInStop()) {
 			setChecked(false);
-			setToolTipText("Start Work");
+			setToolTipText(Messages.StartWorkAction_start);
 		} else {
 			setChecked(false);
 			setEnabled(false);
-			setToolTipText("Explain why action is disabled");
+			setToolTipText(Messages.StartWorkAction_disabled);
 		}
 	}
 
@@ -68,14 +72,14 @@ public class StartWorkAction extends BaseSelectionListenerAction implements ITas
 
 		update();
 
-		IStructuredSelection selection = getStructuredSelection();
-		if (selection == null) {
-			return;
-		}
-		Object selectedObject = selection.getFirstElement();
-		if (!(selectedObject instanceof TaskEditor)) {
-			return;
-		}
+//		IStructuredSelection selection = getStructuredSelection();
+//		if (selection == null) {
+//			return;
+//		}
+//		Object selectedObject = selection.getFirstElement();
+//		if (!(selectedObject instanceof TaskEditor)) {
+//			return;
+//		}
 
 //		final TaskEditor editor = (TaskEditor) selectedObject;
 //		final ITask task = editor.getTaskEditorInput().getTask();
@@ -93,6 +97,8 @@ public class StartWorkAction extends BaseSelectionListenerAction implements ITas
 			stopProgress();
 		} else if (isInStop()) {
 			startProgress();
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 		}
 	}
 
