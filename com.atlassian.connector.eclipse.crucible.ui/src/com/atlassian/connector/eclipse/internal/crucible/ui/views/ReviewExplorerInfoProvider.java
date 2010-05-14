@@ -26,8 +26,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -114,8 +117,7 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 		final int maxWidth = 600;
 		final int maxHeight = 500;
 		// scroll pane respecting maximum size
-		final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL
-					| SWT.V_SCROLL) {
+		final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL) {
 			public org.eclipse.swt.graphics.Point computeSize(int wHint, int hHint, boolean changed) {
 				final Point size = super.computeSize(wHint, hHint, changed);
 				if (size.x > maxWidth) {
@@ -134,7 +136,17 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 		scrolledContent.setLayout(new FillLayout());
 		CommentUiUtil.createWikiTextControl(null, scrolledContent, comment);
 
-		scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scrolledComposite.setExpandVertical(true);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.addControlListener(new ControlAdapter() {
+			public void controlResized(ControlEvent e) {
+				Rectangle r = scrolledComposite.getClientArea();
+				scrolledComposite.setMinSize(scrolledContent.computeSize(r.width,
+						SWT.DEFAULT));
+			}
+		});
+
+		// scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		return scrolledComposite;
 	}
 
