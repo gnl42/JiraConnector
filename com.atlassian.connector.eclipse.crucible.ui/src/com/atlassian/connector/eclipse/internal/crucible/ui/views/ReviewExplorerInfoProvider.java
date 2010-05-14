@@ -146,7 +146,6 @@ public class ReviewExplorerInfoProvider implements ICustomToolTipInfoProvider {
 			}
 		});
 
-		// scrolledContent.setSize(scrolledContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		return scrolledComposite;
 	}
 
