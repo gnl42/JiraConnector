@@ -64,8 +64,6 @@ public class WdhmUtil {
 	 */
 	public static String generateJiraLogTimeString(final long milisSpent) {
 
-		// TODO jj test it
-
 		final long secondsSpent = milisSpent / MILLIS_PER_SECOND;
 
 		StringBuilder timeLog = new StringBuilder();

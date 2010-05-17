@@ -172,9 +172,6 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	public void fillToolBar(IToolBarManager toolBarManager) {
 		super.fillToolBar(toolBarManager);
 
-		// TODO jj check isNew
-		// TODO jj check isDirty
-
 		if (!getModel().getTaskData().isNew()) {
 			StartWorkAction startWorkAction = new StartWorkAction(this);
 //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
