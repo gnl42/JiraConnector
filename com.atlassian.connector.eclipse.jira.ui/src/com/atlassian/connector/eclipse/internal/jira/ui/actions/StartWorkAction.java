@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.jira.ui.actions;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -115,23 +116,17 @@ public class StartWorkAction extends Action implements ITaskActivationListener {
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
 				editorPage.getTask().getConnectorKind(), editorPage.getTask().getRepositoryUrl());
 
-		if (repository == null) {
-			// TODO jj handling
-			return;
-		}
-
 		TaskAttribute rootAttribute = editorPage.getModel().getTaskData().getRoot();
 
-		if (rootAttribute == null) {
-			// TODO jj handling
-			return;
-		}
+		Assert.isNotNull(repository);
+		Assert.isNotNull(rootAttribute);
 
 		// change assignee
 		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
 		if (repository.getUserName() != null && !repository.getUserName().equals(assigneeAttribute.getValue())) {
 			assigneeAttribute.setValue(repository.getUserName());
 			editorPage.getModel().attributeChanged(assigneeAttribute);
+			editorPage.refreshFormContent();
 			editorPage.doJiraSubmit(new SubmitJiraIssueListener());
 		} else {
 			new SubmitJiraIssueListener().startProgress();
@@ -184,16 +179,16 @@ public class StartWorkAction extends Action implements ITaskActivationListener {
 
 		@Override
 		public void done(SubmitJobEvent event) {
-			IStatus status = event.getJob().getStatus();
+			final IStatus status = event.getJob().getStatus();
 
-			if (status == null || IStatus.OK == status.getSeverity()) {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					if (status == null || IStatus.OK == status.getSeverity()) {
 						editorPage.refreshFormContent();
 						startProgress();
 					}
-				});
-			}
+				}
+			});
 		}
 
 		protected void startProgress() {
@@ -236,9 +231,12 @@ public class StartWorkAction extends Action implements ITaskActivationListener {
 						}
 					});
 
-					break;
+					return;
 				}
 			}
+
+			StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
+					Messages.StartWorkAction_Start_Progress_Not_Available));
 		}
 
 		@Override

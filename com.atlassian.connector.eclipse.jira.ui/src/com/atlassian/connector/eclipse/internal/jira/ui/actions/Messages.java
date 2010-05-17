@@ -39,6 +39,8 @@ public class Messages extends NLS {
 
 	public static String StartWorkAction_start;
 
+	public static String StartWorkAction_Start_Progress_Not_Available;
+
 	public static String StartWorkAction_stop;
 	static {
 		// initialize resource bundle

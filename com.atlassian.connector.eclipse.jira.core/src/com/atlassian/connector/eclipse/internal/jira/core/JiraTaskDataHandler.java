@@ -124,6 +124,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	public static final String START_PROGRESS_OPERATION = "4"; //$NON-NLS-1$	
 
+	public static final Object IN_PROGRESS_STATUS = "3"; //$NON-NLS-1$
+
+	public static final Object OPEN_STATUS = "1"; //$NON-NLS-1$
+
+	public static final Object REOPEN_STATUS = "4"; //$NON-NLS-1$
+
 	private static final String LEAVE_OPERATION = "leave"; //$NON-NLS-1$
 
 	private static final JiraVersion TASK_DATA_VERSION_1_0 = new JiraVersion("1.0"); //$NON-NLS-1$

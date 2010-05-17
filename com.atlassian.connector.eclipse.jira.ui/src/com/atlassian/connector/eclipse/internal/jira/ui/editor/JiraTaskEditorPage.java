@@ -15,15 +15,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorActionPart;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskMigrator;
+import org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJob;
+import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobListener;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
@@ -35,6 +43,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.ColumnSpan;
 import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.RowSpan;
+import org.eclipse.ui.PlatformUI;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
@@ -163,8 +172,6 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	public void fillToolBar(IToolBarManager toolBarManager) {
 		super.fillToolBar(toolBarManager);
 
-		// TODO jj check isCompleted
-		// TODO jj check isAssignedToMe and may be put in progress
 		// TODO jj check isNew
 		// TODO jj check isDirty
 
@@ -175,6 +182,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	public void doJiraSubmit(SubmitJobListener submitListener) {
 //		if (!submitEnabled || !needsSubmit()) {
 //			return;
@@ -189,7 +197,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 					getModel().getTaskRepository(), getTask(), getModel().getTaskData(),
 					getModel().getChangedOldAttributes());
 			submitJob.addSubmitJobListener(submitListener);
-//			submitJob.addSubmitJobListener(new SubmitTaskJobListener(getAttachContext()));
+			submitJob.addSubmitJobListener(new SubmitTaskJobListener(getAttachContext()));
 			submitJob.schedule();
 		} catch (RuntimeException e) {
 			showEditorBusy(false);
@@ -198,17 +206,15 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	}
 
 	public boolean isTaskInProgress() {
-		return /* getTask().isActive() && */isAssignedToMe() && haveStopProgressOperation();
+		return isAssignedToMe() && isInProgressState() && haveStopProgressOperation();
 	}
 
 	public boolean isTaskInStop() {
-//		if (!getTask().isActive()) {
-		if (isAssignedToMe() && haveStartProgressOperation()) {
+		if (isAssignedToMe() && isInOpenState() && haveStartProgressOperation()) {
 			return true;
 		} else if (!isAssignedToMe()) {
 			return true;
 		}
-//		}
 
 		return false;
 	}
@@ -239,6 +245,21 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		return false;
 	}
 
+	private boolean isInOpenState() {
+
+		String statusId = getModel().getTaskData().getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
+
+		return statusId != null
+				&& (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
+	}
+
+	private boolean isInProgressState() {
+
+		String statusId = getModel().getTaskData().getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
+
+		return statusId != null && statusId.equals(JiraTaskDataHandler.IN_PROGRESS_STATUS);
+	}
+
 	private boolean isAssignedToMe() {
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(getTask().getConnectorKind(),
 				getTask().getRepositoryUrl());
@@ -256,5 +277,76 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
 
 		return repository.getUserName() != null && repository.getUserName().equals(assigneeAttribute.getValue());
+	}
+
+	private class SubmitTaskJobListener extends SubmitJobListener {
+
+		private final boolean attachContext;
+
+		public SubmitTaskJobListener(boolean attachContext) {
+			this.attachContext = attachContext;
+		}
+
+		@Override
+		public void done(SubmitJobEvent event) {
+			final SubmitJob job = event.getJob();
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				@SuppressWarnings("restriction")
+				private void addTask(ITask newTask) {
+					AbstractTaskContainer parent = null;
+					AbstractTaskEditorPart actionPart = getPart(ID_PART_ACTIONS);
+					if (actionPart instanceof TaskEditorActionPart) {
+						parent = ((TaskEditorActionPart) actionPart).getCategory();
+					}
+					TasksUiInternal.getTaskList().addTask(newTask, parent);
+				}
+
+				@SuppressWarnings("restriction")
+				public void run() {
+					try {
+						if (job.getStatus() == null) {
+							TasksUiInternal.synchronizeRepositoryInBackground(getTaskRepository());
+							if (job.getTask().equals(getTask())) {
+								refreshFormContent();
+							} else {
+								ITask oldTask = getTask();
+								ITask newTask = job.getTask();
+								addTask(newTask);
+
+								TaskMigrator migrator = new TaskMigrator(oldTask);
+								migrator.setDelete(true);
+								migrator.setEditor(getTaskEditor());
+								migrator.execute(newTask);
+							}
+						}
+						handleTaskSubmitted(new SubmitJobEvent(job));
+					} finally {
+						showEditorBusy(false);
+					}
+				}
+			});
+		}
+
+		@SuppressWarnings("restriction")
+		@Override
+		public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
+			if (!getModel().getTaskData().isNew() && attachContext) {
+				AttachmentUtil.postContext(getConnector(), getModel().getTaskRepository(), getTask(), "", null, monitor); //$NON-NLS-1$
+			}
+		}
+
+		@Override
+		public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) {
+		}
+	}
+
+	@SuppressWarnings("restriction")
+	private boolean getAttachContext() {
+		AbstractTaskEditorPart actionPart = getPart(ID_PART_ACTIONS);
+		if (actionPart instanceof TaskEditorActionPart) {
+			return ((TaskEditorActionPart) actionPart).getAttachContext();
+		}
+		return false;
 	}
 }
