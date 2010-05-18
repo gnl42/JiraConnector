@@ -195,7 +195,10 @@ public class JiraClientTest extends TestCase {
 			client.updateIssue(issue, "comment", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getHtmlMessage());
+			assertThat(
+					e.getHtmlMessage(),
+					either(equalTo("User 'nonexistantuser' cannot be assigned issues.")).or(
+							equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
 		}
 
 		try {
@@ -215,7 +218,10 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("User 'guest@mylyn.eclipse.org' cannot be assigned issues.", e.getHtmlMessage());
+			assertThat(
+					e.getHtmlMessage(),
+					either(equalTo("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
+							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "", null);
