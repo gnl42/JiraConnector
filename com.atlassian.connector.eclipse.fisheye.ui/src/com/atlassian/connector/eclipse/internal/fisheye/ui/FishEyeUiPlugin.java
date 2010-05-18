@@ -36,13 +36,12 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-		if (!getPreferenceStore().getBoolean(IFishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
+		if (!getPreferenceStore().getBoolean(FishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
 			Job migrateJob = new MigrateToSecureStorageJob(FishEyeCorePlugin.CONNECTOR_KIND);
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
-					super.done(event);
-					getPreferenceStore().setValue(IFishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
+					getPreferenceStore().setValue(FishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
 				}
 			});
 			migrateJob.schedule();

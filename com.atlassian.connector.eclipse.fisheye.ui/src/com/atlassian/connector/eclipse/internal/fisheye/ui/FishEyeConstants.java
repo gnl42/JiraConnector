@@ -11,8 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-public interface IFishEyeConstants {
+public final class FishEyeConstants {
 
-	String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done";
+	private FishEyeConstants() {}
+
+	public static final String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done";
 
 }

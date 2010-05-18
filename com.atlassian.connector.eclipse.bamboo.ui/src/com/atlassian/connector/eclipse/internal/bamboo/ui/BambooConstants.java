@@ -11,8 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-public interface IBambooConstants {
+public final class BambooConstants {
 
-	String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done";
+	private BambooConstants() {
+	}
+
+	public static final String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done";
 
 }

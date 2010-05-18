@@ -77,7 +77,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
-					super.done(event);
 					getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
 				}
 			});

@@ -48,27 +48,33 @@ public class MigrateToSecureStorageJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	@SuppressWarnings({ "deprecation", "unchecked" })
+	@SuppressWarnings({ "deprecation", "restriction" })
 	public static boolean migrateToSecureStorage(TaskRepository repository) {
 		if (repository.getProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE) == null
-				&& !repository.getUrl().equals("local")) { //$NON-NLS-1$
+				&& !"local".equals(repository.getUrl())) { //$NON-NLS-1$
 			try {
-				AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY);
-				boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY);
+				AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY), httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
+				boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY), httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP), proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
 
 				repository.setProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE, "true"); //$NON-NLS-1$
 
 				if (creds != null) {
-					try {
-						Platform.flushAuthorizationInfo(new URL(repository.getUrl()), "", "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
-					} catch (MalformedURLException ex) {
-						Platform.flushAuthorizationInfo(
-								new URL("http://eclipse.org/mylyn"), repository.getUrl(), "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
-					}
-
 					repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);
 				}
 
+				if (httpCreds != null) {
+					repository.setCredentials(AuthenticationType.HTTP, httpCreds, httpSavePassword);
+				}
+
+				if (proxyCreds != null) {
+					repository.setCredentials(AuthenticationType.PROXY, proxyCreds, proxySavePassword);
+				}
+
+				try {
+					Platform.flushAuthorizationInfo(new URL(repository.getUrl()), "", "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
+				} catch (MalformedURLException ex) {
+					Platform.flushAuthorizationInfo(new URL("http://eclipse.org/mylyn"), repository.getUrl(), "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				return true;
 			} catch (Exception e) {
 				StatusHandler.log(new Status(IStatus.ERROR, ITasksCoreConstants.ID_PLUGIN, NLS.bind(
