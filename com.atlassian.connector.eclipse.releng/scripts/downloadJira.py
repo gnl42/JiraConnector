@@ -4,6 +4,7 @@ from subprocess import *
 import shlex
 import os
 import re
+import shutil
 
 jira_version = "4.2-SNAPSHOT"
 
@@ -28,6 +29,26 @@ def download(user, password):
 
 	return fn
 
+def downloadSoap(user, password):
+	p1 = Popen(shlex.split("wget -q -O - --http-user=%s --http-password=%s https://maven.atlassian.com/content/repositories/atlassian-public-snapshot/com/atlassian/jira/plugins/atlassian-jira-rpc-plugin/%s/maven-metadata.xml" % (user, password, jira_version)), stdout=PIPE)
+	output = p1.communicate()[0]
+	m = re.search("<timestamp>(.*)</timestamp>", output)
+	timestamp = m.group(1)
+
+	m = re.search("<buildNumber>(.*)</buildNumber>", output)
+	buildNo = m.group(1)
+
+	fn = "atlassian-jira-rpc-plugin-4.2-%s-%s.jar" % (timestamp, buildNo)
+
+	try:
+		os.unlink(fn)
+	except OSError:
+		pass
+
+	p1 = Popen(shlex.split("wget -q --http-user=%s --http-password=%s https://maven.atlassian.com/content/repositories/atlassian-public-snapshot/com/atlassian/jira/plugins/atlassian-jira-rpc-plugin/%s/%s" % (user, password, jira_version, fn)))
+	p1.wait()
+
+	return fn
 
 def unpack(fn):
 	p1 = Popen(["tar", "-xzf", fn])
@@ -80,7 +101,9 @@ if __name__ == "__main__":
 
 	fn = download(*sys.argv[1:3])
 	dir = "atlassian-jira-enterprise-%s-standalone" % (jira_version)
+	rpc = downloadSoap(*sys.argv[1:3])
 	shutdown(dir)
 	unpack(fn)
 	configure(dir)
+	shutil.copy(rpc, "%s/atlassian-jira/WEB-INF/lib/" % (dir))	
 	start(dir)
