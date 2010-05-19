@@ -11,11 +11,24 @@
 
 package com.atlassian.connector.eclipse.jira.tests.client;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+
+import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ResolutionFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSessionCallback;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
+import com.atlassian.connector.eclipse.jira.tests.util.MockIssueCollector;
 
 public class JiraRssClientTest extends TestCase {
 
@@ -32,13 +45,13 @@ public class JiraRssClientTest extends TestCase {
 	}
 
 	/**
-	 * PLE-1081 - check if reauthentication works for all JIRA-s
+	 * PLE-1081 - check if re-authentication works for all JIRA-s
 	 */
-	/*public void testFindIssuesReauthenticate() {
+	public void testFindIssuesReauthenticate() {
 		MockIssueCollector ic = new MockIssueCollector() {
 			@Override
 			public int getMaxHits() {
-				return 15;
+				return 1;
 			}
 		};
 		FilterDefinition fd = new FilterDefinition();
@@ -71,5 +84,5 @@ public class JiraRssClientTest extends TestCase {
 		} catch (JiraException e) {
 			fail(e.getMessage());
 		}
-	}*/
+	}
 }
