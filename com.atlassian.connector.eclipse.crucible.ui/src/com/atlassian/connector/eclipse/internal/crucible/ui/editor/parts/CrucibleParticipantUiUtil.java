@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleEditorConstants;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -63,8 +64,8 @@ public final class CrucibleParticipantUiUtil {
 			return createLabelControl(toolkit, parent, " ");
 		} else {
 			Composite reviewersComposite = createComposite(toolkit, parent, menu);
-			GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).grab(true, false).align(SWT.FILL, SWT.FILL).applyTo(
-					reviewersComposite);
+			GridDataFactory.fillDefaults().hint(CrucibleEditorConstants.MIN_WIDTH, SWT.DEFAULT).grab(true, false)
+					.align(SWT.FILL, SWT.FILL).applyTo(reviewersComposite);
 
 			RowLayout layout = new RowLayout();
 			layout.marginBottom = 0;
