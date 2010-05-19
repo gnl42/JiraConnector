@@ -1,0 +1,1097 @@
+HTTP/1.1 200 OK
+Date: Wed, 19 May 2010 09:01:31 GMT
+Server: Apache-Coyote/1.1
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Encoding: gzip
+Vary: User-Agent
+Content-Type: text/html;charset=ISO-8859-1
+Content-Length: 4585
+Connection: close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Update User Preferences: Developer - Mylyn </title>
+
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
+    
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+    <link rel="shortcut icon" href="/jira-enterprise-3.13.5/s/360/1/_/favicon.ico">
+    <link rel="icon" type="image/png" href="/jira-enterprise-3.13.5/s/360/1/_/images/icons/favicon.png">
+	
+
+
+
+
+<link rel="stylesheet" type="text/css" media="print" href="/jira-enterprise-3.13.5/s/360/1/_/styles/combined-printable.css">
+<link type="text/css" rel="StyleSheet" media="all" href="/jira-enterprise-3.13.5/s/360/1/_/styles/combined.css"/>
+<link type="text/css" rel="StyleSheet" media="all" href="/jira-enterprise-3.13.5/s/360/1/8/_/styles/global.css"/>
+
+    <script language="JavaScript" type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/_/includes/js/combined-javascript.js"></script>
+
+<script type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:yui/yahoo-dom-event-min.js" ></script>
+<script type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:yui-container/connection.js" ></script>
+<script type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:yui-container/container.js" ></script>
+<link type="text/css" rel="stylesheet" href="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:yui-container/container.css" media="all"/>
+<script type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:json/json.js" ></script>
+<script type="text/javascript" src="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:jira-menubutton/menubutton-widget.js" ></script>
+<link type="text/css" rel="stylesheet" href="/jira-enterprise-3.13.5/s/360/1/1.0/_/download/resources/jira.webresources:jira-menubutton/menubutton-widget.css" media="all"/>
+
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body bgcolor="#f0f0f0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" link="#003366" vlink="#003366" alink="#660000">
+
+
+<div id="header">
+    <div id="header-top">
+            <a id="logo" href="/jira-enterprise-3.13.5/secure/Dashboard.jspa">
+                            <img class="logo" src="/jira-enterprise-3.13.5/s/360/1/_/images/jira_logo_small.png" width="111" height="30" border="0" alt="Mylyn">
+                        </a>
+            
+            <ul id="account-options">
+            <li>        <a id="user_nav_bar_tests@mylyn.eclipse.org" href="/jira-enterprise-3.13.5/secure/ViewProfile.jspa?name=tests%40mylyn.eclipse.org">Developer</a></li>
+                <li>
+                                    <a class="dropdownmenu" id="saved_filters" title="View and open your favorite filters" href="/jira-enterprise-3.13.5/secure/FavouriteFilters.jspa" onClick="return false;"><span>Filters</span></a>
+                <script type="text/javascript">
+                    YAHOO.util.Event.addListener(window, 'load', function() { new jira.widget.MenuButton('saved_filters','/jira-enterprise-3.13.5/secure/FavouriteFilters.jspa', '/jira-enterprise-3.13.5')});
+                </script>
+                            </li>
+            <li>
+                    <a href="/jira-enterprise-3.13.5/logout" title="Log out and cancel any automatic login.">Log Out</a>
+                </li>
+                <li class="icon">
+                    <a rel="nofollow" href="http://ecit.atlassian.com/jira-enterprise-3.13.5/secure/UpdateUserPreferences!default.jspa?decorator=printable" ><img src="/jira-enterprise-3.13.5/images/icons/print.gif" width="16" height="16" align="absmiddle" border="0" alt="View a printable version of the current page." title="View a printable version of the current page."></a>
+                </li>
+            <li class="icon">
+                    
+                    <a class="helpLink" href="http://www.atlassian.com/software/jira/docs/v3.13/index.html?clicked=jirahelp" target="_jirahelp">
+    
+        <img src="/jira-enterprise-3.13.5/images/icons/help_blue.gif" width="16" height="16" align="absmiddle"
+            title="Get online help about Using and setting up JIRA"
+        /></a>
+
+                </li>
+    </ul>
+
+            
+    </div>
+    <div id="menu">
+        
+        <ul id="main-nav">
+        <li>
+        <a href="/jira-enterprise-3.13.5/secure/Dashboard.jspa"
+                         id="home_link"             title="A configurable overview of JIRA"             accessKey="h"            ><u>h</u>ome</a>
+    </li>
+        <li>
+        <a href="/jira-enterprise-3.13.5/secure/BrowseProject.jspa"
+                         id="browse_link"             title="Browse the projects you have permissions to view"             accessKey="b"            ><u>b</u>rowse projects</a>
+    </li>
+        <li>
+        <a href="/jira-enterprise-3.13.5/secure/IssueNavigator.jspa"
+                         id="find_link"             title="Find issues in the projects you have permissions to view"             accessKey="f"            ><u>f</u>ind issues</a>
+    </li>
+        <li>
+        <a href="/jira-enterprise-3.13.5/secure/CreateIssue!default.jspa"
+                         id="create_link"             title="Create a new issue / bug / feature request / etc"             accessKey="c"            ><u>c</u>reate new issue</a>
+    </li>
+    </ul>
+
+        
+
+                <form id="quicksearch" action="/jira-enterprise-3.13.5/secure/QuickSearch.jspa" method="post">
+            <label onclick="quickSearchTextBoxSetFocus();" onmouseover="showToolTip()" onmouseout="hideToolTip()">&nbsp; &nbsp;<u>Q</u>uick Search:</label>
+            <input id="quickSearchInput" class="quickSearchInput" title="Go directly to an issue by typing a valid issue key, or run a free-text search." type="text" size="25" name="searchString" accessKey="q"  valign="absmiddle" />
+        </form>
+        <div onmouseover="recordInTip()" onmouseout="recordOutTip()" id="quicksearchhelp" class="informationBox"
+             style="display: none; text-align: center; width: 20em; position: absolute; top: 55px; right: 10px; padding: 0.5em;">
+                        Learn more about <a href='http://www.atlassian.com/software/jira/docs/v3.13/quicksearch.html?clicked=jirahelp' target='_jirahelp'>Quick Search</a>
+        </div>
+            </div>
+</div>
+
+
+<!--This should always be included as it is not part of a themable plugin, instead it is core functionality-->
+
+
+
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr>
+<td width="200" bgcolor="#f0f0f0" valign="top">
+    <div class="vcard">
+<table id="full_profile" cellpadding="3" cellspacing="0" border="0">
+    <tr>
+        <td valign=top>
+            <b>Username:</b><br/>
+            tests@mylyn.eclipse.org
+        </td>
+    </tr>
+    <tr>
+        <td valign=top>
+            <b>Full Name:</b><br/>
+            <span class="fn">Developer</span>        </td>
+    </tr>
+        <tr>
+        <td valign=top>
+            <b>Email:</b><br/>
+            <span class="email"><a href="mailto:tests@mylyn.eclipse.org">tests@mylyn.eclipse.org</a></span>        </td>
+    </tr>
+    
+        
+        <tr>
+        <td valign=top>
+            <b>Groups:</b><br>
+                                                <img src="/jira-enterprise-3.13.5/images/icons/bullet_blue.gif" height="8" width="8" border="0" align="absmiddle" alt="">
+                    jira-users<br/>
+                                                                <img src="/jira-enterprise-3.13.5/images/icons/bullet_blue.gif" height="8" width="8" border="0" align="absmiddle" alt="">
+                    jira-developers<br/>
+                                    </td>
+    </tr>
+    </table>
+</div>
+
+<p/>
+        <table cellpadding="3" cellspacing="0" border="0" width="200">
+        <tr><td bgcolor="#dddddd">
+            <b>Reports</b>
+        </td></tr>
+    </table>
+    <img src="/jira-enterprise-3.13.5/images/bluepixel.gif" width=200 height=1 border=0><br>
+
+    <table id="full_profile_reports" cellpadding=3 cellspacing=0 border=0>
+        
+
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_personalroadmap" href="/jira-enterprise-3.13.5/secure/BrowsePersonalProject.jspa" title="">Personal Roadmap</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_votes" href="/jira-enterprise-3.13.5/secure/UserVotes!default.jspa" title="">Your Votes</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_watches" href="/jira-enterprise-3.13.5/secure/UserWatches!default.jspa" title="">Your Watches</a></b>
+                    </td></tr>
+    
+    </table>
+    <p/>
+
+<table cellpadding="3" cellspacing="0" border="0" width="200">
+    <tr><td bgcolor="#dddddd">
+        <b>Operations</b>
+    </td></tr>
+</table>
+<img src="/jira-enterprise-3.13.5/images/bluepixel.gif" width="200" height="1" border="0" alt=""><br/>
+
+<table  id="full_profile_ops" cellpadding="3" cellspacing="0" border="0">
+    
+
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_change_password" href="/jira-enterprise-3.13.5/secure/ChangePassword!default.jspa" title="">Change Password</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_dashboard_config" href="/jira-enterprise-3.13.5/secure/SetupPortal.jspa" title="">Manage Dashboard</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_manage_filters" href="/jira-enterprise-3.13.5/secure/ManageFilters.jspa" title="">Manage Filters</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_nav_columns" href="/jira-enterprise-3.13.5/secure/ViewUserIssueColumns!default.jspa" title="">Navigator Columns</a></b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_user_prefs" href="/jira-enterprise-3.13.5/secure/ViewUserPreferences.jspa" title="">View Preferences</a></b>
+                    </td></tr>
+            <tr><td>
+                    &nbsp;
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b>Edit Preferences</b>
+                    </td></tr>
+            <tr><td>
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_profile" href="/jira-enterprise-3.13.5/secure/ViewProfile.jspa" title="">View Your Profile</a></b>
+                    </td></tr>
+            <tr><td>
+                    &nbsp;
+                    <img src="/jira-enterprise-3.13.5/images/icons/bullet_creme.gif" height="8" width="8" border="0" align="absmiddle" alt=""/>
+                        
+                        
+                            <b><a id="view_edit_profile" href="/jira-enterprise-3.13.5/secure/EditProfile!default.jspa" title="">Edit Profile</a></b>
+                    </td></tr>
+    
+</table>
+<br/>
+
+</td>
+<td bgcolor="#ffffff" valign="top">
+<table width="100%" cellpadding="10" cellspacing="0" border="0"><tr><td>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<form action="UpdateUserPreferences.jspa" method="post" name="jiraform" onsubmit="if (this.submitted) return false; this.submitted = true; return true" >
+
+	
+	<table class="jiraform maxWidth" id="edit_user_preferences"
+    >
+	
+
+	
+	<tr>
+		<td colspan="2" class="jiraformheader">
+        
+        <h3 class="formtitle">Update User Preferences</h3></td>
+	</tr>
+	
+	
+	<tr>
+		<td colspan="2" class="jiraformheader">
+        Update your preferences below to control how JIRA works and looks to you.
+        </td>
+	</tr>
+	
+	
+
+	
+	
+
+	<tr 
+        
+        
+    >
+		
+		
+			
+			
+				<td class="fieldLabelArea">
+			
+		
+        
+        
+ 		
+		Number of Issues displayed per Issue Navigator page:
+        
+        
+		</td>
+
+	
+	
+
+
+
+
+
+	<td bgcolor="ffffff" class="fieldValueArea" >
+
+
+
+<input type="text"
+       name="userIssuesPerPage"
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         value="50"
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+/>
+
+
+
+
+	</td>
+
+</tr>
+
+
+
+        
+
+
+
+	
+
+
+
+	<tr 
+        
+        
+    >
+		
+		
+			
+			
+				<td class="fieldLabelArea">
+			
+		
+        
+        
+ 		
+		Outgoing email format:
+        
+        
+		</td>
+
+	
+	
+
+
+
+
+
+	<td bgcolor="ffffff" class="fieldValueArea" >
+
+
+
+
+
+
+
+
+
+
+<select name="userNotificationsMimeType"
+        id="userNotificationsMimeType_select"
+      
+         
+      
+      
+         
+      
+      
+         
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+>
+   
+      
+   
+   
+      
+   
+
+   
+   
+   
+       
+   
+
+   
+   
+	  <option value="html" 
+              
+              
+              
+              >
+        
+        HTML
+      </option>
+   
+	  <option value="text" SELECTED
+              
+              
+              
+              >
+        
+        Text
+      </option>
+   
+</select>
+
+
+<span class="selectDescription" id="userNotificationsMimeType_summary"></span>
+
+
+
+
+
+	</td>
+
+</tr>
+
+
+
+        
+
+
+
+	
+
+
+
+	<tr 
+        
+        
+    >
+		
+		
+			
+			
+				<td class="fieldLabelArea">
+			
+		
+        
+        
+ 		
+		Language:
+        
+        
+		</td>
+
+	
+	
+
+
+
+
+
+	<td bgcolor="ffffff" class="fieldValueArea" >
+
+
+
+
+
+
+
+
+<select name="userLocale"
+        id="userLocale_select"
+      
+         
+      
+      
+         
+      
+      
+         
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+      
+         
+      
+>
+   
+      
+   
+   
+      
+   
+
+   
+   
+   
+       
+   
+
+   
+   
+	  <option value="-1" 
+              
+              
+              
+              >
+        
+        English (United States) [Default]
+      </option>
+   
+	  <option value="ca_ES" 
+              
+              
+              
+              >
+        
+        Catalan (Spain)
+      </option>
+   
+	  <option value="zh_CN" 
+              
+              
+              
+              >
+        
+        Chinese (China)
+      </option>
+   
+	  <option value="zh_TW" 
+              
+              
+              
+              >
+        
+        Chinese (Taiwan)
+      </option>
+   
+	  <option value="cs_CZ" 
+              
+              
+              
+              >
+        
+        Czech (Czech Republic)
+      </option>
+   
+	  <option value="da_DK" 
+              
+              
+              
+              >
+        
+        Danish (Denmark)
+      </option>
+   
+	  <option value="nl_BE" 
+              
+              
+              
+              >
+        
+        Dutch (Belgium)
+      </option>
+   
+	  <option value="en_UK" 
+              
+              
+              
+              >
+        
+        English (UK)
+      </option>
+   
+	  <option value="en_US" 
+              
+              
+              
+              >
+        
+        English (United States)
+      </option>
+   
+	  <option value="fr_FR" 
+              
+              
+              
+              >
+        
+        French (France)
+      </option>
+   
+	  <option value="de_DE" 
+              
+              
+              
+              >
+        
+        German (Germany)
+      </option>
+   
+	  <option value="de_CH" 
+              
+              
+              
+              >
+        
+        German (Switzerland)
+      </option>
+   
+	  <option value="hu_HU" 
+              
+              
+              
+              >
+        
+        Hungarian (Hungary)
+      </option>
+   
+	  <option value="it_IT" 
+              
+              
+              
+              >
+        
+        Italian (Italy)
+      </option>
+   
+	  <option value="ja_JP" 
+              
+              
+              
+              >
+        
+        Japanese (Japan)
+      </option>
+   
+	  <option value="no_NO" 
+              
+              
+              
+              >
+        
+        Norwegian (Norway)
+      </option>
+   
+	  <option value="pl_PL" 
+              
+              
+              
+              >
+        
+        Polish (Poland)
+      </option>
+   
+	  <option value="pt_BR" 
+              
+              
+              
+              >
+        
+        Portuguese (Brazil)
+      </option>
+   
+	  <option value="ru_RU" 
+              
+              
+              
+              >
+        
+        Russian (Russia)
+      </option>
+   
+	  <option value="sk_SK" 
+              
+              
+              
+              >
+        
+        Slovak (Slovakia)
+      </option>
+   
+	  <option value="es_ES" 
+              
+              
+              
+              >
+        
+        Spanish (Spain)
+      </option>
+   
+	  <option value="tr_TR" 
+              
+              
+              
+              >
+        
+        Turkish (Turkey)
+      </option>
+   
+</select>
+
+
+<span class="selectDescription" id="userLocale_summary"></span>
+
+
+
+
+
+	</td>
+
+</tr>
+
+
+
+        
+
+
+
+
+
+
+	
+
+
+
+	<tr 
+        
+        
+    >
+		
+		
+			
+			
+				<td class="fieldLabelArea">
+			
+		
+        
+        
+ 		
+		Email me when I make changes:
+        
+        
+		</td>
+
+	
+	
+
+
+
+
+
+	<td bgcolor="ffffff" class="fieldValueArea" >
+
+
+<input type="checkbox" checked="checked"
+       name="notifyOwnChanges"
+       value="true"
+     
+        
+     
+     
+        
+     
+     
+        
+     
+     
+        
+     
+     
+        
+     
+     
+        
+     
+     
+        
+     
+/>
+
+
+
+
+
+	</td>
+
+</tr>
+
+
+
+        
+
+
+
+
+	
+
+
+
+	<tr 
+        
+        
+    >
+		
+		
+			
+			
+				<td class="fieldLabelArea">
+			
+		
+        
+        
+ 		
+		Default sharing for filters and dashboards:
+        
+        
+		</td>
+
+	
+	
+
+
+
+
+
+	<td bgcolor="ffffff" class="fieldValueArea" >
+
+
+
+    <input type="radio"
+            
+            
+            
+           name="shareDefault"
+           value="false"
+           id="shareDefault_false"
+            
+                
+            
+            
+                
+            
+            
+                
+            
+            
+                
+            
+            />
+    <label for="shareDefault_false">
+        Public
+    </label>
+    
+        <br />
+    
+
+    <input type="radio"
+            
+            checked="checked"
+            
+           name="shareDefault"
+           value="true"
+           id="shareDefault_true"
+            
+                
+            
+            
+                
+            
+            
+                
+            
+            
+                
+            
+            />
+    <label for="shareDefault_true">
+        Private
+    </label>
+    
+        
+    
+
+
+
+
+
+
+	</td>
+
+</tr>
+
+
+	<tr>
+		<td colspan="2" class="fullyCentered jiraformfooter" >
+            
+			
+				<input type="submit" name="Update" id="Update" value="Update"
+			
+                       accesskey="S"
+                       title="Press Alt+S to submit form"
+			
+                        
+                       class="spaced"
+                />
+
+
+			
+			
+			
+			    <input id="cancelButton"  type="button"
+                       accesskey="`"
+                       title="Cancel (Alt + `)"
+                       name="ViewUserPreferences.jspa"
+                       value="Cancel"
+                       onclick="location.href='ViewUserPreferences.jspa'"
+                />
+			
+		</td>
+	</tr>
+
+    
+
+    
+	</table>
+	
+
+
+
+</form>
+	
+	
+    <script language="javascript" type="text/javascript">
+	    try { document.jiraform.elements[0].focus(); } catch (e) {}
+	</script>
+	
+
+
+
+</td></tr></table>
+</td></tr></table>
+
+
+
+
+
+
+
+
+
+    
+    <div class="footer">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                <td bgcolor="#bbbbbb"><img src="/jira-enterprise-3.13.5/s/360/1/_/images/border/spacer.gif" height="1" width="100" border="0" alt=""></td>
+            </tr>
+                        <tr>
+            <td class="licensemessage">
+        
+        This <a href='http://www.atlassian.com/software/jira'>JIRA</a> site is for non-production use only.
+
+
+            </td>
+    </tr>
+    
+    <tr>
+        <td height="12" style="background-image:url(/jira-enterprise-3.13.5/s/360/1/_/images/border/border_bottom.gif)"><img src="/jira-enterprise-3.13.5/s/360/1/_/images/border/spacer.gif" width="1" height="1" border="0" alt=""></td>
+    </tr>
+</table>
+
+<span  class="poweredbymessage" >
+    Powered by <a href="http://www.atlassian.com/software/jira" class="smalltext">Atlassian JIRA</a>
+    the Professional <a href="http://www.atlassian.com/software/jira">Issue Tracker</a>.
+    <span  style="color: #666666;" >(Enterprise Edition, Version: 3.13.5-#360)</span>    - <a href="http://jira.atlassian.com/default.jsp?clicked=footer">Bug/feature request</a>
+    - <a href="http://www.atlassian.com/about/connected.jsp?s_kwcid=jira-stayintouch">Atlassian news</a>
+    - <a href="/jira-enterprise-3.13.5/secure/Administrators.jspa">Contact Administrators</a>
+</span>
+
+
+</div>
+    
+
+</body>
+</html>
+

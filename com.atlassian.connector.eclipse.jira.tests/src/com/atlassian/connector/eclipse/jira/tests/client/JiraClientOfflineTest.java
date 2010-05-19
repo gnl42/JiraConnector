@@ -50,7 +50,7 @@ public class JiraClientOfflineTest extends TestCase {
 		server.addResponse(JiraTestUtil.getMessage("web/login-success-response"));
 		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
 		server.addResponse(JiraTestUtil.getMessage("soap/get-server-info-3-13-1-success-response"));
-		server.addResponse(JiraTestUtil.getMessage("web/user-preferences-head-response"));
+		server.addResponse(JiraTestUtil.getMessage("web/user-preferences-get-response"));
 		server.addResponse(manglePort(JiraTestUtil.getMessage("web/browse-issue-redirect-response")));
 		client.getIssueByKey("KEY-1", null);
 	}
@@ -69,7 +69,7 @@ public class JiraClientOfflineTest extends TestCase {
 		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
 		server.addResponse(JiraTestUtil.getMessage("soap/get-server-info-3-6-2-success-response"));
 		server.addResponse(JiraTestUtil.getMessage("web/login-success-response"));
-		server.addResponse(JiraTestUtil.getMessage("web/user-preferences-head-response"));
+		server.addResponse(JiraTestUtil.getMessage("web/user-preferences-get-response"));
 		server.addResponse(JiraTestUtil.getMessage("soap/get-worklogs-no-such-operation-response"));
 		assertNull(client.getWorklogs("KEY-1", null));
 	}
