@@ -48,6 +48,8 @@ public class JiraRssClientTest extends TestCase {
 	 * PLE-1081 - check if re-authentication works for all JIRA-s
 	 */
 	public void testFindIssuesReauthenticate() {
+		fail("This breaks on bamboo!");
+
 		MockIssueCollector ic = new MockIssueCollector() {
 			@Override
 			public int getMaxHits() {
