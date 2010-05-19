@@ -302,7 +302,7 @@ public class Utils {
       if (lockToken != null) {
          Header ifHeader = new Header();
          ifHeader.setName("If");
-         ifHeader.setValue("(<" + lockToken + ">)");
+         ifHeader.setValue("<> (<" + lockToken + ">)");
          method.addRequestHeader(ifHeader);
       }
    }

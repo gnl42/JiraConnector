@@ -479,9 +479,9 @@ public class WebdavFile extends File {
     return -1;
   }
 
-  public int compareTo(Object o) {
-    return compareTo((File)o);
-  }
+//  public int compareTo(Object o) {
+//    return compareTo((File)o);
+//  }
 
   public boolean equals(Object x) {
     if(x==null)

@@ -837,7 +837,7 @@ public class WebdavResource extends WebdavSession {
         StringBuffer ifHeaderValue = new StringBuffer();
 
         for (int i = 0; i < lockTokens.length; i++) {
-            ifHeaderValue.append("(<").append(lockTokens[i]).append(">) ");
+            ifHeaderValue.append("<").append(method.getPath()).append("> ").append("(<").append(lockTokens[i]).append(">) ");
         }
 
         method.setRequestHeader("If", ifHeaderValue.toString());
