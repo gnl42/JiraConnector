@@ -173,21 +173,22 @@
 			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip"/>
 		</davput>
 		
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
-		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"
 			destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" />
 			
-		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/-->
-		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" overwrite="true"
+		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}"/-->
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true"
 			destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip"/>
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
 
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" overwrite="true"
+		<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true"
 			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip"/>
 
-		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
 
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"
 			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />
 	</target>
 
