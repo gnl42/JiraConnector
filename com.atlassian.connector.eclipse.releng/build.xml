@@ -135,9 +135,9 @@
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
 		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
-		<!--antcall target="for-each-target">
+		<antcall target="for-each-target">
 			<param name="call" value="publish-helper"/>
-		</antcall--> 
+		</antcall>
 	</target>
 
 	<target name="publish-helper">
@@ -161,27 +161,34 @@
 		
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
 		<property name="publish.name" value="e${build.target}"/>
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/${version}"/>
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
 	
-		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/-->
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
 				
-		<!--davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false">
+		<davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset dir="${build.home}/${build.target}/site/"/>
-		</davput-->
+		</davput>
 
-		<!--davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false">
+		<davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip"/>
-		</davput-->
+		</davput>
 		
-		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
 		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"
-			destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" /-->
+			destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" />
 			
 		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/-->
 		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" overwrite="true"
 			destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip"/>
 		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
-			
+
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" overwrite="true"
+			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip"/>
+
+		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"
+			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />
 	</target>
 
 	<target name="init-3.3">
