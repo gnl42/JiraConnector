@@ -1,0 +1,505 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML><HEAD> 
+	 <TITLE>WebDAV ant tasks</TITLE> <STYLE TYPE="text/css">
+	 	BODY {
+			font-family: Arial, sans-serif;
+		}
+	 </STYLE> 
+  </HEAD> 
+  <BODY> 
+	 <H1>WebDAV ant tasks</H1> 
+	 <P>Tasks for Jakarta Ant for dealing with WebDAV repositories. </P> 
+	 <P>Tested with ant 1.6.1.</P> 
+	 <P>Library dependencies:</P> 
+	 <UL> 
+		<LI>Jakarta Commons HTTP Client</LI> 
+		<LI>Jakarta Slide WebDAV Client library</LI> 
+		<LI>Jakarta Commons Logging library</LI> 
+	 </UL> 
+	 <H3>Task definitions</H3> 
+	 <P>Copy the four java libraries to your <TT>${ANT_HOME}/lib</TT> directory.
+		And choose on of the following options to declare the WebDAV tasks.</P> 
+	 <P>Way 1: Declare the tasks in like the following. Daclare any name and use
+		the name for the tasks described below.</P> 
+	 <PRE> &lt;target name="declare-tasks"&gt;
+   &lt;taskdef name="davput" classname="org.apache.webdav.ant.taskdefs.Put"/&gt; 
+   &lt;taskdef name="davget" classname="org.apache.webdav.ant.taskdefs.Get"/&gt;
+   &lt;taskdef name="lock"   classname="org.apache.webdav.ant.taskdefs.Lock"/&gt;
+   &lt;taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock"/&gt;
+   &lt;taskdef name="mkcol"  classname="org.apache.webdav.ant.taskdefs.Mkcol"/&gt;
+   &lt;taskdef name="davdelete" classname="org.apache.webdav.ant.taskdefs.Delete"/&gt;
+   &lt;taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch"/&gt;
+   &lt;taskdef name="davcopy" classname="org.apache.webdav.ant.taskdefs.Copy"/&gt;
+   &lt;taskdef name="davmove" classname="org.apache.webdav.ant.taskdefs.Move"/&gt;
+ &lt;/target&gt;</PRE> 
+	 <P>Way 1a.</P> 
+	 <PRE>  &lt;target name="declare-tasks"&gt;
+    &lt;taskdef resource="org/apache/webdav/ant/taskdefs.properties"/&gt;
+  &lt;/target&gt;</PRE> 
+	 <P>Way 2: Declare the namespace <TT>antlib:org.apache.webdav.ant</TT>, e.g.
+		at the <TT>project</TT> element of your <TT>build.xml</TT>. </P> 
+	 <PRE>  &lt;project name="site-update" 
+           default="upload" 
+           xmlns:dav="antlib:org.apache.webdav.ant"&gt;
+    &lt;target name="uplaod"
+      &lt;dav:put url="http://${DAV.server}/${DAV.root}"
+               userid="${DAV.user}" password="${DAV.password}"
+               lock="true" overwrite="false"&gt;
+        &lt;dav:fileset dir="site"&gt;
+          &lt;dav:include name="**/*.html"/&gt;
+        &lt;/dav:fileset&gt;
+      &lt;/dav:put&gt;
+    &lt;/target&gt;
+  &lt;/project&gt;</PRE> 
+	 <P>As you can see you use the prefix declared for the namespace
+		<TT>antlib:org.apache.webdav.ant</TT> for all WebDAV ant tasks and for all its
+		children. (The later I didn't understand, but without it doesn't work.)</P> 
+	 <H2>common attributes</H2> 
+	 <P>All of the ant tasks described below have the following attributes.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">url</TD> 
+		  <TD VALIGN="top">The WebDAV URL to work on.</TD> 
+		  <TD VALIGN="middle" ALIGN="center">Yes.</TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">userid</TD> 
+		  <TD VALIGN="top">The username for authentication.</TD> 
+		  <TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">password</TD><TD VALIGN="top">Thes users password
+			 for authentication.</TD><TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">verbose</TD><TD VALIGN="top">Makes the task as
+			 verbose as with ants -v option. Defaults to <TT>false</TT>.</TD><TD
+		  VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H2><A NAME="davget">davget, dav:get</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Retrieves a file a WebDAV-fileset from a WebDAV server and stored it in
+		a local directory.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">toDir</TD> 
+		  <TD VALIGN="top">The local directory where to store the resources
+			 retrieved.</TD> 
+		  <TD VALIGN="middle" ALIGN="center" ROWSPAN="2">Yes. Either todir of
+			 tofile must be specified.</TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">toFile</TD> 
+		  <TD VALIGN="top">A filename where to store the resource given directly
+			 by <TT>url</TT> attribute.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">overwrite</TD><TD VALIGN="top">If set to
+			 <TT>true</TT> WebDAV resources are overwritten without any test. Otherwise they
+			 are overwritten only if its <TT>getlastmodified</TT> property is less then the
+			 local <I>last modified date</I>. Defaults to <TT>false</TT>.</TD><TD
+		  VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">encoding</TD><TD VALIGN="top">Specifies the encoding
+			 of the files to be retrieved. This should be set when using filter, otherwise
+			 it is unused.</TD><TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Nested Elements</H4> 
+	 <P>The files to be retrieved are specified by nested <TT><A
+		HREF="#davfileset">davfileset</A></TT>s.</P> 
+	 <P>This task supports filtering using nested <TT>FilterSet</TT>s. If
+		filters are used the encoding attribute should be set.</P> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;davget url="http://any.host.com/DAV"
+          userid="${DAV.user}" password="${DAV.password}"
+          todir="tmp"&gt;
+    &lt;davfileset dir="any/collection"&gt;
+      &lt;include name="**/*.xml"/&gt;
+    &lt;/davfileset&gt;
+  &lt;/davget&gt;</PRE> 
+	 <P>Retrieves all XML files from the DAV collection published under
+		<TT>http://any.host.com/DAV/any/collection</TT>and its sub collections.</P> 
+	 <PRE>  &lt;davget url="http://${DAV.server}/${DAV.root}/path/to/any/file.txt"
+          userid="${DAV.user}" password="${DAV.password}"
+          tofile="tmp/filterTest.txt" encoding="UTF-8"
+          overwrite="true"&gt;
+    &lt;filterset&gt;
+      &lt;filter token="XXX" value="YYY"/&gt;
+    &lt;/filterset&gt;
+  &lt;/davget&gt;</PRE> 
+	 <P>Retrieves a single file and applies a filter to it.</P> 
+	 <H2><A NAME="davput">davput, dav:put</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Uploads local files to a WebDAV server.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">file</TD> 
+		  <TD VALIGN="top">A single file to be uploaded</TD> 
+		  <TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">lock</TD><TD VALIGN="top">Specifies whether the root
+			 URL (given by the url attribute) is to be locked before uploading. Defaults to
+			 <TT>true</TT>.</TD><TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">locktoken</TD><TD VALIGN="top">Gives a locktoken to
+			 be used while writing. May be obtained with the <A
+			 HREF="#lock"><TT>lock</TT></A> task.</TD><TD VALIGN="middle"
+		  ALIGN="center">No.&nbsp;</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">overwrite</TD><TD VALIGN="top">If set to
+			 <TT>true</TT> local files are overwritten without any test. Otherwise they are
+			 overwritten only if they are older then the WebDAV resource. Defaults to
+			 <TT>false</TT>.</TD><TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">encoding</TD><TD VALIGN="top">Specifies the encoding
+			 of the files to be retrieved. This should be set when using filter, otherwise
+			 it is unused.</TD><TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Nested Elements</H4> 
+	 <P>Files to be uploaded are specified by nested <TT>FileSet</TT>s. If the
+		<TT>file</TT> attribute is given no <TT>FileSet</TT>s are allowed.</P> 
+	 <P>This task supports filtering using nested <TT>FilterSet</TT>s. If
+		filters are used the encoding attribute should be set.</P> 
+	 <P><TT>davput</TT> also supports nested <TT>zipfileset</TT>s.</P> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;davput url="http://${DAV.server}/${DAV.root}/xx/yy/zz"
+          userid="${DAV.user}" password="${DAV.password}"&gt;
+    &lt;fileset dir="${basedir}"&gt;
+      &lt;include name="**/*.xml"/&gt;
+    &lt;/fileset&gt;
+  &lt;/davput&gt;</PRE> 
+	 <P>Uploads all XML files in the base directory that are newer then its
+		version in the DAV collection. The <TT>zz</TT> collection is locked before
+		reading and writing and unlocked if the task is finished.</P> 
+	 <PRE>  &lt;davput url="http://${DAV.server}/${DAV.root}/x/y/z"
+          userid="${DAV.user}" password="${DAV.password}"
+          overwrite="true" encoding="UTF-8"
+          file="filterTest.txt"&gt;
+    &lt;filterset&gt;
+      &lt;filter token="FILTER" value="VALUE"/&gt;
+    &lt;/filterset&gt;
+  &lt;/davput&gt;</PRE> 
+	 <P>Puts a single file to the given URL. If the resource at <TT>/x/y/z</TT>
+		exists and is a collection the given file is puted as new member of this
+		collection. If the resource is not a collection the file will replace the
+		existing resource.</P> 
+	 <P>While uploading a filter is applied.</P> 
+	 <PRE>  &lt;davput url="http://${DAV.server}/${DAV.root}/docs/"
+     userid="${DAV.user}" password="${DAV.password}"&gt;
+     &lt;zipfileset src="docs.zip"&gt;
+       &lt;include name="**/*.xml"/&gt;
+     &lt;/zipfileset&gt;
+  &lt;/davput&gt;</PRE> 
+	 <P>Uploads all XML files found in the zipfile <TT>docs.zip</TT>.</P> 
+	 <H2><A NAME="mkcol">mkcol</A>, dav:mkcol</H2> 
+	 <H4>Description</H4> 
+	 <P>Creates a WebDAV collection and all required parent collections.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">locktoken</TD><TD VALIGN="top">Gives a locktoken to
+			 be used while writing. May be obtained with the <A
+			 HREF="#lock"><TT>lock</TT></A> task.</TD><TD VALIGN="middle"
+		  ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;mkcol url="http://${DAV.server}/xx/yy/zz"
+         userid="${DAV.user}" password="${DAV.password}"/&gt;</PRE> 
+	 <P>Creates a collection named <TT>/xx/yy/zz</TT>. If the collections
+		<TT>/xx</TT> and <TT>/xx/yy</TT> do not exist they are created too.</P> 
+	 <H2><A NAME="davcopy">davcopy, dav:copy</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Copies/renames a resource on a single WebDAV-Server.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">destination</TD><TD VALIGN="top">URL to which the
+			 source (given by the common <TT>url</TT> attribute) is to be copied.<BR>This
+			 URL may be relative to <TT>url</TT> or an absolute one.</TD><TD VALIGN="middle"
+		  ALIGN="center">Yes.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">overwrite</TD><TD VALIGN="top">Determines whether
+			 the destination is overwritten if it always exists.</TD><TD VALIGN="middle"
+		  ALIGN="center">No. Defaults to <TT>false</TT>.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">depth</TD><TD VALIGN="top">Determines whether the
+			 copy of collections is shallow (<TT>0</TT>)or deep (<TT>infinity</TT>).</TD><TD
+		  VALIGN="middle" ALIGN="center">No. Defaults to <TT>infinity</TT>.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>   &lt;davcopy url="http://${DAV.server}/DAV/resource1" verbose="true"
+            userid="${DAV.user}" password="${DAV.password}"
+            destination="http://${DAV.server}/DAV/copy_of_resource1"/&gt;</PRE> 
+	 <P>Copies <TT>resource</TT> to <TT>copy_of_resource</TT>. If
+		<TT>resource</TT> is a collection the whole content is copied too.</P> 
+	 <PRE>   &lt;davcopy url="http://${DAV.server}/DAV/resource1" verbose="true"
+            userid="${DAV.user}" password="${DAV.password}"
+            destination="copy_of_resource1"/&gt;</PRE> 
+	 <P>Does the same as the first example, but the destination is given
+		relative.</P> 
+	 <H2><A NAME="davmove">davmove, dav:move</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Moves/renames a WebDAV-resource.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">destination</TD><TD VALIGN="top">URL to which the
+			 source (given by the common <TT>url</TT> attribute) is to be moved.<BR>This URL
+			 may be relative to <TT>url</TT> or an absolute one.</TD><TD VALIGN="middle"
+		  ALIGN="center">Yes.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">overwrite</TD><TD VALIGN="top">Determines whether
+			 the destination is overwritten if it always exists.</TD><TD VALIGN="middle"
+		  ALIGN="center">No. Defaults to <TT>false</TT>.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>   &lt;davmove url="http://${DAV.server}/DAV/resource1" verbose="true"
+            userid="${DAV.user}" password="${DAV.password}"
+            destination="http://${DAV.server}/DAV/resource2"/&gt;</PRE> 
+	 <P>Renames the resource <TT>resource1</TT> to <TT>resource2</TT>.</P> 
+	 <PRE>   &lt;davmove url="http://${DAV.server}/DAV/coll1/resource" verbose="true"
+            userid="${DAV.user}" password="${DAV.password}"
+            destination="/DAV/coll2/resource"/&gt;</PRE> 
+	 <P>Moves the resource <TT>resource</TT> from collection <TT>coll1</TT> to
+		<TT>coll2</TT> using a relative destination URL.</P> 
+	 <H2><A NAME="davdelete">davdelete, dav:delete</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Deletes a WebDAV resource or a set of resources.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">locktoken</TD><TD VALIGN="top">Gives a locktoken to
+			 be used while writing. May be obtained with the <A
+			 HREF="#lock"><TT>lock</TT></A> task.</TD><TD VALIGN="middle"
+		  ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Nested Elements</H4> 
+	 <P>Resources to be deleted are given by nested <TT><A
+		HREF="#davfileset">davfileset</A></TT>s</P> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;davdelete url="http://${DAV.server}/DAV/"
+             userid="${DAV.user}" password="${DAV.password}"&gt;
+    &lt;davfileset dir="docs"&gt;
+      &lt;include name="**/*.xml"/&gt;
+    &lt;/davfileset&gt;
+  &lt;/davdelete&gt;</PRE> 
+	 <P>Deletes all XML files in the <TT>/DAV/docs</TT> collection and its
+		subcollections.</P> 
+	 <PRE>  &lt;davdelete url="http://${DAV.server}/DAV/xx"
+             userid="${DAV.user}" password="${DAV.password}"&gt;
+  &lt;/davdelete&gt;</PRE> 
+	 <P>Deletes the resource <TT>/DAV/xx</TT>.</P> 
+	 <H2>proppatch, dav:proppatch</H2> 
+	 <H4>Description</H4> 
+	 <P>Sets or removes properties on WebDAV resources. (experimental)</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">locktoken</TD><TD VALIGN="top">Gives a locktoken to
+			 be used while writing. May be obtained with the <A
+			 HREF="#lock"><TT>lock</TT></A> task.</TD><TD VALIGN="middle"
+		  ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Nested Elements</H4> 
+	 <P>Resources to be proppatch'ed are given by nested <TT><A
+		HREF="#davfileset">davfileset</A></TT>s. Without a <TT>davfileset</TT> the
+		resource given by the <TT>url</TT> attribute is used.</P> 
+	 <H5>set, remove</H5> 
+	 <P>The <TT>set</TT> elements specifies a property to be set.</P> 
+	 <P>The <TT>remove</TT> elements specifies a property to be set.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">name</TD><TD VALIGN="top">The name of the property
+			 .</TD><TD VALIGN="middle" ALIGN="center">Yes</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">namespace</TD><TD VALIGN="top">The namespace of the
+			 property. Defaults to the DAV namespace (<TT>DAV:</TT>).</TD><TD
+		  VALIGN="middle" ALIGN="center">No</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">namespaceprefix</TD><TD VALIGN="top">The prefix to
+			 be used in the DAV request for the namespace. This should only be needed in the
+			 rare case where the server expects a certain prefix.</TD><TD VALIGN="middle"
+		  ALIGN="center">No. Discouraged.</TD> 
+		</TR> 
+		<TR><TD
+		  VALIGN="top">value (for <TT>&lt;set&gt;</TT> only)</TD><TD VALIGN="top">The
+			 value of the property. Must not be given if the element contains text.</TD><TD
+		  VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;proppatch url="http://${DAV.server}/DAV/test.txt"
+             userid="${DAV.user}" password="${DAV.password}"&gt;
+     &lt;set name="displayname" value="TEST.TXT"/&gt;
+  &lt;/proppatch&gt;</PRE> 
+	 <P>Sets the <TT>DAV:displayname</TT> of the resource
+		<TT>DAV/test.txt</TT>.</P> 
+	 <PRE>  &lt;proppatch url="http://${DAV.server}/DAV/users/sl"
+             userid="${DAV.user}" password="${DAV.password}"&gt;
+    &lt;set name="email" namespace="imb"&gt;sl@itaw&lt;/set&gt;
+    &lt;set name="displayname"&gt;stefan"&lt;/set&gt;
+    &lt;remove name="address" namespace="imb"/&gt;
+  &lt;/proppatch&gt;</PRE> 
+	 <P>Sets and removes some properties for a user resource.</P> 
+	 <PRE>  &lt;proppatch url="http://${DAV.server}/DAV/pub"
+             userid="${DAV.user}" password="${DAV.password}"&gt;
+     &lt;set name="status" namespace="http://www.abb.com/" value="published"/&gt;
+     &lt;davfileset/&gt;
+  &lt;/proppatch&gt;</PRE> 
+	 <P>Sets the <TT>{http://www.abb.com/}status</TT> property on all resources
+		in the <TT>/DAV/pub</TT> collection.</P> <HR> 
+	 <H2><A NAME="lock">lock, dav:lock</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Locks a WebDAV resource and stores the locktoken recieved in a property.
+		Together with the <A HREF="#unlock"><TT>unlock</TT></A> task this in intended
+		to execute multiple WebDAV operations within the same lock.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">property</TD><TD VALIGN="top">The name of the
+			 property where the locktoken is stored.</TD><TD VALIGN="middle"
+		  ALIGN="center">Yes.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">timeout</TD><TD VALIGN="top">The timeout of the lock
+			 in seconds. Defaults to 3600.</TD><TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">ownerinfo</TD><TD VALIGN="top">The owner info of the
+			 lock. Defaults to the <TT>userid</TT> or to <TT>ant</TT> if no userid is
+			 given.</TD><TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR><TD VALIGN="top">depth</TD><TD VALIGN="top">The depth of the lock.
+			 Valid values are 0<TT></TT> of <TT>infinity</TT>. Defaults to
+			 <TT>infinity</TT>.</TD><TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;lock url="http://${DAV.server}/DAV/col"
+        userid="${DAV.user}" password="${DAV.password}"
+        property="locktoken"/&gt;
+  &lt;mkcol url="http://${DAV.server}/DAV/col"
+        userid="${DAV.user}" password="${DAV.password}"
+        locktoken="${locktoken}"/&gt;
+  &lt;davput url="http://${DAV.server}/DAV/col"
+        userid="${DAV.user}" password="${DAV.password}"
+        locktoken="${locktoken}" overwrite="false"&gt;
+    &lt;fileset dir="${basedir}"&gt;
+      &lt;include name="**/*.xml"/&gt;
+    &lt;/fileset&gt;
+  &lt;/davput&gt;
+  &lt;unlock url="http://${DAV.server}/DAV/col"
+        userid="${DAV.user}" password="${DAV.password}"
+        locktoken="${locktoken}"/&gt;</PRE> 
+	 <P>Locks the resource <TT>/DAV</TT> and stores the locktoken in the
+		property <TT>locktoken</TT>. Executes two writing tasks with the same locktoken
+		and unlocks the <TT>/DAV</TT> resource.</P> 
+	 <PRE>  &lt;lock url="http://${DAV.server}/DAV"
+        userid="${DAV.user}" password="${DAV.password}"
+        property="locktoken" 
+        timeout="100" ownerinfo="${user}" depth="0"/&gt;</PRE> 
+	 <P>Locks the resource <TT>/DAV</TT> for 100 seconds.</P> 
+	 <H2><A NAME="unlock">unlock, dav:unlock</A></H2> 
+	 <H4><A NAME="unlock">Description</A></H4> 
+	 <P>Removes a lock. See <A HREF="#lock"><TT>lock</TT></A>.</P> 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR><TD VALIGN="top">locktoken</TD><TD VALIGN="top">Gives a locktoken of
+			 the lock to be removed.</TD><TD VALIGN="middle" ALIGN="center">Yes.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <P></P> <HR> 
+	 <H2><A NAME="davfileset">davfileset</A></H2> 
+	 <H4>Description</H4> 
+	 <P>Defines a group of WebDAV resources like a fileset for local files.
+		Resources will be found in a collection tree determined by the root
+		collection.</P> 
+	 <P>Resources in the set are specified by nested <TT>&lt;patternset&gt;</TT>
+		<TT>&lt;include&gt;</TT>, <TT>&lt;includesfile&gt;</TT>,
+		<TT>&lt;exclude&gt;</TT> or <TT>&lt;excludesfile&gt;</TT> elements. Without any
+		child element a davfileset selects all resources below the root collection.</P>
+	 
+	 <TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0"> 
+		<TR> 
+		  <TD VALIGN="top"><B>Attribute</B></TD> 
+		  <TD VALIGN="top"><B>Description</B></TD> 
+		  <TD ALIGN="center" VALIGN="top"><B>Required</B></TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">dir</TD> 
+		  <TD VALIGN="top">The root of the collection tree of this DavFileSet.
+			 This is a URL path relative to the URL of the surrounding task.</TD> 
+		  <TD VALIGN="middle" ALIGN="center">No.</TD> 
+		</TR> 
+		<TR> 
+		  <TD VALIGN="top">casesensitive</TD> 
+		  <TD VALIGN="top">Must the include and exclude patterns be treated in a
+			 case sensitive way? Defaults to <TT>true</TT>.</TD> 
+		  <TD VALIGN="top" ALIGN="center">No.</TD> 
+		</TR> 
+	 </TABLE> 
+	 <H4>Examples</H4> 
+	 <PRE>  &lt;davfileset dir="xx/yy"&gt;
+    &lt;include name="**/*.xml"/&gt;
+  &lt;/davfileset&gt;</PRE> 
+	 <P>Selects all XML-files in the collection <TT>xx/yy</TT> below the URL
+		given in the surrounding task.</P> 
+	 <PRE>  &lt;patternset id="HtmlFiles"&gt;
+    &lt;include name="**/*.htm"/&gt;
+    &lt;include name="**/*.html"/&gt;
+  &lt;/patternset&gt;
+  ...
+  &lt;davfileset&gt;
+    &lt;patternset refid="HtmlFiles"/&gt;
+  &lt;/davfileset&gt;</PRE> 
+	 <P>Selects all HTML sources below the URL given in the surrounding
+		task.</P> 
+	 <PRE>  &lt;davfileset dir="tmp"/&gt;</PRE> 
+	 <P>Selects all resources in the <TT>tmp</TT> collections and its
+		subcollections.</P> 
+	 <P></P> </BODY>
+</HTML>

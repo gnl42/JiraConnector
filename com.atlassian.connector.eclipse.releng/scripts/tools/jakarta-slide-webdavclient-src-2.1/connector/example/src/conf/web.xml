@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+<web-app id="WebApp">
+	<servlet>
+		<servlet-name>Test</servlet-name>
+		<display-name>Test</display-name>
+		<servlet-class>connector.TestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Test</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+   <resource-ref >
+      <res-ref-name>WebDAV-Connector</res-ref-name>
+      <res-type>org.apache.webdav.connector.WebDAVConnectionFactory</res-type>
+      <res-auth>Container</res-auth>
+   </resource-ref>
+</web-app>

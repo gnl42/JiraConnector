@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<connection-factories>
+
+  <tx-connection-factory>
+     <jndi-name>WebDAV-Connector</jndi-name>
+     <xa-transaction/>
+     <track-connection-by-tx/> 
+     <adapter-display-name>WebDAV-Connector</adapter-display-name>
+  </tx-connection-factory>
+
+
+</connection-factories>

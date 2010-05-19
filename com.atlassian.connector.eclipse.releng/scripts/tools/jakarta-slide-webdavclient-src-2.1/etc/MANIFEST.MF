@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Extension-Name: webdavclient
+Specification-Title: Slide
+Specification-Version: 2.0
+Specification-Vendor: Apache Software Foundation
+Implementation-Title: Slide
+Implementation-Version: @VERSION@
+Implementation-Vendor: Apache Software Foundation

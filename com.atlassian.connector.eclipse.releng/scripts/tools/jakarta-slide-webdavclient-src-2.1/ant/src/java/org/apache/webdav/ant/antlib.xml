@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<antlib>
+  <taskdef name="put" classname="org.apache.webdav.ant.taskdefs.Put"/>
+  <taskdef name="get" classname="org.apache.webdav.ant.taskdefs.Get"/>
+  <taskdef name="lock" classname="org.apache.webdav.ant.taskdefs.Lock"/>
+  <taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock"/>
+  <taskdef name="mkcol" classname="org.apache.webdav.ant.taskdefs.Mkcol"/>
+  <taskdef name="delete" classname="org.apache.webdav.ant.taskdefs.Delete"/>
+  <taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch"/>
+  <taskdef name="copy" classname="org.apache.webdav.ant.taskdefs.Copy"/>
+  <taskdef name="move" classname="org.apache.webdav.ant.taskdefs.Move"/>
+</antlib>
+
