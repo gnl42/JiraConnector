@@ -135,45 +135,53 @@
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
 		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
-		<antcall target="for-each-target">
+		<!--antcall target="for-each-target">
 			<param name="call" value="publish-helper"/>
-		</antcall> 
-
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
-			trust="true" command="cp -fR &quot;${build.publish.path}/${build.publish.postfix}/${version}/&quot;* &quot;${build.publish.path}/${build.publish.postfix}&quot;" timeout="5000" passphrase="${build.publish.passphrase}"
-			knownhosts="tools/known_hosts"/>
+		</antcall--> 
 	</target>
 
 	<target name="publish-helper">
+		<!-- jakarta slide downloaded from http://archive.apache.org/dist/jakarta/slide/source/ -->
+		<path id="slide.classpath">
+			<pathelement location="${basedir}/lib/jakarta-slide-ant-webdav-2.1.jar"/>
+			<pathelement location="${basedir}/lib/jakarta-slide-webdavlib-2.1.jar"/>
+			<pathelement location="${basedir}/lib/commons-httpclient.jar"/>
+			<pathelement location="${basedir}/lib/commons-logging.jar"/>
+		</path>
+
+		<taskdef name="davput" classname="org.apache.webdav.ant.taskdefs.Put" classpathref="slide.classpath"/> 
+		<taskdef name="davget" classname="org.apache.webdav.ant.taskdefs.Get" classpathref="slide.classpath"/>
+		<taskdef name="lock"   classname="org.apache.webdav.ant.taskdefs.Lock" classpathref="slide.classpath"/>
+		<taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock" classpathref="slide.classpath"/>
+		<taskdef name="mkcol"  classname="org.apache.webdav.ant.taskdefs.Mkcol" classpathref="slide.classpath"/>
+		<taskdef name="davdelete" classname="org.apache.webdav.ant.taskdefs.Delete" classpathref="slide.classpath"/>
+		<taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch" classpathref="slide.classpath"/>
+		<taskdef name="davcopy" classname="org.apache.webdav.ant.taskdefs.Copy" classpathref="slide.classpath"/>
+		<taskdef name="davmove" classname="org.apache.webdav.ant.taskdefs.Move" classpathref="slide.classpath"/>
+		
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
 		<property name="publish.name" value="e${build.target}"/>
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/${version}"/>
 	
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" verbose="true"
-			passphrase="${build.publish.passphrase}"
-			trust="true" command="mkdir -p &quot;${publish.path}/${publish.name}.tmp&quot;" timeout="5000"
-			knownhosts="tools/known_hosts"/>
+		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/-->
+				
+		<!--davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false">
+			<fileset dir="${build.home}/${build.target}/site/"/>
+		</davput-->
 
-		<scp todir="${build.publish.user}@${build.publish.host}:${publish.path}/${publish.name}.tmp" 
-			keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
-			<fileset dir="${build.home}/${build.target}/site"/>
-		</scp>
+		<!--davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false">
+			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip"/>
+		</davput-->
 		
-		<!-- copy zipped site also -->
-		<scp remoteTofile="${build.publish.user}@${build.publish.host}:${publish.path}/${publish.name}-site-all.zip.tmp"
-		   	localFile="${build.home}/${build.target}/${publish.name}-site-all.zip" 
-			keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
-		</scp>
-		
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}"
-			passphrase="${build.publish.passphrase}" 
-			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000" 
-			knownhosts="tools/known_hosts"/>
-
-		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}"
-			passphrase="${build.publish.passphrase}" 
-			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000" 
-			knownhosts="tools/known_hosts"/>
+		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"
+			destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" /-->
+			
+		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/-->
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" overwrite="true"
+			destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip"/>
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true"/>
+			
 	</target>
 
 	<target name="init-3.3">
