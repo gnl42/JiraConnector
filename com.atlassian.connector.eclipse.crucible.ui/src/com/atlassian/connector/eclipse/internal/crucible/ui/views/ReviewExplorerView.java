@@ -972,13 +972,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 						treeNode.setCrucibleFileInfo(fileByPermId);
 						getViewer().refresh(treeNode);
-						return true;
 					} else {
 						// it's a general comment or reply to a general comment - let's refresh all general comments
 						generalCommentsNode.setReview(aReview);
 						getViewer().refresh(generalCommentsNode);
-						return true;
-
 					}
 				}
 			}
