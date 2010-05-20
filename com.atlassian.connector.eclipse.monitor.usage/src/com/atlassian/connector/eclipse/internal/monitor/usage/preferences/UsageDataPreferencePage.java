@@ -12,6 +12,14 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
+import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -34,14 +42,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 
 /**
  * @author Mik Kersten
@@ -116,7 +116,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-		Link details = new Link(uc, SWT.NULL);
+		Link details = new Link(uc, SWT.NONE);
 		details.setText(String.format("<A href=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
