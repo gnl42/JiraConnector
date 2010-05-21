@@ -16,7 +16,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
+import com.atlassian.theplugin.commons.crucible.api.model.Project;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -132,9 +133,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private void setInputAndInitialSelections() {
 		updateInput();
 
-		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(taskRepository);
+		Set<BasicProject> cachedProjects = CrucibleUiUtil.getCachedProjects(taskRepository);
 
-		CrucibleProject lastSelectedProject = CrucibleRepositoryConnector.getLastSelectedProject(taskRepository,
+		BasicProject lastSelectedProject = CrucibleRepositoryConnector.getLastSelectedProject(taskRepository,
 				cachedProjects);
 		if (lastSelectedProject != null) {
 			projectsComboViewer.setSelection(new StructuredSelection(lastSelectedProject));
@@ -163,7 +164,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	private void updateInput() {
-		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(taskRepository);
+		Set<BasicProject> cachedProjects = CrucibleUiUtil.getCachedProjects(taskRepository);
 		projectsComboViewer.setInput(cachedProjects);
 
 		Set<User> cachedUsers = CrucibleUiUtil.getCachedUsers(taskRepository);
@@ -172,7 +173,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	private void updateInputAndRestoreSelections() {
-		CrucibleProject previousProject = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
+		BasicProject previousProject = (BasicProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
 		User previousModerator = (User) ((IStructuredSelection) moderatorComboViewer.getSelection()).getFirstElement();
 		User previousAuthor = (User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement();
 
@@ -211,21 +212,20 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		projectsComboViewer.setSorter(new ViewerSorter());
 		projectsComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				CrucibleProject project = getSelectedProject();
+				BasicProject project = getSelectedProject();
 				if (project != null) {
-					CrucibleProject details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
+					BasicProject details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 
-					if (details == null || details.getAllowedReviewers() == null
-							|| details.getAllowedReviewers().size() == 0) {
+					if (!(details instanceof Project)) {
 						CrucibleUiUtil.updateProjectDetailsCache(taskRepository, project.getKey(), getContainer(),
 								CrucibleReviewDetailsPage.this);
 						details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 					}
 
-					if (details != null && details.getAllowedReviewers() != null
-							&& details.getAllowedReviewers().size() > 0) {
+					if (details instanceof Project && ((Project) details).getAllowedReviewers() != null
+							&& ((Project) details).getAllowedReviewers().size() > 0) {
 						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(getUsersFromUsernames(
-								taskRepository, details.getAllowedReviewers())));
+								taskRepository, ((Project) details).getAllowedReviewers())));
 					} else {
 						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(taskRepository));
 					}
@@ -398,7 +398,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	@Nullable
 	public Review getReview() {
 		final User author = getSelectedAuthor();
-		final CrucibleProject project = getSelectedProject();
+		final BasicProject project = getSelectedProject();
 
 		if (project == null || project.getKey() == null) {
 			return null;
@@ -446,13 +446,13 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	@Nullable
-	CrucibleProject getSelectedProject() {
+	BasicProject getSelectedProject() {
 		if (projectsComboViewer == null) {
 			return null;
 		}
 		Object firstElement = ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
 		if (firstElement != null) {
-			return (CrucibleProject) firstElement;
+			return (BasicProject) firstElement;
 		}
 		return null;
 	}

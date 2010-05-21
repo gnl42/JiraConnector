@@ -18,7 +18,7 @@ import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -380,19 +380,19 @@ public class CrucibleUiUtilTest extends TestCase {
 				.getCrucibleClientData(CrucibleUiUtil.getCrucibleTaskRepository(review));
 		assertNotNull(clientData);
 
-		List<CrucibleProject> projects = new ArrayList<CrucibleProject>();
-		CrucibleProject projectA = new CrucibleProject("a", "AA", "AaA");
-		CrucibleProject projectB = new CrucibleProject("b", "BB", "BbB");
+		List<BasicProject> projects = new ArrayList<BasicProject>();
+		BasicProject projectA = new BasicProject("a", "AA", "AaA");
+		BasicProject projectB = new BasicProject("b", "BB", "BbB");
 		projects.add(projectA);
 		projects.add(projectB);
 		clientData.setProjects(projects);
 
-		Set<CrucibleProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
+		Set<BasicProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
 
 		assertEquals(2, usersReceivedSet.size());
 
-		CrucibleProject cachedProjectA = new CrucibleProject("a", "AA", "AaA");
-		CrucibleProject cachedProjectB = new CrucibleProject("b", "BB", "BbB");
+		BasicProject cachedProjectA = new BasicProject("a", "AA", "AaA");
+		BasicProject cachedProjectB = new BasicProject("b", "BB", "BbB");
 		assertTrue(usersReceivedSet.contains(cachedProjectA));
 		assertTrue(usersReceivedSet.contains(cachedProjectB));
 	}

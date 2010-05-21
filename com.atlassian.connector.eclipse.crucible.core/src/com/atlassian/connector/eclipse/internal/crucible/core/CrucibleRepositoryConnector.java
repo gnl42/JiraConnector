@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -99,7 +99,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	 * @param repository
 	 * @param crucibleProject
 	 */
-	public static void updateLastSelectedProject(TaskRepository repository, CrucibleProject crucibleProject) {
+	public static void updateLastSelectedProject(TaskRepository repository, BasicProject crucibleProject) {
 		repository.setProperty(DEFAULT_PROJECT, crucibleProject.getId());
 	}
 
@@ -111,11 +111,11 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	 *            collection of projects
 	 * @return Crucible project or null
 	 */
-	public static CrucibleProject getLastSelectedProject(TaskRepository repository, Set<CrucibleProject> projects) {
+	public static BasicProject getLastSelectedProject(TaskRepository repository, Set<BasicProject> projects) {
 
 		String projectId = repository.getProperty(DEFAULT_PROJECT);
 
-		for (CrucibleProject project : projects) {
+		for (BasicProject project : projects) {
 			if (project.getId().equals(projectId)) {
 				return project;
 			}

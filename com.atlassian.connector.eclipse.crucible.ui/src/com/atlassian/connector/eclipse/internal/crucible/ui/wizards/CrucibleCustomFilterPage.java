@@ -18,7 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserSorter;
 import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -64,7 +64,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private static final User USER_ANY = new User("ANY_USER", ANY);
 
-	private static final CrucibleProject PROJECT_ANY = new CrucibleProject(ANY, "ANY_PROJECT", ANY);
+	private static final BasicProject PROJECT_ANY = new BasicProject(ANY, "ANY_PROJECT", ANY);
 
 	private Button allRolesButton;
 
@@ -130,8 +130,8 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		projectCombo.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof CrucibleProject) {
-					return ((CrucibleProject) element).getName();
+				if (element instanceof BasicProject) {
+					return ((BasicProject) element).getName();
 				}
 				return super.getText(element);
 			}
@@ -265,7 +265,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		Set<User> users = new HashSet<User>(getCrucibleClientData().getCachedUsers());
 		users.add(USER_ANY);
 
-		Set<CrucibleProject> projects = new HashSet<CrucibleProject>(getCrucibleClientData().getCachedProjects());
+		Set<BasicProject> projects = new HashSet<BasicProject>(getCrucibleClientData().getCachedProjects());
 		projects.add(PROJECT_ANY);
 
 		// TODO add the ANY values and set selections to be what they were before if they exist
@@ -318,7 +318,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		}
 
 		String project = query.getAttribute(CustomFilter.PROJECT);
-		CrucibleProject cachedProject = getCachedProject(project);
+		BasicProject cachedProject = getCachedProject(project);
 		if (cachedProject != null) {
 			projectCombo.setSelection(new StructuredSelection(cachedProject));
 		}
@@ -392,14 +392,14 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		return null;
 	}
 
-	private CrucibleProject getCachedProject(String projectKey) {
+	private BasicProject getCachedProject(String projectKey) {
 		if (projectKey == null || projectKey.length() == 0) {
 			return PROJECT_ANY;
 		}
 
 		final CrucibleClientData clientData = getCrucibleClientData();
 		if (clientData != null && clientData.getCachedProjects() != null) {
-			for (CrucibleProject project : clientData.getCachedProjects()) {
+			for (BasicProject project : clientData.getCachedProjects()) {
 				if (project.getKey().equals(projectKey)) {
 					return project;
 				}
@@ -476,11 +476,11 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		ISelection selection = projectCombo.getSelection();
 		if (selection instanceof StructuredSelection) {
 			Object obj = ((StructuredSelection) selection).getFirstElement();
-			if (obj instanceof CrucibleProject) {
+			if (obj instanceof BasicProject) {
 				if (obj == PROJECT_ANY) {
 					return "";
 				} else {
-					return ((CrucibleProject) obj).getKey();
+					return ((BasicProject) obj).getKey();
 				}
 			}
 		}

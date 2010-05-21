@@ -28,9 +28,9 @@ import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.team.ui.exceptions.UnsupportedTeamProviderException;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -248,21 +248,21 @@ public final class CrucibleUiUtil {
 		return clientData == null ? null : clientData.getVersionInfo();
 	}
 
-	public static Set<CrucibleProject> getCachedProjects(TaskRepository repository) {
+	public static Set<BasicProject> getCachedProjects(TaskRepository repository) {
 		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
 				.getClientManager()
 				.getCrucibleClientData(repository);
-		Set<CrucibleProject> projects;
+		Set<BasicProject> projects;
 		if (clientData == null) {
-			projects = new HashSet<CrucibleProject>();
+			projects = new HashSet<BasicProject>();
 		} else {
 			projects = clientData.getCachedProjects();
 		}
 		return projects;
 	}
 
-	public static CrucibleProject getCachedProject(TaskRepository repository, String projectKey) {
-		for (CrucibleProject project : getCachedProjects(repository)) {
+	public static BasicProject getCachedProject(TaskRepository repository, String projectKey) {
+		for (BasicProject project : getCachedProjects(repository)) {
 			if (project.getKey().equals(projectKey)) {
 				return project;
 			}

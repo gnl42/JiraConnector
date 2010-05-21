@@ -24,7 +24,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.client.IClientDataP
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.IUpdateRepositoryData;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
@@ -278,7 +278,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		clientData.setVersionInfo(versionInfo);
 		submonitor.worked(1);
 
-		List<CrucibleProject> projects = server.getProjects(serverCfg);
+		List<BasicProject> projects = server.getProjects(serverCfg);
 		clientData.setProjects(projects);
 		submonitor.worked(1);
 
@@ -316,8 +316,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 					initializeCache(server, serverCfg, submonitor.newChild(1));
 				}
 
-				CrucibleProject details = server.getSession(serverCfg).getProject(projectKey);
-				Set<CrucibleProject> projects = MiscUtil.buildHashSet(clientData.getCachedProjects());
+				BasicProject details = server.getSession(serverCfg).getProject(projectKey);
+				Set<BasicProject> projects = MiscUtil.buildHashSet(clientData.getCachedProjects());
 				projects.remove(details); // remove project without details
 				projects.add(details); // add project with details
 
