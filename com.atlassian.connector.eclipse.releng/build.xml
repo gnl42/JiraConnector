@@ -58,8 +58,8 @@
 	</target>
 	
 	<target name="pack" depends="init">
-		<!-- make sure Eclipse 3.4 is available -->
-		<antcall target="init-3.4"/>
+		<!-- make sure Eclipse 3.5 is available -->
+		<antcall target="init-3.5"/>
 		
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites"/>
@@ -83,17 +83,17 @@
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml"/>
 		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
 
-		<copy file="associates-e3.4.xml" todir="${build.site}"/>
+		<copy file="associates-e3.5.xml" todir="${build.site}"/>
 
 		<zip destfile="${build.site}/../e${build.target}-site-all.zip" basedir="${build.site}"/>
 	</target>
 
 	<target name="generate-metadata-common" depends="init">
-		<!-- make sure Eclipse 3.4 is available -->
-		<antcall target="init-3.4"/>
+		<!-- make sure Eclipse 3.5 is available -->
+		<antcall target="init-3.5"/>
 
 		<!-- create generic site without associate sites -->
-		<property name="site.common.dir" value="${build.home}/3.4/site"/>
+		<property name="site.common.dir" value="${build.home}/3.5/site"/>
 		<copy todir="${build.home}/site">
 			<fileset dir="${site.common.dir}"/>
 		</copy>
@@ -104,8 +104,8 @@
 	</target>
 		
 	<target name="generate-metadata" depends="init">
-		<!-- make sure Eclipse 3.4 is available -->
-		<antcall target="init-3.4"/>
+		<!-- make sure Eclipse 3.5 is available -->
+		<antcall target="init-3.5"/>
 		
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
@@ -130,7 +130,7 @@
 	</target>
 
 	<target name="publish" depends="init">
-		<antcall target="init-3.4"/>
+		<antcall target="init-3.5"/>
 
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
@@ -217,10 +217,10 @@
 	</target>
 
 	<target name="mirror">
-		<antcall target="init-3.4"/>
+		<antcall target="init-3.5"/>
 		
 		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
-		<property name="to" value="${build.home}/mirror/e3.4"/>
+		<property name="to" value="${build.home}/mirror/e3.5"/>
 		<mkdir dir="${to}"/>
 
 		<antcall target="mirror-helper">
@@ -255,7 +255,7 @@
 		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml"/>
 		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
 
-		<copy file="associates-e3.4.xml" todir="${to}"/>
+		<copy file="associates-e3.5.xml" todir="${to}"/>
 		
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${to}"/>
