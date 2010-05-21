@@ -17,7 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProj
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
-import com.atlassian.theplugin.commons.crucible.api.model.Project;
+import com.atlassian.theplugin.commons.crucible.api.model.ExtendedCrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -205,7 +205,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		});
 		GridDataFactory.fillDefaults().span(5, 1).grab(true, false).applyTo(titleText);
 
-		new Label(composite, SWT.NONE).setText("Project:");
+		new Label(composite, SWT.NONE).setText("ExtendedCrucibleProject:");
 		projectsComboViewer = new ComboViewer(composite);
 		projectsComboViewer.setLabelProvider(new CrucibleProjectsLabelProvider());
 		projectsComboViewer.setContentProvider(new ArrayContentProvider());
@@ -216,16 +216,16 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				if (project != null) {
 					BasicProject details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 
-					if (!(details instanceof Project)) {
+					if (!(details instanceof ExtendedCrucibleProject)) {
 						CrucibleUiUtil.updateProjectDetailsCache(taskRepository, project.getKey(), getContainer(),
 								CrucibleReviewDetailsPage.this);
 						details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 					}
 
-					if (details instanceof Project && ((Project) details).getAllowedReviewers() != null
-							&& ((Project) details).getAllowedReviewers().size() > 0) {
+					if (details instanceof ExtendedCrucibleProject && ((ExtendedCrucibleProject) details).getAllowedReviewers() != null
+							&& ((ExtendedCrucibleProject) details).getAllowedReviewers().size() > 0) {
 						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(getUsersFromUsernames(
-								taskRepository, ((Project) details).getAllowedReviewers())));
+								taskRepository, ((ExtendedCrucibleProject) details).getAllowedReviewers())));
 					} else {
 						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(taskRepository));
 					}
