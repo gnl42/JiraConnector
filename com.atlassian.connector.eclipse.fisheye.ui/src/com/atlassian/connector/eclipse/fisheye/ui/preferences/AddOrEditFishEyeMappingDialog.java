@@ -481,7 +481,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	protected Collection<String> getRepositoriesFromClient(IClientDataProvider client) {
 		Collection<String> repositories = MiscUtil.buildArrayList();
-		Object clientData = (client).getClientData();
+		Object clientData = client.getClientData();
 		if (clientData instanceof FishEyeClientData) {
 			repositories.addAll(((FishEyeClientData) clientData).getCachedRepositories());
 		} else if (clientData instanceof CrucibleClientData) {

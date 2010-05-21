@@ -34,6 +34,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,10 +46,12 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
+import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Bridge between Mylyn and the ACC API's
@@ -225,14 +228,22 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		TaskAttribute hasChangedAttribute = taskData.getRoot().createAttribute(
 				CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
 		hasChangedAttribute.setValue(Boolean.toString(hasChanged));
-		hasChangedAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
-				"Has Changed").setType(TaskAttribute.TYPE_BOOLEAN);
+		hasChangedAttribute.getMetaData()
+				.defaults()
+				.setReadOnly(true)
+				.setKind(TaskAttribute.KIND_DEFAULT)
+				.setLabel("Has Changed")
+				.setType(TaskAttribute.TYPE_BOOLEAN);
 
 		if (hash != -1) {
 			TaskAttribute hashAttribute = taskData.getRoot().createAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
 			hashAttribute.setValue(Integer.toString(hash));
-			hashAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
-					"Hash").setType(TaskAttribute.TYPE_INTEGER);
+			hashAttribute.getMetaData()
+					.defaults()
+					.setReadOnly(true)
+					.setKind(TaskAttribute.KIND_DEFAULT)
+					.setLabel("Hash")
+					.setType(TaskAttribute.TYPE_INTEGER);
 
 		}
 		return taskData;
@@ -260,26 +271,58 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		});
 	}
 
+	private void initializeCache(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+			throws RemoteApiException, ServerPasswordNotProvidedException {
+		SubMonitor submonitor = SubMonitor.convert(monitor, "Updating repository data", 4);
+		CrucibleVersionInfo versionInfo = server.getServerVersion(serverCfg);
+		clientData.setVersionInfo(versionInfo);
+		submonitor.worked(1);
+
+		List<CrucibleProject> projects = server.getProjects(serverCfg);
+		clientData.setProjects(projects);
+		submonitor.worked(1);
+
+		List<User> users = server.getUsers(serverCfg);
+		clientData.setUsers(users);
+		submonitor.worked(1);
+
+		List<Repository> repositories = server.getRepositories(serverCfg);
+		clientData.setRepositories(repositories);
+		submonitor.worked(1);
+	}
+
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-				SubMonitor submonitor = SubMonitor.convert(monitor, "Updating repository data", 4);
-				CrucibleVersionInfo versionInfo = server.getServerVersion(serverCfg);
-				clientData.setVersionInfo(versionInfo);
-				submonitor.worked(1);
+				initializeCache(server, serverCfg, monitor);
+				return null;
+			}
+		});
+	}
 
-				List<CrucibleProject> projects = server.getProjects(serverCfg);
+	public void updateProjectDetails(IProgressMonitor monitor, TaskRepository taskRepository, final String projectKey)
+			throws CoreException {
+		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
+			@Override
+			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+
+				SubMonitor submonitor = SubMonitor.convert(monitor,
+						NLS.bind("Updating project details for {0}", projectKey), 2);
+
+				if (clientData == null || clientData.getCachedProjects() == null) {
+					initializeCache(server, serverCfg, submonitor.newChild(1));
+				}
+
+				CrucibleProject details = server.getSession(serverCfg).getProject(projectKey);
+				Set<CrucibleProject> projects = MiscUtil.buildHashSet(clientData.getCachedProjects());
+				projects.remove(details); // remove project without details
+				projects.add(details); // add project with details
+
 				clientData.setProjects(projects);
-				submonitor.worked(1);
 
-				List<User> users = server.getUsers(serverCfg);
-				clientData.setUsers(users);
-				submonitor.worked(1);
-
-				List<Repository> repositories = server.getRepositories(serverCfg);
-				clientData.setRepositories(repositories);
 				submonitor.worked(1);
 				return null;
 			}

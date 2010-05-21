@@ -198,10 +198,12 @@ public final class CrucibleUiUtil {
 		for (CrucibleFileInfo fileInfo : review.getFiles()) {
 			if (fileInfo != null
 					&& fileInfo.getFileDescriptor() != null
-					&& fileInfo.getFileDescriptor().getUrl().equals(
-							crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
-					&& fileInfo.getFileDescriptor().getRevision().equals(
-							crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+					&& fileInfo.getFileDescriptor()
+							.getUrl()
+							.equals(crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
+					&& fileInfo.getFileDescriptor()
+							.getRevision()
+							.equals(crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
 				return true;
 			}
 		}
@@ -259,6 +261,15 @@ public final class CrucibleUiUtil {
 		return projects;
 	}
 
+	public static CrucibleProject getCachedProject(TaskRepository repository, String projectKey) {
+		for (CrucibleProject project : getCachedProjects(repository)) {
+			if (project.getKey().equals(projectKey)) {
+				return project;
+			}
+		}
+		return null;
+	}
+
 	public static boolean canModifyComment(Review review, Comment comment) {
 		return CrucibleUtil.canAddCommentToReview(review)
 				&& comment.getAuthor().getUsername().equals(CrucibleUiUtil.getCurrentUsername(review));
@@ -296,8 +307,13 @@ public final class CrucibleUiUtil {
 
 	@NotNull
 	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull TaskRepository taskRepository) {
+		return getAllCachedUsersAsReviewers(CrucibleUiUtil.getCachedUsers(taskRepository));
+	}
+
+	@NotNull
+	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull Collection<User> users) {
 		Set<Reviewer> allReviewers = new HashSet<Reviewer>();
-		for (User user : CrucibleUiUtil.getCachedUsers(taskRepository)) {
+		for (User user : users) {
 			allReviewers.add(new Reviewer(user.getUsername(), user.getDisplayName(), false));
 		}
 		return allReviewers;
@@ -336,6 +352,33 @@ public final class CrucibleUiUtil {
 		}
 		if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
 			currentPage.setErrorMessage("Could not retrieve available projects and users from server.");
+		}
+	}
+
+	public static void updateProjectDetailsCache(@NotNull final TaskRepository taskRepository,
+			@NotNull final String projectKey, @NotNull IWizardContainer container, @NotNull WizardPage currentPage) {
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+				CrucibleClient client = connector.getClientManager().getClient(taskRepository);
+				if (client != null) {
+					try {
+						client.updateProjectDetails(monitor, taskRepository, projectKey);
+					} catch (CoreException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Failed to update project details", e));
+					}
+				}
+			}
+		};
+		try {
+			container.run(true, true, runnable);
+		} catch (Exception ex) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
+					ex));
+		}
+		if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
+			currentPage.setErrorMessage("Could not retrieve project details from server.");
 		}
 	}
 
