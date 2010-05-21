@@ -12,12 +12,10 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -109,21 +107,11 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 			}
 		});
 
-		// check if this is a Crucible 2.x repository, if so, we don't need SCM integration
-		CrucibleVersionInfo versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(taskRepository);
-		if (versionInfo == null) {
-			CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), ReviewTypeSelectionPage.this);
-			versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(taskRepository);
-		}
-
 		Set<ITeamUiResourceConnector> teamConnectors = AtlassianTeamUiPlugin.getDefault()
 				.getTeamResourceManager()
 				.getTeamConnectors();
 
 		if (teamConnectors.size() == 0) {
-			if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
-				disablePostCommits();
-			}
 			disablePreCommits();
 			showScmRelatedWarning(
 					buttonComp,
@@ -150,9 +138,6 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 						"Failed to retrieve repositories", e));
 			}
 			if (repoCount[0] == 0) {
-				if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
-					disablePostCommits();
-				}
 				disablePreCommits();
 				showScmRelatedWarning(
 						buttonComp,
@@ -195,11 +180,6 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 	private void disablePreCommits() {
 		workspacePatchReview.setSelection(false);
 		workspacePatchReview.setEnabled(false);
-	}
-
-	private void disablePostCommits() {
-		changesetReview.setSelection(false);
-		changesetReview.setEnabled(false);
 	}
 
 	private void showScmRelatedWarning(Composite parent, String infoMessage) {

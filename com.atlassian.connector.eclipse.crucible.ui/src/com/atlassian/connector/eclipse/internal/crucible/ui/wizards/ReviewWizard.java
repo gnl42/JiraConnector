@@ -38,7 +38,6 @@ import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
@@ -221,15 +220,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	@Override
 	public void addPages() {
 		if (types.contains(Type.ADD_CHANGESET)) {
-			CrucibleVersionInfo versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(getTaskRepository());
-			if (versionInfo == null || !versionInfo.isVersion2OrGreater()) {
-				addChangeSetsPage = new SelectScmChangesetsPage(getTaskRepository(), preselectedLogEntries);
-				addPage(addChangeSetsPage);
-			} else {
-				addChangeSetsFromCruciblePage = new SelectChangesetsFromCruciblePage(getTaskRepository(),
-						preselectedLogEntries);
-				addPage(addChangeSetsFromCruciblePage);
-			}
+			addChangeSetsFromCruciblePage = new SelectChangesetsFromCruciblePage(getTaskRepository(),
+					preselectedLogEntries);
+			addPage(addChangeSetsFromCruciblePage);
 		}
 
 		if (types.contains(Type.ADD_PATCH)) {
