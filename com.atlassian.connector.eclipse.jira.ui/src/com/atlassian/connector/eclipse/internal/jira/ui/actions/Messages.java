@@ -33,6 +33,7 @@ public class Messages extends NLS {
 	public static String JiraConnectorUiActions_Voting_for_issue;
 
 	public static String JiraConnectorUiActions_Watch;
+
 	public static String StartWorkAction_cannot_perform;
 
 	public static String StartWorkAction_disabled;
@@ -41,19 +42,19 @@ public class Messages extends NLS {
 
 	public static String StartWorkAction_start;
 
-	public static String StartWorkAction_Start_Progress;
+	public static String StartWorkAction_Start_Work_Failed;
 
-	public static String StartWorkAction_Start_Progress_Failed;
-
-	public static String StartWorkAction_Start_Progress_Not_Available;
+	public static String StartWorkAction_Start_Work_Not_Available;
 
 	public static String StartWorkAction_Start_Work;
 
-	public static String StartWorkAction_Stop_Progress;
+	public static String StartWorkAction_Starting_Work;
 
-	public static String StartWorkAction_Stop_Progress_Failed;
+	public static String StartWorkAction_Stop_Work_Failed;
 
 	public static String StartWorkAction_Stop_Work;
+
+	public static String StartWorkAction_Stoping_Work;
 
 	public static String StartWorkAction_stop;
 	static {

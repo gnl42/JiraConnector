@@ -189,12 +189,12 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
 	private static Job getStartProgressJob(final TaskData taskData, final ITask task) {
 
-		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Progress) {
+		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Work) {
 
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 
-				monitor.beginTask(Messages.StartWorkAction_Start_Progress, IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.StartWorkAction_Starting_Work + task.getTaskKey(), IProgressMonitor.UNKNOWN);
 
 				final JiraClient client = getClient(task);
 
@@ -219,7 +219,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				} catch (CoreException e) {
 					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 				} catch (JiraException e) {
-					handleError(Messages.StartWorkAction_Start_Progress_Failed, e);
+					handleError(Messages.StartWorkAction_Start_Work_Failed + task.getTaskKey(), e);
 				} finally {
 					if (shouldSynchronize) {
 						synchronizeTask(task, monitor);
@@ -234,12 +234,12 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	}
 
 	private static Job getStopProgressJob(final TaskData taskData, final ITask task) {
-		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Progress) {
+		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Work) {
 
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 
-				monitor.beginTask(Messages.StartWorkAction_Stop_Progress, IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.StartWorkAction_Stoping_Work + task.getTaskKey(), IProgressMonitor.UNKNOWN);
 
 				final JiraClient client = getClient(task);
 
@@ -260,7 +260,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				} catch (CoreException e) {
 					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 				} catch (JiraException e) {
-					handleError(Messages.StartWorkAction_Stop_Progress_Failed, e);
+					handleError(Messages.StartWorkAction_Stop_Work_Failed + task.getTaskKey(), e);
 				}
 
 				return Status.OK_STATUS;
