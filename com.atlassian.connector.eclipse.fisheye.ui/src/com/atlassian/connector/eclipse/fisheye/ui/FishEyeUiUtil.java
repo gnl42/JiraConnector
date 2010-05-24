@@ -41,14 +41,20 @@ public final class FishEyeUiUtil {
 	private FishEyeUiUtil() {
 	}
 
+	/**
+	 *
+	 * @return list of repository mappings for active task repositories (disconnectoed repositories are skipped)
+	 */
 	@NotNull
-	public static Collection<FishEyeMappingConfiguration> getScmRepositoryMappings() {
+	public static Collection<FishEyeMappingConfiguration> getActiveScmRepositoryMappings() {
 		Collection<FishEyeMappingConfiguration> mappings = MiscUtil.buildArrayList();
 		Set<TaskRepository> fishEyeRepositories = FishEyeUiUtil.getFishEyeAndCrucibleServers();
 		for (TaskRepository tr : fishEyeRepositories) {
-			Map<String, String> scmRepositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(tr);
-			for (String scmPath : scmRepositoryMappings.keySet()) {
-				mappings.add(new FishEyeMappingConfiguration(tr, scmPath, scmRepositoryMappings.get(scmPath)));
+			if (!tr.isOffline()) {
+				Map<String, String> scmRepositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(tr);
+				for (String scmPath : scmRepositoryMappings.keySet()) {
+					mappings.add(new FishEyeMappingConfiguration(tr, scmPath, scmRepositoryMappings.get(scmPath)));
+				}
 			}
 		}
 		return mappings;

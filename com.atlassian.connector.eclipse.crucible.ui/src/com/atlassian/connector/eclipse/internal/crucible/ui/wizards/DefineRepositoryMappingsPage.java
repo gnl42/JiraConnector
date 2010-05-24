@@ -92,7 +92,7 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 				validatePage();
 			}
 		});
-		mappingEditor.setRepositoryMappings(FishEyeUiUtil.getScmRepositoryMappings());
+		mappingEditor.setRepositoryMappings(FishEyeUiUtil.getActiveScmRepositoryMappings());
 
 		return parent;
 	}
