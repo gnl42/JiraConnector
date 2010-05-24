@@ -74,7 +74,7 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
 		} else {
 			setChecked(false);
 			setEnabled(false);
-			setToolTipText(Messages.StartWorkAction_disabled);
+			setToolTipText(Messages.StartWorkAction_start);
 		}
 	}
 
