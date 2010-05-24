@@ -25,14 +25,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
@@ -47,10 +46,11 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
  * @author Jacek Jaroczynski
  */
 @SuppressWarnings("restriction")
-public abstract class AbstractJiraAction extends BaseSelectionListenerAction implements IViewActionDelegate,
-		IEditorActionDelegate {
+public abstract class AbstractJiraAction extends BaseSelectionListenerAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection;
+
+	private IWorkbenchPart targetPart;
 
 	public AbstractJiraAction(String text) {
 		super(text);
@@ -83,15 +83,17 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 		}
 	}
 
-	public void init(IViewPart view) {
-	}
-
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-	}
-
 	protected JiraIssue getIssue(ITask task) throws CoreException {
 		TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
 		return JiraTaskDataHandler.buildJiraIssue(taskData);
+	}
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.targetPart = targetPart;
+	}
+
+	public IWorkbenchPart getTargetPart() {
+		return targetPart;
 	}
 
 	protected JiraClient getClient(ITask task) {
@@ -99,6 +101,10 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 				task.getRepositoryUrl());
 
 		return JiraClientFactory.getDefault().getJiraClient(repo);
+	}
+
+	protected AbstractRepositoryConnector getConnector(ITask task) {
+		return TasksUi.getRepositoryConnector(task.getConnectorKind());
 	}
 
 	protected static void handleError(final String message, final Throwable e) {
@@ -118,4 +124,5 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 			}
 		});
 	}
+
 }

@@ -129,6 +129,22 @@
 	        	menubarPath="additions"/>
    </objectContribution>
   </extension>
+-->
+  
+  <!-- TODO jj add icon and fix label -->
+  <extension point="org.eclipse.ui.popupMenus">
+   <objectContribution 
+   		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution" 
+   		objectClass="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask"
+   		adaptable="true">
+	        <action
+		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+	        	id="com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+	        	label="%Action.Start.Work.label"
+	        	menubarPath="additions"
+	        	enablesFor="1"/>
+   </objectContribution>
+  </extension>
   
   <extension
          point="org.eclipse.core.runtime.adapters">
@@ -140,6 +156,6 @@
          </adapter>
       </factory>
    </extension>
--->
+
 
 </plugin>

@@ -11,255 +11,313 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.actions;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizeTasksJob;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.tasks.ui.views.TaskListView;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
-import org.eclipse.mylyn.tasks.core.data.TaskOperation;
-import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
-import org.eclipse.mylyn.tasks.core.sync.SubmitJobListener;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.editor.IFormPage;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
-public class StartWorkAction extends Action implements ITaskActivationListener {
+@SuppressWarnings("restriction")
+public class StartWorkAction extends AbstractStartWorkAction {
 
-	private static final String ID = "com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
+	private ITask task;
 
-	private final JiraTaskEditorPage editorPage;
+	private TaskData taskData;
 
-	public StartWorkAction(JiraTaskEditorPage editorPage) {
-		super();
-		this.editorPage = editorPage;
-		setImageDescriptor(JiraImages.START_PROGRESS);
-		setId(ID);
-
-		update();
-
-		TasksUi.getTaskActivityManager().addActivationListener(this);
-	}
-
-	private void update() {
-		if (editorPage.isTaskInProgress()) {
-			setChecked(true);
-			setToolTipText(Messages.StartWorkAction_stop);
-		} else if (editorPage.isTaskInStop()) {
-			setChecked(false);
-			setToolTipText(Messages.StartWorkAction_start);
-		} else {
-			setChecked(false);
-			setEnabled(false);
-			setToolTipText(Messages.StartWorkAction_disabled);
-		}
+	public StartWorkAction() {
 	}
 
 	@Override
-	public void run() {
+	public void run(IAction action) {
 
-		update();
-
-//		IStructuredSelection selection = getStructuredSelection();
-//		if (selection == null) {
+//		Assert.isNotNull(tasks);
+//
+//		if (tasks.isEmpty()) {
 //			return;
 //		}
-//		Object selectedObject = selection.getFirstElement();
-//		if (!(selectedObject instanceof TaskEditor)) {
+//
+//		if (tasks.size() > 1) {
+//			// this action should be enabled only for single selection in plugin.xml
+//			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN,
+//					Messages.StartWorkAction_enabled_for_single_selection));
+//		}
+//
+//		Assert.isNotNull(tasks.get(0));
+//		task = tasks.get(0).getTask();
+//
+//		try {
+//			taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+//		} catch (CoreException e) {
+//			handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 //			return;
 //		}
 
-//		final TaskEditor editor = (TaskEditor) selectedObject;
-//		final ITask task = editor.getTaskEditorInput().getTask();
-//		if (task == null) {
-//			return;
-//		}
+		if (getTargetPart() instanceof TaskListView) {
+			doActionOutsideEditor();
+		} else if (getTargetPart() instanceof TaskEditor) {
+			TaskEditor taskEditor = (TaskEditor) getTargetPart();
 
-//		AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
-//				task.getConnectorKind());
-//		if (connector == null) {
-//			return;
-//		}
+			IEditorInput editorInput = taskEditor.getEditorInput();
 
-		if (isInProgress()) {
-			stopProgress();
-		} else if (isInStop()) {
-			startProgress();
+			if (editorInput instanceof TaskEditorInput) {
+				TaskEditorInput taskEditorInput = (TaskEditorInput) editorInput;
+
+				if (taskEditorInput.getTask().equals(task)) {
+
+					IFormPage formPage = taskEditor.getActivePageInstance();
+					if (formPage instanceof JiraTaskEditorPage) {
+						JiraTaskEditorPage jiraFormPage = (JiraTaskEditorPage) formPage;
+
+						doActionInsideEditor(jiraFormPage);
+
+						// do editor submit
+						// TODO jj change call (move stuff here from subclass)
+//						new StartWorkEditorToolbarAction(jiraFormPage).run();
+//						TasksUiInternal.synchronizeTasks(connector, new HashSet<ITask>(tasksToSync), true, null);
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	private void synchronizeTask(ITask aTask, IProgressMonitor monitor) {
+
+//		ITaskList taskList = TasksUiInternal.getTaskList();
+//
+//		AbstractTask abstractTask = ((AbstractTask) aTask);
+//		abstractTask.setSynchronizing(true);
+//		((TaskList) taskList).notifySynchronizationStateChanged(asSet(aTask));
+
+		SynchronizeTasksJob job = (SynchronizeTasksJob) TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
+				getConnector(aTask), asSet(aTask));
+
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (task instanceof AbstractTask && ((AbstractTask) task).getStatus() != null) {
+					TasksUiInternal.asyncDisplayStatus(
+							org.eclipse.mylyn.internal.tasks.ui.util.Messages.TasksUiInternal_Task_Synchronization_Failed,
+							((AbstractTask) task).getStatus());
+				}
+			}
+		});
+
+		job.run(monitor);
+
+	}
+
+	private static <T> Set<T> asSet(T... values) {
+		return new HashSet<T>(Arrays.asList(values));
+	}
+
+	private void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage) {
+		Job job = null;
+
+		if (isTaskInStop(taskData, task)) {
+			job = getStartProgressJob();
+		} else if (isTaskInProgress(taskData, task)) {
+			job = getStopProgressJob();
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
+			return;
+		}
+
+		jiraFormPage.showEditorBusy(true);
+		job.setUser(false);
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						jiraFormPage.refreshFormContent();
+//						jiraFormPage.showEditorBusy(false);
+					}
+				});
+			}
+		});
+
+		job.schedule();
+	}
+
+	private void doActionOutsideEditor() {
+		if (isTaskInStop(taskData, task)) {
+			Job job = getStartProgressJob();
+			job.setUser(true);
+			job.schedule();
+		} else if (isTaskInProgress(taskData, task)) {
+			Job job = getStopProgressJob();
+			job.setUser(true);
+			job.schedule();
 		} else {
 			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 		}
 	}
 
-	private boolean isInStop() {
-		return editorPage.isTaskInStop();
-	}
+	private Job getStartProgressJob() {
 
-	private boolean isInProgress() {
-		return editorPage.isTaskInProgress();
-	}
+		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Progress) {
 
-	private void startProgress() {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
 
-		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-				editorPage.getTask().getConnectorKind(), editorPage.getTask().getRepositoryUrl());
+				monitor.beginTask(Messages.StartWorkAction_Start_Progress, IProgressMonitor.UNKNOWN);
 
-		TaskAttribute rootAttribute = editorPage.getModel().getTaskData().getRoot();
+				final JiraClient client = getClient(task);
 
-		Assert.isNotNull(repository);
-		Assert.isNotNull(rootAttribute);
+				boolean shouldSynchronize = false;
 
-		// change assignee
-		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
-		if (repository.getUserName() != null && !repository.getUserName().equals(assigneeAttribute.getValue())) {
-			assigneeAttribute.setValue(repository.getUserName());
-			editorPage.getModel().attributeChanged(assigneeAttribute);
-			editorPage.refreshFormContent();
-			editorPage.doJiraSubmit(new SubmitJiraIssueListener());
-		} else {
-			new SubmitJiraIssueListener().startProgress();
-		}
+				try {
+					final JiraIssue issue = getIssue(task);
 
-	}
-
-	private void stopProgress() {
-
-		TaskDataModel taskModel = editorPage.getModel();
-
-		TaskAttribute selectedOperationAttribute = taskModel.getTaskData().getRoot().getMappedAttribute(
-				TaskAttribute.OPERATION);
-
-		List<TaskOperation> operations = taskModel.getTaskData().getAttributeMapper().getTaskOperations(
-				selectedOperationAttribute);
-
-		for (TaskOperation operation : operations) {
-
-			if (JiraTaskDataHandler.STOP_PROGRESS_OPERATION.equals(operation.getOperationId())) {
-				taskModel.getTaskData().getAttributeMapper().setTaskOperation(selectedOperationAttribute, operation);
-				taskModel.attributeChanged(selectedOperationAttribute);
-				editorPage.doJiraSubmit(new SubmitJobListener() {
-
-					@Override
-					public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
+					if (!isAssignedToMe(taskData, task)) {
+						client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getCurrentUser(task), null, monitor);
+						shouldSynchronize = true;
 					}
+					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.START_PROGRESS_OPERATION, null, monitor);
+					shouldSynchronize = true;
 
-					@Override
-					public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-					}
-
-					@Override
-					public void done(final SubmitJobEvent event) {
-						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-							public void run() {
-								editorPage.refreshFormContent();
-								TasksUi.getTaskActivityManager().deactivateTask(editorPage.getTask());
-								update();
-							}
-						});
-					}
-				});
-				break;
-			}
-		}
-	}
-
-	private class SubmitJiraIssueListener extends SubmitJobListener {
-
-		@Override
-		public void done(SubmitJobEvent event) {
-			final IStatus status = event.getJob().getStatus();
-
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					if (status == null || IStatus.OK == status.getSeverity()) {
-						editorPage.refreshFormContent();
-						startProgress();
+					// activate task
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							TasksUi.getTaskActivityManager().activateTask(task);
+						}
+					});
+				} catch (CoreException e) {
+					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
+				} catch (JiraException e) {
+					handleError(Messages.StartWorkAction_Start_Progress_Failed, e);
+				} finally {
+					if (shouldSynchronize) {
+						synchronizeTask(task, monitor);
 					}
 				}
-			});
-		}
 
-		protected void startProgress() {
-			TaskDataModel taskModel = editorPage.getModel();
+				return Status.OK_STATUS;
+			}
+		};
 
-			TaskAttribute selectedOperationAttribute = taskModel.getTaskData().getRoot().getMappedAttribute(
-					TaskAttribute.OPERATION);
+		return startProgressJob;
+	}
 
-			List<TaskOperation> operations = taskModel.getTaskData().getAttributeMapper().getTaskOperations(
-					selectedOperationAttribute);
+	private Job getStopProgressJob() {
+		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Progress) {
 
-			for (TaskOperation operation : operations) {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
 
-				if (JiraTaskDataHandler.START_PROGRESS_OPERATION.equals(operation.getOperationId())) {
-					taskModel.getTaskData()
-							.getAttributeMapper()
-							.setTaskOperation(selectedOperationAttribute, operation);
-					taskModel.attributeChanged(selectedOperationAttribute);
-					editorPage.doJiraSubmit(new SubmitJobListener() {
+				monitor.beginTask(Messages.StartWorkAction_Stop_Progress, IProgressMonitor.UNKNOWN);
 
-						@Override
-						public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor)
-								throws CoreException {
-						}
+				final JiraClient client = getClient(task);
 
-						@Override
-						public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-						}
+				try {
+					final JiraIssue issue = getIssue(task);
 
-						@Override
-						public void done(final SubmitJobEvent event) {
-							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-								public void run() {
-									editorPage.refreshFormContent();
-//									TasksUiInternal.activateTaskThroughCommand(event.getJob().getTask());
-									TasksUi.getTaskActivityManager().activateTask(event.getJob().getTask());
-									update();
-								}
-							});
+					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.STOP_PROGRESS_OPERATION, null, monitor);
+
+					synchronizeTask(task, monitor);
+
+					// deactivate task
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							TasksUi.getTaskActivityManager().deactivateTask(task);
 						}
 					});
 
-					return;
+				} catch (CoreException e) {
+					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
+				} catch (JiraException e) {
+					handleError(Messages.StartWorkAction_Stop_Progress_Failed, e);
+				}
+
+				return Status.OK_STATUS;
+			}
+		};
+
+		return stopProgressJob;
+	}
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		super.selectionChanged(action, selection);
+
+		task = null;
+
+		if (selection instanceof IStructuredSelection) {
+
+			IStructuredSelection ss = (IStructuredSelection) selection;
+
+			if (!ss.isEmpty()) {
+
+				Iterator<?> iter = ss.iterator();
+				while (iter.hasNext()) {
+					Object sel = iter.next();
+					if (sel instanceof IJiraTask) {
+						task = ((IJiraTask) sel).getTask();
+						try {
+							taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+						} catch (CoreException e) {
+							handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
+						}
+
+						break;
+					}
 				}
 			}
-
-			StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
-					Messages.StartWorkAction_Start_Progress_Not_Available));
 		}
 
-		@Override
-		public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
+		update(action);
+	}
+
+	private void update(IAction action) {
+		if (isTaskInProgress(taskData, task)) {
+			action.setText(Messages.StartWorkAction_Stop_Work);
+		} else if (isTaskInStop(taskData, task)) {
+			action.setText(Messages.StartWorkAction_Start_Work);
+		} else {
+			action.setEnabled(false);
+			action.setText(Messages.StartWorkAction_Start_Work);
 		}
-
-		@Override
-		public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-		}
-
 	}
 
-	public void preTaskActivated(ITask task) {
+	private static String getCurrentUser(ITask task) {
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+				task.getRepositoryUrl());
+
+		return repository.getUserName();
 	}
 
-	public void preTaskDeactivated(ITask task) {
-	}
-
-	public void taskActivated(ITask task) {
-		update();
-	}
-
-	public void taskDeactivated(ITask task) {
-		update();
-	}
 }

@@ -37,9 +37,23 @@ public class Messages extends NLS {
 
 	public static String StartWorkAction_disabled;
 
+	public static String StartWorkAction_enabled_for_single_selection;
+
 	public static String StartWorkAction_start;
 
+	public static String StartWorkAction_Start_Progress;
+
+	public static String StartWorkAction_Start_Progress_Failed;
+
 	public static String StartWorkAction_Start_Progress_Not_Available;
+
+	public static String StartWorkAction_Start_Work;
+
+	public static String StartWorkAction_Stop_Progress;
+
+	public static String StartWorkAction_Stop_Progress_Failed;
+
+	public static String StartWorkAction_Stop_Work;
 
 	public static String StartWorkAction_stop;
 	static {

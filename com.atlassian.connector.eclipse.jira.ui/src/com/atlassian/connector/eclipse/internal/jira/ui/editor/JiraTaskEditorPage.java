@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -26,14 +25,10 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.TaskMigrator;
 import org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
-import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJob;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobListener;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -46,12 +41,11 @@ import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.RowSpan;
 import org.eclipse.ui.PlatformUI;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
 
 /**
  * @author Steffen Pingel
@@ -173,7 +167,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		super.fillToolBar(toolBarManager);
 
 		if (!getModel().getTaskData().isNew()) {
-			StartWorkAction startWorkAction = new StartWorkAction(this);
+			StartWorkEditorToolbarAction startWorkAction = new StartWorkEditorToolbarAction(this);
 //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
 		}
@@ -200,80 +194,6 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			showEditorBusy(false);
 			throw e;
 		}
-	}
-
-	public boolean isTaskInProgress() {
-		return isAssignedToMe() && isInProgressState() && haveStopProgressOperation();
-	}
-
-	public boolean isTaskInStop() {
-		if (isAssignedToMe() && isInOpenState() && haveStartProgressOperation()) {
-			return true;
-		} else if (!isAssignedToMe()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean haveStopProgressOperation() {
-		return haveOperation(JiraTaskDataHandler.STOP_PROGRESS_OPERATION);
-	}
-
-	private boolean haveStartProgressOperation() {
-		return haveOperation(JiraTaskDataHandler.START_PROGRESS_OPERATION);
-	}
-
-	private boolean haveOperation(String operationId) {
-		TaskDataModel taskModel = getModel();
-
-		TaskAttribute selectedOperationAttribute = taskModel.getTaskData().getRoot().getMappedAttribute(
-				TaskAttribute.OPERATION);
-
-		List<TaskOperation> operations = taskModel.getTaskData().getAttributeMapper().getTaskOperations(
-				selectedOperationAttribute);
-
-		for (TaskOperation operation : operations) {
-			if (operationId.equals(operation.getOperationId())) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean isInOpenState() {
-
-		String statusId = getModel().getTaskData().getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
-
-		return statusId != null
-				&& (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
-	}
-
-	private boolean isInProgressState() {
-
-		String statusId = getModel().getTaskData().getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
-
-		return statusId != null && statusId.equals(JiraTaskDataHandler.IN_PROGRESS_STATUS);
-	}
-
-	private boolean isAssignedToMe() {
-		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(getTask().getConnectorKind(),
-				getTask().getRepositoryUrl());
-
-		if (repository == null) {
-			return false;
-		}
-
-		TaskAttribute rootAttribute = getModel().getTaskData().getRoot();
-
-		if (rootAttribute == null) {
-			return false;
-		}
-
-		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
-
-		return repository.getUserName() != null && repository.getUserName().equals(assigneeAttribute.getValue());
 	}
 
 	private class SubmitTaskJobListener extends SubmitJobListener {
