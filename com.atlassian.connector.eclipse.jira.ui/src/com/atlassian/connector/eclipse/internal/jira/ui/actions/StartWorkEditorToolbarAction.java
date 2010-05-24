@@ -34,7 +34,7 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
-public class StartWorkEditorToolbarAction extends AbstractStartWorkAction {
+public class StartWorkEditorToolbarAction extends StartWorkAction {
 
 	private static final String ID = "com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
 
@@ -51,13 +51,14 @@ public class StartWorkEditorToolbarAction extends AbstractStartWorkAction {
 
 	@Override
 	public void run() {
-		if (isTaskInProgress(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
-			stopProgress();
-		} else if (isTaskInStop(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
-			startProgress();
-		} else {
-			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
-		}
+		doActionInsideEditor(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
+//		if (isTaskInProgress(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
+//			stopProgress();
+//		} else if (isTaskInStop(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
+//			startProgress();
+//		} else {
+//			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
+//		}
 	}
 
 	private void startProgress() {

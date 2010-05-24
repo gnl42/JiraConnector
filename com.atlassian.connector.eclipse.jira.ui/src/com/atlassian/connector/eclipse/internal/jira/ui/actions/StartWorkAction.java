@@ -101,7 +101,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 					if (formPage instanceof JiraTaskEditorPage) {
 						JiraTaskEditorPage jiraFormPage = (JiraTaskEditorPage) formPage;
 
-						doActionInsideEditor(jiraFormPage);
+						doActionInsideEditor(jiraFormPage, taskData, task);
 
 						// do editor submit
 						// TODO jj change call (move stuff here from subclass)
@@ -114,7 +114,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		}
 	}
 
-	private void synchronizeTask(ITask aTask, IProgressMonitor monitor) {
+	private static void synchronizeTask(final ITask task, IProgressMonitor monitor) {
 
 //		ITaskList taskList = TasksUiInternal.getTaskList();
 //
@@ -123,7 +123,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 //		((TaskList) taskList).notifySynchronizationStateChanged(asSet(aTask));
 
 		SynchronizeTasksJob job = (SynchronizeTasksJob) TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
-				getConnector(aTask), asSet(aTask));
+				getConnector(task), asSet(task));
 
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
@@ -144,13 +144,13 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return new HashSet<T>(Arrays.asList(values));
 	}
 
-	private void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage) {
+	protected static void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage, TaskData taskData, ITask task) {
 		Job job = null;
 
 		if (isTaskInStop(taskData, task)) {
-			job = getStartProgressJob();
+			job = getStartProgressJob(taskData, task);
 		} else if (isTaskInProgress(taskData, task)) {
-			job = getStopProgressJob();
+			job = getStopProgressJob(taskData, task);
 		} else {
 			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 			return;
@@ -175,11 +175,11 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
 	private void doActionOutsideEditor() {
 		if (isTaskInStop(taskData, task)) {
-			Job job = getStartProgressJob();
+			Job job = getStartProgressJob(taskData, task);
 			job.setUser(true);
 			job.schedule();
 		} else if (isTaskInProgress(taskData, task)) {
-			Job job = getStopProgressJob();
+			Job job = getStopProgressJob(taskData, task);
 			job.setUser(true);
 			job.schedule();
 		} else {
@@ -187,7 +187,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		}
 	}
 
-	private Job getStartProgressJob() {
+	private static Job getStartProgressJob(final TaskData taskData, final ITask task) {
 
 		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Progress) {
 
@@ -233,7 +233,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return startProgressJob;
 	}
 
-	private Job getStopProgressJob() {
+	private static Job getStopProgressJob(final TaskData taskData, final ITask task) {
 		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Progress) {
 
 			@Override

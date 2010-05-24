@@ -56,9 +56,9 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 			return false;
 		}
 
-		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
+//		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
 
-		return repository.getUserName() != null && repository.getUserName().equals(assigneeAttribute.getValue());
+		return repository.getUserName() != null && repository.getUserName().equals(task.getOwner());
 	}
 
 	protected static boolean isTaskInProgress(TaskData taskData, ITask task) {

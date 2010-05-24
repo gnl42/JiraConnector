@@ -83,7 +83,7 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 		}
 	}
 
-	protected JiraIssue getIssue(ITask task) throws CoreException {
+	protected static JiraIssue getIssue(ITask task) throws CoreException {
 		TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
 		return JiraTaskDataHandler.buildJiraIssue(taskData);
 	}
@@ -96,14 +96,14 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 		return targetPart;
 	}
 
-	protected JiraClient getClient(ITask task) {
+	protected static JiraClient getClient(ITask task) {
 		TaskRepository repo = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
 				task.getRepositoryUrl());
 
 		return JiraClientFactory.getDefault().getJiraClient(repo);
 	}
 
-	protected AbstractRepositoryConnector getConnector(ITask task) {
+	protected static AbstractRepositoryConnector getConnector(ITask task) {
 		return TasksUi.getRepositoryConnector(task.getConnectorKind());
 	}
 
