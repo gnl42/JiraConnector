@@ -4,6 +4,7 @@ from subprocess import *
 import shlex
 import os
 import re
+import glob
 import shutil
 
 jira_version = "4.2-SNAPSHOT"
@@ -105,5 +106,11 @@ if __name__ == "__main__":
 	shutdown(dir)
 	unpack(fn)
 	configure(dir)
+	for old_rpc in glob.glob("%s/atlassian-jira/WEB-INF/lib/atlassian-jira-rpc-plugin*" % (dir)):
+		try:
+			os.unlink()
+		except Error, e:
+			pass
+	
 	shutil.copy(rpc, "%s/atlassian-jira/WEB-INF/lib/" % (dir))	
 	start(dir)
