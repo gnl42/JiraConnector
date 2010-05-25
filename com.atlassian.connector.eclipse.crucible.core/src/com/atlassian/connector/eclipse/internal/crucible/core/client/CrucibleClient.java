@@ -23,8 +23,10 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.Revie
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.IClientDataProvider;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.IUpdateRepositoryData;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
-import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
+import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
@@ -60,7 +62,8 @@ import java.util.Set;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga
  */
-public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade2> implements IUpdateRepositoryData,
+public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade2, CrucibleSession> implements
+		IUpdateRepositoryData,
 		IClientDataProvider {
 
 	private final CrucibleClientData clientData;
@@ -72,6 +75,12 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		super(location, serverCfg, crucibleServer, callback);
 		this.clientData = data;
 		this.cachedReviewManager = cachedReviewManager;
+	}
+
+	@Override
+	protected CrucibleSession getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
+			ServerPasswordNotProvidedException {
+		return facade.getSession(connectionCfg);
 	}
 
 	public TaskData getTaskData(TaskRepository taskRepository, final String taskId, IProgressMonitor monitor)
@@ -342,5 +351,18 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public DownloadAvatarsJob createDownloadAvatarsJob(TaskRepository taskRepository, Review review) {
 		return new DownloadAvatarsJob(this, taskRepository, review);
+	}
+
+	public Review changeReviewState(final BasicReview review, final CrucibleAction action,
+			TaskRepository repository, IProgressMonitor progressMonitor) throws CoreException {
+		BasicReview basicReview = execute(new CrucibleRemoteSessionOperation<BasicReview>(progressMonitor, repository) {
+			@Override
+			public BasicReview run(CrucibleSession session, IProgressMonitor monitor) throws RemoteApiException,
+						ServerPasswordNotProvidedException {
+				return session.changeReviewState(review.getPermId(), action);
+			}
+		});
+		String taskId = CrucibleUtil.getTaskIdFromReview(basicReview);
+		return getReview(repository, taskId, true, progressMonitor);
 	}
 }

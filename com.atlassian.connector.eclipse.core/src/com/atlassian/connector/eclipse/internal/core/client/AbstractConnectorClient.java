@@ -17,6 +17,7 @@ import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.ProductServerFacade;
+import com.atlassian.theplugin.commons.remoteapi.ProductSession;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
 
@@ -30,10 +31,11 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public abstract class AbstractConnectorClient<F extends ProductServerFacade> {
+public abstract class AbstractConnectorClient<F extends ProductServerFacade, S extends ProductSession> {
 	protected final F facade;
 
 	protected AbstractWebLocation location;
@@ -62,6 +64,59 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade> {
 	public <T> T execute(RemoteOperation<T, F> op) throws CoreException {
 		return execute(op, true);
 	}
+
+	public <T> T execute(RemoteSessionOperation<T, S> op) throws CoreException {
+		return execute(op, true);
+	}
+
+	private <T> T executeRetry(RemoteSessionOperation<T, S> op, IProgressMonitor monitor, Exception e)
+			throws CoreException {
+		try {
+			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+		} catch (UnsupportedRequestException ex) {
+			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
+					e.getMessage(), e));
+		}
+		return execute(op);
+	}
+
+	public final <T> T execute(RemoteSessionOperation<T, S> op, boolean promptForCredentials) throws CoreException {
+		IProgressMonitor monitor = op.getMonitor();
+		TaskRepository taskRepository = op.getTaskRepository();
+		try {
+			AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
+			if (creds != null && creds.getPassword().length() < 1 && promptForCredentials) {
+				try {
+					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+				} catch (UnsupportedRequestException e) {
+					// ignore
+				}
+			}
+
+			monitor.beginTask("Connecting to " + facade.getServerType().getShortName(), IProgressMonitor.UNKNOWN);
+			updateServer();
+			// @todo refactor this part in 10 years or so - as this is hack which workarounds facade ill design
+			callback.updateHostConfiguration(location, connectionCfg);
+			return op.run(getSession(connectionCfg), op.getMonitor());
+		} catch (CrucibleLoginException e) {
+			return executeRetry(op, monitor, e);
+		} catch (RemoteApiLoginException e) {
+			if (e.getCause() instanceof IOException) {
+				throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
+			}
+			return executeRetry(op, monitor, e);
+		} catch (ServerPasswordNotProvidedException e) {
+			return executeRetry(op, monitor, e);
+		} catch (RemoteApiException e) {
+			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
+		} finally {
+			monitor.done();
+		}
+	}
+
+	@NotNull
+	protected abstract S getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
+			ServerPasswordNotProvidedException;
 
 	public final <T> T execute(RemoteOperation<T, F> op, boolean promptForCredentials) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
@@ -107,7 +162,7 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade> {
 		return execute(op);
 	}
 
-	private void updateServer() {
+	protected void updateServer() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
 			connectionCfg = new ConnectionCfg(connectionCfg.getId(), connectionCfg.getUrl(), credentials.getUserName(),
