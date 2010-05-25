@@ -28,6 +28,10 @@ public class ReviewExplorerLabelProviderTest extends TestCase {
 		assertEquals(
 				"something very very long 1234567890123456789012345...",
 				ReviewExplorerLabelProvider.getAbbreviatedCommentText("something very very long 1234567890123456789012345678901234567890 ..."));
+		assertEquals("abc...", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\n\rxyz"));
+		assertEquals("abc...", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\rxyz"));
+		assertEquals("abc...", ReviewExplorerLabelProvider.getAbbreviatedCommentText("abc\r\nxyz"));
+
 	}
 
 }

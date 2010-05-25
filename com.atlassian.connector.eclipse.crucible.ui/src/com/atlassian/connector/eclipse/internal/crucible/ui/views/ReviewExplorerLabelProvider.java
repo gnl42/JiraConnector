@@ -1,19 +1,19 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.views;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.Comment.ReadState;
-
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -160,15 +160,17 @@ public class ReviewExplorerLabelProvider extends ColumnLabelProvider implements 
 		return element == null ? new StyledString("") : new StyledString(element.toString());
 	}
 
+	private static final char[] NEWLINE_SEPARATORS = new char[] { '\r', '\n' };
+
 	@Nullable
 	public static String getAbbreviatedCommentText(@Nullable String msg) {
 		if (msg == null) {
 			return null;
 		}
-		String newLine = System.getProperty("line.separator");
-		final int newlineIndex = msg.indexOf(newLine);
+
+		final int newlineIndex = StringUtils.indexOfAny(msg, NEWLINE_SEPARATORS);
 		if (newlineIndex != -1) {
-			String cutOffComment = msg.substring(Math.min(newlineIndex + newLine.length(), msg.length()));
+			String cutOffComment = msg.substring(Math.min(newlineIndex + 1, msg.length()));
 
 			msg = msg.substring(0, newlineIndex);
 			if (cutOffComment.trim().length() > 0) {
