@@ -14,21 +14,9 @@ package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorActionPart;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskMigrator;
-import org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.sync.SubmitJob;
-import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
-import org.eclipse.mylyn.tasks.core.sync.SubmitJobListener;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -38,7 +26,6 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.ColumnSpan;
 import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.RowSpan;
-import org.eclipse.ui.PlatformUI;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -171,99 +158,5 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
 		}
-	}
-
-	@SuppressWarnings("restriction")
-	public void doJiraSubmit(SubmitJobListener submitListener) {
-//		if (!submitEnabled || !needsSubmit()) {
-//			return;
-//		}
-
-		try {
-			showEditorBusy(true);
-
-			doSave(new NullProgressMonitor());
-
-			SubmitJob submitJob = TasksUiInternal.getJobFactory().createSubmitTaskJob(getConnector(),
-					getModel().getTaskRepository(), getTask(), getModel().getTaskData(),
-					getModel().getChangedOldAttributes());
-			submitJob.addSubmitJobListener(submitListener);
-			submitJob.addSubmitJobListener(new SubmitTaskJobListener(getAttachContext()));
-			submitJob.schedule();
-		} catch (RuntimeException e) {
-			showEditorBusy(false);
-			throw e;
-		}
-	}
-
-	private class SubmitTaskJobListener extends SubmitJobListener {
-
-		private final boolean attachContext;
-
-		public SubmitTaskJobListener(boolean attachContext) {
-			this.attachContext = attachContext;
-		}
-
-		@Override
-		public void done(SubmitJobEvent event) {
-			final SubmitJob job = event.getJob();
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-
-				@SuppressWarnings("restriction")
-				private void addTask(ITask newTask) {
-					AbstractTaskContainer parent = null;
-					AbstractTaskEditorPart actionPart = getPart(ID_PART_ACTIONS);
-					if (actionPart instanceof TaskEditorActionPart) {
-						parent = ((TaskEditorActionPart) actionPart).getCategory();
-					}
-					TasksUiInternal.getTaskList().addTask(newTask, parent);
-				}
-
-				@SuppressWarnings("restriction")
-				public void run() {
-					try {
-						if (job.getStatus() == null) {
-							TasksUiInternal.synchronizeRepositoryInBackground(getTaskRepository());
-							if (job.getTask().equals(getTask())) {
-								refreshFormContent();
-							} else {
-								ITask oldTask = getTask();
-								ITask newTask = job.getTask();
-								addTask(newTask);
-
-								TaskMigrator migrator = new TaskMigrator(oldTask);
-								migrator.setDelete(true);
-								migrator.setEditor(getTaskEditor());
-								migrator.execute(newTask);
-							}
-						}
-						handleTaskSubmitted(new SubmitJobEvent(job));
-					} finally {
-						showEditorBusy(false);
-					}
-				}
-			});
-		}
-
-		@SuppressWarnings("restriction")
-		@Override
-		public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-			if (!getModel().getTaskData().isNew() && attachContext) {
-				AttachmentUtil.postContext(getConnector(), getModel().getTaskRepository(), getTask(), "", null, monitor); //$NON-NLS-1$
-			}
-		}
-
-		@Override
-		public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) {
-		}
-	}
-
-	@SuppressWarnings("restriction")
-	private boolean getAttachContext() {
-		AbstractTaskEditorPart actionPart = getPart(ID_PART_ACTIONS);
-		if (actionPart instanceof TaskEditorActionPart) {
-			return ((TaskEditorActionPart) actionPart).getAttachContext();
-		}
-		return false;
 	}
 }

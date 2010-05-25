@@ -34,11 +34,13 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
 import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
@@ -125,4 +127,25 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 		});
 	}
 
+	protected static void handleErrorWithDetails(final String message, final Throwable e) {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+
+				String m = message;
+
+				String searchDetails = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
+
+				if (e instanceof JiraRemoteMessageException) {
+				// TODO jj externalize
+					JiraRemoteMessageException jiraException = (JiraRemoteMessageException) e;
+					if (jiraException.getHtmlMessage().contains(searchDetails)) {
+						m += ". \n" + searchDetails + ". \n" + "Please refresh the issue and try again.";
+					}
+				}
+
+				Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, m, e);
+				StatusManager.getManager().handle(status, StatusManager.SHOW | StatusManager.LOG | StatusManager.BLOCK);
+			}
+		});
+	}
 }

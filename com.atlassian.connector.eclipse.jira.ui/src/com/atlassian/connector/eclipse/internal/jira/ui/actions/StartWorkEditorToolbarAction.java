@@ -11,9 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.actions;
 
+import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
+import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
+@SuppressWarnings("restriction")
 public class StartWorkEditorToolbarAction extends StartWorkAction {
 
 	private static final String ID = "com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
@@ -27,42 +32,24 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
 		setId(ID);
 
 		update();
+
+		TasksUiPlugin.getTaskDataManager().addListener(new ITaskDataManagerListener() {
+
+			public void taskDataUpdated(TaskDataManagerEvent event) {
+				update();
+			}
+
+			public void editsDiscarded(TaskDataManagerEvent event) {
+				update();
+			}
+		});
 	}
 
 	@Override
 	public void run() {
+		update();
 		doActionInsideEditor(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
-//		if (isTaskInProgress(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
-//			stopProgress();
-//		} else if (isTaskInStop(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
-//			startProgress();
-//		} else {
-//			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
-//		}
 	}
-
-//	private void startProgress() {
-//
-//		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-//				editorPage.getTask().getConnectorKind(), editorPage.getTask().getRepositoryUrl());
-//
-//		TaskAttribute rootAttribute = editorPage.getModel().getTaskData().getRoot();
-//
-//		Assert.isNotNull(repository);
-//		Assert.isNotNull(rootAttribute);
-//
-//		// change assignee
-//		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
-//		if (repository.getUserName() != null && !repository.getUserName().equals(assigneeAttribute.getValue())) {
-//			assigneeAttribute.setValue(repository.getUserName());
-//			editorPage.getModel().attributeChanged(assigneeAttribute);
-//			editorPage.refreshFormContent();
-//			editorPage.doJiraSubmit(new SubmitJiraIssueListener());
-//		} else {
-//			new SubmitJiraIssueListener().startProgress();
-//		}
-//
-//	}
 
 	protected void update() {
 		if (isTaskInProgress(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
@@ -77,119 +64,4 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
 			setToolTipText(Messages.StartWorkAction_start);
 		}
 	}
-
-//	private void stopProgress() {
-//
-//		final TaskDataModel taskModel = editorPage.getModel();
-//
-//		TaskAttribute selectedOperationAttribute = taskModel.getTaskData().getRoot().getMappedAttribute(
-//				TaskAttribute.OPERATION);
-//
-//		List<TaskOperation> operations = taskModel.getTaskData().getAttributeMapper().getTaskOperations(
-//				selectedOperationAttribute);
-//
-//		for (TaskOperation operation : operations) {
-//
-//			if (JiraTaskDataHandler.STOP_PROGRESS_OPERATION.equals(operation.getOperationId())) {
-//				taskModel.getTaskData().getAttributeMapper().setTaskOperation(selectedOperationAttribute, operation);
-//				taskModel.attributeChanged(selectedOperationAttribute);
-//				editorPage.doJiraSubmit(new SubmitJobListener() {
-//
-//					@Override
-//					public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-//					}
-//
-//					@Override
-//					public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-//					}
-//
-//					@Override
-//					public void done(final SubmitJobEvent event) {
-//						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//							public void run() {
-//								editorPage.refreshFormContent();
-//								TasksUi.getTaskActivityManager().deactivateTask(editorPage.getTask());
-//								update();
-//							}
-//						});
-//					}
-//				});
-//				break;
-//			}
-//		}
-//	}
-
-//	private class SubmitJiraIssueListener extends SubmitJobListener {
-//
-//		@Override
-//		public void done(SubmitJobEvent event) {
-//			final IStatus status = event.getJob().getStatus();
-//
-//			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//				public void run() {
-//					if (status == null || IStatus.OK == status.getSeverity()) {
-//						editorPage.refreshFormContent();
-//						startProgress();
-//					}
-//				}
-//			});
-//		}
-//
-//		protected void startProgress() {
-//			TaskDataModel taskModel = editorPage.getModel();
-//
-//			TaskAttribute selectedOperationAttribute = taskModel.getTaskData().getRoot().getMappedAttribute(
-//					TaskAttribute.OPERATION);
-//
-//			List<TaskOperation> operations = taskModel.getTaskData().getAttributeMapper().getTaskOperations(
-//					selectedOperationAttribute);
-//
-//			for (TaskOperation operation : operations) {
-//
-//				if (JiraTaskDataHandler.START_PROGRESS_OPERATION.equals(operation.getOperationId())) {
-//					taskModel.getTaskData()
-//							.getAttributeMapper()
-//							.setTaskOperation(selectedOperationAttribute, operation);
-//					taskModel.attributeChanged(selectedOperationAttribute);
-//					editorPage.doJiraSubmit(new SubmitJobListener() {
-//
-//						@Override
-//						public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor)
-//								throws CoreException {
-//						}
-//
-//						@Override
-//						public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-//						}
-//
-//						@Override
-//						public void done(final SubmitJobEvent event) {
-//							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//								public void run() {
-//									editorPage.refreshFormContent();
-////									TasksUiInternal.activateTaskThroughCommand(event.getJob().getTask());
-//									TasksUi.getTaskActivityManager().activateTask(event.getJob().getTask());
-//									update();
-//								}
-//							});
-//						}
-//					});
-//
-//					return;
-//				}
-//			}
-//
-//			StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
-//					Messages.StartWorkAction_Start_Work_Not_Available));
-//		}
-
-//		@Override
-//		public void taskSubmitted(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-//		}
-//
-//		@Override
-//		public void taskSynchronized(SubmitJobEvent event, IProgressMonitor monitor) throws CoreException {
-//		}
-
-//	}
 }

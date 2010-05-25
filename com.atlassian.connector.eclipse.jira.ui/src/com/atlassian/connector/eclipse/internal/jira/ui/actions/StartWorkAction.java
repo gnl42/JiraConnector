@@ -63,27 +63,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	@Override
 	public void run(IAction action) {
 
-//		Assert.isNotNull(tasks);
-//
-//		if (tasks.isEmpty()) {
-//			return;
-//		}
-//
-//		if (tasks.size() > 1) {
-//			// this action should be enabled only for single selection in plugin.xml
-//			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN,
-//					Messages.StartWorkAction_enabled_for_single_selection));
-//		}
-//
-//		Assert.isNotNull(tasks.get(0));
-//		task = tasks.get(0).getTask();
-//
-//		try {
-//			taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-//		} catch (CoreException e) {
-//			handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
-//			return;
-//		}
+		update(action);
 
 		if (getTargetPart() instanceof TaskListView) {
 			doActionOutsideEditor();
@@ -103,10 +83,6 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
 						doActionInsideEditor(jiraFormPage, taskData, task);
 
-						// do editor submit
-						// TODO jj change call (move stuff here from subclass)
-//						new StartWorkEditorToolbarAction(jiraFormPage).run();
-//						TasksUiInternal.synchronizeTasks(connector, new HashSet<ITask>(tasksToSync), true, null);
 						return;
 					}
 				}
@@ -219,7 +195,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				} catch (CoreException e) {
 					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 				} catch (JiraException e) {
-					handleError(Messages.StartWorkAction_Start_Work_Failed + task.getTaskKey(), e);
+					handleErrorWithDetails(Messages.StartWorkAction_Start_Work_Failed + task.getTaskKey(), e);
 				} finally {
 					if (shouldSynchronize) {
 						synchronizeTask(task, monitor);
@@ -260,7 +236,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				} catch (CoreException e) {
 					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 				} catch (JiraException e) {
-					handleError(Messages.StartWorkAction_Stop_Work_Failed + task.getTaskKey(), e);
+					handleErrorWithDetails(Messages.StartWorkAction_Stop_Work_Failed + task.getTaskKey(), e);
 				}
 
 				return Status.OK_STATUS;
