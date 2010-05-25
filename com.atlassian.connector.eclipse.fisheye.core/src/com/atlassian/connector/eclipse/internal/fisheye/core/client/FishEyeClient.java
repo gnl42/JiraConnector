@@ -16,6 +16,7 @@ import com.atlassian.connector.commons.fisheye.FishEyeServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.client.AbstractConnectorClient;
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.fisheye.api.FishEyeSession;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,8 +34,8 @@ import java.util.Collection;
  * 
  * @author Wojciech Seliga
  */
-public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2> implements IUpdateRepositoryData,
-		IClientDataProvider {
+public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2, FishEyeSession> implements
+		IUpdateRepositoryData, IClientDataProvider {
 
 	private final FishEyeClientData clientData;
 
@@ -75,6 +76,12 @@ public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2>
 				return null;
 			}
 		});
+	}
+
+	@Override
+	protected FishEyeSession getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
+			ServerPasswordNotProvidedException {
+		return facade.getSession(connectionCfg);
 	}
 
 }
