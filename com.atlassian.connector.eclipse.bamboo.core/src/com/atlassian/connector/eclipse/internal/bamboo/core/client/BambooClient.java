@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackI
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
+import com.atlassian.theplugin.commons.bamboo.api.BambooSession;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
@@ -35,7 +36,7 @@ import java.util.Collection;
  * @author Shawn Minto
  * @author Wojciech Seliga
  */
-public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
+public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, BambooSession> {
 
 	private BambooClientData clientData;
 
@@ -163,5 +164,11 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
 				return server.getBuildForPlanAndNumber(serverCfg, planKey, buildNumber, timezoneOffset);
 			}
 		});
+	}
+
+	@Override
+	protected BambooSession getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
+			ServerPasswordNotProvidedException {
+		return facade.getSession(connectionCfg);
 	}
 }
