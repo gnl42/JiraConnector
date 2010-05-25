@@ -281,14 +281,14 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 			}
 		});
 
-		Control authorControl = CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Author:");
+		CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Author:");
 
 		final Composite authorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit, participantsComp,
 				crucibleReview.getAuthor(), false, false, imageRegistry);
 		authorComposite.setMenu(parent.getMenu());
 
 		if (crucibleReview.getModerator() != null) {
-			Control moderatorControl = CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Moderator:");
+			CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Moderator:");
 			final Composite moderatorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit,
 					participantsComp, crucibleReview.getModerator(), false, false, imageRegistry);
 			moderatorComposite.setMenu(parent.getMenu());

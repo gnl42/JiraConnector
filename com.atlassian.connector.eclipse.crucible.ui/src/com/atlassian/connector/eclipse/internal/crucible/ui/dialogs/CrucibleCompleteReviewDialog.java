@@ -103,7 +103,6 @@ public class CrucibleCompleteReviewDialog extends AbstractCrucibleReviewActionDi
 	protected Control createPageControls(Composite parent) {
 		getShell().setText("Complete Review");
 		setTitle("Complete Review");
-		// setMessage("Provide an optional comment.");
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));

@@ -41,7 +41,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -66,12 +65,11 @@ import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +87,13 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS, ADD_RESOURCES, ADD_COMMENT_TO_FILE;
+		ADD_CHANGESET,
+		ADD_PATCH,
+		ADD_WORKSPACE_PATCH,
+		ADD_SCM_RESOURCES,
+		ADD_UPLOAD_ITEMS,
+		ADD_RESOURCES,
+		ADD_COMMENT_TO_FILE;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -104,7 +108,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				SubMonitor submonitor = SubMonitor.convert(monitor, changesets.keySet().size());
 				Review review = null;
 				for (String repository : changesets.keySet()) {
-					//add changeset to review
+					// add changeset to review
 					review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(), repository,
 							changesets.get(repository));
 					submonitor.worked(1);
@@ -288,7 +292,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			addPage(resourceSelectionPage);
 		}
 
-		//only add details page if review is not already existing
+		// only add details page if review is not already existing
 		if (crucibleReview == null) {
 			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository(), types.contains(Type.ADD_COMMENT_TO_FILE));
 			addPage(detailsPage);
@@ -388,7 +392,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		// create review from changeset
 		if (addChangeSetsPage != null || addChangeSetsFromCruciblePage != null) {
-			final Map<String, Set<String>> changesetsToAdd = addChangeSetsPage != null ? addChangeSetsPage.getSelectedChangesets()
+			final Map<String, Set<String>> changesetsToAdd = addChangeSetsPage != null ? addChangeSetsPage
+					.getSelectedChangesets()
 					: addChangeSetsFromCruciblePage.getSelectedChangesets();
 
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
@@ -479,10 +484,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		EnumSet<CrucibleAction> crucibleActions = crucibleReview.getActions();
+		Set<CrucibleAction> crucibleActions = crucibleReview.getActions();
 
 		if (crucibleActions == null) {
-			crucibleActions = EnumSet.noneOf(CrucibleAction.class);
+			crucibleActions = Collections.emptySet();
 		}
 
 		if (crucibleReview != null && detailsPage != null && detailsPage.isStartReviewImmediately()
@@ -542,13 +547,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
-					@Override
-					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						return server.submitReview(serverCfg, crucibleReview.getPermId());
-					}
-				});
+				client.changeReviewState(crucibleReview, CrucibleAction.SUBMIT, getTaskRepository(), monitor);
 				return Status.OK_STATUS;
 			}
 		};
@@ -562,13 +561,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
-					@Override
-					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						return server.approveReview(serverCfg, crucibleReview.getPermId());
-					}
-				});
+				client.changeReviewState(crucibleReview, CrucibleAction.APPROVE, getTaskRepository(), monitor);
 				return Status.OK_STATUS;
 			}
 		};
@@ -582,7 +575,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			runInJobContainer0(new CrucibleReviewChangeJob("Refresh Review", getTaskRepository(), false, false) {
 				@Override
 				protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-					// Update review after every change because otherwise some data will be missing (in this case we miss actions)
+					// Update review after every change because otherwise some data will be missing (in this case we miss
+					// actions)
 					crucibleReview = client.getReview(getTaskRepository(),
 							CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
 					return Status.OK_STATUS;

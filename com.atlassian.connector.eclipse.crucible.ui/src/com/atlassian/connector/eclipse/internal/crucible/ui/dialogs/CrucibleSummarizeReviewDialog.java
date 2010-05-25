@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleParticipantUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -83,14 +84,13 @@ public class CrucibleSummarizeReviewDialog extends AbstractCrucibleReviewActionD
 					client.execute(publishDraftsOp);
 					updatedReview = client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 				}
-				// summarize
+				// summarise & close
 				CrucibleRemoteOperation<Object> summarizeOp = new CrucibleRemoteOperation<Object>(monitor,
 						getTaskRepository()) {
 					@Override
 					public Object run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						// ignore
-						server.summarizeReview(serverCfg, review.getPermId());
+						server.getSession(serverCfg).changeReviewState(review.getPermId(), CrucibleAction.SUMMARIZE);
 						server.closeReview(serverCfg, review.getPermId(), summaryString);
 						return null;
 					}
