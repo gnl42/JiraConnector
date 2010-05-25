@@ -113,7 +113,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		// TODO fix other 3 fields
 
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("ExtendedCrucibleProject: ");
+		label.setText("Project: ");
 		label.setLayoutData(new GridData());
 
 		projectCombo = new ComboViewer(composite, SWT.READ_ONLY);

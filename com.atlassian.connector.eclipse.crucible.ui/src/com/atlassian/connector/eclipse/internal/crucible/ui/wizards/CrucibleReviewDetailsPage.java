@@ -205,7 +205,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		});
 		GridDataFactory.fillDefaults().span(5, 1).grab(true, false).applyTo(titleText);
 
-		new Label(composite, SWT.NONE).setText("ExtendedCrucibleProject:");
+		new Label(composite, SWT.NONE).setText("Project:");
 		projectsComboViewer = new ComboViewer(composite);
 		projectsComboViewer.setLabelProvider(new CrucibleProjectsLabelProvider());
 		projectsComboViewer.setContentProvider(new ArrayContentProvider());
@@ -222,7 +222,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 						details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 					}
 
-					if (details instanceof ExtendedCrucibleProject && ((ExtendedCrucibleProject) details).getAllowedReviewers() != null
+					if (details instanceof ExtendedCrucibleProject
+							&& ((ExtendedCrucibleProject) details).getAllowedReviewers() != null
 							&& ((ExtendedCrucibleProject) details).getAllowedReviewers().size() > 0) {
 						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(getUsersFromUsernames(
 								taskRepository, ((ExtendedCrucibleProject) details).getAllowedReviewers())));
