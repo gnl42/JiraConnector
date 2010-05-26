@@ -40,7 +40,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.StringUtil;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -59,7 +58,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -73,11 +71,11 @@ import java.util.Set;
  * Utility class for the UI
  * 
  * @author Shawn Minto
+ * @author Wojciech Seliga
  */
 public final class CrucibleUiUtil {
 
 	private CrucibleUiUtil() {
-		// ignore
 	}
 
 	public static TaskRepository getCrucibleTaskRepository(String repositoryUrl) {
@@ -239,6 +237,11 @@ public final class CrucibleUiUtil {
 		return repositories;
 	}
 
+	/**
+	 * 
+	 * @param repository
+	 * @return <code>null</code> when such information has not been yet cached
+	 */
 	@Nullable
 	public static CrucibleVersionInfo getCrucibleVersionInfo(TaskRepository repository) {
 		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()

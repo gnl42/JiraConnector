@@ -11,15 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.theplugin.commons.util.MiscUtil;
-
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.tasks.core.ITaskRepositoryFilter;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
@@ -29,25 +30,21 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
-
+import org.eclipse.ui.PlatformUI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Jacek Jaroczynski
+ * @author Wojciech Seliga
  */
 @SuppressWarnings("restriction")
 public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepositoryPage {
 
-	public static final String IS_VERSION_2_1 = "com.atlassian.connector.eclipse.crucible.core.isVersion2.1";
-
 	private CrucibleRepositorySelectionWizard crucibleRepositoryWizard;
 
 	protected TaskRepository selectedRepository;
-
-	private final Collection<TaskRepository> crucible21Repos = MiscUtil.buildArrayList();
 
 	public SelectCrucible21RepositoryPage() {
 		super(ENABLED_CRUCIBLE_REPOSITORY_FILTER);
@@ -60,7 +57,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 		// we need our own label provider to mark not matching repos as not clickable instead of hide them
 		getViewer().setLabelProvider(
-				new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider(crucible21Repos)));
+				new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider()));
 
 		getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -68,7 +65,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.getFirstElement() instanceof TaskRepository) {
 					selectedRepository = (TaskRepository) selection.getFirstElement();
-					if (crucible21Repos.contains(selectedRepository)) {
+					if (isSelectedRepo21OrNewer()) {
 						setPageComplete(true);
 					} else {
 						setPageComplete(false);
@@ -94,42 +91,52 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		}
 
 		if (visible) {
-			// retrieve Crucible repos version and filter list of available repos in the wizard
-			final WizardPage page = this;
-
-			crucible21Repos.clear();
-			crucible21Repos.addAll(getCrucible21Repos(page));
-
 			getViewer().setInput(getCrucibeTaskRepositories());
+			// using async exec here, as otherwise run() would be run _before_ the dialog is actually shown
+			// so the user would not see anything before the long running operation is completed
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				public void run() {
+					if (getControl() != null && !getControl().isDisposed()) {
+						// retrieve Crucible repos version and filter list of available repos in the wizard
+						fillCrucibleVersionInfo(SelectCrucible21RepositoryPage.this);
+						getWizard().getContainer().updateButtons();
+					}
+				}
+			});
 		}
 	}
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() != null;
+		return isSelectedRepo21OrNewer() && getSelectedNode() != null
+				&& getNextPage() != null;
+	}
+
+	private boolean isSelectedRepo21OrNewer() {
+		if (selectedRepository == null) {
+			return false;
+		}
+		final CrucibleVersionInfo crucibleVersionInfo = CrucibleUiUtil.getCrucibleVersionInfo(selectedRepository);
+		return crucibleVersionInfo != null && crucibleVersionInfo.isVersion21OrGreater();
 	}
 
 	public boolean canFinish() {
-		return crucible21Repos.contains(selectedRepository) && getSelectedNode() != null && getNextPage() == null;
+		return isSelectedRepo21OrNewer() && getSelectedNode() != null
+				&& getNextPage() == null;
 	}
 
-	private Collection<TaskRepository> getCrucible21Repos(final WizardPage page) {
-		final Collection<TaskRepository> crucible21Repos = new ArrayList<TaskRepository>();
+	private void fillCrucibleVersionInfo(final WizardPage page) {
 
 		if (crucibleRepositoryWizard != null) {
 			for (final TaskRepository repo : getCrucibeTaskRepositories()) {
-				if (repo.getProperty(IS_VERSION_2_1) == null) {
+				final CrucibleVersionInfo versionInfo = CrucibleUiUtil.getCrucibleVersionInfo(repo);
+				if (versionInfo == null) {
 					crucibleRepositoryWizard.updateRepoVersion(page, repo);
 				}
-			}
-
-			for (final TaskRepository repo : getCrucibeTaskRepositories()) {
-				if (Boolean.valueOf(repo.getProperty(IS_VERSION_2_1))) {
-					crucible21Repos.add(repo);
-				}
+				getViewer().refresh();
 			}
 		}
-		return crucible21Repos;
 	}
 
 	private List<TaskRepository> getCrucibeTaskRepositories() {
@@ -155,14 +162,21 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		super.setWizard(wizard);
 	}
 
-	public final class LocalRepositoryLabelProvider extends TaskRepositoryLabelProvider implements IStyledLabelProvider {
+	public final static class LocalRepositoryLabelProvider extends TaskRepositoryLabelProvider implements
+			IStyledLabelProvider {
 
-		private final Collection<TaskRepository> crucible21Repos;
+		private static final Styler GRAY_COLOR_STYLER = new Styler() {
 
-		public LocalRepositoryLabelProvider(Collection<TaskRepository> crucible21Repos) {
-			this.crucible21Repos = crucible21Repos;
-			JFaceResources.getColorRegistry().put("colorGrey", new RGB(100, 100, 100));
-		}
+			private static final String COLOR_GREY = "acfeColorGrey";
+			{
+				JFaceResources.getColorRegistry().put(COLOR_GREY, new RGB(100, 100, 100));
+			}
+
+			public void applyStyles(org.eclipse.swt.graphics.TextStyle textStyle) {
+				textStyle.foreground = JFaceResources.getColorRegistry().get(COLOR_GREY);
+
+			};
+		};
 
 		public StyledString getStyledText(Object element) {
 
@@ -170,13 +184,17 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 			if (element instanceof TaskRepository) {
 				TaskRepository repository = (TaskRepository) element;
-
-				if (crucible21Repos.contains(repository)) {
-					styledString.append(super.getText(element));
+				final CrucibleVersionInfo crucibleVersionInfo = CrucibleUiUtil.getCrucibleVersionInfo(repository);
+				if (crucibleVersionInfo == null) {
+					styledString.append(super.getText(element), GRAY_COLOR_STYLER);
+					styledString.append(" (unknown Crucible version)", StyledString.DECORATIONS_STYLER);
 				} else {
-					styledString.append(super.getText(element), StyledString.createColorRegistryStyler("colorGrey",
-							null));
-					styledString.append(" (this repository version is below 2.1)", StyledString.DECORATIONS_STYLER);
+					if (crucibleVersionInfo.isVersion21OrGreater()) {
+						styledString.append(super.getText(element));
+					} else {
+						styledString.append(super.getText(element), GRAY_COLOR_STYLER);
+						styledString.append(" (this repository version is below 2.1)", StyledString.DECORATIONS_STYLER);
+					}
 				}
 
 			} else if (element instanceof AbstractRepositoryConnector) {
