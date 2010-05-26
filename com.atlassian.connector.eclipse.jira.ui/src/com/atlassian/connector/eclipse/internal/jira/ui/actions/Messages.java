@@ -18,6 +18,8 @@ public class Messages extends NLS {
 
 	public static String JiraAction_Issue_Changed;
 
+	public static String JiraAction_Issue_Refresh_Try_Again;
+
 	public static String JiraAction_Issue_Refresh;
 
 	public static String JiraConnectorUiActions_Cannot_get_task_data;

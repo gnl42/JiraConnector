@@ -128,22 +128,36 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 	}
 
 	protected static void handleErrorWithDetails(final String message, final Throwable e) {
+
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 
+				Throwable t = e;
 				String m = message;
+				String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
+				String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$
 
-				String searchDetails = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
-
-				if (e instanceof JiraRemoteMessageException) {
+				if (e.getMessage().contains(searchDetails_1)) {
+					m += " \n" + Messages.JiraAction_Issue_Refresh_Try_Again; //$NON-NLS-1$
+				} else if (e.getMessage().contains(searchDetails_2)) {
+					m += " \n" + Messages.JiraAction_Issue_Refresh; //$NON-NLS-1$
+				} else if (e instanceof JiraRemoteMessageException) {
 					JiraRemoteMessageException jiraException = (JiraRemoteMessageException) e;
-					if (jiraException.getHtmlMessage().contains(searchDetails)) {
+					if (jiraException.getHtmlMessage().contains(searchDetails_1)) {
 						m += ". \n" + Messages.JiraAction_Issue_Changed + " \n" //$NON-NLS-1$ //$NON-NLS-2$ 
-								+ Messages.JiraAction_Issue_Refresh;
+								+ Messages.JiraAction_Issue_Refresh_Try_Again;
+					} else if (jiraException.getHtmlMessage().contains(searchDetails_2)) {
+						m += " \n" + Messages.JiraAction_Issue_Refresh; //$NON-NLS-1$
 					}
 				}
 
-				Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, m, e);
+				final int _300 = 300;
+
+				if (e.getMessage().length() > 300) {
+					t = new Exception(e.getMessage().substring(0, _300) + "...", e); //$NON-NLS-1$
+				}
+
+				Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, m, t);
 				StatusManager.getManager().handle(status, StatusManager.SHOW | StatusManager.LOG | StatusManager.BLOCK);
 			}
 		});
