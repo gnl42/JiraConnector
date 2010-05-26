@@ -136,10 +136,10 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 				String searchDetails = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
 
 				if (e instanceof JiraRemoteMessageException) {
-				// TODO jj externalize
 					JiraRemoteMessageException jiraException = (JiraRemoteMessageException) e;
 					if (jiraException.getHtmlMessage().contains(searchDetails)) {
-						m += ". \n" + searchDetails + ". \n" + "Please refresh the issue and try again.";
+						m += ". \n" + Messages.JiraAction_Issue_Changed + " \n" //$NON-NLS-1$ //$NON-NLS-2$ 
+								+ Messages.JiraAction_Issue_Refresh;
 					}
 				}
 

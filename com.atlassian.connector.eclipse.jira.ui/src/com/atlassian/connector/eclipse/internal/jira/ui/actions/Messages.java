@@ -16,6 +16,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.jira.ui.actions.messages"; //$NON-NLS-1$
 
+	public static String JiraAction_Issue_Changed;
+
+	public static String JiraAction_Issue_Refresh;
+
 	public static String JiraConnectorUiActions_Cannot_get_task_data;
 
 	public static String JiraConnectorUiActions_Cannot_vote;
