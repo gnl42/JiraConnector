@@ -266,16 +266,18 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		return clientData;
 	}
 
-	public void updateVersionInfo(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
+	public CrucibleVersionInfo updateVersionInfo(IProgressMonitor monitor, TaskRepository taskRepository)
+			throws CoreException {
+		return execute(new CrucibleRemoteSessionOperation<CrucibleVersionInfo>(monitor, taskRepository) {
+
 			@Override
-			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+			public CrucibleVersionInfo run(CrucibleSession session, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				SubMonitor submonitor = SubMonitor.convert(monitor, "Updating server version info", 1);
-				CrucibleVersionInfo versionInfo = server.getServerVersion(serverCfg);
+				CrucibleVersionInfo versionInfo = session.getServerVersion();
 				clientData.setVersionInfo(versionInfo);
 				submonitor.worked(1);
-				return null;
+				return versionInfo;
 			}
 		});
 	}
