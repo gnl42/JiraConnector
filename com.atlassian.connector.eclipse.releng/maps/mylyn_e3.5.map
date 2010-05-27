@@ -7,6 +7,7 @@ feature@org.eclipse.mylyn.team_feature=HEAD,:pserver:anonymous@dev.eclipse.org:/
 feature@org.eclipse.mylyn.ide_feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide-feature
 feature@org.eclipse.mylyn.pde_feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.pde-feature
 feature@org.eclipse.mylyn.sdk_feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.sdk-feature
+feature@org.eclipse.mylyn.commons=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons-feature
 
 !******* EXTRAS ***********
 feature@org.eclipse.mylyn.trac_feature=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.trac-feature
