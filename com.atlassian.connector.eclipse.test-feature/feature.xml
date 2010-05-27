@@ -189,6 +189,7 @@
          version="0.0.0"
          unpack="false"/>
 
+
    <plugin
          id="org.eclipse.mylyn.commons.tests"
          download-size="0"
