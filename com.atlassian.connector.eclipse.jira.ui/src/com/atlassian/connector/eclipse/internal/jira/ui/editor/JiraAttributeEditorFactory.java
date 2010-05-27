@@ -81,12 +81,18 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
 				@Override
 				public void createControl(Composite parent, FormToolkit toolkit) {
 					super.createControl(parent, toolkit);
-					if (isReadOnly()) {
-						IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(
-								getTaskAttribute());
-						if (repositoryPerson != null) {
+					IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(getTaskAttribute());
+					if (repositoryPerson != null) {
+						if (isReadOnly()) {
 							if (!StringUtils.isBlank(repositoryPerson.getPersonId())) {
 								getControl().setToolTipText(repositoryPerson.getPersonId());
+							}
+						} else {
+							// add tooltip with user display name for editbox in which we just display user id
+							if (!StringUtils.isBlank(repositoryPerson.getName())) {
+								if (getText() != null) {
+									getText().setToolTipText(repositoryPerson.getName());
+								}
 							}
 						}
 					}

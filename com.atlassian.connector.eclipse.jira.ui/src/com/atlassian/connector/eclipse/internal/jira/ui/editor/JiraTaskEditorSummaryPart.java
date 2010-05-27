@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
@@ -23,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -57,12 +55,6 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
 		Layout layout = composite.getLayout();
 		if (layout instanceof GridLayout) {
 			GridLayout gLayout = (GridLayout) layout;
-			gLayout.numColumns += 1;
-
-			final Label dndLabel = new Label(composite, SWT.NONE);
-			dndLabel.setImage(JiraImages.getImage(JiraImages.DROP_HERE));
-			GridDataFactory.fillDefaults().span(1, 2).align(SWT.RIGHT, SWT.CENTER).grab(true, false).applyTo(dndLabel);
-			dndLabel.setToolTipText(Messages.JiraTaskEditorSummaryPart_Attachements_Drop_Zone_Hover);
 
 			Composite secondLineComposite = new Composite(composite, SWT.NONE);
 			final RowLayout rowLayout = new RowLayout();
@@ -70,7 +62,7 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
 			rowLayout.marginLeft = 0;
 			secondLineComposite.setLayout(rowLayout);
 			rowLayout.spacing = 8;
-			GridDataFactory.fillDefaults().span(gLayout.numColumns - 1, 1).applyTo(secondLineComposite);
+			GridDataFactory.fillDefaults().span(gLayout.numColumns, 1).applyTo(secondLineComposite);
 			toolkit.adapt(secondLineComposite);
 
 			final TaskAttribute reporterAttribute = getTaskData().getRoot().getMappedAttribute(

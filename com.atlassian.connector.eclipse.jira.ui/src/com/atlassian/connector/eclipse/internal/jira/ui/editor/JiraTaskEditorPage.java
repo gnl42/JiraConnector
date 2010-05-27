@@ -45,6 +45,18 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
 
+		if (removePart(parts, ID_PART_ATTACHMENTS)) {
+			parts.add(new TaskEditorPartDescriptor(ID_PART_ATTACHMENTS) {
+				@Override
+				public AbstractTaskEditorPart createPart() {
+					final JiraTaskEditorAttachmentsPart jiraTaskEditorAttachmentsPart = new JiraTaskEditorAttachmentsPart();
+					jiraTaskEditorAttachmentsPart.setUseDescriptionColumn(false);
+					return jiraTaskEditorAttachmentsPart;
+				}
+			}.setPath(PATH_ATTACHMENTS));
+
+		}
+
 		// replace summary part
 		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
 		while (iter.hasNext()) {
@@ -145,16 +157,17 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		return parts;
 	}
 
-	private void removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
+	private boolean removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
 		Iterator<TaskEditorPartDescriptor> iter;
 		iter = parts.iterator();
 		while (iter.hasNext()) {
 			TaskEditorPartDescriptor part = iter.next();
 			if (part.getId().equals(partId)) {
 				parts.remove(part);
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
