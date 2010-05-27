@@ -18,6 +18,9 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 @SuppressWarnings("restriction")
 public class StartWorkEditorToolbarAction extends StartWorkAction {
 

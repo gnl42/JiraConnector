@@ -134,8 +134,9 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
 
 				Throwable t = e;
 				String m = message;
-				String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
-				String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$
+
+				final String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
+				final String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$
 
 				if (e.getMessage().contains(searchDetails_1)) {
 					m += " \n" + Messages.JiraAction_Issue_Refresh_Try_Again; //$NON-NLS-1$

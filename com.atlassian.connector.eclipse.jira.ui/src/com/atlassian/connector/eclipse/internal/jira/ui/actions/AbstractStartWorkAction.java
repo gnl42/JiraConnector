@@ -25,6 +25,9 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 
 	public AbstractStartWorkAction() {

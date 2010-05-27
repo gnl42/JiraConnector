@@ -50,6 +50,9 @@ import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 @SuppressWarnings("restriction")
 public class StartWorkAction extends AbstractStartWorkAction {
 
@@ -91,12 +94,6 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	}
 
 	private static void synchronizeTask(final ITask task, IProgressMonitor monitor) {
-
-//		ITaskList taskList = TasksUiInternal.getTaskList();
-//
-//		AbstractTask abstractTask = ((AbstractTask) aTask);
-//		abstractTask.setSynchronizing(true);
-//		((TaskList) taskList).notifySynchronizationStateChanged(asSet(aTask));
 
 		SynchronizeTasksJob job = (SynchronizeTasksJob) TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
 				getConnector(task), asSet(task));
