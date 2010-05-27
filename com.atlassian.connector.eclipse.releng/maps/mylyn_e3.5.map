@@ -55,6 +55,7 @@ plugin@org.eclipse.mylyn.sandbox.dev=HEAD,:pserver:anonymous@dev.eclipse.org:/cv
 plugin@org.eclipse.mylyn.tasks.bugs=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.bugs
 plugin@org.eclipse.mylyn.tasks.core=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.core
 plugin@org.eclipse.mylyn.tasks.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.ui
+plugin@org.eclipse.mylyn.tasks.search=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.search
 plugin@org.eclipse.mylyn.team.cvs=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.cvs
 plugin@org.eclipse.mylyn.team.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.ui
 plugin@org.eclipse.mylyn.trac.core=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.trac.core
