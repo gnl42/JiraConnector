@@ -7,12 +7,14 @@
  *
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
+ *     Atlassian - UI improvements, adding new features
  *******************************************************************************/
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
@@ -21,10 +23,9 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-
 /**
  * @author Steffen Pingel
+ * @author Wojciech Seliga
  */
 public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
@@ -41,11 +42,6 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 	@Override
 	public IFormPage createPage(TaskEditor parentEditor) {
 		return new JiraTaskEditorPage(parentEditor);
-	}
-
-	@Override
-	public String[] getConflictingIds(TaskEditorInput input) {
-		return new String[] { ITasksUiConstants.ID_PAGE_PLANNING };
 	}
 
 	@Override

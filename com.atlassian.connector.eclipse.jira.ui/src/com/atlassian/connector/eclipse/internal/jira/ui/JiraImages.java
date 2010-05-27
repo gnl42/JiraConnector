@@ -11,12 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author Mik Kersten
@@ -44,6 +44,8 @@ public class JiraImages {
 	public static final ImageDescriptor OVERLAY_SUB_TASK = create(T_VIEW, "overlay-sub-task.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor START_PROGRESS = create("etool16", "startprogress.png"); //$NON-NLS-1$ //$NON-NLS-2$
+
+	public static final ImageDescriptor DROP_HERE = create("obj16", "drop-attachments.png"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static ImageDescriptor create(String prefix, String name) {
 		try {

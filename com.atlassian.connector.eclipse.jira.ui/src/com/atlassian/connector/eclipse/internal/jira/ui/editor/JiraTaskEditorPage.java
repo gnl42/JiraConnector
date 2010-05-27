@@ -7,55 +7,43 @@
  *
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
+ *     Atlassian - UI improvements, adding new features
  *******************************************************************************/
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
-import java.util.Iterator;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
 
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
+import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
-import org.eclipse.mylyn.tasks.ui.editors.LayoutHint;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
-import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.ColumnSpan;
-import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.RowSpan;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Steffen Pingel
+ * @author Wojciech Seliga
  */
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
-		setNeedsPrivateSection(true);
+		setNeedsPrivateSection(false);
 		setNeedsSubmitButton(true);
 	}
 
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
-		if (getModel().getTaskData().getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
-			parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") { //$NON-NLS-1$
-				@Override
-				public AbstractTaskEditorPart createPart() {
-					return new WorkLogPart();
-				}
-			}.setPath(ID_PART_ATTRIBUTES + "/" + PATH_PLANNING)); //$NON-NLS-1$
-		}
 
 		// replace summary part
 		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
@@ -115,38 +103,63 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}
 		}
 
+		// remove planning part - it's now in a separate tab
+		removePart(parts, ID_PART_PLANNING);
+
+		removePart(parts, ID_PART_ATTRIBUTES);
+
+		parts.add(new TaskEditorPartDescriptor(ID_PART_ATTRIBUTES) {
+			@Override
+			public AbstractTaskEditorPart createPart() {
+				return new TaskEditorAttributePart() {
+					@Override
+					protected boolean shouldExpandOnCreate() {
+						return true;
+					}
+				};
+			}
+		}.setPath(PATH_ATTRIBUTES));
+
+		// move Description just below Attributes and expand it always
+		removePart(parts, ID_PART_DESCRIPTION);
+		parts.add(new TaskEditorPartDescriptor(ID_PART_DESCRIPTION) {
+			@Override
+			public AbstractTaskEditorPart createPart() {
+				TaskEditorDescriptionPart part = new TaskEditorDescriptionPart();
+				part.setExpandVertically(true);
+				part.setSectionStyle(ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
+				return part;
+			}
+		}.setPath(PATH_ATTRIBUTES));
+
+		// and worklog at the very end
+		if (getModel().getTaskData().getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
+			parts.add(new TaskEditorPartDescriptor("com.atlassian.connnector.eclipse.jira.worklog") { //$NON-NLS-1$
+				@Override
+				public AbstractTaskEditorPart createPart() {
+					return new WorkLogPart();
+				}
+			}.setPath(PATH_COMMENTS));
+		}
+
 		return parts;
+	}
+
+	private void removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
+		Iterator<TaskEditorPartDescriptor> iter;
+		iter = parts.iterator();
+		while (iter.hasNext()) {
+			TaskEditorPartDescriptor part = iter.next();
+			if (part.getId().equals(partId)) {
+				parts.remove(part);
+				break;
+			}
+		}
 	}
 
 	@Override
 	protected AttributeEditorFactory createAttributeEditorFactory() {
-		AttributeEditorFactory factory = new AttributeEditorFactory(getModel(), getTaskRepository(), getEditorSite()) {
-			@Override
-			public AbstractAttributeEditor createEditor(String type, TaskAttribute taskAttribute) {
-				if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
-					return new TimeSpanAttributeEditor(getModel(), taskAttribute);
-				}
-				if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
-					String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-					if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
-						return new DateTimeAttributeEditor(getModel(), taskAttribute, true);
-					} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
-						return new DateTimeAttributeEditor(getModel(), taskAttribute, false);
-					}
-				}
-				if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
-					CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(
-							getModel(), taskAttribute);
-					attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
-					return attributeEditor;
-				}
-				if (IJiraConstants.TYPE_NUMBER.equals(type)) {
-					return new NumberAttributeEditor(getModel(), taskAttribute);
-				}
-				return super.createEditor(type, taskAttribute);
-			}
-		};
-		return factory;
+		return new JiraAttributeEditorFactory(getModel(), getTaskRepository(), getEditorSite());
 	}
 
 	@Override
@@ -159,4 +172,5 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
 		}
 	}
+
 }
