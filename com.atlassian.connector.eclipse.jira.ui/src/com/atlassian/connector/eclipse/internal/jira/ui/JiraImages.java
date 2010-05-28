@@ -45,7 +45,7 @@ public class JiraImages {
 
 	public static final ImageDescriptor START_PROGRESS = create("etool16", "startprogress.png"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	public static final ImageDescriptor DROP_HERE = create("obj16", "drop-attachments.png"); //$NON-NLS-1$ //$NON-NLS-2$
+	public static final ImageDescriptor LIGHTBULB = create("obj16", "lightbulb.gif"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static ImageDescriptor create(String prefix, String name) {
 		try {

@@ -71,7 +71,7 @@ public class Messages extends NLS {
 
 	public static String TaskEditorCommentPart_Expand_Comments;
 
-	public static String JiraTaskEditorSummaryPart_Attachements_Drop_Zone_Hover;
+	public static String JiraTaskEditorSummaryPart_Attachements_Drag_and_Drop_Hint;
 
 	private Messages() {
 	}

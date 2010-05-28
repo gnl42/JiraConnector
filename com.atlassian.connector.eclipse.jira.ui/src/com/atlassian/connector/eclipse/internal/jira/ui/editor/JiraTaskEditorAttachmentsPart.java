@@ -41,6 +41,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -214,11 +215,11 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 		});
 		getTaskEditorPage().registerDefaultDropListener(attachScreenshotButton);
 
-		final Label dndLabel = new Label(attachmentControlsComposite, SWT.NONE);
-		dndLabel.setImage(JiraImages.getImage(JiraImages.DROP_HERE));
-		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(dndLabel);
-		dndLabel.setToolTipText(com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages.JiraTaskEditorSummaryPart_Attachements_Drop_Zone_Hover);
-		getTaskEditorPage().registerDefaultDropListener(dndLabel);
+		final CLabel dndHintLabel = new CLabel(attachmentControlsComposite, SWT.LEFT);
+		dndHintLabel.setImage(JiraImages.getImage(JiraImages.LIGHTBULB));
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(dndHintLabel);
+		dndHintLabel.setText(com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages.JiraTaskEditorSummaryPart_Attachements_Drag_and_Drop_Hint);
+		getTaskEditorPage().registerDefaultDropListener(dndHintLabel);
 
 	}
 
