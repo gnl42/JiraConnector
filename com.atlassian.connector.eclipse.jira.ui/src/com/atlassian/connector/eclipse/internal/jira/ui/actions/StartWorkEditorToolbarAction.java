@@ -11,9 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.actions;
 
-import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
-import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
@@ -21,31 +20,19 @@ import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPag
 /**
  * @author Jacek Jaroczynski
  */
-@SuppressWarnings("restriction")
 public class StartWorkEditorToolbarAction extends StartWorkAction {
 
 	private static final String ID = "com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
 
 	private final JiraTaskEditorPage editorPage;
 
-	public StartWorkEditorToolbarAction(JiraTaskEditorPage editorPage) {
+	public StartWorkEditorToolbarAction(final JiraTaskEditorPage editorPage) {
 		super();
 		this.editorPage = editorPage;
 		setImageDescriptor(JiraImages.START_PROGRESS);
 		setId(ID);
 
 		update();
-
-		TasksUiPlugin.getTaskDataManager().addListener(new ITaskDataManagerListener() {
-
-			public void taskDataUpdated(TaskDataManagerEvent event) {
-				update();
-			}
-
-			public void editsDiscarded(TaskDataManagerEvent event) {
-				update();
-			}
-		});
 	}
 
 	@Override
@@ -54,11 +41,15 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
 		doActionInsideEditor(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
 	}
 
-	protected void update() {
-		if (isTaskInProgress(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
+	public void update() {
+		update(editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
+	}
+
+	public void update(TaskData taskData, ITask task) {
+		if (isTaskInProgress(taskData, task)) {
 			setChecked(true);
 			setToolTipText(Messages.StartWorkAction_stop);
-		} else if (isTaskInStop(editorPage.getModel().getTaskData(), editorPage.getModel().getTask())) {
+		} else if (isTaskInStop(taskData, task)) {
 			setChecked(false);
 			setToolTipText(Messages.StartWorkAction_start);
 		} else {

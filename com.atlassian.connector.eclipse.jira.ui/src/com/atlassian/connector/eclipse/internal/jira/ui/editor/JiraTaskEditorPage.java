@@ -12,11 +12,13 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
-import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
+import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
@@ -24,16 +26,22 @@ import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import java.util.Iterator;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
 
 /**
  * @author Steffen Pingel
  * @author Wojciech Seliga
  */
+@SuppressWarnings("restriction")
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {
+
+	private StartWorkEditorToolbarAction startWorkAction;
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
@@ -180,10 +188,42 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		super.fillToolBar(toolBarManager);
 
 		if (!getModel().getTaskData().isNew()) {
-			StartWorkEditorToolbarAction startWorkAction = new StartWorkEditorToolbarAction(this);
+			startWorkAction = new StartWorkEditorToolbarAction(this);
 //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
 		}
 	}
+
+	@Override
+	public void dispose() {
+		TasksUiPlugin.getTaskDataManager().removeListener(updateStartWorkActionListener);
+		super.dispose();
+	}
+
+	@Override
+	public void init(IEditorSite site, IEditorInput input) {
+		super.init(site, input);
+
+		TasksUiPlugin.getTaskDataManager().addListener(updateStartWorkActionListener);
+	}
+
+	private final ITaskDataManagerListener updateStartWorkActionListener = new ITaskDataManagerListener() {
+
+		public void taskDataUpdated(TaskDataManagerEvent event) {
+			update(event);
+		}
+
+		public void editsDiscarded(TaskDataManagerEvent event) {
+			update(event);
+		}
+
+		private void update(TaskDataManagerEvent event) {
+			if (event.getTask().equals(getModel().getTask())) {
+				if (startWorkAction != null) {
+					startWorkAction.update(event.getTaskData(), event.getTask());
+				}
+			}
+		}
+	};
 
 }
