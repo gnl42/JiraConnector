@@ -70,14 +70,24 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 				monitor = Policy.backgroundMonitorFor(monitor);
 				client.validate(monitor, taskRepository);
 			} catch (CoreException e) {
+				IStatus status = e.getStatus();
 				if (e.getCause() != null && e.getCause() instanceof RemoteApiException
-						&& e.getCause().getCause() != null && e.getCause().getCause() instanceof IOException
-						&& e.getCause().getCause().getMessage().contains("HTTP 404")) {
-					setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-							"HTTP 404 (Not Found) - Did you enable Remote API in Crucible?", e));
-				} else {
-					setStatus(e.getStatus());
+						&& e.getCause().getCause() != null && e.getCause().getCause() instanceof IOException) {
+					if (e.getCause().getCause().getMessage().contains("HTTP 404")) {
+						status = new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"HTTP 404 (Not Found) - Did you enable Remote API in Crucible?", e);
+					}
+					if (e.getCause().getCause().getMessage().contains("HTTP 403")
+							&& e.getCause().getCause().getCause() != null
+							&& e.getCause().getCause().getCause().getMessage().contains("maximum")) {
+						status = new Status(
+								IStatus.ERROR,
+								CrucibleUiPlugin.PLUGIN_ID,
+								"HTTP 403 (Permission denied) - Wrong credentials or you've been locked out from remote API.",
+								e);
+					}
 				}
+				setStatus(status);
 				return;
 			} finally {
 				if (client != null) {

@@ -9,12 +9,12 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs;
+package com.atlassian.connector.eclipse.ui.dialogs;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +80,8 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 	protected void buttonPressed(int buttonId) {
 		super.buttonPressed(buttonId);
 		if (buttonId == IDialogConstants.HELP_ID) {
-			TasksUiUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse");
+			WorkbenchUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse",
+					IWorkbenchBrowserSupport.AS_EXTERNAL);
 		}
 	}
 

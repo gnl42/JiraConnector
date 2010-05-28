@@ -16,6 +16,7 @@ import static com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin.
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.remoteapi.CaptchaRequiredException;
 import com.atlassian.theplugin.commons.remoteapi.ProductServerFacade;
 import com.atlassian.theplugin.commons.remoteapi.ProductSession;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
@@ -138,6 +139,8 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
 			return op.run(facade, connectionCfg, op.getMonitor());
 		} catch (CrucibleLoginException e) {
 			return executeRetry(op, monitor, e);
+		} catch (CaptchaRequiredException e) {
+			return executeWithCaptchaRetry(op, monitor, e);
 		} catch (RemoteApiLoginException e) {
 			if (e.getCause() instanceof IOException) {
 				throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
@@ -155,6 +158,21 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
 	private <T> T executeRetry(RemoteOperation<T, F> op, IProgressMonitor monitor, Exception e) throws CoreException {
 		try {
 			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+		} catch (UnsupportedRequestException ex) {
+			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
+					e.getMessage(), e));
+		}
+		return execute(op);
+	}
+
+	private <T> T executeWithCaptchaRetry(RemoteOperation<T, F> op, IProgressMonitor monitor, Exception e)
+			throws CoreException {
+		try {
+			if (location instanceof ICaptchaAwareLocation) {
+				((ICaptchaAwareLocation) location).requestCaptchaAuthentication(monitor);
+			} else {
+				throw new UnsupportedRequestException();
+			}
 		} catch (UnsupportedRequestException ex) {
 			throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
 					e.getMessage(), e));

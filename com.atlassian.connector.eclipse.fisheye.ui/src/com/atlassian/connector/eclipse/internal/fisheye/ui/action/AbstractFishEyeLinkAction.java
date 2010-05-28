@@ -16,12 +16,12 @@ import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceC
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
-import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.actions.AbstractResourceAction;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
+import com.atlassian.connector.eclipse.ui.dialogs.ErrorDialogWithHyperlink;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
