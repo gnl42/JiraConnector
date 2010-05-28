@@ -52,7 +52,7 @@
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.mylyn.monitor.core"/>
-      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>
+      <!--      <import plugin="com.atlassian.connector.eclipse.monitor.usage"/>-->
       <import plugin="org.apache.axis"/>
       <import plugin="javax.xml.rpc"/>
       <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
