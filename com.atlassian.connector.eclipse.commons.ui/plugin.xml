@@ -1,0 +1,15 @@
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.atlassian.connector.eclipse.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+  
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="com.atlassian.connector.eclipse.ui.AtlassianUiPlugin$AtlassianUiPluginEarlyStartup">
+      </startup>
+   </extension>
+</plugin>
