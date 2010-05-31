@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
-import com.atlassian.connector.eclipse.branding.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
+import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
