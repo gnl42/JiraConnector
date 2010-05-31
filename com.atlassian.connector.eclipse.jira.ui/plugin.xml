@@ -29,14 +29,15 @@
             id="jira"
             class="com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector"
             name="%JiraRepositoryConnector.name"/>
-	  <connectorUi
-         brandingIcon="icons/eview16/jira-logo.gif"
-         class="com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi"
-         name="%JiraConnectorUi.name"
-         overlayIcon="icons/eview16/overlay-jira.gif"/>
-   <taskListMigrator
-         class="com.atlassian.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
-   </taskListMigrator>
+		<connectorUi 
+			brandingIcon="icons/eview16/jira-logo.gif"
+			class="com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi"
+			name="%JiraConnectorUi.name"
+			overlayIcon="icons/eview16/overlay-jira.gif"/>
+		<taskListMigrator
+			class="com.atlassian.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
+		</taskListMigrator>
+	   <repositoryMigrator class="com.atlassian.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
             
    </extension>
 
