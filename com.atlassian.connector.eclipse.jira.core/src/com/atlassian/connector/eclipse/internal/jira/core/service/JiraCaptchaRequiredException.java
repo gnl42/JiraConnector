@@ -15,7 +15,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service;
 public class JiraCaptchaRequiredException extends JiraAuthenticationException {
 
 	public JiraCaptchaRequiredException(String message) {
-		super(message);
+		super(message == null ? "You've been locked out of remote API due to multiple failed login attemps" : message); //$NON-NLS-1$
 	}
 
 }
