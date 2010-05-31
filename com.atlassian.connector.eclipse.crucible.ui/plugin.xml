@@ -4,6 +4,7 @@
 		</connectorCore>
 		<connectorUi brandingIcon="icons/obj16/crucible.png" class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryConnectorUi" id="crucible" name="Crucible" overlayIcon="icons/obj16/crucible-overlay.png">
 		</connectorUi>
+	   <repositoryMigrator class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryMigrator"/>
 	</extension>
 	<extension point="org.eclipse.mylyn.tasks.ui.editors">
 		<pageFactory class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleEditorPageFactory" id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
@@ -184,4 +185,5 @@
 			<targetClass class="org.eclipse.ui.texteditor.AbstractDecoratedTextEditor" />
 		</column>
 	</extension>   
+	
 </plugin>
