@@ -13,6 +13,7 @@
             name="Bamboo"
             overlayIcon="icons/obj16/bamboo-overlay.png">
       </connectorUi>
+	   <repositoryMigrator class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooRepositoryMigrator"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">
