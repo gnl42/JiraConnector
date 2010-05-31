@@ -549,7 +549,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 
 	@Override
 	protected boolean isAuthenticationException(Exception e) {
-		return e instanceof JiraAuthenticationException;
+		return e instanceof JiraAuthenticationException && !(e instanceof JiraCaptchaRequiredException);
 	}
 
 	@Override

@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.ui;
 
+import com.atlassian.connector.eclipse.branding.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.core.client.ICaptchaAwareLocation;
-import com.atlassian.connector.eclipse.ui.dialogs.RemoteApiLockedDialog;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
