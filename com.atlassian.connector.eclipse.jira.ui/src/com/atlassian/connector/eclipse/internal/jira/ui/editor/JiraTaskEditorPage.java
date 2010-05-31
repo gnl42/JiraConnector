@@ -187,7 +187,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	public void fillToolBar(IToolBarManager toolBarManager) {
 		super.fillToolBar(toolBarManager);
 
-		if (getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
+		if (getModel() != null && getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
 			startWorkAction = new StartWorkEditorToolbarAction(this);
 //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
 			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
