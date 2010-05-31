@@ -71,7 +71,12 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
 						IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(
 								getTaskAttribute());
 						if (repositoryPerson != null) {
-							return repositoryPerson.getName();
+							final String name = repositoryPerson.getName();
+							if (name != null) {
+								return name;
+							} else {
+								return repositoryPerson.getPersonId();
+							}
 						}
 					}
 
