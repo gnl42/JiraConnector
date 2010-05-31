@@ -54,4 +54,3 @@ Export-Package: com.atlassian.connector.eclipse.ui;
    com.atlassian.connector.eclipse.directclickthrough.ui",
  com.atlassian.connector.eclipse.ui.util,
  com.atlassian.connector.eclipse.ui.viewers
-Import-Package: com.atlassian.connector.eclipse.branding.ui.dialogs
