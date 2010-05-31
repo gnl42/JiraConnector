@@ -28,6 +28,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
@@ -217,12 +218,18 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			update(event);
 		}
 
-		private void update(TaskDataManagerEvent event) {
-			if (event.getTask().equals(getModel().getTask())) {
-				if (startWorkAction != null) {
-					startWorkAction.update(event.getTaskData(), event.getTask());
+		private void update(final TaskDataManagerEvent event) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					if (event.getTask() != null && getModel() != null) {
+						if (event.getTask().equals(getModel().getTask())) {
+							if (startWorkAction != null) {
+								startWorkAction.update(event.getTaskData(), event.getTask());
+							}
+						}
+					}
 				}
-			}
+			});
 		}
 	};
 
