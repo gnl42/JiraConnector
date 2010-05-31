@@ -15,6 +15,8 @@
             name="FishEye"
             overlayIcon="icons/obj16/fisheye-overlay.png">
       </connectorUi>
+	   <repositoryMigrator class="com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeRepositoryMigrator"/>
+      
    </extension>
    
    <!-- I don't know how to achieve the same using new Eclipse command API. Would be great to migrate it 
