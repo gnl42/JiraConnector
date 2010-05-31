@@ -201,6 +201,8 @@ public class Messages extends NLS {
 
 	public static String JiraRepositorySettingsPage_Refresh_configuration;
 
+	public static String JiraRepositorySettingsPage_remote_api_locked;
+
 	public static String JiraRepositorySettingsPage_The_repository_location_reported_by_the_server_does_not_match_the_provided_location;
 
 	public static String JiraRepositorySettingsPage_Reset_to_defaults;

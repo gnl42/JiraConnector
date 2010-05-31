@@ -57,6 +57,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.User;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInsufficientPermissionException;
@@ -518,6 +519,9 @@ public class JiraSoapClient extends AbstractSoapClient {
 		} catch (RemotePermissionException e) {
 			throw new JiraInsufficientPermissionException(e.getMessage());
 		} catch (RemoteAuthenticationException e) {
+			if (e.getMessage() != null && e.getMessage().contains("maximum")) { //$NON-NLS-1$
+				throw new JiraCaptchaRequiredException(e.getMessage());
+			}
 			throw new JiraAuthenticationException(e.getMessage());
 		} catch (RemoteException e) {
 			String message = e.getMessage();

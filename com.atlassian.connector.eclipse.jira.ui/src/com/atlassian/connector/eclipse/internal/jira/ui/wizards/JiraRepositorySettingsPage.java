@@ -66,6 +66,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
@@ -430,6 +431,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			JiraConfiguration configuration = JiraUtil.getConfiguration(repository);
 			try {
 				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
+			} catch (JiraCaptchaRequiredException e) {
+				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
+						JiraUiPlugin.ID_PLUGIN, Messages.JiraRepositorySettingsPage_remote_api_locked));
 			} catch (JiraAuthenticationException e) {
 				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
 						JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
