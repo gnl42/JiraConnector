@@ -6,8 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
-Export-Package: com.atlassian.connector.eclipse.branding.ui.dialogs,
- com.atlassian.connector.eclipse.internal.branding.ui;x-internal:=true,
+Export-Package: com.atlassian.connector.eclipse.internal.branding.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.branding.ui.preferences;x-internal:=true,
  com.atlassian.connector.eclipse.internal.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.ui.viewers;x-internal:=true
@@ -16,4 +15,3 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.ui
-Import-Package: org.jetbrains.annotations;resolution:=optional
