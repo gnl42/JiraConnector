@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-import com.atlassian.connector.eclipse.commons.internal.ui.CategoryAddingRepositoryMigrator;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.commons.ui.CategoryAddingRepositoryMigrator;
 
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 

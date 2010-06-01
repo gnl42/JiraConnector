@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-import com.atlassian.connector.eclipse.commons.internal.ui.CategoryAddingRepositoryMigrator;
+import com.atlassian.connector.eclipse.internal.commons.ui.CategoryAddingRepositoryMigrator;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;

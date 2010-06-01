@@ -10,7 +10,7 @@ Export-Package:
  com.atlassian.connector.eclipse.internal.commons.ui.dialogs;x-friends:="com.atlassian.connector.eclipse.bamboo.ui, 
  com.atlassian.connector.eclipse.crucible.ui, com.atlassian.connector.eclipse.fisheye.ui, 
  com.atlassian.connector.eclipse.jira.ui, com.atlassian.connector.eclipse.ui",
- com.atlassian.connector.eclipse.commons.internal.ui;x-friends:="com.atlassian.connector.eclipse.bamboo.ui, 
+ com.atlassian.connector.eclipse.internal.commons.ui;x-friends:="com.atlassian.connector.eclipse.bamboo.ui, 
  com.atlassian.connector.eclipse.crucible.ui, com.atlassian.connector.eclipse.fisheye.ui, 
  com.atlassian.connector.eclipse.jira.ui"
 Require-Bundle: org.eclipse.swt,

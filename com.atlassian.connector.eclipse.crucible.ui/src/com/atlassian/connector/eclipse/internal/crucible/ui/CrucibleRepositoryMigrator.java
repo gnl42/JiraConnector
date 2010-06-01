@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.commons.internal.ui.CategoryAddingRepositoryMigrator;
+import com.atlassian.connector.eclipse.internal.commons.ui.CategoryAddingRepositoryMigrator;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 
