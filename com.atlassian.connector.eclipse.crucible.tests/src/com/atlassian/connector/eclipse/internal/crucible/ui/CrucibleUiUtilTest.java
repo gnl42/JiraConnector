@@ -16,9 +16,10 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
+import com.atlassian.theplugin.commons.crucible.api.model.ExtendedCrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -37,6 +38,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -372,6 +374,7 @@ public class CrucibleUiUtilTest extends TestCase {
 	}
 
 	public void testGetCachedProjects() {
+
 		TaskRepository repository = createMockRepository();
 		Review review = createMockReview(repository);
 
@@ -387,7 +390,7 @@ public class CrucibleUiUtilTest extends TestCase {
 		projects.add(projectB);
 		clientData.setProjects(projects);
 
-		Set<BasicProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
+		Collection<BasicProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
 
 		assertEquals(2, usersReceivedSet.size());
 
@@ -395,6 +398,13 @@ public class CrucibleUiUtilTest extends TestCase {
 		BasicProject cachedProjectB = new BasicProject("b", "BB", "BbB");
 		assertTrue(usersReceivedSet.contains(cachedProjectA));
 		assertTrue(usersReceivedSet.contains(cachedProjectB));
+		assertEquals(BasicProject.class, clientData.getCrucibleProject("BB").getClass());
+		assertEquals(BasicProject.class, clientData.getCrucibleProject("AA").getClass());
+
+		clientData.updateProject(new ExtendedCrucibleProject("b", "BB", "My extended Project", MiscUtil.buildArrayList(
+				"userA", "userB")));
+		assertEquals(ExtendedCrucibleProject.class, clientData.getCrucibleProject("BB").getClass());
+		assertEquals(BasicProject.class, clientData.getCrucibleProject("AA").getClass());
 	}
 
 	public void testGetUsernamesFromUsers() {

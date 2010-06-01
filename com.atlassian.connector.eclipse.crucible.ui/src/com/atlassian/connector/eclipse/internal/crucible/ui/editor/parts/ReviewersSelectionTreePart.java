@@ -13,8 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.ui.viewers.ArrayTreeContentProvider;
-import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
-
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -30,7 +29,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,13 +40,13 @@ import java.util.Set;
  */
 public class ReviewersSelectionTreePart {
 
-	private final Set<Reviewer> selectedReviewers;
+	private final Set<User> selectedReviewers;
 
 	private CheckboxFilteredTree tree;
 
 	private ICheckStateListener externalListener;
 
-	private final Collection<Reviewer> allReviewers;
+	private final Collection<User> allReviewers;
 
 	private class CheckboxFilteredTree extends FilteredTree {
 
@@ -72,13 +70,9 @@ public class ReviewersSelectionTreePart {
 
 	}
 
-//	public ReviewersSelectionTreePart(Review review, ) {
-//		this(new HashSet<Reviewer>(), review);
-//	}
-
-	public ReviewersSelectionTreePart(@NotNull Set<Reviewer> selectedUsers, @NotNull Collection<Reviewer> allReviewers) {
-		selectedReviewers = selectedUsers == null ? new HashSet<Reviewer>() : new HashSet<Reviewer>(selectedUsers);
-		this.allReviewers = new HashSet<Reviewer>(allReviewers);
+	public ReviewersSelectionTreePart(@NotNull Set<User> selectedUsers, @NotNull Collection<User> allReviewers) {
+		selectedReviewers = selectedUsers == null ? new HashSet<User>() : new HashSet<User>(selectedUsers);
+		this.allReviewers = new HashSet<User>(allReviewers);
 	}
 
 	public void setCheckStateListener(ICheckStateListener listener) {
@@ -99,7 +93,7 @@ public class ReviewersSelectionTreePart {
 		tree.getViewer().setContentProvider(ArrayTreeContentProvider.getInstance());
 
 		tree.getViewer().setInput(allReviewers);
-//		updateInput();
+		// updateInput();
 
 		tree.getViewer().setLabelProvider(new CrucibleUserLabelProvider());
 
@@ -110,13 +104,12 @@ public class ReviewersSelectionTreePart {
 		}
 
 		tree.getViewer().setSorter(new ViewerSorter());
-
-		tree.getViewer().setCheckedElements(selectedReviewers.toArray(new Reviewer[selectedReviewers.size()]));
+		tree.getViewer().setCheckedElements(selectedReviewers.toArray(new User[selectedReviewers.size()]));
 
 		tree.getViewer().addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					selectedReviewers.add((Reviewer) event.getElement());
+					selectedReviewers.add((User) event.getElement());
 				} else {
 					selectedReviewers.remove(event.getElement());
 				}
@@ -131,17 +124,13 @@ public class ReviewersSelectionTreePart {
 		return composite;
 	}
 
-	public void setAllReviewers(@NotNull Collection<Reviewer> allReviewers) {
+	public void setAllReviewers(@NotNull Collection<User> allReviewers) {
 		this.allReviewers.clear();
 		this.allReviewers.addAll(allReviewers);
 		tree.getViewer().setInput(this.allReviewers);
 	}
 
-//	private void updateInput() {
-//		tree.getViewer().setInput(allReviewers);
-//	}
-
-	public Set<Reviewer> getSelectedReviewers() {
+	public Set<User> getSelectedReviewers() {
 		return selectedReviewers;
 	}
 }

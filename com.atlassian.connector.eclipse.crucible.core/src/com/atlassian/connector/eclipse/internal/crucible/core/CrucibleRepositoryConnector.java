@@ -33,6 +33,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -111,7 +112,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	 *            collection of projects
 	 * @return Crucible project or null
 	 */
-	public static BasicProject getLastSelectedProject(TaskRepository repository, Set<BasicProject> projects) {
+	public static BasicProject getLastSelectedProject(TaskRepository repository, Collection<BasicProject> projects) {
 
 		String projectId = repository.getProperty(DEFAULT_PROJECT);
 

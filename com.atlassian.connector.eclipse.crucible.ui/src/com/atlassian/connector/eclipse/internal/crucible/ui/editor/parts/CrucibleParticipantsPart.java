@@ -92,10 +92,13 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 		@Override
 		public void run() {
+			final Collection<User> allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
+					CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
+					crucibleReview.getProjectKey());
 			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(WorkbenchUtil.getShell(), crucibleReview,
-					CrucibleUiUtil.getCachedUsers(crucibleReview));
+					allowedReviewers);
 			if (dialog.open() == Window.OK) {
-				Set<Reviewer> reviewers = dialog.getSelectedReviewers();
+				Set<User> reviewers = dialog.getSelectedReviewers();
 				final Set<String> reviewerUserNames = CrucibleUiUtil.getUsernamesFromUsers(reviewers);
 
 				boolean unchanged = reviewers.size() == crucibleReview.getReviewers().size()
@@ -207,6 +210,7 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 			createLabelControl(toolkit, parent, labelString);
 		}
 
+		// @fixme allowed reviewers should be respected here
 		Set<User> users = CrucibleUiUtil.getCachedUsers(crucibleReview);
 
 		Control control;

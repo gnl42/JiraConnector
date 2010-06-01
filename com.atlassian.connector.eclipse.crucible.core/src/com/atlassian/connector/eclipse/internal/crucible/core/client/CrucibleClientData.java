@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
 import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.ExtendedCrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -39,7 +40,10 @@ public class CrucibleClientData implements Serializable {
 
 	private Set<User> cachedUsers;
 
-	private Set<BasicProject> cachedProjects;
+	/**
+	 * Project key => project data ({@link BasicProject} or {@link ExtendedCrucibleProject})
+	 */
+	private Map<String, BasicProject> cachedProjects;
 
 	private Set<Repository> cachedRepositories;
 
@@ -65,16 +69,28 @@ public class CrucibleClientData implements Serializable {
 	}
 
 	public void setProjects(Collection<BasicProject> projects) {
-		cachedProjects = MiscUtil.buildHashSet();
-		cachedProjects.addAll(projects);
+		cachedProjects = MiscUtil.buildHashMap();
+		for (BasicProject basicProject : projects) {
+			cachedProjects.put(basicProject.getKey(), basicProject);
+		}
 	}
 
-	public Set<BasicProject> getCachedProjects() {
+	public void updateProject(ExtendedCrucibleProject project) {
+		cachedProjects.put(project.getKey(), project);
+	}
+
+	@NotNull
+	public Collection<BasicProject> getCachedProjects() {
 		if (cachedProjects != null) {
-			return Collections.unmodifiableSet(cachedProjects);
+			return Collections.unmodifiableCollection(cachedProjects.values());
 		} else {
-			return Collections.unmodifiableSet(new HashSet<BasicProject>());
+			return Collections.emptySet();
 		}
+	}
+
+	@Nullable
+	public BasicProject getCrucibleProject(String key) {
+		return cachedProjects.get(key);
 	}
 
 	public Set<User> getCachedUsers() {

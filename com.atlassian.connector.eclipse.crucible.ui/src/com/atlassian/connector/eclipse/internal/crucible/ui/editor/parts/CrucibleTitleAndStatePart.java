@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -38,7 +37,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.joda.time.DateTime;
-
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Set;
@@ -136,6 +134,7 @@ public class CrucibleTitleAndStatePart extends AbstractCrucibleEditorFormPart {
 			createLabelControl(toolkit, parent, labelString);
 		}
 
+		// @fixme allowed reviewers should be respected here
 		Set<User> users = CrucibleUiUtil.getCachedUsers(crucibleReview);
 
 		Control control;

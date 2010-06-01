@@ -32,6 +32,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.ExtendedCrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -39,6 +40,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
@@ -63,6 +65,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -251,26 +254,52 @@ public final class CrucibleUiUtil {
 		return clientData == null ? null : clientData.getVersionInfo();
 	}
 
-	public static Set<BasicProject> getCachedProjects(TaskRepository repository) {
+	public static Collection<BasicProject> getCachedProjects(TaskRepository repository) {
 		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
 				.getClientManager()
 				.getCrucibleClientData(repository);
-		Set<BasicProject> projects;
 		if (clientData == null) {
-			projects = new HashSet<BasicProject>();
+			return Collections.emptyList();
 		} else {
-			projects = clientData.getCachedProjects();
+			return clientData.getCachedProjects();
 		}
-		return projects;
 	}
 
+	@Nullable
 	public static BasicProject getCachedProject(TaskRepository repository, String projectKey) {
-		for (BasicProject project : getCachedProjects(repository)) {
-			if (project.getKey().equals(projectKey)) {
-				return project;
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager().getCrucibleClientData(repository);
+
+		if (clientData == null) {
+			return null;
+		}
+		return clientData.getCrucibleProject(projectKey);
+	}
+
+	public static Collection<User> getUsersFromUsernames(TaskRepository taskRepository, Collection<String> usernames) {
+		Set<User> users = CrucibleUiUtil.getCachedUsers(taskRepository);
+		Set<User> result = MiscUtil.buildHashSet();
+		for (User user : users) {
+			if (usernames.contains(user.getUsername())) {
+				result.add(user);
 			}
 		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @return <code>null</code> when there is no cached information about allowed reviewers
+	 */
+	@Nullable
+	public static Collection<User> getAllowedReviewers(TaskRepository taskRepository, String projectKey) {
+		BasicProject project = getCachedProject(taskRepository, projectKey);
+		if (project instanceof ExtendedCrucibleProject) {
+			ExtendedCrucibleProject extendedProject = (ExtendedCrucibleProject) project;
+			return getUsersFromUsernames(taskRepository, extendedProject.getAllowedReviewers());
+		}
 		return null;
+
 	}
 
 	public static boolean canModifyComment(Review review, Comment comment) {
@@ -299,27 +328,26 @@ public final class CrucibleUiUtil {
 	}
 
 	@NotNull
-	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull Review review) {
-		Set<Reviewer> allReviewers = new HashSet<Reviewer>();
-		for (User user : CrucibleUiUtil.getCachedUsers(review)) {
-			Reviewer reviewer = CrucibleUiUtil.createReviewerFromCachedUser(review, user);
-			allReviewers.add(reviewer);
-		}
-		return allReviewers;
-	}
-
-	@NotNull
 	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull TaskRepository taskRepository) {
-		return getAllCachedUsersAsReviewers(CrucibleUiUtil.getCachedUsers(taskRepository));
+		return toReviewers(CrucibleUiUtil.getCachedUsers(taskRepository));
 	}
 
 	@NotNull
-	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull Collection<User> users) {
+	public static Set<Reviewer> toReviewers(@NotNull Collection<User> users) {
 		Set<Reviewer> allReviewers = new HashSet<Reviewer>();
 		for (User user : users) {
 			allReviewers.add(new Reviewer(user.getUsername(), user.getDisplayName(), false));
 		}
 		return allReviewers;
+	}
+
+	@NotNull
+	public static Set<User> toUsers(@NotNull Collection<Reviewer> users) {
+		Set<User> res = new HashSet<User>();
+		for (Reviewer user : users) {
+			res.add(new User(user.getUsername(), user.getDisplayName(), user.getAvatarUrl()));
+		}
+		return res;
 	}
 
 	public static void focusOnComment(IEditorPart editor, CrucibleFile crucibleFile, VersionedComment versionedComment) {

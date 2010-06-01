@@ -29,6 +29,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
+import com.atlassian.theplugin.commons.crucible.api.model.ExtendedCrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
@@ -36,7 +37,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,7 +53,6 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Bridge between Mylyn and the ACC API's
@@ -295,12 +294,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 					initializeCache(server, serverCfg, submonitor.newChild(1));
 				}
 
-				BasicProject details = server.getSession(serverCfg).getProject(projectKey);
-				Set<BasicProject> projects = MiscUtil.buildHashSet(clientData.getCachedProjects());
-				projects.remove(details); // remove project without details
-				projects.add(details); // add project with details
-
-				clientData.setProjects(projects);
+				ExtendedCrucibleProject details = server.getSession(serverCfg).getProject(projectKey);
+				clientData.updateProject(details);
 
 				submonitor.worked(1);
 				return null;
