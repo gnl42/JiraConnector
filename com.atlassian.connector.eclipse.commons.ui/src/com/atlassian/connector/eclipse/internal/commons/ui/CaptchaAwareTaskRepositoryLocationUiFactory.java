@@ -9,10 +9,10 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.ui;
+package com.atlassian.connector.eclipse.internal.commons.ui;
 
 import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
-import com.atlassian.connector.eclipse.internal.core.client.ICaptchaAwareLocation;
+import com.atlassian.connector.eclipse.internal.core.ICaptchaAwareLocation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;

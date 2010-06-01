@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
+import com.atlassian.connector.eclipse.internal.commons.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;

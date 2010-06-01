@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.core.client;
 import static com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin.PLUGIN_ID;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.eclipse.internal.core.ICaptchaAwareLocation;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.CaptchaRequiredException;

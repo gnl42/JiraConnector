@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleCustomFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
-import com.atlassian.connector.eclipse.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;

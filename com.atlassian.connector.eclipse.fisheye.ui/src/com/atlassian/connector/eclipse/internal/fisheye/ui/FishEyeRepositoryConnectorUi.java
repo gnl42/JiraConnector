@@ -1,7 +1,7 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
-import com.atlassian.connector.eclipse.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;

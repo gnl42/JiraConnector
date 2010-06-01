@@ -17,7 +17,10 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.core.runtime,
  org.eclipse.jface,
  org.eclipse.mylyn.commons.ui,
+ org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
  org.eclipse.ui.browser,
- org.jetbrains.annotations;resolution:=optional
+ org.jetbrains.annotations;resolution:=optional,
+ com.atlassian.connector.eclipse.commons.core
 Bundle-ClassPath: .
