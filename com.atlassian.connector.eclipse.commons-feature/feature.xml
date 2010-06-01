@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.atlassian.connector.commons"
+      id="com.atlassian.connector.eclipse.commons"
       label="%featureName"
       version="2.2.0.qualifier"
       provider-name="%providerName"
@@ -22,69 +22,15 @@
       <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
    </url>
 
-   <requires>
-      <import plugin="org.apache.axis"/>
-      <import plugin="javax.xml.rpc"/>
-      <import plugin="org.apache.commons.logging"/>
-      <import plugin="org.apache.commons.io"/>
-      <import plugin="org.joda.time"/>
-      <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.jdom_jaxen"/>
-   </requires>
-
    <plugin
-         id="com.atlassian.connector.commons"
+         id="com.atlassian.connector.eclipse.commons.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.joda.time"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.thoughtworks.xstream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom_jaxen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.io"
+         id="com.atlassian.connector.eclipse.commons.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

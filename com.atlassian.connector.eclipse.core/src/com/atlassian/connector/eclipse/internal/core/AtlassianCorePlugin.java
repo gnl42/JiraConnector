@@ -15,12 +15,8 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -34,8 +30,6 @@ public class AtlassianCorePlugin extends Plugin {
 	private static final String TRACE_COMMONS_PROPERTY_NAME = "com.atlassian.connector.eclipse.bamboo.core/trace/commons";
 
 	public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
-
-	public static final String PRODUCT_NAME = "Atlassian Connector for Eclipse";
 
 	// The shared instance
 	private static AtlassianCorePlugin plugin;
@@ -81,11 +75,6 @@ public class AtlassianCorePlugin extends Plugin {
 	 */
 	public static AtlassianCorePlugin getDefault() {
 		return plugin;
-	}
-
-	public boolean suppressConfigurationWizards() {
-		final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
-		return commandLineArgs.contains("-testPluginName") || CoreUtil.TEST_MODE;
 	}
 
 }

@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepostioryMappingEditor;
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -85,7 +85,7 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 				try {
 					FishEyeUiUtil.setScmRepositoryMappings(mappingEditor.getMapping());
 				} catch (IOException e) {
-					ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
+					ErrorDialog.openError(getShell(), CoreConstants.PRODUCT_NAME,
 							"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
 									CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
@@ -177,8 +177,11 @@ public class DefineRepositoryMappingsPage extends WizardPage {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).margins(5, 5).create());
 
 		Composite repositoryMappingViewer = createRepositoryMappingComposite(composite, 700);
-		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-				repositoryMappingViewer);
+		GridDataFactory.fillDefaults()
+				.span(3, 1)
+				.align(SWT.FILL, SWT.FILL)
+				.grab(true, true)
+				.applyTo(repositoryMappingViewer);
 		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		Dialog.applyDialogFont(composite);

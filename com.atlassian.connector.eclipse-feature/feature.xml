@@ -23,13 +23,17 @@
    </url>
 
    <includes
+         id="com.atlassian.connector.commons"
+         version="0.0.0"/>
+
+   <includes
+         id="com.atlassian.connector.eclipse.commons"
+         version="0.0.0"/>
+
+   <includes
          id="com.atlassian.connector.eclipse.monitor"
          version="0.0.0"
          optional="true"/>
-
-   <includes
-         id="com.atlassian.connector.commons"
-         version="0.0.0"/>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
@@ -61,7 +65,6 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.joda.time"/>
-      <!--<import plugin="com.atlassian.connector.eclipse.monitor.usage"/>-->
    </requires>
 
    <plugin
@@ -98,20 +101,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
-   <plugin
-         id="com.atlassian.connector.eclipse.commons.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-	<plugin
-         id="com.atlassian.connector.eclipse.commons.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="com.atlassian.connector.eclipse.core"
@@ -126,5 +115,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   
 </feature>

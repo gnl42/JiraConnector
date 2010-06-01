@@ -64,7 +64,8 @@ import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.BundleContext;
 
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.core.CoreConstants;
+import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
@@ -118,7 +119,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private boolean backgroundEnabled = false;
 
-	private final StudyParameters studyParameters = new StudyParameters(AtlassianCorePlugin.PRODUCT_NAME,
+	private final StudyParameters studyParameters = new StudyParameters(CoreConstants.PRODUCT_NAME,
 			"http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload",
 			"http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector",
 			new String[] { "com.atlassian", "org.eclipse.mylyn" });
@@ -246,7 +247,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 						startMonitoring();
 					}
 
-					if (isFirstTime() && !AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
+					if (isFirstTime() && !RuntimeUtil.suppressConfigurationWizards()) {
 						informUserThatMonitoringIsEnabled();
 					}
 				} catch (Throwable t) {

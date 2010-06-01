@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.core.client;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
@@ -46,7 +47,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 	private final Map<String, ConnectionCfg> locations = new HashMap<String, ConnectionCfg>();
 
 	public HttpSessionCallbackImpl() {
-		userAgent = AtlassianCorePlugin.PRODUCT_NAME + "/" + AtlassianCorePlugin.getDefault().getVersion();
+		userAgent = CoreConstants.PRODUCT_NAME + "/" + AtlassianCorePlugin.getDefault().getVersion();
 	}
 
 	public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {

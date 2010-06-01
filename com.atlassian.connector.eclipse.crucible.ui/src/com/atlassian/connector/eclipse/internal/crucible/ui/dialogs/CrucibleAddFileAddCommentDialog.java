@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -73,8 +73,9 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 					return;
 				}
 
-				CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-						getTaskRepository());
+				CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector()
+						.getClientManager()
+						.getClient(getTaskRepository());
 
 				try {
 					review = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(review), true,
@@ -151,7 +152,7 @@ public class CrucibleAddFileAddCommentDialog extends CrucibleAddCommentDialog {
 		// add comment
 		boolean ok = super.addComment();
 		if (ok && resource != null && decoratedResource != null && !decoratedResource.isUpToDate()) {
-			MessageDialog.openInformation(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
+			MessageDialog.openInformation(getShell(), CoreConstants.PRODUCT_NAME,
 					"Please reopen the file in Review Explorer in order to see comment annotation.");
 		}
 

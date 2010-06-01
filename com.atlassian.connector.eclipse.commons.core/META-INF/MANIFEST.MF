@@ -8,3 +8,6 @@ Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
 Bundle-Vendor: Atlassian
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.mylyn.commons.core
+Export-Package: com.atlassian.connector.eclipse.internal.core;x-internal:=true

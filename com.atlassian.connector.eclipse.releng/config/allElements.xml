@@ -19,6 +19,10 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.commons" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -63,6 +67,10 @@
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.commons" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.commons" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
@@ -143,6 +151,9 @@
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.commons">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.commons">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 </project>
