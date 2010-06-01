@@ -363,8 +363,6 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 		Dialog.applyDialogFont(innerComposite);
 		setControl(innerComposite);
-		downloadFilters();
-
 	}
 
 	@Override
@@ -372,23 +370,27 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		super.setVisible(visible);
 
 		if (visible) {
-			if (!client.getCache().hasDetails()) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					if (downloadFilters()) {
+						if (!client.getCache().hasDetails()) {
 
-				boolean projectListEnabled = projectList.getControl().getEnabled();
-				boolean updateProjectsButtonEnabled = updateButton.getEnabled();
+							boolean projectListEnabled = projectList.getControl().getEnabled();
+							boolean updateProjectsButtonEnabled = updateButton.getEnabled();
 
-				projectList.getControl().setEnabled(false);
-				updateButton.setEnabled(false);
+							projectList.getControl().setEnabled(false);
+							updateButton.setEnabled(false);
 
-				downloadProjects();
+							downloadProjects();
 
-				projectList.getControl().setEnabled(projectListEnabled);
-				updateButton.setEnabled(updateProjectsButtonEnabled);
+							projectList.getControl().setEnabled(projectListEnabled);
+							updateButton.setEnabled(updateProjectsButtonEnabled);
 
-			}
-
-			projectList.setInput(client.getCache().getProjects());
-
+						}
+					}
+					projectList.setInput(client.getCache().getProjects());
+				}
+			});
 		}
 	}
 
@@ -481,17 +483,29 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		setPageComplete(true);
 	}
 
-	protected void downloadFilters() {
+	private void showFilters(final NamedFilter[] loadedFilters) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				if (!savedFilterList.isDisposed()) {
+					displayFilters(loadedFilters);
+				}
+			}
+		});
+	}
+
+	protected boolean downloadFilters() {
+		final boolean[] results = { false };
 
 		IRunnableWithProgress job = new IRunnableWithProgress() {
-
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters, IProgressMonitor.UNKNOWN);
 				NamedFilter[] loadedFilters = new NamedFilter[0];
 				try {
+					monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters,
+							IProgressMonitor.UNKNOWN);
 					JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
 					loadedFilters = jiraServer.getNamedFilters(monitor);
 					filters = loadedFilters;
+					results[0] = true;
 				} catch (JiraException e) {
 					handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
 				} finally {
@@ -499,21 +513,17 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					monitor.done();
 				}
 			}
-
-			private void showFilters(final NamedFilter[] loadedFilters) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						if (!savedFilterList.isDisposed()) {
-							displayFilters(loadedFilters);
-						}
-//						if (!updateFiltersButton.isDisposed() && !buttonSaved.isDisposed()) {
-//							updateFiltersButton.setEnabled(buttonSaved.getSelection());
-//						}
-					}
-				});
-			}
 		};
 
+		try {
+			getRunnableContext().run(true, true, job);
+		} catch (Exception e) {
+			handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
+		}
+		return results[0];
+	}
+
+	private IRunnableContext getRunnableContext() {
 		IRunnableContext context = getContainer();
 		if (context == null) {
 			context = getSearchContainer().getRunnableContext();
@@ -521,26 +531,21 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		if (context == null) {
 			context = PlatformUI.getWorkbench().getProgressService();
 		}
-
-		try {
-			context.run(true, true, job);
-		} catch (Exception e) {
-			handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
-		}
-
+		return context;
 	}
 
-	private void downloadProjects() {
+	private boolean downloadProjects() {
+		final boolean[] results = { false };
 
 		ISelection selection = projectList.getSelection();
 
 		IRunnableWithProgress job = new IRunnableWithProgress() {
 
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-
 				monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_Projects, IProgressMonitor.UNKNOWN);
 				try {
 					client.getCache().refreshDetails(monitor);
+					results[0] = true;
 				} catch (JiraException e) {
 					handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
 				} finally {
@@ -550,22 +555,16 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 		};
 
-		IRunnableContext context = getContainer();
-		if (context == null) {
-			context = getSearchContainer().getRunnableContext();
-		}
-		if (context == null) {
-			context = PlatformUI.getWorkbench().getProgressService();
-		}
-
 		try {
-			context.run(true, true, job);
+			getRunnableContext().run(true, true, job);
 		} catch (Exception e) {
 			handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
 		}
 
 		projectList.setInput(client.getCache().getProjects());
 		projectList.setSelection(selection, true);
+
+		return results[0];
 	}
 
 	protected void handleError(final Throwable e, final String message) {

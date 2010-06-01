@@ -18,13 +18,12 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 public class RemoteApiLockedDialog extends ErrorDialogWithHyperlink {
 
 	public RemoteApiLockedDialog(Shell parentShell, final String repositoryUrl) {
-		super(
-				parentShell,
-				"Permission Denied",
+		super(parentShell, "Permission Denied",
 				"Due to multiple failed login attemps you have been temporarily banned from using remote API.\n\n"
 						+ "You need to log into your server using Web UI to clear failed login attemps counter.\n\n"
-						+ "If you're browser has a current session with the server you need to log out and log in again.",
-				"<a>Open repository</a>", new Runnable() {
+						+ "If you're browser has a current session with the server you need to change your password"
+						+ " (to make sure you know it), then log out and log in again.", "<a>Open repository</a>",
+				new Runnable() {
 					public void run() {
 						WorkbenchUtil.openUrl(repositoryUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
 					}
