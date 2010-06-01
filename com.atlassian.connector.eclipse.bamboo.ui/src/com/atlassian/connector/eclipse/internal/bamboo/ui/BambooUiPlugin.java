@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 
@@ -138,7 +138,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 
 		public void repositoryAdded(TaskRepository repository) {
 			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)
-					&& !AtlassianCorePlugin.getDefault().suppressConfigurationWizards()) {
+					&& !RuntimeUtil.suppressConfigurationWizards()) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						AtlassianUiUtil.ensureViewIsVisible(BambooView.ID);
