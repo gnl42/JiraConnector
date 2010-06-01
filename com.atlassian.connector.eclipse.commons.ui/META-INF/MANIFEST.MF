@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.ui.browser,
  org.jetbrains.annotations;resolution:=optional
+Bundle-ClassPath: .
