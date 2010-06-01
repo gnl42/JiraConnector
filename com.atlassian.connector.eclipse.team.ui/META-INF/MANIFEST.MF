@@ -27,7 +27,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.ui,
  org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.core,
- com.atlassian.connector.eclipse.monitor.usage,
  com.atlassian.connector.eclipse.ui,
  org.apache.commons.io
 Bundle-ActivationPolicy: lazy
