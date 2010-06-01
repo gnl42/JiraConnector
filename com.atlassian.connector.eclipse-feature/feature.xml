@@ -56,10 +56,6 @@
       <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
-      <import plugin="com.atlassian.connector.eclipse.commons.core"/>
-      <import plugin="com.atlassian.connector.eclipse.commons.ui"/>
-      <import plugin="com.atlassian.connector.eclipse.core"/>
-      <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.jface"/>
@@ -116,5 +112,19 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
+   <plugin
+         id="com.atlassian.connector.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
