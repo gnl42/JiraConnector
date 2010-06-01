@@ -15,11 +15,15 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
-			<property name="id" value="com.atlassian.connector.eclipse.bamboo" />
+			<property name="id" value="com.atlassian.connector.commons" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
-			<property name="id" value="com.atlassian.connector.commons" />
+			<property name="id" value="com.atlassian.connector.eclipse" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.bamboo" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
@@ -43,10 +47,6 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
-			<property name="id" value="com.atlassian.connector.eclipse" />
-		</ant>
-		<ant antfile="${genericTargets}" target="${target}">
-			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.test" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -62,15 +62,15 @@
 	<target name="siteElementsDelegator">
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.commons" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.bamboo" />
-		</ant>
-		<ant antfile="${genericTargets}" target="${target}">
-			<property name="type" value="feature" />
-			<property name="id" value="com.atlassian.connector.commons" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
