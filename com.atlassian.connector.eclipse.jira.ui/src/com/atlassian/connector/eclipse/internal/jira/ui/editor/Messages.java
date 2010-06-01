@@ -48,9 +48,13 @@ public class Messages extends NLS {
 
 	public static String WorkLogPart_Work_Log;
 
+	public static String WorkLogPart_Log_Work;
+
 	public static String WorkLogPart_Worked;
 
 	public static String WorkLogPart_Auto_Filled;
+
+	public static String Skip;
 
 	static {
 		// initialize resource bundle
@@ -60,6 +64,8 @@ public class Messages extends NLS {
 	public static String JiraCommetVisible;
 
 	public static String JiraCommetVisibleTooltip;
+
+	public static String WorkLogTime_Disable_Time_Tracking;
 
 	public static String TaskEditorCommentPart_0;
 
@@ -72,6 +78,10 @@ public class Messages extends NLS {
 	public static String TaskEditorCommentPart_Expand_Comments;
 
 	public static String JiraTaskEditorSummaryPart_Attachements_Drag_and_Drop_Hint;
+
+	public static String LogJiraTimeDialog_not_show_dialog;
+
+	public static String LogJiraTimeDialog_Unable_to_find_Time_Tracking_preference;
 
 	private Messages() {
 	}

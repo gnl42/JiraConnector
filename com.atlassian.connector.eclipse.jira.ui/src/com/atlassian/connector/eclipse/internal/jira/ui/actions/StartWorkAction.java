@@ -26,8 +26,11 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizeTasksJob;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
@@ -44,6 +47,7 @@ import org.eclipse.ui.forms.editor.IFormPage;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
@@ -59,6 +63,8 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	private ITask task;
 
 	private TaskData taskData;
+
+	private JiraWorkLog workLog;
 
 	public StartWorkAction() {
 	}
@@ -117,13 +123,16 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return new HashSet<T>(Arrays.asList(values));
 	}
 
-	protected static void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage, TaskData taskData, ITask task) {
+	protected void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage, TaskData taskData, ITask task) {
 		Job job = null;
 
 		if (isTaskInStop(taskData, task)) {
 			job = getStartProgressJob(taskData, task);
 		} else if (isTaskInProgress(taskData, task)) {
-			job = getStopProgressJob(taskData, task);
+			if (!showLogWorkDialog(task)) {
+				return;
+			}
+			job = getStopProgressJob(taskData, task, workLog);
 		} else {
 			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 			return;
@@ -152,12 +161,38 @@ public class StartWorkAction extends AbstractStartWorkAction {
 			job.setUser(true);
 			job.schedule();
 		} else if (isTaskInProgress(taskData, task)) {
-			Job job = getStopProgressJob(taskData, task);
+			// TODO jj make it appears only once
+			if (!showLogWorkDialog(task)) {
+				return;
+			}
+			Job job = getStopProgressJob(taskData, task, workLog);
 			job.setUser(true);
 			job.schedule();
 		} else {
 			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 		}
+	}
+
+	/**
+	 * @param iTask
+	 * @return false if the process of stopping work should be break
+	 */
+	private boolean showLogWorkDialog(ITask iTask) {
+		if (MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
+
+			LogJiraTimeDialog dialog = new LogJiraTimeDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+					iTask);
+
+			dialog.open();
+
+			if (dialog.getReturnCode() == Window.OK) {
+				workLog = dialog.getWorkLog();
+			} else if (dialog.getReturnCode() == LogJiraTimeDialog.WINDOW_INTERUPT) {
+				return false;
+			}
+
+		}
+		return true;
 	}
 
 	private static Job getStartProgressJob(final TaskData taskData, final ITask task) {
@@ -206,7 +241,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return startProgressJob;
 	}
 
-	private static Job getStopProgressJob(final TaskData taskData, final ITask task) {
+	private static Job getStopProgressJob(final TaskData taskData, final ITask task, final JiraWorkLog jiraWorkLog) {
 		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Work) {
 
 			@Override
@@ -218,6 +253,21 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
 				try {
 					final JiraIssue issue = getIssue(task);
+
+					if (jiraWorkLog != null) {
+						client.addWorkLog(task.getTaskKey(), jiraWorkLog, monitor);
+
+						// reset activity time
+						TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
+								task.getConnectorKind(), task.getRepositoryUrl());
+						if (repository != null) {
+							String handler = RepositoryTaskHandleUtil.getHandle(repository.getRepositoryUrl(),
+									taskData.getTaskId());
+							MonitorUiPlugin.getDefault().getActivityContextManager().removeActivityTime(handler, 0l,
+									System.currentTimeMillis());
+						}
+
+					}
 
 					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.STOP_PROGRESS_OPERATION, null, monitor);
 

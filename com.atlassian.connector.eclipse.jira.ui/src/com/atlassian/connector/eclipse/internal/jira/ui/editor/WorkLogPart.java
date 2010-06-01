@@ -11,12 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
-import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
-import com.atlassian.connector.eclipse.internal.jira.ui.WdhmUtil;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -61,12 +61,11 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
 
 /**
  * @author Steffen Pingel
@@ -324,11 +323,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		});
 
 		timeSpentText.setToolTipText(timeSpendTooltip);
-		GridDataFactory.fillDefaults()
-				.span(2, 1)
-				.hint(135, SWT.DEFAULT)
-				.align(SWT.BEGINNING, SWT.FILL)
-				.applyTo(timeSpentText);
+		GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(
+				timeSpentText);
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
 		dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
@@ -412,7 +408,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		if (createNewWorkLog.getSelection() && MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
 			long time = TasksUiPlugin.getTaskActivityManager().getElapsedTime(getTaskEditorPage().getTask());
 
-			String wdhmTime = WdhmUtil.generateJiraLogTimeString(time);
+			String wdhmTime = JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository()).format(
+					new Long(time / 1000));
 			if (wdhmTime != null && wdhmTime.length() > 0) {
 				timeSpentText.setText(wdhmTime);
 

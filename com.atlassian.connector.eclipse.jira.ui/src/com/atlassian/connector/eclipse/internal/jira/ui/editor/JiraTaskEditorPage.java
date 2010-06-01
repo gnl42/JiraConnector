@@ -224,7 +224,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 					if (event.getTask() != null && getModel() != null) {
 						if (event.getTask().equals(getModel().getTask())) {
 							if (startWorkAction != null) {
-								startWorkAction.update(event.getTaskData(), event.getTask());
+								// event.getTaskData() sometimes returns null
+								startWorkAction.update(getModel().getTaskData(), event.getTask());
 							}
 						}
 					}
