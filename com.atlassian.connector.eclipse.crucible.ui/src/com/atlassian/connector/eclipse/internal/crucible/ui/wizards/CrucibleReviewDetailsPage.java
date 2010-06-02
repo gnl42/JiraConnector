@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
@@ -130,10 +130,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private void setInputAndInitialSelections() {
 		updateInput();
 
-		Collection<BasicProject> cachedProjects = CrucibleUiUtil.getCachedProjects(taskRepository);
-
-		BasicProject lastSelectedProject = CrucibleRepositoryConnector.getLastSelectedProject(taskRepository,
-				cachedProjects);
+		final String lastSelectedProjectKey = CrucibleUiPlugin.getDefault().getLastSelectedProjectKey(taskRepository);
+		final BasicProject lastSelectedProject = CrucibleUiUtil.getCachedProject(taskRepository, lastSelectedProjectKey);
 		if (lastSelectedProject != null) {
 			projectsComboViewer.setSelection(new StructuredSelection(lastSelectedProject));
 		} else {
@@ -156,8 +154,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		}
 
 		// restore checkboxes selection
-		anyoneCanJoin.setSelection(CrucibleRepositoryConnector.getAllowAnyoneOption(taskRepository));
-		startReview.setSelection(CrucibleRepositoryConnector.getStartReviewOption(taskRepository));
+		anyoneCanJoin.setSelection(CrucibleUiPlugin.getDefault().getAllowAnyoneOption(taskRepository));
+		startReview.setSelection(CrucibleUiPlugin.getDefault().getStartReviewOption(taskRepository));
 		updateReviewersControl();
 	}
 

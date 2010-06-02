@@ -15,7 +15,6 @@ import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
@@ -37,6 +36,7 @@ import com.atlassian.connector.eclipse.ui.commons.DecoratedResource;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
+import com.atlassian.theplugin.commons.crucible.api.model.BasicProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -326,11 +326,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		if (detailsPage != null) {
 			// save project selection
-			CrucibleRepositoryConnector.updateLastSelectedProject(getTaskRepository(), detailsPage.getSelectedProject());
+			final BasicProject selectedProject = detailsPage.getSelectedProject();
+			CrucibleUiPlugin.getDefault().updateLastSelectedProject(getTaskRepository(),
+					selectedProject != null ? selectedProject.getKey() : null);
 
 			// save checkbox selections
-			CrucibleRepositoryConnector.updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
-			CrucibleRepositoryConnector.updateStartReviewOption(getTaskRepository(),
+			CrucibleUiPlugin.getDefault().updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
+			CrucibleUiPlugin.getDefault().updateStartReviewOption(getTaskRepository(),
 					detailsPage.isStartReviewImmediately());
 		}
 
