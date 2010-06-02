@@ -34,7 +34,6 @@ import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizeTasksJob;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.internal.tasks.ui.views.TaskListView;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -71,12 +70,9 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
 	@Override
 	public void run(IAction action) {
-
 		update(action);
 
-		if (getTargetPart() instanceof TaskListView) {
-			doActionOutsideEditor();
-		} else if (getTargetPart() instanceof TaskEditor) {
+		if (getTargetPart() instanceof TaskEditor) {
 			TaskEditor taskEditor = (TaskEditor) getTargetPart();
 
 			IEditorInput editorInput = taskEditor.getEditorInput();
@@ -90,12 +86,43 @@ public class StartWorkAction extends AbstractStartWorkAction {
 					if (formPage instanceof JiraTaskEditorPage) {
 						JiraTaskEditorPage jiraFormPage = (JiraTaskEditorPage) formPage;
 
-						doActionInsideEditor(jiraFormPage, taskData, task);
+						startWork(jiraFormPage);
 
 						return;
 					}
 				}
 			}
+		}
+
+		startWork(null);
+	}
+
+	protected void run(JiraTaskEditorPage editorPage, TaskData taskData, ITask task) {
+		this.taskData = taskData;
+		this.task = task;
+
+		startWork(editorPage);
+	}
+
+	private void startWork(JiraTaskEditorPage page) {
+		Job job = null;
+
+		if (isTaskInStop(taskData, task)) {
+			job = getStartProgressJob(taskData, task);
+		} else if (isTaskInProgress(taskData, task)) {
+			if (!showLogWorkDialog(task)) {
+				return;
+			}
+			job = getStopProgressJob(taskData, task, workLog);
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
+			return;
+		}
+
+		if (page == null) {
+			doActionOutsideEditor(job);
+		} else {
+			doActionInsideEditor(job, page);
 		}
 	}
 
@@ -123,21 +150,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return new HashSet<T>(Arrays.asList(values));
 	}
 
-	protected void doActionInsideEditor(final JiraTaskEditorPage jiraFormPage, TaskData taskData, ITask task) {
-		Job job = null;
-
-		if (isTaskInStop(taskData, task)) {
-			job = getStartProgressJob(taskData, task);
-		} else if (isTaskInProgress(taskData, task)) {
-			if (!showLogWorkDialog(task)) {
-				return;
-			}
-			job = getStopProgressJob(taskData, task, workLog);
-		} else {
-			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
-			return;
-		}
-
+	private void doActionInsideEditor(Job job, final JiraTaskEditorPage jiraFormPage) {
 		jiraFormPage.showEditorBusy(true);
 		job.setUser(false);
 		job.addJobChangeListener(new JobChangeAdapter() {
@@ -155,22 +168,9 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		job.schedule();
 	}
 
-	private void doActionOutsideEditor() {
-		if (isTaskInStop(taskData, task)) {
-			Job job = getStartProgressJob(taskData, task);
-			job.setUser(true);
-			job.schedule();
-		} else if (isTaskInProgress(taskData, task)) {
-			// TODO jj make it appears only once
-			if (!showLogWorkDialog(task)) {
-				return;
-			}
-			Job job = getStopProgressJob(taskData, task, workLog);
-			job.setUser(true);
-			job.schedule();
-		} else {
-			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
-		}
+	private void doActionOutsideEditor(Job job) {
+		job.setUser(true);
+		job.schedule();
 	}
 
 	/**

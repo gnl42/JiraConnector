@@ -38,10 +38,10 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
 	@Override
 	public void run() {
 		update();
-		doActionInsideEditor(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
+		run(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
 	}
 
-	public void update() {
+	private void update() {
 		update(editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
 	}
 
