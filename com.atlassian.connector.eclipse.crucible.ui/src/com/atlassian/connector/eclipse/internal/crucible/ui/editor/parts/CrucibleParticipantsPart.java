@@ -40,6 +40,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -92,9 +94,32 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 		@Override
 		public void run() {
-			final Collection<User> allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
+			Collection<User> allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
 					CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
 					crucibleReview.getProjectKey());
+
+			if (allowedReviewers == null) {
+				final TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview);
+				boolean isSuccess = CrucibleUiUtil.updateProjectDetailsCache(taskRepository, crucibleReview.getProjectKey(),
+						new ProgressMonitorDialog(WorkbenchUtil.getShell()));
+
+				if (!isSuccess) {
+					MessageDialog.openError(WorkbenchUtil.getShell(), "Problem",
+							"Cannot fetch project details with allowed reviewers.\n"
+									+ "See Error Log for details");
+					return;
+				}
+
+				allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
+						CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
+						crucibleReview.getProjectKey());
+				if (allowedReviewers == null) {
+					MessageDialog.openError(WorkbenchUtil.getShell(), "Problem",
+							"Cannot determine allowed reviewers for this review");
+					return;
+				}
+			}
+
 			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(WorkbenchUtil.getShell(), crucibleReview,
 					allowedReviewers);
 			if (dialog.open() == Window.OK) {

@@ -49,6 +49,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -386,8 +387,8 @@ public final class CrucibleUiUtil {
 		}
 	}
 
-	public static void updateProjectDetailsCache(@NotNull final TaskRepository taskRepository,
-			@NotNull final String projectKey, @NotNull IWizardContainer container, @NotNull WizardPage currentPage) {
+	public static boolean updateProjectDetailsCache(@NotNull final TaskRepository taskRepository,
+			@NotNull final String projectKey, @NotNull IRunnableContext container) {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
@@ -396,20 +397,18 @@ public final class CrucibleUiUtil {
 					try {
 						client.updateProjectDetails(monitor, taskRepository, projectKey);
 					} catch (CoreException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Failed to update project details", e));
+						throw new InvocationTargetException(e);
 					}
 				}
 			}
 		};
 		try {
 			container.run(true, true, runnable);
+			return true;
 		} catch (Exception ex) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
 					ex));
-		}
-		if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
-			currentPage.setErrorMessage("Could not retrieve project details from server.");
+			return false;
 		}
 	}
 

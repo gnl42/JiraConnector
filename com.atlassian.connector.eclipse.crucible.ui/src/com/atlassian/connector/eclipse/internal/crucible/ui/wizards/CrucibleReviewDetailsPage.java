@@ -23,6 +23,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -36,6 +37,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -450,8 +452,16 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			BasicProject details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 
 			if (!(details instanceof ExtendedCrucibleProject)) {
-				CrucibleUiUtil.updateProjectDetailsCache(taskRepository, project.getKey(), getContainer(),
-						CrucibleReviewDetailsPage.this);
+				if (!CrucibleUiUtil.updateProjectDetailsCache(taskRepository, project.getKey(), getContainer())) {
+					MessageDialog.openError(WorkbenchUtil.getShell(), "Problem",
+							"Could not retrieve project details from server.\n"
+									+ "See Error Log for details");
+					// such call (the original one) does not help here,
+					// as error message gets immediately cleared by hasRequiredFields()
+
+					// setErrorMessage("Could not retrieve project details from server.");
+				}
+
 				details = CrucibleUiUtil.getCachedProject(taskRepository, project.getKey());
 			}
 

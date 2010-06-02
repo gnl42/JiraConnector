@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class ReviewerSelectionDialog extends Dialog {
 
 	private ReviewersSelectionTreePart reviewersSelectionTreePart;
 
-	public ReviewerSelectionDialog(Shell shell, Review review, Collection<User> users) {
+	public ReviewerSelectionDialog(Shell shell, @NotNull Review review, @NotNull Collection<User> users) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		selectedReviewers = CrucibleUiUtil.toUsers(review.getReviewers());
