@@ -21,13 +21,13 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -35,7 +35,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -170,8 +169,8 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		fishEyeSection.setClient(fishEyeButton);
 		fishEyeButton.setSelection(repository != null && CrucibleRepositoryConnector.isFishEye(repository));
 
-		// below line adds additional task repository settings section (supported wiki selection) 
-//		super.createContributionControls(parentControl);
+		// below line adds additional task repository settings section (supported wiki selection)
+		// super.createContributionControls(parentControl);
 
 	}
 
@@ -179,6 +178,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 	public void applyTo(TaskRepository repository) {
 		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
+		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_REVIEW);
 		CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleRepositoryConnector.updateFishEyeStatus(repository, fishEyeButton.getSelection());
 
