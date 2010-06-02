@@ -43,7 +43,7 @@ public class JiraImages {
 
 	public static final ImageDescriptor OVERLAY_SUB_TASK = create(T_VIEW, "overlay-sub-task.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor START_PROGRESS = create("etool16", "startprogress.png"); //$NON-NLS-1$ //$NON-NLS-2$
+	public static final ImageDescriptor START_PROGRESS = create("etool16", "activate-and-start-progress.png"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	public static final ImageDescriptor LIGHTBULB = create("obj16", "lightbulb.gif"); //$NON-NLS-1$ //$NON-NLS-2$
 
