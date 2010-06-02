@@ -18,12 +18,6 @@ public class Messages extends NLS {
 
 	public static String RemoteApiLockedDialog_info;
 
-	public static String RemoteApiLockedDialog_2;
-
-	public static String RemoteApiLockedDialog_3;
-
-	public static String RemoteApiLockedDialog_4;
-
 	public static String RemoteApiLockedDialog_5;
 
 	public static String RemoteApiLockedDialog_permission_denied;

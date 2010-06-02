@@ -115,12 +115,8 @@ public class JiraCorePlugin extends Plugin {
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
 		String url = repository.getRepositoryUrl();
 		if (e instanceof JiraCaptchaRequiredException) {
-			return new RepositoryStatus(
-					repository.getRepositoryUrl(),
-					IStatus.ERROR,
-					ID_PLUGIN,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN,
-					Messages.JiraCorePlugin_remote_api_locked);
+			return new RepositoryStatus(repository.getRepositoryUrl(), IStatus.ERROR, ID_PLUGIN,
+					RepositoryStatus.ERROR_REPOSITORY_LOGIN, Messages.JiraCorePlugin_remote_api_locked);
 		} else if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID_PLUGIN);
 		} else if (e instanceof JiraServiceUnavailableException) {
