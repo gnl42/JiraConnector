@@ -23,7 +23,7 @@
    </url>
 
    <includes
-         id="com.atlassian.connector.commons"
+         id="com.atlassian.connector.eclipse"
          version="0.0.0"/>
 
    <requires>
@@ -50,7 +50,6 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.mylyn.monitor.ui"/>
       <import plugin="org.eclipse.mylyn.monitor.core"/>
-      <!--<import plugin="com.atlassian.connector.eclipse.monitor.usage"/>-->
       <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
    </requires>
 
@@ -63,20 +62,6 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.bamboo.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -119,13 +104,6 @@
 
    <plugin
          id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.help"
          download-size="0"
          install-size="0"
          version="0.0.0"
