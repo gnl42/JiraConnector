@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -45,6 +46,7 @@ import org.eclipse.mylyn.commons.net.WebUtil;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInvalidResponseTypeException;
@@ -350,6 +352,16 @@ public class JiraWebSession {
 		if (!getContentType().endsWith(method.getResponseCharSet())) {
 			this.characterEncoding = method.getResponseCharSet();
 			return true;
+		}
+
+		try {
+			client.getSoapClient().login(new NullProgressMonitor()); // pass NPM so there will be no request credentials dialog
+		} catch (JiraException e) {
+			if (e instanceof JiraCaptchaRequiredException) {
+				throw (JiraCaptchaRequiredException) e;
+			} else {
+				// just skip it
+			}
 		}
 
 		try {

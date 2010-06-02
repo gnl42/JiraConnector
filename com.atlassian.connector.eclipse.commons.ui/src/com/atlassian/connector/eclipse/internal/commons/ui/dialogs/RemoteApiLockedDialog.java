@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.commons.ui.dialogs;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.Messages;
+
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
@@ -18,12 +20,8 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 public class RemoteApiLockedDialog extends ErrorDialogWithHyperlink {
 
 	public RemoteApiLockedDialog(Shell parentShell, final String repositoryUrl) {
-		super(parentShell, "Permission Denied",
-				"Due to multiple failed login attemps you have been temporarily banned from using remote API.\n\n"
-						+ "You need to log into your server using Web UI to clear failed login attemps counter.\n\n"
-						+ "If you're browser has a current session with the server you need to change your password"
-						+ " (to make sure you know it), then log out and log in again.", "<a>Open repository</a>",
-				new Runnable() {
+		super(parentShell, Messages.RemoteApiLockedDialog_permission_denied, Messages.RemoteApiLockedDialog_info,
+				Messages.RemoteApiLockedDialog_5, new Runnable() {
 					public void run() {
 						WorkbenchUtil.openUrl(repositoryUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
 					}

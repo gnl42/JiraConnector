@@ -26,6 +26,7 @@ import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
@@ -113,7 +114,14 @@ public class JiraCorePlugin extends Plugin {
 
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
 		String url = repository.getRepositoryUrl();
-		if (e instanceof JiraAuthenticationException) {
+		if (e instanceof JiraCaptchaRequiredException) {
+			return new RepositoryStatus(
+					repository.getRepositoryUrl(),
+					IStatus.ERROR,
+					ID_PLUGIN,
+					RepositoryStatus.ERROR_REPOSITORY_LOGIN,
+					Messages.JiraCorePlugin_remote_api_locked);
+		} else if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID_PLUGIN);
 		} else if (e instanceof JiraServiceUnavailableException) {
 			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_IO, e.getMessage(), e);

@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage;
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.PlatformUI;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
@@ -56,6 +58,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDef
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ProjectFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ResolutionFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.StatusFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
@@ -506,6 +509,13 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					loadedFilters = jiraServer.getNamedFilters(monitor);
 					filters = loadedFilters;
 					results[0] = true;
+				} catch (JiraCaptchaRequiredException e) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open();
+						}
+					});
+					handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
 				} catch (JiraException e) {
 					handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
 				} finally {
@@ -546,6 +556,13 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				try {
 					client.getCache().refreshDetails(monitor);
 					results[0] = true;
+				} catch (JiraCaptchaRequiredException e) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open();
+						}
+					});
+					handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
 				} catch (JiraException e) {
 					handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
 				} finally {
