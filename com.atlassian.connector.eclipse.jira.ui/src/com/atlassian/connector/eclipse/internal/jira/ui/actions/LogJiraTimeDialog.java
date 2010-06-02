@@ -250,13 +250,6 @@ public class LogJiraTimeDialog extends MessageDialog {
 		return workLog;
 	}
 
-//	@Override
-//	protected void buttonPressed(int buttonId) {
-//		collectWorkLog();
-//
-//		super.buttonPressed(buttonId);
-//	}
-
 	private String getTimeSpentTooltipText() {
 		final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
 				JiraUtil.getWorkDaysPerWeek(repository), JiraUtil.getWorkHoursPerDay(repository));
@@ -277,21 +270,22 @@ public class LogJiraTimeDialog extends MessageDialog {
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (workDoneAmount > 0) {
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+
+		// disable button for time less than 60seconds 
+		if (workDoneAmount >= 60) {
 			getButton(0).setEnabled(true);
 		} else {
 			getButton(0).setEnabled(false);
 		}
-
-		super.finalize();
 	}
 
 	@Override
-	protected void okPressed() {
-		collectWorkLog();
-
-		super.okPressed();
+	protected void buttonPressed(int buttonId) {
+		if (buttonId == 0) {
+			collectWorkLog();
+		}
+		super.buttonPressed(buttonId);
 	}
-
 }
