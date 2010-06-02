@@ -16,7 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import com.atlassian.connector.eclipse.ui.MigrateToSecureStorageJob;
+import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
 
@@ -187,8 +187,11 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		planViewer.setLabelProvider(new BambooLabelProvider());
 		setCachedPlanInput();
 		int height = convertVerticalDLUsToPixels(BUILD_PLAN_VIEWER_HEIGHT);
-		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, height).applyTo(
-				planViewer.getControl());
+		GridDataFactory.fillDefaults()
+				.grab(true, true)
+				.align(SWT.FILL, SWT.FILL)
+				.hint(SWT.DEFAULT, height)
+				.applyTo(planViewer.getControl());
 
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonComposite);

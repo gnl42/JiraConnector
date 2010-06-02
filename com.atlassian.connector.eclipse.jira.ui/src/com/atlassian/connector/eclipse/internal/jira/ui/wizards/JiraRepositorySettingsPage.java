@@ -64,6 +64,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -73,7 +74,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaReq
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
-import com.atlassian.connector.eclipse.internal.jira.ui.MigrateToSecureStorageJob;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.

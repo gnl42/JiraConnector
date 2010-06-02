@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.jira.ui;
+package com.atlassian.connector.eclipse.internal.commons.ui;
 
 import java.net.MalformedURLException;
 import java.net.URL;
