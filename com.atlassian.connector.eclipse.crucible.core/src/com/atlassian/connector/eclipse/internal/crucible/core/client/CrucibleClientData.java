@@ -90,7 +90,7 @@ public class CrucibleClientData implements Serializable {
 
 	@Nullable
 	public BasicProject getCrucibleProject(String key) {
-		return cachedProjects.get(key);
+		return cachedProjects != null ? cachedProjects.get(key) : null;
 	}
 
 	public Set<User> getCachedUsers() {
