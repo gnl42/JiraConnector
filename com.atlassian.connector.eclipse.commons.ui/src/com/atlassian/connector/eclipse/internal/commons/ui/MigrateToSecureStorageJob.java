@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
@@ -30,11 +31,25 @@ import java.util.Set;
 
 public class MigrateToSecureStorageJob extends UIJob {
 
+	public static class MutexRule implements ISchedulingRule {
+		public boolean isConflicting(ISchedulingRule rule) {
+			return rule == this;
+		}
+
+		public boolean contains(ISchedulingRule rule) {
+			return rule == this;
+		}
+	}
+
 	private final String kind;
+
+	private static final MutexRule mutex = new MutexRule();
 
 	public MigrateToSecureStorageJob(String kind) {
 		super("Migrating passwords to secure storage");
 		this.kind = kind;
+
+		setRule(mutex);
 	}
 
 	@Override
