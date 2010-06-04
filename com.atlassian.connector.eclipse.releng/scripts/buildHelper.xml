@@ -23,6 +23,11 @@
 			<contains string="${targets}" substring="3.5" />
 		</not>
 	</condition>
+	<condition property="skip3.6">
+		<not>
+			<contains string="${targets}" substring="3.6" />
+		</not>
+	</condition>
 
 	<target name="for-each-target">
 		<antcall target="e3.3" />
