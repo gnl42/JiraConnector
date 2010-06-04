@@ -11,15 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.commons.ui;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
@@ -27,8 +22,13 @@ import org.eclipse.mylyn.internal.tasks.core.ITasksCoreConstants;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.progress.UIJob;
 
-public class MigrateToSecureStorageJob extends Job {
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Set;
+
+public class MigrateToSecureStorageJob extends UIJob {
 
 	private final String kind;
 
@@ -38,7 +38,7 @@ public class MigrateToSecureStorageJob extends Job {
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus runInUIThread(IProgressMonitor monitor) {
 		Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
 		if (repos != null) {
 			for (TaskRepository repo : repos) {
@@ -83,4 +83,5 @@ public class MigrateToSecureStorageJob extends Job {
 		}
 		return false;
 	}
+
 }
