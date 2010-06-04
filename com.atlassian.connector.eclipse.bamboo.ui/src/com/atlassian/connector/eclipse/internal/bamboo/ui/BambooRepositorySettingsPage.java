@@ -17,11 +17,14 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
+import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
+import com.atlassian.theplugin.commons.remoteapi.CaptchaRequiredException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -31,6 +34,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -43,6 +47,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import java.net.MalformedURLException;
@@ -78,6 +83,18 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 				monitor = Policy.backgroundMonitorFor(monitor);
 				client.validate(monitor, taskRepository);
+			} catch (CoreException e) {
+				if (e.getCause() != null && e.getCause() instanceof CaptchaRequiredException) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							new RemoteApiLockedDialog(WorkbenchUtil.getShell(), taskRepository.getRepositoryUrl()).open();
+						}
+					});
+					setStatus(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+							"Wrong credentials or you've been locked out from remote API."));
+				} else {
+					setStatus(e.getStatus());
+				}
 			} finally {
 				if (client != null) {
 					clientManager.deleteTempClient(client.getServerData());

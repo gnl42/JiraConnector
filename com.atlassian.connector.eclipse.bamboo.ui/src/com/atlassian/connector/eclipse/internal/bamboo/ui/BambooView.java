@@ -629,7 +629,7 @@ public class BambooView extends ViewPart {
 		if (failed) {
 			if (forcedRefresh) {
 				statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
-						"Error while refreshing build plans. See Error log for details.");
+						"Error while refreshing build plans. See Error Log for details.");
 			} else {
 				statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
 						"Error while refreshing build plans. Retry by manually invoking a refresh in the view's toolbar.");

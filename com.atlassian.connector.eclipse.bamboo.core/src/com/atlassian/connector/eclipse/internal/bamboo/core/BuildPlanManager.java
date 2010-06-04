@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -88,8 +89,6 @@ public final class BuildPlanManager {
 
 		private final Map<TaskRepository, Collection<BambooBuild>> builds;
 
-		private MultiStatus result;
-
 		private final boolean manualRefresh;
 
 		private boolean isRunning;
@@ -109,24 +108,34 @@ public final class BuildPlanManager {
 			}
 			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 			Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
-			result = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Retrieval of Bamboo builds failed", null);
+			boolean allSuccessful = true;
+
 			for (TaskRepository repository : repositories) {
 				//ignore disconnected repositories
 				if (!repository.isOffline()) {
 					BambooClient client = clientManager.getClient(repository);
 					try {
-						this.builds.put(repository, client.getBuilds(monitor, repository, manualRefresh
-								|| !firstScheduledSynchronizationDone));
+						this.builds.put(
+								repository,
+								client.getBuilds(monitor, repository, manualRefresh
+										|| !firstScheduledSynchronizationDone));
+					} catch (OperationCanceledException e) {
+						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
+						StatusHandler.log(status);
+						allSuccessful = false;
 					} catch (CoreException e) {
 						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
 								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
-						result.add(status);
 						StatusHandler.log(status);
+						allSuccessful = false;
 					}
 				}
 			}
 			firstScheduledSynchronizationDone = true;
-			handleFinishedRefreshAllBuildsJob(builds, manualRefresh);
+
+			//compare new builds with current builds
+			processRefreshedBuildsAllRepositories(builds, manualRefresh, allSuccessful);
 			isRunning = false;
 			return Status.OK_STATUS;
 		}
@@ -275,12 +284,13 @@ public final class BuildPlanManager {
 			getRefreshedBuildsDiff(newBuilds, taskRepository, changedBuilds, errorLog);
 		}
 
-		notifyListeners(oldBuilds, changedBuilds, errorLog, true);
+		notifyListeners(oldBuilds, changedBuilds, errorLog, true, true);
 	}
 
 	private void notifyListeners(Map<TaskRepository, Collection<BambooBuild>> oldBuilds,
-			Map<TaskRepository, Collection<BambooBuild>> changedBuilds, List<String> errorLog, boolean forcedRefresh) {
-		boolean failed = errorLog == null ? false : errorLog.size() > 0;
+			Map<TaskRepository, Collection<BambooBuild>> changedBuilds, List<String> errorLog, boolean forcedRefresh,
+			boolean allUpdated) {
+		boolean failed = (errorLog == null ? false : errorLog.size() > 0) || !allUpdated;
 		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds, errorLog,
 				forcedRefresh, failed);
 
@@ -289,8 +299,7 @@ public final class BuildPlanManager {
 			listener.buildsUpdated(event);
 		}
 		//send failed refreshes to error log
-		if (failed && errorLog != null) {
-
+		if (failed && errorLog != null && errorLog.size() > 0) {
 			if (forcedRefresh) {
 				MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0,
 						"Error while refreshing builds", null);
@@ -312,11 +321,11 @@ public final class BuildPlanManager {
 				subscribedBuilds.remove(repository);
 			}
 		}
-		notifyListeners(oldBuilds, null, null, false);
+		notifyListeners(oldBuilds, null, null, false, true);
 	}
 
 	private void processRefreshedBuildsAllRepositories(Map<TaskRepository, Collection<BambooBuild>> newBuilds,
-			boolean forcedRefresh) {
+			boolean forcedRefresh, boolean allUpdated) {
 		Map<TaskRepository, Collection<BambooBuild>> oldBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>(
 				subscribedBuilds);
 		Map<TaskRepository, Collection<BambooBuild>> changedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
@@ -327,7 +336,7 @@ public final class BuildPlanManager {
 			}
 		}
 
-		notifyListeners(oldBuilds, changedBuilds, errorLog, forcedRefresh);
+		notifyListeners(oldBuilds, changedBuilds, errorLog, forcedRefresh, allUpdated);
 	}
 
 	public Job initializeScheduler(IRepositoryManager manager) {
@@ -355,12 +364,6 @@ public final class BuildPlanManager {
 			}
 		}
 		return scheduledRefreshBuildsForAllRepositoriesJob;
-	}
-
-	public void handleFinishedRefreshAllBuildsJob(Map<TaskRepository, Collection<BambooBuild>> builds,
-			boolean forcedRefresh) {
-		//compare new builds with current builds
-		processRefreshedBuildsAllRepositories(builds, forcedRefresh);
 	}
 
 	public Job refreshAllBuilds() {
