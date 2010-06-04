@@ -44,6 +44,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -98,6 +99,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.themes.IThemeManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +121,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	private class ChangeReviewStateAction extends Action {
 
 		private final String title;
+
 		private final String completionMessage;
+
 		private final CrucibleAction crucibleAction;
 
 		ChangeReviewStateAction(String title, CrucibleAction crucibleAction, String completionMessage) {
@@ -182,9 +186,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, resultMessage);
 		}
 
-		protected abstract Review runAsCrucibleRemoteOperation(CrucibleSession session,
-				IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-				ServerPasswordNotProvidedException;
+		protected abstract Review runAsCrucibleRemoteOperation(CrucibleSession session, IProgressMonitor monitor)
+				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	};
 
 	/**
@@ -242,6 +245,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	private static final int OPEN_DOWNLOAD_DELAY = 0;
 
 	private static final int VERTICAL_BAR_WIDTH = 15;
+
+	private static final String REVIEW_UPDATE_FAILED_CLICK = "Review update failed. Click to see details.";
 
 	private FormToolkit toolkit;
 
@@ -413,15 +418,17 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				monitor.subTask("Retrieving Crucible Review");
 
 				// TODO clean this up
-				Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(
-						getTask().getRepositoryUrl(), getTask().getTaskId());
+				Review cachedReview = CrucibleCorePlugin.getDefault()
+						.getReviewCache()
+						.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
 
 				if (cachedReview == null || force) {
 					review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 				} else {
 					review = cachedReview;
 				}
-				final DownloadAvatarsJob downloadAvatarsJob = new DownloadAvatarsJob(client, getTaskRepository(), review);
+				final DownloadAvatarsJob downloadAvatarsJob = new DownloadAvatarsJob(client, getTaskRepository(),
+						review);
 				// executing it synchronously - directly
 				downloadAvatarsJob.downloadAvatarsIfMissing(monitor);
 				final AvatarImages avatarsCache = CrucibleUiPlugin.getDefault().getAvatarsCache();
@@ -656,9 +663,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void createSubmitReviewAction(IToolBarManager manager) {
-		Action submitAction = new ChangeReviewStateAction("Submit Crucible Review "
-				+ review.getPermId() /* + getTask().getTaskKey() */,
-				CrucibleAction.SUBMIT, "Review has been submitted.");
+		Action submitAction = new ChangeReviewStateAction(
+				"Submit Crucible Review " + review.getPermId() /* + getTask().getTaskKey() */, CrucibleAction.SUBMIT,
+				"Review has been submitted.");
 		submitAction.setText("Submit");
 		submitAction.setToolTipText("Submit review");
 		submitAction.setImageDescriptor(CrucibleImages.SUBMIT);
@@ -672,7 +679,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 			@Override
 			protected Review runAsCrucibleRemoteOperation(CrucibleSession session, IProgressMonitor monitor)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				session.completeReview(new PermId(permId), false);
 				return null;
 			}
@@ -785,8 +792,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 										IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 										ServerPasswordNotProvidedException {
 									String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-									BasicReview res = server.getSession(serverCfg).changeReviewState(new PermId(permId),
-											CrucibleAction.ABANDON);
+									BasicReview res = server.getSession(serverCfg).changeReviewState(
+											new PermId(permId), CrucibleAction.ABANDON);
 									return server.getReview(serverCfg, res.getPermId());
 								}
 							});
@@ -904,7 +911,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				markTaskAsRead();
 			} else {
 				// TODO improve the message?
-				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, new HyperlinkAdapter() {
+				getEditor().setMessage(REVIEW_UPDATE_FAILED_CLICK, IMessageProvider.ERROR, new HyperlinkAdapter() {
 					@SuppressWarnings("restriction")
 					@Override
 					public void linkActivated(HyperlinkEvent e) {

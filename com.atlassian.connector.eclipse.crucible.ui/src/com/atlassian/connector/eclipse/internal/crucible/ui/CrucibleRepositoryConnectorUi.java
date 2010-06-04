@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.internal.commons.ui.CaptchaAwareTaskRepositoryLocationUiFactory;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleCustomFilterPage;
@@ -26,6 +25,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
@@ -40,7 +40,7 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 	public CrucibleRepositoryConnectorUi() {
 		CrucibleCorePlugin.getRepositoryConnector()
 				.getClientManager()
-				.setTaskRepositoryLocationFactory(new CaptchaAwareTaskRepositoryLocationUiFactory());
+				.setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory());
 	}
 
 	@Override
