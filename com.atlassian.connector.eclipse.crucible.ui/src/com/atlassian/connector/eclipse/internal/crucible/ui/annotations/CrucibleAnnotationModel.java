@@ -196,7 +196,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 			event.annotationAdded(ca);
 
 		} catch (BadLocationException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, "Unable to add annoation.", e));
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, "Unable to add annotation.", e));
 		}
 	}
 
