@@ -89,11 +89,8 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 								new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
 							}
 						});
-						status = new Status(
-								IStatus.ERROR,
-								CrucibleUiPlugin.PLUGIN_ID,
-								"HTTP 403 (Permission denied) - Wrong credentials or you've been locked out from remote API.",
-								e);
+						status = new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"HTTP 403 (Permission denied) - You've been locked out from remote API.", e);
 					}
 				}
 				setStatus(status);
