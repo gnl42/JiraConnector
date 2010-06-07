@@ -50,6 +50,7 @@ import com.atlassian.connector.eclipse.ui.viewers.CollapseAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandAllAction;
 import com.atlassian.connector.eclipse.ui.viewers.ExpandCollapseSelectionAction;
 import com.atlassian.connector.eclipse.ui.viewers.TreeViewerUtil;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -365,17 +366,37 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 
 			protected void open(ISelection selection, boolean activate) {
-				if (openNewAction.isEnabled()) {
-					openNewAction.run();
-				} else if (openOldAction.isEnabled()) {
-					openOldAction.run();
-				} else {
-					if (selection instanceof IStructuredSelection) {
-						final IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
-						if (structuredSelection.size() != 1) {
-							return;
+				if (selection instanceof IStructuredSelection) {
+					final IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
+					if (structuredSelection.size() != 1) {
+						return;
+					}
+					final Object element = ((IStructuredSelection) selection).getFirstElement();
+
+					if (element instanceof VersionedComment && openNewAction.isEnabled() && openOldAction.isEnabled()) {
+						VersionedComment parent = ReviewModelUtil.getParentVersionedComment((Comment) element);
+						Map<String, IntRanges> ranges = parent.getLineRanges();
+						if (ranges != null) {
+							VersionedVirtualFile newFile = parent.getCrucibleFileInfo().getFileDescriptor();
+							VersionedVirtualFile oldFile = parent.getCrucibleFileInfo().getOldFileDescriptor();
+
+							if (newFile != null && ranges.containsKey(newFile.getRevision())) {
+								openNewAction.run();
+								return;
+							}
+
+							if (oldFile != null && ranges.containsKey(oldFile.getRevision())) {
+								openOldAction.run();
+								return;
+							}
 						}
-						final Object element = ((IStructuredSelection) selection).getFirstElement();
+					}
+
+					if (openNewAction.isEnabled()) {
+						openNewAction.run();
+					} else if (openOldAction.isEnabled()) {
+						openOldAction.run();
+					} else {
 						if (viewer.getExpandedState(element)) {
 							viewer.collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
 						} else {
