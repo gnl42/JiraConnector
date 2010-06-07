@@ -1,10 +1,12 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
+import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.theplugin.commons.remoteapi.CaptchaRequiredException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -12,11 +14,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,6 +51,13 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 						&& e.getCause().getCause().getMessage().contains("HTTP 404")) {
 					setStatus(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID,
 							"HTTP 404 (Not Found) - Seems like the server you entered isn't FishEye", e));
+				} else if (e.getCause() instanceof CaptchaRequiredException) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
+						}
+					});
+					setStatus(new Status(IStatus.ERROR,	FishEyeUiPlugin.PLUGIN_ID, "You've been locked out from remote API.", e));
 				} else {
 					setStatus(e.getStatus());
 				}
