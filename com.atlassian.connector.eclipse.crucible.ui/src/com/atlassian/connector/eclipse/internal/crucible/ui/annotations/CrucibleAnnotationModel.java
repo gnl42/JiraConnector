@@ -187,7 +187,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 				if (endLine == 0) {
 					endLine = startLine;
 				}
-				length = Math.max(editorDocument.getLineOffset(endLine) - offset - 1, 0);
+				length = Math.max(editorDocument.getLineOffset(endLine - 1) - offset - 1, 0);
 
 			}
 			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment,
@@ -340,16 +340,20 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 			if (other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl() != null) {
 				return false;
 			}
-		} else if (!crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl().equals(
-				other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl())) {
+		} else if (!crucibleFile.getCrucibleFileInfo()
+				.getFileDescriptor()
+				.getAbsoluteUrl()
+				.equals(other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl())) {
 			return false;
 		}
 		if (crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() == null) {
 			if (other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() != null) {
 				return false;
 			}
-		} else if (!crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision().equals(
-				other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+		} else if (!crucibleFile.getCrucibleFileInfo()
+				.getFileDescriptor()
+				.getRevision()
+				.equals(other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
 			return false;
 		}
 		return true;
