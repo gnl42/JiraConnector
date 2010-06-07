@@ -86,7 +86,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 							&& e.getCause().getCause().getCause().getMessage().contains("maximum")) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
-								new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
+								new RemoteApiLockedDialog(WorkbenchUtil.getShell(), taskRepository.getRepositoryUrl()).open();
 							}
 						});
 						status = new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
