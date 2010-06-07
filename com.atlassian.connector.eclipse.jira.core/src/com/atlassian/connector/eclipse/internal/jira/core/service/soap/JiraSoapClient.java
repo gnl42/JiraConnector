@@ -31,14 +31,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.provisional.commons.soap.AbstractSoapClient;
 import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.atlassian.connector.eclipse.internal.core.ICaptchaAwareLocation;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
@@ -503,15 +501,6 @@ public class JiraSoapClient extends AbstractSoapClient {
 	protected <T> T call(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
 		try {
 			return super.call(monitor, runnable);
-		} catch (JiraCaptchaRequiredException e) {
-			AbstractWebLocation location = jiraClient.getLocation();
-			if (location instanceof ICaptchaAwareLocation) {
-				try {
-					((ICaptchaAwareLocation) location).requestCaptchaAuthentication(monitor);
-				} catch (UnsupportedRequestException e1) {
-				}
-			}
-			throw e;
 		} catch (JiraException e) {
 			throw e;
 		} catch (RuntimeException e) {

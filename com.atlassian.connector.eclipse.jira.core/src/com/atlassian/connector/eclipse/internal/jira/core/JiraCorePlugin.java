@@ -25,6 +25,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.core.CoreMessages;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
@@ -116,7 +117,7 @@ public class JiraCorePlugin extends Plugin {
 		String url = repository.getRepositoryUrl();
 		if (e instanceof JiraCaptchaRequiredException) {
 			return new RepositoryStatus(repository.getRepositoryUrl(), IStatus.ERROR, ID_PLUGIN,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, Messages.JiraCorePlugin_remote_api_locked);
+					RepositoryStatus.ERROR_REPOSITORY_LOGIN, CoreMessages.Captcha_authentication_required);
 		} else if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID_PLUGIN);
 		} else if (e instanceof JiraServiceUnavailableException) {

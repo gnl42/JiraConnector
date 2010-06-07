@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.core.client;
 import static com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin.PLUGIN_ID;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.eclipse.internal.core.CoreMessages;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.CaptchaRequiredException;
@@ -144,11 +145,8 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
 					new RepositoryStatus(
 							IStatus.ERROR,
 							PLUGIN_ID,
-							RepositoryStatus.ERROR_REPOSITORY_LOGIN,
-							"Due to multiple failed login attempts you have been temporarily banned from using remote API.\n\n"
-									+ "You need to log into your server using Web UI to clear failed login attempts counter.\n\n"
-									+ "If you're browser has a current session with the server you need to change your password "
-									+ "(to make sure you know it), then log out and log in again.", e));
+							RepositoryStatus.ERROR_REPOSITORY_LOGIN, CoreMessages.Captcha_authentication_required
+						, e));
 		} catch (RemoteApiLoginException e) {
 			if (e.getCause() instanceof IOException) {
 				throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));

@@ -124,29 +124,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		return monitorFile.getAbsolutePath();
 	}
 
-	/** The status from the http request */
-	//private int status;
-
-	/** the response for the http request */
-	//private String resp;
-
-	/*
-	private String getData(InputStream i) {
-		String s = ""; //$NON-NLS-1$
-		String data = ""; //$NON-NLS-1$
-		BufferedReader br = new BufferedReader(new InputStreamReader(i));
-		try {
-			while ((s = br.readLine()) != null) {
-				data += s;
-			}
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_error_uploading, e));
-		}
-		return data;
-	}
-	*/
-
 	public boolean failed() {
 		return failed;
 	}

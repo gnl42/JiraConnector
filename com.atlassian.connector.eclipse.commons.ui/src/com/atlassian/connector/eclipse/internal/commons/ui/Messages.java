@@ -16,8 +16,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.commons.ui.messages"; //$NON-NLS-1$
 
-	public static String RemoteApiLockedDialog_info;
-
 	public static String RemoteApiLockedDialog_5;
 
 	public static String RemoteApiLockedDialog_permission_denied;
