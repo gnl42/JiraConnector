@@ -16,13 +16,13 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddChangesetToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
@@ -60,6 +60,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleN
 import com.atlassian.theplugin.commons.crucible.api.model.notification.NewCommentNotification;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
+
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -110,6 +111,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -363,9 +365,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			}
 
 			protected void open(ISelection selection, boolean activate) {
-				if (compareAction.isEnabled()) {
-					compareAction.run();
-				} else if (openNewAction.isEnabled()) {
+				if (openNewAction.isEnabled()) {
 					openNewAction.run();
 				} else if (openOldAction.isEnabled()) {
 					openOldAction.run();
@@ -550,8 +550,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 			setContentDescription("");
 		} else {
 			setContentDescription(NLS.bind("Review files for {0} ({1} files, {2} comments)", new Object[] {
-					review.getPermId().getId(), review.getFiles().size(),
-					review.getNumberOfVersionedComments() }));
+					review.getPermId().getId(), review.getFiles().size(), review.getNumberOfVersionedComments() }));
 		}
 	}
 
@@ -694,8 +693,10 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 			public void run() {
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-							CrucibleUiPlugin.COMMENT_VIEW_ID);
+					PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage()
+							.showView(CrucibleUiPlugin.COMMENT_VIEW_ID);
 				} catch (PartInitException e) {
 					// don't care
 				}
@@ -743,12 +744,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(showCommentsViewAction);
 		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);
-		mgr.add(addFileCommentAction);
 		mgr.add(publishAllDraftsAction);
-		mgr.add(new Separator());
-		mgr.add(openOldAction);
-		mgr.add(openNewAction);
-		mgr.add(compareAction);
 	}
 
 	private void createContextMenu() {
@@ -851,13 +847,14 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	/**
-	 * Uses linear search (potentially very slow), but in fact, when I tested in on a review with 1700 files, it was able to
-	 * find random {@link CrucibleFileInfo} in 50 - 100 ms. More than good enough.
+	 * Uses linear search (potentially very slow), but in fact, when I tested in on a review with 1700 files, it was
+	 * able to find random {@link CrucibleFileInfo} in 50 - 100 ms. More than good enough.
 	 * 
 	 * So I decided not to keep a separate map {@link CrucibleFileInfo} -> {@link ReviewTreeNode}
 	 * 
 	 * @param cfi
-	 * @return a node with {@link CrucibleFileInfo} similar to the argument (the same root info, but perhaps different comments)
+	 * @return a node with {@link CrucibleFileInfo} similar to the argument (the same root info, but perhaps different
+	 *         comments)
 	 */
 	private ReviewTreeNode findReviewTreeNode(@NotNull CrucibleFileInfo cfi) {
 		ReviewTreeNode[] model = getCurrentModel();
@@ -871,8 +868,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	private ReviewTreeNode findReviewTreeNode(@NotNull CrucibleFileInfo cfi, ReviewTreeNode rootNode) {
-		if (rootNode.getCrucibleFileInfo() != null
-				&& rootNode.getCrucibleFileInfo().equals(cfi)) {
+		if (rootNode.getCrucibleFileInfo() != null && rootNode.getCrucibleFileInfo().equals(cfi)) {
 			return rootNode;
 		}
 
@@ -942,8 +938,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		return true;
 	}
 
-	public void reviewUpdated(ITask task, Review aReview,
-			Collection<CrucibleNotification> differences) {
+	public void reviewUpdated(ITask task, Review aReview, Collection<CrucibleNotification> differences) {
 		setReview(aReview, false, differences);
 	}
 
@@ -953,8 +948,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 				return false;
 			}
 			final ReviewTreeNode[] currentInput = getCurrentModel();
-			final GeneralCommentsNode generalCommentsNode = (currentInput[0] instanceof GeneralCommentsNode)
-					? (GeneralCommentsNode) currentInput[0] : null;
+			final GeneralCommentsNode generalCommentsNode = (currentInput[0] instanceof GeneralCommentsNode) ? (GeneralCommentsNode) currentInput[0]
+					: null;
 
 			for (CrucibleNotification diff : differences) {
 				if (diff instanceof AbstractCommentNotification) {
