@@ -187,7 +187,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 				if (endLine == 0) {
 					endLine = startLine;
 				}
-				length = Math.max(editorDocument.getLineOffset(endLine - 1) - offset - 1, 0);
+				length = Math.max(editorDocument.getLineOffset(endLine - 1) - offset, 0);
 
 			}
 			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment,
