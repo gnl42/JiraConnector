@@ -35,12 +35,6 @@ public class JiraUiUtil {
 
 		long localTimeTicks = 0;
 
-//		LocalIssueData issueData = getClient(iTask).getCache().getIssueData(iTask.getTaskKey());
-//
-//		if (issueData != null) {
-//			localTimeTicks = issueData.getLoggedActivityTime();
-//		}
-
 		String stringLoggedTime = iTask.getAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME);
 
 		if (stringLoggedTime != null && stringLoggedTime.length() > 0) {
@@ -62,13 +56,7 @@ public class JiraUiUtil {
 	}
 
 	public static void clearLoggedActivityTime(ITask task) {
-//		JiraClient client = JiraCorePlugin.getClientManager().getClient(task.getRepositoryUrl());
-//
-//		client.getCache().getIssueData(task.getTaskKey()).setLoggedActivityTime(
-//				TasksUiPlugin.getTaskActivityManager().getElapsedTime(task));
-
 		task.setAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME, ""); //$NON-NLS-1$
-
 	}
 
 	/**
@@ -77,9 +65,6 @@ public class JiraUiUtil {
 	 * @param task
 	 */
 	public static void setLoggedActivityTime(ITask task) {
-//		getClient(task).getCache().getIssueData(task.getTaskKey()).setLoggedActivityTime(
-//		TasksUiPlugin.getTaskActivityManager().getElapsedTime(task));
-
 		task.setAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME,
 				Long.toString(TasksUiPlugin.getTaskActivityManager().getElapsedTime(task)));
 	}
