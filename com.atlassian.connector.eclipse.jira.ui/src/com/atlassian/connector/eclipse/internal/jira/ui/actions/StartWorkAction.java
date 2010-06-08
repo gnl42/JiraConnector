@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -150,6 +151,9 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	}
 
 	private void doActionInsideEditor(Job job, final JiraTaskEditorPage jiraFormPage) {
+		if (jiraFormPage.isDirty()) {
+			jiraFormPage.getEditor().doSave(new NullProgressMonitor());
+		}
 		jiraFormPage.showEditorBusy(true);
 		job.setUser(false);
 		job.addJobChangeListener(new JobChangeAdapter() {
