@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-public class MigrateToSecureStorageJob extends UIJob {
+/* PLE-1120 public */class MigrateToSecureStorageJob extends UIJob {
 
 	public static class MutexRule implements ISchedulingRule {
 		public boolean isConflicting(ISchedulingRule rule) {

@@ -12,16 +12,15 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -66,15 +65,15 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.
@@ -334,7 +333,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@SuppressWarnings("restriction")
 	@Override
 	public void applyTo(TaskRepository repository) {
-		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+		// PLE-1120 MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
 
 		super.applyTo(repository);

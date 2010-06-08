@@ -1,6 +1,5 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
@@ -89,7 +88,7 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 	 * in the superclass)
 	 */
 	public TaskRepository applyToValidate(TaskRepository repository) {
-		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+		// PLE-1120 MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
 		return repository;
 	}
