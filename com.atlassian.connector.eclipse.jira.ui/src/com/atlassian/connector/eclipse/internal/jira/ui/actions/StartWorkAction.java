@@ -30,7 +30,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizeTasksJob;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
@@ -108,12 +107,12 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		Job job = null;
 
 		if (isTaskInStop(taskData, task)) {
-			job = getStartProgressJob(taskData, task);
+			job = getStartWorkJob(taskData, task);
 		} else if (isTaskInProgress(taskData, task)) {
-			if (!showLogWorkDialog(task)) {
+			if (!showLogWorkDialog(taskData, task)) {
 				return;
 			}
-			job = getStopProgressJob(taskData, task, workLog);
+			job = getStopWorkJob(taskData, task, workLog);
 		} else {
 			StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, Messages.StartWorkAction_cannot_perform));
 			return;
@@ -158,7 +157,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 			public void done(IJobChangeEvent event) {
 				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 					public void run() {
-						jiraFormPage.refreshFormContent();
+						jiraFormPage.refresh();
 //						jiraFormPage.showEditorBusy(false);
 					}
 				});
@@ -174,14 +173,17 @@ public class StartWorkAction extends AbstractStartWorkAction {
 	}
 
 	/**
+	 * @param taskData
 	 * @param iTask
-	 * @return false if the process of stopping work should be break
+	 * @return false if the process of stopping work should be broken
 	 */
-	private boolean showLogWorkDialog(ITask iTask) {
+	private boolean showLogWorkDialog(TaskData taskData, ITask iTask) {
 		if (MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
 
+			long seconds = JiraUiUtil.getLoggedActivityTime(iTask);
+
 			LogJiraTimeDialog dialog = new LogJiraTimeDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-					iTask);
+					iTask, seconds);
 
 			dialog.open();
 
@@ -195,7 +197,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return true;
 	}
 
-	private static Job getStartProgressJob(final TaskData taskData, final ITask task) {
+	private static Job getStartWorkJob(final TaskData taskData, final ITask task) {
 
 		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Work) {
 
@@ -207,6 +209,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				final JiraClient client = getClient(task);
 
 				boolean shouldSynchronize = false;
+				boolean shouldActivate = false;
 
 				try {
 					final JiraIssue issue = getIssue(task);
@@ -216,14 +219,10 @@ public class StartWorkAction extends AbstractStartWorkAction {
 						shouldSynchronize = true;
 					}
 					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.START_PROGRESS_OPERATION, null, monitor);
-					shouldSynchronize = true;
 
-					// activate task
-					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							TasksUi.getTaskActivityManager().activateTask(task);
-						}
-					});
+					shouldSynchronize = true;
+					shouldActivate = true;
+
 				} catch (CoreException e) {
 					handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
 				} catch (JiraException e) {
@@ -231,6 +230,14 @@ public class StartWorkAction extends AbstractStartWorkAction {
 				} finally {
 					if (shouldSynchronize) {
 						synchronizeTask(task, monitor);
+					}
+					if (shouldActivate) {
+						// activate task
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								TasksUi.getTaskActivityManager().activateTask(task);
+							}
+						});
 					}
 				}
 
@@ -241,7 +248,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return startProgressJob;
 	}
 
-	private static Job getStopProgressJob(final TaskData taskData, final ITask task, final JiraWorkLog jiraWorkLog) {
+	private static Job getStopWorkJob(final TaskData taskData, final ITask task, final JiraWorkLog jiraWorkLog) {
 		Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Work) {
 
 			@Override
@@ -258,15 +265,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 						client.addWorkLog(task.getTaskKey(), jiraWorkLog, monitor);
 
 						// reset activity time
-						TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-								task.getConnectorKind(), task.getRepositoryUrl());
-						if (repository != null) {
-							String handler = RepositoryTaskHandleUtil.getHandle(repository.getRepositoryUrl(),
-									taskData.getTaskId());
-							MonitorUiPlugin.getDefault().getActivityContextManager().removeActivityTime(handler, 0l,
-									System.currentTimeMillis());
-						}
-
+						JiraUiUtil.setLoggedActivityTime(task);
 					}
 
 					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.STOP_PROGRESS_OPERATION, null, monitor);

@@ -321,6 +321,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
 
+//		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_MYLYN_ACTIVITY_DELTA);
+
 		TaskAttribute projectRoles = createAttribute(data, JiraAttribute.PROJECT_ROLES);
 		projectRoles.putOption(IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
 		ProjectRole[] roles = client.getCache().getProjectRoles();

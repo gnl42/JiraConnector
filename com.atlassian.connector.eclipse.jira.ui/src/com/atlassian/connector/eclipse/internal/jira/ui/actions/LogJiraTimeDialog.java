@@ -22,7 +22,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -52,6 +51,9 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraEditorUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 @SuppressWarnings("restriction")
 public class LogJiraTimeDialog extends MessageDialog {
 
@@ -61,11 +63,9 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 	private JiraWorkLog workLog;
 
-	private long workDoneAmount = 0;
+	private long workDoneAmountInSeconds = 0;
 
 	private final TaskRepository repository;
-
-	private final ITask iTask;
 
 	private Text descriptionText;
 
@@ -75,10 +75,10 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 	private DateTime timeWidget;
 
-	public LogJiraTimeDialog(Shell parentShell, ITask iTask) {
+	public LogJiraTimeDialog(Shell parentShell, ITask iTask, long seconds) {
 		super(parentShell, Messages.WorkLogPart_Log_Work_Done + " " + iTask.getTaskKey(), null, null, SWT.NONE, //$NON-NLS-1$
 				buttons, 0);
-		this.iTask = iTask;
+		this.workDoneAmountInSeconds = seconds;
 		this.repository = TasksUi.getRepositoryManager().getRepository(iTask.getConnectorKind(),
 				iTask.getRepositoryUrl());
 	}
@@ -110,9 +110,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		time.setText(Messages.WorkLogPart_Time_Spent);
 
 		final Text timeSpentText = new Text(c1, SWT.BORDER);
-		long timeTicks = TasksUiPlugin.getTaskActivityManager().getElapsedTime(iTask);
-		workDoneAmount = timeTicks / 1000; // change milliseconds to seconds
-		String wdhmTime = JiraUtil.getTimeFormat(repository).format(new Long(workDoneAmount));
+		String wdhmTime = JiraUtil.getTimeFormat(repository).format(new Long(workDoneAmountInSeconds));
 		timeSpentText.setText(wdhmTime);
 		GridDataFactory.fillDefaults().applyTo(timeSpentText);
 
@@ -122,8 +120,8 @@ public class LogJiraTimeDialog extends MessageDialog {
 			public void modifyText(ModifyEvent e) {
 				timeSpentText.setToolTipText(getTimeSpentTooltipText());
 				try {
-					workDoneAmount = JiraUtil.getTimeFormat(repository).parse(timeSpentText.getText());
-					if (workDoneAmount > 0) {
+					workDoneAmountInSeconds = JiraUtil.getTimeFormat(repository).parse(timeSpentText.getText());
+					if (workDoneAmountInSeconds > 0) {
 						getButton(0).setEnabled(true);
 					} else {
 						getButton(0).setEnabled(false);
@@ -215,7 +213,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		tempworkLog.setAuthor(repository.getUserName());
 		tempworkLog.setComment(descriptionText.getText());
 		tempworkLog.setStartDate(cal.getTime());
-		tempworkLog.setTimeSpent(workDoneAmount);
+		tempworkLog.setTimeSpent(workDoneAmountInSeconds);
 		tempworkLog.setAutoAdjustEstimate(autoAdjustButton.getSelection());
 		workLog = tempworkLog;
 	}
@@ -274,7 +272,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		super.createButtonsForButtonBar(parent);
 
 		// disable button for time less than 60seconds 
-		if (workDoneAmount >= 60) {
+		if (workDoneAmountInSeconds >= 60) {
 			getButton(0).setEnabled(true);
 		} else {
 			getButton(0).setEnabled(false);

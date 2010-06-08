@@ -13,18 +13,24 @@ package com.atlassian.connector.eclipse.internal.jira.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskActivityListener;
+import org.eclipse.mylyn.tasks.core.TaskActivityAdapter;
 import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
 
 /**
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 public class JiraUiPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "com.atlassian.connector.eclipse.jira.ui"; //$NON-NLS-1$
@@ -47,6 +53,26 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylyn.jira", path); //$NON-NLS-1$
 	}
+
+	private final ITaskActivityListener activityTimeListener = new TaskActivityAdapter() {
+
+		private boolean initialized = false;
+
+		@Override
+		public void elapsedTimeUpdated(ITask task, long newElapsedTime) {
+			if (initialized && newElapsedTime == 0) {
+				// reset logged time activity
+				JiraUiUtil.clearLoggedActivityTime(task);
+			}
+		}
+
+		@Override
+		public void activityReset() {
+			// hack to prevent reseting activity time when Mylyn is starting and reloading activity
+			initialized = true;
+		}
+
+	};
 
 	public JiraUiPlugin() {
 	}
@@ -76,10 +102,13 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 			});
 			migrateJob.schedule();
 		}*/
+
+		TasksUiPlugin.getTaskActivityManager().addActivityListener(activityTimeListener);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		TasksUiPlugin.getTaskActivityManager().removeActivityListener(activityTimeListener);
 		TasksUi.getRepositoryManager().removeListener(JiraClientFactory.getDefault());
 		JiraClientFactory.getDefault().logOutFromAll();
 		instance = null;

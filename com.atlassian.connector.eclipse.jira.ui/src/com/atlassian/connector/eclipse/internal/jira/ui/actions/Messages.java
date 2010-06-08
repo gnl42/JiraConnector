@@ -40,6 +40,12 @@ public class Messages extends NLS {
 
 	public static String JiraConnectorUiActions_Watch;
 
+	public static String JiraUiUtil_Cannot_parse_logged_activity_time;
+
+	public static String JiraUiUtil_Logged_activity_time_problem;
+
+	public static String StartWorkAction_Cannot_parse_Mylyn_activity_delta;
+
 	public static String StartWorkAction_cannot_perform;
 
 	public static String StartWorkAction_enabled_for_single_selection;

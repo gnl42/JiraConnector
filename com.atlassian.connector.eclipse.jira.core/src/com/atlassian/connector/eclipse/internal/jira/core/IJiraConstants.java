@@ -71,4 +71,6 @@ public class IJiraConstants {
 
 	public static final String PREFERENCE_SECURE_STORAGE_MIGRATED = "secure_storage.migration.done"; //$NON-NLS-1$
 
+	public static final String ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME = "attribute.jira.loggedActivityTime"; //$NON-NLS-1$
+
 }

@@ -57,6 +57,8 @@ public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWork
 
 	public static final String ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG = "attribute.jira.worklog.new.submit.flag"; //$NON-NLS-1$
 
+//	public static final String ATTRIBUTE_WORKLOG_MYLYN_ACTIVITY_DELTA = "attribute.jira.worklog.mylyn.activity.delta"; //$NON-NLS-1$
+
 	public final static JiraField<String> ROLE_LEVEL_ID = create(String.class,
 			"roleLevelId", Messages.WorkLogConverter_Role_Level, //$NON-NLS-1$
 			TaskAttribute.TYPE_SHORT_TEXT);
