@@ -68,7 +68,4 @@ public class JiraClientData implements Serializable {
 	Map<String, User> usersByName = new HashMap<String, User>();
 
 	long lastUpdate;
-
-	Map<String, LocalIssueData> localIssueDataMap = new HashMap<String, LocalIssueData>();
-
 }

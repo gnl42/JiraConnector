@@ -15,6 +15,7 @@ package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
@@ -22,6 +23,7 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
@@ -237,6 +239,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		}
 	};
 
+	private boolean isWorkLogSubmit = false;
+
 	@Override
 	public void doSubmit() {
 
@@ -246,11 +250,28 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
 			//if flag is set and true, submit worklog will happen
 			if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
-				JiraUiUtil.setLoggedActivityTime(getModel().getTask());
+				isWorkLogSubmit = true;
 			}
 		}
 
 		super.doSubmit();
+	}
+
+	@Override
+	protected void handleTaskSubmitted(SubmitJobEvent event) {
+
+		if (isWorkLogSubmit) {
+			isWorkLogSubmit = false;
+
+			IStatus status = event.getJob().getStatus();
+			if (status == null || status.getSeverity() == IStatus.OK) {
+				// remember submitted time
+				JiraUiUtil.setLoggedActivityTime(getModel().getTask());
+			}
+		}
+
+		// ignore
+		super.handleTaskSubmitted(event);
 	}
 
 }

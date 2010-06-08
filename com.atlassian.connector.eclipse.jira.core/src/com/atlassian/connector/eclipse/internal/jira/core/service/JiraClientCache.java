@@ -264,8 +264,6 @@ public class JiraClientCache {
 
 		newData.lastUpdate = System.currentTimeMillis();
 
-		newData.localIssueDataMap = this.data.localIssueDataMap;
-
 		this.data = newData;
 	}
 
@@ -321,17 +319,4 @@ public class JiraClientCache {
 		}
 		return user;
 	}
-
-	public LocalIssueData getIssueData(String taskKey) {
-		if (this.data.localIssueDataMap == null) {
-			this.data.localIssueDataMap = new HashMap<String, LocalIssueData>();
-		}
-
-		if (this.data.localIssueDataMap.get(taskKey) == null) {
-			this.data.localIssueDataMap.put(taskKey, new LocalIssueData());
-		}
-
-		return this.data.localIssueDataMap.get(taskKey);
-	}
-
 }
