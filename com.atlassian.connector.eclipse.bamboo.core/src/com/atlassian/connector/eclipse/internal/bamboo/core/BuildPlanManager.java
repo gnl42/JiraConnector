@@ -101,42 +101,54 @@ public final class BuildPlanManager {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			isRunning = true;
 			if (repositoryManager == null) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "No repository manager found."));
 				return Status.OK_STATUS;
 			}
-			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
-			boolean allSuccessful = true;
 
-			for (TaskRepository repository : repositories) {
-				//ignore disconnected repositories
-				if (!repository.isOffline()) {
-					BambooClient client = clientManager.getClient(repository);
-					try {
-						this.builds.put(
-								repository,
-								client.getBuilds(monitor, repository, manualRefresh
-										|| !firstScheduledSynchronizationDone));
-					} catch (OperationCanceledException e) {
-						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
-								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
-						StatusHandler.log(status);
-						allSuccessful = false;
-					} catch (CoreException e) {
-						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
-								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
-						StatusHandler.log(status);
-						allSuccessful = false;
+			isRunning = true;
+			try {
+				BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+				Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
+				boolean allSuccessful = true;
+
+				for (TaskRepository repository : repositories) {
+					if (monitor.isCanceled()) {
+						return Status.CANCEL_STATUS;
+					}
+
+					//ignore disconnected repositories
+					if (!repository.isOffline()) {
+						BambooClient client = clientManager.getClient(repository);
+						try {
+							this.builds.put(
+									repository,
+									client.getBuilds(monitor, repository, manualRefresh
+											|| !firstScheduledSynchronizationDone));
+						} catch (OperationCanceledException e) {
+							Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+									"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
+							StatusHandler.log(status);
+							allSuccessful = false;
+						} catch (CoreException e) {
+							Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+									"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
+							StatusHandler.log(status);
+							allSuccessful = false;
+						}
 					}
 				}
-			}
-			firstScheduledSynchronizationDone = true;
+				firstScheduledSynchronizationDone = true;
 
-			//compare new builds with current builds
-			processRefreshedBuildsAllRepositories(builds, manualRefresh, allSuccessful);
-			isRunning = false;
+				if (monitor.isCanceled()) {
+					return Status.CANCEL_STATUS;
+				}
+
+				// compare new builds with current builds
+				processRefreshedBuildsAllRepositories(builds, manualRefresh, allSuccessful);
+			} finally {
+				isRunning = false;
+			}
 			return Status.OK_STATUS;
 		}
 
