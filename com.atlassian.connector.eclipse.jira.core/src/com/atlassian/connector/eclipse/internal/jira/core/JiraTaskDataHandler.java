@@ -36,8 +36,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
-import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
@@ -1136,7 +1134,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	private void postWorkLog(TaskRepository repository, JiraClient client, TaskData taskData, JiraIssue issue,
 			IProgressMonitor monitor) throws JiraException {
 		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
@@ -1148,9 +1145,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				client.addWorkLog(issue.getKey(), log, monitor);
 
 				// reset activity time
-				String handler = RepositoryTaskHandleUtil.getHandle(repository.getRepositoryUrl(), taskData.getTaskId());
-				MonitorUiPlugin.getDefault().getActivityContextManager().removeActivityTime(handler, 0l,
-						System.currentTimeMillis());
+//				String handler = RepositoryTaskHandleUtil.getHandle(repository.getRepositoryUrl(), taskData.getTaskId());
+//				MonitorUiPlugin.getDefault().getActivityContextManager().removeActivityTime(handler, 0l,
+//						System.currentTimeMillis());
 			}
 		}
 	}

@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
@@ -33,6 +34,8 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
 
 /**
@@ -233,5 +236,21 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			});
 		}
 	};
+
+	@Override
+	public void doSubmit() {
+
+		TaskAttribute attribute = getModel().getTaskData().getRoot().getMappedAttribute(
+				WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+		if (attribute != null) {
+			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
+			//if flag is set and true, submit worklog will happen
+			if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
+				JiraUiUtil.setLoggedActivityTime(getModel().getTask());
+			}
+		}
+
+		super.doSubmit();
+	}
 
 }

@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -66,11 +65,13 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
 
 /**
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
  */
+@SuppressWarnings("restriction")
 public class WorkLogPart extends AbstractTaskEditorPart {
 
 	private static final String ID_POPUP_MENU = "org.eclipse.mylyn.jira.ui.editor.menu.worklog"; //$NON-NLS-1$
@@ -399,17 +400,15 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		return newWorkLogSection;
 	}
 
-	@SuppressWarnings("restriction")
 	private void showLogWorkComponents() {
 		addWorkLogToModel();
 		includeWorklog = createNewWorkLog.getSelection();
 		setSubmitWorklog();
 
 		if (createNewWorkLog.getSelection() && MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
-			long time = TasksUiPlugin.getTaskActivityManager().getElapsedTime(getTaskEditorPage().getTask());
+			long time = JiraUiUtil.getLoggedActivityTime(getTaskEditorPage().getTask());
 
-			String wdhmTime = JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository()).format(
-					new Long(time / 1000));
+			String wdhmTime = JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository()).format(new Long(time));
 			if (wdhmTime != null && wdhmTime.length() > 0) {
 				timeSpentText.setText(wdhmTime);
 
@@ -489,7 +488,6 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
 		private final FormToolkit toolkit;
 
-		@SuppressWarnings("restriction")
 		public LogWorkDoneAction(FormToolkit toolkit, Section section) {
 			this.toolkit = toolkit;
 			this.section = section;
