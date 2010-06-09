@@ -11,14 +11,19 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
+
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 
 public abstract class AbstractTeamUiConnector implements ITeamUiResourceConnector {
 	public static String getResourcePathWithProjectName(IResource resource) {
@@ -45,4 +50,19 @@ public abstract class AbstractTeamUiConnector implements ITeamUiResourceConnecto
 		}
 	}
 
+	protected String getCharset(IFile file) {
+		if (file == null) {
+			return UploadItem.DEFAULT_CHARSET;
+		}
+		try {
+			return file.getCharset() == null ? UploadItem.DEFAULT_CHARSET : file.getCharset();
+		} catch (CoreException e) {
+			return UploadItem.DEFAULT_CHARSET;
+		}
+	}
+
+	protected String getContentType(IFile file) {
+		String mimeType = file != null ? URLConnection.getFileNameMap().getContentTypeFor(file.getName()) : null;
+		return mimeType == null ? UploadItem.DEFAULT_CONTENT_TYPE : mimeType;
+	}
 }

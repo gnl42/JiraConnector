@@ -123,8 +123,9 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector i
 					}
 				}
 			} else {
-				if (getLogMessagesOp.getStatus().toString().contains(
-						"Selected SVN connector library is not available or cannot be loaded.")) {
+				if (getLogMessagesOp.getStatus()
+						.toString()
+						.contains("Selected SVN connector library is not available or cannot be loaded.")) {
 					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 							"Subversive doesn't have a default client installed", getLogMessagesOp.getStatus()
 									.getException()));
@@ -245,21 +246,33 @@ public class SubversiveTeamUiResourceConnector extends AbstractTeamUiConnector i
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
-				byte[] newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
+				IFile file = ((IFile) resource);
+				byte[] newContent = getResourceContent(file.getContents());
+				items.add(new UploadItem(fileName, getContentType(null), getCharset(null), new byte[0],
+						getContentType(file), getCharset(file), newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()), DELETED_ITEM));
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
+						getResourceContent(getContent.getContent()), getContentType(null), getCharset(null),
+						DELETED_ITEM));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
 				byte[] newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()),
-						newContent.length == 0 ? EMPTY_ITEM : newContent));
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
+						getResourceContent(getContent.getContent()), getContentType((IFile) resource),
+						getCharset((IFile) resource), newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
 		return items;
+	}
+
+	@Override
+	protected String getContentType(IFile file) {
+		String mimeType = file != null ? SVNUtility.getPropertyForNotConnected(file, SVNProperty.BuiltIn.MIME_TYPE)
+				: null;
+		return mimeType == null ? super.getContentType(file) : mimeType;
 	}
 
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {

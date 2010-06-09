@@ -85,8 +85,11 @@ public class LocalTeamResourceConnector extends AbstractTeamUiConnector {
 
 			final String fileName = getResourcePathWithProjectName(resource);
 
-			byte[] newContent = getResourceContent(((IFile) resource).getContents());
-			items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
+			IFile file = ((IFile) resource);
+			byte[] newContent = getResourceContent(file.getContents());
+			items.add(new UploadItem(fileName, UploadItem.DEFAULT_CONTENT_TYPE, UploadItem.DEFAULT_CHARSET,
+					new byte[0], getContentType(file), getCharset(file), newContent.length == 0 ? EMPTY_ITEM
+							: newContent));
 		}
 		return items;
 	}

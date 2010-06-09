@@ -179,14 +179,19 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(scmResource) || IStateFilter.SF_ADDED.accept(scmResource)
 					|| IStateFilter.SF_IGNORED.accept(scmResource)) {
-				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
+				IFile file = (IFile) resource;
+				byte[] newContent = getResourceContent(file);
+				items.add(new UploadItem(fileName, getContentType(null), getCharset(null), new byte[0],
+						getContentType(file), getCharset(file), newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (IStateFilter.SF_DELETED.accept(scmResource)) {
-				items.add(new UploadItem(fileName, getResourceContent(scmResource.getHeadContents()), DELETED_ITEM));
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
+						getResourceContent(scmResource.getHeadContents()), getContentType(null), getCharset(null),
+						DELETED_ITEM));
 			} else if (IStateFilter.SF_ANY_CHANGE.accept(scmResource)) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(fileName, getResourceContent(scmResource.getHeadContents()),
-						newContent.length == 0 ? EMPTY_ITEM : newContent));
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
+						getResourceContent(scmResource.getHeadContents()), getContentType((IFile) resource),
+						getCharset((IFile) resource), newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
 		return items;
