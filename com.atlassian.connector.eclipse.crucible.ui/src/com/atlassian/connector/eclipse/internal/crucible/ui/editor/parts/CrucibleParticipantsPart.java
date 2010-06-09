@@ -30,6 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -70,6 +71,7 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -95,24 +97,21 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 		@Override
 		public void run() {
 			Collection<User> allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
-					CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
-					crucibleReview.getProjectKey());
+					CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview), crucibleReview.getProjectKey());
 
 			if (allowedReviewers == null) {
 				final TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview);
-				boolean isSuccess = CrucibleUiUtil.updateProjectDetailsCache(taskRepository, crucibleReview.getProjectKey(),
-						new ProgressMonitorDialog(WorkbenchUtil.getShell()));
+				boolean isSuccess = CrucibleUiUtil.updateProjectDetailsCache(taskRepository,
+						crucibleReview.getProjectKey(), new ProgressMonitorDialog(WorkbenchUtil.getShell()));
 
 				if (!isSuccess) {
 					MessageDialog.openError(WorkbenchUtil.getShell(), "Problem",
-							"Cannot fetch project details with allowed reviewers.\n"
-									+ "See Error Log for details");
+							"Cannot fetch project details with allowed reviewers.\n" + "See Error Log for details");
 					return;
 				}
 
 				allowedReviewers = CrucibleUiUtil.getAllowedReviewers(
-						CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
-						crucibleReview.getProjectKey());
+						CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview), crucibleReview.getProjectKey());
 				if (allowedReviewers == null) {
 					MessageDialog.openError(WorkbenchUtil.getShell(), "Problem",
 							"Cannot determine allowed reviewers for this review");
@@ -182,15 +181,12 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 	private IAction setReviewersAction;
 
-	private boolean newReview;
-
 	private Control reviewersPart;
 
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleReview = review;
 		this.crucibleEditor = editor;
-		this.newReview = isNewReview;
 	}
 
 	@Override
@@ -312,8 +308,8 @@ public class CrucibleParticipantsPart extends AbstractCrucibleEditorFormPart {
 
 		CrucibleParticipantUiUtil.createLabel(toolkit, participantsComp, "Author:");
 
-		final Composite authorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit, participantsComp,
-				crucibleReview.getAuthor(), false, false, imageRegistry);
+		final Composite authorComposite = CrucibleParticipantUiUtil.createParticipantComposite(toolkit,
+				participantsComp, crucibleReview.getAuthor(), false, false, imageRegistry);
 		authorComposite.setMenu(parent.getMenu());
 
 		if (crucibleReview.getModerator() != null) {
