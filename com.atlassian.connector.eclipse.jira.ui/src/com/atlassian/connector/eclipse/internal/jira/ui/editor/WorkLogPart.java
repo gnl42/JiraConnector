@@ -35,6 +35,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -50,10 +52,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -311,6 +315,20 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		newWorkLogSection.setClient(newWorkLogComposite);
 		newWorkLogComposite.setLayout(GridLayoutFactory.swtDefaults().spacing(10, 5).numColumns(3).create());
 
+		if (!MonitorUiPlugin.getDefault().getPreferenceStore().getBoolean(MonitorUiPlugin.ACTIVITY_TRACKING_ENABLED)) {
+			Link timeTrackingDisabled = new Link(newWorkLogComposite, SWT.NONE);
+			timeTrackingDisabled.setText("<A>Enable automatic time tracking in Mylyn</A>");
+			GridDataFactory.fillDefaults().span(3, 1).applyTo(timeTrackingDisabled);
+			timeTrackingDisabled.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					PreferencesUtil.createPreferenceDialogOn(WorkbenchUtil.getShell(), TasksUiPreferencePage.ID, null,
+							null).open();
+				}
+			});
+			toolkit.adapt(timeTrackingDisabled, true, true);
+		}
+
 		final String timeSpendTooltip = getTimeSpentTooltipText();
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Time_Spent);
@@ -324,8 +342,11 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		});
 
 		timeSpentText.setToolTipText(timeSpendTooltip);
-		GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(
-				timeSpentText);
+		GridDataFactory.fillDefaults()
+				.span(2, 1)
+				.hint(135, SWT.DEFAULT)
+				.align(SWT.BEGINNING, SWT.FILL)
+				.applyTo(timeSpentText);
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
 		dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
