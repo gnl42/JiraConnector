@@ -319,14 +319,18 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (status.isUnversioned() || status.isAdded() || status.isIgnored()) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
+				items.add(new UploadItem(fileName, UploadItem.DEFAULT_CONTENT_TYPE, UploadItem.DEFAULT_CHARSET,
+						new byte[0], getContentType((IFile) resource), getCharset((IFile) resource),
+						newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (status.isDeleted()) {
-				items.add(new UploadItem(fileName,
-						getResourceContent(svnResource.getBaseResource().getStorage(monitor)), DELETED_ITEM));
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
+						getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
+						UploadItem.DEFAULT_CONTENT_TYPE, UploadItem.DEFAULT_CHARSET, DELETED_ITEM));
 			} else if (status.isDirty()) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(fileName,
+				items.add(new UploadItem(fileName, getContentType((IFile) resource), getCharset((IFile) resource),
 						getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
+						getContentType((IFile) resource), getCharset((IFile) resource),
 						newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
@@ -501,8 +505,9 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 	}
 
 	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
-		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
-				monitor);
+		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin()
+				.getRepositoryManager()
+				.getKnownRepositoryLocations(monitor);
 		List<ScmRepository> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
 			res.add(new ScmRepository(repo.getUrl().toString(), repo.getRepositoryRoot().toString(), repo.getLabel(),
@@ -511,4 +516,16 @@ public class SubclipseTeamUiResourceConnector extends AbstractTeamUiConnector im
 		return res;
 	}
 
+	@Override
+	protected String getContentType(IFile file) {
+		ISVNLocalResource local = file != null ? SVNWorkspaceRoot.getSVNResourceFor(file) : null;
+		ISVNProperty mimeType = null;
+		if (local != null) {
+			try {
+				mimeType = local.getSvnProperty(ISVNProperty.MIME_TYPE);
+			} catch (SVNException e) {
+			}
+		}
+		return mimeType != null ? mimeType.getValue() : super.getContentType(file);
+	}
 }
