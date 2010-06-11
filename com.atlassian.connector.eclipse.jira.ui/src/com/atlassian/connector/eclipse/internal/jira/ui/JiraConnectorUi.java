@@ -33,6 +33,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.LegendElement;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
@@ -41,7 +42,9 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.wizards.JiraFilterDefinitionPage;
 import com.atlassian.connector.eclipse.internal.jira.ui.wizards.JiraNamedFilterPage;
@@ -121,8 +124,26 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 				return JiraImages.OVERLAY_IMPROVEMENT;
 			} else if (JiraTaskKind.TASK.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_TASK;
-			} else if (JiraTaskKind.SUB_TASK.toString().equals(task.getTaskKind())) {
-				return JiraImages.OVERLAY_SUB_TASK;
+			} else {
+				TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
+						task.getRepositoryUrl());
+				JiraClient client = repository != null ? JiraClientFactory.getDefault().getJiraClient(repository)
+						: null;
+				JiraClientCache cache = client != null ? client.getCache() : null;
+
+				if (cache != null) {
+					for (IssueType type : cache.getIssueTypes()) {
+						if (type.getName().equals(task.getTaskKind())) {
+							if (type.isSubTaskType()) {
+								return JiraImages.OVERLAY_SUB_TASK;
+							}
+							break;
+						}
+
+					}
+				} else if (JiraTaskKind.SUB_TASK.toString().equals(task.getTaskKind())) {
+					return JiraImages.OVERLAY_SUB_TASK;
+				}
 			}
 		}
 		return null;
@@ -206,8 +227,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X, task.getTaskKey()) + ":"; //$NON-NLS-1$
 		} else if (includeTask) {
 			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X_comment_X, task.getTaskKey(),
-					taskComment.getNumber())
-					+ ":"; //$NON-NLS-1$
+					taskComment.getNumber()) + ":"; //$NON-NLS-1$
 		} else {
 			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_comment_X, taskComment.getNumber()) + ":"; //$NON-NLS-1$
 		}
