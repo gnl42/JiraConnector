@@ -237,6 +237,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 
 		});
+		buttonCustom.setEnabled(query == null || isCustom);
 
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
 		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
@@ -250,9 +251,11 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				if (filters != null && filters.length > 0) {
 					savedFilterList.setEnabled(selection);
 				}
+				updateButton.setEnabled(!buttonCustom.getSelection());
 				getContainer().updateButtons();
 			}
 		});
+		buttonSaved.setEnabled(query == null || !isCustom);
 
 		savedFilterList = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
 		savedFilterList.add(Messages.JiraNamedFilterPage_Downloading_);
@@ -262,10 +265,11 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		gd.minimumHeight = 90;
 		gd.heightHint = 90;
 		savedFilterList.setLayoutData(gd);
-		savedFilterList.setEnabled(false);
+		savedFilterList.setEnabled(!isCustom);
 		savedFilterList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				updateButton.setEnabled(!buttonCustom.getSelection());
 				getContainer().updateButtons();
 			}
 		});
@@ -284,6 +288,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				getContainer().updateButtons();
 			}
 		});
+		buttonPredefined.setEnabled(query == null || !isCustom);
 
 		projectList = new ListViewer(innerComposite, SWT.V_SCROLL | SWT.BORDER);
 		projectList.add(Messages.JiraNamedFilterPage_Downloading_);
@@ -340,8 +345,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					// download filters
 					downloadFilters();
 
-					savedFilterList.setEnabled(buttonSaved.getSelection() && filters != null && filters.length > 0);
-					savedFilterList.setSelection(s);
+					//savedFilterList.setEnabled(buttonSaved.getSelection() && filters != null && filters.length > 0);
+					//savedFilterList.setSelection(s);
 
 					getContainer().updateButtons();
 
@@ -466,9 +471,6 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			savedFilterList.setEnabled(false);
 			savedFilterList.add(Messages.JiraNamedFilterPage_No_filters_found);
 			savedFilterList.deselectAll();
-
-//			setMessage(Messages.JiraNamedFilterPage_No_saved_filters_found, IMessageProvider.WARNING);
-//			setPageComplete(false);
 			return;
 		}
 
@@ -480,10 +482,11 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 		}
 
-//		savedFilterList.select(n);
-//		savedFilterList.showSelection();
+		savedFilterList.select(n);
+		savedFilterList.showSelection();
 		savedFilterList.setEnabled(buttonSaved.getSelection());
 		setPageComplete(true);
+		//getContainer().updateButtons();
 	}
 
 	private void showFilters(final NamedFilter[] loadedFilters) {
@@ -526,7 +529,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		};
 
 		try {
-			getRunnableContext().run(true, true, job);
+			getRunnableContext().run(false, true, job);
 		} catch (Exception e) {
 			handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
 		}
