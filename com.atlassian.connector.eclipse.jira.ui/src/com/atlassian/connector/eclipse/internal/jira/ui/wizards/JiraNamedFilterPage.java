@@ -324,7 +324,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		gd.horizontalIndent = 15;
 		updateButton.setLayoutData(gd);
 		updateButton.setText(Messages.JiraNamedFilterPage_Update_from_Repository);
-		updateButton.setEnabled(false);
+		updateButton.setEnabled(!isCustom);
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
