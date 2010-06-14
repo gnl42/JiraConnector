@@ -39,7 +39,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSes
  */
 public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 
-	//private static final int MAX_REDIRECTS = 1;
+	private static final int MAX_REDIRECTS = 3;
 
 	private final boolean useCompression;
 
@@ -54,57 +54,57 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 	public final void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException,
 			IOException {
 		String rssUrl = getRssUrl(baseUrl);
-		//for (int i = 0; i <= MAX_REDIRECTS; i++) {
-		GetMethod rssRequest = new GetMethod(rssUrl);
-		rssRequest.setFollowRedirects(false);
-		if (useCompression) {
-			// request compressed response, this does not guarantee it will be done
-			rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
 
-		try {
-			int code = execute(rssRequest);
+		for (int i = 0; i <= MAX_REDIRECTS; i++) {
+			GetMethod rssRequest = new GetMethod(rssUrl);
+			rssRequest.setFollowRedirects(false);
+			if (useCompression) {
+				// request compressed response, this does not guarantee it will be done
+				rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 
-			// TODO refactor, code was copied from JiraWebSession.expectRedirect()
-			if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
-				// check if redirect was to issue page, this means only a single result was received
-				Header locationHeader = rssRequest.getResponseHeader("location"); //$NON-NLS-1$
-				if (locationHeader == null) {
-					throw new JiraRedirectException();
+			try {
+				int code = execute(rssRequest);
+
+				// TODO refactor, code was copied from JiraWebSession.expectRedirect()
+				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
+					// check if redirect was to issue page, this means only a single result was received
+					Header locationHeader = rssRequest.getResponseHeader("location"); //$NON-NLS-1$
+					if (locationHeader == null) {
+						throw new JiraRedirectException();
+					}
+					String url = locationHeader.getValue();
+					if (!url.startsWith(baseUrl + "/browse/") && !url.startsWith(baseUrl + "/si/jira.issueviews:issue-xml/")) { //$NON-NLS-1$ //$NON-NLS-2$
+						throw new JiraRedirectException(url);
+					}
+
+					// request XML for single result
+					rssUrl = url + "?decorator=none&view=rss"; //$NON-NLS-1$
+					continue;
+				} else if (code != HttpStatus.SC_OK) {
+					StringBuilder sb = new StringBuilder("Unexpected result code "); //$NON-NLS-1$
+					sb.append(code);
+					sb.append(" while running query: "); //$NON-NLS-1$
+					sb.append(rssUrl);
+					throw new JiraRemoteMessageException(sb.toString(), rssRequest.getResponseBodyAsString());
 				}
-				String url = locationHeader.getValue();
-				if (!url.startsWith(baseUrl + "/browse/")) { //$NON-NLS-1$
-					throw new JiraRedirectException(url);
+
+				// if it still isn't an XML response, an invalid issue was entered
+				if (!isXMLOrRSS(rssRequest)) {
+					throw new JiraInvalidResponseTypeException(
+							Messages.JiraRssSessionCallback_Repository_returned_invalid_type);
 				}
 
+				parseResult(client, baseUrl, rssRequest, monitor);
+
+				// success
+				return;
+			} finally {
 				rssRequest.releaseConnection();
-
-				// request XML for single result
-				rssUrl = url + "?decorator=none&view=rss"; //$NON-NLS-1$
-			} else if (code != HttpStatus.SC_OK) {
-				StringBuilder sb = new StringBuilder("Unexpected result code "); //$NON-NLS-1$
-				sb.append(code);
-				sb.append(" while running query: "); //$NON-NLS-1$
-				sb.append(rssUrl);
-				throw new JiraRemoteMessageException(sb.toString(), rssRequest.getResponseBodyAsString());
 			}
-
-			// if it still isn't an XML response, an invalid issue was entered
-			if (!isXMLOrRSS(rssRequest)) {
-				throw new JiraInvalidResponseTypeException(
-						Messages.JiraRssSessionCallback_Repository_returned_invalid_type);
-			}
-
-			parseResult(client, baseUrl, rssRequest, monitor);
-
-			// success
-			return;
-		} finally {
-			rssRequest.releaseConnection();
 		}
-		//}
 
-		//throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl); //$NON-NLS-1$
+		throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl); //$NON-NLS-1$
 	}
 
 	private void parseResult(JiraClient client, String baseUrl, GetMethod method, IProgressMonitor monitor)
