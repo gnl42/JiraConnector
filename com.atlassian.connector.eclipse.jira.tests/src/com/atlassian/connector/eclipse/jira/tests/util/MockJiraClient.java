@@ -276,12 +276,6 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public byte[] getAttachment(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
-		// ignore
-		return null;
-	}
-
-	@Override
 	public void getAttachment(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
 			throws JiraException {
 		// ignore
