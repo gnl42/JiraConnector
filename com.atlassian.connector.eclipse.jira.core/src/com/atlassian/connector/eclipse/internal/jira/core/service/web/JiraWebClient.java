@@ -315,6 +315,7 @@ public class JiraWebClient {
 					StringPart commentPart = new StringPart("comment", comment); //$NON-NLS-1$
 					commentPart.setTransferEncoding(null);
 					commentPart.setContentType(null);
+					commentPart.setCharSet(client.getCharacterEncoding(monitor));
 					parts.add(commentPart);
 				}
 
