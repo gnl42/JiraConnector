@@ -43,6 +43,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
@@ -345,44 +346,6 @@ public class JiraWebClient {
 		});
 	}
 
-	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final byte[] attachmentData,
-			IProgressMonitor monitor) throws JiraException {
-		doInSession(monitor, new JiraWebSessionCallback() {
-			@Override
-			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/attachment/"); //$NON-NLS-1$
-				rssUrlBuffer.append(attachment.getId());
-				rssUrlBuffer.append("/"); //$NON-NLS-1$
-				try {
-					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding(monitor)));
-				} catch (UnsupportedEncodingException e) {
-					throw new JiraException(e);
-				}
-
-				GetMethod get = new GetMethod(rssUrlBuffer.toString());
-				try {
-					int result = execute(get);
-					if (result != HttpStatus.SC_OK) {
-						handleErrorMessage(get);
-					} else {
-						byte[] data = get.getResponseBody();
-						if (data.length != attachmentData.length) {
-							throw new IOException("Unexpected attachment size (got " + data.length + ", expected " //$NON-NLS-1$ //$NON-NLS-2$
-									+ attachmentData.length + ")"); //$NON-NLS-1$
-						}
-						System.arraycopy(data, 0, attachmentData, 0, attachmentData.length);
-					}
-				} catch (IOException e) {
-					throw new JiraException(e);
-				} finally {
-					get.releaseConnection();
-				}
-			}
-
-		});
-	}
-
 	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final OutputStream out,
 			IProgressMonitor monitor) throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {
@@ -405,7 +368,7 @@ public class JiraWebClient {
 					if (result != HttpStatus.SC_OK) {
 						handleErrorMessage(get);
 					} else {
-						out.write(get.getResponseBody());
+						IOUtils.copy(get.getResponseBodyAsStream(), out);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);

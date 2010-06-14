@@ -447,12 +447,6 @@ public class JiraClient {
 
 	}
 
-	public byte[] getAttachment(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
-		byte[] result = new byte[(int) attachment.getSize()];
-		webClient.retrieveFile(issue, attachment, result, monitor);
-		return result;
-	}
-
 	public void getAttachment(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
 			throws JiraException {
 		webClient.retrieveFile(issue, attachment, out, monitor);
