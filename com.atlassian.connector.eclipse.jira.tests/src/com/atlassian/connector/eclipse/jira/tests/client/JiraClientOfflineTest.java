@@ -18,6 +18,7 @@ import org.eclipse.mylyn.commons.tests.support.TestProxy;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 
@@ -52,7 +53,15 @@ public class JiraClientOfflineTest extends TestCase {
 		server.addResponse(JiraTestUtil.getMessage("soap/get-server-info-3-13-1-success-response"));
 		server.addResponse(JiraTestUtil.getMessage("web/user-preferences-get-response"));
 		server.addResponse(manglePort(JiraTestUtil.getMessage("web/browse-issue-redirect-response")));
-		client.getIssueByKey("KEY-1", null);
+		server.addResponse(manglePort(JiraTestUtil.getMessage("web/browse-issue-redirect-response")));
+		server.addResponse(manglePort(JiraTestUtil.getMessage("web/browse-issue-redirect-response")));
+		server.addResponse(manglePort(JiraTestUtil.getMessage("web/browse-issue-redirect-response")));
+		try {
+			client.getIssueByKey("KEY-1", null);
+			fail("Maximum number of query redirects reached. Should throw an exception");
+		} catch (JiraException e) {
+			// succeeded
+		}
 	}
 
 	public void testGetWorklogs() throws Exception {
