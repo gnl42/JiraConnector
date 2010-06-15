@@ -39,9 +39,9 @@
 		      	class="com.atlassian.connector.eclipse.internal.ui.viewers.InstallIntegrationsFromRepositoriesViewerAction"
 	        	id="com.atlassian.connector.eclipse.actions.installIntegrationsFromRepositoriesViewerAction"
 	        	label="%InstallIntegrationsFromRepositoriesViewerAction.label"
-	        	menubarPath="org.eclipse.mylyn.tasks.ui.views.repositories"/>
+	        	menubarPath="additions"/>
 	        <visibility>
-				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="true"/>
+				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="false"/>
 	        </visibility>
       </viewerContribution>
    </extension>
