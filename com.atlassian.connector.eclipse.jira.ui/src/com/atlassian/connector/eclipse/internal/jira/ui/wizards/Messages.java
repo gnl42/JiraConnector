@@ -167,7 +167,7 @@ public class Messages extends NLS {
 
 	public static String JiraProjectPage_Pick_a_project_to_open_the_new_bug_editor;
 
-	public static String JiraProjectPage_Update_Projects_from_Repository;
+	public static String JiraProjectPage_Update_Project_Listing;
 
 	public static String JiraRepositorySettingsPage_Advanced_Configuration;
 

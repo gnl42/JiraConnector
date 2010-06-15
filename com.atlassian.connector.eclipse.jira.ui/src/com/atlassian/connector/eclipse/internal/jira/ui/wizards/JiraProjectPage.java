@@ -218,7 +218,7 @@ public class JiraProjectPage extends WizardPage {
 		});
 
 		Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
-		updateButton.setText(Messages.JiraProjectPage_Update_Projects_from_Repository);
+		updateButton.setText(Messages.JiraProjectPage_Update_Project_Listing);
 		updateButton.setLayoutData(new GridData());
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
