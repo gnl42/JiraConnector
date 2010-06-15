@@ -13,6 +13,7 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.wizards;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,11 +33,11 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
-import org.eclipse.mylyn.internal.provisional.commons.ui.EnhancedFilteredTree;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -46,9 +47,10 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -60,6 +62,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.progress.UIJob;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
@@ -87,6 +90,8 @@ public class JiraProjectPage extends WizardPage {
 
 	private final TaskRepository repository;
 
+	private Button offlineButton;
+
 	public JiraProjectPage(TaskRepository repository) {
 		super("jiraProject"); //$NON-NLS-1$
 		Assert.isNotNull(repository);
@@ -102,8 +107,6 @@ public class JiraProjectPage extends WizardPage {
 		// create the desired layout for this wizard page
 		composite.setLayout(new GridLayout());
 
-		// create the list of bug reports
-		// TODO e3.5 use new FilteredTree API
 		PatternFilter patternFilter = new PatternFilter() { // matching on project keys
 			@Override
 			protected boolean isLeafMatch(Viewer viewer, Object element) {
@@ -117,9 +120,12 @@ public class JiraProjectPage extends WizardPage {
 			}
 
 		};
-		projectTree = new EnhancedFilteredTree(composite, SWT.SINGLE | SWT.BORDER, patternFilter, true);
-		projectTree.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).hint(
-				SWT.DEFAULT, 200).create());
+		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, patternFilter, true);
+		projectTree.setLayoutData(GridDataFactory.swtDefaults()
+				.align(SWT.FILL, SWT.FILL)
+				.grab(true, true)
+				.hint(SWT.DEFAULT, 200)
+				.create());
 
 		TreeViewer projectTreeViewer = projectTree.getViewer();
 		projectTreeViewer.setLabelProvider(new LabelProvider() {
@@ -130,17 +136,6 @@ public class JiraProjectPage extends WizardPage {
 					return project.getName() + "  (" + project.getKey() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				return ""; //$NON-NLS-1$
-			}
-
-			@Override
-			public Image getImage(Object element) {
-//				if (element instanceof Project) {
-//					Project project = (Project) element;
-//					if (!project.hasDetails()) {
-//						return CommonImages.getImage(CommonImages.REFRESH);
-//					}
-//				}
-				return super.getImage(element);
 			}
 		});
 
@@ -216,6 +211,38 @@ public class JiraProjectPage extends WizardPage {
 				}
 			}
 		});
+
+		projectTreeViewer.addFilter(new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				if (element instanceof Project) {
+					return (offlineButton != null && !offlineButton.getSelection()) || ((Project) element).hasDetails();
+				}
+				return false;
+			}
+		});
+
+		projectTree.getFilterControl().addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String text = projectTree.getFilterControl().getText();
+				if (!StringUtils.isEmpty(text) && !text.equals(WorkbenchMessages.FilteredTree_FilterMessage)) {
+					if (offlineButton != null && offlineButton.getSelection()) {
+						offlineButton.setSelection(false);
+					}
+				}
+			}
+		});
+
+		offlineButton = new Button(composite, SWT.CHECK);
+		offlineButton.setText("Show only projects available in offline mode");
+		offlineButton.setSelection(true);
+		offlineButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				projectTree.getViewer().refresh();
+			}
+		});
+		GridDataFactory.fillDefaults().applyTo(offlineButton);
 
 		Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
 		updateButton.setText(Messages.JiraProjectPage_Update_Project_Listing);
