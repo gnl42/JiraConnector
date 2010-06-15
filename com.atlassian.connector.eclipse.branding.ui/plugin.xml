@@ -41,7 +41,7 @@
 	        	label="%InstallIntegrationsFromRepositoriesViewerAction.label"
 	        	menubarPath="additions"/>
 	        <visibility>
-				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="false"/>
+				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="true"/>
 	        </visibility>
       </viewerContribution>
    </extension>
