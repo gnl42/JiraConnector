@@ -48,17 +48,17 @@
             anonymous="false"
             repositoryKind="jira"
             label="Codehaus"
-            urlRepository="http://jira.codehaus.org/"/>
+            urlRepository="http://jira.codehaus.org"/>
       <repository
             addAutomatically="false"
             anonymous="false"
             repositoryKind="jira"
             label="Apache"
-            urlRepository="http://issues.apache.org/jira/"/>
+            urlRepository="http://issues.apache.org/jira"/>
       <repository addAutomatically="true"
 			label="Atlassian Integrations Support" 
 			repositoryKind="jira" 
-			urlRepository="https://studio.atlassian.com/" />
+			urlRepository="https://studio.atlassian.com" />
    </extension>
 
    <extension
