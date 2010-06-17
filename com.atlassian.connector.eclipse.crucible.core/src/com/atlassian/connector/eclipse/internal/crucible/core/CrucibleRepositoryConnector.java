@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
-	private static final String REPOSITORY_LABEL = "Crucible";
+	private static final String REPOSITORY_LABEL = "Crucible (supports 2.0 and later)";
 
 	private static final String IS_FISHEYE_PROP = "isFishEye";
 

@@ -34,7 +34,7 @@ import java.io.File;
  */
 public class BambooRepositoryConnector extends AbstractRepositoryConnector {
 
-	private static final String REPOSITORY_LABEL = "Bamboo";
+	private static final String REPOSITORY_LABEL = "Bamboo (supports 2.2.4 and later)";
 
 	private BambooClientManager clientManager;
 

@@ -29,7 +29,7 @@ import java.io.File;
 
 public class FishEyeRepositoryConnector extends AbstractRepositoryConnector {
 
-	private static final String REPOSITORY_LABEL = "FishEye";
+	private static final String REPOSITORY_LABEL = "FishEye (supports 2.0 and later)";
 
 	private FishEyeClientManager clientManager;
 

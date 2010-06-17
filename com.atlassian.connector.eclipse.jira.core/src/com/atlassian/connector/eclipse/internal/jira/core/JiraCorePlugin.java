@@ -12,10 +12,12 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core;
 
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.atlassian.connector.eclipse.internal.core.CoreMessages;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisProperties;
 import org.eclipse.core.runtime.IStatus;
@@ -24,13 +26,9 @@ import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
-
-import com.atlassian.connector.eclipse.internal.core.CoreMessages;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Brock Janiczak
@@ -45,7 +43,7 @@ public class JiraCorePlugin extends Plugin {
 
 	public final static String CONNECTOR_KIND = "jira"; //$NON-NLS-1$
 
-	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.4"); //$NON-NLS-1$
+	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.13"); //$NON-NLS-1$
 
 	private static boolean initialized;
 
