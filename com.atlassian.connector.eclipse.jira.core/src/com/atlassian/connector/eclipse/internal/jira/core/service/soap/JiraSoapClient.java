@@ -520,7 +520,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 			throw new JiraInsufficientPermissionException(e.getMessage());
 		} catch (RemoteAuthenticationException e) {
 			String msg = e.toString();
-			if (msg.contains("maximum") || msg.contains("elevated")) { //$NON-NLS-1$ //$NON-NLS-2$
+			if (msg.contains("maximum") || msg.contains("elevated security check")) { //$NON-NLS-1$ //$NON-NLS-2$
 				throw new JiraCaptchaRequiredException(e.getMessage());
 			}
 			throw new JiraAuthenticationException(e.getMessage());
