@@ -51,7 +51,7 @@ public class BambooRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetLabel() {
-		assertEquals("Bamboo", connector.getLabel());
+		assertTrue(connector.getLabel().startsWith("Bamboo"));
 	}
 
 	public void testGetRepositoryUrlFromTaskUrl() {
