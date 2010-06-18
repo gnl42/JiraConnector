@@ -656,7 +656,7 @@ public class JiraWebClient {
 						if (classValue != null) {
 							if (tag.getTagType() == Tag.DIV) {
 								if (classValue.startsWith("infoBox") || classValue.startsWith("errorArea") //$NON-NLS-1$ //$NON-NLS-2$
-										|| "error".equals(classValue)) { //$NON-NLS-1$
+										|| classValue.contains("error")) { //$NON-NLS-1$
 									throw new JiraRemoteMessageException(getContent(tokenizer, Tag.DIV));
 								}
 							} else if (tag.getTagType() == Tag.SPAN) {
