@@ -76,7 +76,7 @@
 		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
 
 		<antcall target="mirror-helper">
-			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
+			<param name="from" value="${mylyn.site}/e${build.target}"/>
 			<param name="to" value="${build.site}"/>
 		</antcall>
 
@@ -224,7 +224,7 @@
 		<mkdir dir="${to}"/>
 
 		<antcall target="mirror-helper">
-			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
+			<param name="from" value="${mylyn.site}/e${build.target}"/>
 		</antcall>
 		<!--antcall target="mirror-helper">
 			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
@@ -304,7 +304,7 @@
 			<repository location="${location}" name="Mirror" />
 			<add>
 				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/"/>
-				<repository location="http://download.eclipse.org/tools/mylyn/update/e3.4/"/>
+				<repository location="${mylyn.site}/e${build.target}"/>
 				<!--repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/-->
 				<repository location="http://subclipse.tigris.org/update_1.6.x/"/>
 				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
