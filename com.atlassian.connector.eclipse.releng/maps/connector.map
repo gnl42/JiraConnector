@@ -86,3 +86,4 @@ plugin@org.eclipse.mylyn.resources.tests=HEAD,:pserver:anonymous@dev.eclipse.org
 !plugin@org.eclipse.mylyn.pde.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.pde.ui
 plugin@org.eclipse.mylyn.context.tests=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
 !plugin@org.eclipse.mylyn.team.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.ui
+plugin@org.eclipse.mylyn.tasks.tests=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.tests
