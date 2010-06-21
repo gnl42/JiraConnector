@@ -47,6 +47,10 @@
 			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map"/>
 		</delete>
 		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.mylyn.commons"/>
+			<param name="update.site" value="${mylyn.site}"/>
+		</antcall>
+		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.mylyn_feature"/>
 			<param name="update.site" value="${mylyn.site}"/>
 		</antcall>
