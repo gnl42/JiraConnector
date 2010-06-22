@@ -5,9 +5,9 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" />
 
 	<xsl:template match="/">
-		<site pack200="true" associateSitesURL="http://update.atlassian.com/atlassian-eclipse-plugin/e3.4/associates-e3.4.xml">
+		<site pack200="true" associateSitesURL="http://update.atlassian.com/atlassian-eclipse-plugin/e3.5/associates-e3.5.xml">
 			<description url="http://update.atlassian.com/atlassian-eclipse-plugin">
-				Atlassian Connector for Eclipse 3.4 and 3.5
+				Atlassian Connector for Eclipse
 		    </description>
 		    <xsl:apply-templates select="site/feature"/>
 		    <xsl:apply-templates select="site/category-def[@name='Connector']"/>
