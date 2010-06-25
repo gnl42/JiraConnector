@@ -90,7 +90,7 @@
 		</antcall>
 
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml">
-			<param name="siteUrl" expression="${build.publish.host}/${publish.path}/${publish.name}"/>
+			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
 		</xslt>
 			
 		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
@@ -268,7 +268,7 @@
 		</antcall>
 		
 		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml">
-			<param name="siteUrl" expression="${build.publish.host}/${publish.path}/${publish.name}"/>
+			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
 		</xslt>
 		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
 
