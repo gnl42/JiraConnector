@@ -1,0 +1,7 @@
+
+			<h4>Errors</h4>
+            <ul>
+			
+			<li>It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue (PRONE-23538). The likely cause is that somebody has changed the issue recently, please look at the issue history for details.</li>
+			
+            </ul>

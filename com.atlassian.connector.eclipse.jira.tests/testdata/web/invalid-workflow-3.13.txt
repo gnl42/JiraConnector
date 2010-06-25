@@ -1,0 +1,4 @@
+
+		<strong>Workflow Action Invalid</strong>
+        <p/>
+		It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue (In Progress). The likely cause is that somebody has changed the issue recently, please look at the issue history for details.<p/><a id="refreshIssue" href="/jira-enterprise-3.13.5/browse/PRONE-58999">Please refresh the issue and try again.</a>
