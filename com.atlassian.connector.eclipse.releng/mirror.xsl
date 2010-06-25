@@ -2,13 +2,13 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	version="2.0">
 
+	<xsl:param name="siteUrl"/>
+	
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" />
 
 	<xsl:template match="/">
-		<site pack200="true" associateSitesURL="http://update.atlassian.com/atlassian-eclipse-plugin/e3.5/associates-e3.5.xml">
-			<description url="http://update.atlassian.com/atlassian-eclipse-plugin">
-				Atlassian Connector for Eclipse
-		    </description>
+		<site pack200="true" associateSitesURL="{$siteUrl}/associates-e3.5.xml">
+			<description url="{$siteUrl}">Atlassian Connector for Eclipse</description>
 		    <xsl:apply-templates select="site/feature"/>
 		    <xsl:apply-templates select="site/category-def[@name='Connector']"/>
 		    <xsl:apply-templates select="site/category-def[@name='Integrations']"/>

@@ -75,7 +75,9 @@
 	
 	<target name="pack-sites" depends="init">
 		<property name="build.site" value="${build.home}/${build.target}/site"/>
-
+		<property name="publish.name" value="e${build.target}"/>
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
+			
 		<antcall target="pack-helper">
 			<param name="dir" value="${build.site}"/>
 		</antcall>
@@ -87,7 +89,10 @@
 			<param name="to" value="${build.site}"/>
 		</antcall>
 
-		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml"/>
+		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml">
+			<param name="siteUrl" expression="${build.publish.host}/${publish.path}/${publish.name}"/>
+		</xslt>
+			
 		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
 
 		<copy file="associates-e3.5.xml" todir="${build.site}"/>
@@ -226,6 +231,9 @@
 	<target name="mirror">
 		<antcall target="init-3.5"/>
 		
+		<property name="publish.name" value="e${build.target}"/>
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
+				
 		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
 		<property name="to" value="${build.home}/mirror/e3.5"/>
 		<mkdir dir="${to}"/>
@@ -259,7 +267,9 @@
 			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin"/>
 		</antcall>
 		
-		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml"/>
+		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml">
+			<param name="siteUrl" expression="${build.publish.host}/${publish.path}/${publish.name}"/>
+		</xslt>
 		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
 
 		<copy file="associates-e3.5.xml" todir="${to}"/>
