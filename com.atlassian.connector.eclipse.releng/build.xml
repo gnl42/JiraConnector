@@ -89,6 +89,7 @@
 			<param name="to" value="${build.site}"/>
 		</antcall>
 
+		<fail message="Required property build.public.host is not set" unless="build.public.host"/>
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml">
 			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
 		</xslt>
@@ -267,6 +268,7 @@
 			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin"/>
 		</antcall>
 		
+		<fail message="Required property build.public.host is not set" unless="build.public.host"/>
 		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml">
 			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
 		</xslt>
