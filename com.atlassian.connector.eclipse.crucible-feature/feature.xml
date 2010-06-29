@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.crucible"
       label="%featureName"
-      version="2.2.0.qualifier"
+      version="2.3.0.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 

@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.cvs"
       label="%featureName"
-      version="2.2.0.qualifier"
+      version="2.3.0.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 
@@ -27,7 +27,7 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="com.atlassian.connector.eclipse.crucible" version="2.2.0.qualifier" match="equivalent"/>
+      <import feature="com.atlassian.connector.eclipse.crucible" version="2.3.0.qualifier" match="equivalent"/>
       <import plugin="org.eclipse.team.cvs.core"/>
       <import plugin="org.eclipse.team.cvs.ui"/>
       <import feature="org.eclipse.cvs"/>
