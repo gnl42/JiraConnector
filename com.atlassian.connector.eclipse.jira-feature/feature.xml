@@ -28,10 +28,6 @@
       %license
    </license>
 
-   <url>
-      <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
-   </url>
-
    <includes
          id="org.eclipse.mylyn.jira_feature"
          version="0.0.0"/>
