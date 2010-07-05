@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 
+import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -20,15 +21,19 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 
 /**
  * 
  * @author Jacek Jaroczynski
  */
-public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEditorInput, ICrucibleFileProvider {
+@SuppressWarnings("restriction")
+public class CruciblePreCommitFileInput extends FileStoreEditorInput implements IStorageEditorInput, IPathEditorInput,
+		ICrucibleFileProvider {
 	private final CruciblePreCommitFileStorage storage;
 
-	public CruciblePreCommitFileInput(CruciblePreCommitFileStorage storage) {
+	public CruciblePreCommitFileInput(CruciblePreCommitFileStorage storage, LocalFile localFile) {
+		super(localFile);
 		this.storage = storage;
 	}
 
@@ -54,11 +59,6 @@ public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEdi
 
 	public String getToolTipText() {
 		return storage.getFullPath().toString();
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		return null;
 	}
 
 	public CrucibleFile getCrucibleFile() {

@@ -39,6 +39,7 @@ import com.atlassian.theplugin.commons.util.UrlUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -67,6 +68,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 
+@SuppressWarnings("restriction")
 public class OpenVirtualFileJob extends JobWithStatus {
 
 	private final Review review;
@@ -195,8 +197,10 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				try {
 					final String editorId = getEditorId(PlatformUI.getWorkbench(), crucibleFile2.getSelectedFile()
 							.getName());
-					part[0] = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-							new FileEditorInput(iResource), editorId);
+					part[0] = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage()
+							.openEditor(new FileEditorInput(iResource), editorId);
 				} catch (CoreException e) {
 					exception[0] = e;
 				}
@@ -278,16 +282,23 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				}
 			}
 
+
+
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
-						String editorId = getEditorId(PlatformUI.getWorkbench(), virtualFile.getName());
+						
+						final LocalFile localFile = new LocalFile(localCopy);
+
+						final String editorId = getEditorId(PlatformUI.getWorkbench(), virtualFile.getName());
+
+						final CruciblePreCommitFileInput editorInput = new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
+								crucibleFile, file, localCopy), localFile);
+						
 						IEditorPart editor = PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow()
 								.getActivePage()
-								.openEditor(
-										new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(crucibleFile,
-												file, localCopy)), editorId);
+								.openEditor(editorInput, editorId);
 
 						if (editor != null) {
 							CrucibleUiUtil.focusOnComment(editor, crucibleFile, comment);

@@ -37,7 +37,8 @@ Require-Bundle: com.atlassian.connector.commons,
  org.apache.commons.io,
  org.eclipse.ui.views.log;resolution:=optional,
  org.eclipse.ui.workbench.texteditor,
- com.atlassian.connector.eclipse.jira.ui
+ com.atlassian.connector.eclipse.jira.ui,
+ org.eclipse.core.filesystem
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
