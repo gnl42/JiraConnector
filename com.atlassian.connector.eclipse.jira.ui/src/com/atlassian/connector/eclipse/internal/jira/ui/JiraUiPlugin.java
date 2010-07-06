@@ -11,6 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
@@ -22,7 +25,10 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
+import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
 
 /**
@@ -90,7 +96,6 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
 		TasksUi.getRepositoryManager().addListener(JiraClientFactory.getDefault());
 
-		/* PLE-1120
 		if (!getPreferenceStore().getBoolean(IJiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
 			Job migrateJob = new MigrateToSecureStorageJob(JiraCorePlugin.CONNECTOR_KIND);
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
@@ -101,7 +106,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 				}
 			});
 			migrateJob.schedule();
-		}*/
+		}
 
 		TasksUiPlugin.getTaskActivityManager().addActivityListener(activityTimeListener);
 	}

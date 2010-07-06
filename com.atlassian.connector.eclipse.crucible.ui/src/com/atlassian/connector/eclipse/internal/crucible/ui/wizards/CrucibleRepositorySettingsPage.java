@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
@@ -182,7 +183,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 	@Override
 	public void applyTo(TaskRepository repository) {
-		// PLE-1120 MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_REVIEW);
 		CrucibleCorePlugin.getRepositoryConnector();

@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-/* PLE-1120 public */class MigrateToSecureStorageJob extends UIJob {
+public class MigrateToSecureStorageJob extends UIJob {
 
 	public static class MutexRule implements ISchedulingRule {
 		public boolean isConflicting(ISchedulingRule rule) {
@@ -63,7 +63,7 @@ import java.util.Set;
 		return Status.OK_STATUS;
 	}
 
-	@SuppressWarnings({ "deprecation", "restriction" })
+	@SuppressWarnings( { "deprecation", "restriction" })
 	public static boolean migrateToSecureStorage(TaskRepository repository) {
 		if (repository.getProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE) == null
 				&& !"local".equals(repository.getUrl())) { //$NON-NLS-1$

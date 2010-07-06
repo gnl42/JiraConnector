@@ -65,6 +65,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
+import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
 import com.atlassian.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -333,7 +334,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@SuppressWarnings("restriction")
 	@Override
 	public void applyTo(TaskRepository repository) {
-		// PLE-1120 MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
 
 		super.applyTo(repository);
