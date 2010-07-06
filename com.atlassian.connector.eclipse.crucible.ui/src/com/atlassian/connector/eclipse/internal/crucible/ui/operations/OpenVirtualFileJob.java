@@ -119,6 +119,13 @@ public class OpenVirtualFileJob extends JobWithStatus {
 			IOUtils.closeQuietly(stream);
 		}
 
+		try {
+			retVal.setReadOnly();
+		} catch (SecurityException e) {
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+					"Cannot set temp file as readonly", e));
+		}
+
 		return retVal;
 	}
 
@@ -197,10 +204,8 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				try {
 					final String editorId = getEditorId(PlatformUI.getWorkbench(), crucibleFile2.getSelectedFile()
 							.getName());
-					part[0] = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow()
-							.getActivePage()
-							.openEditor(new FileEditorInput(iResource), editorId);
+					part[0] = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+							new FileEditorInput(iResource), editorId);
 				} catch (CoreException e) {
 					exception[0] = e;
 				}
@@ -282,19 +287,17 @@ public class OpenVirtualFileJob extends JobWithStatus {
 				}
 			}
 
-
-
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
-						
+
 						final LocalFile localFile = new LocalFile(localCopy);
 
 						final String editorId = getEditorId(PlatformUI.getWorkbench(), virtualFile.getName());
 
-						final CruciblePreCommitFileInput editorInput = new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
-								crucibleFile, file, localCopy), localFile);
-						
+						final CruciblePreCommitFileInput editorInput = new CruciblePreCommitFileInput(
+								new CruciblePreCommitFileStorage(crucibleFile, file, localCopy), localFile);
+
 						IEditorPart editor = PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow()
 								.getActivePage()
