@@ -36,6 +36,7 @@ plugin@org.eclipse.mylyn.commons.core=HEAD,:pserver:anonymous@dev.eclipse.org:/c
 plugin@org.eclipse.mylyn.commons.net=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.net
 plugin@org.eclipse.mylyn.commons.soap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.soap
 plugin@org.eclipse.mylyn.commons.xmlrpc=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.xmlrpc
+plugin@org.eclipse.mylyn.commons.repositories=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.repositories
 plugin@org.eclipse.mylyn.commons.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.ui
 plugin@org.eclipse.mylyn.compatibility=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.compatibility
 plugin@org.eclipse.mylyn.context.core=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.core
