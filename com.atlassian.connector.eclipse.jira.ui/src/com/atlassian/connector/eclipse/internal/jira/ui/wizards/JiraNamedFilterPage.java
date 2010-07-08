@@ -529,7 +529,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		};
 
 		try {
-			getRunnableContext().run(false, true, job);
+			getRunnableContext().run(true, true, job);
 		} catch (Exception e) {
 			handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
 		}
