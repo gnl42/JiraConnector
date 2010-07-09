@@ -12,7 +12,10 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.JDomDriver;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -33,6 +36,7 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -199,7 +203,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskFromTaskData(TaskRepository taskRepository, ITask task, TaskData taskData) {
-		TaskMapper scheme = new TaskMapper(taskData);
+		TaskMapper scheme = new CrucibleTaskMapper(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
 
@@ -253,4 +257,27 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		return task.getDueDate() != null;
 	}
 
+	@SuppressWarnings("unchecked")
+	//@Override missing because there no such method in AbstractRepositoryConnector
+	//it should be added soon check PLE-1150 for details
+	public boolean isOwnedByUser(TaskRepository repository, ITask task) {
+		if (super.isOwnedByUser(repository, task)) {
+			return true;
+		}
+
+		String ccStr = task.getAttribute(TaskAttribute.USER_CC);
+		if (!StringUtils.isEmpty(ccStr)) {
+			XStream xs = new XStream(new JDomDriver());
+			List<String> cc = (List<String>) xs.fromXML(ccStr);
+			if (cc != null) {
+				for (String username : cc) {
+					if (username.equals(repository.getUserName())) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 }

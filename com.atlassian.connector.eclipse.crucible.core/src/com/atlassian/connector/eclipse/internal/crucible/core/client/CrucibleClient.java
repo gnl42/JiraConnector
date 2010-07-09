@@ -34,9 +34,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -196,6 +198,18 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		mapper.setOwner(owner);
 		mapper.setCompletionDate(closeDate);
 		mapper.setTaskUrl(CrucibleUtil.getReviewUrl(taskRepository.getUrl(), id));
+
+		List<String> cc = MiscUtil.buildArrayList();
+		if (review.getModerator() != null) {
+			cc.add(review.getModerator().getUsername());
+		}
+		if (review.getReviewers() != null) {
+			for (Reviewer reviewer : review.getReviewers()) {
+				cc.add(reviewer.getUsername());
+			}
+		}
+		mapper.setCc(cc);
+
 		final DateTime dueDate = review.getDueDate();
 		if (dueDate != null) {
 			mapper.setDueDate(dueDate.toDate());
@@ -204,22 +218,14 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		TaskAttribute hasChangedAttribute = taskData.getRoot().createAttribute(
 				CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
 		hasChangedAttribute.setValue(Boolean.toString(hasChanged));
-		hasChangedAttribute.getMetaData()
-				.defaults()
-				.setReadOnly(true)
-				.setKind(TaskAttribute.KIND_DEFAULT)
-				.setLabel("Has Changed")
-				.setType(TaskAttribute.TYPE_BOOLEAN);
+		hasChangedAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
+				"Has Changed").setType(TaskAttribute.TYPE_BOOLEAN);
 
 		if (hash != -1) {
 			TaskAttribute hashAttribute = taskData.getRoot().createAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
 			hashAttribute.setValue(Integer.toString(hash));
-			hashAttribute.getMetaData()
-					.defaults()
-					.setReadOnly(true)
-					.setKind(TaskAttribute.KIND_DEFAULT)
-					.setLabel("Hash")
-					.setType(TaskAttribute.TYPE_INTEGER);
+			hashAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
+					"Hash").setType(TaskAttribute.TYPE_INTEGER);
 
 		}
 		return taskData;
@@ -287,8 +293,8 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 
-				SubMonitor submonitor = SubMonitor.convert(monitor,
-						NLS.bind("Updating project details for {0}", projectKey), 2);
+				SubMonitor submonitor = SubMonitor.convert(monitor, NLS.bind("Updating project details for {0}",
+						projectKey), 2);
 
 				if (clientData == null || clientData.getCachedProjects() == null) {
 					initializeCache(server, serverCfg, submonitor.newChild(1));

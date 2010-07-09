@@ -11,9 +11,15 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.JDomDriver;
+
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
+
+import java.util.List;
 
 /**
  * Utility class for mapping between TaskData and Task
@@ -35,4 +41,16 @@ public class CrucibleTaskMapper extends TaskMapper {
 		setValue(TaskAttribute.TASK_KEY, key);
 	}
 
+	@Override
+	public boolean applyTo(ITask task) {
+		boolean changed = super.applyTo(task);
+
+		List<String> cc = getCc();
+		if (cc != null && cc.size() > 0) {
+			XStream xs = new XStream(new JDomDriver());
+			task.setAttribute(TaskAttribute.USER_CC, xs.toXML(cc));
+		}
+
+		return changed;
+	}
 }
