@@ -16,13 +16,14 @@ import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager;
-import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages;
-import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.ICrucibleFileProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManager.IReviewActivationListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ActiveReviewCompletnesSwitcherAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddChangesetToActiveReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddFileCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToActiveReviewAction;
@@ -287,6 +288,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	private AddChangesetToActiveReviewAction addChangesetAction;
 
 	private AddPatchToActiveReviewAction addPatchAction;
+
+	private ActiveReviewCompletnesSwitcherAction completnesSwitcherAction;
 
 	private static final String[] NO_ACTIVE_REVIEW = new String[] { "There's no active review.\n"
 			+ "This view contents are rendered only if there's an active review." };
@@ -714,10 +717,8 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 
 			public void run() {
 				try {
-					PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow()
-							.getActivePage()
-							.showView(CrucibleUiPlugin.COMMENT_VIEW_ID);
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+							CrucibleUiPlugin.COMMENT_VIEW_ID);
 				} catch (PartInitException e) {
 					// don't care
 				}
@@ -736,6 +737,9 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		addPatchAction = new AddPatchToActiveReviewAction();
 		reviewActivationListeners.add(addPatchAction);
 
+		completnesSwitcherAction = new ActiveReviewCompletnesSwitcherAction();
+		reviewActivationListeners.add(completnesSwitcherAction);
+
 		// in the end register all additional activation listeners
 		final ActiveReviewManager mgr = CrucibleUiPlugin.getDefault().getActiveReviewManager();
 		for (IReviewActivationListener listener : reviewActivationListeners) {
@@ -747,7 +751,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 	}
 
 	public void createToolbar() {
-		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		final IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
 		final CommentNavigationAction prevCommentAction = new CommentNavigationAction(this, getViewSite(), false);
 		final CommentNavigationAction nextCommentAction = new CommentNavigationAction(this, getViewSite(), true);
 
@@ -766,6 +770,7 @@ public class ReviewExplorerView extends ViewPart implements IReviewActivationLis
 		mgr.add(new Separator());
 		mgr.add(addGeneralCommentAction);
 		mgr.add(publishAllDraftsAction);
+		mgr.add(completnesSwitcherAction);
 	}
 
 	private void createContextMenu() {
