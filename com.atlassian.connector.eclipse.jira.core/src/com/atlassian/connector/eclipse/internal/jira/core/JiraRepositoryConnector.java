@@ -13,19 +13,16 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core;
 
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -46,15 +43,20 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
  * @author Mik Kersten
@@ -72,8 +74,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(
-			Platform.getDebugOption("com.atlassian.connector.eclipse.jira.core/debug/connector")); //$NON-NLS-1$
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("com.atlassian.connector.eclipse.jira.core/debug/connector")); //$NON-NLS-1$
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
 	public final static String ISSUE_URL_PREFIX = "/browse/"; //$NON-NLS-1$
@@ -126,6 +127,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					return RepositoryStatus.createStatus(repository, IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 							Messages.JiraRepositoryConnector_The_JIRA_query_is_invalid);
 				}
+			} catch (InvalidJiraQueryException e) {
+				return JiraCorePlugin.toStatus(repository, e);
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
 			}
@@ -380,7 +383,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// for backward compatibility we are also checking the status
 		TaskAttribute status = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
 		return status != null
-					&& (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
+				&& (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
 	}
 
 	public static boolean isClosed(JiraIssue issue) {

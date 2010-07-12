@@ -16,4 +16,6 @@ public class CoreMessages extends NLS {
 
 	public static String Captcha_authentication_required;
 
+	public static String Invalid_query;
+
 }
