@@ -12,10 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.JDomDriver;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,7 +33,6 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 import java.io.File;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -257,9 +253,11 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		return task.getDueDate() != null;
 	}
 
+	/*
+	 * PLE-1150
+	 * 
 	@SuppressWarnings("unchecked")
-	//@Override missing because there no such method in AbstractRepositoryConnector
-	//it should be added soon check PLE-1150 for details
+	@Override
 	public boolean isOwnedByUser(TaskRepository repository, ITask task) {
 		if (super.isOwnedByUser(repository, task)) {
 			return true;
@@ -279,5 +277,5 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		return false;
-	}
+	}*/
 }
