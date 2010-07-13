@@ -24,6 +24,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,6 +95,8 @@ public class CrucibleCompleteReviewDialog extends AbstractCrucibleReviewActionDi
 	private static final String INCOMPLETED_REVIEWERS_WARNING = "Reviewers not yet finished: ";
 
 	private static final String COMPLETED_REVIEWERS_INFO = "Reviewers that have finished this review:";
+
+	private static final String ONE_REVIEWER = "You're the only reviewer for this review. You can Complete it now.";
 
 	public CrucibleCompleteReviewDialog(Shell parentShell, Review review, String userName, String taskKey,
 			String taskId, TaskRepository taskRepository, CrucibleClient client) {
@@ -165,6 +169,11 @@ public class CrucibleCompleteReviewDialog extends AbstractCrucibleReviewActionDi
 			final Label label2 = new Label(draftComp, SWT.WRAP);
 			GridDataFactory.fillDefaults().grab(true, false).hint(600, SWT.DEFAULT).applyTo(label2);
 			label2.setText(getSortedReviewersAsString(openReviewers));
+		}
+
+		if (!hasCompletedReviewers && openReviewers.size() == 0) {
+			final Label label = new Label(draftComp, SWT.NONE);
+			label.setText(ONE_REVIEWER);
 		}
 		handleUserDrafts(draftComp);
 	}

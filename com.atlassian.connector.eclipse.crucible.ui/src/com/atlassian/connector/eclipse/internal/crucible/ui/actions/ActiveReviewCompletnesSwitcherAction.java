@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -67,7 +68,9 @@ public class ActiveReviewCompletnesSwitcherAction extends Action implements IRev
 			AbstractCrucibleReviewActionDialog completeReviewDialog = new CrucibleCompleteReviewDialog(
 					WorkbenchUtil.getShell(), review, client.getUsername(), task.getTaskKey(), task.getTaskId(),
 					taskRepository, client);
-			completeReviewDialog.open();
+			if (completeReviewDialog.open() == Window.CANCEL) {
+				setChecked(false);
+			}
 		} else {
 			Job job = new CompleteReviewJob(review, false, true);
 			job.schedule();
