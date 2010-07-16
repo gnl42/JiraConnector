@@ -21,7 +21,28 @@ import java.util.Date;
 public class JiraWorkLog implements Serializable {
 
 	public enum AdjustEstimateMethod {
-		AUTO, LEAVE, SET
+		AUTO("AUTO"), //$NON-NLS-1$
+		LEAVE("LEAVE"), //$NON-NLS-1$
+		SET("SET"); //$NON-NLS-1$
+
+		private final String value;
+
+		AdjustEstimateMethod(String value) {
+			this.value = value;
+		}
+
+		public String value() {
+			return value;
+		}
+
+		public static AdjustEstimateMethod fromValue(String v) {
+			for (AdjustEstimateMethod c : AdjustEstimateMethod.values()) {
+				if (c.value.equals(v)) {
+					return c;
+				}
+			}
+			throw new IllegalArgumentException(v);
+		}
 	}
 
 	private static final long serialVersionUID = 1L;
