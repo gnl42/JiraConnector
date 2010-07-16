@@ -54,7 +54,11 @@ public class Messages extends NLS {
 
 	public static String WorkLogPart_Auto_Filled;
 
-	public static String Skip;
+	public static String LogJiraTimeDialog_Set_estimated_time_remaining;
+
+	public static String LogJiraTimeDialog_Stop_And_Log;
+
+	public static String LogJiraTimeDialog_Stop_Only;
 
 	static {
 		// initialize resource bundle

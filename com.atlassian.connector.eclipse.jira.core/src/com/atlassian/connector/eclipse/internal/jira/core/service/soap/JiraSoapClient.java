@@ -650,12 +650,19 @@ public class JiraSoapClient extends AbstractSoapClient {
 				JiraTimeFormat formatter = new JiraTimeFormat(jiraClient.getConfiguration().getWorkDaysPerWeek(),
 						jiraClient.getConfiguration().getWorkHoursPerDay());
 				RemoteWorklog remoteLog = JiraSoapConverter.convert(log, formatter);
-				if (log.isAutoAdjustEstimate()) {
+				switch (log.getAdjustEstimate()) {
+				case AUTO:
 					remoteLog = getSoapService().addWorklogAndAutoAdjustRemainingEstimate(loginToken.getCurrentValue(),
 							issueKey, remoteLog);
-				} else {
+					break;
+				case LEAVE:
 					remoteLog = getSoapService().addWorklogAndRetainRemainingEstimate(loginToken.getCurrentValue(),
 							issueKey, remoteLog);
+					break;
+				case SET:
+					remoteLog = getSoapService().addWorklogWithNewRemainingEstimate(loginToken.getCurrentValue(),
+							issueKey, remoteLog, formatter.format(log.getNewRemainingEstimate()));
+					break;
 				}
 				return (remoteLog != null) ? JiraSoapConverter.convert(remoteLog) : null;
 			}

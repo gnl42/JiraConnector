@@ -189,14 +189,15 @@ public class StartWorkAction extends AbstractStartWorkAction {
 			LogJiraTimeDialog dialog = new LogJiraTimeDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
 					iTask, seconds);
 
-			dialog.open();
+			int result = dialog.open();
 
-			if (dialog.getReturnCode() == Window.OK) {
+			if (result == Window.OK) {
 				workLog = dialog.getWorkLog();
-			} else if (dialog.getReturnCode() == LogJiraTimeDialog.WINDOW_INTERUPT) {
+			} else if (result == LogJiraTimeDialog.SKIP_LOGGING) {
+				workLog = null;
+			} else {
 				return false;
 			}
-
 		}
 		return true;
 	}

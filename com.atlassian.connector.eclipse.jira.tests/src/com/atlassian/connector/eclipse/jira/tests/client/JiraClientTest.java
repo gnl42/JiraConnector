@@ -42,6 +42,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
@@ -195,10 +196,8 @@ public class JiraClientTest extends TestCase {
 			client.updateIssue(issue, "comment", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
-			assertThat(
-					e.getHtmlMessage(),
-					either(equalTo("User 'nonexistantuser' cannot be assigned issues.")).or(
-							equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
+			assertThat(e.getHtmlMessage(), either(equalTo("User 'nonexistantuser' cannot be assigned issues.")).or(
+					equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
 		}
 
 		try {
@@ -218,8 +217,7 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
-			assertThat(
-					e.getHtmlMessage(),
+			assertThat(e.getHtmlMessage(),
 					either(equalTo("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
 							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
@@ -612,7 +610,7 @@ public class JiraClientTest extends TestCase {
 		assertEquals(1200, issue.getEstimate());
 
 		JiraWorkLog worklog1 = new JiraWorkLog();
-		worklog1.setAutoAdjustEstimate(false);
+		worklog1.setAdjustEstimate(AdjustEstimateMethod.LEAVE);
 		worklog1.setComment("comment");
 		Date time = new GregorianCalendar().getTime();
 		worklog1.setStartDate(time);
@@ -628,7 +626,7 @@ public class JiraClientTest extends TestCase {
 		assertEquals(time, receivedWorklog.getStartDate());
 
 		worklog1 = new JiraWorkLog();
-		worklog1.setAutoAdjustEstimate(true);
+		worklog1.setAdjustEstimate(AdjustEstimateMethod.AUTO);
 		worklog1.setComment("comment2");
 		time = new GregorianCalendar().getTime();
 		worklog1.setStartDate(time);

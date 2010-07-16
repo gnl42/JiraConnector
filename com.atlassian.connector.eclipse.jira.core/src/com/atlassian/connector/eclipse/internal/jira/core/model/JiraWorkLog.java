@@ -20,6 +20,10 @@ import java.util.Date;
  */
 public class JiraWorkLog implements Serializable {
 
+	public enum AdjustEstimateMethod {
+		AUTO, LEAVE, SET
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	private String author;
@@ -42,13 +46,15 @@ public class JiraWorkLog implements Serializable {
 
 	private Date updated;
 
-	private boolean autoAdjustEstimate;
+	private long newRemainingEstimate;
+
+	private AdjustEstimateMethod adjustEstimate;
 
 	public JiraWorkLog() {
 	}
 
-	public boolean isAutoAdjustEstimate() {
-		return autoAdjustEstimate;
+	public AdjustEstimateMethod getAdjustEstimate() {
+		return adjustEstimate;
 	}
 
 	public String getAuthor() {
@@ -94,8 +100,8 @@ public class JiraWorkLog implements Serializable {
 		return updated;
 	}
 
-	public void setAutoAdjustEstimate(boolean autoAdjustEstimate) {
-		this.autoAdjustEstimate = autoAdjustEstimate;
+	public void setAdjustEstimate(AdjustEstimateMethod method) {
+		this.adjustEstimate = method;
 	}
 
 	public void setAuthor(String author) {
@@ -143,7 +149,7 @@ public class JiraWorkLog implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
-		result = prime * result + (autoAdjustEstimate ? 1231 : 1237);
+		result = prime * result + ((adjustEstimate == null) ? 0 : adjustEstimate.hashCode());
 		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		result = prime * result + ((created == null) ? 0 : created.hashCode());
 		result = prime * result + ((groupLevel == null) ? 0 : groupLevel.hashCode());
@@ -153,6 +159,7 @@ public class JiraWorkLog implements Serializable {
 		result = prime * result + (int) (timeSpent ^ (timeSpent >>> 32));
 		result = prime * result + ((updateAuthor == null) ? 0 : updateAuthor.hashCode());
 		result = prime * result + ((updated == null) ? 0 : updated.hashCode());
+		result = prime * result + (int) (newRemainingEstimate ^ (newRemainingEstimate >>> 32));
 		return result;
 	}
 
@@ -175,7 +182,7 @@ public class JiraWorkLog implements Serializable {
 		} else if (!author.equals(other.author)) {
 			return false;
 		}
-		if (autoAdjustEstimate != other.autoAdjustEstimate) {
+		if (adjustEstimate != other.adjustEstimate) {
 			return false;
 		}
 		if (comment == null) {
@@ -237,6 +244,21 @@ public class JiraWorkLog implements Serializable {
 		} else if (!updated.equals(other.updated)) {
 			return false;
 		}
+		if (newRemainingEstimate != other.newRemainingEstimate) {
+			return false;
+		}
 		return true;
+	}
+
+	public void setNewRemainingEstimate(long newRemainingEstimate) {
+		this.newRemainingEstimate = newRemainingEstimate;
+	}
+
+	public long getNewRemainingEstimate() {
+		return newRemainingEstimate;
+	}
+
+	public boolean isAutoAdjustEstimate() {
+		return adjustEstimate == AdjustEstimateMethod.AUTO;
 	}
 }

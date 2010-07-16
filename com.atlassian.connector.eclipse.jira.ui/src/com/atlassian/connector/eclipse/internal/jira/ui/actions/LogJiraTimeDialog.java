@@ -17,10 +17,12 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -46,6 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraEditorUtil;
@@ -57,9 +60,10 @@ import com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages;
 @SuppressWarnings("restriction")
 public class LogJiraTimeDialog extends MessageDialog {
 
-	public static final int WINDOW_INTERUPT = 2;
+	public static final int SKIP_LOGGING = 1;
 
-	private final static String[] buttons = new String[] { Messages.WorkLogPart_Log_Work, Messages.Skip };
+	private final static String[] buttons = new String[] { Messages.LogJiraTimeDialog_Stop_And_Log,
+			Messages.LogJiraTimeDialog_Stop_Only, IDialogConstants.CANCEL_LABEL };
 
 	private JiraWorkLog workLog;
 
@@ -69,11 +73,17 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 	private Text descriptionText;
 
-	private Button autoAdjustButton;
-
 	private DateTime dateWidget;
 
 	private DateTime timeWidget;
+
+	protected AdjustEstimateMethod adjustEstimate;
+
+	private Text setRemainigEstimateText;
+
+	protected long remainingEstimateInSeconds;
+
+	private Text timeSpentText;
 
 	public LogJiraTimeDialog(Shell parentShell, ITask iTask, long seconds) {
 		super(parentShell, Messages.WorkLogPart_Log_Work_Done + " " + iTask.getTaskKey(), null, null, SWT.NONE, //$NON-NLS-1$
@@ -109,7 +119,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		final Label time = new Label(c1, SWT.NONE);
 		time.setText(Messages.WorkLogPart_Time_Spent);
 
-		final Text timeSpentText = new Text(c1, SWT.BORDER);
+		timeSpentText = new Text(c1, SWT.BORDER);
 		String wdhmTime = JiraUtil.getTimeFormat(repository).format(new Long(workDoneAmountInSeconds));
 		timeSpentText.setText(wdhmTime);
 		GridDataFactory.fillDefaults().applyTo(timeSpentText);
@@ -118,19 +128,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 		timeSpentText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				timeSpentText.setToolTipText(getTimeSpentTooltipText());
-				try {
-					workDoneAmountInSeconds = JiraUtil.getTimeFormat(repository).parse(timeSpentText.getText());
-					if (workDoneAmountInSeconds > 0) {
-						getButton(0).setEnabled(true);
-					} else {
-						getButton(0).setEnabled(false);
-					}
-				} catch (ParseException ex) {
-					//disable button
-					getButton(0).setEnabled(false);
-				}
-				JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, repository);
+				validateSettings();
 			}
 		});
 
@@ -169,17 +167,63 @@ public class LogJiraTimeDialog extends MessageDialog {
 		adjust.setText(Messages.WorkLogPart_Adjust_Estimate);
 
 		final Composite adjustComposite = new Composite(c1, SWT.NONE);
-		adjustComposite.setLayout(GridLayoutFactory.fillDefaults().margins(0, 5).spacing(0, 5).create());
+		adjustComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).margins(0, 5).spacing(0, 5).create());
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(adjustComposite);
 
-		autoAdjustButton = new Button(adjustComposite, SWT.RADIO);
+		final Button autoAdjustButton = new Button(adjustComposite, SWT.RADIO);
 		autoAdjustButton.setText(Messages.WorkLogPart_Auto_Adjust);
 		autoAdjustButton.setToolTipText(Messages.WorkLogPart_Auto_Adjust_Explanation_Tooltip);
+		autoAdjustButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.AUTO;
+				validateSettings();
+			}
+		});
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(autoAdjustButton);
 
 		final Button leaveAdjustButton = new Button(adjustComposite, SWT.RADIO);
 		leaveAdjustButton.setText(Messages.WorkLogPart_Leave_Existing_Estimate);
 		leaveAdjustButton.setSelection(true);
 		leaveAdjustButton.setToolTipText(Messages.WorkLogPart_Leave_Existing_Explanation_Tooltip);
+		leaveAdjustButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.LEAVE;
+				validateSettings();
+			}
+
+		});
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(leaveAdjustButton);
+
+		final Button setRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
+		setRemainingTimeButton.setText(Messages.LogJiraTimeDialog_Set_estimated_time_remaining);
+		setRemainingTimeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.SET;
+				setRemainigEstimateText.setEnabled(setRemainingTimeButton.getSelection());
+				validateSettings();
+			}
+		});
+
+		setRemainigEstimateText = new Text(adjustComposite, SWT.BORDER);
+		setRemainigEstimateText.setEnabled(setRemainingTimeButton.getSelection());
+		setRemainigEstimateText.setToolTipText(getTimeSpentTooltipText());
+		setRemainigEstimateText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validateSettings();
+			}
+		});
+		GridDataFactory.fillDefaults().indent(10, SWT.DEFAULT).applyTo(setRemainigEstimateText);
+
+		/*final Button reduceRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
+		reduceRemainingTimeButton.setText("Reduce estimated time remaining by: ");
+
+		Text reduceRemainigText = new Text(adjustComposite, SWT.BORDER);*/
 
 		// work description
 		final Label description = new Label(c1, SWT.NONE);
@@ -194,6 +238,36 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 		descriptionText = new Text(descComposite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).hint(150, 100).applyTo(descriptionText);
+	}
+
+	protected void validateSettings() {
+		boolean ok = true;
+
+		timeSpentText.setToolTipText(getTimeSpentTooltipText());
+		try {
+			workDoneAmountInSeconds = JiraUtil.getTimeFormat(repository).parse(timeSpentText.getText());
+			if (workDoneAmountInSeconds <= 0) {
+				ok = false;
+			}
+		} catch (ParseException ex) {
+			ok = false;
+		}
+		JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, repository);
+
+		if (adjustEstimate == AdjustEstimateMethod.SET) {
+			try {
+				remainingEstimateInSeconds = JiraUtil.getTimeFormat(repository)
+						.parse(setRemainigEstimateText.getText());
+				if (remainingEstimateInSeconds <= 0) {
+					ok = false;
+				}
+			} catch (ParseException ex) {
+				ok = false;
+			}
+			JiraEditorUtil.setTimeSpentDecorator(setRemainigEstimateText, false, repository);
+		}
+
+		getButton(0).setEnabled(ok);
 	}
 
 	private GregorianCalendar collectDate() {
@@ -214,7 +288,8 @@ public class LogJiraTimeDialog extends MessageDialog {
 		tempworkLog.setComment(descriptionText.getText());
 		tempworkLog.setStartDate(cal.getTime());
 		tempworkLog.setTimeSpent(workDoneAmountInSeconds);
-		tempworkLog.setAutoAdjustEstimate(autoAdjustButton.getSelection());
+		tempworkLog.setAdjustEstimate(adjustEstimate);
+		tempworkLog.setNewRemainingEstimate(remainingEstimateInSeconds);
 		workLog = tempworkLog;
 	}
 
@@ -226,7 +301,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setReturnCode(WINDOW_INTERUPT);
+				setReturnCode(Window.CANCEL);
 				close();
 
 				Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();

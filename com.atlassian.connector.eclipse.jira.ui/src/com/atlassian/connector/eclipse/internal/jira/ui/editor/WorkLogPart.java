@@ -66,6 +66,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
@@ -342,11 +343,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		});
 
 		timeSpentText.setToolTipText(timeSpendTooltip);
-		GridDataFactory.fillDefaults()
-				.span(2, 1)
-				.hint(135, SWT.DEFAULT)
-				.align(SWT.BEGINNING, SWT.FILL)
-				.applyTo(timeSpentText);
+		GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(
+				timeSpentText);
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
 		dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
@@ -467,7 +465,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		tempworkLog.setComment(newWorkDoneDescription);
 		tempworkLog.setStartDate(newWorkDoneDate.getTime());
 		tempworkLog.setTimeSpent(newWorkDoneAmount);
-		tempworkLog.setAutoAdjustEstimate(newWorkDoneAutoAdjust);
+		tempworkLog.setAdjustEstimate(newWorkDoneAutoAdjust ? AdjustEstimateMethod.AUTO : AdjustEstimateMethod.LEAVE);
 		if (tempworkLog.equals(newWorkLog)) {
 			return false;
 		}
