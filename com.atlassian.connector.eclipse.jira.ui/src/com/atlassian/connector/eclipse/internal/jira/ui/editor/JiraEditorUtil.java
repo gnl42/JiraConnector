@@ -38,6 +38,11 @@ public class JiraEditorUtil {
 		} catch (ParseException e) {
 			invalid = true;
 		}
+
+		showTimeSpentDecorator(toDecorate, repository, invalid);
+	}
+
+	public static void showTimeSpentDecorator(Text toDecorate, TaskRepository repository, boolean show) {
 		if (toDecorate == null || toDecorate.isDisposed()) {
 			return;
 		}
@@ -56,7 +61,7 @@ public class JiraEditorUtil {
 		}
 		FieldDecoration errorImage = FieldDecorationRegistry.getDefault().getFieldDecoration(decorationId);
 		amountTextControlDecoration.setImage(errorImage.getImage());
-		if (invalid) {
+		if (show) {
 			amountTextControlDecoration.show();
 		} else {
 			amountTextControlDecoration.hide();

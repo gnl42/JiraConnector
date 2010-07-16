@@ -187,7 +187,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 			long seconds = JiraUiUtil.getLoggedActivityTime(iTask);
 
 			LogJiraTimeDialog dialog = new LogJiraTimeDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-					iTask, seconds);
+					taskData, iTask, seconds);
 
 			int result = dialog.open();
 

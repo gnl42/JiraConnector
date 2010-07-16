@@ -27,6 +27,8 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -47,8 +49,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
+import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraEditorUtil;
@@ -79,15 +83,22 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 	protected AdjustEstimateMethod adjustEstimate = AdjustEstimateMethod.LEAVE;
 
+	protected boolean reduceEstimate;
+
 	private Text setRemainigEstimateText;
 
 	protected long remainingEstimateInSeconds;
 
 	private Text timeSpentText;
 
-	public LogJiraTimeDialog(Shell parentShell, ITask iTask, long seconds) {
+	private final TaskData taskData;
+
+	private Text reduceRemainigEstimateText;
+
+	public LogJiraTimeDialog(Shell parentShell, TaskData taskData, ITask iTask, long seconds) {
 		super(parentShell, Messages.WorkLogPart_Log_Work_Done + " " + iTask.getTaskKey(), null, null, SWT.NONE, //$NON-NLS-1$
 				buttons, 0);
+		this.taskData = taskData;
 		this.workDoneAmountInSeconds = seconds;
 		this.repository = TasksUi.getRepositoryManager().getRepository(iTask.getConnectorKind(),
 				iTask.getRepositoryUrl());
@@ -207,6 +218,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
 				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.SET;
+				reduceEstimate = false;
 				setRemainigEstimateText.setEnabled(setRemainingTimeButton.getSelection());
 				validateSettings();
 			}
@@ -222,10 +234,29 @@ public class LogJiraTimeDialog extends MessageDialog {
 		});
 		GridDataFactory.fillDefaults().indent(10, SWT.DEFAULT).applyTo(setRemainigEstimateText);
 
-		/*final Button reduceRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
-		reduceRemainingTimeButton.setText("Reduce estimated time remaining by: ");
+		final Button reduceRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
+		reduceRemainingTimeButton.setText("Reduce estimated remaining time by:");
+		reduceRemainingTimeButton.setSelection(adjustEstimate == AdjustEstimateMethod.SET);
+		reduceRemainingTimeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.SET;
+				reduceEstimate = true;
+				reduceRemainigEstimateText.setEnabled(reduceRemainingTimeButton.getSelection());
+				validateSettings();
+			}
+		});
 
-		Text reduceRemainigText = new Text(adjustComposite, SWT.BORDER);*/
+		reduceRemainigEstimateText = new Text(adjustComposite, SWT.BORDER);
+		reduceRemainigEstimateText.setEnabled(reduceRemainingTimeButton.getSelection());
+		reduceRemainigEstimateText.setToolTipText(getTimeSpentTooltipText());
+		reduceRemainigEstimateText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validateSettings();
+			}
+		});
+		GridDataFactory.fillDefaults().indent(10, SWT.DEFAULT).applyTo(reduceRemainigEstimateText);
 
 		// work description
 		final Label description = new Label(c1, SWT.NONE);
@@ -243,30 +274,57 @@ public class LogJiraTimeDialog extends MessageDialog {
 	}
 
 	protected void validateSettings() {
-		boolean ok = true;
+		boolean ok = true, controlIsOk;
+		JiraTimeFormat formatter = JiraUtil.getTimeFormat(repository);
 
+		controlIsOk = true;
 		timeSpentText.setToolTipText(getTimeSpentTooltipText());
 		try {
-			workDoneAmountInSeconds = JiraUtil.getTimeFormat(repository).parse(timeSpentText.getText());
+			workDoneAmountInSeconds = formatter.parse(timeSpentText.getText());
 			if (workDoneAmountInSeconds <= 0) {
-				ok = false;
+				controlIsOk = false;
 			}
 		} catch (ParseException ex) {
+			controlIsOk = false;
+		}
+		if (controlIsOk) {
+			JiraEditorUtil.showTimeSpentDecorator(timeSpentText, repository, false);
+		} else {
+			JiraEditorUtil.showTimeSpentDecorator(timeSpentText, repository, true);
 			ok = false;
 		}
-		JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, repository);
+
+		JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, false);
+		JiraEditorUtil.showTimeSpentDecorator(setRemainigEstimateText, repository, false);
 
 		if (adjustEstimate == AdjustEstimateMethod.SET) {
 			try {
-				remainingEstimateInSeconds = JiraUtil.getTimeFormat(repository)
-						.parse(setRemainigEstimateText.getText());
-				if (remainingEstimateInSeconds <= 0) {
-					ok = false;
+				if (reduceEstimate) {
+					TaskAttribute estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ESTIMATE);
+					if (estimate == null) {
+						estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
+					}
+					remainingEstimateInSeconds = (estimate == null ? 0 : Long.parseLong(estimate.getValue()))
+							- formatter.parse(reduceRemainigEstimateText.getText());
+				} else {
+					remainingEstimateInSeconds = formatter.parse(setRemainigEstimateText.getText());
 				}
 			} catch (ParseException ex) {
+				controlIsOk = false;
+			}
+
+			if (remainingEstimateInSeconds <= 0) {
+				controlIsOk = false;
+			}
+
+			if (!controlIsOk) {
+				if (reduceEstimate) {
+					JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, true);
+				} else {
+					JiraEditorUtil.showTimeSpentDecorator(setRemainigEstimateText, repository, true);
+				}
 				ok = false;
 			}
-			JiraEditorUtil.setTimeSpentDecorator(setRemainigEstimateText, false, repository);
 		}
 
 		getButton(0).setEnabled(ok);
