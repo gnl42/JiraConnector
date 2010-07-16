@@ -77,7 +77,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 	private DateTime timeWidget;
 
-	protected AdjustEstimateMethod adjustEstimate;
+	protected AdjustEstimateMethod adjustEstimate = AdjustEstimateMethod.LEAVE;
 
 	private Text setRemainigEstimateText;
 
@@ -173,6 +173,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 		final Button autoAdjustButton = new Button(adjustComposite, SWT.RADIO);
 		autoAdjustButton.setText(Messages.WorkLogPart_Auto_Adjust);
 		autoAdjustButton.setToolTipText(Messages.WorkLogPart_Auto_Adjust_Explanation_Tooltip);
+		autoAdjustButton.setSelection(adjustEstimate == AdjustEstimateMethod.AUTO);
 		autoAdjustButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -185,7 +186,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 		final Button leaveAdjustButton = new Button(adjustComposite, SWT.RADIO);
 		leaveAdjustButton.setText(Messages.WorkLogPart_Leave_Existing_Estimate);
-		leaveAdjustButton.setSelection(true);
+		leaveAdjustButton.setSelection(adjustEstimate == AdjustEstimateMethod.LEAVE);
 		leaveAdjustButton.setToolTipText(Messages.WorkLogPart_Leave_Existing_Explanation_Tooltip);
 		leaveAdjustButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -200,6 +201,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 		final Button setRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
 		setRemainingTimeButton.setText(Messages.LogJiraTimeDialog_Set_estimated_time_remaining);
+		setRemainingTimeButton.setSelection(adjustEstimate == AdjustEstimateMethod.SET);
 		setRemainingTimeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

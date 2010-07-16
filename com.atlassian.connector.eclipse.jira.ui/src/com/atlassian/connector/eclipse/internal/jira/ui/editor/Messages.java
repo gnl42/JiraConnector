@@ -54,6 +54,8 @@ public class Messages extends NLS {
 
 	public static String WorkLogPart_Auto_Filled;
 
+	public static String WorkLogPart_Enable_Automatic_Tracking;
+
 	public static String LogJiraTimeDialog_Set_estimated_time_remaining;
 
 	public static String LogJiraTimeDialog_Stop_And_Log;
