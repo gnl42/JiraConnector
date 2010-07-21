@@ -203,23 +203,19 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "", null);
 			fail("Expected JiraException");
-		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issues must be assigned.", e.getHtmlMessage());
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), containsString("Issues must be assigned."));
 		}
 
-		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
-		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
-		}
+		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
 
 		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
-		} catch (JiraRemoteMessageException e) {
-			assertThat(e.getHtmlMessage(),
-					either(equalTo("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
-							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), either(
+					containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
+					equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "", null);

@@ -46,8 +46,8 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylyn.commons.net.HtmlTag;
+import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
@@ -216,7 +216,7 @@ public class JiraWebClient {
 				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 				prepareSecurityToken(post);
 
-				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user)); //$NON-NLS-1$
+				post.addParameter("assignee", client.getAssigneeParam(issue, assigneeType, user)); //$NON-NLS-1$
 
 				if (comment != null) {
 					post.addParameter("comment", comment); //$NON-NLS-1$
@@ -612,23 +612,6 @@ public class JiraWebClient {
 		}, monitor);
 		serverInfo.getStatistics().record("Login via web took {0}"); //$NON-NLS-1$
 		return serverInfo;
-	}
-
-	private String getAssigneeParam(JiraClient server, JiraIssue issue, int assigneeType, String user) {
-		switch (assigneeType) {
-		case JiraClient.ASSIGNEE_CURRENT:
-			return issue.getAssignee();
-		case JiraClient.ASSIGNEE_DEFAULT:
-			return "-1"; //$NON-NLS-1$
-		case JiraClient.ASSIGNEE_NONE:
-			return ""; //$NON-NLS-1$
-		case JiraClient.ASSIGNEE_SELF:
-			return server.getUserName();
-		case JiraClient.ASSIGNEE_USER:
-			return user;
-		default:
-			return user;
-		}
 	}
 
 	protected void handleErrorMessage(HttpMethodBase method) throws JiraException {

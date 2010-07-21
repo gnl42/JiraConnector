@@ -64,6 +64,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInsufficie
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteField;
+import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteNamedObject;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteProjectRole;
@@ -673,6 +674,16 @@ public class JiraSoapClient extends AbstractSoapClient {
 		call(monitor, new Callable<Object>() {
 			public Object call() throws java.rmi.RemoteException, JiraException {
 				getSoapService().addComment(loginToken.getCurrentValue(), issueKey, JiraSoapConverter.convert(comment));
+				return null;
+			}
+		});
+	}
+
+	public void assignIssueTo(final String issueKey, final String user, IProgressMonitor monitor) throws JiraException {
+		call(monitor, new Callable<Object>() {
+			public Object call() throws java.rmi.RemoteException, JiraException {
+				RemoteFieldValue field = new RemoteFieldValue("assignee", new String[] { user }); //$NON-NLS-1$
+				getSoapService().updateIssue(loginToken.getCurrentValue(), issueKey, new RemoteFieldValue[] { field });
 				return null;
 			}
 		});

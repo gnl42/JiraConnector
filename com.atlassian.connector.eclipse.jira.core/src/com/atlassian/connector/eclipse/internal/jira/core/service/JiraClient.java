@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -151,7 +152,14 @@ public class JiraClient {
 
 	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
 			throws JiraException {
-		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+		soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue, assigneeType, user), monitor);
+
+		if (!StringUtils.isEmpty(comment)) {
+			Comment cmnt = new Comment();
+			cmnt.setComment(comment);
+			soapClient.addComment(issue.getKey(), cmnt, monitor);
+		}
+		//webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
 	}
 
 	public void addAttachment(JiraIssue issue, String comment, PartSource partSource, String contentType,
@@ -569,4 +577,22 @@ public class JiraClient {
 	public JiraWebSession getWebSession() {
 		return webSession;
 	}
+
+	public String getAssigneeParam(JiraIssue issue, int assigneeType, String user) {
+		switch (assigneeType) {
+		case JiraClient.ASSIGNEE_CURRENT:
+			return issue.getAssignee();
+		case JiraClient.ASSIGNEE_DEFAULT:
+			return "-1"; //$NON-NLS-1$
+		case JiraClient.ASSIGNEE_NONE:
+			return ""; //$NON-NLS-1$
+		case JiraClient.ASSIGNEE_SELF:
+			return getUserName();
+		case JiraClient.ASSIGNEE_USER:
+			return user;
+		default:
+			return user;
+		}
+	}
+
 }
