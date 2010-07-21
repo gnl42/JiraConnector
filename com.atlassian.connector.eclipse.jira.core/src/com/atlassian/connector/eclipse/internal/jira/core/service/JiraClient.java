@@ -150,11 +150,13 @@ public class JiraClient {
 
 	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
 			throws JiraException {
+		/*PLE-1188
 		soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue, assigneeType, user), monitor);
 
 		if (!StringUtils.isEmpty(comment)) {
 			addCommentToIssue(issue.getKey(), comment, monitor);
-		}
+		}*/
+		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
 	}
 
 	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] content, IProgressMonitor monitor)
