@@ -55,7 +55,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -137,6 +136,14 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private boolean initialized;
 
+	private Button btnUseFavourites;
+
+	private Button selectAllButton;
+
+	private Button deselectAllButton;
+
+	private Button refreshButton;
+
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
 		setNeedsHttpAuth(true);
@@ -149,14 +156,19 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	public void applyTo(final TaskRepository repository) {
 		this.repository = applyToValidate(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUILD);
-		Object[] items = planViewer.getCheckedElements();
-		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
-		for (Object item : items) {
-			if (item instanceof BambooPlan) {
-				plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
+
+		repository.setProperty(BambooUtil.KEY_USE_FAVOURITES, Boolean.toString(btnUseFavourites.getSelection()));
+
+		if (!btnUseFavourites.getSelection()) {
+			Object[] items = planViewer.getCheckedElements();
+			Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
+			for (Object item : items) {
+				if (item instanceof BambooPlan) {
+					plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
+				}
 			}
+			BambooUtil.setSubcribedPlans(this.repository, plans);
 		}
-		BambooUtil.setSubcribedPlans(this.repository, plans);
 		//update cache
 		//updateAndWriteCache();
 		BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
@@ -198,16 +210,24 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		Composite composite = new Composite(section, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginWidth = 0;
+		layout.verticalSpacing = 10;
 		composite.setLayout(layout);
 		section.setClient(composite);
+
+		btnUseFavourites = new Button(composite, SWT.CHECK);
+		btnUseFavourites.setText("Use Favourite Builds for Server");
+		GridDataFactory.fillDefaults().span(2, 1).indent(0, 5).applyTo(btnUseFavourites);
 
 		planViewer = new CheckboxTreeViewer(composite, SWT.V_SCROLL | SWT.BORDER);
 		planViewer.setContentProvider(new BuildPlanContentProvider());
 		planViewer.setLabelProvider(new BambooLabelProvider());
 		setCachedPlanInput();
 		int height = convertVerticalDLUsToPixels(BUILD_PLAN_VIEWER_HEIGHT);
-		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, height).applyTo(
-				planViewer.getControl());
+		GridDataFactory.fillDefaults()
+				.grab(true, true)
+				.align(SWT.FILL, SWT.FILL)
+				.hint(SWT.DEFAULT, height)
+				.applyTo(planViewer.getControl());
 
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonComposite);
@@ -215,31 +235,31 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		buttonLayout.fill = true;
 		buttonComposite.setLayout(buttonLayout);
 
-		Button selectFavorites = new Button(buttonComposite, SWT.PUSH);
-		selectFavorites.setText("&Favourites");
-		selectFavorites.addSelectionListener(new SelectionAdapter() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				Object input = planViewer.getInput();
-				// if there are no plans, let's call validate first
-				if (!(input instanceof Collection<?>)) {
-					validateSettings();
-				}
-				input = planViewer.getInput();
-				if (input instanceof Collection<?>) {
-					List<BambooPlan> favorites = new ArrayList<BambooPlan>();
-					for (BambooPlan plan : (Collection<BambooPlan>) input) {
-						if (plan.isFavourite()) {
-							favorites.add(plan);
-						}
-					}
-					planViewer.setCheckedElements(favorites.toArray());
-				}
-			}
-		});
+//		Button selectFavorites = new Button(buttonComposite, SWT.PUSH);
+//		selectFavorites.setText("&Favourites");
+//		selectFavorites.addSelectionListener(new SelectionAdapter() {
+//			@SuppressWarnings("unchecked")
+//			@Override
+//			public void widgetSelected(SelectionEvent event) {
+//				Object input = planViewer.getInput();
+//				// if there are no plans, let's call validate first
+//				if (!(input instanceof Collection<?>)) {
+//					validateSettings();
+//				}
+//				input = planViewer.getInput();
+//				if (input instanceof Collection<?>) {
+//					List<BambooPlan> favorites = new ArrayList<BambooPlan>();
+//					for (BambooPlan plan : (Collection<BambooPlan>) input) {
+//						if (plan.isFavourite()) {
+//							favorites.add(plan);
+//						}
+//					}
+//					planViewer.setCheckedElements(favorites.toArray());
+//				}
+//			}
+//		});
 
-		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
+		selectAllButton = new Button(buttonComposite, SWT.PUSH);
 		selectAllButton.setText("&Select All");
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -256,7 +276,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			}
 		});
 
-		Button deselectAllButton = new Button(buttonComposite, SWT.PUSH);
+		deselectAllButton = new Button(buttonComposite, SWT.PUSH);
 		deselectAllButton.setText("&Deselect All");
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -265,7 +285,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			}
 		});
 
-		Button refreshButton = new Button(buttonComposite, SWT.PUSH);
+		refreshButton = new Button(buttonComposite, SWT.PUSH);
 		refreshButton.setText("Refresh");
 		refreshButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -273,6 +293,29 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				validateSettings();
 			}
 		});
+
+		btnUseFavourites.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				favouritesSelected(btnUseFavourites.getSelection());
+			}
+		});
+
+		restoreOldValues();
+	}
+
+	private void restoreOldValues() {
+		if (BambooUtil.isUseFavourites(repository)) {
+			btnUseFavourites.setSelection(true);
+			favouritesSelected(true);
+		}
+	}
+
+	private void favouritesSelected(boolean enabled) {
+		planViewer.getControl().setEnabled(!enabled);
+		selectAllButton.setEnabled(!enabled);
+		deselectAllButton.setEnabled(!enabled);
+		refreshButton.setEnabled(!enabled);
 	}
 
 	private void setCachedPlanInput() {
@@ -331,7 +374,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	@Override
 	protected void validateSettings() {
 		super.validateSettings();
-		if (validSettings) {
+		if (validSettings && !btnUseFavourites.getSelection()) {
 			refreshBuildPlans();
 		}
 	}
