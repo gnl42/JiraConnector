@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.WebLocation;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
@@ -100,7 +101,12 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void addCommentToIssue(String issueKey, String comment, IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
 

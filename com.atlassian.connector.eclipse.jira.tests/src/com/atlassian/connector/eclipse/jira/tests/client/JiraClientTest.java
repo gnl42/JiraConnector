@@ -248,7 +248,7 @@ public class JiraClientTest extends TestCase {
 	public void testAddComment() throws Exception {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAddComment");
 
-		client.addCommentToIssue(issue, "comment 1", null);
+		client.addCommentToIssue(issue.getKey(), "comment 1", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		Comment comment = getComment(issue, "comment 1");
 		assertNotNull(comment);
@@ -257,7 +257,7 @@ public class JiraClientTest extends TestCase {
 		// test with other privileges
 		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 
-		client.addCommentToIssue(issue, "comment guest", null);
+		client.addCommentToIssue(issue.getKey(), "comment guest", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		comment = getComment(issue, "comment guest");
 		assertNotNull(comment);

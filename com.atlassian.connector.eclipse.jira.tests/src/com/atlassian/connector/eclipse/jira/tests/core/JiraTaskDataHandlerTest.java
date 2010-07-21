@@ -127,7 +127,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(600, issue.getInitialEstimate());
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
-		client.addCommentToIssue(issue, commentText, null);
+		client.addCommentToIssue(issue.getKey(), commentText, null);
 
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		ITask task = JiraTestUtil.createTask(repository, taskData.getTaskId());
@@ -154,7 +154,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(600, issue.getInitialEstimate());
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
-		client.addCommentToIssue(issue, commentText, null);
+		client.addCommentToIssue(issue.getKey(), commentText, null);
 
 		// mark that project requires metadata refresh, getTaskData should update it automatically
 		client.getCache().getProjectById(issue.getProject().getId()).setDetails(false);

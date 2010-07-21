@@ -133,13 +133,14 @@ public class JiraClient {
 		this(location, new JiraConfiguration());
 	}
 
-	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
-		webClient.addCommentToIssue(issue, comment, monitor);
+	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
+		soapClient.addComment(issueKey, comment, monitor);
 	}
 
-	public void addComentToIssueWithViewable(String issueKey, Comment comment, IProgressMonitor monitor)
-			throws JiraException {
-		soapClient.addComment(issueKey, comment, monitor);
+	public void addCommentToIssue(String issueKey, String comment, IProgressMonitor monitor) throws JiraException {
+		Comment cmnt = new Comment();
+		cmnt.setComment(comment);
+		soapClient.addComment(issueKey, cmnt, monitor);
 	}
 
 	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
@@ -183,7 +184,7 @@ public class JiraClient {
 	 * <li>Fix Version</li>
 	 * <li>Environment</li>
 	 * <li>Description</li>
-	 * <li>Assigee (If sufficient permissions)</li>
+	 * <li>Assignee (If sufficient permissions)</li>
 	 * <li>Reporter (If sufficient permissions)</li>
 	 * </ul>
 	 * All other fields other fields are not settable at this time
