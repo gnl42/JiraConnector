@@ -69,7 +69,7 @@ public class JiraWorkLog implements Serializable {
 
 	private long newRemainingEstimate;
 
-	private AdjustEstimateMethod adjustEstimate;
+	private AdjustEstimateMethod adjustEstimate = AdjustEstimateMethod.AUTO;
 
 	public JiraWorkLog() {
 	}
