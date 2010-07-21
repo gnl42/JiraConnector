@@ -48,8 +48,26 @@ public class BambooUtilTest extends TestCase {
 		Collection<SubscribedPlan> result = BambooUtil.getSubscribedPlans(repo);
 		assertEquals(plans.size(), result.size());
 		assertEquals(plans.iterator().next(), result.iterator().next());
-		assertEquals(plans.iterator().next(), new SubscribedPlan(repo.getProperty(
-				"com.atlassian.connector.eclipse.bamboo.subscribedPlans").substring(0, 3)));
+		assertEquals(plans.iterator().next(),
+				new SubscribedPlan(repo.getProperty("com.atlassian.connector.eclipse.bamboo.subscribedPlans")
+						.substring(0, 3)));
+	}
+
+	/**
+	 * Test method for
+	 * {@link com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil#isUseFavourites(org.eclipse.mylyn.tasks.core.TaskRepository)}
+	 * .
+	 */
+	public void testIsUseFavourites() {
+		TaskRepository repo = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://bamboo.atlassian.com");
+
+		assertFalse(BambooUtil.isUseFavourites(repo));
+
+		BambooUtil.setUseFavourites(repo, true);
+		assertTrue(BambooUtil.isUseFavourites(repo));
+
+		BambooUtil.setUseFavourites(repo, false);
+		assertFalse(BambooUtil.isUseFavourites(repo));
 	}
 
 	public void testIsSameBuildPlan() {

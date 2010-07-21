@@ -157,7 +157,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		this.repository = applyToValidate(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUILD);
 
-		repository.setProperty(BambooUtil.KEY_USE_FAVOURITES, Boolean.toString(btnUseFavourites.getSelection()));
+		BambooUtil.setUseFavourites(repository, btnUseFavourites.getSelection());
 
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);

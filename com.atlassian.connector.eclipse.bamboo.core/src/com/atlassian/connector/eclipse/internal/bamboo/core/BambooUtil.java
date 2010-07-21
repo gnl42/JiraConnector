@@ -117,4 +117,8 @@ public final class BambooUtil {
 	public static boolean isUseFavourites(TaskRepository taskRepository) {
 		return Boolean.valueOf(taskRepository.getProperty(KEY_USE_FAVOURITES));
 	}
+
+	public static void setUseFavourites(TaskRepository taskRepository, boolean useFavourite) {
+		taskRepository.setProperty(BambooUtil.KEY_USE_FAVOURITES, Boolean.toString(useFavourite));
+	}
 }
