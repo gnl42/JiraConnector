@@ -13,14 +13,12 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.service;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -155,26 +153,17 @@ public class JiraClient {
 		soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue, assigneeType, user), monitor);
 
 		if (!StringUtils.isEmpty(comment)) {
-			Comment cmnt = new Comment();
-			cmnt.setComment(comment);
-			soapClient.addComment(issue.getKey(), cmnt, monitor);
+			addCommentToIssue(issue.getKey(), comment, monitor);
 		}
-		//webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
 	}
 
-	public void addAttachment(JiraIssue issue, String comment, PartSource partSource, String contentType,
-			IProgressMonitor monitor) throws JiraException {
-		webClient.attachFile(issue, comment, partSource, contentType, monitor);
-	}
+	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] content, IProgressMonitor monitor)
+			throws JiraException {
+		soapClient.addAttachmentsToIssue(issue.getKey(), new String[] { filename }, new byte[][] { content }, monitor);
 
-	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
-			IProgressMonitor monitor) throws JiraException {
-		webClient.attachFile(issue, comment, filename, contents, contentType, monitor);
-	}
-
-	public void addAttachment(JiraIssue issue, String comment, String filename, File file, String contentType,
-			IProgressMonitor monitor) throws JiraException {
-		webClient.attachFile(issue, comment, filename, file, contentType, monitor);
+		if (!StringUtils.isEmpty(comment)) {
+			addCommentToIssue(issue.getKey(), comment, monitor);
+		}
 	}
 
 	/**
@@ -217,7 +206,7 @@ public class JiraClient {
 	}
 
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		webClient.deleteIssue(issue, monitor);
+		soapClient.deleteIssue(issue.getKey(), monitor);
 	}
 
 	@Override

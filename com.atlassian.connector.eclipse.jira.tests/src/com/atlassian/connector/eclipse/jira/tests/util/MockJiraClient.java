@@ -11,10 +11,8 @@
 
 package com.atlassian.connector.eclipse.jira.tests.util;
 
-import java.io.File;
 import java.io.OutputStream;
 
-import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.WebLocation;
 
@@ -123,20 +121,8 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void addAttachment(JiraIssue issue, String comment, PartSource partSource, String contentType,
-			IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
-	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
-			IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
-	public void addAttachment(JiraIssue issue, String comment, String filename, File file, String contentType,
-			IProgressMonitor monitor) throws JiraException {
+	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] content, IProgressMonitor monitor)
+			throws JiraException {
 		// ignore
 	}
 

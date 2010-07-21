@@ -13,9 +13,11 @@ package com.atlassian.connector.eclipse.internal.jira.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +28,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentSource;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
-import org.eclipse.mylyn.tasks.core.data.TaskAttachmentPartSource;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
@@ -89,28 +90,28 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask(Messages.JiraTaskAttachmentHandler_Sending_attachment, IProgressMonitor.UNKNOWN);
-			String contentType = source.getContentType();
 			String filename = source.getName();
 			if (attachmentAttribute != null) {
 				TaskAttachmentMapper mapper = TaskAttachmentMapper.createFrom(attachmentAttribute);
-				if (mapper.getContentType() != null) {
-					contentType = mapper.getContentType();
-				}
 				if (mapper.getFileName() != null) {
 					filename = mapper.getFileName();
 				}
 			}
+
+			InputStream is = source.createInputStream(monitor);
 			JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 			try {
 				JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
-				server.addAttachment(issue, comment, new TaskAttachmentPartSource(source, filename), contentType,
-						monitor);
+				server.addAttachment(issue, comment, filename, IOUtils.toByteArray(is), monitor);
 			} catch (JiraException e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			} catch (IOException e) {
+				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			} finally {
+				IOUtils.closeQuietly(is);
 			}
 		} finally {
 			monitor.done();
 		}
 	}
-
 }

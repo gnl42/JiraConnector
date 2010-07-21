@@ -701,4 +701,21 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
+	public void deleteIssue(final String issueKey, IProgressMonitor monitor) throws JiraException {
+		call(monitor, new Callable<Object>() {
+			public Object call() throws java.rmi.RemoteException, JiraException {
+				getSoapService().deleteIssue(loginToken.getCurrentValue(), issueKey);
+				return null;
+			}
+		});
+	}
+
+	public boolean addAttachmentsToIssue(final String issueKey, final String[] filenames, final byte[][] files,
+			IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<Boolean>() {
+			public Boolean call() throws java.rmi.RemoteException, JiraException {
+				return getSoapService().addAttachmentsToIssue(loginToken.getCurrentValue(), issueKey, filenames, files);
+			}
+		});
+	}
 }

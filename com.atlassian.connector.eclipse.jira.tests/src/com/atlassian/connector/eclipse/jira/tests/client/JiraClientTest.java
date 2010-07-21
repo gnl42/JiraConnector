@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.io.File;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -270,20 +269,16 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		File file = File.createTempFile("mylyn", null);
-		file.deleteOnExit();
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachFile");
 
 		// test attaching an empty file
 		try {
-			client.addAttachment(issue, "", file.getName(), file, "application/binary", null);
+			client.addAttachment(issue, "", "testAttachEmptyFile.txt", new byte[0], null);
 			fail("Expected JiraException");
-		} catch (JiraRemoteMessageException e) {
+		} catch (JiraException e) {
 		}
 
-		client.addAttachment(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' },
-				"application/binary", null);
+		client.addAttachment(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' }, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		Attachment attachment = getAttachment(issue, "my.filename.1");
 		assertNotNull(attachment);
@@ -292,7 +287,7 @@ public class JiraClientTest extends TestCase {
 		assertNotNull(attachment.getCreated());
 
 		// spaces in filename
-		client.addAttachment(issue, "", "file name with spaces", new byte[] { '1' }, "text/html", null);
+		client.addAttachment(issue, "", "file name with spaces", new byte[] { '1' }, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		attachment = getAttachment(issue, "file name with spaces");
 		assertNotNull(attachment);
