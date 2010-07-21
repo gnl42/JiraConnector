@@ -159,16 +159,14 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 		repository.setProperty(BambooUtil.KEY_USE_FAVOURITES, Boolean.toString(btnUseFavourites.getSelection()));
 
-		if (!btnUseFavourites.getSelection()) {
-			Object[] items = planViewer.getCheckedElements();
-			Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
-			for (Object item : items) {
-				if (item instanceof BambooPlan) {
-					plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
-				}
+		Object[] items = planViewer.getCheckedElements();
+		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
+		for (Object item : items) {
+			if (item instanceof BambooPlan) {
+				plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
 			}
-			BambooUtil.setSubcribedPlans(this.repository, plans);
 		}
+		BambooUtil.setSubcribedPlans(this.repository, plans);
 		//update cache
 		//updateAndWriteCache();
 		BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
