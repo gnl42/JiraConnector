@@ -475,54 +475,8 @@ public class JiraClient {
 		return getBaseUrl();
 	}
 
-	/**
-	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
-	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not
-	 * valid for the user to vote for an issue this method will do nothing.
-	 * 
-	 * @param issue
-	 *            Issue to remove vote from
-	 */
-	public void unvoteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		webClient.unvoteIssue(issue, monitor);
-	}
-
-	/**
-	 * Stop watching <code>issue</code>. Nothing will happen if the user is not currently watching the issue.
-	 * 
-	 * @param issue
-	 *            Issue to stop watching
-	 */
-	public void unwatchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		webClient.unwatchIssue(issue, monitor);
-	}
-
 	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
 		webClient.updateIssue(issue, comment, monitor);
-	}
-
-	/**
-	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
-	 * not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not
-	 * valid for the user to vote for an issue this method will do nothing.
-	 * 
-	 * @param issue
-	 *            Issue to vote for
-	 */
-	public void voteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		webClient.voteIssue(issue, monitor);
-	}
-
-	/**
-	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
-	 * 
-	 * @param issue
-	 *            Issue to begin watching
-	 */
-	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		webClient.watchIssue(issue, monitor);
 	}
 
 	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {

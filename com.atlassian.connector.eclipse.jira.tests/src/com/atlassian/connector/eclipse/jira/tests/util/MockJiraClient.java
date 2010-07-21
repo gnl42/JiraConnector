@@ -283,27 +283,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void unvoteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
-	public void unwatchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
 	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
-	public void voteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		// ignore
-	}
-
-	@Override
-	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
 
