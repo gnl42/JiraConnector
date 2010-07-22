@@ -18,7 +18,12 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,6 +42,7 @@ import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
@@ -44,6 +50,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Group;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
@@ -63,6 +70,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInsufficientPermissionException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
+import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteField;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue;
@@ -718,4 +726,142 @@ public class JiraSoapClient extends AbstractSoapClient {
 			}
 		});
 	}
+
+	public void updateIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		call(monitor, new Callable<Object>() {
+			public Object call() throws java.rmi.RemoteException, JiraException {
+				final List<RemoteFieldValue> fields = new ArrayList<RemoteFieldValue>();
+
+				fields.add(new RemoteFieldValue("summary", new String[] { issue.getSummary() })); //$NON-NLS-1$
+				fields.add(new RemoteFieldValue("issuetype", new String[] { issue.getType().getId() })); //$NON-NLS-1$
+				if (issue.getPriority() != null) {
+					fields.add(new RemoteFieldValue("priority", new String[] { issue.getPriority().getId() })); //$NON-NLS-1$
+				}
+
+				if (issue.getDue() != null) {
+					DateFormat format = jiraClient.getConfiguration().getDateFormat();
+					fields.add(new RemoteFieldValue("duedate", new String[] { format.format(issue.getDue()) })); //$NON-NLS-1$
+				} else {
+					fields.add(new RemoteFieldValue("duedate", new String[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+
+				fields.add(new RemoteFieldValue(
+						"timetracking", new String[] { Long.toString(issue.getEstimate() / 60) + "m" })); //$NON-NLS-1$ //$NON-NLS-2$
+
+				Component[] components = issue.getComponents();
+				if (components != null) {
+					if (components.length == 0) {
+						fields.add(new RemoteFieldValue("components", new String[] { "-1" })); //$NON-NLS-1$ //$NON-NLS-2$
+					} else {
+						List<String> values = new ArrayList<String>();
+						for (Component component : components) {
+							values.add(component.getId());
+						}
+						fields.add(new RemoteFieldValue("components", values.toArray(new String[0]))); //$NON-NLS-1$
+					}
+				}
+
+				Version[] versions = issue.getReportedVersions();
+				if (versions != null) {
+					if (versions.length == 0) {
+						fields.add(new RemoteFieldValue("versions", new String[] { "-1" })); //$NON-NLS-1$ //$NON-NLS-2$
+					} else {
+						List<String> values = new ArrayList<String>();
+						for (Version version : versions) {
+							values.add(version.getId());
+						}
+						fields.add(new RemoteFieldValue("versions", values.toArray(new String[0]))); //$NON-NLS-1$
+					}
+				}
+
+				Version[] fixVersions = issue.getFixVersions();
+				if (fixVersions != null) {
+					if (fixVersions.length == 0) {
+						fields.add(new RemoteFieldValue("fixVersions", new String[] { "-1" })); //$NON-NLS-1$ //$NON-NLS-2$
+					} else {
+						List<String> values = new ArrayList<String>();
+						for (Version fixVersion : fixVersions) {
+							values.add(fixVersion.getId());
+						}
+						fields.add(new RemoteFieldValue("fixVersions", values.toArray(new String[0]))); //$NON-NLS-1$
+					}
+				}
+
+				// TODO need to be able to choose unassigned and automatic
+				if (issue.getAssignee() != null) {
+					fields.add(new RemoteFieldValue("assignee", new String[] { issue.getAssignee() })); //$NON-NLS-1$
+				} else {
+					fields.add(new RemoteFieldValue("assignee", new String[] { "-1" })); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				if (issue.getReporter() != null) {
+					fields.add(new RemoteFieldValue("reporter", new String[] { issue.getReporter() })); //$NON-NLS-1$
+				}
+				if (issue.getEnvironment() != null) {
+					fields.add(new RemoteFieldValue("environment", new String[] { issue.getEnvironment() })); //$NON-NLS-1$
+				}
+				fields.add(new RemoteFieldValue("description", new String[] { issue.getDescription() })); //$NON-NLS-1$
+
+				if (issue.getSecurityLevel() != null) {
+					fields.add(new RemoteFieldValue("security", new String[] { issue.getSecurityLevel().getId() })); //$NON-NLS-1$
+				}
+
+				addCustomFields(fields, issue);
+
+				getSoapService().updateIssue(loginToken.getCurrentValue(), issue.getKey(),
+						fields.toArray(new RemoteFieldValue[fields.size()]));
+				return null;
+			}
+
+		});
+	}
+
+	private void addCustomFields(List<RemoteFieldValue> fields, JiraIssue issue) {
+		for (CustomField customField : issue.getCustomFields()) {
+			addCustomField(fields, customField);
+		}
+	}
+
+	private void addCustomField(List<RemoteFieldValue> fields, CustomField customField) {
+		for (String value : customField.getValues()) {
+			String key = customField.getKey();
+			if (includeCustomField(key, value)) {
+				if (value != null
+						&& (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key))) {
+					try {
+						Date date = JiraRssHandler.getDateTimeFormat().parse(value);
+						DateFormat format;
+						if (JiraFieldType.DATE.getKey().equals(key)) {
+							format = jiraClient.getConfiguration().getDateFormat();
+						} else {
+							format = jiraClient.getConfiguration().getDateTimeFormat();
+						}
+						value = format.format(date);
+					} catch (ParseException e) {
+						// XXX ignore
+					}
+				}
+				fields.add(new RemoteFieldValue(customField.getId(), new String[] { value == null ? "" : value })); //$NON-NLS-1$
+			}
+		}
+	}
+
+	private boolean includeCustomField(String key, String value) {
+		if (key == null) {
+			return true;
+		}
+
+		if (key.startsWith("com.pyxis.greenhopper.jira:greenhopper-ranking")) { //$NON-NLS-1$
+			// if this field is a valid float sent it back if not ignore it (old greenhopper publishes invalid content in this field)
+			try {
+				Float.parseFloat(value);
+				return true;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+
+		return !key.startsWith("com.atlassian.jira.toolkit") && //$NON-NLS-1$
+				!key.startsWith("com.atlassian.jira.ext.charting"); //$NON-NLS-1$
+	}
+
 }

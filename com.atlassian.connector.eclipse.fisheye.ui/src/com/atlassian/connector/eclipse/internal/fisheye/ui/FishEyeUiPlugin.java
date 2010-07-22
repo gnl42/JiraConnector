@@ -1,6 +1,7 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
+import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -36,7 +37,8 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-		if (!getPreferenceStore().getBoolean(FishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
+		if (!getPreferenceStore().getBoolean(FishEyeConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
+				&& !RuntimeUtil.suppressConfigurationWizards()) {
 			Job migrateJob = new MigrateToSecureStorageJob(FishEyeCorePlugin.CONNECTOR_KIND);
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override

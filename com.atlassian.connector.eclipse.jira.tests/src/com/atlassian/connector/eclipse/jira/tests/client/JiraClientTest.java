@@ -194,25 +194,29 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.updateIssue(issue, "comment", null);
 			fail("Expected JiraException");
-		} catch (JiraRemoteMessageException e) {
-			assertThat(e.getHtmlMessage(), either(equalTo("User 'nonexistantuser' cannot be assigned issues.")).or(
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), either(containsString("User 'nonexistantuser' cannot be assigned issues.")).or(
 					equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
 		}
 
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "", null);
 			fail("Expected JiraException");
-		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Issues must be assigned."));
+		} catch (JiraRemoteMessageException e) {
+			assertThat(e.getHtmlMessage(), containsString("Issues must be assigned."));
 		}
 
-		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+		try {
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
+		}
 
 		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
-		} catch (JiraException e) {
-			assertThat(e.getMessage(), either(
+		} catch (JiraRemoteMessageException e) {
+			assertThat(e.getHtmlMessage(), either(
 					containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
 					equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
@@ -401,7 +405,7 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.updateIssue(issue, "", null);
 			fail("Expected JiraException");
-		} catch (JiraRemoteMessageException e) {
+		} catch (JiraException e) {
 		}
 
 		issue.setSummary("testUpdateIssueGuest");
@@ -410,7 +414,7 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.updateIssue(issue, "", null);
 			fail("Expected JiraException");
-		} catch (JiraRemoteMessageException e) {
+		} catch (JiraException e) {
 		}
 
 		// change privilege level

@@ -73,7 +73,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
 		repositoryManager.addListener(BambooCorePlugin.getRepositoryConnector().getClientManager());
 
-		if (!getPreferenceStore().getBoolean(BambooConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)) {
+		if (!getPreferenceStore().getBoolean(BambooConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
+				&& !RuntimeUtil.suppressConfigurationWizards()) {
 			Job migrateJob = new MigrateToSecureStorageJob(BambooCorePlugin.CONNECTOR_KIND);
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override

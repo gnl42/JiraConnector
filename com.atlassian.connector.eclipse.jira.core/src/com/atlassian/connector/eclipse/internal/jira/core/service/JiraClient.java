@@ -476,7 +476,11 @@ public class JiraClient {
 	}
 
 	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
-		webClient.updateIssue(issue, comment, monitor);
+		soapClient.updateIssue(issue, monitor);
+
+		if (!StringUtils.isEmpty(comment)) {
+			addCommentToIssue(issue.getKey(), comment, monitor);
+		}
 	}
 
 	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
