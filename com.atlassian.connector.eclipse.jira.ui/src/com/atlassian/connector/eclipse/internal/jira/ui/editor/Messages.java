@@ -87,6 +87,8 @@ public class Messages extends NLS {
 
 	public static String LogJiraTimeDialog_not_show_dialog;
 
+	public static String LogJiraTimeDialog_Reduce_estimated_time_by;
+
 	public static String LogJiraTimeDialog_Unable_to_find_Time_Tracking_preference;
 
 	private Messages() {

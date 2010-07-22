@@ -23,7 +23,8 @@ public class JiraWorkLog implements Serializable {
 	public enum AdjustEstimateMethod {
 		AUTO("AUTO"), //$NON-NLS-1$
 		LEAVE("LEAVE"), //$NON-NLS-1$
-		SET("SET"); //$NON-NLS-1$
+		SET("SET"), //$NON-NLS-1$
+		REDUCE("REDUCE"); //$NON-NLS-1$
 
 		private final String value;
 

@@ -73,4 +73,6 @@ public class IJiraConstants {
 
 	public static final String ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME = "attribute.jira.loggedActivityTime"; //$NON-NLS-1$
 
+	public static final String ATTRIBUTE_ADJUST_ESTIMATE_OPTION = "attribute.adjust-estimate"; //$NON-NLS-1$
+
 }

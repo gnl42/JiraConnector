@@ -669,6 +669,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 							issueKey, remoteLog);
 					break;
 				case SET:
+				case REDUCE:
 					remoteLog = getSoapService().addWorklogWithNewRemainingEstimate(loginToken.getCurrentValue(),
 							issueKey, remoteLog, formatter.format(log.getNewRemainingEstimate()));
 					break;

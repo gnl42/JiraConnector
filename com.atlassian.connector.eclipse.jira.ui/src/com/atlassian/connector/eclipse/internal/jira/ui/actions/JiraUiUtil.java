@@ -16,8 +16,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 /**
@@ -67,6 +70,18 @@ public class JiraUiUtil {
 	public static void setLoggedActivityTime(ITask task) {
 		task.setAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME,
 				Long.toString(TasksUiPlugin.getTaskActivityManager().getElapsedTime(task)));
+	}
+
+	public static void updateAdjustEstimateOption(AdjustEstimateMethod adjustEstimate, TaskRepository repository) {
+		repository.setProperty(IJiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION, adjustEstimate.value());
+	}
+
+	public static AdjustEstimateMethod getAdjustEstimateOption(TaskRepository repository) {
+		try {
+			return JiraWorkLog.AdjustEstimateMethod.fromValue(repository.getProperty(IJiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION));
+		} catch (IllegalArgumentException e) {
+			return AdjustEstimateMethod.LEAVE;
+		}
 	}
 
 }
