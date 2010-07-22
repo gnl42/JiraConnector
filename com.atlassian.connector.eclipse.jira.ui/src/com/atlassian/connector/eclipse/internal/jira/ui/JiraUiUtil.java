@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.jira.ui.actions;
+package com.atlassian.connector.eclipse.internal.jira.ui;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,7 +21,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.actions.Messages;
 
 /**
  * @author Jacek Jaroczynski

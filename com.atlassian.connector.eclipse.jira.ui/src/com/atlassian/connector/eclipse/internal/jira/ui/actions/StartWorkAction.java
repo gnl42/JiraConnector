@@ -51,6 +51,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage;
 
 /**

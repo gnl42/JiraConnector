@@ -55,6 +55,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.Adju
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraEditorUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages;
 

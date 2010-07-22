@@ -30,7 +30,6 @@ import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
 
 /**
  * @author Mik Kersten

@@ -37,7 +37,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.WorkLogConverter;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorToolbarAction;
 
 /**

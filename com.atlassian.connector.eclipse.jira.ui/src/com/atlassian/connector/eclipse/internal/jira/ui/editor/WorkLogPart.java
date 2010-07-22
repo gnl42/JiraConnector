@@ -70,7 +70,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.Adju
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi;
-import com.atlassian.connector.eclipse.internal.jira.ui.actions.JiraUiUtil;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiUtil;
 
 /**
  * @author Steffen Pingel
