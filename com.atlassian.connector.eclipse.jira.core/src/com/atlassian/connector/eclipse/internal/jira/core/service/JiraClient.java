@@ -208,8 +208,7 @@ public class JiraClient {
 	}
 
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		//soapClient.deleteIssue(issue.getKey(), monitor);
-		webClient.deleteIssue(issue, monitor);
+		soapClient.deleteIssue(issue.getKey(), monitor);
 	}
 
 	@Override
