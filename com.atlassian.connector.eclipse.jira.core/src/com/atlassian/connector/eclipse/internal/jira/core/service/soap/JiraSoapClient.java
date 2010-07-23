@@ -804,6 +804,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 
 				if (issue.getSecurityLevel() != null) {
 					fields.add(new RemoteFieldValue("security", new String[] { issue.getSecurityLevel().getId() })); //$NON-NLS-1$
+				} else {
+					fields.add(new RemoteFieldValue("security", new String[] { "-1" })); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				addCustomFields(fields, issue);
