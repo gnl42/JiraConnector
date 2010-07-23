@@ -96,6 +96,7 @@
       <import plugin="org.eclipse.mylyn.commons.tests" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.resources.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.resources.tests" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.ide.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
