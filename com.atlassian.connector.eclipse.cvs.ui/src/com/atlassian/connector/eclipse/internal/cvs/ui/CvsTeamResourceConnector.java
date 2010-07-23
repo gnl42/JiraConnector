@@ -89,7 +89,7 @@ public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 					: syncInfo.getRevision() : null;
 
 			return new LocalStatus(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
-					syncInfo == null || syncInfo.isAdded(), false, isBinary, false, false);
+					syncInfo == null || syncInfo.isAdded(), false, isBinary, true, false);
 		}
 		return null;
 	}
