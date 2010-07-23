@@ -15,7 +15,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryServerUnrelatedTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest;
 import com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiStandaloneTest;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 
@@ -35,9 +37,9 @@ public class AllJiraTests {
 		for (JiraFixture fixture : new JiraFixture[] { JiraFixture.DEFAULT }) {
 			fixture.createSuite(suite);
 			fixture.add(JiraCustomQueryTest.class);
-			/*fixture.add(JiraClientFactoryTest.class);
+			fixture.add(JiraClientFactoryTest.class);
 			fixture.add(JiraTaskExternalizationTest.class);
-			fixture.add(JiraRepositoryConnectorTest.class);
+			/*fixture.add(JiraRepositoryConnectorTest.class);
 			fixture.add(JiraTaskAttachmentHandlerTest.class);
 			fixture.add(JiraTaskDataHandlerTest.class);
 			fixture.add(JiraStackTraceDuplicateDetectorTest.class);
