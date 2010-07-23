@@ -15,12 +15,12 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.mylyn.java.tests.AbstractJavaContextTest;
-import org.eclipse.mylyn.java.tests.TestJavaProject;
-import org.eclipse.mylyn.java.tests.TestProject;
 import org.eclipse.mylyn.resources.tests.ResourceTestUtil;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -101,13 +101,27 @@ public final class TeamUiUtilsTests extends TestCase {
 		ResourceTestUtil.deleteProject(project.getProject());
 		ResourceTestUtil.deleteProject(nonJavaProject.getProject());
 
-		AbstractJavaContextTest.waitForAutoBuild();
+		waitForAutoBuild();
 	}
 
 	public void testGetSupportedTeamConnectors() {
 		// @todo wseliga restore it
 //		TestUtil.assertHasOnlyElements(TeamUiUtils.getSupportedTeamConnectors(), "Subversive", "Subclipse",
 //				"Team API (partial support)", "CVS (FishEye only)");
+	}
+
+	public static void waitForAutoBuild() {
+		boolean wasInterrupted = false;
+		do {
+			try {
+				Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+				wasInterrupted = false;
+			} catch (OperationCanceledException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				wasInterrupted = true;
+			}
+		} while (wasInterrupted);
 	}
 
 }

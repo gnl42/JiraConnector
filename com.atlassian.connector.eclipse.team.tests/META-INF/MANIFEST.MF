@@ -7,7 +7,6 @@ Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
  org.junit,
  com.atlassian.connector.commons.tests.dependencies,
- org.eclipse.mylyn.java.tests,
  org.eclipse.mylyn.resources.tests,
  org.eclipse.jdt.core,
  com.atlassian.connector.eclipse.team.ui,
@@ -23,6 +22,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.jface.text,
  org.eclipse.jface,
+ org.eclipse.jdt.launching,
  org.eclipse.compare,
  org.jetbrains.annotations;resolution:=optional
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
