@@ -17,8 +17,14 @@ import junit.framework.TestSuite;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryServerUnrelatedTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraStackTraceDuplicateDetectorTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskAttachmentHandlerTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest;
 import com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiStandaloneTest;
+import com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiTest;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 
 /**
@@ -39,15 +45,14 @@ public class AllJiraTests {
 			fixture.add(JiraCustomQueryTest.class);
 			fixture.add(JiraClientFactoryTest.class);
 			fixture.add(JiraTaskExternalizationTest.class);
-			/*fixture.add(JiraRepositoryConnectorTest.class);
+			fixture.add(JiraRepositoryConnectorTest.class);
 			fixture.add(JiraTaskAttachmentHandlerTest.class);
 			fixture.add(JiraTaskDataHandlerTest.class);
 			fixture.add(JiraStackTraceDuplicateDetectorTest.class);
 			fixture.add(JiraConnectorUiTest.class);
-			fixture.add(JiraFilterTest.class);*/
+			fixture.add(JiraFilterTest.class);
 			fixture.done();
 		}
 		return suite;
 	}
-
 }
