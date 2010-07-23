@@ -7,7 +7,6 @@ Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
  org.junit,
  com.atlassian.connector.commons.tests.dependencies,
- org.eclipse.mylyn.resources.tests,
  org.eclipse.jdt.core,
  com.atlassian.connector.eclipse.team.ui,
  org.eclipse.core.runtime,

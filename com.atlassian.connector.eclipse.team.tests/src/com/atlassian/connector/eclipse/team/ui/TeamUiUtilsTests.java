@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.mylyn.resources.tests.ResourceTestUtil;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
