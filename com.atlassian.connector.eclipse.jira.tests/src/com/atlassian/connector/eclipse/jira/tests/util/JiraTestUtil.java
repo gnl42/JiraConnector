@@ -65,7 +65,7 @@ public class JiraTestUtil {
 
 	public static String PROJECT1 = "PRONE";
 
-	private static Map<JiraClient, List<JiraIssue>> testIssues = new HashMap<JiraClient, List<JiraIssue>>();
+	private static List<JiraIssue> testIssues = new ArrayList<JiraIssue>();
 
 	private static final JiraTestUtil instance = new JiraTestUtil();
 
@@ -74,12 +74,10 @@ public class JiraTestUtil {
 
 	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
 		issue = client.createIssue(issue, null);
-		List<JiraIssue> list = testIssues.get(client);
-		if (list == null) {
-			list = new ArrayList<JiraIssue>();
-			testIssues.put(client, list);
+		if (testIssues == null) {
+			testIssues = new ArrayList<JiraIssue>();
 		}
-		list.add(issue);
+		testIssues.add(issue);
 		return issue;
 	}
 
@@ -260,12 +258,15 @@ public class JiraTestUtil {
 		JiraClientFactory.getDefault().clearClients();
 	}
 
+	@SuppressWarnings("restriction")
 	public static void tearDown() throws JiraException {
-		for (JiraClient client : testIssues.keySet()) {
-			for (JiraIssue issue : testIssues.get(client)) {
-				client.deleteIssue(issue, null);
-			}
+		TaskRepository repository = JiraTestUtil.init(JiraFixture.current().getRepositoryUrl(), PrivilegeLevel.ADMIN);
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+
+		for (JiraIssue issue : testIssues) {
+			client.deleteIssue(issue, null);
 		}
+
 		testIssues.clear();
 	}
 
