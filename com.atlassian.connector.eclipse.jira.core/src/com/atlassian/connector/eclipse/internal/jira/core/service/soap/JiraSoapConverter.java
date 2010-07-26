@@ -33,6 +33,8 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteComment;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteComponent;
+import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
+import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteGroup;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssueType;
@@ -369,5 +371,43 @@ class JiraSoapConverter {
 			securityLevels[i] = securityLevel;
 		}
 		return securityLevels;
+	}
+
+	public static RemoteComponent[] convert(Component[] components) {
+		RemoteComponent[] remoteComponents = new RemoteComponent[components.length];
+		for (int i = 0; i < remoteComponents.length; ++i) {
+			remoteComponents[i] = convert(components[i]);
+		}
+		return remoteComponents;
+	}
+
+	private static RemoteComponent convert(Component component) {
+		return new RemoteComponent(component.getId(), component.getName());
+	}
+
+	public static RemoteVersion[] convert(Version[] reportedVersions) {
+		RemoteVersion[] versions = new RemoteVersion[reportedVersions.length];
+		for (int i = 0; i < versions.length; ++i) {
+			versions[i] = convert(reportedVersions[i]);
+		}
+		return versions;
+	}
+
+	private static RemoteVersion convert(Version version) {
+		Calendar releaseDate = Calendar.getInstance();
+		releaseDate.setTime(version.getReleaseDate());
+		return new RemoteVersion(version.getId(), version.getName(), false, releaseDate, false, version.getSequence());
+	}
+
+	public static RemoteCustomFieldValue[] convert(RemoteFieldValue[] array) {
+		RemoteCustomFieldValue[] fields = new RemoteCustomFieldValue[array.length];
+		for (int i = 0; i < array.length; ++i) {
+			fields[i] = convert(array[i]);
+		}
+		return fields;
+	}
+
+	private static RemoteCustomFieldValue convert(RemoteFieldValue remoteFieldValue) {
+		return new RemoteCustomFieldValue(remoteFieldValue.getId(), null, remoteFieldValue.getValues());
 	}
 }

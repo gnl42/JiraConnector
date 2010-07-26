@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -904,5 +905,67 @@ public class JiraSoapClient extends AbstractSoapClient {
 				}
 			}
 		}
+	}
+
+	public String createIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<String>() {
+			public String call() throws Exception {
+				RemoteIssue remoteIssue = new RemoteIssue();
+
+				remoteIssue.setProject(issue.getProject().getId());
+				remoteIssue.setType(issue.getType().getId());
+				remoteIssue.setSummary(issue.getSummary());
+
+				if (issue.getPriority() != null) {
+					remoteIssue.setPriority(issue.getPriority().getId());
+				}
+
+				if (issue.getDue() != null) {
+					Calendar dueDate = Calendar.getInstance();
+					dueDate.setTime(issue.getDue());
+					remoteIssue.setDuedate(dueDate);
+				}
+
+				issue.setEstimate(issue.getEstimate());
+
+				if (issue.getComponents() != null) {
+					remoteIssue.setComponents(JiraSoapConverter.convert(issue.getComponents()));
+				}
+
+				if (issue.getReportedVersions() != null) {
+					remoteIssue.setAffectsVersions(JiraSoapConverter.convert(issue.getReportedVersions()));
+				}
+
+				if (issue.getFixVersions() != null) {
+					remoteIssue.setFixVersions(JiraSoapConverter.convert(issue.getFixVersions()));
+				}
+
+				if (issue.getAssignee() == null) {
+					remoteIssue.setAssignee("-1"); // Default assignee //$NON-NLS-1$ 
+				} else if (issue.getAssignee().length() == 0) {
+					remoteIssue.setAssignee(""); // nobody //$NON-NLS-1$ 
+				} else {
+					remoteIssue.setAssignee(issue.getAssignee());
+				}
+
+				remoteIssue.setReporter(jiraClient.getUserName());
+
+				remoteIssue.setEnvironment(issue.getEnvironment() != null ? issue.getEnvironment() : ""); //$NON-NLS-1$ 
+				remoteIssue.setDescription(issue.getDescription() != null ? issue.getDescription() : ""); //$NON-NLS-1$ 
+
+				List<RemoteFieldValue> fields = new ArrayList<RemoteFieldValue>();
+				addCustomFields(fields, issue);
+				remoteIssue.setCustomFieldValues(JiraSoapConverter.convert(fields.toArray(new RemoteFieldValue[0])));
+
+				if (issue.getSecurityLevel() != null) {
+					remoteIssue = getSoapService().createIssueWithSecurityLevel(loginToken.getCurrentValue(),
+							remoteIssue, Long.parseLong(issue.getSecurityLevel().getId()));
+				} else {
+					remoteIssue = getSoapService().createIssue(loginToken.getCurrentValue(), remoteIssue);
+				}
+
+				return remoteIssue != null ? remoteIssue.getKey() : null;
+			}
+		});
 	}
 }

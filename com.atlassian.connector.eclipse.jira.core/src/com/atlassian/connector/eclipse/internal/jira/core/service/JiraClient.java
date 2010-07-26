@@ -198,7 +198,7 @@ public class JiraClient {
 	 *         the details of the new issue
 	 */
 	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		String issueKey = webClient.createIssue(issue, monitor);
+		String issueKey = soapClient.createIssue(issue, monitor);
 		return getIssueByKey(issueKey, monitor);
 	}
 
