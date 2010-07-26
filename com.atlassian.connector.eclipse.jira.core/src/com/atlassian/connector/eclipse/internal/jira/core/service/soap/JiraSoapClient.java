@@ -867,4 +867,42 @@ public class JiraSoapClient extends AbstractSoapClient {
 				!key.startsWith("com.atlassian.jira.ext.charting"); //$NON-NLS-1$
 	}
 
+	public void progressWorkflowAction(final JiraIssue issue, final String actionKey, final String[] actionFields,
+			IProgressMonitor monitor) throws JiraException {
+		call(monitor, new Callable<Object>() {
+			public Object call() throws Exception {
+				List<RemoteFieldValue> fields = new ArrayList<RemoteFieldValue>();
+
+				addFields(fields, issue, actionFields);
+
+				getSoapService().progressWorkflowAction(loginToken.getCurrentValue(), issue.getKey(), actionKey,
+						fields.toArray(new RemoteFieldValue[fields.size()]));
+				return null;
+			}
+		});
+	}
+
+	private void addFields(List<RemoteFieldValue> fields, JiraIssue issue, String[] actionFields) {
+		for (String field : actionFields) {
+			if ("duedate".equals(field)) { //$NON-NLS-1$
+				if (issue.getDue() != null) {
+					DateFormat format = jiraClient.getConfiguration().getDateFormat();
+					fields.add(new RemoteFieldValue("duedate", new String[] { format.format(issue.getDue()) })); //$NON-NLS-1$
+				} else {
+					fields.add(new RemoteFieldValue("duedate", new String[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			} else if (field.startsWith("customfield_")) { //$NON-NLS-1$
+				for (CustomField customField : issue.getCustomFields()) {
+					addCustomField(fields, customField);
+				}
+			} else {
+				String[] values = issue.getFieldValues(field);
+				if (values == null) {
+					// method.addParameter(field, "");
+				} else {
+					fields.add(new RemoteFieldValue(field, values));
+				}
+			}
+		}
+	}
 }

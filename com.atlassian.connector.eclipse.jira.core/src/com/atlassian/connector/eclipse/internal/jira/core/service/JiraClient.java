@@ -145,7 +145,11 @@ public class JiraClient {
 	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
 			throws JiraException {
 		String[] fields = getActionFields(issue.getKey(), actionKey, monitor);
-		webClient.advanceIssueWorkflow(issue, actionKey, comment, fields, monitor);
+		soapClient.progressWorkflowAction(issue, actionKey, fields, monitor);
+
+		if (!StringUtils.isEmpty(comment)) {
+			addCommentToIssue(issue.getKey(), comment, monitor);
+		}
 	}
 
 	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
