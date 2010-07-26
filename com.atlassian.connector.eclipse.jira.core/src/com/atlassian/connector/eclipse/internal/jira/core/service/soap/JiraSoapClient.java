@@ -926,7 +926,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 					remoteIssue.setDuedate(dueDate);
 				}
 
-				issue.setEstimate(issue.getEstimate());
+				issue.setInitialEstimate(issue.getEstimate());
 
 				if (issue.getComponents() != null) {
 					remoteIssue.setComponents(JiraSoapConverter.convert(issue.getComponents()));
