@@ -198,13 +198,14 @@ public class JiraClient {
 	 *         the details of the new issue
 	 */
 	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		if (issue.getProject().getKey() == null) {
+		/*PLE-1181 if (issue.getProject().getKey() == null) {
 			Project project = cache.getProjectById(issue.getProject().getId(), monitor);
 			if (project != null) {
 				issue.getProject().setKey(project.getKey());
 			}
 		}
-		String issueKey = soapClient.createIssue(issue, monitor);
+		String issueKey = soapClient.createIssue(issue, monitor);*/
+		String issueKey = webClient.createIssue(issue, monitor);
 		return getIssueByKey(issueKey, monitor);
 	}
 
