@@ -77,11 +77,20 @@ public final class TaskRepositoryUtil {
 
 		Map.Entry<String, String> matching = null;
 		for (Map.Entry<String, String> prefix : repositories.entrySet()) {
-			URI prefixUri = URI.create(prefix.getKey()).normalize();
-			URI scmUri = URI.create(scmPath).normalize();
-			if (scmUri.toString().startsWith(prefixUri.toString())) {
-				if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
-					matching = prefix;
+			try {
+				URI prefixUri = URI.create(prefix.getKey()).normalize();
+				URI scmUri = URI.create(scmPath).normalize();
+				if (scmUri.toString().startsWith(prefixUri.toString())) {
+					if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
+						matching = prefix;
+					}
+				}
+			} catch (IllegalArgumentException e) {
+				// in case mapping key is not a proper URL (i.e. CVS) compare strings
+				if (scmPath.startsWith(prefix.getKey())) {
+					if (matching == null || prefix.getKey().length() > matching.getKey().length()) {
+						matching = prefix;
+					}
 				}
 			}
 		}
