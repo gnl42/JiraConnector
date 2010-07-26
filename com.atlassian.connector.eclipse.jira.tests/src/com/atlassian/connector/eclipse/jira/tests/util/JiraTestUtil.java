@@ -65,7 +65,7 @@ public class JiraTestUtil {
 
 	public static String PROJECT1 = "PRONE";
 
-	private static List<JiraIssue> testIssues = new ArrayList<JiraIssue>();
+	private static Map<JiraClient, List<JiraIssue>> testIssues = new HashMap<JiraClient, List<JiraIssue>>();
 
 	private static final JiraTestUtil instance = new JiraTestUtil();
 
@@ -74,10 +74,12 @@ public class JiraTestUtil {
 
 	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
 		issue = client.createIssue(issue, null);
-		if (testIssues == null) {
-			testIssues = new ArrayList<JiraIssue>();
+		List<JiraIssue> list = testIssues.get(client);
+		if (list == null) {
+			list = new ArrayList<JiraIssue>();
+			testIssues.put(client, list);
 		}
-		testIssues.add(issue);
+		list.add(issue);
 		return issue;
 	}
 
@@ -192,7 +194,7 @@ public class JiraTestUtil {
 		Credentials credentials = TestUtil.readCredentials(level);
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, url);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
-				credentials.password), false);
+				credentials.password), true);
 
 		manager.addRepository(repository);
 		return repository;
@@ -258,15 +260,12 @@ public class JiraTestUtil {
 		JiraClientFactory.getDefault().clearClients();
 	}
 
-	@SuppressWarnings("restriction")
 	public static void tearDown() throws JiraException {
-		TaskRepository repository = JiraTestUtil.init(JiraFixture.current().getRepositoryUrl(), PrivilegeLevel.ADMIN);
-		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-
-		for (JiraIssue issue : testIssues) {
-			client.deleteIssue(issue, null);
+		for (JiraClient client : testIssues.keySet()) {
+			for (JiraIssue issue : testIssues.get(client)) {
+				client.deleteIssue(issue, null);
+			}
 		}
-
 		testIssues.clear();
 	}
 
