@@ -123,8 +123,8 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
-		} catch (JiraRemoteMessageException e) {
-			assertThat(e.getMessage(), either(containsString(resolveMsg)).or(equalTo("Workflow Action Invalid")));
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
 		}
 
 		// have to get "close" operation after resolving issue
@@ -137,19 +137,15 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
-		} catch (JiraRemoteMessageException e) {
-			assertThat(e.getMessage(), either(containsString(resolveMsg)).or(equalTo("Workflow Action Invalid")));
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
 		}
 
 		try {
 			client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(
-					e.getMessage(),
-					either(
-							containsString("It seems that you have tried to perform a workflow operation (Close Issue) that is not valid for the current state of this issue ")).or(
-							equalTo("Workflow Action Invalid")));
+			assertThat(e.getMessage(), containsString("Action 701 is invalid"));
 		}
 
 		String reopenOperation = JiraTestUtil.getOperation(client, issue.getKey(), "reopen");
