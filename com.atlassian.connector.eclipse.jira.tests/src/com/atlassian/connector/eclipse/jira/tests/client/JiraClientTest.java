@@ -89,12 +89,8 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.advanceIssueWorkflow(issue, startOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
-		} catch (JiraRemoteMessageException e) {
-			assertThat(
-					e.getMessage(),
-					either(
-							containsString("It seems that you have tried to perform a workflow operation (Start Progress) that is not valid for the current state of this issue ")).or(
-							equalTo("Workflow Action Invalid")));
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), containsString("Action 4 is invalid"));
 		}
 
 		String stopOperation = JiraTestUtil.getOperation(client, issue.getKey(), "stop");
@@ -104,11 +100,7 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, stopOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(
-					e.getMessage(),
-					either(
-							containsString("It seems that you have tried to perform a workflow operation (Stop Progress) that is not valid for the current state of this issue ")).or(
-							equalTo("Workflow Action Invalid")));
+			assertThat(e.getMessage(), containsString("Action 301 is invalid"));
 		}
 		client.advanceIssueWorkflow(issue, startOperation, null, null);
 	}

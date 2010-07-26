@@ -527,7 +527,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 		try {
 			return super.callOnce(monitor, runnable);
 		} catch (RemotePermissionException e) {
-			throw new JiraInsufficientPermissionException(e.getMessage());
+			throw new JiraInsufficientPermissionException(e.getFaultString());
 		} catch (RemoteAuthenticationException e) {
 			String msg = e.toString();
 			if (msg.contains("maximum") || msg.contains("elevated security check")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -912,7 +912,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 			public String call() throws Exception {
 				RemoteIssue remoteIssue = new RemoteIssue();
 
-				remoteIssue.setProject(issue.getProject().getId());
+				remoteIssue.setProject(issue.getProject().getKey());
 				remoteIssue.setType(issue.getType().getId());
 				remoteIssue.setSummary(issue.getSummary());
 
