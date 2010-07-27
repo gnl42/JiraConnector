@@ -926,8 +926,6 @@ public class JiraSoapClient extends AbstractSoapClient {
 					remoteIssue.setDuedate(dueDate);
 				}
 
-				issue.setInitialEstimate(issue.getEstimate());
-
 				if (issue.getComponents() != null) {
 					remoteIssue.setComponents(JiraSoapConverter.convert(issue.getComponents()));
 				}
@@ -962,6 +960,12 @@ public class JiraSoapClient extends AbstractSoapClient {
 							remoteIssue, Long.parseLong(issue.getSecurityLevel().getId()));
 				} else {
 					remoteIssue = getSoapService().createIssue(loginToken.getCurrentValue(), remoteIssue);
+				}
+
+				if (remoteIssue != null) {
+					getSoapService().updateIssue(loginToken.getCurrentValue(), remoteIssue.getKey(),
+							new RemoteFieldValue[] { new RemoteFieldValue("timetracking", //$NON-NLS-1$
+									new String[] { Long.toString(issue.getEstimate() / 60) + "m" }) }); //$NON-NLS-1$
 				}
 
 				return remoteIssue != null ? remoteIssue.getKey() : null;
