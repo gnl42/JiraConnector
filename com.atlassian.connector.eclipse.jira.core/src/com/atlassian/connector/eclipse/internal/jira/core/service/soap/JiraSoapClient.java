@@ -962,7 +962,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 					remoteIssue = getSoapService().createIssue(loginToken.getCurrentValue(), remoteIssue);
 				}
 
-				if (remoteIssue != null) {
+				if (remoteIssue != null && issue.getEstimate() != 0) {
 					getSoapService().updateIssue(loginToken.getCurrentValue(), remoteIssue.getKey(),
 							new RemoteFieldValue[] { new RemoteFieldValue("timetracking", //$NON-NLS-1$
 									new String[] { Long.toString(issue.getEstimate() / 60) + "m" }) }); //$NON-NLS-1$
