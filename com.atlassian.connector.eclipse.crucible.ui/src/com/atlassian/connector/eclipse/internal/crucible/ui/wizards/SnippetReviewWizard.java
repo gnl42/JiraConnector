@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
@@ -63,8 +64,9 @@ public class SnippetReviewWizard extends Wizard {
 				} else {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
+							StatusHandler.log(job.getStatus());
 							MessageDialog.openError(WorkbenchUtil.getShell(), "Failed to create review",
-									job.getStatus().getMessage());
+									job.getStatus().getMessage() + "\n\nSee error log for details.");
 						}
 					});
 				}
