@@ -160,7 +160,8 @@ public final class CrucibleUiUtil {
 		return new Reviewer(user.getUsername(), user.getDisplayName(), completed);
 	}
 
-	public static String getCurrentUsername(TaskRepository repository) {
+	@Nullable
+	public static String getCurrentUsername(@NotNull TaskRepository repository) {
 		/*
 		 * String currentUser = CrucibleCorePlugin.getRepositoryConnector() .getClientManager() .getClient(repository)
 		 * .getUserName();
@@ -168,10 +169,12 @@ public final class CrucibleUiUtil {
 		return repository.getUserName();
 	}
 
-	public static User getCachedUser(String userName, TaskRepository repository) {
-		for (User user : getCachedUsers(repository)) {
-			if (userName.equals(user.getUsername())) {
-				return user;
+	public static User getCachedUser(@Nullable String userName, TaskRepository repository) {
+		if (userName != null) {
+			for (User user : getCachedUsers(repository)) {
+				if (userName.equals(user.getUsername())) {
+					return user;
+				}
 			}
 		}
 		return null;

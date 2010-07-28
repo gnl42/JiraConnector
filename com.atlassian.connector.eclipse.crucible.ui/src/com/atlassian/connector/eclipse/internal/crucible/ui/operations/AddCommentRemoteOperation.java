@@ -27,9 +27,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+
 import java.util.HashMap;
 
 /**
@@ -138,12 +140,12 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 		if (commentLines != null) {
 			if (reviewItem.isOldFile()) {
 				newComment.setFromStartLine(commentLines.getStartLine());
-				newComment.setFromEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines());
+				newComment.setFromEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines() - 1);
 				newComment.setFromLineInfo(true);
 				newComment.setToLineInfo(false);
 			} else {
 				newComment.setToStartLine(commentLines.getStartLine());
-				newComment.setToEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines());
+				newComment.setToEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines() - 1);
 				newComment.setFromLineInfo(false);
 				newComment.setToLineInfo(true);
 			}

@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedExcept
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,6 +35,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class CreateSnippetReviewJob extends CrucibleReviewChangeJob {
 
@@ -79,31 +79,18 @@ public class CreateSnippetReviewJob extends CrucibleReviewChangeJob {
 		InputStream stream = file.getContents();
 		StringBuffer sb = new StringBuffer();
 		try {
-			boolean include = false;
-			int start = 1, count = -1, current = 1;
+			int start = 1, count = -1;
 			if (selection.getLineRange() != null) {
 				start = selection.getLineRange().getStartLine();
 				count = selection.getLineRange().getNumberOfLines();
 			}
-			LineIterator lines;
-			try {
-				lines = IOUtils.lineIterator(stream, file.getCharset());
-				for (; lines.hasNext() && (count == -1 || --count > 0); ++current) {
-					String line = lines.nextLine();
-
-					if (start == current) {
-						include = true;
-					}
-
-					if (include) {
-						sb.append(line);
-						sb.append("\n");
-					}
-				}
-			} catch (IOException e) {
-				throw new CoreException(
-						new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error reading a file", e));
+			List<?> lines = IOUtils.readLines(stream);
+			for (int i = 0, s = (count == -1 ? lines.size() : count); i < s; ++i) {
+				sb.append(lines.get(start - 1 + i));
+				sb.append("\n");
 			}
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error reading a file", e));
 		} finally {
 			IOUtils.closeQuietly(stream);
 		}

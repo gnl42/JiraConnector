@@ -117,7 +117,7 @@ public final class AtlassianUiUtil {
 		if (selection instanceof TextSelection) {
 			TextSelection textSelection = ((TextSelection) selection);
 			return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
-					- textSelection.getStartLine());
+					- textSelection.getStartLine() + 1);
 		}
 		return null;
 	}
