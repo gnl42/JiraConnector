@@ -15,6 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -125,6 +127,7 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
 
 			Link link = new Link(parentComposite, SWT.NONE);
+			toolkit.adapt(link, true, true);
 			link.setText("<a>Show review files</a>");
 			link.setToolTipText("Activates this review (if not already active) "
 					+ "and focuses on Review Explorer view populated with review files.");
@@ -141,24 +144,44 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 					}
 				}
 			});
+
+			for (CrucibleFileInfo file : crucibleReview.getFiles()) {
+				if (file.getRepositoryType() == RepositoryType.PATCH) {
+					Label patch = toolkit.createLabel(
+							parentComposite,
+							"Review contains patches which are not supported currently in IDE. To view them you need to go to Crucible.",
+							SWT.WRAP);
+					GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(patch);
+
+					createOpenBrowserLink(toolkit, parentComposite);
+
+					break;
+				}
+			}
 		} else {
 			Label t = toolkit.createLabel(parentComposite,
-					"If you want to see a content of the snippet review you need to go to web.", SWT.WRAP);
+					"If you want to see a content of the snippet review you need to go to Crucible.", SWT.WRAP);
 
 			GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
 
-			Link link = new Link(parentComposite, SWT.NONE);
-			link.setText("<a>Open review in browser</a>");
-			link.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					TasksUiUtil.openWithBrowser(CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
-							CrucibleUiUtil.getCrucibleTask(crucibleReview));
-				}
-			});
+			createOpenBrowserLink(toolkit, parentComposite);
 		}
 
 		return parentComposite;
+	}
+
+	private Link createOpenBrowserLink(FormToolkit toolkit, Composite parentComposite) {
+		Link link = new Link(parentComposite, SWT.NONE);
+		toolkit.adapt(link, true, true);
+		link.setText("<a>Open review in browser</a>");
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TasksUiUtil.openWithBrowser(CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
+						CrucibleUiUtil.getCrucibleTask(crucibleReview));
+			}
+		});
+		return link;
 	}
 
 	@Override
