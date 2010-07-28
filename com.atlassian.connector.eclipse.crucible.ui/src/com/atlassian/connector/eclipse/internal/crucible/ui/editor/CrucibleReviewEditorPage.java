@@ -22,10 +22,10 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.core.client.DownloadAvatarsJob;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages;
-import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.AvatarImages.AvatarSize;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompleteReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.AbstractCrucibleEditorFormPart;
@@ -39,6 +39,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.BasicReview;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
@@ -262,8 +263,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private ISelectionProvider selectionProviderAdapter;
 
-	private Control highlightedControl;
-
 	private Color selectionColor;
 
 	private final Color colorIncoming;
@@ -418,9 +417,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				monitor.subTask("Retrieving Crucible Review");
 
 				// TODO clean this up
-				Review cachedReview = CrucibleCorePlugin.getDefault()
-						.getReviewCache()
-						.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
+				Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(
+						getTask().getRepositoryUrl(), getTask().getTaskId());
 
 				if (cachedReview == null || force) {
 					review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
@@ -519,7 +517,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		focusablePart = new CrucibleTitleAndStatePart();
 		parts.add(focusablePart);
 		parts.add(new CrucibleParticipantsPart());
-		parts.add(new CrucibleObjectivesPart());
+		if (review.getType() == ReviewType.REVIEW) {
+			parts.add(new CrucibleObjectivesPart());
+		}
 		parts.add(new EmptyReviewFilesPart());
 	}
 
@@ -530,8 +530,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		}
 
 		parts.clear();
-
-		highlightedControl = null;
 
 		Menu menu = editorComposite.getMenu();
 		// preserve context menu

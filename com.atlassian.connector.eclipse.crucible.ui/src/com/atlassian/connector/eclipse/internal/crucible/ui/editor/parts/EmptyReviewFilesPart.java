@@ -13,9 +13,12 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.ReviewType;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
@@ -23,6 +26,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -38,6 +42,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
 import java.util.Collection;
 
 /**
@@ -109,31 +114,49 @@ public class EmptyReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		parentComposite = toolkit.createComposite(commentsSection);
 		parentComposite.setLayout(GridLayoutFactory.fillDefaults().create());
 
-		Label t = toolkit.createLabel(parentComposite,
-				"You need to activate this task to see review files and comments. "
-						+ "You will be automatically switched to Crucible Review Perspective. "
-						+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
-				SWT.WRAP);
+		if (crucibleReview.getType() == ReviewType.REVIEW) {
+			Label t = toolkit.createLabel(
+					parentComposite,
+					"You need to activate this task to see review files and comments. "
+							+ "You will be automatically switched to Crucible Review Perspective. "
+							+ "Don't worry though when you deactivate the task you'll be right back in this perspective.",
+					SWT.WRAP);
 
-		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
+			GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
 
-		Link link = new Link(parentComposite, SWT.NONE);
-		link.setText("<a>Show review files</a>");
-		link.setToolTipText("Activates this review (if not already active) "
-				+ "and focuses on Review Explorer view populated with review files.");
-		link.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TasksUi.getTaskActivityManager().activateTask(crucibleEditor.getTask());
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-							CrucibleUiConstants.REVIEW_EXPLORER_VIEW);
-				} catch (PartInitException e1) {
-					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-							"Failed to show Review Explorer View", e1));
+			Link link = new Link(parentComposite, SWT.NONE);
+			link.setText("<a>Show review files</a>");
+			link.setToolTipText("Activates this review (if not already active) "
+					+ "and focuses on Review Explorer view populated with review files.");
+			link.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					TasksUi.getTaskActivityManager().activateTask(crucibleEditor.getTask());
+					try {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+								CrucibleUiConstants.REVIEW_EXPLORER_VIEW);
+					} catch (PartInitException e1) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Failed to show Review Explorer View", e1));
+					}
 				}
-			}
-		});
+			});
+		} else {
+			Label t = toolkit.createLabel(parentComposite,
+					"If you want to see a content of the snippet review you need to go to web.", SWT.WRAP);
+
+			GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(t);
+
+			Link link = new Link(parentComposite, SWT.NONE);
+			link.setText("<a>Open review in browser</a>");
+			link.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					TasksUiUtil.openWithBrowser(CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview),
+							CrucibleUiUtil.getCrucibleTask(crucibleReview));
+				}
+			});
+		}
 
 		return parentComposite;
 	}
