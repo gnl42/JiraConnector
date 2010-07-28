@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class CrucibleRepositorySelectionWizard extends RepositorySelectionWizard {
 
-	public CrucibleRepositorySelectionWizard(SelectCrucible21RepositoryPage page) {
+	public CrucibleRepositorySelectionWizard(SelectCrucibleVersionOrNewerRepositoryPage page) {
 		super(page);
 		page.setWizard(this);
 	}

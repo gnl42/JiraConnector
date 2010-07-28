@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleVersionOrNewerRepositoryPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.ui.commons.ResourceEditorBean;
@@ -49,7 +49,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 			boolean isPostCommit, final Shell shell) {
 
 		if (isPostCommit) {
-			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
+			SelectCrucibleVersionOrNewerRepositoryPage selectRepositoryPage = new SelectCrucibleVersionOrNewerRepositoryPage() {
 				@Override
 				protected IWizard createWizard(TaskRepository taskRepository) {
 					ReviewWizard wizard = new ReviewWizard(taskRepository, MiscUtil.buildHashSet(
@@ -112,7 +112,7 @@ public class CreateReviewFromResourcesAction extends AbstractReviewFromResources
 			boolean isCrucible21Required, Shell shell) {
 
 		if (isCrucible21Required) {
-			SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
+			SelectCrucibleVersionOrNewerRepositoryPage selectRepositoryPage = new SelectCrucibleVersionOrNewerRepositoryPage() {
 				@Override
 				protected IWizard createWizard(TaskRepository taskRepository) {
 					ReviewWizard wizard = new ReviewWizard(taskRepository,

@@ -25,6 +25,14 @@
                label="Create Review"
                tooltip="Create Review">
          </action>
+         <action
+               class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateSnippetReviewFromResourcesAction"
+               id="com.atlassian.connector.eclipse.internal.crucible.ui.CreateSnippetReviewAction"
+               menubarPath="team.main/group10"
+               icon="icons/obj16/crucible.png"
+               label="Create Snippet Review"
+               tooltip="Create Snippet Review">
+         </action>
       </objectContribution>
 	</extension>
 

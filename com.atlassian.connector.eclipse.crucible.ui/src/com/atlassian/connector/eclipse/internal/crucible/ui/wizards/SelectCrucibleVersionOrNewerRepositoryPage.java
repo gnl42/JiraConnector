@@ -13,13 +13,14 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleVersionInfo;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.tasks.core.ITaskRepositoryFilter;
@@ -28,9 +29,11 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoryLabelProvider;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,15 +43,24 @@ import java.util.Set;
  * @author Wojciech Seliga
  */
 @SuppressWarnings("restriction")
-public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepositoryPage {
+public abstract class SelectCrucibleVersionOrNewerRepositoryPage extends SelectCrucibleRepositoryPage {
 
 	private CrucibleRepositorySelectionWizard crucibleRepositoryWizard;
 
 	protected TaskRepository selectedRepository;
 
-	public SelectCrucible21RepositoryPage() {
+	private final CrucibleVersionInfo version;
+
+	public SelectCrucibleVersionOrNewerRepositoryPage() {
+		this(new CrucibleVersionInfo("2.1", null));
+	}
+
+	public SelectCrucibleVersionOrNewerRepositoryPage(CrucibleVersionInfo version) {
 		super(ENABLED_CRUCIBLE_REPOSITORY_FILTER);
-		setDescription("Add new repositories using the Task Repositories view.\nOnly Crucible 2.1 or newer supports current operation.");
+		setDescription(NLS.bind(
+				"Add new repositories using the Task Repositories view.\nOnly Crucible {0} or newer supports current operation.",
+				version.toString()));
+		this.version = version;
 	}
 
 	@Override
@@ -56,8 +68,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		super.createControl(parent);
 
 		// we need our own label provider to mark not matching repos as not clickable instead of hide them
-		getViewer().setLabelProvider(
-				new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider()));
+		getViewer().setLabelProvider(new DelegatingStyledCellLabelProvider(new LocalRepositoryLabelProvider()));
 
 		getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -65,7 +76,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.getFirstElement() instanceof TaskRepository) {
 					selectedRepository = (TaskRepository) selection.getFirstElement();
-					if (isSelectedRepo21OrNewer()) {
+					if (isSelectedRepoInVersionOrNewer()) {
 						setPageComplete(true);
 					} else {
 						setPageComplete(false);
@@ -99,7 +110,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 				public void run() {
 					if (getControl() != null && !getControl().isDisposed()) {
 						// retrieve Crucible repos version and filter list of available repos in the wizard
-						fillCrucibleVersionInfo(SelectCrucible21RepositoryPage.this);
+						fillCrucibleVersionInfo(SelectCrucibleVersionOrNewerRepositoryPage.this);
 						getWizard().getContainer().updateButtons();
 					}
 				}
@@ -109,21 +120,19 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return isSelectedRepo21OrNewer() && getSelectedNode() != null
-				&& getNextPage() != null;
+		return isSelectedRepoInVersionOrNewer() && getSelectedNode() != null && getNextPage() != null;
 	}
 
-	private boolean isSelectedRepo21OrNewer() {
+	private boolean isSelectedRepoInVersionOrNewer() {
 		if (selectedRepository == null) {
 			return false;
 		}
 		final CrucibleVersionInfo crucibleVersionInfo = CrucibleUiUtil.getCrucibleVersionInfo(selectedRepository);
-		return crucibleVersionInfo != null && crucibleVersionInfo.isVersion21OrGreater();
+		return crucibleVersionInfo != null && crucibleVersionInfo.compareTo(version) >= 0;
 	}
 
 	public boolean canFinish() {
-		return isSelectedRepo21OrNewer() && getSelectedNode() != null
-				&& getNextPage() == null;
+		return isSelectedRepoInVersionOrNewer() && getSelectedNode() != null && getNextPage() == null;
 	}
 
 	private void fillCrucibleVersionInfo(final WizardPage page) {
@@ -162,10 +171,9 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		super.setWizard(wizard);
 	}
 
-	public final static class LocalRepositoryLabelProvider extends TaskRepositoryLabelProvider implements
-			IStyledLabelProvider {
+	public final class LocalRepositoryLabelProvider extends TaskRepositoryLabelProvider implements IStyledLabelProvider {
 
-		private static final Styler GRAY_COLOR_STYLER = new Styler() {
+		private final Styler GRAY_COLOR_STYLER = new Styler() {
 
 			private static final String COLOR_GREY = "acfeColorGrey";
 			{
@@ -189,11 +197,12 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 					styledString.append(super.getText(element), GRAY_COLOR_STYLER);
 					styledString.append(" (unknown Crucible version)", StyledString.DECORATIONS_STYLER);
 				} else {
-					if (crucibleVersionInfo.isVersion21OrGreater()) {
+					if (crucibleVersionInfo.compareTo(version) >= 0) {
 						styledString.append(super.getText(element));
 					} else {
 						styledString.append(super.getText(element), GRAY_COLOR_STYLER);
-						styledString.append(" (this repository version is below 2.1)", StyledString.DECORATIONS_STYLER);
+						styledString.append(NLS.bind(" (this repository version is below {0})", version.toString()),
+								StyledString.DECORATIONS_STYLER);
 					}
 				}
 

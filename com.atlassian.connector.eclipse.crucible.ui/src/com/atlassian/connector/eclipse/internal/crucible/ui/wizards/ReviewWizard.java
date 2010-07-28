@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
@@ -26,6 +25,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommen
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddDecoratedResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddUploadItemsToReviewJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.OpenReviewAsTaskJob;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
@@ -41,6 +41,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -50,21 +51,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IWorkbench;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,13 +80,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET,
-		ADD_PATCH,
-		ADD_WORKSPACE_PATCH,
-		ADD_SCM_RESOURCES,
-		ADD_UPLOAD_ITEMS,
-		ADD_RESOURCES,
-		ADD_COMMENT_TO_FILE;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_RESOURCES, ADD_UPLOAD_ITEMS, ADD_RESOURCES, ADD_COMMENT_TO_FILE;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -210,18 +197,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// ignore
-		super.init(workbench, selection);
-	}
-
-	@Override
-	protected ITaskMapping getInitializationData() {
-		// ignore
-		return super.getInitializationData();
-	}
-
-	@Override
 	public void addPages() {
 		if (types.contains(Type.ADD_CHANGESET)) {
 			addChangeSetsFromCruciblePage = new SelectChangesetsFromCruciblePage(getTaskRepository(),
@@ -331,7 +306,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					selectedProject != null ? selectedProject.getKey() : null);
 
 			// save checkbox selections
-			CrucibleUiPlugin.getDefault().updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
+			CrucibleUiPlugin.getDefault().updateAllowAnyoneOption(getTaskRepository(),
+					detailsPage.isAllowAnyoneToJoin());
 			CrucibleUiPlugin.getDefault().updateStartReviewOption(getTaskRepository(),
 					detailsPage.isStartReviewImmediately());
 		}
@@ -394,8 +370,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		// create review from changeset
 		if (addChangeSetsPage != null || addChangeSetsFromCruciblePage != null) {
-			final Map<String, Set<String>> changesetsToAdd = addChangeSetsPage != null ? addChangeSetsPage
-					.getSelectedChangesets()
+			final Map<String, Set<String>> changesetsToAdd = addChangeSetsPage != null ? addChangeSetsPage.getSelectedChangesets()
 					: addChangeSetsFromCruciblePage.getSelectedChangesets();
 
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
@@ -514,22 +489,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				final ITask task = TasksUi.getRepositoryModel().createTask(getTaskRepository(),
-						CrucibleUtil.getTaskIdFromPermId(crucibleReview.getPermId().getId()));
-				try {
-					TaskData taskData = CrucibleUiUtil.getClient(crucibleReview).getTaskData(getTaskRepository(),
-							task.getTaskId(), monitor);
-					CrucibleCorePlugin.getRepositoryConnector().updateTaskFromTaskData(getTaskRepository(), task,
-							taskData);
-					TasksUiInternal.getTaskList().addTask(task, null);
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							TasksUiUtil.openTask(task);
-						}
-					});
-				} catch (CoreException e) {
-					// ignore
-				}
+				new OpenReviewAsTaskJob(getTaskRepository(), crucibleReview).run(monitor);
 			}
 		};
 
