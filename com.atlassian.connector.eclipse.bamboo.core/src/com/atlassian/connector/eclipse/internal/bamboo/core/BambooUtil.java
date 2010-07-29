@@ -115,6 +115,9 @@ public final class BambooUtil {
 	}
 
 	public static boolean isUseFavourites(TaskRepository taskRepository) {
+		if (taskRepository == null) {
+			return false;
+		}
 		return Boolean.valueOf(taskRepository.getProperty(KEY_USE_FAVOURITES));
 	}
 

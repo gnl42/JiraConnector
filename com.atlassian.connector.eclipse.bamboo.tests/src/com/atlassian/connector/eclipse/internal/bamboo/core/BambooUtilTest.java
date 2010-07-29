@@ -68,6 +68,8 @@ public class BambooUtilTest extends TestCase {
 
 		BambooUtil.setUseFavourites(repo, false);
 		assertFalse(BambooUtil.isUseFavourites(repo));
+
+		assertFalse(BambooUtil.isUseFavourites(null));
 	}
 
 	public void testIsSameBuildPlan() {
