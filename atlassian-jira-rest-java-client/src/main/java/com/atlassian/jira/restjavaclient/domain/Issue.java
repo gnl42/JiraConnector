@@ -13,6 +13,13 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
+    public Issue(URI self, String key) {
+        this.self = self;
+        this.key = key;
+    }
+
+    private final URI self;
+
 	private User reporter;
 	private User assignee;
 	private String key;
@@ -40,7 +47,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	}
 
 	public URI getSelf() {
-		return null;
+		return self;
 	}
 
 	public Iterable<String> getExpandos() {
