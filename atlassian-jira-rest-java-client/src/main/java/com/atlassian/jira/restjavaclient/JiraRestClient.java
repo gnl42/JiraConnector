@@ -10,7 +10,7 @@ import com.atlassian.jira.restjavaclient.domain.User;
  */
 public interface JiraRestClient {
 	void login();
-	Issue getIssue(IssueArgs args);
+	Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
 	User getUser();
 	
 }

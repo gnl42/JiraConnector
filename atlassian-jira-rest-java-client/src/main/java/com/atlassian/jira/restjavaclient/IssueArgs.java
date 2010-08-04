@@ -1,5 +1,7 @@
 package com.atlassian.jira.restjavaclient;
 
+import javax.annotation.Nullable;
+
 /**
  * TODO: Document this class / interface here
  *
@@ -28,7 +30,13 @@ public class IssueArgs {
 
 	private boolean withComments;
 	private boolean withAttachments;
-	private String renderer;
+
+    @Nullable
+    public String getRenderer() {
+        return renderer;
+    }
+
+    private String renderer;
 
 
 	public boolean withComments() {
