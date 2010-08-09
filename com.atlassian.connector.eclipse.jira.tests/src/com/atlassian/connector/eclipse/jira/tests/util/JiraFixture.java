@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.jira.tests.util;
 
-import org.eclipse.mylyn.tests.util.TestFixture;
-import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
-
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
+
+import org.eclipse.mylyn.tests.util.TestFixture;
+import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
 
 /**
  * @author Steffen Pingel
@@ -40,7 +40,7 @@ public class JiraFixture extends TestFixture {
 			"4.1.1", "522", "Enterprise");
 
 	public static JiraFixture SNAPSHOT = new JiraFixture(getServerUrl("jira-enterprise-snapshot"), //
-			"4.2-SNAPSHOT", "565", "Enterprise");
+			"4.2-SNAPSHOT", "570", "Enterprise");
 
 	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0, SNAPSHOT };
 
