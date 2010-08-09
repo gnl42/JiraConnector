@@ -40,4 +40,21 @@ public class User implements AddressableEntity {
         return Objects.toStringHelper(this).add("name", name)
                 .add("displayName", displayName).add("self", self).toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            User that = (User) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.name, that.name)
+                    && Objects.equal(this.displayName, that.displayName);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, name, displayName);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.atlassian.jira.restjavaclient.domain;
 
 import com.atlassian.jira.restjavaclient.AddressableEntity;
+import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
@@ -37,6 +38,7 @@ public class Attachment implements AddressableEntity {
     public boolean hasThumbnail() {
         return thumbnailUri != null;
     }
+
     public URI getSelf() {
         return null;
     }
@@ -68,5 +70,40 @@ public class Attachment implements AddressableEntity {
     @Nullable
     public URI getThumbnailUri() {
         return thumbnailUri;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("filename", filename).
+                add("author", author).
+                add("creationDate", creationDate).
+                add("size", size).
+                add("mimeType", mimeType).
+                add("contentUri", contentUri).
+                add("thumbnailUri", thumbnailUri).
+                toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Attachment) {
+            Attachment that = (Attachment) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.filename, that.filename)
+                    && Objects.equal(this.author, that.author)
+                    && Objects.equal(this.creationDate, that.creationDate)
+                    && Objects.equal(this.size, that.size)
+                    && Objects.equal(this.mimeType, that.mimeType)
+                    && Objects.equal(this.contentUri, that.contentUri)
+                    && Objects.equal(this.thumbnailUri, that.thumbnailUri);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
     }
 }

@@ -1,8 +1,6 @@
 package com.atlassian.jira.restjavaclient;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.protocol.BasicHttpContext;
+import org.apache.commons.httpclient.HttpClient;
 
 /**
  * TODO: Document this class / interface here

@@ -19,7 +19,11 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * TODO: Document this class / interface here
@@ -62,9 +66,35 @@ public class JerseyJiraRestClient implements JiraRestClient {
         return Splitter.on(',').split(expando);
     }
 
+	private static final String UPDATED_ATTR = "updated";
+	private static final String CREATED_ATTR = "created";
+
+
+	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList("summary", UPDATED_ATTR, CREATED_ATTR));
+
+
+	static Collection<Field> parseFields(JSONObject json) throws JSONException {
+		ArrayList<Field> res = new ArrayList<Field>(json.length());
+		for (Iterator<String> it =  json.keys(); it.hasNext();) {
+			final String key = it.next();
+			if (SPECIAL_FIELDS.contains(key)) {
+				continue;
+			}
+			final Object value = json.get(key);
+			if (value instanceof JSONObject) {
+				
+			} else {
+				res.add(new Field(key, value.toString()));
+			}
+		}
+		return res;
+	}
+
+
     @Nullable
     String getExpandoString(IssueArgs args) {
         Collection<String> expandos = new ArrayList<String>();
+		expandos.add("fields"); // this IMO always vital;
         StringBuilder sb = new StringBuilder();
         if (args.withAttachments()) {
             expandos.add("attachments");
@@ -102,6 +132,20 @@ public class JerseyJiraRestClient implements JiraRestClient {
     }
 
 
+	IssueType parseIssueType(JSONObject json) throws JSONException {
+		final URI selfUri = getSelfUri(json);
+		final String name = json.getString("name");
+		final boolean isSubtask = json.getBoolean("subtask");
+		return new IssueType(selfUri, name, isSubtask);
+	}
+
+	JSONObject getNestedObject(JSONObject json, String... path) throws JSONException {
+		for (String s : path) {
+			json = json.getJSONObject(s);
+		}
+		return json;
+	}
+
     public Issue getIssue(final IssueArgs args, ProgressMonitor progressMonitor) {
         final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
         uriBuilder.path("issue").path(args.getKey());
@@ -115,7 +159,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
         final JSONObject s = issueResource.get(JSONObject.class);
 
         try {
-            System.out.println(s.toString(4));
+//            System.out.println(s.toString(4));
 
             final ExpandableProperty<Comment> expandableComment = parseExpandableProperty(s.getJSONObject("comments"),
                     new CommentExpandablePropertyBuilder(args));
@@ -126,8 +170,9 @@ public class JerseyJiraRestClient implements JiraRestClient {
                 }
             });
             final Iterable<String> expandos = parseExpandos(s);
-
-            return new Issue(getSelfUri(s), s.getString("key"), expandos, expandableComment, attachments);
+			final Collection<Field> fields = parseFields(s.getJSONObject("fields"));
+			final IssueType issueType = parseIssueType(getNestedObject(s, "fields", "issuetype"));
+			return new Issue(getSelfUri(s), s.getString("key"), issueType, expandos, expandableComment, attachments, fields);
         } catch (JSONException e) {
             throw new RestClientException(e);
         }
@@ -163,7 +208,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
         final DateTime creationDate = parseDateTime(json.getString("created"));
         final int size = json.getInt("size");
         final String mimeType = json.getString("mimeType");
-        final URI contentURI = parseURI("content");
+        final URI contentURI = parseURI(json.getString("content"));
         final URI thumbnailURI = json.has(THUMBNAIL) ? parseURI(THUMBNAIL) : null;
         return new Attachment(selfUri, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);
     }

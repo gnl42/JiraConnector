@@ -3,6 +3,8 @@ package com.atlassian.jira.restjavaclient.domain;
 import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.ExpandableResource;
+import com.google.common.base.Objects;
+import org.joda.time.DateTime;
 
 import java.net.URI;
 import java.util.Collection;
@@ -14,13 +16,15 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(URI self, String key, Iterable<String> expandos, ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments) {
+    public Issue(URI self, String key, IssueType issueType, Iterable<String> expandos, ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields) {
         this.self = self;
         this.key = key;
         this.expandos = expandos;
         this.comments = comments;
         this.attachments = attachments;
-    }
+		this.fields = fields;
+		this.issueType = issueType;
+	}
 
     private final URI self;
     private final Iterable<String> expandos;
@@ -28,6 +32,9 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private User assignee;
 	private String key;
 	private Collection<Field> fields;
+	private IssueType issueType;
+	private DateTime creationDate;
+	private DateTime updateDate;
 
 	public User getReporter() {
 		return reporter;
@@ -69,4 +76,21 @@ public class Issue implements AddressableEntity, ExpandableResource {
     }
 
     private final ExpandableProperty<Comment> comments;
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).
+				add("self", self).
+				add("key", key).
+				add("expandos", expandos).
+				add("reporter", reporter).
+				add("assignee", assignee).
+				add("fields", fields).
+				add("issueType", issueType).
+				add("creationDate", creationDate).
+				add("updateDate", updateDate).
+				add("attachments", attachments).
+				add("comments", comments).
+				toString();
+	}
 }
