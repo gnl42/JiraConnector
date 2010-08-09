@@ -37,7 +37,7 @@ public class CrucibleRepositorySettingsPageTest extends TestCase {
 
 	public void testNotFound() throws Exception {
 		String message = "HTTP 404 (Not Found) - Did you enable Remote API in Crucible?";
-		testValidateSettings("https://studio.atlassian.com/dupa", IMessageProvider.ERROR, message);
+		testValidateSettings("https://studio.atlassian.com/some-non-existing-url", IMessageProvider.ERROR, message);
 	}
 
 	private void testValidateSettings(String url, int messageType, String message) throws Exception {
