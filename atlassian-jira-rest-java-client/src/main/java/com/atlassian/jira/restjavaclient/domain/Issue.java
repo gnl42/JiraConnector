@@ -16,23 +16,29 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(URI self, String key, IssueType issueType, Iterable<String> expandos, ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields) {
+    public Issue(URI self, String key, Project project, IssueType issueType, Iterable<String> expandos, ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields, DateTime creationDate, DateTime updateDate, URI transitionsUri) {
         this.self = self;
         this.key = key;
-        this.expandos = expandos;
+		this.project = project;
+		this.expandos = expandos;
         this.comments = comments;
         this.attachments = attachments;
 		this.fields = fields;
 		this.issueType = issueType;
+		this.creationDate = creationDate;
+		this.updateDate = updateDate;
+		this.transitionsUri = transitionsUri;
 	}
 
     private final URI self;
-    private final Iterable<String> expandos;
+	private IssueType issueType;
+	private Project project;
+	private final URI transitionsUri;
+	private final Iterable<String> expandos;
 	private User reporter;
 	private User assignee;
 	private String key;
 	private Collection<Field> fields;
-	private IssueType issueType;
 	private DateTime creationDate;
 	private DateTime updateDate;
 
@@ -75,13 +81,18 @@ public class Issue implements AddressableEntity, ExpandableResource {
         return comments;
     }
 
-    private final ExpandableProperty<Comment> comments;
+	public Project getProject() {
+		return project;
+	}
+
+	private final ExpandableProperty<Comment> comments;
 
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("key", key).
+				add("project", project).
 				add("expandos", expandos).
 				add("reporter", reporter).
 				add("assignee", assignee).
@@ -91,6 +102,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("updateDate", updateDate).
 				add("attachments", attachments).
 				add("comments", comments).
+				add("transitionsUri", transitionsUri).
 				toString();
 	}
 }

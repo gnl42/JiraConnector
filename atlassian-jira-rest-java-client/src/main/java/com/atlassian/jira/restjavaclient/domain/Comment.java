@@ -12,12 +12,13 @@ import java.net.URI;
  * @since v0.1
  */
 public class Comment implements AddressableEntity {
+	private final URI self;
 	private final User author;
 	private final User updateAuthor;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
 	private final String body;
-	private final URI self;
+	private final String renderer;
 
     public Comment(URI self, String body, User author, User updateAuthor, DateTime creationDate, DateTime updateDate, String renderer) {
         this.author = author;
@@ -29,10 +30,12 @@ public class Comment implements AddressableEntity {
         this.renderer = renderer;
     }
 
-    private final String renderer;
-	
+	public String getRenderer() {
+		return renderer;
+	}
+
 	public boolean wasUpdated() {
-		return false;
+		return updateDate.isAfter(creationDate);
 	}
 	public String getBody() {
 		return body;

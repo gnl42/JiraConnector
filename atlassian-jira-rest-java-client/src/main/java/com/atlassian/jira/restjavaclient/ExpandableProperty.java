@@ -1,5 +1,7 @@
 package com.atlassian.jira.restjavaclient;
 
+import com.google.common.base.Objects;
+
 import java.util.Collection;
 
 /**
@@ -29,4 +31,12 @@ public class ExpandableProperty<T> {
     Iterable<T> getItems() {
         return items;
     }
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).
+				add("size", size).
+				add("items", items).
+				toString();
+	}
 }
