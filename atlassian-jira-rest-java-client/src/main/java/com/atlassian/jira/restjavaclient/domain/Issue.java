@@ -6,6 +6,7 @@ import com.atlassian.jira.restjavaclient.ExpandableResource;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Collection;
 
@@ -16,7 +17,9 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(URI self, String key, Project project, IssueType issueType, Iterable<String> expandos, ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields, DateTime creationDate, DateTime updateDate, URI transitionsUri) {
+    public Issue(URI self, String key, Project project, IssueType issueType, Iterable<String> expandos,
+			ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields,
+			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks) {
         this.self = self;
         this.key = key;
 		this.project = project;
@@ -28,6 +31,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		this.creationDate = creationDate;
 		this.updateDate = updateDate;
 		this.transitionsUri = transitionsUri;
+		this.issueLinks = issueLinks;
 	}
 
     private final URI self;
@@ -42,6 +46,9 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private DateTime creationDate;
 	private DateTime updateDate;
 
+	@Nullable
+	private final Collection<IssueLink> issueLinks;
+
 	public User getReporter() {
 		return reporter;
 	}
@@ -52,6 +59,14 @@ public class Issue implements AddressableEntity, ExpandableResource {
 
 	public String getSummary() {
 		return null;
+	}
+
+	/**
+	 * 
+	 * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
+	 */
+	public Iterable<IssueLink> getIssueLinks() {
+		return issueLinks;
 	}
 
 
@@ -103,6 +118,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("attachments", attachments).
 				add("comments", comments).
 				add("transitionsUri", transitionsUri).
+				add("issueLinks", issueLinks).
 				toString();
 	}
 }
