@@ -17,12 +17,14 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(URI self, String key, Project project, IssueType issueType, Iterable<String> expandos,
+    public Issue(URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
 			ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields,
-			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks) {
+			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, ExpandableProperty<Worklog> worklogs,
+			Watchers watchers) {
         this.self = self;
         this.key = key;
 		this.project = project;
+		this.status = status;
 		this.expandos = expandos;
         this.comments = comments;
         this.attachments = attachments;
@@ -32,8 +34,12 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		this.updateDate = updateDate;
 		this.transitionsUri = transitionsUri;
 		this.issueLinks = issueLinks;
+		this.votes = votes;
+		this.worklogs = worklogs;
+		this.watchers = watchers;
 	}
 
+	private final BasicStatus status;
     private final URI self;
 	private IssueType issueType;
 	private Project project;
@@ -45,9 +51,21 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private Collection<Field> fields;
 	private DateTime creationDate;
 	private DateTime updateDate;
+	private final Votes votes;
+
+	private final ExpandableProperty<Comment> comments;
 
 	@Nullable
 	private final Collection<IssueLink> issueLinks;
+
+	private final ExpandableProperty<Attachment> attachments;
+
+	private final ExpandableProperty<Worklog> worklogs;
+	private final Watchers watchers;
+
+	public BasicStatus getStatus() {
+		return status;
+	}
 
 	public User getReporter() {
 		return reporter;
@@ -57,18 +75,18 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return assignee;
 	}
 
+
 	public String getSummary() {
 		return null;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
 	 */
 	public Iterable<IssueLink> getIssueLinks() {
 		return issueLinks;
 	}
-
 
 	public Iterable<Field> getFields() {
 		return fields;
@@ -86,8 +104,6 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return expandos;
 	}
 
-    private final ExpandableProperty<Attachment> attachments;
-
     public ExpandableProperty<Attachment> getAttachments() {
         return attachments;
     }
@@ -100,7 +116,17 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return project;
 	}
 
-	private final ExpandableProperty<Comment> comments;
+	public Votes getVotes() {
+		return votes;
+	}
+
+	public ExpandableProperty<Worklog> getWorklogs() {
+		return worklogs;
+	}
+
+	public Watchers getWatchers() {
+		return watchers;
+	}
 
 	@Override
 	public String toString() {
@@ -108,17 +134,21 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("self", self).
 				add("key", key).
 				add("project", project).
+				add("status", status).
 				add("expandos", expandos).
 				add("reporter", reporter).
-				add("assignee", assignee).
-				add("fields", fields).
+				add("assignee", assignee).addValue("\n").
+				add("fields", fields).addValue("\n").
 				add("issueType", issueType).
 				add("creationDate", creationDate).
-				add("updateDate", updateDate).
-				add("attachments", attachments).
-				add("comments", comments).
+				add("updateDate", updateDate).addValue("\n").
+				add("attachments", attachments).addValue("\n").
+				add("comments", comments).addValue("\n").
 				add("transitionsUri", transitionsUri).
-				add("issueLinks", issueLinks).
+				add("issueLinks", issueLinks).addValue("\n").
+				add("votes", votes).addValue("\n").
+				add("worklogs", worklogs).addValue("\n").
+				add("watchers", watchers).
 				toString();
 	}
 }

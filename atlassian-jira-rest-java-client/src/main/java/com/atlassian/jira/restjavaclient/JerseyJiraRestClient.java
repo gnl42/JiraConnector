@@ -53,6 +53,12 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		if (args.withComments()) {
 			expandos.add("comments");
 		}
+		if (args.withWorklogs()) {
+			expandos.add("worklogs");
+		}
+		if (args.withWatchers()) {
+			expandos.add("watchers.list");
+		}
 		if (expandos.size() == 0) {
 			return null;
 		}

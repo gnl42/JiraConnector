@@ -5,7 +5,6 @@ import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.User;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
@@ -35,7 +34,8 @@ public class JerseyJiraRestClientTest {
 
     @Test
     public void testGetIssue() throws Exception {
-        final Issue issue = client.getIssue(new IssueArgs("TST-1").withAttachments(true).withComments(true),
+        final Issue issue = client.getIssue(
+				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),
                 new NullProgressMonitor());
         assertEquals("TST-1", issue.getKey());
         assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
@@ -60,7 +60,7 @@ public class JerseyJiraRestClientTest {
 
     @Test
     public void testGetIssueNoAttachments() throws Exception {
-        final Issue issue = client.getIssue(new IssueArgs("TST-1").withAttachments(false).withComments(true),
+        final Issue issue = client.getIssue(new IssueArgsBuilder("TST-1").withAttachments(false).withComments(true).build(),
                 new NullProgressMonitor());
         assertEquals("TST-1", issue.getKey());
         assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));

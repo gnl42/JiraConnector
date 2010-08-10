@@ -3,6 +3,7 @@ package com.atlassian.jira.restjavaclient.json;
 import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
+import com.atlassian.jira.restjavaclient.domain.BasicStatus;
 import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.Field;
 import com.atlassian.jira.restjavaclient.domain.Issue;
@@ -10,6 +11,9 @@ import com.atlassian.jira.restjavaclient.domain.IssueLink;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Project;
 import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.Votes;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
+import com.atlassian.jira.restjavaclient.domain.Worklog;
 import com.google.common.base.Splitter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -41,11 +45,11 @@ public class IssueJsonParser {
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList("summary", UPDATED_ATTR, CREATED_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
+	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
+	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
+	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
+	private final WatchersJsonParser watchersJsonParser = new WatchersJsonParser();
 
-
-	interface ExpandablePropertyBuilder<T> {
-		T parse(JSONObject json) throws JSONException;
-	}
 
 	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
 		final String expando = json.getString("expand");
@@ -53,25 +57,6 @@ public class IssueJsonParser {
 	}
 
 	
-	private <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, ExpandablePropertyBuilder<T> expandablePropertyBuilder)
-			throws JSONException {
-		final int numItems = json.getInt("size");
-		final Collection<T> items;
-		JSONArray itemsJa = json.getJSONArray("items");
-
-		if (itemsJa.length() > 0) {
-			items = new ArrayList<T>(numItems);
-			for (int i = 0; i < itemsJa.length(); i++) {
-				final T item = expandablePropertyBuilder.parse(itemsJa.getJSONObject(i));
-				items.add(item);
-			}
-		} else {
-			items = null;
-		}
-
-		return new ExpandableProperty<T>(numItems, items);
-	}
-
 	private Collection<IssueLink> parseIssueLinks(JSONArray jsonArray) throws JSONException {
 		final Collection<IssueLink> issueLinks = new ArrayList<IssueLink>(jsonArray.length());
 		for (int i = 0; i < jsonArray.length(); i++) {
@@ -81,10 +66,11 @@ public class IssueJsonParser {
 	}
 	
 	public Issue parseIssue(IssueArgs args, JSONObject s) throws JSONException {
-		final ExpandableProperty<Comment> expandableComment = parseExpandableProperty(s.getJSONObject("comments"),
+		final ExpandableProperty<Comment> expandableComment = JsonParseUtil.parseExpandableProperty(s.getJSONObject("comments"),
 				new CommentExpandablePropertyBuilder(args));
 
-		final ExpandableProperty<Attachment> attachments = parseExpandableProperty(s.getJSONObject("attachments"), new ExpandablePropertyBuilder<Attachment>() {
+		final ExpandableProperty<Attachment> attachments = JsonParseUtil.parseExpandableProperty(s.getJSONObject("attachments"),
+				new JsonParseUtil.ExpandablePropertyBuilder<Attachment>() {
 			public Attachment parse(JSONObject json) throws JSONException {
 				return parseAttachment(json);
 			}
@@ -97,16 +83,29 @@ public class IssueJsonParser {
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final Project project = parseProject(getNestedObject(s, "fields", "project"));
 		final JSONArray linksJsonArray = s.optJSONArray("links");
-		Collection<IssueLink> issueLinks = linksJsonArray != null ? parseIssueLinks(linksJsonArray) : null;
+		final Collection<IssueLink> issueLinks = linksJsonArray != null ? parseIssueLinks(linksJsonArray) : null;
+		final Votes votes = votesJsonParser.parseVotes(getNestedObject(s, "fields", "votes"));
+		final BasicStatus status = statusJsonParser.parseBasicStatus(getNestedObject(s, "fields", "status"));
 
-		return new Issue(JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, expandos, expandableComment, attachments, fields, creationDate, updateDate, transitionsUri, issueLinks);
+
+		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
+				new JsonParseUtil.ExpandablePropertyBuilder<Worklog>() {
+			public Worklog parse(JSONObject json) throws JSONException {
+				return worklogJsonParser.parseWorklog(json);
+			}
+		});
+
+		final Watchers watchers = watchersJsonParser.parseWatchers(s.getJSONObject("watchers"));
+
+		return new Issue(JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, expandableComment,
+				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers);
 	}
 
 	private static Comment parseComment(JSONObject json, @Nullable String renderer) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String body = json.getString("body");
-		final User author = JsonParseUtil.parseAuthor(json.getJSONObject("author"));
-		final User updateAuthor = JsonParseUtil.parseAuthor(json.getJSONObject("updateAuthor"));
+		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
+		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
 		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
 				JsonParseUtil.parseDateTime(json.getString("updated")), renderer);
 	}
@@ -114,7 +113,7 @@ public class IssueJsonParser {
 	private Attachment parseAttachment(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String filename = json.getString("filename");
-		final User author = JsonParseUtil.parseAuthor(json.getJSONObject("author"));
+		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
 		final int size = json.getInt("size");
 		final String mimeType = json.getString("mimeType");
@@ -154,7 +153,7 @@ public class IssueJsonParser {
 	}
 
 
-	private static class CommentExpandablePropertyBuilder implements ExpandablePropertyBuilder<Comment> {
+	private static class CommentExpandablePropertyBuilder implements JsonParseUtil.ExpandablePropertyBuilder<Comment> {
 		private final IssueArgs args;
 
 		public CommentExpandablePropertyBuilder(IssueArgs args) {
@@ -165,6 +164,7 @@ public class IssueJsonParser {
 			return parseComment(json, args.getRenderer());
 		}
 	}
+
 
 	
 }

@@ -8,36 +8,31 @@ import javax.annotation.Nullable;
  * @since v0.1
  */
 public class IssueArgs {
-	public IssueArgs(String key) {
+	private final String key;
+	private final boolean withComments;
+	private final boolean withAttachments;
+	private final boolean withWorklogs;
+	private final String renderer;
+	private final boolean withWatchers;
+
+	public IssueArgs(String key, boolean withComments, boolean withAttachments, boolean withWorklogs, String renderer, boolean withWatchers) {
 		this.key = key;
+		this.withComments = withComments;
+		this.withAttachments = withAttachments;
+		this.withWorklogs = withWorklogs;
+		this.renderer = renderer;
+		this.withWatchers = withWatchers;
 	}
 
 	public String getKey() {
 		return key;
 	}
 
-	private final String key;
-
-	public IssueArgs withComments(boolean withComments) {
-		this.withComments = withComments;
-		return this;
-	}
-
-	public IssueArgs withAttachments(boolean withAttachments) {
-		this.withAttachments = withAttachments;
-		return this;
-	}
-
-	private boolean withComments;
-	private boolean withAttachments;
 
     @Nullable
     public String getRenderer() {
         return renderer;
     }
-
-    private String renderer;
-
 
 	public boolean withComments() {
 		return withComments;
@@ -47,8 +42,11 @@ public class IssueArgs {
 		return withAttachments;
 	}
 
-	public IssueArgs withRenderer(String renderer) {
-		this.renderer = renderer;
-		return this;
+	public boolean withWorklogs() {
+		return withWorklogs;
+	}
+
+	public boolean withWatchers() {
+		return withWatchers;
 	}
 }
