@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
-import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -26,28 +25,29 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicStatus implements AddressableEntity {
-	private final URI self;
-	private final String name;
+public class Status extends BasicStatus {
+	private final String description;
+	private final URI iconUrl;
 
-	public BasicStatus(URI self, String name) {
-		this.self = self;
-		this.name = name;
+	public Status(URI self, String name, String description, URI iconUrl) {
+		super(self, name);
+		this.description = description;
+		this.iconUrl = iconUrl;
 	}
 
-	public URI getSelf() {
-		return self;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getName() {
-		return name;
+	public URI getIconUrl() {
+		return iconUrl;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("name", name).
+		return Objects.toStringHelper(this).addValue(super.toString()).
+				add("description", description).
+				add("iconUrl", iconUrl).
 				toString();
 	}
 }
