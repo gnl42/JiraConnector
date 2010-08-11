@@ -114,9 +114,13 @@ public class PerforceTeamUiResourceConnector extends AbstractTeamUiConnector {
 					boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
 
 					if (IStateFilter.SF_ADDED.accept(scmResource)) {
+						StatusHandler.log(new Status(IStatus.INFO, AtlassianPerforceUiPlugin.PLUGIN_ID, NLS.bind(
+								"Resource is managed by SCM but hasn't beed commited {0}", resource.getName())));
 						return LocalStatus.makeAdded(getScmPath(scmResource), isBinary);
 					}
 
+					StatusHandler.log(new Status(IStatus.INFO, AtlassianPerforceUiPlugin.PLUGIN_ID, NLS.bind(
+							"Resource is managed by SCM {0}", resource.getName())));
 					return LocalStatus.makeVersioned(getScmPath(scmResource),
 							scmFile != null ? String.valueOf(scmFile.getHeadChange()) : null,
 							scmFile != null ? String.valueOf(scmFile.getHeadChange()) : null,
