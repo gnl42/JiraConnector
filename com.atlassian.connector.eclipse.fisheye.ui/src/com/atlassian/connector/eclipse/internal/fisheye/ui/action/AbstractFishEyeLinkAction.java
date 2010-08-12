@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +67,7 @@ public abstract class AbstractFishEyeLinkAction extends AbstractResourceAction {
 					}
 				}
 			} catch (CoreException e) {
+				StatusHandler.log(e.getStatus());
 				isEnabled = false;
 			}
 		}
