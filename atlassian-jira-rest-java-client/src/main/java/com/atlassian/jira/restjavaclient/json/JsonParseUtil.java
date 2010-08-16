@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -70,6 +71,14 @@ public class JsonParseUtil {
 		return json;
 	}
 
+	public static JSONArray getNestedArray(JSONObject json, String... path) throws JSONException {
+		for (int i = 0; i < path.length - 1; i++) {
+			String s = path[i];
+			json = json.getJSONObject(s);
+		}
+		return json.getJSONArray(path[path.length - 1]);
+	}
+
 	public static String getNestedString(JSONObject json, String... path) throws JSONException {
 
 		for (int i = 0; i < path.length - 1; i++) {
@@ -92,11 +101,30 @@ public class JsonParseUtil {
 		return new User(getSelfUri(json), json.getString("name"), json.optString("displayName", null));
 	}
 
+	public static DateTime parseDateTime(JSONObject jsonObject, String attributeName) throws JSONException {
+		return parseDateTime(jsonObject.getString(attributeName));
+	}
+
+	@Nullable
+	public static DateTime parseOptionalDateTime(JSONObject jsonObject, String attributeName) throws JSONException {
+		final String s = jsonObject.optString(attributeName, null);
+		return s != null ? parseDateTime(s) : null;
+	}
+
 	public static DateTime parseDateTime(String str) {
 		try {
 			return DATE_TIME_FORMATTER.parseDateTime(str);
 		} catch (Exception e) {
 			throw new RestClientException(e);
 		}
+	}
+
+	@Nullable
+	public static String getNullableString(JSONObject jsonObject, String attributeName) throws JSONException {
+		final Object o = jsonObject.get(attributeName);
+		if (o == JSONObject.NULL) {
+			return null;
+		}
+		return o.toString();
 	}
 }

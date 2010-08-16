@@ -36,7 +36,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
     public Issue(URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
 			ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields,
 			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, ExpandableProperty<Worklog> worklogs,
-			Watchers watchers) {
+			Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions) {
         this.self = self;
         this.key = key;
 		this.project = project;
@@ -53,6 +53,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		this.votes = votes;
 		this.worklogs = worklogs;
 		this.watchers = watchers;
+		this.fixVersions = fixVersions;
+		this.affectedVersions = affectedVersions;
 	}
 
 	private final BasicStatus status;
@@ -68,6 +70,10 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private DateTime creationDate;
 	private DateTime updateDate;
 	private final Votes votes;
+	@Nullable
+	private final Collection<Version> fixVersions;
+	@Nullable
+	private final Collection<Version> affectedVersions;
 
 	private final ExpandableProperty<Comment> comments;
 
@@ -144,6 +150,14 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return watchers;
 	}
 
+	public Iterable<Version> getFixVersions() {
+		return fixVersions;
+	}
+
+	public Iterable<Version> getAffectedVersions() {
+		return affectedVersions;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
@@ -155,6 +169,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("reporter", reporter).
 				add("assignee", assignee).addValue("\n").
 				add("fields", fields).addValue("\n").
+				add("affectedVersions", affectedVersions).addValue("\n").
+				add("fixVersions", fixVersions).addValue("\n").
 				add("issueType", issueType).
 				add("creationDate", creationDate).
 				add("updateDate", updateDate).addValue("\n").

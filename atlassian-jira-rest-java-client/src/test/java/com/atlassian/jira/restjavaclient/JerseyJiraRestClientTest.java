@@ -87,5 +87,11 @@ public class JerseyJiraRestClientTest {
         assertNull(issue.getAttachments().getItems());
     }
 
+	@Test
+	public void temporaryOnly() throws Exception {
+		final Issue issue = client.getIssue(new IssueArgsBuilder("TST-2").withAttachments(false).withComments(true).build(),
+				new NullProgressMonitor());
+		System.out.println(issue);
+	}
 
 }
