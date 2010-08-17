@@ -34,6 +34,7 @@ public class ComponentJsonParser {
 	public static JsonParser<Component> createComponentParser() {
 		return new JsonParser<Component>() {
 
+			@Override
 			public Component parse(JSONObject jsonObject) throws JSONException {
 				return ComponentJsonParser.parseComponent(jsonObject);
 			}
@@ -44,6 +45,7 @@ public class ComponentJsonParser {
 	public static JsonParser<BasicComponent> createBasicComponentParser() {
 		return new JsonParser<BasicComponent>() {
 
+			@Override
 			public BasicComponent parse(JSONObject jsonObject) throws JSONException {
 				return ComponentJsonParser.parseBasicComponent(jsonObject);
 			}

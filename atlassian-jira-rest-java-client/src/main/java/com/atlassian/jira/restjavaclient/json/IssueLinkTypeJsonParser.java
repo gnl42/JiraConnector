@@ -25,10 +25,11 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @since v0.1
  */
-public class IssueLinkTypeJsonParser {
+public class IssueLinkTypeJsonParser implements JsonParser<IssueLinkType> {
 	private static final String KEY_DIRECTION = "direction";
 
-	public IssueLinkType parseIssueLinkType(JSONObject json) throws JSONException {
+	@Override
+	public IssueLinkType parse(JSONObject json) throws JSONException {
 		final String name = json.getString("name");
 		final String description = json.getString("description");
 		final String dirStr = json.getString(KEY_DIRECTION);

@@ -35,7 +35,7 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
 		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource("/json/issue/valid-all-expanded.json");
-		IssueJsonParser parser = new IssueJsonParser();
+		final IssueJsonParser parser = new IssueJsonParser();
 		final Issue issue = parser.parseIssue(new IssueArgsBuilder("TST-2").build(), issueJson);
 		Assert.assertEquals("TST-2", issue.getKey());
 		Assert.assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),

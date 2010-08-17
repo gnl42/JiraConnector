@@ -29,12 +29,14 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class WatchersJsonParser {
-	Watchers parseWatchers(JSONObject json) throws JSONException {
+public class WatchersJsonParser implements JsonParser<Watchers> {
+	@Override
+	public Watchers parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final boolean isWatching = json.getBoolean("isWatching");
 		final ExpandableProperty<User> list = JsonParseUtil.parseExpandableProperty(json.getJSONObject("list"),
 				new JsonParseUtil.ExpandablePropertyBuilder<User>() {
+			@Override
 			public User parse(JSONObject json) throws JSONException {
 				return JsonParseUtil.parseUser(json);
 			}

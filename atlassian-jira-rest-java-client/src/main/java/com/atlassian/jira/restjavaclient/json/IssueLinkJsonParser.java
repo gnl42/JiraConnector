@@ -28,13 +28,14 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class IssueLinkJsonParser {
+public class IssueLinkJsonParser implements JsonParser<IssueLink> {
 	private final IssueLinkTypeJsonParser issueLinkTypeJsonParser = new IssueLinkTypeJsonParser();
 
-	public IssueLink parseIssueLink(JSONObject json) throws JSONException {
+	@Override
+	public IssueLink parse(JSONObject json) throws JSONException {
 		final String key = json.getString("key");
 		final URI targetIssueUri = JsonParseUtil.getSelfUri(json);
-		final IssueLinkType issueLinkType = issueLinkTypeJsonParser.parseIssueLinkType(json.getJSONObject("type"));
+		final IssueLinkType issueLinkType = issueLinkTypeJsonParser.parse(json.getJSONObject("type"));
 		return new IssueLink(key, targetIssueUri, issueLinkType);
 	}
 }

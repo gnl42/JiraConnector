@@ -84,7 +84,7 @@ public class IssueJsonParser {
 	private Collection<IssueLink> parseIssueLinks(JSONArray jsonArray) throws JSONException {
 		final Collection<IssueLink> issueLinks = new ArrayList<IssueLink>(jsonArray.length());
 		for (int i = 0; i < jsonArray.length(); i++) {
-			issueLinks.add(issueLinkJsonParser.parseIssueLink(jsonArray.getJSONObject(i)));
+			issueLinks.add(issueLinkJsonParser.parse(jsonArray.getJSONObject(i)));
 		}
 		return issueLinks;
 	}
@@ -118,7 +118,7 @@ public class IssueJsonParser {
 		final Project project = parseProject(getNestedObject(s, "fields", "project"));
 		final JSONArray linksJsonArray = s.optJSONArray("links");
 		final Collection<IssueLink> issueLinks = linksJsonArray != null ? parseIssueLinks(linksJsonArray) : null;
-		final Votes votes = votesJsonParser.parseVotes(getNestedObject(s, "fields", "votes"));
+		final Votes votes = votesJsonParser.parse(getNestedObject(s, "fields", "votes"));
 		final BasicStatus status = statusJsonParser.parseBasicStatus(getNestedObject(s, "fields", "status"));
 
 		final Collection<Version> fixVersions = parseOptionalArrayField(s, FIX_VERSIONS_ATTR, versionJsonParser);
@@ -128,11 +128,11 @@ public class IssueJsonParser {
 		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
 				new JsonParseUtil.ExpandablePropertyBuilder<Worklog>() {
 			public Worklog parse(JSONObject json) throws JSONException {
-				return worklogJsonParser.parseWorklog(json);
+				return worklogJsonParser.parse(json);
 			}
 		});
 
-		final Watchers watchers = watchersJsonParser.parseWatchers(s.getJSONObject("watchers"));
+		final Watchers watchers = watchersJsonParser.parse(s.getJSONObject("watchers"));
 
 		return new Issue(JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, expandableComment,
 				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);

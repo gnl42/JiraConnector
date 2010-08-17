@@ -29,8 +29,10 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class WorklogJsonParser {
-	public Worklog parseWorklog(JSONObject json) throws JSONException {
+public class WorklogJsonParser implements JsonParser<Worklog> {
+	
+	@Override
+	public Worklog parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
 		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));

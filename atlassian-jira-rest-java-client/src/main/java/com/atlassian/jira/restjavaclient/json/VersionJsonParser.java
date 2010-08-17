@@ -29,6 +29,7 @@ import java.net.URI;
  * @since v0.1
  */
 public class VersionJsonParser implements JsonParser<Version> {
+	@Override
 	public Version parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
