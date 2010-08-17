@@ -19,6 +19,7 @@ package com.atlassian.jira.restjavaclient.json;
 import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
+import com.atlassian.jira.restjavaclient.domain.BasicComponent;
 import com.atlassian.jira.restjavaclient.domain.BasicStatus;
 import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.Field;
@@ -60,9 +61,10 @@ public class IssueJsonParser {
 	private static final String CREATED_ATTR = "created";
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
 	private static final String FIX_VERSIONS_ATTR = "fixVersions";
+	private static final String COMPONENTS_ATTR = "components";
 
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList("summary", UPDATED_ATTR, CREATED_ATTR,
-			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR));
+			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
@@ -70,6 +72,7 @@ public class IssueJsonParser {
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
 	private final WatchersJsonParser watchersJsonParser = new WatchersJsonParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
+	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
 
 
 	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
@@ -85,7 +88,17 @@ public class IssueJsonParser {
 		}
 		return issueLinks;
 	}
-	
+
+	@Nullable
+	private <T> Collection<T> parseOptionalArrayField(JSONObject jsonObject, String fieldKey, JsonParser<T> jsonParser) throws JSONException {
+		final JSONArray jsonArray = JsonParseUtil.getNestedArray(jsonObject, "fields", fieldKey);
+		if (jsonArray == null) {
+			return null;
+		}
+		return parseJsonArray(jsonArray, jsonParser);
+	}
+
+
 	public Issue parseIssue(IssueArgs args, JSONObject s) throws JSONException {
 		final ExpandableProperty<Comment> expandableComment = JsonParseUtil.parseExpandableProperty(s.getJSONObject("comments"),
 				new CommentExpandablePropertyBuilder(args));
@@ -107,11 +120,13 @@ public class IssueJsonParser {
 		final Collection<IssueLink> issueLinks = linksJsonArray != null ? parseIssueLinks(linksJsonArray) : null;
 		final Votes votes = votesJsonParser.parseVotes(getNestedObject(s, "fields", "votes"));
 		final BasicStatus status = statusJsonParser.parseBasicStatus(getNestedObject(s, "fields", "status"));
+
 		final JSONArray fixVersionsJsonArray = JsonParseUtil.getNestedArray(s, "fields", FIX_VERSIONS_ATTR);
 		final Collection<Version> fixVersions = fixVersionsJsonArray != null ? parseVersions(fixVersionsJsonArray) : null;
 
 		final JSONArray affectedVersionsJsonArray = JsonParseUtil.getNestedArray(s, "fields", AFFECTS_VERSIONS_ATTR);
 		final Collection<Version> affectedVersions = affectedVersionsJsonArray != null ? parseVersions(affectedVersionsJsonArray) : null;
+		final Collection<BasicComponent> components = parseOptionalArrayField(s, COMPONENTS_ATTR, basicComponentJsonParser);
 
 		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
 				new JsonParseUtil.ExpandablePropertyBuilder<Worklog>() {
@@ -123,7 +138,7 @@ public class IssueJsonParser {
 		final Watchers watchers = watchersJsonParser.parseWatchers(s.getJSONObject("watchers"));
 
 		return new Issue(JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, expandableComment,
-				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions);
+				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);
 	}
 
 	private <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonParser<T> jsonParser) throws JSONException {

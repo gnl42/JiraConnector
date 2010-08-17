@@ -30,16 +30,37 @@ import java.net.URI;
  * @since v0.1
  */
 public class ComponentJsonParser {
-	public Component parseComponent(JSONObject json) throws JSONException {
-		final BasicComponent basicComponent = parseBasicComponent(json);
-		final User lead = JsonParseUtil.parseUser(json.getJSONObject("lead"));
-		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
+
+	public static JsonParser<Component> createComponentParser() {
+		return new JsonParser<Component>() {
+
+			public Component parse(JSONObject jsonObject) throws JSONException {
+				return ComponentJsonParser.parseComponent(jsonObject);
+			}
+
+		};
 	}
 
-	public BasicComponent parseBasicComponent(JSONObject json) throws JSONException {
+	public static JsonParser<BasicComponent> createBasicComponentParser() {
+		return new JsonParser<BasicComponent>() {
+
+			public BasicComponent parse(JSONObject jsonObject) throws JSONException {
+				return ComponentJsonParser.parseBasicComponent(jsonObject);
+			}
+
+		};
+	}
+
+	private static BasicComponent parseBasicComponent(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
 		final String description = json.getString("description");
 		return new BasicComponent(selfUri, name, description);
+	}
+
+	private static Component parseComponent(JSONObject json) throws JSONException {
+		final BasicComponent basicComponent = parseBasicComponent(json);
+		final User lead = JsonParseUtil.parseUser(json.getJSONObject("lead"));
+		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
 	}
 }

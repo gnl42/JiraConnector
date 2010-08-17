@@ -18,15 +18,12 @@ package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.DateTimeMatcher;
 import com.atlassian.jira.restjavaclient.domain.Version;
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -38,25 +35,11 @@ import static org.junit.Assert.assertEquals;
  * @since v0.1
  */
 public class VersionJsonParserTest {
-	public JSONObject getJsonObjectFromResource(String resourcePath) {
-		final String s;
-		try {
-			s = IOUtils.toString(VersionJsonParserTest.class.getResourceAsStream(resourcePath));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
 
 	@Test
 	public void testParse() throws JSONException, URISyntaxException {
 		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(getJsonObjectFromResource("/json/version/valid.json"));
+		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid.json"));
 		
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
 		assertEquals("1.1", version.getName());
@@ -70,7 +53,7 @@ public class VersionJsonParserTest {
 	@Test
 	public void testParse2() throws JSONException, URISyntaxException {
 		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(getJsonObjectFromResource("/json/version/valid2-no-releaseDate.json"));
+		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid2-no-releaseDate.json"));
 
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
 		assertEquals("1.1abc", version.getName());

@@ -36,7 +36,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
     public Issue(URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
 			ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields,
 			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, ExpandableProperty<Worklog> worklogs,
-			Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions) {
+			Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
         this.self = self;
         this.key = key;
 		this.project = project;
@@ -55,6 +55,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		this.watchers = watchers;
 		this.fixVersions = fixVersions;
 		this.affectedVersions = affectedVersions;
+		this.components = components;
 	}
 
 	private final BasicStatus status;
@@ -63,6 +64,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private Project project;
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
+	private final Collection<BasicComponent> components;
 	private User reporter;
 	private User assignee;
 	private String key;
@@ -158,6 +160,10 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return affectedVersions;
 	}
 
+	public Iterable<BasicComponent> getComponents() {
+		return components;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
@@ -171,6 +177,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("fields", fields).addValue("\n").
 				add("affectedVersions", affectedVersions).addValue("\n").
 				add("fixVersions", fixVersions).addValue("\n").
+				add("components", components).addValue("\n").
 				add("issueType", issueType).
 				add("creationDate", creationDate).
 				add("updateDate", updateDate).addValue("\n").

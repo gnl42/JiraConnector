@@ -17,6 +17,7 @@
 package com.atlassian.jira.restjavaclient.domain;
 
 import com.atlassian.jira.restjavaclient.AddressableEntity;
+import com.google.common.base.Objects;
 
 import java.net.URI;
 
@@ -46,5 +47,14 @@ public class BasicComponent implements AddressableEntity {
 
 	public String getDescription() {
 		return description;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).
+				add("self", self).
+				add("name", name).
+				add("description", description).
+				toString();
 	}
 }
