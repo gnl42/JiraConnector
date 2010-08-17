@@ -55,4 +55,21 @@ public class IssueLinkType {
 				add("direction", direction).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IssueLinkType) {
+			IssueLinkType that = (IssueLinkType) obj;
+			return Objects.equal(this.name, that.name)
+					&& Objects.equal(this.description, that.description)
+					&& Objects.equal(this.direction, that.direction);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, description, direction);
+	}
+
 }

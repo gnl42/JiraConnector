@@ -56,4 +56,21 @@ public class IssueLink {
 				add("issueLinkType", issueLinkType).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IssueLink) {
+			IssueLink that = (IssueLink) obj;
+			return Objects.equal(this.targetIssueKey, that.targetIssueKey)
+					&& Objects.equal(this.targetIssueUri, that.targetIssueUri)
+					&& Objects.equal(this.issueLinkType, that.issueLinkType);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(targetIssueKey, targetIssueUri, issueLinkType);
+	}
+
 }

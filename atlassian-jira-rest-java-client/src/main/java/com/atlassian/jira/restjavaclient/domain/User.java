@@ -47,7 +47,8 @@ public class User implements AddressableEntity {
 
 
 
-    public URI getSelf() {
+    @Override
+	public URI getSelf() {
         return self;
     }
 

@@ -36,15 +36,15 @@ public class Comment implements AddressableEntity {
 	private final String body;
 	private final String renderer;
 
-    public Comment(URI self, String body, User author, User updateAuthor, DateTime creationDate, DateTime updateDate, String renderer) {
-        this.author = author;
-        this.updateAuthor = updateAuthor;
-        this.creationDate = creationDate;
-        this.updateDate = updateDate;
-        this.body = body;
-        this.self = self;
-        this.renderer = renderer;
-    }
+	public Comment(URI self, String body, User author, User updateAuthor, DateTime creationDate, DateTime updateDate, String renderer) {
+		this.author = author;
+		this.updateAuthor = updateAuthor;
+		this.creationDate = creationDate;
+		this.updateDate = updateDate;
+		this.body = body;
+		this.self = self;
+		this.renderer = renderer;
+	}
 
 	public String getRenderer() {
 		return renderer;
@@ -53,22 +53,24 @@ public class Comment implements AddressableEntity {
 	public boolean wasUpdated() {
 		return updateDate.isAfter(creationDate);
 	}
+
 	public String getBody() {
 		return body;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("self", self)
-                .add("body", body)
-                .add("author", author)
-                .add("updateAuthor", updateAuthor)
-                .add("creationDate", creationDate)
-                .add("updateDate", updateDate).toString();
-    }
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("self", self)
+				.add("body", body)
+				.add("author", author)
+				.add("updateAuthor", updateAuthor)
+				.add("creationDate", creationDate)
+				.add("updateDate", updateDate).toString();
+	}
 }
