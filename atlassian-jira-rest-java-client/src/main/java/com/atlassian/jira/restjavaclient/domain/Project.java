@@ -50,4 +50,20 @@ public class Project implements AddressableEntity {
 				add("key", key).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Project) {
+			Project that = (Project) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.key, that.key);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, key);
+	}
+
 }

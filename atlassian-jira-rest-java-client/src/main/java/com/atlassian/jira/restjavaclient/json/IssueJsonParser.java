@@ -121,11 +121,8 @@ public class IssueJsonParser {
 		final Votes votes = votesJsonParser.parseVotes(getNestedObject(s, "fields", "votes"));
 		final BasicStatus status = statusJsonParser.parseBasicStatus(getNestedObject(s, "fields", "status"));
 
-		final JSONArray fixVersionsJsonArray = JsonParseUtil.getNestedArray(s, "fields", FIX_VERSIONS_ATTR);
-		final Collection<Version> fixVersions = fixVersionsJsonArray != null ? parseVersions(fixVersionsJsonArray) : null;
-
-		final JSONArray affectedVersionsJsonArray = JsonParseUtil.getNestedArray(s, "fields", AFFECTS_VERSIONS_ATTR);
-		final Collection<Version> affectedVersions = affectedVersionsJsonArray != null ? parseVersions(affectedVersionsJsonArray) : null;
+		final Collection<Version> fixVersions = parseOptionalArrayField(s, FIX_VERSIONS_ATTR, versionJsonParser);
+		final Collection<Version> affectedVersions = parseOptionalArrayField(s, AFFECTS_VERSIONS_ATTR, versionJsonParser);
 		final Collection<BasicComponent> components = parseOptionalArrayField(s, COMPONENTS_ATTR, basicComponentJsonParser);
 
 		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
@@ -149,10 +146,6 @@ public class IssueJsonParser {
 		return res;
 	}
 
-
-	private Collection<Version> parseVersions(JSONArray jsonArray) throws JSONException {
-		return parseJsonArray(jsonArray, versionJsonParser);
-	}
 
 	private static Comment parseComment(JSONObject json, @Nullable String renderer) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);

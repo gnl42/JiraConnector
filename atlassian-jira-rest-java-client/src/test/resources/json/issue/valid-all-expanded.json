@@ -1,0 +1,297 @@
+{
+   "expand":"fields,comments,worklogs,attachments,watchers",
+   "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+   "key":"TST-2",
+   "fields":{
+      "summary":"Testing issue",
+      "timetracking":{
+         "timeestimate":0,
+         "timespent":78
+      },
+      "issuetype":{
+         "self":"http://localhost:8090/jira/rest/api/latest/issueType/1",
+         "name":"Bug",
+         "subtask":false
+      },
+      "status":{
+         "self":"http://localhost:8090/jira/rest/api/latest/status/3",
+         "name":"In Progress"
+      },
+      "labels":[
+
+      ],
+      "votes":{
+         "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-2/votes",
+         "votes":1,
+         "hasVoted":false
+      },
+      "assignee":{
+         "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+         "name":"admin",
+         "displayName":"Administrator"
+      },
+      "fixVersions":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/version/10000",
+            "description":"Some version",
+            "name":"1.1",
+            "archived":false,
+            "released":false,
+            "releaseDate":"2010-08-25T00:00:00.000+0200"
+         }
+      ],
+      "reporter":{
+         "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+         "name":"admin",
+         "displayName":"Administrator"
+      },
+      "My Radio buttons":null,
+      "project":{
+         "self":"http://localhost:8090/jira/rest/api/latest/project/TST",
+         "key":"TST"
+      },
+      "versions":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/version/10001",
+            "description":"initial version",
+            "name":"1",
+            "archived":false,
+            "released":false
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/version/10000",
+            "description":"Some version",
+            "name":"1.1",
+            "archived":false,
+            "released":false,
+            "releaseDate":"2010-08-25T00:00:00.000+0200"
+         }
+      ],
+      "project3":null,
+      "updated":"2010-08-17T16:53:15.851+0200",
+      "created":"2010-07-26T13:29:18.262+0200",
+      "project2":null,
+      "priority":{
+         "self":"http://localhost:8090/jira/rest/api/latest/priority/3",
+         "name":"Major"
+      },
+      "components":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/component/10000",
+            "name":"Component A",
+            "description":"this is some description of component A"
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/component/10001",
+            "name":"Component B",
+            "description":"another description"
+         }
+      ],
+      "My Number Field New":null
+   },
+   "transitions":"http://localhost:8090/jira/rest/api/latest/issue/TST-2/transitions",
+   "comments":{
+      "size":3,
+      "items":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/comment/10020",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "body":"some comment",
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "created":"2010-08-17T16:40:57.791+0200",
+            "updated":"2010-08-17T16:40:57.791+0200",
+            "role":10002
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/comment/10021",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "body":"a comment by user",
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "created":"2010-08-17T16:41:15.360+0200",
+            "updated":"2010-08-17T16:41:15.360+0200"
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/comment/10022",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "body":"a comment viewable only by jira-users",
+            "groupLevel":"jira-users",
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "created":"2010-08-17T16:49:31.528+0200",
+            "updated":"2010-08-17T16:49:31.528+0200"
+         }
+      ]
+   },
+   "subtasks":[
+
+   ],
+   "worklogs":{
+      "size":3,
+      "items":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/worklog/10010",
+            "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "comment":"my first work",
+            "created":"2010-08-17T16:35:47.466+0200",
+            "updated":"2010-08-17T16:35:47.466+0200",
+            "startDate":"2010-08-15T16:35:00.000+0200",
+            "timeSpent":60
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/worklog/10011",
+            "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "comment":"another piece of work",
+            "created":"2010-08-17T16:38:00.013+0200",
+            "updated":"2010-08-17T16:38:24.948+0200",
+            "roleLevel":"Developers",
+            "startDate":"2010-08-17T16:37:00.000+0200",
+            "timeSpent":15
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/worklog/10012",
+            "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "updateAuthor":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            },
+            "comment":"a worklog viewable just by jira-users",
+            "created":"2010-08-17T16:53:15.848+0200",
+            "updated":"2010-08-17T16:53:15.848+0200",
+            "groupLevel":"jira-users",
+            "startDate":"2010-08-11T16:52:00.000+0200",
+            "timeSpent":3
+         }
+      ]
+   },
+   "attachments":{
+      "size":3,
+      "items":[
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/attachment/10036",
+            "filename":"jira_logo.gif",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "created":"2010-07-26T14:41:52.159+0200",
+            "size":2517,
+            "mimeType":"image/gif",
+            "content":"http://localhost:8090/jira/secure/attachment/10036/jira_logo.gif",
+            "thumbnail":"http://localhost:8090/jira/secure/thumbnail/10036/10036_jira_logo.gif"
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/attachment/10031",
+            "filename":"snipe.png",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "created":"2010-07-26T13:31:35.577+0200",
+            "size":31020,
+            "mimeType":"image/png",
+            "content":"http://localhost:8090/jira/secure/attachment/10031/snipe.png",
+            "thumbnail":"http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png"
+         },
+         {
+            "self":"http://localhost:8090/jira/rest/api/latest/attachment/10035",
+            "filename":"transparent-png.png",
+            "author":{
+               "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+               "name":"admin",
+               "displayName":"Administrator"
+            },
+            "created":"2010-07-26T13:38:32.643+0200",
+            "size":30347,
+            "mimeType":"image/png",
+            "content":"http://localhost:8090/jira/secure/attachment/10035/transparent-png.png",
+            "thumbnail":"http://localhost:8090/jira/secure/thumbnail/10035/10035_transparent-png.png"
+         }
+      ]
+   },
+   "links":[
+      {
+         "key":"TST-1",
+         "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
+         "type":{
+            "name":"Duplicate",
+            "direction":"OUTBOUND",
+            "description":"duplicates"
+         }
+      },
+      {
+         "key":"TST-1",
+         "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
+         "type":{
+            "name":"Duplicate",
+            "direction":"INBOUND",
+            "description":"is duplicated by"
+         }
+      }
+   ],
+   "watchers":{
+      "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-2/watchers",
+      "isWatching":false,
+      "list":{
+         "size":1,
+         "items":[
+            {
+               "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+               "name":"wseliga",
+               "displayName":"Wojciech Seliga"
+            }
+         ]
+      },
+      "expand":"list"
+   }
+}

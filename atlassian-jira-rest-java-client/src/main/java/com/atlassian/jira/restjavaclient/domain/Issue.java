@@ -128,7 +128,12 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return expandos;
 	}
 
-    public ExpandableProperty<Attachment> getAttachments() {
+
+	public IssueType getIssueType() {
+		return issueType;
+	}
+
+	public ExpandableProperty<Attachment> getAttachments() {
         return attachments;
     }
 

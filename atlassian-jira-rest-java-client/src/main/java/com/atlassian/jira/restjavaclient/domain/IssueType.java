@@ -59,4 +59,21 @@ public class IssueType implements AddressableEntity {
 				add("isSubtask", isSubtask).
 				toString();
 	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IssueType) {
+			IssueType that = (IssueType) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.name, that.name)
+					&& Objects.equal(this.isSubtask, that.isSubtask);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, name, isSubtask);
+	}
 }
