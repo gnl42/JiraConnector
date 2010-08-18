@@ -16,9 +16,8 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
+import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.User;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -29,14 +28,20 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class WatchersJsonParser implements JsonParser<Watchers> {
-	private final UserJsonParser userJsonParser = new UserJsonParser();
+public class CommentJsonParser implements JsonParser<Comment> {
+	private final String renderer;
+
+	public CommentJsonParser(String renderer) {
+		this.renderer = renderer;
+	}
 
 	@Override
-	public Watchers parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final boolean isWatching = json.getBoolean("isWatching");
-		final ExpandableProperty<User> list = JsonParseUtil.parseExpandableProperty(json.getJSONObject("list"), userJsonParser);
-		return new Watchers(self, isWatching, list);
+	public Comment parse(JSONObject json) throws JSONException {
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final String body = json.getString("body");
+		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
+		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
+		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
+				JsonParseUtil.parseDateTime(json.getString("updated")), renderer);
 	}
 }

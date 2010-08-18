@@ -27,7 +27,6 @@ import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.IssueLink;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Project;
-import com.atlassian.jira.restjavaclient.domain.User;
 import com.atlassian.jira.restjavaclient.domain.Version;
 import com.atlassian.jira.restjavaclient.domain.Votes;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
@@ -56,7 +55,6 @@ import static com.atlassian.jira.restjavaclient.json.JsonParseUtil.getNestedStri
  * @since v0.1
  */
 public class IssueJsonParser {
-	private static final String THUMBNAIL = "thumbnail";
 	private static final String UPDATED_ATTR = "updated";
 	private static final String CREATED_ATTR = "created";
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
@@ -73,6 +71,7 @@ public class IssueJsonParser {
 	private final WatchersJsonParser watchersJsonParser = new WatchersJsonParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
+	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
 
 
 	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
@@ -101,14 +100,10 @@ public class IssueJsonParser {
 
 	public Issue parseIssue(IssueArgs args, JSONObject s) throws JSONException {
 		final ExpandableProperty<Comment> expandableComment = JsonParseUtil.parseExpandableProperty(s.getJSONObject("comments"),
-				new CommentExpandablePropertyBuilder(args));
+				new CommentJsonParser(args.getRenderer()));
 
 		final ExpandableProperty<Attachment> attachments = JsonParseUtil.parseExpandableProperty(s.getJSONObject("attachments"),
-				new JsonParseUtil.ExpandablePropertyBuilder<Attachment>() {
-			public Attachment parse(JSONObject json) throws JSONException {
-				return parseAttachment(json);
-			}
-		});
+				attachmentJsonParser);
 		final Iterable<String> expandos = parseExpandos(s);
 		final Collection<Field> fields = parseFields(s.getJSONObject("fields"));
 		final IssueType issueType = parseIssueType(getNestedObject(s, "fields", "issuetype"));
@@ -126,11 +121,7 @@ public class IssueJsonParser {
 		final Collection<BasicComponent> components = parseOptionalArrayField(s, COMPONENTS_ATTR, basicComponentJsonParser);
 
 		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
-				new JsonParseUtil.ExpandablePropertyBuilder<Worklog>() {
-			public Worklog parse(JSONObject json) throws JSONException {
-				return worklogJsonParser.parse(json);
-			}
-		});
+				worklogJsonParser);
 
 		final Watchers watchers = watchersJsonParser.parse(s.getJSONObject("watchers"));
 
@@ -147,27 +138,6 @@ public class IssueJsonParser {
 	}
 
 
-	private static Comment parseComment(JSONObject json, @Nullable String renderer) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String body = json.getString("body");
-		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
-		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
-				JsonParseUtil.parseDateTime(json.getString("updated")), renderer);
-	}
-
-	private Attachment parseAttachment(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String filename = json.getString("filename");
-		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
-		final int size = json.getInt("size");
-		final String mimeType = json.getString("mimeType");
-		final URI contentURI = JsonParseUtil.parseURI(json.getString("content"));
-		final URI thumbnailURI = json.has(THUMBNAIL) ? JsonParseUtil.parseURI(THUMBNAIL) : null;
-		return new Attachment(selfUri, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);
-	}
-
 	IssueType parseIssueType(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
@@ -183,8 +153,10 @@ public class IssueJsonParser {
 
 	static Collection<Field> parseFields(JSONObject json) throws JSONException {
 		ArrayList<Field> res = new ArrayList<Field>(json.length());
-		for (Iterator<String> it = json.keys(); it.hasNext();) {
-			final String key = it.next();
+		@SuppressWarnings("unchecked")
+		final Iterator<String> iterator = json.keys();
+		while (iterator.hasNext()) {
+			final String key = iterator.next();
 			if (SPECIAL_FIELDS.contains(key)) {
 				continue;
 			}
@@ -198,19 +170,4 @@ public class IssueJsonParser {
 		return res;
 	}
 
-
-	private static class CommentExpandablePropertyBuilder implements JsonParseUtil.ExpandablePropertyBuilder<Comment> {
-		private final IssueArgs args;
-
-		public CommentExpandablePropertyBuilder(IssueArgs args) {
-			this.args = args;
-		}
-
-		public Comment parse(JSONObject json) throws JSONException {
-			return parseComment(json, args.getRenderer());
-		}
-	}
-
-
-	
 }

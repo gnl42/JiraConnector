@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
+import com.atlassian.jira.restjavaclient.domain.Attachment;
 import com.atlassian.jira.restjavaclient.domain.User;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
 
 import java.net.URI;
 
@@ -29,14 +29,20 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class WatchersJsonParser implements JsonParser<Watchers> {
-	private final UserJsonParser userJsonParser = new UserJsonParser();
+public class AttachmentJsonParser implements JsonParser<Attachment> {
+
+	private static final String THUMBNAIL = "thumbnail";
 
 	@Override
-	public Watchers parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final boolean isWatching = json.getBoolean("isWatching");
-		final ExpandableProperty<User> list = JsonParseUtil.parseExpandableProperty(json.getJSONObject("list"), userJsonParser);
-		return new Watchers(self, isWatching, list);
+	public Attachment parse(JSONObject json) throws JSONException {
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final String filename = json.getString("filename");
+		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
+		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
+		final int size = json.getInt("size");
+		final String mimeType = json.getString("mimeType");
+		final URI contentURI = JsonParseUtil.parseURI(json.getString("content"));
+		final URI thumbnailURI = JsonParseUtil.parseOptionalURI(json, THUMBNAIL);
+		return new Attachment(selfUri, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);
 	}
 }

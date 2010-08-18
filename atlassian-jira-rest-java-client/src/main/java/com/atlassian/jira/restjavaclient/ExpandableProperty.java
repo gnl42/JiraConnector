@@ -18,6 +18,7 @@ package com.atlassian.jira.restjavaclient;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -33,7 +34,7 @@ public class ExpandableProperty<T> {
         items = null;
 	}
 
-    public ExpandableProperty(int size, Collection<T> items) {
+    public ExpandableProperty(int size, @Nullable Collection<T> items) {
         this.size = size;
         this.items = items;
     }
@@ -42,9 +43,11 @@ public class ExpandableProperty<T> {
         return size;
     }
 
+	@Nullable
     final private Collection<T> items;
 
-    Iterable<T> getItems() {
+    @Nullable
+	public Iterable<T> getItems() {
         return items;
     }
 

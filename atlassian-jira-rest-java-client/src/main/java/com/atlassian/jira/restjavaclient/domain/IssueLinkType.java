@@ -24,7 +24,10 @@ import com.google.common.base.Objects;
  * @since v0.1
  */
 public class IssueLinkType {
-	public enum Direction { OUTBOUND, INBOUND}
+	public enum Direction {
+		OUTBOUND,
+		INBOUND
+	}
 	private final String name;
 	private final String description;
 	private final Direction direction;

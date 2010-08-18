@@ -35,11 +35,11 @@ import java.util.Collection;
 public class JsonParseUtil {
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
 
-	public interface ExpandablePropertyBuilder<T> {
-		T parse(JSONObject json) throws JSONException;
-	}
+//	public interface ExpandablePropertyBuilder<T> {
+//		T parse(JSONObject json) throws JSONException;
+//	}
 
-	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, ExpandablePropertyBuilder<T> expandablePropertyBuilder)
+	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonParser<T> expandablePropertyBuilder)
 			throws JSONException {
 		final int numItems = json.getInt("size");
 		final Collection<T> items;
@@ -95,6 +95,12 @@ public class JsonParseUtil {
 		} catch (URISyntaxException e) {
 			throw new RestClientException(e);
 		}
+	}
+
+	@Nullable
+	public static URI parseOptionalURI(JSONObject jsonObject, String attributeName) {
+		final String s = jsonObject.optString(attributeName, null);
+		return s != null ? parseURI(s) : null;
 	}
 
 	public static User parseUser(JSONObject json) throws JSONException {

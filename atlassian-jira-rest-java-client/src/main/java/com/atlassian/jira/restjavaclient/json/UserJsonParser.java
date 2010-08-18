@@ -16,21 +16,18 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.User;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class TestConstants {
-	public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), "wseliga", "Wojciech Seliga");
-
-	public static final User USER_ADMIN = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/admin"), "admin", "Administrator");
+public class UserJsonParser implements JsonParser<User> {
+	@Override
+	public User parse(JSONObject jsonObject) throws JSONException {
+		return JsonParseUtil.parseUser(jsonObject);
+	}
 }

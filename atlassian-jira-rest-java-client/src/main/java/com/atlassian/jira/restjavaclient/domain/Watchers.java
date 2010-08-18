@@ -38,6 +38,7 @@ public class Watchers implements AddressableEntity {
 		this.list = list;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}

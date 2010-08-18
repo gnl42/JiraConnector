@@ -109,7 +109,7 @@ public class Attachment implements AddressableEntity {
             return Objects.equal(this.self, that.self)
                     && Objects.equal(this.filename, that.filename)
                     && Objects.equal(this.author, that.author)
-                    && Objects.equal(this.creationDate, that.creationDate)
+                    && this.creationDate.isEqual(that.creationDate)
                     && Objects.equal(this.size, that.size)
                     && Objects.equal(this.mimeType, that.mimeType)
                     && Objects.equal(this.contentUri, that.contentUri)

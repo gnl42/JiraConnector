@@ -1,0 +1,13 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/attachment/10031",
+	"filename":"snipe.png",
+	"author": {
+		"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+		"name":"admin","displayName":"Administrator"
+	},
+	"created":"2010-07-26T13:31:35.577+0200",
+	"size":31020,
+	"mimeType":"image/png",
+	"content":"http://localhost:8090/jira/secure/attachment/10031/snipe.png",
+	"thumbnail":"http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png"
+}
