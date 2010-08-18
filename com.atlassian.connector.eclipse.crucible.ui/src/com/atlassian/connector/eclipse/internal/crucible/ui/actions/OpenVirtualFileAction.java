@@ -24,9 +24,13 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.team.internal.ui.ITeamUIImages;
 import org.eclipse.team.ui.TeamImages;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -91,7 +95,17 @@ public class OpenVirtualFileAction extends BaseSelectionListenerAction {
 	@Override
 	public void run() {
 		AtlassianUiUtil.showViewInActiveWorkbenchPage(CommentView.ID);
-		OpenVirtualFileJob job = new OpenVirtualFileJob(review, new CrucibleFile(fileInfo, oldFile), comment);
+		final OpenVirtualFileJob job = new OpenVirtualFileJob(review, new CrucibleFile(fileInfo, oldFile), comment);
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				super.done(event);
+
+				if (!job.getStatus().isOK()) {
+					StatusHandler.log(job.getStatus());
+				}
+			}
+		});
 		job.setPriority(Job.INTERACTIVE);
 		job.schedule();
 	}

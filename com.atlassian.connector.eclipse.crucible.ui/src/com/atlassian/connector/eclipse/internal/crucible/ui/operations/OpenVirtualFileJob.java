@@ -34,8 +34,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.util.UrlUtil;
 
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -95,9 +96,15 @@ public class OpenVirtualFileJob extends JobWithStatus {
 		}
 
 		if (contentUrl != null) {
-			contentUrl = UrlUtil.adjustUrlPath(contentUrl, url);
+			try {
+				URI contentUri = new URI(url, true);
+				contentUri.setPath(contentUrl.startsWith("/") ? contentUrl : "/" + contentUrl);
 
-			return session.getFileContent(contentUrl);
+				return session.getFileContent(contentUri.toString(), true);
+			} catch (URIException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						NLS.bind("Invalid URI {0}", url), e));
+			}
 		}
 
 		return null;
