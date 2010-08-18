@@ -22,6 +22,7 @@ import com.atlassian.connector.eclipse.jira.tests.core.FilterDefinitionConverter
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientCacheTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraRemoteMessageExceptionTest;
+import com.atlassian.connector.eclipse.jira.tests.core.JiraSoapConverterTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraTimeFormatTest;
 import com.atlassian.connector.eclipse.jira.tests.model.ComponentFilterTest;
 import com.atlassian.connector.eclipse.jira.tests.model.JiraVersionTest;
@@ -48,6 +49,7 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(ComponentFilterTest.class);
 		suite.addTestSuite(JiraCommentDateComparatorTest.class);
 		suite.addTestSuite(JiraRemoteMessageExceptionTest.class);
+		suite.addTestSuite(JiraSoapConverterTest.class);
 		suite.addTestSuite(JiraUiUtilTest.class);
 		// repository tests
 		for (JiraFixture fixture : new JiraFixture[] { JiraFixture.DEFAULT }) {

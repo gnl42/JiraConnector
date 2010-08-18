@@ -54,7 +54,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteWorkl
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
  */
-class JiraSoapConverter {
+public class JiraSoapConverter {
 
 	protected static Priority[] convert(RemotePriority[] remotePriorities) {
 		Priority[] priorities = new Priority[remotePriorities.length];
@@ -394,8 +394,11 @@ class JiraSoapConverter {
 	}
 
 	private static RemoteVersion convert(Version version) {
-		Calendar releaseDate = Calendar.getInstance();
-		releaseDate.setTime(version.getReleaseDate());
+		Calendar releaseDate = null;
+		if (version.getReleaseDate() != null) {
+			releaseDate = Calendar.getInstance();
+			releaseDate.setTime(version.getReleaseDate());
+		}
 		return new RemoteVersion(version.getId(), version.getName(), false, releaseDate, false, version.getSequence());
 	}
 
