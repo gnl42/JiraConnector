@@ -19,6 +19,7 @@ package com.atlassian.jira.restjavaclient.domain;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -36,6 +37,10 @@ public class Worklog {
 	private final DateTime updateDate;
 	private final DateTime startDate;
 	private final int minutesSpent;
+	@Nullable
+	private final String groupLevel = null;
+	@Nullable
+	private final String roleLevel= null;			
 
 	public Worklog(URI self, URI issue, User author, User updateAuthor, String comment, DateTime creationDate, 
 			DateTime updateDate, DateTime startDate, int minutesSpent) {
@@ -100,4 +105,28 @@ public class Worklog {
 				add("minutesSpent", minutesSpent).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Worklog) {
+			Worklog that = (Worklog) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.issue, that.issue)
+					&& Objects.equal(this.author, that.author)
+					&& Objects.equal(this.updateAuthor, that.updateAuthor)
+					&& Objects.equal(this.comment, that.comment)
+					&& this.creationDate.isEqual(that.creationDate)
+					&& this.updateDate.isEqual(that.updateDate)
+					&& this.startDate.isEqual(that.startDate)
+					&& Objects.equal(this.minutesSpent, that.minutesSpent);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+	}
+
+
 }

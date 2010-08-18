@@ -16,6 +16,10 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -25,11 +29,17 @@ import java.net.URISyntaxException;
  * @since v0.1
  */
 public class TestUtil {
+	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+
 	public static URI toUri(String str) {
 		try {
 			return new URI(str);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static DateTime toDateTime(String isoDateTimeSt) {
+		return formatter.parseDateTime(isoDateTimeSt);
 	}
 }

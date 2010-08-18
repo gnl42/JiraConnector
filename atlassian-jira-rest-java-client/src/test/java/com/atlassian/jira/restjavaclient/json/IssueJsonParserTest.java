@@ -48,14 +48,7 @@ import static org.junit.Assert.*;
  */
 public class IssueJsonParserTest {
 	@Test
-	public void x() {
-		fail("abc");
-
-	}
-	@Test
 	public void testParseIssue() throws Exception {
-		fail("fds");
-
 		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource("/json/issue/valid-all-expanded.json");
 		final IssueJsonParser parser = new IssueJsonParser();
 		final Issue issue = parser.parseIssue(new IssueArgsBuilder("TST-2").build(), issueJson);
@@ -91,7 +84,7 @@ public class IssueJsonParserTest {
 		attachmentIt.next();
 		attachmentIt.next();
 		final Attachment lastAttachment = attachmentIt.next();
-		assertEquals("transparent-png.png2", lastAttachment.getFilename());
+		assertEquals("transparent-png.png", lastAttachment.getFilename());
 
 		// worklogs
 		final ExpandableProperty<Worklog> worklogs = issue.getWorklogs();
@@ -101,6 +94,6 @@ public class IssueJsonParserTest {
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), TestConstants.USER1,
 				TestConstants.USER1, "a worklog viewable just by jira-users",
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
-				toDateTime("2010-08-11T16:52:00.000+0200"), 3), null);
+				toDateTime("2010-08-11T16:52:00.000+0200"), 3), worklog);
 	}
 }
