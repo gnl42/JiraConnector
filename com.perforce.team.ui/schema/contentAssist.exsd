@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.perforce.team.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.perforce.team.ui" id="contentAssist" name="Content Proposal Provider"/>
+      </appinfo>
+      <documentation>
+         Contribute content assist proposals to the different UI contexts.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="provider"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="provider">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.perforce.team.ui.editor.IContentAssistProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="context" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2009.3
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension point=&quot;com.perforce.team.ui.contentAssist&quot;&gt;
+      &lt;provider
+            class=&quot;com.my.xyz.MyServerContentAssistProvider&quot;
+            context=&quot;pending.edit&quot;&gt;
+      &lt;/provider&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+The above example contributes a content assist provider to the
+Pending Changelist dialog known as context &quot;pending.edit&quot;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         The specified provider must implemeent com.perforce.team.ui.editor.IContentAssistProvider.
+It is recommnded to extend com.perforce.team.ui.editor.BaseContentAssistProvider
+instead of directly implementing the interface to shield from future API changes.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         This extension point is not used by any current P4WSAD plugins.
+      </documentation>
+   </annotation>
+
+
+</schema>

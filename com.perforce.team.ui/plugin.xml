@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
 	<extension-point id="timelapse" name="Time-lapse View" schema="schema/timelapse.exsd"/>
+	<extension-point id="fileDiff" name="File Difference" schema="schema/fileDiff.exsd"/>
+	<extension-point id="contentAssist" name="Content Assist Provider" schema="schema/contentAssist.exsd"/>
+	<extension-point id="page" name="Editor pages" schema="schema/page.exsd"/>
+	<extension-point id="action" name="P4 Action extensions" schema="schema/action.exsd"/>
 <!-- New/Import wizard contributions -->
    <extension
          point="org.eclipse.ui.newWizards">
@@ -445,8 +449,8 @@
                menubarPath="perforce.group1"
                id="com.perforce.team.ui.server_info" />
          <action
-         	label="Integrate Branches..."
-         	tooltip="Integrate Branches..."
+         	label="Integrate Branch..."
+         	tooltip="Integrate Branch..."
          	enablesFor="1"
          	class="com.perforce.team.ui.p4java.actions.IntegrateAction"
          	icon="icons/normal/branch.png"
@@ -470,8 +474,9 @@
          	id="com.perforce.team.ui.actions.share_projects" />
       </objectContribution>
       <objectContribution
-            objectClass="com.perforce.team.core.p4java.IP4Job"
-            id="com.perforce.team.core.p4java.IP4Job">
+            adaptable="true"
+            id="com.perforce.team.core.p4java.IP4Job"
+            objectClass="com.perforce.team.core.p4java.IP4Job">
          <action
                label="%UnfixJobAction.label"
                helpContextId="com.perforce.team.ui.action_unfix_job"
@@ -594,6 +599,23 @@
                tooltip="%IntegrateAction.tooltip" />
                
          <action
+               label="%ShowHistoryAction.label"
+               helpContextId="com.perforce.team.ui.action_show_history"
+               tooltip="%ShowHistoryAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ShowHistoryAction"
+               icon="icons/views/history.gif"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.actions.showhistory" />
+               
+          <action
+               label="%CheckoutProjectAsAction.label"
+               helpContextId="com.perforce.team.ui.action_checkout_project_as"
+               tooltip="%CheckoutProjectAsAction.tooltip"
+               class="com.perforce.team.ui.project.ImportProjectAsAction"
+               menubarPath="perforce.group3"
+               id="com.perforce.team.ui.actions.checkoutprojectas" />
+               
+         <action
                label="%CheckoutProjectAction.label"
                helpContextId="com.perforce.team.ui.action_checkout_project"
                tooltip="%CheckoutProjectAction.tooltip"
@@ -601,7 +623,7 @@
                icon="icons/normal/import.gif"
                menubarPath="perforce.group3"
                id="com.perforce.team.ui.actions.checkoutproject" />
-         
+               
       </objectContribution>
       
       <objectContribution
@@ -703,6 +725,13 @@
                icon="icons/normal/unshelve.png"
                menubarPath="perforce.group2"
                id="com.perforce.team.ui.unshelve" />
+          <action
+                class="com.perforce.team.ui.p4java.actions.ViewChangelistAction"
+                icon="icons/perforce/shelved_editor.png"
+                id="com.perforce.team.ui.viewshelvedchangelist"
+                label="View Changelist"
+                menubarPath="perforce.group2">
+          </action>
       </objectContribution>
       <objectContribution
 			objectClass="com.perforce.team.core.p4java.IP4ShelveFile"
@@ -751,6 +780,83 @@
                class="com.perforce.team.ui.shelve.DiffShelveLocalAction"
                menubarPath="perforce.group2"
                id="com.perforce.team.ui.difflocalshelvefile" />
+      </objectContribution>
+      <objectContribution
+      		objectClass="com.perforce.team.core.p4java.IP4SubmittedChangelist"
+			id="com.perforce.team.core.p4java.IP4SubmittedChangelist">
+        <action
+               class="com.perforce.team.ui.p4java.actions.IntegrateAction"
+               helpContextId="com.perforce.team.ui.action_integrate_changelist"
+               id="com.perforce.team.ui.integratechangelist"
+               icon="icons/normal/branch.png"
+               label="Integrate Changelist..."
+               menubarPath="perforce.group1"
+               tooltip="Integrate Submitted Changelist...">
+         </action>
+        <action
+              class="com.perforce.team.ui.p4java.actions.ViewChangelistAction"
+              icon="icons/perforce/submitted_editor.png"
+              id="com.perforce.team.ui.viewsubmittedchangelist"
+              label="View Changelist"
+              menubarPath="perforce.group1">
+        </action>
+      </objectContribution>
+      <objectContribution
+      		objectClass="com.perforce.team.core.p4java.IP4SubmittedFile"
+			id="com.perforce.team.core.p4java.IP4SubmittedFile">
+        <action
+               label="%TimeLapseView.label"
+               helpContextId="com.perforce.team.ui.time_lapse_view"
+               tooltip="%TimeLapseView.tooltip"
+               class="com.perforce.team.ui.timelapse.TimeLapseAction"
+               icon="icons/normal/time_lapse.png"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.time_lapse_view" />         
+       
+       	<action
+               label="%ShowHistoryAction.label"
+               helpContextId="com.perforce.team.ui.action_show_history"
+               tooltip="%ShowHistoryAction.tooltip"
+               class="com.perforce.team.ui.p4java.actions.ShowHistoryAction"
+               icon="icons/views/history.gif"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.actions.showhistory" />
+               
+         <action
+               label="%RevisionGraph.label"
+               helpContextId="com.perforce.team.ui.revision_graph"
+               tooltip="%RevisionGraph.tooltip"
+               class="com.perforce.team.ui.p4v.P4VRevisionGraphAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.revision_graph" />
+               
+        <action
+               label="Open in Editor"
+               tooltip="Open in Editor"
+               class="com.perforce.team.ui.submitted.OpenEditorAction"
+               menubarPath="perforce.group1"
+               id="com.perforce.team.ui.submitted.openEditor" />
+         
+        <action
+               class="com.perforce.team.ui.p4java.actions.DepotDiffPreviousAction"
+               helpContextId="com.perforce.team.ui.action_diff_previous"
+               id="com.perforce.team.ui.compare.diffprevious"
+               label="Diff Against Previous Revision"
+               icon="icons/normal/diff.png"
+               menubarPath="perforce.group1"
+               tooltip="Diff Against Previous Revision">
+        </action>
+        
+         <action
+               class="com.perforce.team.ui.p4java.actions.CopyPathAction"
+               helpContextId="com.perforce.team.ui.action_copy_path"
+               id="com.perforce.team.ui.copy.path"
+               label="Copy File Path"
+               icon="icons/normal/copy.gif"
+               menubarPath="perforce.group1"
+               tooltip="Copy File Path">
+        </action>  
+         
       </objectContribution>
       <objectContribution
 			objectClass="org.eclipse.core.resources.IFile"
@@ -1041,6 +1147,18 @@
                class="com.perforce.team.ui.p4java.actions.AuthenticationAction"
                menubarPath="team.main/group5"
                id="com.perforce.team.ui.authentication" />
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="com.perforce.team.core.p4java.IP4Revision"
+            objectClass="com.perforce.team.core.p4java.IP4Revision">
+         <action
+               class="com.perforce.team.ui.p4java.actions.ViewChangelistAction"
+               icon="icons/perforce/submitted_editor.png"
+               id="com.perforce.team.ui.revision.viewChangelist"
+               label="View Changelist"
+               menubarPath="perforce.group1">
+         </action>
       </objectContribution>
    </extension>
 <!-- Marker Resolutions -->
@@ -1724,6 +1842,44 @@
           id="com.perforce.team.ui.head_provider"
           label="Perforce Head Revision">
     </referenceprovider>
+ </extension>
+ <extension
+       point="org.eclipse.core.runtime.adapters">
+    <factory
+          adaptableType="org.eclipse.team.internal.ui.synchronize.ChangeSetDiffNode"
+          class="com.perforce.team.ui.synchronize.ChangeSetAdapterFactory">
+       <adapter
+             type="com.perforce.team.core.p4java.synchronize.IP4ChangeSet">
+       </adapter>
+    </factory>
+ </extension>
+ <extension
+         point="com.perforce.team.ui.fileDiff">
+      <diff
+            class="com.perforce.team.ui.zip.ZipDiffer"
+            extension="zip">
+      </diff>
+  </extension>
+ <extension
+       point="org.eclipse.ui.editors">
+    <editor
+          class="com.perforce.team.ui.changelists.ChangelistEditor"
+          default="false"
+          icon="icons/perforce/submitted_editor.png"
+          id="com.perforce.team.ui.changelists.ChangelistEditor"
+          name="P4 Changelist Editor">
+    </editor>
+ </extension>
+ <extension
+       point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+    <hyperlinkDetector
+          activate="true"
+          class="com.perforce.team.ui.changelists.ChangelistHyperlinkDetector"
+          description="Detect hyperlinks to Perforce changelists"
+          id="com.perforce.team.ui.changelistHyperlinkDetector"
+          name="P4 Changelist"
+          targetId="org.eclipse.ui.DefaultTextEditor">
+    </hyperlinkDetector>
  </extension>
 
 </plugin>
