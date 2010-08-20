@@ -16,26 +16,25 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.IssueLink;
 import com.atlassian.jira.restjavaclient.domain.IssueLinkType;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.junit.Test;
 
-import java.net.URI;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class IssueLinkJsonParser implements JsonParser<IssueLink> {
-	private final IssueLinkTypeJsonParser issueLinkTypeJsonParser = new IssueLinkTypeJsonParser();
-
-	@Override
-	public IssueLink parse(JSONObject json) throws JSONException {
-		final String key = json.getString("issueKey");
-        final URI targetIssueUri = JsonParseUtil.parseURI(json.getString("issue"));
-		final IssueLinkType issueLinkType = issueLinkTypeJsonParser.parse(json.getJSONObject("type"));
-		return new IssueLink(key, targetIssueUri, issueLinkType);
-	}
+public class IssueLinkJsonParserTest {
+    @Test
+    public void testParseIssueLink() throws Exception {
+        IssueLinkJsonParser parser = new IssueLinkJsonParser();
+        final IssueLink issueLink = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueLink/valid.json"));
+        assertEquals(new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND), issueLink.getIssueLinkType());
+        assertEquals("TST-2", issueLink.getTargetIssueKey());
+        assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), issueLink.getTargetIssueUri());
+    }
 }

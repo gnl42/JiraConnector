@@ -40,8 +40,8 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 		final String comment = json.getString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json.getString("updated"));
-		final DateTime startDate = JsonParseUtil.parseDateTime(json.getString("startDate"));
-		final int minutesSpent = json.getInt("timeSpent");
+		final DateTime startDate = JsonParseUtil.parseDateTime(json.getString("started"));
+		final int minutesSpent = json.getInt("minutesSpent");
 		return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
 	}
 }

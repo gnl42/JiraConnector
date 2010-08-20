@@ -59,7 +59,7 @@ public class Worklog {
 		return self;
 	}
 
-	public URI getIssue() {
+	public URI getIssueUri() {
 		return issue;
 	}
 

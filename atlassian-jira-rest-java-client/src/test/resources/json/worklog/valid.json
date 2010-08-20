@@ -1,0 +1,19 @@
+{
+    "self":"http://localhost:8090/jira/rest/api/latest/worklog/10010",
+    "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+    "author":{
+        "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+        "name":"admin",
+        "displayName":"Administrator"
+    },
+    "updateAuthor":{
+        "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+        "name":"admin",
+        "displayName":"Administrator"
+    },
+    "comment":"my first work",
+    "created":"2010-08-17T16:35:47.466+0200",
+    "updated":"2010-08-17T16:35:47.466+0200",
+    "started":"2010-08-15T16:35:00.000+0200",
+    "minutesSpent":60
+}

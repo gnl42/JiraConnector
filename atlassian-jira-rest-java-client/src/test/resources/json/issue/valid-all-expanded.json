@@ -167,8 +167,8 @@
             "comment":"my first work",
             "created":"2010-08-17T16:35:47.466+0200",
             "updated":"2010-08-17T16:35:47.466+0200",
-            "startDate":"2010-08-15T16:35:00.000+0200",
-            "timeSpent":60
+            "started":"2010-08-15T16:35:00.000+0200",
+            "minutesSpent":60
          },
          {
             "self":"http://localhost:8090/jira/rest/api/latest/worklog/10011",
@@ -187,8 +187,8 @@
             "created":"2010-08-17T16:38:00.013+0200",
             "updated":"2010-08-17T16:38:24.948+0200",
             "roleLevel":"Developers",
-            "startDate":"2010-08-17T16:37:00.000+0200",
-            "timeSpent":15
+            "started":"2010-08-17T16:37:00.000+0200",
+            "minutesSpent":15
          },
          {
             "self":"http://localhost:8090/jira/rest/api/latest/worklog/10012",
@@ -207,8 +207,8 @@
             "created":"2010-08-17T16:53:15.848+0200",
             "updated":"2010-08-17T16:53:15.848+0200",
             "groupLevel":"jira-users",
-            "startDate":"2010-08-11T16:52:00.000+0200",
-            "timeSpent":3
+            "started":"2010-08-11T16:52:00.000+0200",
+            "minutesSpent":3
          }
       ]
    },
@@ -261,8 +261,8 @@
    },
    "links":[
       {
-         "key":"TST-1",
-         "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
+         "issueKey":"TST-1",
+         "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
          "type":{
             "name":"Duplicate",
             "direction":"OUTBOUND",
@@ -270,8 +270,8 @@
          }
       },
       {
-         "key":"TST-1",
-         "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
+         "issueKey":"TST-1",
+         "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-1",
          "type":{
             "name":"Duplicate",
             "direction":"INBOUND",
