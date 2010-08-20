@@ -18,6 +18,7 @@ package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.Worklog;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
@@ -37,5 +38,33 @@ public class WorklogJsonParserTest {
         assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getUpdateDate());
         assertEquals(TestUtil.toDateTime("2010-08-15T16:35:00.000+0200"), worklog.getStartDate());
         assertEquals(60, worklog.getMinutesSpent());
+        Assert.assertNull(worklog.getRoleLevel());
+        Assert.assertNull(worklog.getGroupLevel());
     }
+
+    @Test
+    public void testParseWithRoleLevel() throws Exception {
+        final WorklogJsonParser parser = new WorklogJsonParser();
+        final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-roleLevel.json"));
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/worklog/10011"), worklog.getSelf());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), worklog.getIssueUri());
+        assertEquals(TestConstants.USER1, worklog.getAuthor());
+        assertEquals(TestConstants.USER1, worklog.getUpdateAuthor());
+        assertEquals("another piece of work", worklog.getComment());
+        assertEquals(TestUtil.toDateTime("2010-08-17T16:38:00.013+0200"), worklog.getCreationDate());
+        assertEquals(TestUtil.toDateTime("2010-08-17T16:38:24.948+0200"), worklog.getUpdateDate());
+        assertEquals(TestUtil.toDateTime("2010-08-17T16:37:00.000+0200"), worklog.getStartDate());
+        assertEquals("Developers", worklog.getRoleLevel());
+        assertEquals(15, worklog.getMinutesSpent());
+        Assert.assertNull(worklog.getGroupLevel());
+    }
+
+    @Test
+    public void testParseWithGroupLevel() throws Exception {
+        final WorklogJsonParser parser = new WorklogJsonParser();
+        final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-groupLevel.json"));
+        assertEquals("jira-users", worklog.getGroupLevel());
+        Assert.assertNull(worklog.getRoleLevel());
+    }
+
 }

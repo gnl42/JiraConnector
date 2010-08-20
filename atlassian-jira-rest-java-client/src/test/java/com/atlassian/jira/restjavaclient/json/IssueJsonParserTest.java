@@ -19,7 +19,6 @@ package com.atlassian.jira.restjavaclient.json;
 import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.IsIterableOf;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
-import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.IssueLink;
@@ -28,15 +27,11 @@ import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Project;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.domain.Worklog;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.Iterator;
 
 import static com.atlassian.jira.restjavaclient.TestUtil.toDateTime;
@@ -94,6 +89,6 @@ public class IssueJsonParserTest {
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), TestConstants.USER1,
 				TestConstants.USER1, "a worklog viewable just by jira-users",
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
-				toDateTime("2010-08-11T16:52:00.000+0200"), 3), worklog);
+				toDateTime("2010-08-11T16:52:00.000+0200"), 3, null, "jira-users"), worklog);
 	}
 }

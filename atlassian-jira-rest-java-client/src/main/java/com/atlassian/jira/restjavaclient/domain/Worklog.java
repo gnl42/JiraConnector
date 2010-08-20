@@ -29,7 +29,7 @@ import java.net.URI;
  */
 public class Worklog {
 	private final URI self;
-	private final URI issue;
+	private final URI issueUri;
 	private final User author;
 	private final User updateAuthor;
 	private final String comment;
@@ -38,14 +38,14 @@ public class Worklog {
 	private final DateTime startDate;
 	private final int minutesSpent;
 	@Nullable
-	private final String groupLevel = null;
+	private final String groupLevel;
 	@Nullable
-	private final String roleLevel= null;			
+	private final String roleLevel;
 
-	public Worklog(URI self, URI issue, User author, User updateAuthor, String comment, DateTime creationDate, 
-			DateTime updateDate, DateTime startDate, int minutesSpent) {
+	public Worklog(URI self, URI issueUri, User author, User updateAuthor, String comment, DateTime creationDate,
+                   DateTime updateDate, DateTime startDate, int minutesSpent, String roleLevel, String groupLevel) {
 		this.self = self;
-		this.issue = issue;
+		this.issueUri = issueUri;
 		this.author = author;
 		this.updateAuthor = updateAuthor;
 		this.comment = comment;
@@ -53,14 +53,16 @@ public class Worklog {
 		this.updateDate = updateDate;
 		this.startDate = startDate;
 		this.minutesSpent = minutesSpent;
-	}
+        this.roleLevel = roleLevel;
+        this.groupLevel = groupLevel;
+    }
 
 	public URI getSelf() {
 		return self;
 	}
 
 	public URI getIssueUri() {
-		return issue;
+		return issueUri;
 	}
 
 	public User getAuthor() {
@@ -91,11 +93,19 @@ public class Worklog {
 		return minutesSpent;
 	}
 
-	@Override
+    public String getGroupLevel() {
+        return groupLevel;
+    }
+
+    public String getRoleLevel() {
+        return roleLevel;
+    }
+
+    @Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).
-				add("issue", issue).
+				add("issueUri", issueUri).
 				add("author", author).
 				add("updateAuthor", updateAuthor).
 				add("comment", comment).
@@ -103,6 +113,8 @@ public class Worklog {
 				add("updateDate", updateDate).
 				add("startDate", startDate).
 				add("minutesSpent", minutesSpent).
+                add("roleLevel", roleLevel).
+                add("groupLevel", groupLevel).
 				toString();
 	}
 
@@ -111,10 +123,12 @@ public class Worklog {
 		if (obj instanceof Worklog) {
 			Worklog that = (Worklog) obj;
 			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.issue, that.issue)
+					&& Objects.equal(this.issueUri, that.issueUri)
 					&& Objects.equal(this.author, that.author)
 					&& Objects.equal(this.updateAuthor, that.updateAuthor)
 					&& Objects.equal(this.comment, that.comment)
+					&& Objects.equal(this.groupLevel, that.groupLevel)
+					&& Objects.equal(this.roleLevel, that.roleLevel)
 					&& this.creationDate.isEqual(that.creationDate)
 					&& this.updateDate.isEqual(that.updateDate)
 					&& this.startDate.isEqual(that.startDate)
@@ -125,7 +139,7 @@ public class Worklog {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
 	}
 
 

@@ -1,0 +1,20 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/worklog/10012",
+   "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
+   "author":{
+      "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+      "name":"wseliga",
+      "displayName":"Wojciech Seliga"
+   },
+   "updateAuthor":{
+      "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+      "name":"wseliga",
+      "displayName":"Wojciech Seliga"
+   },
+   "comment":"a worklog viewable just by jira-users",
+   "created":"2010-08-17T16:53:15.848+0200",
+   "updated":"2010-08-17T16:53:15.848+0200",
+   "groupLevel":"jira-users",
+   "started":"2010-08-11T16:52:00.000+0200",
+   "minutesSpent":3
+}

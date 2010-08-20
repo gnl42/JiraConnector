@@ -38,10 +38,12 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
 		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
 		final String comment = json.getString("comment");
-		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
-		final DateTime updateDate = JsonParseUtil.parseDateTime(json.getString("updated"));
-		final DateTime startDate = JsonParseUtil.parseDateTime(json.getString("started"));
+		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
+		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
+		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
 		final int minutesSpent = json.getInt("minutesSpent");
-		return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+        final String roleLevel = JsonParseUtil.getOptionalString(json, "roleLevel");
+        final String groupLevel = JsonParseUtil.getOptionalString(json, "groupLevel");
+        return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, roleLevel, groupLevel);
 	}
 }

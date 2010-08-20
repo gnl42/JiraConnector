@@ -133,4 +133,10 @@ public class JsonParseUtil {
 		}
 		return o.toString();
 	}
+
+
+    @Nullable
+    public static String getOptionalString(JSONObject jsonObject, String attributeName) {
+        return jsonObject.optString(attributeName, null);
+    }
 }
