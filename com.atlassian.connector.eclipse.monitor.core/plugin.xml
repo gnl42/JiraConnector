@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="study" name="%extension-point.name" schema="schema/study.exsd"/>
+
+   <extension
+         name="%startupAndShutdown.name"
+         point="org.eclipse.ui.startup">
+      <startup
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin$UiUsageMonitorStartup">
+      </startup>
+   </extension>   
+    
+   <extension point="org.eclipse.ui.preferencePages">
+      <page 
+         name="%preferencePage.name"
+         class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.UsageDataPreferencePage"
+         id="com.atlassian.connector.eclipse.monitor.usage.preferences"
+		 category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage">
+         <keywordReference id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
+      </page> 
+   </extension>
+   
+   <extension
+   		point="org.eclipse.ui.keywords">
+      <keyword
+            label="%keyword.label"
+            id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
+   </extension>
+   
+   <extension point="org.eclipse.ui.newWizards">
+      <wizard
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard"
+            icon="icons/eview16/wizard-feedback.gif"
+            id="com.atlassian.connector.eclipse.ui.UsageSubmissionWizard"
+            name="Usage Data Submission for Atlassian Connector for Eclipse">
+      </wizard>
+   </extension>
+   
+    <extension
+          point="org.eclipse.core.runtime.preferences">
+       <initializer
+             class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.PreferenceInitializer">
+       </initializer>
+    </extension>
+</plugin>
