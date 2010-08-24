@@ -33,7 +33,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientData;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 
@@ -150,7 +150,7 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, JiraConfiguration configuration,
+	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
 		JiraClient client = createClient(location, configuration);
 		return client.getServerInfo(monitor);
@@ -164,14 +164,14 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private JiraClient createClient(AbstractWebLocation location, JiraConfiguration configuration) {
+	private JiraClient createClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 //		}
 		return new JiraClient(location, configuration);
 	}
 
-	public JiraClient addClient(AbstractWebLocation location, JiraConfiguration configuration) {
+	public JiraClient addClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 		if (clientByUrl.containsKey(location.getUrl())) {
 			throw new RuntimeException("A client with that name already exists"); //$NON-NLS-1$
 		}

@@ -18,7 +18,7 @@ import java.util.Locale;
 /**
  * @author Steffen Pingel
  */
-public class JiraConfiguration {
+public class JiraLocalConfiguration {
 
 	public static final String DEFAULT_DATE_PATTERN = "dd/MMM/yy"; //$NON-NLS-1$
 
@@ -48,7 +48,9 @@ public class JiraConfiguration {
 
 	private String defaultCharacterEncoding;
 
-	public JiraConfiguration() {
+	private boolean useServerTimeTrackingSettings;
+
+	public JiraLocalConfiguration() {
 		setDatePattern(DEFAULT_DATE_PATTERN);
 		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
 		setLocale(DEFAULT_LOCALE);
@@ -69,7 +71,7 @@ public class JiraConfiguration {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		JiraConfiguration other = (JiraConfiguration) obj;
+		JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
 		if (characterEncoding == null) {
 			if (other.characterEncoding != null) {
 				return false;
@@ -108,6 +110,9 @@ public class JiraConfiguration {
 			return false;
 		}
 		if (workHoursPerDay != other.workHoursPerDay) {
+			return false;
+		}
+		if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {
 			return false;
 		}
 		return true;
@@ -153,6 +158,14 @@ public class JiraConfiguration {
 		return workHoursPerDay;
 	}
 
+	public synchronized boolean isCompressionEnabled() {
+		return compressionEnabled;
+	}
+
+	public boolean isUseServerTimeTrackingSettings() {
+		return useServerTimeTrackingSettings;
+	}
+
 	@Override
 	public synchronized int hashCode() {
 		final int prime = 31;
@@ -166,10 +179,6 @@ public class JiraConfiguration {
 		result = prime * result + workDaysPerWeek;
 		result = prime * result + workHoursPerDay;
 		return result;
-	}
-
-	public synchronized boolean isCompressionEnabled() {
-		return compressionEnabled;
 	}
 
 	public synchronized void setCharacterEncoding(String characterEncoding) {
@@ -206,6 +215,10 @@ public class JiraConfiguration {
 
 	public synchronized void setWorkHoursPerDay(int workHoursPerDay) {
 		this.workHoursPerDay = workHoursPerDay;
+	}
+
+	public void setUseServerTimeTrackingSettings(boolean useServerTimeTrackingSettings) {
+		this.useServerTimeTrackingSettings = useServerTimeTrackingSettings;
 	}
 
 }

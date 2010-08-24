@@ -489,7 +489,7 @@ public class JiraClientTest extends TestCase {
 
 	public void testCharacterEncoding() throws Exception {
 		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
-		client.getConfiguration().setCharacterEncoding("UTF-8");
+		client.getLocalConfiguration().setCharacterEncoding("UTF-8");
 		assertEquals("UTF-8", client.getCharacterEncoding(new NullProgressMonitor()));
 	}
 

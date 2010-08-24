@@ -51,6 +51,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Group;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
@@ -72,6 +73,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInsufficie
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteField;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue;
@@ -165,6 +167,15 @@ public class JiraSoapClient extends AbstractSoapClient {
 			public Component[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getComponents(loginToken.getCurrentValue(),
 						projectKey));
+			}
+		});
+	}
+
+	public JiraConfiguration getConfiguration(IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<JiraConfiguration>() {
+
+			public JiraConfiguration call() throws Exception {
+				return JiraSoapConverter.convert(getSoapService().getConfiguration(loginToken.getCurrentValue()));
 			}
 		});
 	}
@@ -657,8 +668,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 			throws JiraException {
 		return call(monitor, new Callable<JiraWorkLog>() {
 			public JiraWorkLog call() throws java.rmi.RemoteException, JiraException {
-				JiraTimeFormat formatter = new JiraTimeFormat(jiraClient.getConfiguration().getWorkDaysPerWeek(),
-						jiraClient.getConfiguration().getWorkHoursPerDay());
+				JiraTimeFormat formatter = new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(jiraClient),
+						JiraUtil.getWorkHoursPerDay(jiraClient));
 				RemoteWorklog remoteLog = JiraSoapConverter.convert(log, formatter);
 				switch (log.getAdjustEstimate()) {
 				case AUTO:
@@ -741,7 +752,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 				}
 
 				if (issue.getDue() != null) {
-					DateFormat format = jiraClient.getConfiguration().getDateFormat();
+					DateFormat format = jiraClient.getLocalConfiguration().getDateFormat();
 					fields.add(new RemoteFieldValue("duedate", new String[] { format.format(issue.getDue()) })); //$NON-NLS-1$
 				} else {
 					fields.add(new RemoteFieldValue("duedate", new String[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
@@ -835,9 +846,9 @@ public class JiraSoapClient extends AbstractSoapClient {
 						Date date = JiraRssHandler.getDateTimeFormat().parse(value);
 						DateFormat format;
 						if (JiraFieldType.DATE.getKey().equals(key)) {
-							format = jiraClient.getConfiguration().getDateFormat();
+							format = jiraClient.getLocalConfiguration().getDateFormat();
 						} else {
-							format = jiraClient.getConfiguration().getDateTimeFormat();
+							format = jiraClient.getLocalConfiguration().getDateTimeFormat();
 						}
 						value = format.format(date);
 					} catch (ParseException e) {
@@ -887,7 +898,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 		for (String field : actionFields) {
 			if ("duedate".equals(field)) { //$NON-NLS-1$
 				if (issue.getDue() != null) {
-					DateFormat format = jiraClient.getConfiguration().getDateFormat();
+					DateFormat format = jiraClient.getLocalConfiguration().getDateFormat();
 					fields.add(new RemoteFieldValue("duedate", new String[] { format.format(issue.getDue()) })); //$NON-NLS-1$
 				} else {
 					fields.add(new RemoteFieldValue("duedate", new String[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$

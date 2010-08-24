@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Group;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
@@ -33,6 +34,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteComment;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteComponent;
+import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFieldValue;
 import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteFilter;
@@ -105,6 +107,8 @@ public class JiraSoapConverter {
 		remoteWorklog.setId(worklog.getId());
 		remoteWorklog.setRoleLevelId(worklog.getRoleLevelId());
 		remoteWorklog.setStartDate(convert(worklog.getStartDate()));
+		// looks like JIRA ignores seconds and takes string 'timespent' 
+		// it can cause some problems if local time tracking setting is different from the server one 
 		remoteWorklog.setTimeSpentInSeconds(worklog.getTimeSpent());
 		remoteWorklog.setTimeSpent(formatter.format(worklog.getTimeSpent()));
 		remoteWorklog.setUpdateAuthor(worklog.getUpdateAuthor());
@@ -413,4 +417,22 @@ public class JiraSoapConverter {
 	private static RemoteCustomFieldValue convert(RemoteFieldValue remoteFieldValue) {
 		return new RemoteCustomFieldValue(remoteFieldValue.getId(), null, remoteFieldValue.getValues());
 	}
+
+	public static JiraConfiguration convert(RemoteConfiguration remoteConf) {
+		JiraConfiguration conf = new JiraConfiguration();
+
+		conf.setTimeTrackingHoursPerDay(remoteConf.getTimeTrackingHoursPerDay());
+		conf.setTimeTrackingDaysPerWeek(remoteConf.getTimeTrackingDaysPerWeek());
+		conf.setAllowAttachments(remoteConf.isAllowAttachments());
+		conf.setAllowExternalUserManagment(remoteConf.isAllowExternalUserManagment());
+		conf.setAllowIssueLinking(remoteConf.isAllowIssueLinking());
+		conf.setAllowSubTasks(remoteConf.isAllowSubTasks());
+		conf.setAllowTimeTracking(remoteConf.isAllowTimeTracking());
+		conf.setAllowUnassignedIssues(remoteConf.isAllowUnassignedIssues());
+		conf.setAllowVoting(remoteConf.isAllowVoting());
+		conf.setAllowWatching(remoteConf.isAllowWatching());
+
+		return conf;
+	}
+
 }

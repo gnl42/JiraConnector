@@ -84,7 +84,7 @@ public class JiraClientOfflineTest extends TestCase {
 	}
 
 	public void testHttpsRedirect() throws Exception {
-		client.getConfiguration().setFollowRedirects(false);
+		client.getLocalConfiguration().setFollowRedirects(false);
 		try {
 			server.addResponse(JiraTestUtil.getMessage("soap/login-redirect-response"));
 			client.getServerInfo(null);

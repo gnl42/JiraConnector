@@ -705,9 +705,9 @@ public class JiraWebClient {
 						Date date = JiraRssHandler.getDateTimeFormat().parse(value);
 						DateFormat format;
 						if (JiraFieldType.DATE.getKey().equals(key)) {
-							format = client.getConfiguration().getDateFormat();
+							format = client.getLocalConfiguration().getDateFormat();
 						} else {
-							format = client.getConfiguration().getDateTimeFormat();
+							format = client.getLocalConfiguration().getDateTimeFormat();
 						}
 						value = format.format(date);
 					} catch (ParseException e) {
@@ -723,7 +723,7 @@ public class JiraWebClient {
 		for (String field : fields) {
 			if ("duedate".equals(field)) { //$NON-NLS-1$
 				if (issue.getDue() != null) {
-					DateFormat format = client.getConfiguration().getDateFormat();
+					DateFormat format = client.getLocalConfiguration().getDateFormat();
 					post.addParameter("duedate", format.format(issue.getDue())); //$NON-NLS-1$
 				} else {
 					post.addParameter("duedate", ""); //$NON-NLS-1$ //$NON-NLS-2$

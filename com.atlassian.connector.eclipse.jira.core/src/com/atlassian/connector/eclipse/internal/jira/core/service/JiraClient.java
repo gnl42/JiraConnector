@@ -33,6 +33,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
@@ -110,16 +111,16 @@ public class JiraClient {
 
 	private final JiraSoapClient soapClient;
 
-	private JiraConfiguration configuration;
+	private JiraLocalConfiguration localConfiguration;
 
 	private final JiraWebSession webSession;
 
-	public JiraClient(AbstractWebLocation location, JiraConfiguration configuration) {
+	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 		Assert.isNotNull(location);
 		Assert.isNotNull(configuration);
 		this.baseUrl = location.getUrl();
 		this.location = location;
-		this.configuration = configuration;
+		this.localConfiguration = configuration;
 
 		this.cache = new JiraClientCache(this);
 		this.webSession = new JiraWebSession(this);
@@ -129,7 +130,7 @@ public class JiraClient {
 	}
 
 	public JiraClient(AbstractWebLocation location) {
-		this(location, new JiraConfiguration());
+		this(location, new JiraLocalConfiguration());
 	}
 
 	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
@@ -274,7 +275,7 @@ public class JiraClient {
 	}
 
 	public String getCharacterEncoding(IProgressMonitor monitor) throws JiraException {
-		if (configuration.getCharacterEncoding() == null) {
+		if (localConfiguration.getCharacterEncoding() == null) {
 			String serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
 			if (serverEncoding != null) {
 				return serverEncoding;
@@ -288,15 +289,15 @@ public class JiraClient {
 			// fallback
 			return DEFAULT_CHARSET;
 		}
-		return configuration.getCharacterEncoding();
+		return localConfiguration.getCharacterEncoding();
 	}
 
 	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
 		return soapClient.getComponents(projectKey, monitor);
 	}
 
-	public synchronized JiraConfiguration getConfiguration() {
-		return configuration;
+	public synchronized JiraLocalConfiguration getLocalConfiguration() {
+		return localConfiguration;
 	}
 
 	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
@@ -515,13 +516,17 @@ public class JiraClient {
 		return soapClient.getProjectRoleUsers(project, projectRole, monitor);
 	}
 
-	public synchronized void setConfiguration(JiraConfiguration configuration) {
+	public JiraConfiguration getConfiguration(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getConfiguration(monitor);
+	}
+
+	public synchronized void setLocalConfiguration(JiraLocalConfiguration configuration) {
 		Assert.isNotNull(configuration);
-		this.configuration = configuration;
+		this.localConfiguration = configuration;
 	}
 
 	public boolean isCompressionEnabled() {
-		return getConfiguration().isCompressionEnabled();
+		return getLocalConfiguration().isCompressionEnabled();
 	}
 
 	public synchronized void purgeSession() {

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
@@ -39,7 +39,7 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
 
 	public DateTimeAttributeEditor(TaskDataModel model, TaskAttribute taskAttribute, boolean includeTime) {
 		super(model, taskAttribute);
-		JiraConfiguration configuration = JiraUtil.getConfiguration(model.getTaskRepository());
+		JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(model.getTaskRepository());
 		if (includeTime) {
 			this.format = configuration.getDateTimeFormat();
 		} else {

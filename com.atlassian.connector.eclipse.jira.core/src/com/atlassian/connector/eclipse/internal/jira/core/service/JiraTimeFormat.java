@@ -35,7 +35,7 @@ public class JiraTimeFormat extends Format {
 	private final int workHoursPerDay;
 
 	public JiraTimeFormat() {
-		this(JiraConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, JiraConfiguration.DEFAULT_WORK_HOURS_PER_DAY);
+		this(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY);
 	}
 
 	public JiraTimeFormat(int workDaysPerWeek, int workHoursPerDay) {

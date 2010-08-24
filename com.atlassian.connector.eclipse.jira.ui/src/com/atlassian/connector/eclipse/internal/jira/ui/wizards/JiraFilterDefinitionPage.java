@@ -1841,7 +1841,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			return false;
 		}
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(getTaskRepository().getCharacterEncoding(),
-				client.getConfiguration().getDateFormat());
+				client.getLocalConfiguration().getDateFormat());
 		this.workingCopy = converter.toFilter(client, searchUrl, false);
 		return true;
 	}

@@ -29,6 +29,7 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentSource;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.UnsubmittedTaskAttachment;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
@@ -89,6 +90,8 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
+			UnsubmittedTaskAttachment taskAttachment = new UnsubmittedTaskAttachment(source, attachmentAttribute);
+
 			monitor.beginTask(Messages.JiraTaskAttachmentHandler_Sending_attachment, IProgressMonitor.UNKNOWN);
 			String filename = source.getName();
 			if (attachmentAttribute != null) {

@@ -25,7 +25,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
@@ -72,7 +72,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 		JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
 		if (client == null) {
 			AbstractWebLocation location = taskRepositoryLocationFactory.createWebLocation(repository);
-			client = clientManager.addClient(location, JiraUtil.getConfiguration(repository));
+			client = clientManager.addClient(location, JiraUtil.getLocalConfiguration(repository));
 		}
 		return client;
 	}
@@ -137,14 +137,14 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 	}
 
 	private void updateClient(JiraClient client, TaskRepository repository) {
-		JiraConfiguration configuration = JiraUtil.getConfiguration(repository);
-		if (!configuration.equals(client.getConfiguration())) {
-			client.setConfiguration(configuration);
+		JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
+		if (!configuration.equals(client.getLocalConfiguration())) {
+			client.setLocalConfiguration(configuration);
 		}
 	}
 
 	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
-		return validateConnection(location, new JiraConfiguration(), monitor);
+		return validateConnection(location, new JiraLocalConfiguration(), monitor);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, JiraConfiguration configuration,
+	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
 		ServerInfo info = clientManager.validateConnection(location, configuration, monitor);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());

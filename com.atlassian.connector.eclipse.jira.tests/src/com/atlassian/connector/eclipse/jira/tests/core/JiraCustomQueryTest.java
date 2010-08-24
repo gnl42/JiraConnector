@@ -44,7 +44,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFi
 import com.atlassian.connector.eclipse.internal.jira.core.service.FilterDefinitionConverter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraConfiguration;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
@@ -194,7 +194,7 @@ public class JiraCustomQueryTest extends TestCase {
 		client.setCache(cache);
 
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
-				JiraUtil.getConfiguration(taskRepository).getDateFormat());
+				JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
 		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
@@ -274,7 +274,7 @@ public class JiraCustomQueryTest extends TestCase {
 		String repositoryUrl = JiraFixture.current().getRepositoryUrl();
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET,
-				new SimpleDateFormat(JiraConfiguration.DEFAULT_DATE_PATTERN, Locale.US));
+				new SimpleDateFormat(JiraLocalConfiguration.DEFAULT_DATE_PATTERN, Locale.US));
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
@@ -356,7 +356,7 @@ public class JiraCustomQueryTest extends TestCase {
 		client.setCache(cache);
 
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
-				JiraUtil.getConfiguration(taskRepository).getDateFormat());
+				JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
 		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();

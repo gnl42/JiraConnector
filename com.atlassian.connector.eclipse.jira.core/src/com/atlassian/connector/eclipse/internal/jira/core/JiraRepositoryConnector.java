@@ -34,9 +34,9 @@ import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -423,11 +423,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
+	/**
+	 * TODO: Not used???
+	 */
 	@Override
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, ITask task, IProgressMonitor monitor)
 			throws CoreException {
 		final String projectId = task.getAttribute(JiraAttribute.PROJECT.id());
-		if (projectId != null && !"".equals(projectId)) {
+		if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
 			try {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 				client.getCache().refreshProjectDetails(projectId, monitor);
@@ -447,7 +450,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
-		return "".equals(assignee) ? UNASSIGNED_USER : assignee;
+		return "".equals(assignee) ? UNASSIGNED_USER : assignee; //$NON-NLS-1$
 	}
 
 	private void trace(IStatus status) {

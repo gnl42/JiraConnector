@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -33,6 +34,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.User;
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
+ * @author Jacek Jaroczynski
  */
 public class JiraClientCache {
 
@@ -80,8 +82,8 @@ public class JiraClientCache {
 	}
 
 	private void initializeProject(Project project, IProgressMonitor monitor) throws JiraException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.JiraClientCache_project_details_for,
-				project.getKey()), 5);
+		SubMonitor subMonitor = SubMonitor.convert(monitor,
+				NLS.bind(Messages.JiraClientCache_project_details_for, project.getKey()), 5);
 
 		synchronized (project) {
 			final JiraVersion version = new JiraVersion(data.serverInfo.getVersion());
@@ -231,6 +233,16 @@ public class JiraClientCache {
 		return data.resolutions;
 	}
 
+	public JiraConfiguration getConfiguration() {
+		return data.configuration;
+	}
+
+	private void initializeConfiguration(JiraClientData data, SubMonitor monitor) throws JiraException {
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
+
+		data.configuration = jiraClient.getConfiguration(submonitor);
+	}
+
 	public void setData(JiraClientData data) {
 		this.data = data;
 	}
@@ -270,10 +282,15 @@ public class JiraClientCache {
 		initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeProjectRoles(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeProjects(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializeConfiguration(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 
 		newData.lastUpdate = System.currentTimeMillis();
 
 		this.data = newData;
+	}
+
+	public void refreshConfiguration(IProgressMonitor monitor) throws JiraException {
+		initializeConfiguration(data, SubMonitor.convert(monitor));
 	}
 
 	/**

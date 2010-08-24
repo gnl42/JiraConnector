@@ -121,7 +121,7 @@ public class JiraWebSession {
 			try {
 				// check if session is expired
 				if (doLogin || isAuthenticated(httpClient, hostConfiguration, monitor)) {
-					callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
+					callback.configure(httpClient, hostConfiguration, baseUrl, client.getLocalConfiguration()
 							.getFollowRedirects());
 					callback.run(client, baseUrl, monitor);
 					return;
@@ -227,10 +227,10 @@ public class JiraWebSession {
 	private String getContentType() {
 		String characterEncoding = getCharacterEncoding();
 		if (characterEncoding == null) {
-			characterEncoding = client.getConfiguration().getCharacterEncoding();
+			characterEncoding = client.getLocalConfiguration().getCharacterEncoding();
 		}
 		if (characterEncoding == null) {
-			characterEncoding = client.getConfiguration().getDefaultCharacterEncoding();
+			characterEncoding = client.getLocalConfiguration().getDefaultCharacterEncoding();
 		}
 		return "application/x-www-form-urlencoded; charset=" + characterEncoding; //$NON-NLS-1$
 	}
@@ -282,7 +282,7 @@ public class JiraWebSession {
 				}
 				if (url.endsWith("/success")) { //$NON-NLS-1$
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success")); //$NON-NLS-1$
-					if (baseUrl.equals(newBaseUrl) || !client.getConfiguration().getFollowRedirects()) {
+					if (baseUrl.equals(newBaseUrl) || !client.getLocalConfiguration().getFollowRedirects()) {
 						// success
 						addAuthenticationCookie(httpClient, login);
 						return hostConfiguration;
