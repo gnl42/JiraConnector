@@ -395,6 +395,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
+					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
+							IProgressMonitor.UNKNOWN);
 					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 					try {
 						client.getCache().refreshConfiguration(monitor);
@@ -403,7 +405,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
 								repository.getRepositoryUrl()));
 						StatusHandler.log(status);
-						return status;
+					} finally {
+						monitor.done();
 					}
 					return Status.OK_STATUS;
 				}

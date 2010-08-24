@@ -237,9 +237,8 @@ public class JiraClientCache {
 		return data.configuration;
 	}
 
-	private void initializeConfiguration(JiraClientData data, SubMonitor monitor) throws JiraException {
+	private void initializeConfiguration(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
-
 		data.configuration = jiraClient.getConfiguration(submonitor);
 	}
 
@@ -269,7 +268,7 @@ public class JiraClientCache {
 
 	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_Updating_repository_configuration,
-				7);
+				8);
 
 		final JiraClientData newData = new JiraClientData();
 
@@ -290,7 +289,7 @@ public class JiraClientCache {
 	}
 
 	public void refreshConfiguration(IProgressMonitor monitor) throws JiraException {
-		initializeConfiguration(data, SubMonitor.convert(monitor));
+		initializeConfiguration(data, monitor);
 	}
 
 	/**
