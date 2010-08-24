@@ -9,12 +9,12 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.monitor.usage;
+package com.atlassian.connector.eclipse.monitor.core;
 
 import java.util.Date;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent.Kind;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEvent.Kind;
 
 public final class Monitoring {
 	private final String pluginId;
@@ -24,15 +24,15 @@ public final class Monitoring {
 	}
 
 	public void logAction(String actionId, String details) {
-		if (UiUsageMonitorPlugin.getDefault().isMonitoringEnabled()) {
-			UiUsageMonitorPlugin.getDefault().getInteractionLogger().interactionObserved(
+		if (MonitorCorePlugin.getDefault().isMonitoringEnabled()) {
+			MonitorCorePlugin.getDefault().getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.ACTION, pluginId, actionId, details, new Date()));
 		}
 	}
 
 	public void logJob(String jobId, String details) {
-		if (UiUsageMonitorPlugin.getDefault().isMonitoringEnabled()) {
-			UiUsageMonitorPlugin.getDefault().getInteractionLogger().interactionObserved(
+		if (MonitorCorePlugin.getDefault().isMonitoringEnabled()) {
+			MonitorCorePlugin.getDefault().getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.JOB, pluginId, jobId, details, new Date()));
 		}
 	}

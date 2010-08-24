@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
+package com.atlassian.connector.eclipse.internal.monitor.core.operations;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,11 +30,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent;
+import com.atlassian.connector.eclipse.internal.monitor.core.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
 
 public final class UploadMonitoringStatusJob extends Job {
 
@@ -59,7 +59,7 @@ public final class UploadMonitoringStatusJob extends Job {
 		}
 
 		try {
-			upload(UiUsageMonitorPlugin.getDefault().getStudyParameters(), monitoringDisabledLog, monitor);
+			upload(MonitorCorePlugin.getDefault().getStudyParameters(), monitoringDisabledLog, monitor);
 		} finally {
 			monitoringDisabledLog.delete();
 		}
@@ -73,11 +73,11 @@ public final class UploadMonitoringStatusJob extends Job {
 		try {
 			InteractionEventLogger iel = new InteractionEventLogger(temp);
 			iel.startMonitoring();
-			iel.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
+			iel.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN,
 					"monitoring.enabled", Boolean.toString(enabled))); //$NON-NLS-1$ 
 			iel.stopMonitoring();
 
-			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+			File zipFile = File.createTempFile(MonitorCorePlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
 			ZipFileUtil.createZipFile(zipFile, Arrays.asList(new File[] { temp }), submonitor.newChild(1));
 			return zipFile;
 		} finally {
@@ -112,10 +112,10 @@ public final class UploadMonitoringStatusJob extends Job {
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user and log the exception
 			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						Messages.UsageSubmissionWizard_no_network, e));
 			} else {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						Messages.UsageSubmissionWizard_unknown_exception, e));
 			}
 			return false;

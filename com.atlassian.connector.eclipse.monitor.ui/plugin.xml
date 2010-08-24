@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="study" name="%extension-point.name" schema="schema/study.exsd"/>
-
    <extension
          name="%startupAndShutdown.name"
          point="org.eclipse.ui.startup">
       <startup
-            class="com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin$UiUsageMonitorStartup">
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin$UiUsageMonitorStartup">
       </startup>
    </extension>   
     
@@ -37,10 +35,4 @@
       </wizard>
    </extension>
    
-    <extension
-          point="org.eclipse.core.runtime.preferences">
-       <initializer
-             class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.PreferenceInitializer">
-       </initializer>
-    </extension>
 </plugin>

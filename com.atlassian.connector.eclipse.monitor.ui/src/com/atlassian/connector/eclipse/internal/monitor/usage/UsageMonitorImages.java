@@ -31,7 +31,7 @@ public class UsageMonitorImages {
 
 	private static final String T_MISC = "misc";
 
-	private static final URL baseURL = UiUsageMonitorPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL baseURL = MonitorUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	public static final ImageDescriptor REFRESH = create(T_ELCL, "refresh.gif");
 

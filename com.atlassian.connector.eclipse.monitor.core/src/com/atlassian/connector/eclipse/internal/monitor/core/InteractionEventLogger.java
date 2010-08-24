@@ -10,7 +10,7 @@
  *     Ken Sueda - XML serialization
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage;
+package com.atlassian.connector.eclipse.internal.monitor.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
-import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.JDomDriver;
 
@@ -46,8 +46,8 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	}
 
 	public synchronized void interactionObserved(InteractionEvent event) {
-		if (UiUsageMonitorPlugin.getDefault() == null) {
-			StatusHandler.log(new Status(IStatus.WARNING, UiUsageMonitorPlugin.ID_PLUGIN,
+		if (MonitorCorePlugin.getDefault() == null) {
+			StatusHandler.log(new Status(IStatus.WARNING, MonitorCorePlugin.ID_PLUGIN,
 					"Attempted to log event before usage monitor start"));
 		}
 		try {
@@ -59,7 +59,7 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 			}
 			eventAccumulartor++;
 		} catch (Throwable t) {
-			StatusHandler.log(new Status(IStatus.WARNING, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.WARNING, MonitorCorePlugin.ID_PLUGIN,
 					"Could not log interaction event", t));
 		}
 	}
@@ -76,8 +76,8 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	@Override
 	public void stopMonitoring() {
 		super.stopMonitoring();
-		if (UiUsageMonitorPlugin.getDefault() != null) {
-			UiUsageMonitorPlugin.getDefault().incrementObservedEvents(eventAccumulartor);
+		if (MonitorCorePlugin.getDefault() != null) {
+			MonitorCorePlugin.getDefault().incrementObservedEvents(eventAccumulartor);
 		}
 		eventAccumulartor = 0;
 	}
@@ -87,7 +87,7 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 			XStream xs = new XStream(new JDomDriver());
 			return xs.toXML(event);
 		} catch (Throwable t) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, "Could not write event", t));
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, "Could not write event", t));
 			return "";
 		}
 	}
@@ -101,8 +101,8 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 
 	public synchronized void clearInteractionHistory(boolean startMonitoring) throws IOException {
 		stopMonitoring();
-		if (UiUsageMonitorPlugin.getDefault() != null) {
-			UiUsageMonitorPlugin.getDefault().setObservedEvents(0);
+		if (MonitorCorePlugin.getDefault() != null) {
+			MonitorCorePlugin.getDefault().setObservedEvents(0);
 		}
 		outputStream = new FileOutputStream(outputFile, false);
 		outputStream.flush();
@@ -131,7 +131,7 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 			}
 
 		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					"Could not read interaction history", e));
 		}
 		return events;

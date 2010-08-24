@@ -35,10 +35,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 
@@ -58,7 +59,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	public UsageDataPreferencePage() {
 		super();
-		setPreferenceStore(UiUsageMonitorPlugin.getPrefs());
+		setPreferenceStore(MonitorUiPlugin.getPrefs());
 		setDescription(Messages.UsageDataPreferencePage_description);
 	}
 
@@ -111,7 +112,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
+		final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
 
 		Link details = new Link(uc, SWT.NONE);
 		details.setText(String.format("<A href=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
@@ -154,7 +155,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			}
 		});
 
-		String logFilePath = UiUsageMonitorPlugin.getDefault().getMonitorLogFile().getPath();
+		String logFilePath = MonitorCorePlugin.getDefault().getMonitorLogFile().getPath();
 		logFilePath = logFilePath.replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 		logFileText = new Text(group, SWT.BORDER);
 		logFileText.setText(logFilePath);
@@ -181,9 +182,9 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		GridData gridData = new GridData();
 		gridData.widthHint = 30;
 		submissionTime.setLayoutData(gridData);
-		long submissionFreq = UiUsageMonitorPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
-		if (UiUsageMonitorPlugin.getPrefs().contains(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY)) {
-			submissionFreq = UiUsageMonitorPlugin.getPrefs().getLong(
+		long submissionFreq = MonitorUiPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
+		if (MonitorUiPlugin.getPrefs().contains(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY)) {
+			submissionFreq = MonitorUiPlugin.getPrefs().getLong(
 					MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY);
 		}
 		long submissionFreqInDays = submissionFreq / DAYS_IN_MS;
@@ -201,7 +202,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	@Override
 	public void performDefaults() {
 		super.performDefaults();
-		logFileText.setText(UiUsageMonitorPlugin.getDefault().getMonitorLogFile().getPath());
+		logFileText.setText(MonitorCorePlugin.getDefault().getMonitorLogFile().getPath());
 	}
 
 	@Override
@@ -209,20 +210,20 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		boolean wasEnabled = getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
 		if (enableMonitoring.getSelection()) {
 			if (!wasEnabled) {
-				UiUsageMonitorPlugin.getDefault().monitoringEnabled();
+				MonitorCorePlugin.getDefault().monitoringEnabled();
 			}
-			UiUsageMonitorPlugin.getDefault().startMonitoring();
+			MonitorCorePlugin.getDefault().startMonitoring();
 		} else {
 			if (wasEnabled) {
-				UiUsageMonitorPlugin.getDefault().monitoringDisabled();
+				MonitorCorePlugin.getDefault().monitoringDisabled();
 			}
-			UiUsageMonitorPlugin.getDefault().stopMonitoring();
+			MonitorCorePlugin.getDefault().stopMonitoring();
 		}
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				enableMonitoring.getSelection());
 
-		long transmitFrequency = UiUsageMonitorPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
+		long transmitFrequency = MonitorUiPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
 
 		String submissionFrequency = submissionTime.getText();
 

@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage;
+package com.atlassian.connector.eclipse.internal.monitor.core;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,7 +51,7 @@ public abstract class AbstractMonitorLog {
 			}
 			outputStream = new FileOutputStream(outputFile, true);
 		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, "Could not log to file: " //$NON-NLS-1$
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, "Could not log to file: " //$NON-NLS-1$
 					+ outputFile.getAbsolutePath(), e));
 		}
 	}
@@ -64,7 +64,7 @@ public abstract class AbstractMonitorLog {
 			}
 			started = false;
 		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					"Could not close interaction event stream", e)); //$NON-NLS-1$
 		}
 	}
@@ -83,7 +83,7 @@ public abstract class AbstractMonitorLog {
 			}
 			this.outputFile = newFile;
 		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					"Could not set logger output file", e)); //$NON-NLS-1$
 		}
 		startMonitoring();

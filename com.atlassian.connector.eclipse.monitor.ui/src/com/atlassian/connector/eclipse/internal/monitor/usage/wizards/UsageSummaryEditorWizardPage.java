@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 
 /**
  * @author Meghan Allen
@@ -44,7 +44,7 @@ public class UsageSummaryEditorWizardPage extends WizardPage implements IWizardP
 		super(TITLE);
 		setTitle(TITLE);
 		setDescription(DESCRIPTION);
-		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(UiUsageMonitorPlugin.ID_PLUGIN,
+		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(MonitorUiPlugin.ID_PLUGIN,
 				"icons/wizban/banner-usage.gif")); //$NON-NLS-1$
 	}
 

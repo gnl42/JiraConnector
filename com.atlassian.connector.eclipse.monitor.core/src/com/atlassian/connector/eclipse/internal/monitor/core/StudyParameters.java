@@ -10,7 +10,7 @@
  *     Leah Findlater - improvements
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage;
+package com.atlassian.connector.eclipse.internal.monitor.core;
 
 
 /**

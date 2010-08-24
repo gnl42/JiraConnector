@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
+package com.atlassian.connector.eclipse.internal.monitor.core.operations;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,12 +34,12 @@ import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Constants;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
-import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -66,7 +66,7 @@ public final class UsageDataUploadJob extends Job {
 			monitor.done();
 			return Status.OK_STATUS;
 		} catch (Exception e) {
-			Status status = new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, IStatus.ERROR,
+			Status status = new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, IStatus.ERROR,
 					Messages.UsageSubmissionWizard_error_uploading, e);
 			StatusHandler.log(status);
 			return status;
@@ -74,7 +74,7 @@ public final class UsageDataUploadJob extends Job {
 	}
 
 	private void checkLastTransmitTimeAndRun(IProgressMonitor monitor) {
-		final UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
+		final MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
 
 		Date lastTransmit = plugin.getPreviousTransmitDate();
 		if (lastTransmit == null) {
@@ -85,7 +85,7 @@ public final class UsageDataUploadJob extends Job {
 		final Date currentTime = new Date();
 
 		if (currentTime.getTime() > lastTransmit.getTime() + plugin.getTransmitPromptPeriod()
-				&& plugin.isMonitoringEnabled() && !plugin.isFirstTime()) {
+				&& plugin.isMonitoringEnabled()) {
 
 			// time must be stored right away into preferences, to prevent
 			// other threads
@@ -98,33 +98,33 @@ public final class UsageDataUploadJob extends Job {
 	private static final String SYSTEM_INFO_PREFIX = "system info: ";
 
 	private void logPlatformDetails(InteractionEventLogger log) {
-		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
 				+ "os-arch", Platform.getOSArch()));
-		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "os", Platform.getOS()));
-		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX + "os",
+				Platform.getOS()));
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
 				+ Platform.PI_RUNTIME, Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(
 				Constants.BUNDLE_VERSION).toString()));
-		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "connector-version", UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "connector-version", MonitorCorePlugin.getDefault().getBundle().getHeaders().get(
 				Constants.BUNDLE_VERSION).toString()));
 	}
 
 	private void logInstalledFeatures(InteractionEventLogger log) {
-		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
 				+ "plugins", AtlassianBundlesInfo.getAllInstalledBundles().toString()));
 	}
 
 	private void performUpload(IProgressMonitor monitor) {
-		InteractionEventLogger interactionLogger = UiUsageMonitorPlugin.getDefault().getInteractionLogger();
+		InteractionEventLogger interactionLogger = MonitorCorePlugin.getDefault().getInteractionLogger();
 		logPlatformDetails(interactionLogger);
 		logInstalledFeatures(interactionLogger);
 
-		UiUsageMonitorPlugin.setPerformingUpload(true);
-		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
+		MonitorCorePlugin.setPerformingUpload(true);
+		MonitorCorePlugin.getDefault().getInteractionLogger().stopMonitoring();
 		boolean failed = false;
 		try {
-			final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
+			final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
 
 			File zipFile = zipFilesForUpload(monitor);
 			if (zipFile == null) {
@@ -142,45 +142,45 @@ public final class UsageDataUploadJob extends Job {
 			if (!failed) {
 				// clear the log on success (so we don't send duplicates)
 				try {
-					UiUsageMonitorPlugin.getDefault().getInteractionLogger().clearInteractionHistory();
+					MonitorCorePlugin.getDefault().getInteractionLogger().clearInteractionHistory();
 				} catch (IOException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 							"Failed to clear the Usage Data log", e));
 				}
 			}
-			UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
-			UiUsageMonitorPlugin.setPerformingUpload(false);
+			MonitorCorePlugin.getDefault().getInteractionLogger().startMonitoring();
+			MonitorCorePlugin.setPerformingUpload(false);
 		}
 		return;
 	}
 
 	private File zipFilesForUpload(IProgressMonitor monitor) {
 		List<File> files = new ArrayList<File>();
-		File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
+		File monitorFile = MonitorCorePlugin.getDefault().getMonitorLogFile();
 		File fileToUpload;
 		try {
 			fileToUpload = this.processMonitorFile(monitorFile);
 		} catch (IOException e1) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_error_uploading, e1));
 			return null;
 		}
 		files.add(fileToUpload);
 
 		try {
-			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+			File zipFile = File.createTempFile(MonitorCorePlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
 			ZipFileUtil.createZipFile(zipFile, files, monitor);
 			return zipFile;
 		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_error_uploading, e));
 			return null;
 		}
 	}
 
 	private File processMonitorFile(File monitorFile) throws IOException {
-		File processedFile = File.createTempFile(String.format("processed-%s%d.",
-				UiUsageMonitorPlugin.MONITOR_LOG_NAME, processedFileCount++), ".xml");
+		File processedFile = File.createTempFile(String.format("processed-%s%d.", MonitorCorePlugin.MONITOR_LOG_NAME,
+				processedFileCount++), ".xml");
 		InteractionEventLogger logger = new InteractionEventLogger(processedFile);
 		logger.startMonitoring();
 		List<InteractionEvent> eventList = logger.getHistoryFromFile(monitorFile);
@@ -221,10 +221,10 @@ public final class UsageDataUploadJob extends Job {
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user and log the exception
 			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						Messages.UsageSubmissionWizard_no_network, e));
 			} else {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						Messages.UsageSubmissionWizard_unknown_exception, e));
 			}
 			return false;
@@ -233,15 +233,15 @@ public final class UsageDataUploadJob extends Job {
 		monitor.worked(1);
 
 		if (status == 401) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, NLS.bind(
 					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), "")));
 		} else if (status == 407) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_proxy_authentication));
 		} else if (status != 200) {
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
+			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, NLS.bind(
 					Messages.UsageSubmissionWizard_30, f.getName(), status)));
 		} else {
 			// the file was uploaded successfully

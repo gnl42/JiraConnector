@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 
 /**
@@ -87,7 +87,7 @@ public class UsageUploadWizardPage extends WizardPage {
 
 		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
+		final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
 
 		Link details = new Link(uc, SWT.NULL);
 		details.setText(String.format("<A HREF=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));

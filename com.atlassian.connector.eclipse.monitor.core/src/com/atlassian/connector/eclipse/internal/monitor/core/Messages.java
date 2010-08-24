@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage;
+package com.atlassian.connector.eclipse.internal.monitor.core;
 
 import org.eclipse.osgi.util.NLS;
 

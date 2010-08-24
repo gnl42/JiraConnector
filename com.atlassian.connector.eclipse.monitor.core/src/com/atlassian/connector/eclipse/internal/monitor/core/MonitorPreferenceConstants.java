@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.usage;
+package com.atlassian.connector.eclipse.internal.monitor.core;
 
 /**
  * @author Mik Kersten
@@ -26,9 +26,6 @@ public class MonitorPreferenceConstants {
 
 	public static final String PREF_MONITORING_SUBMIT_FREQUENCY = "com.atlassian.connector.eclipse.monitor.usage.submission.frequency";
 
-	public static final String PREF_MONITORING_STARTED = "com.atlassian.connector.eclipse.monitor.usage.monitoring.started";
-
 	public static final String PREF_MONITORING_USER_ID = "com.atlassian.connector.eclipse.monitor.usage.user_id";
 
-	public static final String PREF_MONITORING_FIRST_TIME = "com.atlassian.connector.eclipse.monitor.usage.first.time";
 }

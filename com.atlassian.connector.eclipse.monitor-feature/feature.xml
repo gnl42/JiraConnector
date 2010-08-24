@@ -43,9 +43,16 @@
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
    </requires>
-
+	
+	<plugin
+         id="com.atlassian.connector.eclipse.monitor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
-         id="com.atlassian.connector.eclipse.monitor.usage"
+         id="com.atlassian.connector.eclipse.monitor.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

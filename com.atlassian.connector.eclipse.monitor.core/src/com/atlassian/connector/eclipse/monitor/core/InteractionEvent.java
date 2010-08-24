@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.monitor.usage;
+package com.atlassian.connector.eclipse.monitor.core;
 
 import java.util.Date;
 
