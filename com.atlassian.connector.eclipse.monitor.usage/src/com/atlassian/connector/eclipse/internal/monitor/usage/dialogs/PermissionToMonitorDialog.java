@@ -11,11 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.dialogs;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -33,9 +28,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-public class EnabledMonitoringNoticeDialog extends Dialog {
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 
-	public EnabledMonitoringNoticeDialog(Shell parentShell) {
+public class PermissionToMonitorDialog extends Dialog {
+
+	public PermissionToMonitorDialog(Shell parentShell) {
 		super(parentShell);
 	}
 
@@ -82,13 +82,18 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 			};
 		});
 
+		messageLabel = new Label(composite, SWT.WRAP);
+		messageLabel.setText("Enable monitoring?");
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(messageLabel);
+
 		applyDialogFont(composite);
 		return composite;
 	}
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
+		createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, false);
 	}
 
 	@Override

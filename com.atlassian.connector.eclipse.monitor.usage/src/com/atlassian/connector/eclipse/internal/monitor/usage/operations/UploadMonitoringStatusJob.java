@@ -29,12 +29,12 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
-import org.eclipse.mylyn.monitor.core.InteractionEvent;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent;
 
 public final class UploadMonitoringStatusJob extends Job {
 
@@ -74,7 +74,7 @@ public final class UploadMonitoringStatusJob extends Job {
 			InteractionEventLogger iel = new InteractionEventLogger(temp);
 			iel.startMonitoring();
 			iel.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-					enabled ? "enabled usage data monitor" : "disabled usage data monitor")); //$NON-NLS-1$ //$NON-NLS-2$
+					"monitoring.enabled", Boolean.toString(enabled))); //$NON-NLS-1$ 
 			iel.stopMonitoring();
 
 			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$

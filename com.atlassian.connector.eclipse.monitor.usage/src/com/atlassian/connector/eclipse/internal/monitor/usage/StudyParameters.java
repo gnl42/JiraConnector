@@ -12,9 +12,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * @author Mik Kersten
@@ -26,25 +23,16 @@ public class StudyParameters {
 
 	private final String uploadUrl;
 
-	private final Collection<String> eventFilters;
-
 	private final String detailsUrl;
 
-	public StudyParameters(final String name, final String uploadUrl, final String detailsUrl,
-			final String[] eventFilters) {
+	public StudyParameters(final String name, final String uploadUrl, final String detailsUrl) {
 		this.name = name;
 		this.uploadUrl = uploadUrl;
-		this.eventFilters = new ArrayList<String>();
-		this.eventFilters.addAll(Arrays.asList(eventFilters));
 		this.detailsUrl = detailsUrl;
 	}
 
 	public String getUploadUrl() {
 		return uploadUrl;
-	}
-
-	public Collection<String> getEventFilters() {
-		return eventFilters;
 	}
 
 	public String getDetailsUrl() {

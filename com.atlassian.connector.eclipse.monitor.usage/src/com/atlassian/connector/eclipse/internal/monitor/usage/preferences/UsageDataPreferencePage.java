@@ -12,14 +12,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -43,6 +35,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
+
 /**
  * @author Mik Kersten
  * @author Ken Sueda
@@ -52,8 +51,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	private static final long DAYS_IN_MS = 1000 * 60 * 60 * 24;
 
 	private Button enableMonitoring;
-
-	private Button enableObfuscation;
 
 	private Text logFileText;
 
@@ -164,15 +161,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		logFileText.setEditable(false);
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(logFileText);
 
-		enableObfuscation = new Button(group, SWT.CHECK);
-		enableObfuscation.setText(Messages.UsageDataPreferencePage_obfuscate_elements);
-		enableObfuscation.setSelection(getPreferenceStore().getBoolean(
-				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
-
-		Label obfuscationLablel = new Label(group, SWT.NULL);
-		obfuscationLablel.setText(InteractionEventObfuscator.ENCRYPTION_ALGORITHM
-				+ Messages.UsageDataPreferencePage_message_digest);
-
 		createFeedbackSection(group);
 	}
 
@@ -218,9 +206,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	@Override
 	public boolean performOk() {
-		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE,
-				enableObfuscation.getSelection());
-
 		boolean wasEnabled = getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
 		if (enableMonitoring.getSelection()) {
 			if (!wasEnabled) {
@@ -256,8 +241,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	public boolean performCancel() {
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
-		enableObfuscation.setSelection(getPreferenceStore().getBoolean(
-				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
 		return true;
 	}
 }

@@ -37,14 +37,6 @@
       </wizard>
    </extension>
    
-   	<extension point="org.eclipse.ui.editors">
-        <editor
-           icon="icons/eview16/editor-usage.gif"
-           class="com.atlassian.connector.eclipse.internal.monitor.usage.editors.UsageSummaryReportEditorPart"
-           name="%editor.name"
-           id="com.atlassian.connector.eclipse.monitor.usage.summary.editor"/>
-  	</extension>
-  	
     <extension
           point="org.eclipse.core.runtime.preferences">
        <initializer

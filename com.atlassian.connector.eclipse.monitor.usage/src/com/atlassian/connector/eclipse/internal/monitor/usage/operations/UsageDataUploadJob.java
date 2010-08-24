@@ -12,14 +12,10 @@
 package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -30,22 +26,20 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
-import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
+import com.atlassian.connector.eclipse.monitor.usage.InteractionEvent;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -105,20 +99,20 @@ public final class UsageDataUploadJob extends Job {
 
 	private void logPlatformDetails(InteractionEventLogger log) {
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "os-arch=" + Platform.getOSArch()));
+				+ "os-arch", Platform.getOSArch()));
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "os=" + Platform.getOS()));
+				+ "os", Platform.getOS()));
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ Platform.PI_RUNTIME + "="
-				+ Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+				+ Platform.PI_RUNTIME, Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(
+				Constants.BUNDLE_VERSION).toString()));
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "connector-version="
-				+ UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+				+ "connector-version", UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(
+				Constants.BUNDLE_VERSION).toString()));
 	}
 
 	private void logInstalledFeatures(InteractionEventLogger log) {
 		log.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "plugins=" + AtlassianBundlesInfo.getAllInstalledBundles().toString()));
+				+ "plugins", AtlassianBundlesInfo.getAllInstalledBundles().toString()));
 	}
 
 	private void performUpload(IProgressMonitor monitor) {
@@ -132,7 +126,7 @@ public final class UsageDataUploadJob extends Job {
 		try {
 			final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-			File zipFile = zipFilesForUpload(params, monitor);
+			File zipFile = zipFilesForUpload(monitor);
 			if (zipFile == null) {
 				return;
 			}
@@ -160,42 +154,18 @@ public final class UsageDataUploadJob extends Job {
 		return;
 	}
 
-	private File zipFilesForUpload(StudyParameters collector, IProgressMonitor monitor) {
+	private File zipFilesForUpload(IProgressMonitor monitor) {
 		List<File> files = new ArrayList<File>();
 		File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
 		File fileToUpload;
 		try {
-			fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
+			fileToUpload = this.processMonitorFile(monitorFile);
 		} catch (IOException e1) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_error_uploading, e1));
 			return null;
 		}
 		files.add(fileToUpload);
-
-		// check if backup/archive files were also selected and add them
-		List<File> backupFilesToUpload = getBackupFiles();
-		if (backupFilesToUpload.size() > 0) {
-			for (File backupFile : backupFilesToUpload) {
-				if (backupFile.exists()) {
-					List<File> unzippedFiles;
-					try {
-						unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"),
-								new NullProgressMonitor());
-
-						if (unzippedFiles.size() > 0) {
-							for (File unzippedFile : unzippedFiles) {
-								files.add(this.processMonitorFile(unzippedFile, collector.getEventFilters()));
-								this.addToSubmittedLogFile(backupFile);
-							}
-						}
-					} catch (IOException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-								Messages.UsageSubmissionWizard_error_unzipping, e));
-					}
-				}
-			}
-		}
 
 		try {
 			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -208,39 +178,16 @@ public final class UsageDataUploadJob extends Job {
 		}
 	}
 
-	private void addToSubmittedLogFile(File file) {
-		File submissionLogFile = new File(MonitorFileRolloverJob.getZippedMonitorFileDirPath(),
-				SUBMISSION_LOG_FILE_NAME);
-		try {
-			FileWriter fileWriter = new FileWriter(submissionLogFile, true);
-			fileWriter.append(file.getAbsolutePath() + "\n");
-			fileWriter.flush();
-			fileWriter.close();
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_error_uploading, e));
-		}
-	}
-
-	private File processMonitorFile(File monitorFile, Collection<String> eventFilters) throws IOException {
+	private File processMonitorFile(File monitorFile) throws IOException {
 		File processedFile = File.createTempFile(String.format("processed-%s%d.",
 				UiUsageMonitorPlugin.MONITOR_LOG_NAME, processedFileCount++), ".xml");
 		InteractionEventLogger logger = new InteractionEventLogger(processedFile);
 		logger.startMonitoring();
 		List<InteractionEvent> eventList = logger.getHistoryFromFile(monitorFile);
 
-		boolean filtersEmpty = eventFilters.size() == 0;
 		if (eventList.size() > 0) {
 			for (InteractionEvent event : eventList) {
-				if (filtersEmpty) {
-					logger.interactionObserved(event);
-				} else {
-					for (String prefix : eventFilters) {
-						if (event.getOriginId().startsWith(prefix)) {
-							logger.interactionObserved(event);
-						}
-					}
-				}
+				logger.interactionObserved(event);
 			}
 		}
 
@@ -303,45 +250,4 @@ public final class UsageDataUploadJob extends Job {
 		return false;
 	}
 
-	public static List<File> getBackupFiles() {
-		ArrayList<File> backupFiles = new ArrayList<File>();
-		try {
-			final File backupFolder = MonitorFileRolloverJob.getZippedMonitorFileDirPath();
-
-			if (backupFolder.exists()) {
-				File[] files = backupFolder.listFiles();
-				File submissionLogFile = new File(backupFolder, SUBMISSION_LOG_FILE_NAME);
-
-				if (!submissionLogFile.exists()) {
-					submissionLogFile.createNewFile();
-				}
-
-				FileInputStream inputStream = new FileInputStream(submissionLogFile);
-
-				int bytesRead = 0;
-				byte[] buffer = new byte[1000];
-
-				String fileContents = ""; //$NON-NLS-1$
-
-				if (submissionLogFile.exists()) {
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
-						fileContents += new String(buffer, 0, bytesRead);
-					}
-				}
-				for (File file : files) {
-					if (file.getName().contains(MonitorFileRolloverJob.BACKUP_FILE_SUFFIX)
-							&& !fileContents.contains(file.getName())) {
-						backupFiles.add(file);
-					}
-				}
-			}
-		} catch (FileNotFoundException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UsageDataUploadJob_cant_read_files, e));
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UsageDataUploadJob_cant_read_files, e));
-		}
-		return backupFiles;
-	}
 }

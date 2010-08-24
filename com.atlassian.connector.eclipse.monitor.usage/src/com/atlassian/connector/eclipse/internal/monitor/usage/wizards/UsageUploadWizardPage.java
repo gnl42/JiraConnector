@@ -11,9 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.wizards;
 
-import java.io.File;
-import java.util.List;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -22,7 +19,6 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -34,7 +30,6 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
 
 /**
  * Page to upload the file to the server
@@ -110,20 +105,6 @@ public class UsageUploadWizardPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(usageFileText);
 
 		usageFileText.setText(wizard.getMonitorFileName());
-
-		final List<File> backupFiles = UsageDataUploadJob.getBackupFiles();
-		if (backupFiles != null && backupFiles.size() > 0) {
-			for (File backupFile : backupFiles) {
-				label = new Label(topContainer, SWT.NULL);
-				label.setText(Messages.UsageUploadWizardPage_archive_file);
-
-				Text backupFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
-				backupFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				backupFileText.setEditable(false);
-
-				backupFileText.setText(backupFile.toString());
-			}
-		}
 
 		Composite bottomContainer = new Composite(container, SWT.NULL);
 		GridLayout bottomContainerLayout = new GridLayout();

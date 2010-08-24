@@ -13,51 +13,26 @@ package com.atlassian.connector.eclipse.internal.monitor.usage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
-import org.eclipse.mylyn.internal.context.core.ContextCorePlugin;
-import org.eclipse.mylyn.internal.context.core.InteractionContextManager;
-import org.eclipse.mylyn.internal.monitor.ui.ActionExecutionMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.ActivityChangeMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.KeybindingCommandMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.MenuCommandMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
-import org.eclipse.mylyn.internal.monitor.ui.PerspectiveChangeMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.WindowChangeMonitor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.monitor.core.IInteractionEventListener;
-import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
-import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
-import org.eclipse.mylyn.monitor.ui.IMonitorLifecycleListener;
-import org.eclipse.mylyn.monitor.ui.MonitorUi;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.ui.IStartup;
-import org.eclipse.ui.IWindowListener;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
@@ -66,10 +41,9 @@ import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
-import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
+import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.PermissionToMonitorDialog;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
-import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
 /**
  * @author Mik Kersten
@@ -81,7 +55,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 7 * 24 * HOUR;
 
-	public static final String MONITOR_LOG_NAME = "monitor-log";
+	public static final String MONITOR_LOG_NAME_OLD = "monitor-log.xml";
+
+	public static final String MONITOR_LOG_NAME = "usage-data.xml";
 
 	public static final String ID_PLUGIN = "com.atlassian.connector.eclipse.monitor.usage"; //$NON-NLS-1$
 
@@ -93,162 +69,50 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private InteractionEventLogger interactionLogger;
 
-	private PerspectiveChangeMonitor perspectiveMonitor;
-
-	private ActivityChangeMonitor activityMonitor;
-
-	private MenuCommandMonitor menuMonitor;
-
-	private WindowChangeMonitor windowMonitor;
-
-	private KeybindingCommandMonitor keybindingCommandMonitor;
-
 	private static UiUsageMonitorPlugin plugin;
-
-	private final List<IActionExecutionListener> actionExecutionListeners = new ArrayList<IActionExecutionListener>();
-
-	private final List<AbstractCommandMonitor> commandMonitors = new ArrayList<AbstractCommandMonitor>();
-
-	private ResourceBundle resourceBundle;
 
 	private final Authentication uploadAuthentication = null;
 
 	private static boolean performingUpload = false;
 
-	private boolean questionnaireEnabled = true;
-
-	private boolean backgroundEnabled = false;
-
 	private final StudyParameters studyParameters = new StudyParameters(CoreConstants.PRODUCT_NAME,
 			"http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload",
-			"http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector",
-			new String[] { "com.atlassian", "org.eclipse.mylyn" });
-
-	private final ListenerList lifecycleListeners = new ListenerList();
+			"http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector");
 
 	private ImageRegistry customLogosRegistry;
 
 	public static class UiUsageMonitorStartup implements IStartup {
-
 		public void earlyStartup() {
 			// everything happens on normal start
 		}
 	}
 
-	private final IWindowListener WINDOW_LISTENER = new IWindowListener() {
-		public void windowActivated(IWorkbenchWindow window) {
-		}
-
-		public void windowDeactivated(IWorkbenchWindow window) {
-		}
-
-		public void windowClosed(IWorkbenchWindow window) {
-			if (window.getShell() != null) {
-				window.getShell().removeShellListener(SHELL_LISTENER);
-			}
-		}
-
-		public void windowOpened(IWorkbenchWindow window) {
-			if (window.getShell() != null && !PlatformUI.getWorkbench().isClosing()) {
-				window.getShell().addShellListener(SHELL_LISTENER);
-			}
-		}
-	};
-
-	private final ShellListener SHELL_LISTENER = new ShellListener() {
-
-		public void shellDeactivated(ShellEvent arg0) {
-			if (!isPerformingUpload() && ContextCorePlugin.getDefault() != null) {
-				for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-					listener.stopMonitoring();
-				}
-			}
-		}
-
-		public void shellActivated(ShellEvent arg0) {
-//			if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards() && ContextCorePlugin.getDefault() != null) {
-//				checkForStatisticsUpload();
-//			}
-			if (!isPerformingUpload() && ContextCorePlugin.getDefault() != null) {
-				for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-					listener.startMonitoring();
-				}
-			}
-		}
-
-		public void shellDeiconified(ShellEvent arg0) {
-		}
-
-		public void shellIconified(ShellEvent arg0) {
-		}
-
-		public void shellClosed(ShellEvent arg0) {
-		}
-	};
-
-	private LogMoveUtility logMoveUtility;
-
 	private UsageDataUploadJob scheduledStatisticsUploadJob;
-
-	private final List<IMonitorActivator> monitorActivators = new ArrayList<IMonitorActivator>();
-
-	/**
-	 * NOTE: this needs to be a separate class in order to avoid loading ..mylyn.context.core on eager startup
-	 */
-	private class LogMoveUtility {
-
-//		private final IContextStoreListener DATA_DIR_MOVE_LISTENER = new IContextStoreListener() {
-//
-//			public void contextStoreMoved(File file) {
-//				if (!isPerformingUpload()) {
-//					for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-//						listener.stopMonitoring();
-//					}
-//					interactionLogger.moveOutputFile(getMonitorLogFile().getAbsolutePath());
-//					for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-//						listener.startMonitoring();
-//					}
-//				}
-//			}
-//		};
-
-		void start() {
-//			ContextCore.getContextStore().addListener(DATA_DIR_MOVE_LISTENER);
-		}
-
-		void stop() {
-//			ContextCore.getContextStore().removeListener(DATA_DIR_MOVE_LISTENER);
-		}
-	}
 
 	public UiUsageMonitorPlugin() {
 		plugin = this;
-
 	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		workbench.getDisplay().asyncExec(new Runnable() {
+
+		File oldMonitorFile = new File(getLogFilesRootDir(), MONITOR_LOG_NAME_OLD);
+		if (oldMonitorFile.exists() && oldMonitorFile.canWrite()) {
+			oldMonitorFile.delete();
+		}
+
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
 					interactionLogger = new InteractionEventLogger(getMonitorLogFile());
-					perspectiveMonitor = new PerspectiveChangeMonitor();
-					activityMonitor = new ActivityChangeMonitor();
-					windowMonitor = new WindowChangeMonitor();
-					menuMonitor = new MenuCommandMonitor();
-					keybindingCommandMonitor = new KeybindingCommandMonitor();
-
-					// browserMonitor = new BrowserMonitor();
-					// setAcceptedUrlMatchList(studyParameters.getAcceptedUrlList());
 
 					if (isMonitoringEnabled()) {
 						startMonitoring();
 					}
 
 					if (isFirstTime() && !RuntimeUtil.suppressConfigurationWizards()) {
-						informUserThatMonitoringIsEnabled();
+						askUserToEnableMonitoring();
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
@@ -263,50 +127,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return;
 		}
 		interactionLogger.startMonitoring();
-		for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-			listener.startMonitoring();
-		}
-
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		MonitorUi.addInteractionListener(interactionLogger);
-		getCommandMonitors().add(keybindingCommandMonitor);
-
-		getActionExecutionListeners().add(new ActionExecutionMonitor());
-		workbench.addWindowListener(WINDOW_LISTENER);
-		for (IWorkbenchWindow w : MonitorUiPlugin.getDefault().getMonitoredWindows()) {
-			if (w.getShell() != null) {
-				w.getShell().addShellListener(SHELL_LISTENER);
-			}
-		}
-
-		if (logMoveUtility == null) {
-			logMoveUtility = new LogMoveUtility();
-		}
-		logMoveUtility.start();
-
-		MonitorUiPlugin.getDefault().addWindowPerspectiveListener(perspectiveMonitor);
-		workbench.getActivitySupport().getActivityManager().addActivityManagerListener(activityMonitor);
-		workbench.getDisplay().addFilter(SWT.Selection, menuMonitor);
-		workbench.addWindowListener(windowMonitor);
-
-		// installBrowserMonitor(workbench);
-
-		for (Object listener : lifecycleListeners.getListeners()) {
-			((IMonitorLifecycleListener) listener).startMonitoring();
-		}
-
-		for (IMonitorActivator activator : monitorActivators) {
-			activator.start();
-		}
 
 		// schedule statistics upload
 		startUploadStatisticsJob();
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, true);
-	}
-
-	public boolean isObfuscationEnabled() {
-		return UiUsageMonitorPlugin.getPrefs().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE);
 	}
 
 	public void stopMonitoring() {
@@ -317,57 +142,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		// stop statistics upload
 		stopUploadStatisticsJob();
 
-		for (IMonitorActivator activator : monitorActivators) {
-			activator.stop();
-		}
-
-		for (Object listener : lifecycleListeners.getListeners()) {
-			((IMonitorLifecycleListener) listener).stopMonitoring();
-		}
-
-		for (IInteractionEventListener listener : MonitorUiPlugin.getDefault().getInteractionListeners()) {
-			listener.stopMonitoring();
-		}
-
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		MonitorUi.removeInteractionListener(interactionLogger);
-
-		getCommandMonitors().remove(keybindingCommandMonitor);
-		getActionExecutionListeners().remove(new ActionExecutionMonitor());
-
-		workbench.removeWindowListener(WINDOW_LISTENER);
-		for (IWorkbenchWindow w : MonitorUiPlugin.getDefault().getMonitoredWindows()) {
-			if (w.getShell() != null) {
-				w.getShell().removeShellListener(SHELL_LISTENER);
-			}
-		}
-		logMoveUtility.stop();
-		// ContextCore.getPluginPreferences().removePropertyChangeListener(DATA_DIR_MOVE_LISTENER);
-
-		MonitorUiPlugin.getDefault().removeWindowPerspectiveListener(perspectiveMonitor);
-		workbench.getActivitySupport().getActivityManager().removeActivityManagerListener(activityMonitor);
-
-		if (!workbench.getDisplay().isDisposed()) {
-			workbench.getDisplay().removeFilter(SWT.Selection, menuMonitor);
-		}
-
-		workbench.removeWindowListener(windowMonitor);
-
 		// uninstallBrowserMonitor(workbench);
 		interactionLogger.stopMonitoring();
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, false);
-	}
-
-	public void addMonitoringLifecycleListener(IMonitorLifecycleListener listener) {
-		lifecycleListeners.add(listener);
-		if (isMonitoringEnabled()) {
-			listener.startMonitoring();
-		}
-	}
-
-	public void removeMonitoringLifecycleListener(IMonitorLifecycleListener listener) {
-		lifecycleListeners.remove(listener);
 	}
 
 	@Override
@@ -382,21 +160,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		super.stop(context);
 		plugin = null;
-		resourceBundle = null;
-	}
-
-	public void actionObserved(IAction action, String info) {
-		for (IActionExecutionListener listener : actionExecutionListeners) {
-			listener.actionObserved(action);
-		}
-	}
-
-	public List<IActionExecutionListener> getActionExecutionListeners() {
-		return actionExecutionListeners;
-	}
-
-	public List<AbstractCommandMonitor> getCommandMonitors() {
-		return commandMonitors;
 	}
 
 	public File getLogFilesRootDir() {
@@ -415,7 +178,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	 */
 	public File getMonitorLogFile() {
 		File rootDir = getLogFilesRootDir();
-		File file = new File(rootDir, MONITOR_LOG_NAME + InteractionContextManager.CONTEXT_FILE_EXTENSION_OLD);
+		File file = new File(rootDir, MONITOR_LOG_NAME);
 		if (!file.exists() || !file.canWrite()) {
 			try {
 				file.createNewFile();
@@ -435,48 +198,23 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = UiUsageMonitorPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		try {
-			if (resourceBundle == null) {
-				resourceBundle = ResourceBundle.getBundle("org.eclipse.mylyn.monitor.ui.MonitorPluginResources");
-			}
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-		return resourceBundle;
-	}
-
-	/**
 	 * One time action (after this plugin was installed) - after the plugin was installed inform user that monitoring is
 	 * enabled.
 	 */
-	private void informUserThatMonitoringIsEnabled() {
+	private void askUserToEnableMonitoring() {
 		final IPreferenceStore store = getPreferenceStore();
 
-		// report to the server that monitoring is enabled
-		monitoringEnabled();
-
-		UIJob informUserJob = new UIJob("Usage Data Monitoring Enabled") {
+		UIJob informUserJob = new UIJob("Ask User about Usage Data Monitoring") {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				// must not use boolean here, it will not be stored
 				store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
-				if (isMonitoringEnabled()) {
-					new EnabledMonitoringNoticeDialog(WorkbenchUtil.getShell()).open();
+				if (!isMonitoringEnabled()) {
+					if (new PermissionToMonitorDialog(WorkbenchUtil.getShell()).open() == IDialogConstants.YES_ID) {
+						getPrefs().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, true);
+						monitoringEnabled();
+						startMonitoring();
+					}
 				}
 				return Status.OK_STATUS;
 			}
@@ -532,28 +270,12 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return interactionLogger;
 	}
 
-	public boolean isQuestionnaireEnabled() {
-		return questionnaireEnabled;
-	}
-
-	public void setQuestionnaireEnabled(boolean questionnaireEnabled) {
-		this.questionnaireEnabled = questionnaireEnabled;
-	}
-
 	public StudyParameters getStudyParameters() {
 		return studyParameters;
 	}
 
 	public boolean isMonitoringEnabled() {
 		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
-	}
-
-	public boolean isBackgroundEnabled() {
-		return backgroundEnabled;
-	}
-
-	public void setBackgroundEnabled(boolean backgroundEnabled) {
-		this.backgroundEnabled = backgroundEnabled;
 	}
 
 	public String getUserId() {

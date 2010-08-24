@@ -11,21 +11,19 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import java.util.UUID;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = UiUsageMonitorPlugin.getDefault().getPreferenceStore();
-
-		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE, true);
 
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED);
