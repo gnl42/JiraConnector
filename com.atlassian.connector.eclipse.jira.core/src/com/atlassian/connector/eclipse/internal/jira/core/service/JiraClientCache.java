@@ -237,6 +237,13 @@ public class JiraClientCache {
 		return data.configuration;
 	}
 
+	/**
+	 * Requires Administration Privileges on the JIRA side
+	 * 
+	 * @param data
+	 * @param monitor
+	 * @throws JiraException
+	 */
 	private void initializeConfiguration(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
 		data.configuration = jiraClient.getConfiguration(submonitor);
@@ -281,13 +288,20 @@ public class JiraClientCache {
 		initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeProjectRoles(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeProjects(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeConfiguration(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+//		initializeConfiguration(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 
 		newData.lastUpdate = System.currentTimeMillis();
 
 		this.data = newData;
 	}
 
+	/**
+	 * Requires Administration Privileges on the JIRA side
+	 * 
+	 * @param data
+	 * @param monitor
+	 * @throws JiraException
+	 */
 	public void refreshConfiguration(IProgressMonitor monitor) throws JiraException {
 		initializeConfiguration(data, monitor);
 	}

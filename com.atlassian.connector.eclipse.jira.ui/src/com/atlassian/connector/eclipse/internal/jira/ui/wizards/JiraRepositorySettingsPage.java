@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -73,8 +72,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
@@ -191,9 +188,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
 		timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
-		useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK | SWT.LEFT);
-		useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
+//		useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK | SWT.LEFT);
+//		useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
+//		useServerSettingsButton.setToolTipText(Messages.JiraRepositorySettingsPage_Administration_priviliges_required);
+//		GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
 
 		workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
 		workDaysPerWeekSpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
@@ -221,18 +219,15 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			workDaysPerWeekSpinner.setSelection(JiraUtil.getWorkDaysPerWeekLocal(repository));
 			workHoursPerDaySpinner.setSelection(JiraUtil.getWorkHoursPerDayLocal(repository));
 
-		} else {
-			useServerSettingsButton.setSelection(true);
-			workDaysPerWeekSpinner.setEnabled(false);
-			workHoursPerDaySpinner.setEnabled(false);
 		}
-		useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
-				workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
-			}
-		});
+
+//		useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
+//				workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
+//			}
+//		});
 
 		Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
 		maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
@@ -390,34 +385,34 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}
 
-		if (!JiraUtil.isUseServerTimeTrackingSettings(repository) && useServerSettingsButton.getSelection()) {
-			Job refreshServerSettingsJob = new Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
-							IProgressMonitor.UNKNOWN);
-					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-					try {
-						client.getCache().refreshConfiguration(monitor);
-					} catch (JiraException e) {
-						Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
-								repository.getRepositoryUrl()));
-						StatusHandler.log(status);
-					} finally {
-						monitor.done();
-					}
-					return Status.OK_STATUS;
-				}
-			};
-
-			refreshServerSettingsJob.setUser(false);
-			refreshServerSettingsJob.schedule();
-
-		}
-
-		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
+//		if (!JiraUtil.isUseServerTimeTrackingSettings(repository) && useServerSettingsButton.getSelection()) {
+//			Job refreshServerSettingsJob = new Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
+//
+//				@Override
+//				protected IStatus run(IProgressMonitor monitor) {
+//					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
+//							IProgressMonitor.UNKNOWN);
+//					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+//					try {
+//						client.getCache().refreshConfiguration(monitor);
+//					} catch (JiraException e) {
+//						Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+//								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
+//								repository.getRepositoryUrl()));
+//						StatusHandler.log(status);
+//					} finally {
+//						monitor.done();
+//					}
+//					return Status.OK_STATUS;
+//				}
+//			};
+//
+//			refreshServerSettingsJob.setUser(false);
+//			refreshServerSettingsJob.schedule();
+//
+//		}
+//
+//		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
 	}
 
 	@Override

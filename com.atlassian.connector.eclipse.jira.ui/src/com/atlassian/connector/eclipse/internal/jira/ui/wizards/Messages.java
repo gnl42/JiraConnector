@@ -169,6 +169,8 @@ public class Messages extends NLS {
 
 	public static String JiraProjectPage_Update_Project_Listing;
 
+	public static String JiraRepositorySettingsPage_Administration_priviliges_required;
+
 	public static String JiraRepositorySettingsPage_Advanced_Configuration;
 
 	public static String JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing;
