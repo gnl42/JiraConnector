@@ -28,10 +28,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
+import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
-import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 public class PermissionToMonitorDialog extends Dialog {
 
@@ -49,8 +49,6 @@ public class PermissionToMonitorDialog extends Dialog {
 
 		new Label(composite, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-		final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
-
 		Label messageLabel = new Label(composite, SWT.WRAP);
 		messageLabel.setText(Messages.EnabledMonitoringNoticeDialog_please_consider_uploading);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).hint(
@@ -60,8 +58,8 @@ public class PermissionToMonitorDialog extends Dialog {
 		Link details = new Link(composite, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(details);
 
-		details.setText(NLS.bind(Messages.EnabledMonitoringNoticeDialog_learn_more, params.getDetailsUrl(),
-				params.getName()));
+		details.setText(NLS.bind(Messages.EnabledMonitoringNoticeDialog_learn_more, MonitorCorePlugin.HELP_URL,
+				CoreConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

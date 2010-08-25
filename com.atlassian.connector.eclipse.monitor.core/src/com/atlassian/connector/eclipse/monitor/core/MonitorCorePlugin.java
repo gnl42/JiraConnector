@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.core;
+package com.atlassian.connector.eclipse.monitor.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,8 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.atlassian.connector.eclipse.internal.core.CoreConstants;
+import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UsageDataUploadJob;
 
@@ -63,9 +64,9 @@ public class MonitorCorePlugin extends Plugin {
 
 	private static boolean performingUpload = false;
 
-	private final StudyParameters studyParameters = new StudyParameters(CoreConstants.PRODUCT_NAME,
-			"http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload",
-			"http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector");
+	public static final String UPLOAD_URL = "http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload";
+
+	public static final String HELP_URL = "http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector";
 
 	private UsageDataUploadJob scheduledStatisticsUploadJob;
 
@@ -197,10 +198,6 @@ public class MonitorCorePlugin extends Plugin {
 
 	public InteractionEventLogger getInteractionLogger() {
 		return interactionLogger;
-	}
-
-	public StudyParameters getStudyParameters() {
-		return studyParameters;
 	}
 
 	public boolean isMonitoringEnabled() {

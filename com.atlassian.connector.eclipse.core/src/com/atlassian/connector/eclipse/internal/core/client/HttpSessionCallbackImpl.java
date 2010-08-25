@@ -12,8 +12,8 @@
 package com.atlassian.connector.eclipse.internal.core.client;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
-import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;

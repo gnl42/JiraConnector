@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.core;
+package com.atlassian.connector.eclipse.commons.core;
 
 public final class CoreConstants {
 	private CoreConstants() {

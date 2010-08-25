@@ -35,13 +35,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
+import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
 import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 /**
  * @author Mik Kersten
@@ -112,10 +112,8 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-		final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
-
 		Link details = new Link(uc, SWT.NONE);
-		details.setText(String.format("<A href=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
+		details.setText(String.format("<A href=\"%s\">%s</A>", MonitorCorePlugin.HELP_URL, CoreConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

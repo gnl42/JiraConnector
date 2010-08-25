@@ -34,12 +34,11 @@ import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Constants;
 
-import com.atlassian.connector.eclipse.internal.monitor.core.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
-import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
 import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEventLogger;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -124,14 +123,12 @@ public final class UsageDataUploadJob extends Job {
 		MonitorCorePlugin.getDefault().getInteractionLogger().stopMonitoring();
 		boolean failed = false;
 		try {
-			final StudyParameters params = MonitorCorePlugin.getDefault().getStudyParameters();
-
 			File zipFile = zipFilesForUpload(monitor);
 			if (zipFile == null) {
 				return;
 			}
 
-			if (!upload(params, zipFile, monitor)) {
+			if (!upload(MonitorCorePlugin.UPLOAD_URL, zipFile, monitor)) {
 				failed = true;
 			}
 
@@ -201,11 +198,11 @@ public final class UsageDataUploadJob extends Job {
 	 *            The file to upload
 	 * @return true on success
 	 */
-	private boolean upload(StudyParameters collector, File f, IProgressMonitor monitor) {
+	private boolean upload(String uploadUrl, File f, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {
-			final PostMethod filePost = new PostMethod(collector.getUploadUrl());
+			final PostMethod filePost = new PostMethod(uploadUrl);
 			try {
 				Part[] parts = { new FilePart("temp.txt", f, "application/zip", FilePart.DEFAULT_CHARSET) }; //$NON-NLS-1$
 

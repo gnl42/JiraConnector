@@ -3,13 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.atlassian.connector.eclipse.monitor.core;singleton:=true
 Bundle-Version: 2.3.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin
+Bundle-Activator: com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.update.core,
  org.eclipse.core.filesystem,
  com.atlassian.connector.eclipse.branding.ui,
- com.atlassian.connector.eclipse.commons.core,
  org.eclipse.mylyn.commons.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.ui;bundle-version="[3.0.0,4.0.0)",

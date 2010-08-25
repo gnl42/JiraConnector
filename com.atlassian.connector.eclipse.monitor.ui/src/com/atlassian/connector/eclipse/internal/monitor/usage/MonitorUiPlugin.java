@@ -27,8 +27,8 @@ import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.PermissionToMonitorDialog;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 /**
  * @author Mik Kersten

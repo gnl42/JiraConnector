@@ -26,9 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UsageDataUploadJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 /**
  * A wizard for uploading the Mylyn statistics to a website

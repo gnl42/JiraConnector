@@ -30,11 +30,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 
-import com.atlassian.connector.eclipse.internal.monitor.core.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorCorePlugin;
-import com.atlassian.connector.eclipse.internal.monitor.core.StudyParameters;
 import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
+import com.atlassian.connector.eclipse.monitor.core.InteractionEventLogger;
+import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 public final class UploadMonitoringStatusJob extends Job {
 
@@ -59,7 +58,7 @@ public final class UploadMonitoringStatusJob extends Job {
 		}
 
 		try {
-			upload(MonitorCorePlugin.getDefault().getStudyParameters(), monitoringDisabledLog, monitor);
+			upload(MonitorCorePlugin.UPLOAD_URL, monitoringDisabledLog, monitor);
 		} finally {
 			monitoringDisabledLog.delete();
 		}
@@ -92,11 +91,11 @@ public final class UploadMonitoringStatusJob extends Job {
 	 *            The file to upload
 	 * @return true on success
 	 */
-	private boolean upload(StudyParameters params, File log, IProgressMonitor monitor) {
+	private boolean upload(String uploadUrl, File log, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {
-			final PostMethod filePost = new PostMethod(params.getUploadUrl());
+			final PostMethod filePost = new PostMethod(uploadUrl);
 			try {
 				Part[] parts = { new FilePart("temp.txt", log, "application/zip", FilePart.DEFAULT_CHARSET) }; //$NON-NLS-1$
 

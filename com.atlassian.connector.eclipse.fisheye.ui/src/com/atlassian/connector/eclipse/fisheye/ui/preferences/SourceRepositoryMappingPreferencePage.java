@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
-import com.atlassian.connector.eclipse.internal.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 
 import org.eclipse.core.runtime.IStatus;

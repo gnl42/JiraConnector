@@ -10,7 +10,7 @@
  *     Ken Sueda - XML serialization
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.core;
+package com.atlassian.connector.eclipse.monitor.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
-import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
+import com.atlassian.connector.eclipse.internal.monitor.core.AbstractMonitorLog;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.JDomDriver;
 

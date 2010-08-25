@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.team.ui;
 
-import com.atlassian.connector.eclipse.internal.core.CoreConstants;
+import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.team.ui.exceptions.UnsupportedTeamProviderException;
 
 import org.apache.commons.lang.StringUtils;
