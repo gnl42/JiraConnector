@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
 import com.atlassian.connector.commons.api.BambooServerFacade2;
 import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.core.client.AbstractConnectorClient;
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
@@ -56,6 +57,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public BambooClientData updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository)
 			throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("updateRepositoryData", null); //$NON-NLS-1$
 		this.clientData = execute(new BambooRemoteOperation<BambooClientData>(monitor, taskRepository) {
 			@Override
 			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg connectionCfg,
@@ -72,6 +74,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, final TaskRepository taskRepository,
 			boolean promptForCredentials) throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("getBuilds", null); //$NON-NLS-1$
 		return execute(new BambooRemoteOperation<Collection<BambooBuild>>(monitor, taskRepository) {
 			@Override
 			public Collection<BambooBuild> run(BambooServerFacade2 server, ConnectionCfg serverCfg,
@@ -86,6 +89,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public BuildDetails getBuildDetails(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
 			throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("getBuildDetails", null); //$NON-NLS-1$
 		return execute(new BambooRemoteOperation<BuildDetails>(monitor, taskRepository) {
 			@Override
 			public BuildDetails run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -100,6 +104,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public String getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
 			throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("getBuildLogs", null); //$NON-NLS-1$
 		return execute(new BambooRemoteOperation<String>(monitor, taskRepository) {
 			@Override
 			public String run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -113,6 +118,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public void addLabelToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
 			final String label) throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("addLabelToBuild", null); //$NON-NLS-1$
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
 			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -126,6 +132,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public void addCommentToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
 			final String comment) throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("addCommentToBuild", null); //$NON-NLS-1$
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
 			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -139,6 +146,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public void runBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build)
 			throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("runBuild", null); //$NON-NLS-1$
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
 			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -152,6 +160,7 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 
 	public BambooBuild getBuildForPlanAndNumber(IProgressMonitor monitor, final TaskRepository repository,
 			final String planKey, final int buildNumber, final int timezoneOffset) throws CoreException {
+		BambooCorePlugin.getMonitoring().logJob("getBuildForPlanAndNumber", null); //$NON-NLS-1$
 		return execute(new BambooRemoteOperation<BambooBuild>(monitor, repository) {
 			@Override
 			public BambooBuild run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.core;
 
+import com.atlassian.connector.eclipse.core.monitoring.Monitoring;
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
@@ -37,6 +38,8 @@ public class FishEyeCorePlugin extends Plugin {
 
 	// The shared instance
 	private static FishEyeCorePlugin plugin;
+
+	private static Monitoring monitoring = null;
 
 	/**
 	 * The constructor
@@ -93,4 +96,10 @@ public class FishEyeCorePlugin extends Plugin {
 		return repositoryConnector;
 	}
 
+	public static Monitoring getMonitoring() {
+		if (monitoring == null) {
+			monitoring = new Monitoring(PLUGIN_ID);
+		}
+		return monitoring;
+	}
 }

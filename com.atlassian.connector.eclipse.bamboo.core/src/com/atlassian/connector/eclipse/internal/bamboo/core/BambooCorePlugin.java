@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
+import com.atlassian.connector.eclipse.core.monitoring.Monitoring;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -49,6 +50,8 @@ public class BambooCorePlugin extends Plugin {
 	private static BambooCorePlugin plugin;
 
 	private static BuildPlanManager buildPlanManager;
+
+	private static Monitoring monitoring = null;
 
 	public BambooCorePlugin() {
 		// make sure that we have the logging going to the eclipse log
@@ -189,5 +192,12 @@ public class BambooCorePlugin extends Plugin {
 	public static boolean isAutoRefresh() {
 		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
 		return preferences.getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
+	}
+
+	public static Monitoring getMonitoring() {
+		if (monitoring == null) {
+			monitoring = new Monitoring(PLUGIN_ID);
+		}
+		return monitoring;
 	}
 }

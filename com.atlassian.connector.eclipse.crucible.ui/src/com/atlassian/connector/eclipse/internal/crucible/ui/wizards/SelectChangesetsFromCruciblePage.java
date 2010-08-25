@@ -145,6 +145,7 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 						@Override
 						public ChangesetIdList run(FishEyeServerFacade2 server, ConnectionCfg serverCfg,
 								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
+							FishEyeCorePlugin.getMonitoring().logJob("getChangesetList", null); //$NON-NLS-1$
 							FishEyeSession session = server.getSession(serverCfg);
 							session.login(serverCfg.getUsername(), serverCfg.getPassword().toCharArray());
 
@@ -158,6 +159,7 @@ public class SelectChangesetsFromCruciblePage extends AbstractCrucibleWizardPage
 						@Override
 						public List<Changeset> run(FishEyeServerFacade2 server, ConnectionCfg serverCfg,
 								IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
+							FishEyeCorePlugin.getMonitoring().logJob("getChangesets", null); //$NON-NLS-1$
 							SubMonitor submonitor = SubMonitor.convert(monitor, csids.getCsids().size());
 							FishEyeSession session = server.getSession(serverCfg);
 							session.login(serverCfg.getUsername(), serverCfg.getPassword().toCharArray());
