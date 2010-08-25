@@ -25,6 +25,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.core.monitoring.Monitoring;
 import com.atlassian.connector.eclipse.internal.core.CoreMessages;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
@@ -48,6 +49,8 @@ public class JiraCorePlugin extends Plugin {
 	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.13"); //$NON-NLS-1$
 
 	private static boolean initialized;
+
+	private static Monitoring monitoring = null;
 
 	/**
 	 * The constructor.
@@ -134,5 +137,12 @@ public class JiraCorePlugin extends Plugin {
 		} else {
 			return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e); //$NON-NLS-1$
 		}
+	}
+
+	public static Monitoring getMonitoring() {
+		if (monitoring == null) {
+			monitoring = new Monitoring(ID_PLUGIN);
+		}
+		return monitoring;
 	}
 }

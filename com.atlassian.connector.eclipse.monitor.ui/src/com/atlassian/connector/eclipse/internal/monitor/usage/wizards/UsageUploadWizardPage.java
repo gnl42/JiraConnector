@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import com.atlassian.connector.eclipse.commons.core.CoreConstants;
-import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 

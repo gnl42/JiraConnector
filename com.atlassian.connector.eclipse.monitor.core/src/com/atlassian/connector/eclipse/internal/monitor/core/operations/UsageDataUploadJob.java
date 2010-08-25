@@ -49,14 +49,14 @@ public final class UsageDataUploadJob extends Job {
 	private static int processedFileCount = 1;
 
 	public UsageDataUploadJob(boolean ignoreLastTransmit) {
-		super(Messages.UsageSubmissionWizard_upload_usage_data);
+		super(Messages.UsageDataUploadJob_upload_usage_data);
 		this.ifTimeElapsed = ignoreLastTransmit;
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			monitor.beginTask(Messages.UsageSubmissionWizard_uploading_usage_stats, 3);
+			monitor.beginTask(Messages.UsageDataUploadJob_uploading_usage_stats, 3);
 			if (ifTimeElapsed) {
 				performUpload(monitor);
 			} else {
@@ -66,7 +66,7 @@ public final class UsageDataUploadJob extends Job {
 			return Status.OK_STATUS;
 		} catch (Exception e) {
 			Status status = new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, IStatus.ERROR,
-					Messages.UsageSubmissionWizard_error_uploading, e);
+					Messages.UsageDataUploadJob_error_uploading, e);
 			StatusHandler.log(status);
 			return status;
 		}
@@ -159,7 +159,7 @@ public final class UsageDataUploadJob extends Job {
 			fileToUpload = this.processMonitorFile(monitorFile);
 		} catch (IOException e1) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_error_uploading, e1));
+					Messages.UsageDataUploadJob_error_uploading, e1));
 			return null;
 		}
 		files.add(fileToUpload);
@@ -170,7 +170,7 @@ public final class UsageDataUploadJob extends Job {
 			return zipFile;
 		} catch (Exception e) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_error_uploading, e));
+					Messages.UsageDataUploadJob_error_uploading, e));
 			return null;
 		}
 	}
@@ -219,10 +219,10 @@ public final class UsageDataUploadJob extends Job {
 			// dialog to inform the user and log the exception
 			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_no_network, e));
+						Messages.UsageDataUploadJob_no_network, e));
 			} else {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_unknown_exception, e));
+						Messages.UsageDataUploadJob_unknown_exception, e));
 			}
 			return false;
 		}
@@ -231,15 +231,15 @@ public final class UsageDataUploadJob extends Job {
 
 		if (status == 401) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, NLS.bind(
-					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), "")));
+					Messages.UsageDataUploadJob_invalid_uid, f.getName(), "")));
 		} else if (status == 407) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_proxy_authentication));
+					Messages.UsageDataUploadJob_proxy_authentication));
 		} else if (status != 200) {
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, NLS.bind(
-					Messages.UsageSubmissionWizard_30, f.getName(), status)));
+					Messages.UsageDataUploadJob_30, f.getName(), status)));
 		} else {
 			// the file was uploaded successfully
 			return true;

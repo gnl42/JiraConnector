@@ -112,10 +112,10 @@ public final class UploadMonitoringStatusJob extends Job {
 			// dialog to inform the user and log the exception
 			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_no_network, e));
+						Messages.UsageDataUploadJob_no_network, e));
 			} else {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_unknown_exception, e));
+						Messages.UsageDataUploadJob_unknown_exception, e));
 			}
 			return false;
 		}

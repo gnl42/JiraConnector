@@ -91,7 +91,7 @@ public class MonitorCorePlugin extends Plugin {
 			}
 		} catch (Throwable t) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-					Messages.UiUsageMonitorPlugin_failed_to_start, t));
+					Messages.MonitorCorePlugin_failed_to_start, t));
 		}
 
 		getPreferenceStore().addPreferenceChangeListener(new IPreferenceChangeListener() {
@@ -154,7 +154,7 @@ public class MonitorCorePlugin extends Plugin {
 				file.createNewFile();
 			} catch (IOException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-						Messages.UiUsageMonitorPlugin_cant_create_log_file, e));
+						Messages.MonitorCorePlugin_cant_create_log_file, e));
 			}
 		}
 		return file;

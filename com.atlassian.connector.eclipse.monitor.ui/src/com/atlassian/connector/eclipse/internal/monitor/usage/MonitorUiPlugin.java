@@ -74,7 +74,7 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, MonitorUiPlugin.ID_PLUGIN,
-							Messages.UiUsageMonitorPlugin_failed_to_start, t));
+							Messages.MonitorCorePlugin_failed_to_start, t));
 				}
 			}
 		});
