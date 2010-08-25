@@ -83,7 +83,7 @@ public final class UsageDataUploadJob extends Job {
 
 		final Date currentTime = new Date();
 
-		if (currentTime.getTime() > lastTransmit.getTime() + plugin.getTransmitPromptPeriod()
+		if (currentTime.getTime() > lastTransmit.getTime() + MonitorCorePlugin.DELAY_BETWEEN_TRANSMITS
 				&& plugin.isMonitoringEnabled()) {
 
 			// time must be stored right away into preferences, to prevent

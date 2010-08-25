@@ -44,7 +44,7 @@ public class MonitorCorePlugin extends Plugin {
 
 	private static final long HOUR = 3600 * 1000;
 
-	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 7 * 24 * HOUR;
+	public static final long DELAY_BETWEEN_TRANSMITS = 3 * 24 * HOUR;
 
 	public static final String MONITOR_LOG_NAME_OLD = "monitor-log.xml";
 
@@ -217,11 +217,6 @@ public class MonitorCorePlugin extends Plugin {
 			uid = prefs.get(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, null);
 		}
 		return uid;
-	}
-
-	public long getTransmitPromptPeriod() {
-		return getPreferenceStore().getLong(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY,
-				DEFAULT_DELAY_BETWEEN_TRANSMITS);
 	}
 
 	/**

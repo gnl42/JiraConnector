@@ -12,14 +12,14 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -42,6 +42,7 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
 
 /**
  * @author Mik Kersten
@@ -49,13 +50,9 @@ import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
  */
 public class UsageDataPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private static final long DAYS_IN_MS = 1000 * 60 * 60 * 24;
-
 	private Button enableMonitoring;
 
 	private Text logFileText;
-
-	private Text submissionTime;
 
 	public UsageDataPreferencePage() {
 		super();
@@ -129,10 +126,8 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	private void updateEnablement() {
 		if (!enableMonitoring.getSelection()) {
 			logFileText.setEnabled(false);
-			submissionTime.setEnabled(false);
 		} else {
 			logFileText.setEnabled(true);
-			submissionTime.setEnabled(true);
 		}
 	}
 
@@ -168,33 +163,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		events.setText(Messages.UsageDataPreferencePage_events_since_upload);
 		Label logged = new Label(group, SWT.NULL);
 		logged.setText("" + getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS)); //$NON-NLS-1$
-
-		Label submission = new Label(group, SWT.NULL);
-		submission.setText(Messages.UsageDataPreferencePage_submission_every);
-
-		Composite submissionTimeGroup = new Composite(group, SWT.NULL);
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(submissionTimeGroup);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(submissionTimeGroup);
-
-		submissionTime = new Text(submissionTimeGroup, SWT.BORDER | SWT.RIGHT);
-		GridData gridData = new GridData();
-		gridData.widthHint = 30;
-		submissionTime.setLayoutData(gridData);
-		long submissionFreq = MonitorUiPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
-		if (MonitorUiPlugin.getPrefs().contains(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY)) {
-			submissionFreq = MonitorUiPlugin.getPrefs().getLong(
-					MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY);
-		}
-		long submissionFreqInDays = submissionFreq / DAYS_IN_MS;
-		submissionTime.setText("" + submissionFreqInDays); //$NON-NLS-1$
-		submissionTime.setTextLimit(2);
-		submissionTime.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-
-			}
-		});
-		Label label2 = new Label(submissionTimeGroup, SWT.NONE);
-		label2.setText(Messages.UsageDataPreferencePage_days);
 	}
 
 	@Override
@@ -221,18 +189,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				enableMonitoring.getSelection());
 
-		long transmitFrequency = MonitorUiPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
-
-		String submissionFrequency = submissionTime.getText();
-
-		try {
-			transmitFrequency = Integer.parseInt(submissionFrequency);
-			transmitFrequency *= DAYS_IN_MS;
-		} catch (NumberFormatException nfe) {
-			// do nothing, transmitFrequency will have the default value
-		}
-
-		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY, transmitFrequency);
 		return true;
 	}
 
@@ -241,5 +197,10 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
 		return true;
+	}
+
+	@Override
+	protected IPreferenceStore doGetPreferenceStore() {
+		return new EclipsePreferencesAdapter(new InstanceScope(), MonitorCorePlugin.ID_PLUGIN);
 	}
 }

@@ -38,8 +38,9 @@ public final class Monitoring {
 			return;
 		}
 
-		if (MonitorCorePlugin.getDefault().isMonitoringEnabled()) {
-			MonitorCorePlugin.getDefault().getInteractionLogger().interactionObserved(
+		MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
+		if (plugin != null && plugin.isMonitoringEnabled()) {
+			plugin.getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.ACTION, pluginId, actionId, details, new Date()));
 		}
 	}
@@ -49,7 +50,8 @@ public final class Monitoring {
 			return;
 		}
 
-		if (MonitorCorePlugin.getDefault().isMonitoringEnabled()) {
+		MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
+		if (plugin != null && plugin.isMonitoringEnabled()) {
 			MonitorCorePlugin.getDefault().getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.JOB, pluginId, jobId, details, new Date()));
 		}

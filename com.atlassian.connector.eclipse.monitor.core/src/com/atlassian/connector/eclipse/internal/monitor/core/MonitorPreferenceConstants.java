@@ -24,8 +24,6 @@ public class MonitorPreferenceConstants {
 
 	public static final String PREF_MONITORING_ENABLED = "com.atlassian.connector.eclipse.monitor.usage.enabled";
 
-	public static final String PREF_MONITORING_SUBMIT_FREQUENCY = "com.atlassian.connector.eclipse.monitor.usage.submission.frequency";
-
 	public static final String PREF_MONITORING_USER_ID = "com.atlassian.connector.eclipse.monitor.usage.user_id";
 
 }
