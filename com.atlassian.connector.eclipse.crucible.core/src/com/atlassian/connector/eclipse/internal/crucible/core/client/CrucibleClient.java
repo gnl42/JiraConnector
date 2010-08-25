@@ -85,7 +85,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public TaskData getTaskData(TaskRepository taskRepository, final String taskId, IProgressMonitor monitor)
 			throws CoreException {
-
+		CrucibleCorePlugin.getMonitoring().logJob("getTaskData", null); //$NON-NLS-1$
 		return execute(new CrucibleRemoteOperation<TaskData>(monitor, taskRepository) {
 			@Override
 			public TaskData run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -118,6 +118,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public void performQuery(TaskRepository taskRepository, final IRepositoryQuery query,
 			final TaskDataCollector resultCollector, IProgressMonitor monitor) throws CoreException {
+		CrucibleCorePlugin.getMonitoring().logJob("performQuery", null); //$NON-NLS-1$
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -241,6 +242,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public CrucibleVersionInfo updateVersionInfo(IProgressMonitor monitor, TaskRepository taskRepository)
 			throws CoreException {
+		CrucibleCorePlugin.getMonitoring().logJob("updateVersionInfo", null); //$NON-NLS-1$
 		return execute(new CrucibleRemoteSessionOperation<CrucibleVersionInfo>(monitor, taskRepository) {
 
 			@Override
@@ -276,6 +278,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 	}
 
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
+		CrucibleCorePlugin.getMonitoring().logJob("updateRepositoryData", null); //$NON-NLS-1$
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -288,6 +291,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public void updateProjectDetails(IProgressMonitor monitor, TaskRepository taskRepository, final String projectKey)
 			throws CoreException {
+		CrucibleCorePlugin.getMonitoring().logJob("updateProjectDetails", null); //$NON-NLS-1$
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
@@ -326,6 +330,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	public Review changeReviewState(final BasicReview review, final CrucibleAction action, TaskRepository repository,
 			IProgressMonitor progressMonitor) throws CoreException {
+		CrucibleCorePlugin.getMonitoring().logJob("changeReviewState", null); //$NON-NLS-1$
 		BasicReview basicReview = execute(new CrucibleRemoteSessionOperation<BasicReview>(progressMonitor, repository) {
 			@Override
 			public BasicReview run(CrucibleSession session, IProgressMonitor monitor) throws RemoteApiException,
@@ -336,4 +341,5 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		String taskId = CrucibleUtil.getTaskIdFromReview(basicReview);
 		return getReview(repository, taskId, true, progressMonitor);
 	}
+
 }

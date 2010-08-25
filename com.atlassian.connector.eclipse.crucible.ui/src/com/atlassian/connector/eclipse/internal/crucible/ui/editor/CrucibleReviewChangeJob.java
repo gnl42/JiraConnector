@@ -63,6 +63,7 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 			return;
 		}
 
+		CrucibleCorePlugin.getMonitoring().logJob(getName(), null);
 		setStatus(execute(client, monitor));
 
 		if (refresh || waitForTaskListSync) {
