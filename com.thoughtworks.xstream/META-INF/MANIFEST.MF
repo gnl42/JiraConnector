@@ -28,3 +28,4 @@ Require-Bundle: org.joda.time;resolution:=optional,
  org.jdom_jaxen;resolution:=optional
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-Vendor: Atlassian
+Eclipse-BuddyPolicy: dependent
