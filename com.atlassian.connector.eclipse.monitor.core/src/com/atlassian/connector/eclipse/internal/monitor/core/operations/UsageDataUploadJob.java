@@ -26,23 +26,19 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
 import com.atlassian.connector.eclipse.monitor.core.InteractionEvent;
 import com.atlassian.connector.eclipse.monitor.core.InteractionEventLogger;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 public final class UsageDataUploadJob extends Job {
-
-	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt"; //$NON-NLS-1$
 
 	private final boolean ifTimeElapsed;
 
@@ -56,13 +52,11 @@ public final class UsageDataUploadJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			monitor.beginTask(Messages.UsageDataUploadJob_uploading_usage_stats, 3);
 			if (ifTimeElapsed) {
 				performUpload(monitor);
 			} else {
 				checkLastTransmitTimeAndRun(monitor);
 			}
-			monitor.done();
 			return Status.OK_STATUS;
 		} catch (Exception e) {
 			Status status = new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, IStatus.ERROR,
@@ -94,59 +88,31 @@ public final class UsageDataUploadJob extends Job {
 		}
 	}
 
-	private static final String SYSTEM_INFO_PREFIX = "system info: ";
-
-	private void logPlatformDetails(InteractionEventLogger log) {
-		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "os-arch", Platform.getOSArch()));
-		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX + "os",
-				Platform.getOS()));
-		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ Platform.PI_RUNTIME, Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(
-				Constants.BUNDLE_VERSION).toString()));
-		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "connector-version", MonitorCorePlugin.getDefault().getBundle().getHeaders().get(
-				Constants.BUNDLE_VERSION).toString()));
-	}
-
-	private void logInstalledFeatures(InteractionEventLogger log) {
-		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
-				+ "plugins", AtlassianBundlesInfo.getAllInstalledBundles().toString()));
-	}
-
 	private void performUpload(IProgressMonitor monitor) {
-		InteractionEventLogger interactionLogger = MonitorCorePlugin.getDefault().getInteractionLogger();
-		logPlatformDetails(interactionLogger);
-		logInstalledFeatures(interactionLogger);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.UsageDataUploadJob_uploading_usage_stats, 3);
 
-		MonitorCorePlugin.setPerformingUpload(true);
 		MonitorCorePlugin.getDefault().getInteractionLogger().stopMonitoring();
-		boolean failed = false;
 		try {
-			File zipFile = zipFilesForUpload(monitor);
+			File zipFile = zipFilesForUpload(submonitor.newChild(1));
 			if (zipFile == null) {
 				return;
 			}
-
-			if (!upload(MonitorCorePlugin.UPLOAD_URL, zipFile, monitor)) {
-				failed = true;
-			}
-
-			if (zipFile.exists()) {
-				zipFile.delete();
-			}
-		} finally {
-			if (!failed) {
-				// clear the log on success (so we don't send duplicates)
-				try {
-					MonitorCorePlugin.getDefault().getInteractionLogger().clearInteractionHistory();
-				} catch (IOException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-							"Failed to clear the Usage Data log", e));
+			try {
+				upload(MonitorCorePlugin.UPLOAD_URL, zipFile, submonitor.newChild(1));
+			} finally {
+				if (zipFile.exists()) {
+					zipFile.delete();
 				}
 			}
+		} finally {
+			// clear the log every time so it doesn't grow, don't care if it was sent
+			try {
+				MonitorCorePlugin.getDefault().getInteractionLogger().clearInteractionHistory();
+			} catch (IOException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
+						"Failed to clear the Usage Data log", e));
+			}
 			MonitorCorePlugin.getDefault().getInteractionLogger().startMonitoring();
-			MonitorCorePlugin.setPerformingUpload(false);
 		}
 		return;
 	}

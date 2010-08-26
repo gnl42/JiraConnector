@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -29,18 +30,21 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UsageDataUploadJob;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
 
 /**
  * @author Mik Kersten
  * @author Shawn Minto
  */
 public class MonitorCorePlugin extends Plugin {
+	private static final String SYSTEM_INFO_PREFIX = "system info: ";
 
 	private static final long HOUR = 3600 * 1000;
 
@@ -56,13 +60,9 @@ public class MonitorCorePlugin extends Plugin {
 
 	private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 
-	private static final long FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
-
 	private InteractionEventLogger interactionLogger;
 
 	private static MonitorCorePlugin plugin;
-
-	private static boolean performingUpload = false;
 
 	public static final String UPLOAD_URL = "http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload";
 
@@ -107,8 +107,28 @@ public class MonitorCorePlugin extends Plugin {
 		});
 	}
 
+	private void logPlatformDetails(InteractionEventLogger log) {
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "os-arch", Platform.getOSArch()));
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX + "os",
+				Platform.getOS()));
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ Platform.PI_RUNTIME, Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(
+				Constants.BUNDLE_VERSION).toString()));
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "connector-version", MonitorCorePlugin.getDefault().getBundle().getHeaders().get(
+				Constants.BUNDLE_VERSION).toString()));
+	}
+
+	private void logInstalledFeatures(InteractionEventLogger log) {
+		log.interactionObserved(InteractionEvent.makePreference(MonitorCorePlugin.ID_PLUGIN, SYSTEM_INFO_PREFIX
+				+ "plugins", AtlassianBundlesInfo.getAllInstalledBundles().toString()));
+	}
+
 	public void startMonitoring() {
 		interactionLogger.startMonitoring();
+		logPlatformDetails(interactionLogger);
+		logInstalledFeatures(interactionLogger);
 
 		// schedule statistics upload
 		startUploadStatisticsJob();
@@ -186,14 +206,6 @@ public class MonitorCorePlugin extends Plugin {
 
 	public void incrementObservedEvents(int increment) {
 		setObservedEvents(getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, 0) + increment);
-	}
-
-	public static boolean isPerformingUpload() {
-		return performingUpload;
-	}
-
-	public static void setPerformingUpload(boolean performingUpload) {
-		MonitorCorePlugin.performingUpload = performingUpload;
 	}
 
 	public InteractionEventLogger getInteractionLogger() {
