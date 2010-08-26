@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
-import com.atlassian.connector.eclipse.internal.monitor.core.AbstractMonitorLog;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.JDomDriver;
 
@@ -41,8 +40,12 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 
 	private final List<InteractionEvent> queue = new CopyOnWriteArrayList<InteractionEvent>();
 
+	private final XStream xs;
+
 	public InteractionEventLogger(File outputFile) {
 		this.outputFile = outputFile;
+		xs = new XStream(new JDomDriver());
+		xs.alias("interactionEvent", InteractionEvent.class);
 	}
 
 	public synchronized void interactionObserved(InteractionEvent event) {
@@ -84,7 +87,6 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 
 	private String getXmlForEvent(InteractionEvent event) {
 		try {
-			XStream xs = new XStream(new JDomDriver());
 			return xs.toXML(event);
 		} catch (Throwable t) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN, "Could not write event", t));
@@ -144,7 +146,6 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	 * @param buf
 	 */
 	private void getHistoryFromStream(InputStream reader, List<InteractionEvent> events) throws IOException {
-		XStream xs = new XStream(new JDomDriver());
 		List<?> list = (List<?>) xs.fromXML(reader);
 		if (list != null) {
 			for (Object e : list) {

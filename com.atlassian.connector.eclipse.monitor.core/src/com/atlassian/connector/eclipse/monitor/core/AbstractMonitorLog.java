@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.monitor.core;
+package com.atlassian.connector.eclipse.monitor.core;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
-import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 /**
  * Used for logging interaction events.
