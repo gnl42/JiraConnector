@@ -23,6 +23,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -45,7 +47,7 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	public InteractionEventLogger(File outputFile) {
 		this.outputFile = outputFile;
 		xs = new XStream(new JDomDriver());
-		xs.alias("interactionEvent", InteractionEvent.class);
+		xs.aliasType("interactionEvent", InteractionEvent.class);
 	}
 
 	public synchronized void interactionObserved(InteractionEvent event) {
@@ -146,7 +148,12 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	 * @param buf
 	 */
 	private void getHistoryFromStream(InputStream reader, List<InteractionEvent> events) throws IOException {
-		List<?> list = (List<?>) xs.fromXML(reader);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write("<list>".getBytes());
+		IOUtils.copy(reader, out);
+		out.write("</list>".getBytes());
+
+		List<?> list = (List<?>) xs.fromXML(out.toString());
 		if (list != null) {
 			for (Object e : list) {
 				if (e instanceof InteractionEvent) {

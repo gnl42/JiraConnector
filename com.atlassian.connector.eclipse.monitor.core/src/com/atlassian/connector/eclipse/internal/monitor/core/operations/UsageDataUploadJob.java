@@ -45,7 +45,7 @@ public final class UsageDataUploadJob extends Job {
 	private static int processedFileCount = 1;
 
 	public UsageDataUploadJob(boolean ignoreLastTransmit) {
-		super(Messages.UsageDataUploadJob_upload_usage_data);
+		super(Messages.UsageDataUploadJob_uploading_usage_stats);
 		this.ifTimeElapsed = ignoreLastTransmit;
 	}
 
@@ -106,12 +106,13 @@ public final class UsageDataUploadJob extends Job {
 			}
 		} finally {
 			// clear the log every time so it doesn't grow, don't care if it was sent
+			/* FIXME
 			try {
 				MonitorCorePlugin.getDefault().getInteractionLogger().clearInteractionHistory();
 			} catch (IOException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						"Failed to clear the Usage Data log", e));
-			}
+			}*/
 			MonitorCorePlugin.getDefault().getInteractionLogger().startMonitoring();
 		}
 		return;

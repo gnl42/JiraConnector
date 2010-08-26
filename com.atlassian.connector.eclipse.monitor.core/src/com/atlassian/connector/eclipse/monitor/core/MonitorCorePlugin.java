@@ -64,7 +64,9 @@ public class MonitorCorePlugin extends Plugin {
 
 	private static MonitorCorePlugin plugin;
 
-	public static final String UPLOAD_URL = "http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload";
+	//public static final String UPLOAD_URL = "http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload/2";
+
+	public static final String UPLOAD_URL = "http://localhost:8080/com.atlassian.connector.eclipse.monitor.server/upload-2";
 
 	public static final String HELP_URL = "http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector";
 

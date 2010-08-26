@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.monitor.core;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.monitor.usage.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.monitor.core.messages"; //$NON-NLS-1$
 
 	public static String MonitorCorePlugin_failed_to_start;
 
@@ -31,8 +31,6 @@ public class Messages extends NLS {
 	public static String UsageDataUploadJob_proxy_authentication;
 
 	public static String UsageDataUploadJob_30;
-
-	public static String UsageDataUploadJob_upload_usage_data;
 
 	public static String UsageDataUploadJob_uploading_usage_stats;
 
