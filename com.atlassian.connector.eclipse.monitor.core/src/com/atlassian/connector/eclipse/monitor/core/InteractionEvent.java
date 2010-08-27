@@ -66,6 +66,9 @@ public class InteractionEvent {
 			if (string.equals("action")) {
 				return ACTION;
 			}
+			if (string.equals("job")) {
+				return JOB;
+			}
 			if (string.equals("view")) {
 				return VIEW;
 			}

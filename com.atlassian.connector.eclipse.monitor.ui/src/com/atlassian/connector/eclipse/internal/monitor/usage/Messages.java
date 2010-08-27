@@ -38,7 +38,7 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_monitoring_and_submission;
 
-	public static String UsageDataPreferencePage_enable_logging_to;
+	public static String UsageDataPreferencePage_enable_monitoring;
 
 	public static String UsageSubmissionWizard_title;
 

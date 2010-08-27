@@ -12,34 +12,43 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
+import java.io.File;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.eclipse.ui.ide.IDE;
 
 import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
@@ -53,6 +62,8 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	private Button enableMonitoring;
 
 	private Text logFileText;
+
+	private Button openFile;
 
 	public UsageDataPreferencePage() {
 		super();
@@ -95,22 +106,9 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	}
 
 	private void createCollectorsSection(Composite parent) {
-		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_collectors);
-		group.setLayout(new GridLayout(1, false));
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		Label info = new Label(group, SWT.NULL);
-		info.setText(Messages.UsageDataPreferencePage_sent_to_following_recipients);
-
-		Composite uc = new Composite(group, SWT.NONE);
-		uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
-
-		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
-
-		Link details = new Link(uc, SWT.NONE);
-		details.setText(String.format("<A href=\"%s\">%s</A>", MonitorCorePlugin.HELP_URL, CoreConstants.PRODUCT_NAME));
+		Link details = new Link(parent, SWT.NONE);
+		details.setText(String.format("<A href=\"%s\">Check %s documentation for details.</A>",
+				MonitorCorePlugin.HELP_URL, CoreConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -124,21 +122,14 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	}
 
 	private void updateEnablement() {
-		if (!enableMonitoring.getSelection()) {
-			logFileText.setEnabled(false);
-		} else {
-			logFileText.setEnabled(true);
-		}
+		logFileText.setEnabled(enableMonitoring.getSelection());
+		openFile.setEnabled(enableMonitoring.getSelection());
 	}
 
 	private void createMonitoringAndFeedbackSection(Composite parent) {
-		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_monitoring_and_submission);
-		group.setLayout(new GridLayout(2, false));
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		enableMonitoring = new Button(group, SWT.CHECK);
-		enableMonitoring.setText(Messages.UsageDataPreferencePage_enable_logging_to);
+		enableMonitoring = new Button(parent, SWT.CHECK);
+		GridDataFactory.fillDefaults().span(2, SWT.DEFAULT).applyTo(enableMonitoring);
+		enableMonitoring.setText(Messages.UsageDataPreferencePage_enable_monitoring);
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
 		enableMonitoring.addSelectionListener(new SelectionAdapter() {
@@ -148,20 +139,43 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			}
 		});
 
-		String logFilePath = MonitorCorePlugin.getDefault().getMonitorLogFile().getPath();
-		logFilePath = logFilePath.replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
-		logFileText = new Text(group, SWT.BORDER);
-		logFileText.setText(logFilePath);
+		Composite c = new Composite(parent, SWT.NONE);
+		GridDataFactory.fillDefaults().applyTo(c);
+		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(c);
+
+		final Label label = new Label(c, SWT.NONE);
+		label.setText("Log file:");
+
+		final File logFilePath = MonitorCorePlugin.getDefault().getMonitorLogFile();
+		logFileText = new Text(c, SWT.BORDER);
+		logFileText.setText(logFilePath.getPath());
 		logFileText.setEditable(false);
 		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(logFileText);
 
-		createFeedbackSection(group);
-	}
+		openFile = new Button(c, SWT.PUSH);
+		openFile.setText("Show file");
+		openFile.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(logFilePath.getPath()));
+				try {
+					IDE.openEditorOnFileStore(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
+							fileStore);
+					((PreferenceDialog) getContainer()).close();
+				} catch (PartInitException e1) {
+					StatusHandler.log(new Status(IStatus.ERROR, MonitorUiPlugin.ID_PLUGIN, "Unable to open editor", e1));
+				}
+			}
+		});
+		openFile.setEnabled(getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
 
-	private void createFeedbackSection(Composite group) {
-		Label events = new Label(group, SWT.NULL);
+		c = new Composite(parent, SWT.NONE);
+		GridDataFactory.fillDefaults().applyTo(c);
+		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(c);
+
+		Label events = new Label(c, SWT.NULL);
 		events.setText(Messages.UsageDataPreferencePage_events_since_upload);
-		Label logged = new Label(group, SWT.NULL);
+		Label logged = new Label(c, SWT.NULL);
 		logged.setText("" + getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS)); //$NON-NLS-1$
 	}
 
