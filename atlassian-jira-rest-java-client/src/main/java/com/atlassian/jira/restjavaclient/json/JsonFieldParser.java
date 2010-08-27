@@ -17,7 +17,6 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.Field;
-import com.atlassian.jira.restjavaclient.domain.FloatingPointFieldValue;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
