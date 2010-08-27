@@ -34,7 +34,6 @@ import org.osgi.framework.Constants;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.core.operations.UsageDataUploadJob;
 import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
@@ -206,10 +205,6 @@ public class MonitorCorePlugin extends Plugin {
 		return scheduledStatisticsUploadJob;
 	}
 
-	public void incrementObservedEvents(int increment) {
-		setObservedEvents(getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, 0) + increment);
-	}
-
 	public InteractionEventLogger getInteractionLogger() {
 		return interactionLogger;
 	}
@@ -254,10 +249,6 @@ public class MonitorCorePlugin extends Plugin {
 		}
 	}
 
-	public void setObservedEvents(int number) {
-		getPreferenceStore().putInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, number);
-	}
-
 	public void monitoringDisabled() {
 		Job job = new UploadMonitoringStatusJob(false);
 		job.schedule();
@@ -271,4 +262,5 @@ public class MonitorCorePlugin extends Plugin {
 	public void setMonitoringEnabled(boolean b) {
 		getPreferenceStore().putBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, b);
 	}
+
 }

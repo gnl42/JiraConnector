@@ -46,11 +46,11 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.ide.IDE;
 
 import com.atlassian.connector.eclipse.commons.core.CoreConstants;
-import com.atlassian.connector.eclipse.internal.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
+import com.atlassian.connector.eclipse.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
 
 /**
@@ -118,7 +118,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	}
 
 	public void init(IWorkbench workbench) {
-		// Nothing to init
+		setPreferenceStore(null);
 	}
 
 	private void updateEnablement() {
@@ -168,15 +168,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			}
 		});
 		openFile.setEnabled(getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
-
-		c = new Composite(parent, SWT.NONE);
-		GridDataFactory.fillDefaults().applyTo(c);
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(c);
-
-		Label events = new Label(c, SWT.NULL);
-		events.setText(Messages.UsageDataPreferencePage_events_since_upload);
-		Label logged = new Label(c, SWT.NULL);
-		logged.setText("" + getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS)); //$NON-NLS-1$
 	}
 
 	@Override

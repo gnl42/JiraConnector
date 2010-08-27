@@ -38,8 +38,6 @@ import com.thoughtworks.xstream.io.xml.JDomDriver;
  */
 public class InteractionEventLogger extends AbstractMonitorLog {
 
-	private int eventAccumulartor = 0;
-
 	private final List<InteractionEvent> queue = new CopyOnWriteArrayList<InteractionEvent>();
 
 	private final XStream xs;
@@ -62,7 +60,6 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 			} else if (event != null) {
 				queue.add(event);
 			}
-			eventAccumulartor++;
 		} catch (Throwable t) {
 			StatusHandler.log(new Status(IStatus.WARNING, MonitorCorePlugin.ID_PLUGIN,
 					"Could not log interaction event", t));
@@ -81,10 +78,6 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 	@Override
 	public void stopMonitoring() {
 		super.stopMonitoring();
-		if (MonitorCorePlugin.getDefault() != null) {
-			MonitorCorePlugin.getDefault().incrementObservedEvents(eventAccumulartor);
-		}
-		eventAccumulartor = 0;
 	}
 
 	private String getXmlForEvent(InteractionEvent event) {
@@ -105,9 +98,6 @@ public class InteractionEventLogger extends AbstractMonitorLog {
 
 	public synchronized void clearInteractionHistory(boolean startMonitoring) throws IOException {
 		stopMonitoring();
-		if (MonitorCorePlugin.getDefault() != null) {
-			MonitorCorePlugin.getDefault().setObservedEvents(0);
-		}
 		outputStream = new FileOutputStream(outputFile, false);
 		outputStream.flush();
 		outputStream.close();

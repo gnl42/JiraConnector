@@ -30,8 +30,6 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_sent_to_following_recipients;
 
-	public static String UsageDataPreferencePage_events_since_upload;
-
 	public static String UsageDataPreferencePage_submission_every;
 
 	public static String UsageDataPreferencePage_days;
