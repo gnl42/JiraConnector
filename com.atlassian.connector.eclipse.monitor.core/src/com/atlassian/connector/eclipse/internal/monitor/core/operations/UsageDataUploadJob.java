@@ -106,13 +106,12 @@ public final class UsageDataUploadJob extends Job {
 			}
 		} finally {
 			// clear the log every time so it doesn't grow, don't care if it was sent
-			/* FIXME
 			try {
 				MonitorCorePlugin.getDefault().getInteractionLogger().clearInteractionHistory();
 			} catch (IOException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 						"Failed to clear the Usage Data log", e));
-			}*/
+			}
 			MonitorCorePlugin.getDefault().getInteractionLogger().startMonitoring();
 		}
 		return;
