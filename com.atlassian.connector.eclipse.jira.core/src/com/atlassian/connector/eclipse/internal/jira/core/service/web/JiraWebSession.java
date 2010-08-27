@@ -33,7 +33,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -355,7 +354,7 @@ public class JiraWebSession {
 		}
 
 		try {
-			client.getSoapClient().login(new NullProgressMonitor()); // pass NPM so there will be no request credentials dialog
+			client.getSoapClient().login(Policy.backgroundMonitorFor(monitor)); // pass NPM so there will be no request credentials dialog
 		} catch (JiraException e) {
 			if (e instanceof JiraCaptchaRequiredException) {
 				throw (JiraCaptchaRequiredException) e;

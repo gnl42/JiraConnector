@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
@@ -69,7 +70,7 @@ public class JiraClientCache {
 
 	private void initializeProjects(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_projects, 10);
-		data.projects = jiraClient.getProjects(submonitor.newChild(1));
+		data.projects = jiraClient.getProjects(wb(monitor, submonitor.newChild(1)));
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
 		data.projectsByKey = new HashMap<String, Project>(data.projects.length);
@@ -81,19 +82,24 @@ public class JiraClientCache {
 		}
 	}
 
+	private IProgressMonitor wb(IProgressMonitor monitor, SubMonitor newChild) {
+		return Policy.isBackgroundMonitor(monitor) ? Policy.backgroundMonitorFor(newChild) : newChild;
+	}
+
 	private void initializeProject(Project project, IProgressMonitor monitor) throws JiraException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor,
-				NLS.bind(Messages.JiraClientCache_project_details_for, project.getKey()), 5);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.JiraClientCache_project_details_for,
+				project.getKey()), 5);
 
 		synchronized (project) {
 			final JiraVersion version = new JiraVersion(data.serverInfo.getVersion());
 
-			project.setComponents(jiraClient.getComponents(project.getKey(), subMonitor.newChild(1)));
-			project.setVersions(jiraClient.getVersions(project.getKey(), subMonitor.newChild(1)));
+			project.setComponents(jiraClient.getComponents(project.getKey(), wb(monitor, subMonitor.newChild(1))));
+			project.setVersions(jiraClient.getVersions(project.getKey(), wb(monitor, subMonitor.newChild(1))));
 
 			if (version.supportsPerProjectIssueTypes()) {
-				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), subMonitor.newChild(1));
-				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
+				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), wb(monitor, subMonitor.newChild(1)));
+				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), wb(monitor,
+						subMonitor.newChild(1)));
 				for (IssueType issueType : subTaskIssueTypes) {
 					issueType.setSubTaskType(true);
 				}
@@ -106,8 +112,8 @@ public class JiraClientCache {
 			}
 			if (version.compareTo(JiraVersion.JIRA_3_13) >= 0) {
 				try {
-					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(),
-							subMonitor.newChild(1));
+					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(), wb(
+							monitor, subMonitor.newChild(1)));
 					if (securityLevels.length > 0) {
 						SecurityLevel[] projectSecurityLevels = new SecurityLevel[securityLevels.length + 1];
 						projectSecurityLevels[0] = SecurityLevel.NONE;
@@ -150,9 +156,9 @@ public class JiraClientCache {
 	}
 
 	private void initializePriorities(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
 
-		data.priorities = jiraClient.getPriorities(monitor);
+		data.priorities = jiraClient.getPriorities(wb(monitor, submonitor));
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (Priority priority : data.priorities) {
 			data.prioritiesById.put(priority.getId(), priority);
@@ -171,10 +177,10 @@ public class JiraClientCache {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
 
 		String version = data.serverInfo.getVersion();
-		IssueType[] issueTypes = jiraClient.getIssueTypes(submonitor.newChild(1));
+		IssueType[] issueTypes = jiraClient.getIssueTypes(wb(monitor, submonitor.newChild(1)));
 		IssueType[] subTaskIssueTypes;
 		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
-			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
+			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(wb(monitor, submonitor.newChild(1)));
 		} else {
 			subTaskIssueTypes = new IssueType[0];
 		}
@@ -198,7 +204,7 @@ public class JiraClientCache {
 	private void initializeStatuses(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_statuses, 1);
 
-		data.statuses = jiraClient.getStatuses(submonitor.newChild(1));
+		data.statuses = jiraClient.getStatuses(wb(monitor, submonitor.newChild(1)));
 		data.statusesById = new HashMap<String, JiraStatus>(data.statuses.length);
 		for (JiraStatus status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
@@ -208,7 +214,7 @@ public class JiraClientCache {
 	private void initializeProjectRoles(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_project_roles, 1);
 
-		ProjectRole[] projectRoles = jiraClient.getProjectRoles(submonitor.newChild(1));
+		ProjectRole[] projectRoles = jiraClient.getProjectRoles(wb(monitor, submonitor.newChild(1)));
 		if (projectRoles == null) {
 			projectRoles = new ProjectRole[0];
 		}
@@ -218,7 +224,7 @@ public class JiraClientCache {
 	private void initializeResolutions(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_resolutions, 1);
 
-		data.resolutions = jiraClient.getResolutions(submonitor.newChild(0));
+		data.resolutions = jiraClient.getResolutions(wb(monitor, submonitor.newChild(0)));
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (Resolution resolution : data.resolutions) {
 			data.resolutionsById.put(resolution.getId(), resolution);
@@ -246,7 +252,7 @@ public class JiraClientCache {
 	 */
 	private void initializeConfiguration(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
-		data.configuration = jiraClient.getConfiguration(submonitor);
+		data.configuration = jiraClient.getConfiguration(wb(monitor, submonitor));
 	}
 
 	public void setData(JiraClientData data) {
@@ -279,16 +285,16 @@ public class JiraClientCache {
 
 		final JiraClientData newData = new JiraClientData();
 
-		refreshServerInfo(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		refreshServerInfo(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
 		data.serverInfo = newData.serverInfo;
 
-		initializePriorities(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeIssueTypes(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeResolutions(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeProjectRoles(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-		initializeProjects(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
-//		initializeConfiguration(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializePriorities(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+		initializeIssueTypes(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+		initializeResolutions(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+		initializeStatuses(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+		initializeProjectRoles(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+		initializeProjects(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
+//		initializeConfiguration(newData, wb(monitor, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE)));
 
 		newData.lastUpdate = System.currentTimeMillis();
 
@@ -312,7 +318,7 @@ public class JiraClientCache {
 	 */
 	public synchronized void refreshServerInfo(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_Getting_server_information, 1);
-		data.serverInfo = jiraClient.getServerInfo(submonitor.newChild(1));
+		data.serverInfo = jiraClient.getServerInfo(wb(monitor, submonitor.newChild(1)));
 	}
 
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
