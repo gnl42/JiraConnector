@@ -3,7 +3,7 @@
    "-//Hibernate/Hibernate Mapping DTD//EN"
    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="com.atlassian.connector.eclipse.monitor.server.model">
+<hibernate-mapping package="com.atlassian.connector.eclipse.monitor.server.model" auto-import="false">
 
 	<class name="DailyStatistic" table="daily_statistics">
 		<id name="day" type="date"/>

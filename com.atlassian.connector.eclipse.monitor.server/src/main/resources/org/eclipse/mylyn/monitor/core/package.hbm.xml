@@ -3,7 +3,7 @@
    "-//Hibernate/Hibernate Mapping DTD//EN"
    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.eclipse.mylyn.monitor.core">
+<hibernate-mapping package="org.eclipse.mylyn.monitor.core" auto-import="false">
 	<typedef name="KindAsString"
 		class="com.atlassian.connector.eclipse.monitor.server.hibernate.GenericEnumUserType">
 		<param name="enumClass">org.eclipse.mylyn.monitor.core.InteractionEvent$Kind</param>

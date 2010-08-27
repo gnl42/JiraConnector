@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.atlassian.connector.eclipse.monitor.core" auto-import="false">
+	<typedef name="KindAsString"
+		class="com.atlassian.connector.eclipse.monitor.server.hibernate.GenericEnumUserType">
+		<param name="enumClass">com.atlassian.connector.eclipse.monitor.core.InteractionEvent$Kind</param>
+		<param name="identifierMethod">toString</param>
+		<param name="valueOfMethod">fromString</param>
+	</typedef>
+
+	<!--
+		mutable="false" - you won't be able to update or modify entries, we
+		don't care, we only store, and that gives us performance boost
+	-->
+	<class name="UserInteractionEvent" table="events"
+		mutable="false">
+		<id name="id" column="id" unsaved-value="-1" type="java.lang.Integer">
+			<generator class="sequence">
+				<param name="sequence">events_id_seq</param>
+			</generator>
+		</id>
+		
+		<property name="kind" access="field" type="KindAsString">
+			<column name="kind" not-null="true" />
+		</property>
+		<property name="pluginId" access="field">
+			<column name="plugin_id" not-null="true" />
+		</property>
+		<property name="eventId" access="field">
+			<column name="event_id" not-null="true" />
+		</property>
+		<property name="details" access="field">
+			<column name="details" not-null="false" />
+		</property>
+		<property name="date" access="field">
+			<column name="date" not-null="true" />
+		</property>
+		<property name="uid" access="field">
+			<column name="uid" not-null="true" />
+		</property>
+	</class>
+</hibernate-mapping>

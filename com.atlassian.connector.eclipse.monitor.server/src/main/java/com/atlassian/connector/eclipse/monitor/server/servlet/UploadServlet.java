@@ -23,6 +23,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.connector.eclipse.monitor.core.UsageDataUtil2;
 import com.atlassian.connector.eclipse.monitor.server.HibernateUtil;
 import com.atlassian.connector.eclipse.monitor.server.model.DailyStatistic;
 
@@ -91,7 +92,7 @@ public class UploadServlet extends HttpServlet {
 			Session session = null;
 			try {
 				session = HibernateUtil.getSessionFactory().openSession();
-				updateDailyStats(session, loadFiles(session, files));
+				updateDailyStats(session, request.getServletPath().endsWith("-2") ? loadFiles2(session, files) : loadFiles(session, files));
 			} finally {
 				if (session != null) {
 					try {
@@ -132,6 +133,56 @@ public class UploadServlet extends HttpServlet {
 			for (Object fileObj : files) {
 				UsageDataUtil.processFile((FileItem) fileObj, new UsageDataUtil.UserInteractionEventCallback() {
 					public boolean visit(UserInteractionEvent uie) {
+						// put as much data as we can into db, don't care if something is dropped
+						Transaction tx = null;
+						try {
+							tx = session.beginTransaction();
+							session.persist(uie);
+							tx.commit();
+							
+							++succeeded[0];
+						} catch(Exception e) {
+							if (tx != null) {
+								try {
+									tx.rollback();
+								} catch(Exception e1) {
+									// ignore
+								}
+							}
+							
+							if (e instanceof ConstraintViolationException) {
+								// tried to put data again (happens sometimes)
+								++conflicts[0];
+							} else {
+								log.warn("Failed to store UserInteractionEvent", e);
+								++failed[0];
+							}
+						}
+						return true;
+					}
+				});
+			}
+		} catch (Exception e) {
+			log.error("Exception while storing UserInteractionEvent", e);
+		}
+		
+		log.debug("Files loaded");
+		
+		return new DailyStatistic(null, 1, succeeded[0], failed[0], conflicts[0]);
+	}
+	
+	private DailyStatistic loadFiles2(final Session session, final List<?> files) {
+		final int[] succeeded = new int[] {0};
+		final int[] failed = new int[] {0};
+		final int[] conflicts = new int[] {0};
+		
+		log.debug("Loading files");
+		
+		try {
+			for (Object fileObj : files) {
+				UsageDataUtil2.processFile((FileItem) fileObj, new UsageDataUtil2.UserInteractionEventCallback() {
+					public boolean visit(
+							com.atlassian.connector.eclipse.monitor.core.UserInteractionEvent uie) {
 						// put as much data as we can into db, don't care if something is dropped
 						Transaction tx = null;
 						try {

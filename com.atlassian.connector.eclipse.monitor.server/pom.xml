@@ -90,6 +90,12 @@
 			<version>4.6</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.0-312.jdbc3</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -144,6 +150,40 @@
 				<configuration>
 					<argLine>-Xmx256m</argLine>
 					<disableXmlReport>true</disableXmlReport>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>tomcat6x</containerId>
+						<zipUrlInstaller>
+							<url>http://apache.privatejetscharter.net/tomcat/tomcat-6/v6.0.29/bin/apache-tomcat-6.0.29.zip</url>
+							<installDir>${project.build.directory}/tomcat6x-server</installDir>
+						</zipUrlInstaller>
+						<dependencies>
+							<dependency>
+								<groupId>postgresql</groupId>
+								<artifactId>postgresql</artifactId>
+							</dependency>
+						</dependencies>
+					</container>
+
+					<configuration>
+						<type>standalone</type>
+						<home>${project.build.directory}/tomcat6x</home>
+						<properties>
+							<cargo.jvmargs><![CDATA[-Xdebug -Xrunjdwp:transport=dt_socket,address=15102,server=y,suspend=n]]></cargo.jvmargs>
+							<cargo.datasource.datasource.postgresql>
+								cargo.datasource.driver=org.postgresql.Driver|
+								cargo.datasource.url=jdbc:postgresql://localhost:65432/eclipseusage|
+								cargo.datasource.jndi=jdbc/eclipseusageDS|
+								cargo.datasource.username=user|
+								cargo.datasource.password=pass
+							</cargo.datasource.datasource.postgresql>
+						</properties>
+					</configuration>
 				</configuration>
 			</plugin>
 		</plugins>

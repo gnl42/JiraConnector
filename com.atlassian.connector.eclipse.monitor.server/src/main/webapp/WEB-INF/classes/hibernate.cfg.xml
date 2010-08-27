@@ -26,15 +26,13 @@
         <property name="show_sql">false</property>
         <property name="format_sql">false</property>
     
-        <!-- Update schema when SessionFactory is built. -->
-        <property name="hbm2ddl.auto">update</property>
-    
         <!-- Bind the getCurrentSession() method to the thread. -->
         <property name="current_session_context_class">thread</property>
 
         <!-- Hibernate XML mapping files -->
         <mapping resource="org/eclipse/mylyn/monitor/core/package.hbm.xml"/>
         <mapping resource="com/atlassian/connector/eclipse/monitor/server/model/package.hbm.xml"/>
+        <mapping resource="com/atlassian/connector/eclipse/monitor/core/package.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>
