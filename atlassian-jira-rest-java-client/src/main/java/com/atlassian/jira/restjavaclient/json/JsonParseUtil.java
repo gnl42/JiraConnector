@@ -34,11 +34,20 @@ import java.util.Collection;
 
 public class JsonParseUtil {
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
+    public static final String VALUE_KEY = "value";
 
 //	public interface ExpandablePropertyBuilder<T> {
 //		T parse(JSONObject json) throws JSONException;
 //	}
 
+    public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonParser<T> jsonParser) throws JSONException {
+        final Collection<T> res = new ArrayList<T>(jsonArray.length());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
+        }
+        return res;
+    }
+    
 	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonParser<T> expandablePropertyBuilder)
 			throws JSONException {
 		final int numItems = json.getInt("size");
@@ -71,6 +80,16 @@ public class JsonParseUtil {
 		return json;
 	}
 
+    @Nullable
+    public static JSONObject getNestedOptionalObject(JSONObject json, String... path) throws JSONException {
+        for (int i = 0; i < path.length - 1; i++) {
+            String s = path[i];
+            json = json.getJSONObject(s);
+        }
+        return json.optJSONObject(path[path.length - 1]);
+    }
+
+
 	public static JSONArray getNestedArray(JSONObject json, String... path) throws JSONException {
 		for (int i = 0; i < path.length - 1; i++) {
 			String s = path[i];
@@ -78,6 +97,15 @@ public class JsonParseUtil {
 		}
 		return json.getJSONArray(path[path.length - 1]);
 	}
+
+    public static JSONArray getNestedOptionalArray(JSONObject json, String... path) throws JSONException {
+        for (int i = 0; i < path.length - 1; i++) {
+            String s = path[i];
+            json = json.getJSONObject(s);
+        }
+        return json.optJSONArray(path[path.length - 1]);
+    }
+
 
 	public static String getNestedString(JSONObject json, String... path) throws JSONException {
 
@@ -87,7 +115,16 @@ public class JsonParseUtil {
 		}
 		return json.getString(path[path.length - 1]);
 	}
-	
+
+    public static boolean getNestedBoolean(JSONObject json, String... path) throws JSONException {
+
+        for (int i = 0; i < path.length - 1; i++) {
+            String s = path[i];
+            json = json.getJSONObject(s);
+        }
+        return json.getBoolean(path[path.length - 1]);
+    }
+
 
 	public static URI parseURI(String str) {
 		try {

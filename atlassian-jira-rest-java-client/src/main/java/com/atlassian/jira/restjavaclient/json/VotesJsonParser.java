@@ -27,9 +27,9 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class VotesJsonParser implements JsonParser<Votes> {
+public class VotesJsonParser extends JsonParserWithJsonObjectValue<Votes> {
 	@Override
-	public Votes parse(JSONObject json) throws JSONException {
+	public Votes parseValue(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final int voteCount = json.getInt("votes");
 		final boolean hasVoted = json.getBoolean("hasVoted");

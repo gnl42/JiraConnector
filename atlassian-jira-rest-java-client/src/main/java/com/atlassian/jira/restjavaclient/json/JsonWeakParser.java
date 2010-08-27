@@ -17,13 +17,12 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+* TODO: Document this class / interface here
+*
+* @since v0.1
+*/
+interface JsonWeakParser<T> {
+    T parse(Object o) throws JSONException;
 }

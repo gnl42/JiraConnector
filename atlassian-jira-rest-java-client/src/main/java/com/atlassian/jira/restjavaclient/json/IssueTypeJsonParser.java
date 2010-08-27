@@ -16,14 +16,24 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+public class IssueTypeJsonParser implements JsonParser<IssueType> {
+    @Override
+    public IssueType parse(JSONObject json) throws JSONException {
+        final JSONObject valueJson = json.getJSONObject(JsonParseUtil.VALUE_KEY);
+        final URI selfUri = JsonParseUtil.getSelfUri(valueJson);
+        final String name = valueJson.getString("name");
+        final boolean isSubtask = valueJson.getBoolean("subtask");
+        return new IssueType(selfUri, name, isSubtask);
+    }
 }

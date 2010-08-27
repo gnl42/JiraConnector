@@ -27,8 +27,9 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class StatusJsonParser {
-	public BasicStatus parseBasicStatus(JSONObject json) throws JSONException {
+public class StatusJsonParser extends JsonParserWithJsonObjectValue<BasicStatus> {
+	@Override
+    public BasicStatus parseValue(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
 		return new BasicStatus(self, name);

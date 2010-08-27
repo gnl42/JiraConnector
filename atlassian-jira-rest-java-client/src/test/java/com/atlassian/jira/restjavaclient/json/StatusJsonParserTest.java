@@ -16,14 +16,15 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.junit.Test;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+public class StatusJsonParserTest {
+    @Test
+    public void testParse() throws Exception {
+    }
 }

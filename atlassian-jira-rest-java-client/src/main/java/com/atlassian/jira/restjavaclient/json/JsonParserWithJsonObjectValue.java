@@ -24,6 +24,12 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @since v0.1
  */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+public abstract class JsonParserWithJsonObjectValue<T> implements JsonParser<T> {
+    @Override
+    public final T parse(JSONObject json) throws JSONException {
+        final JSONObject valueJson = json.getJSONObject(JsonParseUtil.VALUE_KEY);
+        return parseValue(valueJson);
+    }
+
+    protected abstract T parseValue(JSONObject json) throws JSONException;
 }

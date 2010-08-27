@@ -32,21 +32,26 @@ import java.util.Map;
 public class JsonFieldParser implements JsonParser<Field>{
     private static final String VALUE_ATTRIBUTE = "value";
 
-    private Map<String, FieldValueParser> registeredValueParsers = new HashMap<String, FieldValueParser>() {{
+    private Map<String, JsonParser> registeredValueParsers = new HashMap<String, JsonParser>() {{
         put("com.atlassian.jira.plugin.system.customfieldtypes:float", new FloatingPointFieldValueParser());
         put("java.lang.String", new StringFieldValueParser());
     }};
 
     @Override
     public Field parse(JSONObject jsonObject) throws JSONException {
-        final String type = jsonObject.getString("type");
+        String type = jsonObject.getString("type");
         final String name = jsonObject.getString("name");
         final Object valueObject = jsonObject.opt(VALUE_ATTRIBUTE);
         final Object value;
+        // @todo ugly hack until https://jdog.atlassian.com/browse/JRADEV-3220 is fixed
+        if ("comment".equals(name)) {
+            type = "com.atlassian.jira.Comment";
+        }
+
         if (valueObject == null) {
             value = null;
         } else {
-            final FieldValueParser valueParser = registeredValueParsers.get(type);
+            final JsonParser valueParser = registeredValueParsers.get(type);
             if (valueParser != null) {
                 value = valueParser.parse(jsonObject);
             } else {
@@ -57,12 +62,7 @@ public class JsonFieldParser implements JsonParser<Field>{
     }
 
 
-    interface FieldValueParser {
-        @Nullable
-        Object parse(JSONObject jsonObject) throws JSONException;
-    }
-
-    class FloatingPointFieldValueParser implements FieldValueParser {
+    class FloatingPointFieldValueParser implements JsonParser<Double> {
 
         @Override
         public Double parse(JSONObject jsonObject) throws JSONException {
@@ -78,12 +78,14 @@ public class JsonFieldParser implements JsonParser<Field>{
         }
     }
 
-    class StringFieldValueParser implements FieldValueParser {
+    class StringFieldValueParser implements JsonParser<String> {
 
         @Override
         public String parse(JSONObject jsonObject) throws JSONException {
             return JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
         }
     }
+
+
 
 }

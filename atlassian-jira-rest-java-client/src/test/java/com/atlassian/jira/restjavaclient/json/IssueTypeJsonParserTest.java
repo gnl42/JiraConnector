@@ -16,14 +16,23 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.junit.Test;
+
+import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+public class IssueTypeJsonParserTest {
+    @Test
+    public void testParse() throws JSONException {
+        IssueTypeJsonParser parser = new IssueTypeJsonParser();
+        final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));
+        assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", true), issueType);
+    }
 }

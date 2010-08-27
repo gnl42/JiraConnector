@@ -47,6 +47,7 @@ public class IssueJsonParserTest {
 		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource("/json/issue/valid-all-expanded.json");
 		final IssueJsonParser parser = new IssueJsonParser();
 		final Issue issue = parser.parseIssue(new IssueArgsBuilder("TST-2").build(), issueJson);
+        assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
 		assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
@@ -65,30 +66,33 @@ public class IssueJsonParserTest {
 		final Watchers watchers = issue.getWatchers();
 		assertFalse(watchers.isWatching());
 		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2/watchers"), watchers.getSelf());
-		assertThat(watchers.getList().getItems(), IsIterableOf.hasOnlyElements(TestConstants.USER1));
+		assertThat(watchers.getList(), IsIterableOf.hasOnlyElements(TestConstants.USER1));
 
 		// attachments
-		final ExpandableProperty<Attachment> attachments = issue.getAttachments();
-		assertEquals(3, attachments.getSize());
-		final Attachment attachment = attachments.getItems().iterator().next();
+		final Iterable<Attachment> attachments = issue.getAttachments();
+        assertEquals(3, Iterables.size(attachments));
+		final Attachment attachment = attachments.iterator().next();
 		assertEquals("jira_logo.gif", attachment.getFilename());
 		assertEquals(TestConstants.USER_ADMIN, attachment.getAuthor());
 		assertEquals(2517, attachment.getSize());
 		assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10036/10036_jira_logo.gif"), attachment.getThumbnailUri());
-		final Iterator<Attachment> attachmentIt = attachments.getItems().iterator();
+		final Iterator<Attachment> attachmentIt = attachments.iterator();
 		attachmentIt.next();
 		attachmentIt.next();
 		final Attachment lastAttachment = attachmentIt.next();
 		assertEquals("transparent-png.png", lastAttachment.getFilename());
 
 		// worklogs
-		final ExpandableProperty<Worklog> worklogs = issue.getWorklogs();
-		assertEquals(3, worklogs.getSize());
-		final Worklog worklog = Iterables.get(worklogs.getItems(), 2);
+		final Iterable<Worklog> worklogs = issue.getWorklogs();
+		assertEquals(5, Iterables.size(worklogs));
+		final Worklog worklog = Iterables.get(worklogs, 2);
 		assertEquals(new Worklog(toUri("http://localhost:8090/jira/rest/api/latest/worklog/10012"),
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), TestConstants.USER1,
 				TestConstants.USER1, "a worklog viewable just by jira-users",
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
 				toDateTime("2010-08-11T16:52:00.000+0200"), 3, null, "jira-users"), worklog);
+
+        final Worklog worklog3 = Iterables.get(worklogs, 3);
+        assertEquals("", worklog3.getComment());
 	}
 }

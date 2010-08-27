@@ -20,6 +20,7 @@ import com.atlassian.jira.restjavaclient.domain.Attachment;
 import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.User;
+import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
@@ -62,11 +63,11 @@ public class JerseyJiraRestClientTest {
         assertEquals("TST-1", issue.getKey());
         assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 
-        assertEquals(3, issue.getComments().getSize());
-        assertThat(issue.getExpandos(), IsIterableOf.hasOnlyElements("comments", "worklogs", "attachments", "watchers", "fields"));
+        assertEquals(3, Iterables.size(issue.getComments()));
+        assertThat(issue.getExpandos(), IsIterableOf.hasOnlyElements("html"));
 
-        assertEquals(4, issue.getAttachments().getSize());
-        final Iterable<Attachment> items = issue.getAttachments().getItems();
+        assertEquals(4, Iterables.size(issue.getAttachments()));
+        final Iterable<Attachment> items = issue.getAttachments();
         assertNotNull(items);
         final User user = new User(new URI("http://localhost:8090/jira/rest/api/latest/user/admin"),
                 "admin", "Administrator");
@@ -78,19 +79,6 @@ public class JerseyJiraRestClientTest {
 
 		System.out.println(issue);
 
-    }
-
-//    @Test
-    public void testGetIssueNoAttachments() throws Exception {
-        final Issue issue = client.getIssue(new IssueArgsBuilder("TST-1").withAttachments(false).withComments(true).build(),
-                new NullProgressMonitor());
-        assertEquals("TST-1", issue.getKey());
-        assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
-
-        assertEquals(3, issue.getComments().getSize());
-        final Iterable<Comment> comments = issue.getComments().getItems();
-        assertEquals(4, issue.getAttachments().getSize());
-        assertNull(issue.getAttachments().getItems());
     }
 
 //	@Test

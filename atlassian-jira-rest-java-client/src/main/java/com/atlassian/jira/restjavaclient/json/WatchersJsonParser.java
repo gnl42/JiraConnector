@@ -23,20 +23,21 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
+import java.util.Collection;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class WatchersJsonParser implements JsonParser<Watchers> {
+public class WatchersJsonParser extends JsonParserWithJsonObjectValue<Watchers> {
 	private final UserJsonParser userJsonParser = new UserJsonParser();
 
-	@Override
-	public Watchers parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final boolean isWatching = json.getBoolean("isWatching");
-		final ExpandableProperty<User> list = JsonParseUtil.parseExpandableProperty(json.getJSONObject("list"), userJsonParser);
-		return new Watchers(self, isWatching, list);
-	}
+    @Override
+    protected Watchers parseValue(JSONObject json) throws JSONException {
+        final URI self = JsonParseUtil.getSelfUri(json);
+        final boolean isWatching = json.getBoolean("isWatching");
+        final Collection<User> list = JsonParseUtil.parseJsonArray(json.getJSONArray("list"), userJsonParser);
+        return new Watchers(self, isWatching, list);
+    }
 }

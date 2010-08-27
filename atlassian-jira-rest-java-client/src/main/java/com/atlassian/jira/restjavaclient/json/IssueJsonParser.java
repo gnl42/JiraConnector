@@ -16,21 +16,8 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.IssueArgs;
-import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.BasicComponent;
-import com.atlassian.jira.restjavaclient.domain.BasicStatus;
-import com.atlassian.jira.restjavaclient.domain.Comment;
-import com.atlassian.jira.restjavaclient.domain.Field;
-import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.domain.IssueLink;
-import com.atlassian.jira.restjavaclient.domain.IssueType;
-import com.atlassian.jira.restjavaclient.domain.Project;
-import com.atlassian.jira.restjavaclient.domain.Version;
-import com.atlassian.jira.restjavaclient.domain.Votes;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
-import com.atlassian.jira.restjavaclient.domain.Worklog;
+import com.atlassian.jira.restjavaclient.domain.*;
 import com.google.common.base.Splitter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -39,12 +26,7 @@ import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import static com.atlassian.jira.restjavaclient.json.JsonParseUtil.getNestedObject;
 import static com.atlassian.jira.restjavaclient.json.JsonParseUtil.getNestedString;
@@ -60,9 +42,20 @@ public class IssueJsonParser {
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
 	private static final String FIX_VERSIONS_ATTR = "fixVersions";
 	private static final String COMPONENTS_ATTR = "components";
+	private static final String LINKS_ATTR = "links";
+    private static final String ISSUE_TYPE_ATTR = "issuetype";
+    private static final String VOTES_ATTR = "votes";
+    private static final String WORKLOG_ATTR = "worklog";
+    private static final String WATCHER_ATTR = "watcher";
+    private static final String PROJECT_ATTR = "project";
+    private static final String STATUS_ATTR = "status";
+    private static final String COMMENT_ATTR = "comment";
+    private static final String ATTACHMENT_ATTR = "attachment";
+    private static final String SUMMARY_ATTR = "summary";
 
-	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList("summary", UPDATED_ATTR, CREATED_ATTR,
-			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR));
+    private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
+			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, ISSUE_TYPE_ATTR, VOTES_ATTR,
+            WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
@@ -72,86 +65,83 @@ public class IssueJsonParser {
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
+    private final JsonFieldParser fieldParser = new JsonFieldParser();
+    private final CommentJsonParser commentJsonParser = new CommentJsonParser("");
+    private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
+    private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();
 
+    private static final String FIELDS = "fields";
+    private static final String VALUE_ATTR = "value";
 
-	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
+    static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
 		final String expando = json.getString("expand");
 		return Splitter.on(',').split(expando);
 	}
 
 	
-	private Collection<IssueLink> parseIssueLinks(JSONArray jsonArray) throws JSONException {
-		final Collection<IssueLink> issueLinks = new ArrayList<IssueLink>(jsonArray.length());
-		for (int i = 0; i < jsonArray.length(); i++) {
-			issueLinks.add(issueLinkJsonParser.parse(jsonArray.getJSONObject(i)));
-		}
-		return issueLinks;
-	}
+    private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser) throws JSONException {
+//        String type = jsonObject.getString("type");
+//        final String name = jsonObject.getString("name");
+        final JSONArray valueObject = jsonObject.optJSONArray(VALUE_ATTR);
+        if (valueObject == null) {
+            return new ArrayList<T>();
+        }
+        Collection<T> res = new ArrayList<T>(valueObject.length());
+        for (int i = 0; i < valueObject.length(); i++) {
+            res.add(jsonParser.parse(valueObject.get(i)));
+        }
+        return res;
+    }
 
-	@Nullable
-	private <T> Collection<T> parseOptionalArrayField(JSONObject jsonObject, String fieldKey, JsonParser<T> jsonParser) throws JSONException {
-		final JSONArray jsonArray = JsonParseUtil.getNestedArray(jsonObject, "fields", fieldKey);
-		if (jsonArray == null) {
-			return null;
-		}
-		return parseJsonArray(jsonArray, jsonParser);
-	}
 
+    @Nullable
+    private <T> Collection<T> parseOptionalArray(JSONObject json, JsonWeakParser<T> jsonParser, String ... path) throws JSONException {
+        final JSONObject js = JsonParseUtil.getNestedOptionalObject(json, path);
+        if (js == null) {
+            return null;
+        }
+        return parseArray(js, jsonParser);
+    }
 
 	public Issue parseIssue(IssueArgs args, JSONObject s) throws JSONException {
-		final ExpandableProperty<Comment> expandableComment = JsonParseUtil.parseExpandableProperty(s.getJSONObject("comments"),
-				new CommentJsonParser(args.getRenderer()));
+        final JSONObject commentsJs = JsonParseUtil.getNestedObject(s, FIELDS, COMMENT_ATTR);
 
-		final ExpandableProperty<Attachment> attachments = JsonParseUtil.parseExpandableProperty(s.getJSONObject("attachments"),
-				attachmentJsonParser);
+        Collection<Comment> comments;
+        if (commentsJs != null) {
+            comments = parseArray(commentsJs, new JsonWeakParserForJsonObject<Comment>(commentJsonParser));
+        } else {
+            comments = new ArrayList<Comment>();
+        }
+
+        final String summary = JsonParseUtil.getNestedString(s, FIELDS, SUMMARY_ATTR, VALUE_ATTR);
+		final Collection<Attachment> attachments = parseOptionalArray(s, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_ATTR);
 		final Iterable<String> expandos = parseExpandos(s);
-		final Collection<Field> fields = parseFields(s.getJSONObject("fields"));
-		final IssueType issueType = parseIssueType(getNestedObject(s, "fields", "issuetype"));
-		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, "fields", "created"));
-		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, "fields", "updated"));
+		final Collection<Field> fields = parseFields(s.getJSONObject(FIELDS));
+		final IssueType issueType = issueTypeJsonParser.parse(getNestedObject(s, FIELDS, ISSUE_TYPE_ATTR));
+		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, CREATED_ATTR, VALUE_ATTR));
+		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, UPDATED_ATTR, VALUE_ATTR));
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
-		final Project project = parseProject(getNestedObject(s, "fields", "project"));
-		final JSONArray linksJsonArray = s.optJSONArray("links");
-		final Collection<IssueLink> issueLinks = linksJsonArray != null ? parseIssueLinks(linksJsonArray) : null;
-		final Votes votes = votesJsonParser.parse(getNestedObject(s, "fields", "votes"));
-		final BasicStatus status = statusJsonParser.parseBasicStatus(getNestedObject(s, "fields", "status"));
+		final Project project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
+        final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
+		final Votes votes = votesJsonParser.parse(getNestedObject(s, FIELDS, VOTES_ATTR));
+		final BasicStatus status = statusJsonParser.parse(getNestedObject(s, FIELDS, STATUS_ATTR));
 
-		final Collection<Version> fixVersions = parseOptionalArrayField(s, FIX_VERSIONS_ATTR, versionJsonParser);
-		final Collection<Version> affectedVersions = parseOptionalArrayField(s, AFFECTS_VERSIONS_ATTR, versionJsonParser);
-		final Collection<BasicComponent> components = parseOptionalArrayField(s, COMPONENTS_ATTR, basicComponentJsonParser);
+        final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_ATTR);
+        final Collection<Version> affectedVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_ATTR);
+        final Collection<BasicComponent> components = parseOptionalArray(s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_ATTR);
 
-		final ExpandableProperty<Worklog> worklogs = JsonParseUtil.parseExpandableProperty(s.getJSONObject("worklogs"),
-				worklogJsonParser);
+        final Collection<Worklog> worklogs = parseOptionalArray(s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
-		final Watchers watchers = watchersJsonParser.parse(s.getJSONObject("watchers"));
+		final Watchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
 
-		return new Issue(JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, expandableComment,
+		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, comments,
 				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);
 	}
 
-	private <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonParser<T> jsonParser) throws JSONException {
-		final Collection<T> res = new ArrayList<T>(jsonArray.length());
-		for (int i = 0; i < jsonArray.length(); i++) {
-			res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
-		}
-		return res;
-	}
 
 
-	IssueType parseIssueType(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String name = json.getString("name");
-		final boolean isSubtask = json.getBoolean("subtask");
-		return new IssueType(selfUri, name, isSubtask);
-	}
 
-	Project parseProject(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String key = json.getString("key");
-		return new Project(selfUri, key);
-	}
-
-	static Collection<Field> parseFields(JSONObject json) throws JSONException {
+	private Collection<Field> parseFields(JSONObject json) throws JSONException {
 		ArrayList<Field> res = new ArrayList<Field>(json.length());
 		@SuppressWarnings("unchecked")
 		final Iterator<String> iterator = json.keys();
@@ -160,12 +150,13 @@ public class IssueJsonParser {
 			if (SPECIAL_FIELDS.contains(key)) {
 				continue;
 			}
-			final Object value = json.get(key);
-			if (value instanceof JSONObject) {
-
-			} else {
-				res.add(new Field(key, value != JSONObject.NULL ? value.toString() : null));
-			}
+            try {
+                res.add(fieldParser.parse(json.getJSONObject(key)));
+            } catch (JSONException e) {
+                final JSONException jsonException = new JSONException("Cannot parse field [" + key + "]");
+                jsonException.initCause(e);
+                throw jsonException;
+            }
 		}
 		return res;
 	}

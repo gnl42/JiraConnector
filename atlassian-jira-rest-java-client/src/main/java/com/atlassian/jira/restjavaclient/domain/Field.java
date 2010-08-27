@@ -26,26 +26,33 @@ import com.google.common.base.Objects;
 public class Field {
 	private final String name;
 
-	private final String value;
+    private final String type;
 
-	public Field(String name, String value) {
+    private final Object value;
+
+	public Field(String name, String type, Object value) {
 		this.name = name;
-		this.value = value;
-	}
+        this.type = type;
+        this.value = value;
+    }
 
 	public String getName() {
 		return name;
 	}
 
-	public String getValue() {
-		return value;
-	}
+    public String getType() {
+        return type;
+    }
+
+    public Object getValue() {
+        return value;
+    }
 
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("name", name).
-				add("value", value).
+				add("value", getValue()).
 				toString();
 	}
 }

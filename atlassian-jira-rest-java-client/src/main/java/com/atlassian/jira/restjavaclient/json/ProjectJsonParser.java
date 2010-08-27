@@ -16,14 +16,22 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.domain.Project;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JsonParser<T> {
-	T parse(JSONObject json) throws JSONException;
+public class ProjectJsonParser extends JsonParserWithJsonObjectValue<Project> {
+    @Override
+    public Project parseValue(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String key = json.getString("key");
+        return new Project(selfUri, key);
+    }
 }

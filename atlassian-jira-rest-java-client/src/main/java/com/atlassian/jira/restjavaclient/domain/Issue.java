@@ -33,10 +33,11 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
-			ExpandableProperty<Comment> comments, ExpandableProperty<Attachment> attachments, Collection<Field> fields,
-			DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, ExpandableProperty<Worklog> worklogs,
-			Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
+    public Issue(String summary, URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
+                 Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
+                 DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, Collection<Worklog> worklogs,
+                 Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
+        this.summary = summary;
         this.self = self;
         this.key = key;
 		this.project = project;
@@ -65,6 +66,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
+    private final String summary;
 	private User reporter;
 	private User assignee;
 	private String key;
@@ -77,14 +79,14 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	@Nullable
 	private final Collection<Version> affectedVersions;
 
-	private final ExpandableProperty<Comment> comments;
+	private final Collection<Comment> comments;
 
 	@Nullable
 	private final Collection<IssueLink> issueLinks;
 
-	private final ExpandableProperty<Attachment> attachments;
+	private final Collection<Attachment> attachments;
 
-	private final ExpandableProperty<Worklog> worklogs;
+	private final Collection<Worklog> worklogs;
 	private final Watchers watchers;
 
 	public BasicStatus getStatus() {
@@ -101,7 +103,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 
 
 	public String getSummary() {
-		return null;
+		return summary;
 	}
 
 	/**
@@ -133,11 +135,11 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return issueType;
 	}
 
-	public ExpandableProperty<Attachment> getAttachments() {
+	public Iterable<Attachment> getAttachments() {
         return attachments;
     }
 
-    public ExpandableProperty<Comment> getComments() {
+    public Iterable<Comment> getComments() {
         return comments;
     }
 
@@ -149,7 +151,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return votes;
 	}
 
-	public ExpandableProperty<Worklog> getWorklogs() {
+	public Iterable<Worklog> getWorklogs() {
 		return worklogs;
 	}
 

@@ -21,6 +21,7 @@ import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.google.common.base.Objects;
 
 import java.net.URI;
+import java.util.Collection;
 
 /**
  * TODO: Document this class / interface here
@@ -30,9 +31,9 @@ import java.net.URI;
 public class Watchers implements AddressableEntity {
 	private final URI self;
 	private final boolean isWatching;
-	private final ExpandableProperty<User> list;
+	private final Collection<User> list;
 
-	public Watchers(URI self, boolean watching, ExpandableProperty<User> list) {
+	public Watchers(URI self, boolean watching, Collection<User> list) {
 		this.self = self;
 		isWatching = watching;
 		this.list = list;
@@ -47,7 +48,7 @@ public class Watchers implements AddressableEntity {
 		return isWatching;
 	}
 
-	public ExpandableProperty<User> getList() {
+	public Iterable<User> getList() {
 		return list;
 	}
 
