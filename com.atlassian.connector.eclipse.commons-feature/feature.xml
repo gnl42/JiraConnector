@@ -18,6 +18,11 @@
       %license
    </license>
 
+   <includes
+         id="com.atlassian.connector.eclipse.monitor"
+         version="0.0.0"
+         optional="true"/>
+
    <plugin
          id="com.atlassian.connector.eclipse.commons.core"
          download-size="0"
