@@ -1,7 +1,7 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.branding.ui.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;

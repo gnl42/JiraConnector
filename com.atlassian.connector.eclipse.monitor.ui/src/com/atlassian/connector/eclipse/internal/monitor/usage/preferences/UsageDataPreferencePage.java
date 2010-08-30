@@ -45,10 +45,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.ide.IDE;
 
-import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 import com.atlassian.connector.eclipse.monitor.core.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
@@ -108,7 +108,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	private void createCollectorsSection(Composite parent) {
 		Link details = new Link(parent, SWT.NONE);
 		details.setText(String.format("<A href=\"%s\">Check %s documentation for details.</A>",
-				MonitorCorePlugin.HELP_URL, CoreConstants.PRODUCT_NAME));
+				MonitorCorePlugin.HELP_URL, IBrandingConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

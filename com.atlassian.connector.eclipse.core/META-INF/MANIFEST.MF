@@ -11,6 +11,7 @@ Require-Bundle:
  org.eclipse.mylyn.commons.net,
  org.eclipse.core.runtime,
  com.atlassian.connector.commons,
+ com.atlassian.connector.eclipse.branding.ui,
  com.atlassian.connector.eclipse.commons.core,
  org.jetbrains.annotations;resolution:=optional
 Export-Package: com.atlassian.connector.eclipse.internal.core;

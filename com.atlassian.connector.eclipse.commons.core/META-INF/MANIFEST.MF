@@ -12,6 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.net,
  com.atlassian.connector.eclipse.monitor.core;resolution:=optional
-Export-Package: com.atlassian.connector.eclipse.commons.core,
- com.atlassian.connector.eclipse.core.monitoring,
+Export-Package: com.atlassian.connector.eclipse.core.monitoring,
  com.atlassian.connector.eclipse.internal.core;x-internal:=true

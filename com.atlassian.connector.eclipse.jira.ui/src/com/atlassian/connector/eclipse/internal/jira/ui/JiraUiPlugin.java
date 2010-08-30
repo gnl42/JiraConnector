@@ -25,8 +25,8 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.branding.ui.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;

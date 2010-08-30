@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 public class PermissionToMonitorDialog extends Dialog {
@@ -59,7 +59,7 @@ public class PermissionToMonitorDialog extends Dialog {
 		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(details);
 
 		details.setText(NLS.bind(Messages.EnabledMonitoringNoticeDialog_learn_more, MonitorCorePlugin.HELP_URL,
-				CoreConstants.PRODUCT_NAME));
+				IBrandingConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

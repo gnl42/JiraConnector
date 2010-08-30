@@ -17,4 +17,6 @@ public interface IBrandingConstants {
 
 	String JIRA_INSTALLED_SYSTEM_PROPERTY = "com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled";
 
+	String PRODUCT_NAME = "Atlassian Connector for Eclipse";
+
 }

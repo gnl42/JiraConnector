@@ -13,8 +13,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
+import com.atlassian.connector.eclipse.internal.branding.ui.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;

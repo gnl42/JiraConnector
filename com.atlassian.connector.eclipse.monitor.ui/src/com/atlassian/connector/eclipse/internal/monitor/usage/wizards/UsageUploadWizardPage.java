@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
-import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
 /**
@@ -88,7 +88,8 @@ public class UsageUploadWizardPage extends WizardPage {
 		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
 		Link details = new Link(uc, SWT.NULL);
-		details.setText(String.format("<A HREF=\"%s\">%s</A>", MonitorCorePlugin.HELP_URL, CoreConstants.PRODUCT_NAME));
+		details.setText(String.format("<A HREF=\"%s\">%s</A>", MonitorCorePlugin.HELP_URL,
+				IBrandingConstants.PRODUCT_NAME));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

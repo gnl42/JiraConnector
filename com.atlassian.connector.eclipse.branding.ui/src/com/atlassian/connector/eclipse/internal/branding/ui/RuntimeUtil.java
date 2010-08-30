@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.core;
+package com.atlassian.connector.eclipse.internal.branding.ui;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.mylyn.commons.core.CoreUtil;

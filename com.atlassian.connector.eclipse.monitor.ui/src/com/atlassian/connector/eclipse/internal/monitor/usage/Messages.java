@@ -16,6 +16,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.monitor.usage.messages"; //$NON-NLS-1$
 
+	public static String MonitorUiPlugin_failed_to_start;
+
 	public static String EnabledMonitoringNoticeDialog_learn_more;
 
 	public static String EnabledMonitoringNoticeDialog_to_disable;

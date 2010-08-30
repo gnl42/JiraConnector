@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
-import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.SourceRepositoryMappingPreferencePage;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
@@ -21,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
@@ -201,7 +201,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-				mb.setText(CoreConstants.PRODUCT_NAME);
+				mb.setText(IBrandingConstants.PRODUCT_NAME);
 				mb.setMessage("No resources to add to the review. Either you selected only directories or resources are already in the review.");
 				mb.open();
 				return;
@@ -217,7 +217,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
-				mb.setText(CoreConstants.PRODUCT_NAME);
+				mb.setText(IBrandingConstants.PRODUCT_NAME);
 				mb.setMessage("Some resources you selected are unversioned or have local modifications. Please commit them first and try again.");
 				mb.open();
 				return;

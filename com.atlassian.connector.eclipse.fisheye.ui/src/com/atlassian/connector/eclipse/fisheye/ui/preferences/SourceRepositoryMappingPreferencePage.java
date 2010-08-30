@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
-import com.atlassian.connector.eclipse.commons.core.CoreConstants;
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -119,7 +119,7 @@ public class SourceRepositoryMappingPreferencePage extends PreferencePage implem
 		try {
 			FishEyeUiUtil.setScmRepositoryMappings(mappingEditor.getMapping());
 		} catch (IOException e) {
-			ErrorDialog.openError(getShell(), CoreConstants.PRODUCT_NAME,
+			ErrorDialog.openError(getShell(), IBrandingConstants.PRODUCT_NAME,
 					"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
 							FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			return false;

@@ -25,8 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
-import com.atlassian.connector.eclipse.internal.core.RuntimeUtil;
-import com.atlassian.connector.eclipse.internal.monitor.core.Messages;
+import com.atlassian.connector.eclipse.internal.branding.ui.RuntimeUtil;
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.PermissionToMonitorDialog;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
 
@@ -74,7 +73,7 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, MonitorUiPlugin.ID_PLUGIN,
-							Messages.MonitorCorePlugin_failed_to_start, t));
+							Messages.MonitorUiPlugin_failed_to_start, t));
 				}
 			}
 		});
