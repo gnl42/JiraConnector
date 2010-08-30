@@ -69,8 +69,6 @@ plugin@org.jdom_jaxen=GET,https://studio.atlassian.com/svn/PLE/trunk/bundles/org
 plugin@org.jetbrains.annotations=GET,https://studio.atlassian.com/svn/PLE/trunk/bundles/org.jetbrains.annotations_7.0.2.v20081216-1400.jar
 plugin@com.perforce.p4java=GET,https://studio.atlassian.com/svn/PLE/trunk/bundles/com.perforce.p4java_2009.2.234487.jar
 
-plugin@javax.activation,1.1.0=GET,http://eclipse.unixheads.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.activation_1.1.0.v200906290531.jar
-
 !**************************************************
 ! Mylyn's plugins that are required during release
 !**************************************************
