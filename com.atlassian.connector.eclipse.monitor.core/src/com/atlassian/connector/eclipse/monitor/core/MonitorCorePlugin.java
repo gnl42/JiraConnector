@@ -26,8 +26,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -86,26 +84,10 @@ public class MonitorCorePlugin extends Plugin {
 
 		try {
 			interactionLogger = new InteractionEventLogger(getMonitorLogFile());
-
-			if (isMonitoringEnabled()) {
-				startMonitoring();
-			}
 		} catch (Throwable t) {
 			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
 					Messages.MonitorCorePlugin_failed_to_start, t));
 		}
-
-		getPreferenceStore().addPreferenceChangeListener(new IPreferenceChangeListener() {
-			public void preferenceChange(PreferenceChangeEvent event) {
-				if (event.getKey().equals(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
-					if (isMonitoringEnabled()) {
-						startMonitoring();
-					} else {
-						stopMonitoring();
-					}
-				}
-			}
-		});
 	}
 
 	private void logPlatformDetails(InteractionEventLogger log) {
@@ -145,10 +127,6 @@ public class MonitorCorePlugin extends Plugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if (isMonitoringEnabled()) {
-			stopMonitoring();
-		}
-
 		super.stop(context);
 		plugin = null;
 	}
@@ -209,11 +187,6 @@ public class MonitorCorePlugin extends Plugin {
 		return interactionLogger;
 	}
 
-	public boolean isMonitoringEnabled() {
-		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
-				MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED);
-	}
-
 	public IEclipsePreferences getPreferenceStore() {
 		return new DefaultScope().getNode(MonitorCorePlugin.ID_PLUGIN);
 	}
@@ -257,10 +230,6 @@ public class MonitorCorePlugin extends Plugin {
 	public void monitoringEnabled() {
 		Job job = new UploadMonitoringStatusJob(true);
 		job.schedule();
-	}
-
-	public void setMonitoringEnabled(boolean b) {
-		getPreferenceStore().putBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, b);
 	}
 
 }

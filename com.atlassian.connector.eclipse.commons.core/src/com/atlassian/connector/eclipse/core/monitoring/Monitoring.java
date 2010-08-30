@@ -39,7 +39,7 @@ public final class Monitoring {
 		}
 
 		MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
-		if (plugin != null && plugin.isMonitoringEnabled() && plugin.getInteractionLogger() != null) {
+		if (plugin != null && plugin.getInteractionLogger() != null) {
 			plugin.getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.ACTION, pluginId, actionId, details, new Date()));
 		}
@@ -51,7 +51,7 @@ public final class Monitoring {
 		}
 
 		MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
-		if (plugin != null && plugin.isMonitoringEnabled() && plugin.getInteractionLogger() != null) {
+		if (plugin != null && plugin.getInteractionLogger() != null) {
 			plugin.getInteractionLogger().interactionObserved(
 					new InteractionEvent(Kind.JOB, pluginId, jobId, details, new Date()));
 		}

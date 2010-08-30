@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.ui.IStartup;
@@ -49,8 +51,6 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 
 	private static MonitorUiPlugin plugin;
 
-	public static final String PREF_MONITORING_FIRST_TIME = "com.atlassian.connector.eclipse.monitor.usage.first.time";
-
 	public static class UiUsageMonitorStartup implements IStartup {
 		public void earlyStartup() {
 			// everything happens on normal start
@@ -64,6 +64,22 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+
+		getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED)) {
+					if (isMonitoringEnabled()) {
+						MonitorCorePlugin.getDefault().startMonitoring();
+					} else {
+						MonitorCorePlugin.getDefault().stopMonitoring();
+					}
+				}
+			}
+		});
+
+		if (isMonitoringEnabled()) {
+			MonitorCorePlugin.getDefault().startMonitoring();
+		}
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -81,6 +97,10 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if (isMonitoringEnabled()) {
+			MonitorCorePlugin.getDefault().stopMonitoring();
+		}
+
 		super.stop(context);
 		plugin = null;
 	}
@@ -103,11 +123,11 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				// must not use boolean here, it will not be stored
-				store.setValue(PREF_MONITORING_FIRST_TIME, "false");
+				store.setValue(MonitorUiPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
 
-				if (!MonitorCorePlugin.getDefault().isMonitoringEnabled()) {
+				if (!isMonitoringEnabled()) {
 					if (new PermissionToMonitorDialog(WorkbenchUtil.getShell()).open() == IDialogConstants.YES_ID) {
-						MonitorCorePlugin.getDefault().setMonitoringEnabled(true);
+						setMonitoringEnabled(true);
 					}
 				}
 				return Status.OK_STATUS;
@@ -123,8 +143,16 @@ public class MonitorUiPlugin extends AbstractUIPlugin {
 	}
 
 	public boolean isFirstTime() {
-		return !getPreferenceStore().contains(PREF_MONITORING_FIRST_TIME)
-				|| getPreferenceStore().getBoolean(PREF_MONITORING_FIRST_TIME);
+		return !getPreferenceStore().contains(MonitorUiPreferenceConstants.PREF_MONITORING_FIRST_TIME)
+				|| getPreferenceStore().getBoolean(MonitorUiPreferenceConstants.PREF_MONITORING_FIRST_TIME);
+	}
+
+	public boolean isMonitoringEnabled() {
+		return getPreferenceStore().getBoolean(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED);
+	}
+
+	public void setMonitoringEnabled(boolean b) {
+		getPreferenceStore().setValue(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED, b);
 	}
 
 }

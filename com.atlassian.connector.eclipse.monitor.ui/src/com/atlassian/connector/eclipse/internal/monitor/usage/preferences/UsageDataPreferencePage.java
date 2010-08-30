@@ -19,10 +19,8 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -47,11 +45,10 @@ import org.eclipse.ui.ide.IDE;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorUiPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 import com.atlassian.connector.eclipse.monitor.core.MonitorCorePlugin;
-import com.atlassian.connector.eclipse.monitor.core.MonitorPreferenceConstants;
-import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
 
 /**
  * @author Mik Kersten
@@ -118,7 +115,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	}
 
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(null);
 	}
 
 	private void updateEnablement() {
@@ -131,7 +127,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		GridDataFactory.fillDefaults().span(2, SWT.DEFAULT).applyTo(enableMonitoring);
 		enableMonitoring.setText(Messages.UsageDataPreferencePage_enable_monitoring);
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
-				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
+				MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED));
 		enableMonitoring.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -167,7 +163,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 				}
 			}
 		});
-		openFile.setEnabled(getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
+		openFile.setEnabled(getPreferenceStore().getBoolean(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED));
 	}
 
 	@Override
@@ -178,7 +174,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	@Override
 	public boolean performOk() {
-		boolean wasEnabled = getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
+		boolean wasEnabled = getPreferenceStore().getBoolean(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED);
 		if (enableMonitoring.getSelection()) {
 			if (!wasEnabled) {
 				MonitorCorePlugin.getDefault().monitoringEnabled();
@@ -191,7 +187,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			MonitorCorePlugin.getDefault().stopMonitoring();
 		}
 
-		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
+		getPreferenceStore().setValue(MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED,
 				enableMonitoring.getSelection());
 
 		return true;
@@ -200,12 +196,8 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	@Override
 	public boolean performCancel() {
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
-				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
+				MonitorUiPreferenceConstants.PREF_MONITORING_ENABLED));
 		return true;
 	}
 
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return new EclipsePreferencesAdapter(new InstanceScope(), MonitorCorePlugin.ID_PLUGIN);
-	}
 }

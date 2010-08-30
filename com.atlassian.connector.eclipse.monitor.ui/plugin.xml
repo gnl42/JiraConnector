@@ -26,4 +26,10 @@
             id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
    </extension>
    
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.PreferenceInitializer">
+		</initializer>
+	</extension>
+   
 </plugin>
