@@ -54,7 +54,7 @@
             anonymous="false"
             repositoryKind="jira"
             label="Apache"
-            urlRepository="http://issues.apache.org/jira"/>
+            urlRepository="https://issues.apache.org/jira"/>
       <repository addAutomatically="true"
 			label="Atlassian Integrations Support" 
 			repositoryKind="jira" 
