@@ -77,6 +77,9 @@
 	<!-- Steps to do before fetching the build elements -->
 	<!-- ===================================================================== -->
 	<target name="preFetch">
+		<taskdef resource="net/sourceforge/ant4hg/taskdefs/antlib.xml" classpath="${builder}/../lib/ant4hg-V0.07.jar"/>
+
+		<!--hg-clone source="http://mercurial.intuxication.org/hg/ant4hg-tests" destination="${buildDirectory}" /-->
 	</target>
 
 	<!-- ===================================================================== -->
