@@ -121,7 +121,6 @@ public class MonitorCorePlugin extends Plugin {
 		// stop statistics upload
 		stopUploadStatisticsJob();
 
-		// uninstallBrowserMonitor(workbench);
 		interactionLogger.stopMonitoring();
 	}
 
@@ -178,9 +177,10 @@ public class MonitorCorePlugin extends Plugin {
 		return scheduledStatisticsUploadJob;
 	}
 
-	public Job stopUploadStatisticsJob() {
-		scheduledStatisticsUploadJob.cancel();
-		return scheduledStatisticsUploadJob;
+	public void stopUploadStatisticsJob() {
+		if (scheduledStatisticsUploadJob != null) {
+			scheduledStatisticsUploadJob.cancel();
+		}
 	}
 
 	public InteractionEventLogger getInteractionLogger() {
