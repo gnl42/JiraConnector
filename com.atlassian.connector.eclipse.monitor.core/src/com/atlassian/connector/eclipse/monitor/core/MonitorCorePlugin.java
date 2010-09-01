@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -173,7 +173,7 @@ public class MonitorCorePlugin extends Plugin {
 				scheduledStatisticsUploadJob.schedule(SIX_HOURS_IN_MS);
 			}
 		});
-		scheduledStatisticsUploadJob.schedule(TEN_MINUTES_IN_MS); // schedule it in 10 minutes (all startup jobs were executed)
+		scheduledStatisticsUploadJob.schedule(/*TEN_MINUTES_IN_MS*/); // schedule it in 10 minutes (all startup jobs were executed)
 		return scheduledStatisticsUploadJob;
 	}
 
@@ -188,7 +188,7 @@ public class MonitorCorePlugin extends Plugin {
 	}
 
 	public IEclipsePreferences getPreferenceStore() {
-		return new DefaultScope().getNode(MonitorCorePlugin.ID_PLUGIN);
+		return new InstanceScope().getNode(MonitorCorePlugin.ID_PLUGIN);
 	}
 
 	public String getUserId() {

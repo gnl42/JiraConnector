@@ -69,15 +69,11 @@ public final class UsageDataUploadJob extends Job {
 	private void checkLastTransmitTimeAndRun(IProgressMonitor monitor) {
 		final MonitorCorePlugin plugin = MonitorCorePlugin.getDefault();
 
-		Date lastTransmit = plugin.getPreviousTransmitDate();
-		if (lastTransmit == null) {
-			lastTransmit = new Date();
-			plugin.setPreviousTransmitDate(lastTransmit);
-		}
-
+		final Date lastTransmit = plugin.getPreviousTransmitDate();
 		final Date currentTime = new Date();
 
-		if (currentTime.getTime() > lastTransmit.getTime() + MonitorCorePlugin.DELAY_BETWEEN_TRANSMITS) {
+		if (lastTransmit == null
+				|| currentTime.getTime() > lastTransmit.getTime() + MonitorCorePlugin.DELAY_BETWEEN_TRANSMITS) {
 
 			// time must be stored right away into preferences, to prevent
 			// other threads
