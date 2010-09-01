@@ -45,7 +45,7 @@ public class JerseyJiraRestClientTest {
     private final DateTime dateTime = ISODateTimeFormat.dateTime().parseDateTime("2010-08-04T17:46:45.454+0200");
 
     public JerseyJiraRestClientTest() throws URISyntaxException {
-        jiraUri = new URI("http://localhost:8090/jira/");
+        jiraUri = new URI("http://localhost:8090/jira/"); // @todo it will be one day set to the JIRA automatically deployed while integration tests
         client = new JerseyJiraRestClient(jiraUri);
     }
 
