@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.ui,
  com.atlassian.connector.eclipse.team.ui,
  com.atlassian.connector.eclipse.subclipse.core,
  org.eclipse.mylyn.commons.core,
- org.tigris.subversion.subclipse.core;bundle-version="[1.4.0,2.0.0)",
  org.tigris.subversion.subclipse.ui;bundle-version="[1.4.0,2.0.0)",
  org.eclipse.team.core,
  org.eclipse.core.filesystem,
@@ -23,8 +22,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.commons.net,
  org.apache.commons.io,
  org.jetbrains.annotations;resolution:=optional,
- com.collabnet.subversion.merge;resolution:=optional,
- org.tigris.subversion.clientadapter
+ com.collabnet.subversion.merge;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true
 Bundle-Vendor: Atlassian
