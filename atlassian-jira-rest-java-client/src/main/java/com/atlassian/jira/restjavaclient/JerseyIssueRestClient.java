@@ -1,0 +1,113 @@
+/*
+ * Copyright (C) 2010 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.atlassian.jira.restjavaclient;
+
+import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
+import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
+import com.atlassian.jira.restjavaclient.json.JsonParser;
+import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
+import com.google.common.base.Joiner;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.client.apache.ApacheHttpClient;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * TODO: Document this class / interface here
+ *
+ * @since v0.1
+ */
+public class JerseyIssueRestClient implements IssueRestClient {
+
+    private final ApacheHttpClient client;
+    private final URI baseUri;
+
+    private final IssueJsonParser issueParser = new IssueJsonParser();
+    private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
+
+    public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
+        this.baseUri = baseUri;
+        this.client = client;
+    }
+
+    @Override
+    public Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor) {
+        final WebResource watchersResource = client.resource(issue.getWatchers().getSelf());
+
+        final JSONObject s = watchersResource.get(JSONObject.class);
+        try {
+            return watchersParser.parse(s);
+        } catch (JSONException e) {
+            throw new RestClientException(e);
+        }
+    }
+
+    @Override
+    public Issue getIssue(final IssueArgs args, ProgressMonitor progressMonitor) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+        uriBuilder.path("issue").path(args.getKey());
+        final String expandoString = getExpandoString(args);
+        if (expandoString != null) {
+            uriBuilder.queryParam("expand", expandoString);
+        }
+
+        final WebResource issueResource = client.resource(uriBuilder.build());
+
+        final JSONObject s = issueResource.get(JSONObject.class);
+
+        try {
+//            System.out.println(s.toString(4));
+            return issueParser.parseIssue(args, s);
+        } catch (JSONException e) {
+            throw new RestClientException(e);
+        }
+    }
+
+
+    @Nullable
+    private String getExpandoString(IssueArgs args) {
+        Collection<String> expandos = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        if (args.withAttachments()) {
+            expandos.add("attachments");
+        }
+        if (args.withComments()) {
+            expandos.add("comments");
+        }
+        if (args.withHtml()) {
+            expandos.add("html");
+        }
+        if (args.withWorklogs()) {
+            expandos.add("worklogs");
+        }
+        if (args.withWatchers()) {
+            expandos.add("watchers.list");
+        }
+        if (expandos.size() == 0) {
+            return null;
+        }
+        return Joiner.on(',').join(expandos);
+    }
+
+}

@@ -39,14 +39,10 @@ import static org.junit.Assert.assertThat;
  *
  * @since v0.1
  */
-public class JerseyJiraRestClientTest {
-    final URI jiraUri;
-    private JerseyJiraRestClient client;
-    private final DateTime dateTime = ISODateTimeFormat.dateTime().parseDateTime("2010-08-04T17:46:45.454+0200");
+public class JerseyJiraRestClientTest extends AbstractJerseyRestClientTest {
 
     public JerseyJiraRestClientTest() throws URISyntaxException {
-        jiraUri = new URI("http://localhost:8090/jira/"); // @todo it will be one day set to the JIRA automatically deployed while integration tests
-        client = new JerseyJiraRestClient(jiraUri);
+        super();
     }
 
     @Test
@@ -55,35 +51,10 @@ public class JerseyJiraRestClientTest {
     }
 
 
-    @Test
-    public void testGetIssue() throws Exception {
-        final Issue issue = client.getIssue(
-				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),
-                new NullProgressMonitor());
-        assertEquals("TST-1", issue.getKey());
-        assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 
-        assertEquals(3, Iterables.size(issue.getComments()));
-        assertThat(issue.getExpandos(), IsIterableOf.hasOnlyElements("html"));
-
-        assertEquals(4, Iterables.size(issue.getAttachments()));
-        final Iterable<Attachment> items = issue.getAttachments();
-        assertNotNull(items);
-        final User user = new User(new URI("http://localhost:8090/jira/rest/api/latest/user/admin"),
-                "admin", "Administrator");
-        Attachment attachment1 = new Attachment(new URI("http://localhost:8090/jira/rest/api/latest/attachment/10040"),
-                "dla Paw\u0142a.txt", user, dateTime, 643, "text/plain",
-                new URI("http://localhost:8090/jira/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
-
-        assertEquals(attachment1, items.iterator().next());
-
-		System.out.println(issue);
-
-    }
-
-//	@Test
+	@Test
 	public void temporaryOnly() throws Exception {
-		final Issue issue = client.getIssue(new IssueArgsBuilder("TST-2").withAttachments(false).withComments(true).build(),
+		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-2").withAttachments(false).withComments(true).build(),
 				new NullProgressMonitor());
 		System.out.println(issue);
 	}

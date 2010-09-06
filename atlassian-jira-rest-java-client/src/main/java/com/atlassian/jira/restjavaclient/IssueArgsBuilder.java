@@ -21,7 +21,7 @@ public class IssueArgsBuilder {
 	private boolean withComments;
 	private boolean withAttachments;
 	private boolean withWorklogs;
-	private String renderer;
+	private boolean withHtml;
 	private boolean withWatchers;
 
 	public IssueArgsBuilder(String key) {
@@ -43,8 +43,8 @@ public class IssueArgsBuilder {
 		return this;
 	}
 
-	public IssueArgsBuilder withRenderer(String renderer) {
-		this.renderer = renderer;
+	public IssueArgsBuilder withHtml(boolean withHtml) {
+		this.withHtml = this.withHtml;
 		return this;
 	}
 
@@ -54,6 +54,6 @@ public class IssueArgsBuilder {
 	}
 
 	public IssueArgs build() {
-		return new IssueArgs(key, withComments, withAttachments, withWorklogs, renderer, withWatchers);
+		return new IssueArgs(key, withComments, withAttachments, withWorklogs, withWatchers, withHtml);
 	}
 }

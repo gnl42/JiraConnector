@@ -16,15 +16,24 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-	void login();
-	User getUser();
-    public IssueRestClient getIssueClient();
+public class AbstractJerseyRestClientTest {
+    protected final URI jiraUri;
+    protected JerseyJiraRestClient client;
+
+    public AbstractJerseyRestClientTest() {
+        try {
+            jiraUri = new URI("http://localhost:8090/jira/"); // @todo it will be one day set to the JIRA automatically deployed while integration tests
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        client = new JerseyJiraRestClient(jiraUri);
+    }
 }

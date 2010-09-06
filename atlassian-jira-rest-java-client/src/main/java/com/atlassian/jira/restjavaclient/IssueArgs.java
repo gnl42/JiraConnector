@@ -28,27 +28,22 @@ public class IssueArgs {
 	private final boolean withComments;
 	private final boolean withAttachments;
 	private final boolean withWorklogs;
-	private final String renderer;
 	private final boolean withWatchers;
+    private final boolean withHtml;
 
-	public IssueArgs(String key, boolean withComments, boolean withAttachments, boolean withWorklogs, String renderer, boolean withWatchers) {
+	public IssueArgs(String key, boolean withComments, boolean withAttachments, boolean withWorklogs, boolean withWatchers, boolean withHtml) {
 		this.key = key;
 		this.withComments = withComments;
 		this.withAttachments = withAttachments;
 		this.withWorklogs = withWorklogs;
-		this.renderer = renderer;
 		this.withWatchers = withWatchers;
-	}
+        this.withHtml = withHtml;
+    }
 
 	public String getKey() {
 		return key;
 	}
 
-
-    @Nullable
-    public String getRenderer() {
-        return renderer;
-    }
 
 	public boolean withComments() {
 		return withComments;
@@ -57,6 +52,10 @@ public class IssueArgs {
 	public boolean withAttachments() {
 		return withAttachments;
 	}
+
+    public boolean withHtml() {
+        return withHtml;
+    }
 
 	public boolean withWorklogs() {
 		return withWorklogs;

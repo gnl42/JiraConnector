@@ -16,15 +16,16 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-	void login();
-	User getUser();
-    public IssueRestClient getIssueClient();
+public interface IssueRestClient {
+    Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
+    Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
+
 }
