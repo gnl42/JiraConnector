@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.commons.net,
  org.apache.commons.io,
  org.jetbrains.annotations;resolution:=optional,
- com.collabnet.subversion.merge;resolution:=optional
+ com.collabnet.subversion.merge;resolution:=optional,
+ org.tigris.subversion.clientadapter
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true
 Bundle-Vendor: Atlassian
