@@ -55,7 +55,7 @@ public class JerseyJiraRestClientTest {
     }
 
 
-//    @Test
+    @Test
     public void testGetIssue() throws Exception {
         final Issue issue = client.getIssue(
 				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),

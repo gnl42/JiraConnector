@@ -16,17 +16,10 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.IsIterableOf;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
-import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.domain.IssueLink;
-import com.atlassian.jira.restjavaclient.domain.IssueLinkType;
-import com.atlassian.jira.restjavaclient.domain.IssueType;
-import com.atlassian.jira.restjavaclient.domain.Project;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
-import com.atlassian.jira.restjavaclient.domain.Worklog;
+import com.atlassian.jira.restjavaclient.domain.*;
+import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
@@ -63,10 +56,10 @@ public class IssueJsonParserTest {
 
 
 		// watchers
-		final Watchers watchers = issue.getWatchers();
+		final BasicWatchers watchers = issue.getWatchers();
 		assertFalse(watchers.isWatching());
 		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2/watchers"), watchers.getSelf());
-		assertThat(watchers.getList(), IsIterableOf.hasOnlyElements(TestConstants.USER1));
+		assertEquals(1, watchers.getNumWatchers());
 
 		// attachments
 		final Iterable<Attachment> attachments = issue.getAttachments();

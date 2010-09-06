@@ -1,0 +1,18 @@
+{
+    "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1/watchers",
+    "isWatching":false,
+    "watchCount":1,
+    "watchers":[
+        {
+            "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+            "name":"wseliga",
+            "displayName":"Wojciech Seliga"
+        },
+        {
+            "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+            "name":"admin",
+            "displayName":"Administrator"
+        }
+
+    ]
+}

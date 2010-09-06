@@ -16,11 +16,8 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
-import com.atlassian.jira.restjavaclient.AddressableEntity;
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.google.common.base.Objects;
 
-import java.net.URI;
 import java.util.Collection;
 
 /**
@@ -28,36 +25,24 @@ import java.util.Collection;
  *
  * @since v0.1
  */
-public class Watchers implements AddressableEntity {
-	private final URI self;
-	private final boolean isWatching;
-	private final Collection<User> list;
+public class Watchers extends BasicWatchers {
+    private final Collection<User> watchers;
 
-	public Watchers(URI self, boolean watching, Collection<User> list) {
-		this.self = self;
-		isWatching = watching;
-		this.list = list;
-	}
+    public Watchers(BasicWatchers basicWatchers, Collection<User> watchers) {
+        super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
+        this.watchers = watchers;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    public Iterable<User> getWatchers() {
+        return watchers;
+    }
 
-	public boolean isWatching() {
-		return isWatching;
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(super.toString()).
+                add("watchers", watchers).
+                toString();
+    }
 
-	public Iterable<User> getList() {
-		return list;
-	}
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("isWatching", isWatching).
-				add("list", list).
-				toString();
-	}
 }

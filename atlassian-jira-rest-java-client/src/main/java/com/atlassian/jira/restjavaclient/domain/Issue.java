@@ -17,7 +17,6 @@
 package com.atlassian.jira.restjavaclient.domain;
 
 import com.atlassian.jira.restjavaclient.AddressableEntity;
-import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.ExpandableResource;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
@@ -36,7 +35,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
     public Issue(String summary, URI self, String key, Project project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
                  Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
                  DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, Collection<Worklog> worklogs,
-                 Watchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
+                 BasicWatchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
         this.summary = summary;
         this.self = self;
         this.key = key;
@@ -87,7 +86,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private final Collection<Attachment> attachments;
 
 	private final Collection<Worklog> worklogs;
-	private final Watchers watchers;
+	private final BasicWatchers watchers;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -155,7 +154,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return worklogs;
 	}
 
-	public Watchers getWatchers() {
+	public BasicWatchers getWatchers() {
 		return watchers;
 	}
 

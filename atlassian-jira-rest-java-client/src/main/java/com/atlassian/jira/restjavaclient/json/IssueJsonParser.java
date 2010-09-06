@@ -61,7 +61,8 @@ public class IssueJsonParser {
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
-	private final WatchersJsonParser watchersJsonParser = new WatchersJsonParser();
+	private final JsonParserWithJsonObjectValue<BasicWatchers> watchersJsonParser
+            = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
@@ -132,7 +133,7 @@ public class IssueJsonParser {
 
         final Collection<Worklog> worklogs = parseOptionalArray(s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
-		final Watchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
+		final BasicWatchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, comments,
 				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);
