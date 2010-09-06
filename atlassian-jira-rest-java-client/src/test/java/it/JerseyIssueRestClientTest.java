@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package it;
 
+import com.atlassian.jira.restjavaclient.IsIterableOf;
+import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
+import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.User;

@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package it;
 
-import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.Comment;
+import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
+import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.domain.User;
-import com.google.common.collect.Iterables;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;

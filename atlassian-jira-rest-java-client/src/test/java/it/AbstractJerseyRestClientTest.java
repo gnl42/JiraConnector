@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package it;
+
+import com.atlassian.jira.restjavaclient.JerseyJiraRestClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
