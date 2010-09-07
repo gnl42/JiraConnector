@@ -160,13 +160,13 @@ public class LogJiraTimeDialog extends MessageDialog {
 
 		GregorianCalendar now = new GregorianCalendar();
 
-		dateWidget = new DateTime(dateTimeComposite, SWT.DATE);
+		dateWidget = new DateTime(dateTimeComposite, SWT.DATE | SWT.BORDER);
 		dateWidget.setYear(now.get(Calendar.YEAR));
 		dateWidget.setMonth(now.get(Calendar.MONTH));
 		dateWidget.setDay(now.get(Calendar.DAY_OF_MONTH));
 //		GridDataFactory.fillDefaults().applyTo(dateWidget);
 
-		timeWidget = new DateTime(dateTimeComposite, SWT.TIME);
+		timeWidget = new DateTime(dateTimeComposite, SWT.TIME | SWT.BORDER);
 		timeWidget.setHours(now.get(Calendar.HOUR_OF_DAY));
 		timeWidget.setMinutes(now.get(Calendar.MINUTE));
 		timeWidget.setSeconds(now.get(Calendar.SECOND));
