@@ -110,25 +110,6 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}
 		}
 
-		// remove standard new comment part 
-		iter = parts.iterator();
-		while (iter.hasNext()) {
-			TaskEditorPartDescriptor part = iter.next();
-			if (part.getId().equals(ID_PART_NEW_COMMENT)) {
-				parts.remove(part);
-
-				// add JIRA specific comment part (with visibility restriction combo)
-				parts.add(new TaskEditorPartDescriptor(ID_PART_NEW_COMMENT) {
-					@Override
-					public AbstractTaskEditorPart createPart() {
-						return new JiraNewCommentPart(getModel());
-					}
-				}.setPath(part.getPath()));
-
-				break;
-			}
-		}
-
 		// remove planning part - it's now in a separate tab
 		removePart(parts, ID_PART_PLANNING);
 
@@ -244,8 +225,9 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	@Override
 	public void doSubmit() {
 
-		TaskAttribute attribute = getModel().getTaskData().getRoot().getMappedAttribute(
-				WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+		TaskAttribute attribute = getModel().getTaskData()
+				.getRoot()
+				.getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
 		if (attribute != null) {
 			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
 			//if flag is set and true, submit worklog will happen
