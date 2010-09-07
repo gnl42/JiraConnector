@@ -303,6 +303,9 @@
 			<fileset dir="${basedir}/maps">
 				<include name="*.map" />
 			</fileset>
+			<filterset>
+				<filter token="buildDirectory" value="${build.home}/${build.target}"/>
+			</filterset>
 		</copy>
 	</target>
 

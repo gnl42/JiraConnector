@@ -1,0 +1,3 @@
+tools
+com.atlassian.connector.eclipse.releng/build
+.*/bin
