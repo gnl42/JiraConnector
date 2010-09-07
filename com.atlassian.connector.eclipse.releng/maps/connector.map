@@ -55,7 +55,7 @@ plugin@com.atlassian.connector.eclipse.jira.core=COPY,@buildDirectory@/../../../
 plugin@com.atlassian.connector.eclipse.jira.ui=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.jira.ui
 plugin@com.atlassian.connector.eclipse.jira.tests=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.jira.tests
 
-plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC/,com.atlassian.connector.commons,hg-migration
+plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC/,,hg-migration/com.atlassian.connector.commons
 !plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC,,atlassian-connector-commons-3.1.4
 plugin@com.atlassian.connector.commons.tests.dependencies=COPY,@buildDirectory@/../../../,com.atlassian.connector.commons.tests.dependencies
 
