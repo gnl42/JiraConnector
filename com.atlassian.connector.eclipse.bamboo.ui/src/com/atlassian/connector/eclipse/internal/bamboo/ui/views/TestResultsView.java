@@ -38,7 +38,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.internal.junit.BasicElementLabels;
 import org.eclipse.jdt.internal.junit.Messages;
 import org.eclipse.jdt.internal.junit.launcher.ITestKind;
 import org.eclipse.jdt.internal.junit.launcher.TestKindRegistry;
@@ -52,12 +51,10 @@ import org.eclipse.jdt.internal.junit.ui.CounterPanel;
 import org.eclipse.jdt.internal.junit.ui.IJUnitHelpContextIds;
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.JUnitPreferencesConstants;
 import org.eclipse.jdt.internal.junit.ui.JUnitProgressBar;
 import org.eclipse.jdt.internal.junit.ui.ProgressImages;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
-import org.eclipse.jdt.internal.ui.viewsupport.ViewHistory;
-import org.eclipse.jdt.junit.model.ITestElement.Result;
+import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -68,7 +65,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -94,7 +90,6 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -103,7 +98,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorActionBarContributor;
-import org.eclipse.ui.part.PageSwitcher;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.UIJob;
@@ -112,13 +106,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class TestResultsView extends ViewPart {
@@ -200,8 +192,6 @@ public class TestResultsView extends ViewPart {
 	private TestRunSession fTestRunSession;
 
 	private TestSessionListener fTestSessionListener;
-
-	private RunnerViewHistory fViewHistory;
 
 	private TestRunSessionListener fTestRunSessionListener;
 
@@ -343,120 +333,6 @@ public class TestResultsView extends ViewPart {
 	};
 
 	protected boolean fPartIsVisible = false;
-
-	private class RunnerViewHistory extends ViewHistory {
-
-		public void configureHistoryListAction(IAction action) {
-			action.setText(JUnitMessages.TestRunnerViewPart_history);
-		}
-
-		public void configureHistoryDropDownAction(IAction action) {
-			action.setToolTipText(JUnitMessages.TestRunnerViewPart_test_run_history);
-			JUnitPlugin.setLocalImageDescriptors(action, "history_list.gif"); //$NON-NLS-1$
-		}
-
-		public Action getClearAction() {
-			return new ClearAction();
-		}
-
-		public String getHistoryListDialogTitle() {
-			return JUnitMessages.TestRunnerViewPart_test_runs;
-		}
-
-		public String getHistoryListDialogMessage() {
-			return JUnitMessages.TestRunnerViewPart_select_test_run;
-		}
-
-		public Shell getShell() {
-			return fParent.getShell();
-		}
-
-		public List getHistoryEntries() {
-			return JUnitPlugin.getModel().getTestRunSessions();
-		}
-
-		public Object getCurrentEntry() {
-			return fTestRunSession;
-		}
-
-		public void setActiveEntry(Object entry) {
-			TestRunSession deactivatedSession = setActiveTestRunSession((TestRunSession) entry);
-			if (deactivatedSession != null) {
-				deactivatedSession.swapOut();
-			}
-		}
-
-		public void setHistoryEntries(List remainingEntries, Object activeEntry) {
-			setActiveTestRunSession((TestRunSession) activeEntry);
-
-			List testRunSessions = JUnitPlugin.getModel().getTestRunSessions();
-			testRunSessions.removeAll(remainingEntries);
-			for (Iterator iter = testRunSessions.iterator(); iter.hasNext();) {
-				JUnitPlugin.getModel().removeTestRunSession((TestRunSession) iter.next());
-			}
-			for (Iterator iter = remainingEntries.iterator(); iter.hasNext();) {
-				TestRunSession remaining = (TestRunSession) iter.next();
-				remaining.swapOut();
-			}
-		}
-
-		public ImageDescriptor getImageDescriptor(Object element) {
-			TestRunSession session = (TestRunSession) element;
-			if (session.isStopped()) {
-				return fSuiteIconDescriptor;
-			}
-
-			if (session.isRunning()) {
-				return fSuiteRunningIconDescriptor;
-			}
-
-			Result result = session.getTestResult(true);
-			if (result == Result.OK) {
-				return fSuiteOkIconDescriptor;
-			} else if (result == Result.ERROR) {
-				return fSuiteErrorIconDescriptor;
-			} else if (result == Result.FAILURE) {
-				return fSuiteFailIconDescriptor;
-			} else {
-				return fSuiteIconDescriptor;
-			}
-		}
-
-		public String getText(Object element) {
-			TestRunSession session = (TestRunSession) element;
-			String testRunLabel = BasicElementLabels.getJavaElementName(session.getTestRunName());
-			if (session.getStartTime() == 0) {
-				return testRunLabel;
-			} else {
-				String startTime = DateFormat.getDateTimeInstance().format(new Date(session.getStartTime()));
-				return Messages.format(JUnitMessages.TestRunnerViewPart_testName_startTime, new Object[] {
-						testRunLabel, startTime });
-			}
-		}
-
-		public void addMenuEntries(MenuManager manager) {
-			manager.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new ImportTestRunSessionAction(
-					fParent.getShell()));
-			if (fTestRunSession != null) {
-				manager.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new ExportTestRunSessionAction(
-						fParent.getShell(), fTestRunSession));
-			}
-		}
-
-		public String getMaxEntriesMessage() {
-			return JUnitMessages.TestRunnerViewPart_max_remembered;
-		}
-
-		public int getMaxEntries() {
-			IPreferenceStore store = JUnitPlugin.getDefault().getPreferenceStore();
-			return store.getInt(JUnitPreferencesConstants.MAX_TEST_RUNS);
-		}
-
-		public void setMaxEntries(int maxEntries) {
-			IPreferenceStore store = JUnitPlugin.getDefault().getPreferenceStore();
-			store.setValue(JUnitPreferencesConstants.MAX_TEST_RUNS, maxEntries);
-		}
-	}
 
 	private static class ImportTestRunSessionAction extends Action {
 		private final Shell fShell;
@@ -717,41 +593,7 @@ public class TestResultsView extends ViewPart {
 		}
 
 		public boolean belongsTo(Object family) {
-			return family == TestRunnerViewPart.FAMILY_JUNIT_RUN;
-		}
-	}
-
-	private class ClearAction extends Action {
-		public ClearAction() {
-			setText(JUnitMessages.TestRunnerViewPart_clear_history_label);
-
-			boolean enabled = false;
-			List testRunSessions = JUnitPlugin.getModel().getTestRunSessions();
-			for (Iterator iter = testRunSessions.iterator(); iter.hasNext();) {
-				TestRunSession testRunSession = (TestRunSession) iter.next();
-				if (!testRunSession.isRunning() && !testRunSession.isStarting()) {
-					enabled = true;
-					break;
-				}
-			}
-			setEnabled(enabled);
-		}
-
-		public void run() {
-			List testRunSessions = getRunningSessions();
-			Object first = testRunSessions.isEmpty() ? null : testRunSessions.get(0);
-			fViewHistory.setHistoryEntries(testRunSessions, first);
-		}
-
-		private List getRunningSessions() {
-			List testRunSessions = JUnitPlugin.getModel().getTestRunSessions();
-			for (Iterator iter = testRunSessions.iterator(); iter.hasNext();) {
-				TestRunSession testRunSession = (TestRunSession) iter.next();
-				if (!testRunSession.isRunning() && !testRunSession.isStarting()) {
-					iter.remove();
-				}
-			}
-			return testRunSessions;
+			return family == FAMILY_JUNIT_RUN;
 		}
 	}
 
@@ -1452,7 +1294,6 @@ action enablement
 		gridLayout.marginHeight = 0;
 		parent.setLayout(gridLayout);
 
-		fViewHistory = new RunnerViewHistory();
 		configureToolBar();
 
 		fCounterComposite = createProgressCountPanel(parent);
@@ -1463,7 +1304,6 @@ action enablement
 		IActionBars actionBars = getViewSite().getActionBars();
 		fCopyAction = new JUnitCopyAction(fFailureTrace, fClipboard);
 		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), fCopyAction);
-		initPageSwitcher();
 
 		fOriginalViewImage = getTitleImage();
 		fProgressImages = new ProgressImages();
@@ -1480,30 +1320,6 @@ action enablement
 
 		fTestRunSessionListener = new TestRunSessionListener();
 		JUnitPlugin.getModel().addTestRunSessionListener(fTestRunSessionListener);
-	}
-
-	private void initPageSwitcher() {
-		new PageSwitcher(this) {
-			public Object[] getPages() {
-				return fViewHistory.getHistoryEntries().toArray();
-			}
-
-			public String getName(Object page) {
-				return fViewHistory.getText(page);
-			}
-
-			public ImageDescriptor getImageDescriptor(Object page) {
-				return fViewHistory.getImageDescriptor(page);
-			}
-
-			public void activatePage(Object page) {
-				fViewHistory.setActiveEntry(page);
-			}
-
-			public int getCurrentPageIndex() {
-				return fViewHistory.getHistoryEntries().indexOf(fViewHistory.getCurrentEntry());
-			}
-		};
 	}
 
 	private void addResizeListener(Composite parent) {
@@ -1567,7 +1383,6 @@ action enablement
 		toolBar.add(fScrollLockAction);
 		toolBar.add(new Separator());
 		toolBar.add(fStopAction);
-		toolBar.add(fViewHistory.createHistoryDropDownAction());
 
 		viewMenu.add(fShowTestHierarchyAction);
 		viewMenu.add(new Separator());

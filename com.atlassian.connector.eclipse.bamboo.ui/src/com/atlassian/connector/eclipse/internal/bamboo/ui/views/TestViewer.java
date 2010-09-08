@@ -23,9 +23,6 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.junit.model.TestCaseElement;
 import org.eclipse.jdt.internal.junit.model.TestElement;
 import org.eclipse.jdt.internal.junit.model.TestRoot;
@@ -33,8 +30,6 @@ import org.eclipse.jdt.internal.junit.model.TestRunSession;
 import org.eclipse.jdt.internal.junit.model.TestSuiteElement;
 import org.eclipse.jdt.internal.junit.model.TestElement.Status;
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
-import org.eclipse.jdt.internal.junit.ui.TestSessionTableContentProvider;
-import org.eclipse.jdt.internal.junit.ui.TestSessionTreeContentProvider;
 import org.eclipse.jdt.internal.ui.viewsupport.ColoringLabelProvider;
 import org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.jface.action.Action;
@@ -255,20 +250,6 @@ public class TestViewer {
 		}
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
-	}
-
-	private boolean testClassExists(String className) {
-		IJavaProject project = fTestRunnerPart.getLaunchedProject();
-		if (project == null) {
-			return false;
-		}
-		try {
-			IType type = project.findType(className);
-			return type != null;
-		} catch (JavaModelException e) {
-			// fall through
-		}
-		return false;
 	}
 
 	public Control getTestViewerControl() {
