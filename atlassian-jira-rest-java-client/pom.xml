@@ -23,9 +23,26 @@
         <jira.test-lib.version>4.2-SNAPSHOT</jira.test-lib.version>
         <jdkLevel>1.5</jdkLevel>
     </properties>
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jira-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <productVersion>4.2-SNAPSHOT</productVersion>
+                    <!--<restVersion>4.2-SNAPSHOT</restVersion>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -42,6 +59,9 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <excludes>
+                      <exclude>it/**</exclude>
+                    </excludes>
                     <forkMode>once</forkMode>
                 </configuration>
             </plugin>
@@ -103,6 +123,5 @@
             <version>${jira.test-lib.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>

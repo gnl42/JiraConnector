@@ -21,14 +21,6 @@ import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import org.junit.Test;
 
-import java.net.URISyntaxException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 /**
  * TODO: Document this class / interface here
  *
@@ -36,13 +28,8 @@ import static org.junit.Assert.assertThat;
  */
 public class JerseyJiraRestClientTest extends AbstractJerseyRestClientTest {
 
-    public JerseyJiraRestClientTest() throws URISyntaxException {
-        super();
-    }
-
-    @Test
-    public void emptyTest() {
-        // for the sake of mvn test
+    public void testEmpty() {
+        // for the sake of mvn integration-test
     }
 
 

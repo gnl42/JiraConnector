@@ -16,21 +16,21 @@
 
 package it;
 
+import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IsIterableOf;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.domain.*;
-import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 
 /**
@@ -44,15 +44,21 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
     public void testGetWatchers() throws Exception {
+        configureJira();
         final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
         final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
         assertEquals(1, watchers.getNumWatchers());
         assertFalse(watchers.isWatching());
-        assertThat(watchers.getWatchers(), IsIterableOf.hasOnlyElements(TestConstants.USER1));
+        assertThat(watchers.getWatchers(), IsIterableOf.hasOnlyElements(IntegrationTestUtil.USER1));
+    }
+
+    public URI jiraRestUri(String path) {
+        return UriBuilder.fromUri(jiraRestRootUri).path(path).build();
     }
 
     @Test
     public void testGetIssue() throws Exception {
+        configureJira();
         final Issue issue = client.getIssueClient().getIssue(
 				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),
                 new NullProgressMonitor());
@@ -65,11 +71,11 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
         assertEquals(4, Iterables.size(issue.getAttachments()));
         final Iterable<Attachment> items = issue.getAttachments();
         assertNotNull(items);
-        final User user = new User(new URI("http://localhost:8090/jira/rest/api/latest/user/admin"),
+        final User user = new User(jiraRestUri("/user/admin"),
                 "admin", "Administrator");
-        Attachment attachment1 = new Attachment(new URI("http://localhost:8090/jira/rest/api/latest/attachment/10040"),
+        Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(jiraRestRootUri, "/attachment/10040"),
                 "dla Paw\u0142a.txt", user, dateTime, 643, "text/plain",
-                new URI("http://localhost:8090/jira/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
+                IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 
         assertEquals(attachment1, items.iterator().next());
 
@@ -79,6 +85,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
     public void testGetTransitions() throws Exception {
+        configureJira();
         final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
         final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
         assertEquals(3, Iterables.size(transitions));

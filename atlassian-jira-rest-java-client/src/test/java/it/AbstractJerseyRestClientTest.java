@@ -16,8 +16,10 @@
 
 package it;
 
+import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.restjavaclient.JerseyJiraRestClient;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -26,16 +28,30 @@ import java.net.URISyntaxException;
  *
  * @since v0.1
  */
-public class AbstractJerseyRestClientTest {
-    protected final URI jiraUri;
+public class AbstractJerseyRestClientTest extends FuncTestCase {
+    protected URI jiraUri;
     protected JerseyJiraRestClient client;
+    protected URI jiraRestRootUri;
 
     public AbstractJerseyRestClientTest() {
+    }
+
+    public void configureJira() {
+        System.out.println("!!!!!!!!!!Configuring JIRA");
+        administration.restoreData("jira1-export.xml");
+        setUpTest();
+    }
+
+    @Override
+    protected void setUpTest() {
+        System.out.println("!!!!!!!!!!Test Setup");
         try {
-            jiraUri = new URI("http://localhost:8090/jira/"); // @todo it will be one day set to the JIRA automatically deployed while integration tests
+            jiraUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI())/*.path(environmentData.getContext())*/.build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
+        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUU [" + jiraRestRootUri.toString() + "]");
         client = new JerseyJiraRestClient(jiraUri);
     }
 }
