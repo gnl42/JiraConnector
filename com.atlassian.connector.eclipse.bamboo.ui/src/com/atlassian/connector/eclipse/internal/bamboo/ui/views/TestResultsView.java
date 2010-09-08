@@ -219,10 +219,6 @@ public class TestResultsView extends ViewPart {
 
 	private ShowTestHierarchyAction fShowTestHierarchyAction;
 
-	private ShowTimeAction fShowTimeAction;
-
-	private ActivateOnErrorAction fActivateOnErrorAction;
-
 	private IMenuListener fViewMenuListener;
 
 	private TestRunSession fTestRunSession;
@@ -297,11 +293,6 @@ public class TestResultsView extends ViewPart {
 	 * @since 3.2
 	 */
 	static final String TAG_FAILURES_ONLY = "failuresOnly"; //$NON-NLS-1$
-
-	/**
-	 * @since 3.4
-	 */
-	static final String TAG_SHOW_TIME = "time"; //$NON-NLS-1$
 
 	/**
 	 * @since 3.5
@@ -613,7 +604,6 @@ public class TestResultsView extends ViewPart {
 	private class TestSessionListener implements ITestSessionListener {
 		public void sessionStarted() {
 			fTestViewer.registerViewersRefresh();
-			fShowOnErrorOnly = getShowOnErrorOnly();
 
 			startUpdateJobs();
 
@@ -939,17 +929,6 @@ public class TestResultsView extends ViewPart {
 		}
 	}
 
-	private class ShowTimeAction extends Action {
-
-		public ShowTimeAction() {
-			super(JUnitMessages.TestRunnerViewPart_show_execution_time, IAction.AS_CHECK_BOX);
-		}
-
-		public void run() {
-			setShowExecutionTime(isChecked());
-		}
-	}
-
 	private class ShowTestHierarchyAction extends Action {
 
 		public ShowTestHierarchyAction() {
@@ -960,25 +939,6 @@ public class TestResultsView extends ViewPart {
 		public void run() {
 			int mode = isChecked() ? LAYOUT_HIERARCHICAL : LAYOUT_FLAT;
 			setLayoutMode(mode);
-		}
-	}
-
-	private class ActivateOnErrorAction extends Action {
-		public ActivateOnErrorAction() {
-			super(JUnitMessages.TestRunnerViewPart_activate_on_failure_only, IAction.AS_CHECK_BOX);
-			//setImageDescriptor(JUnitPlugin.getImageDescriptor("obj16/failures.gif")); //$NON-NLS-1$
-			update();
-		}
-
-		public void update() {
-			setChecked(getShowOnErrorOnly());
-		}
-
-		public void run() {
-			boolean checked = isChecked();
-			fShowOnErrorOnly = checked;
-			IPreferenceStore store = JUnitPlugin.getDefault().getPreferenceStore();
-			store.setValue(JUnitPreferencesConstants.SHOW_ON_ERROR_ONLY, checked);
 		}
 	}
 
@@ -1054,7 +1014,6 @@ public class TestResultsView extends ViewPart {
 
 		memento.putString(TAG_FAILURES_ONLY, fFailuresOnlyFilterAction.isChecked() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		memento.putInteger(TAG_LAYOUT, fLayout);
-		memento.putString(TAG_SHOW_TIME, fShowTimeAction.isChecked() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private void restoreLayoutState(IMemento memento) {
@@ -1093,14 +1052,7 @@ public class TestResultsView extends ViewPart {
 			showFailuresOnly = failuresOnly.equals("true"); //$NON-NLS-1$
 		}
 
-		String time = memento.getString(TAG_SHOW_TIME);
-		boolean showTime = true;
-		if (time != null) {
-			showTime = time.equals("true"); //$NON-NLS-1$
-		}
-
 		setFilterAndLayout(showFailuresOnly, layoutValue);
-		setShowExecutionTime(showTime);
 	}
 
 	/**
@@ -1500,9 +1452,6 @@ action enablement
 		if (fClipboard != null) {
 			fClipboard.dispose();
 		}
-		if (fViewMenuListener != null) {
-			getViewSite().getActionBars().getMenuManager().removeMenuListener(fViewMenuListener);
-		}
 		if (fDirtyListener != null) {
 			JavaCore.removeElementChangedListener(fDirtyListener);
 			fDirtyListener = null;
@@ -1687,7 +1636,7 @@ action enablement
 		getViewSite().getPage().addPartListener(fPartListener);
 
 		setFilterAndLayout(false, LAYOUT_HIERARCHICAL);
-		setShowExecutionTime(true);
+		fTestViewer.setShowTime(true);
 		if (fMemento != null) {
 			restoreLayoutState(fMemento);
 		}
@@ -1803,7 +1752,6 @@ action enablement
 				new ToggleOrientationAction(VIEW_ORIENTATION_AUTOMATIC) };
 
 		fShowTestHierarchyAction = new ShowTestHierarchyAction();
-		fShowTimeAction = new ShowTimeAction();
 
 		toolBar.add(fNextAction);
 		toolBar.add(fPreviousAction);
@@ -1816,7 +1764,6 @@ action enablement
 		toolBar.add(fViewHistory.createHistoryDropDownAction());
 
 		viewMenu.add(fShowTestHierarchyAction);
-		viewMenu.add(fShowTimeAction);
 		viewMenu.add(new Separator());
 
 		MenuManager layoutSubMenu = new MenuManager(JUnitMessages.TestRunnerViewPart_layout_menu);
@@ -1827,16 +1774,6 @@ action enablement
 		viewMenu.add(new Separator());
 
 		viewMenu.add(fFailuresOnlyFilterAction);
-
-		fActivateOnErrorAction = new ActivateOnErrorAction();
-		viewMenu.add(fActivateOnErrorAction);
-		fViewMenuListener = new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				fActivateOnErrorAction.update();
-			}
-		};
-
-		viewMenu.addMenuListener(fViewMenuListener);
 
 		actionBars.updateActionBars();
 	}
@@ -2012,11 +1949,6 @@ action enablement
 		}
 	}
 
-	private static boolean getShowOnErrorOnly() {
-		IPreferenceStore store = JUnitPlugin.getDefault().getPreferenceStore();
-		return store.getBoolean(JUnitPreferencesConstants.SHOW_ON_ERROR_ONLY);
-	}
-
 	public FailureTrace getFailureTrace() {
 		return fFailureTrace;
 	}
@@ -2034,12 +1966,6 @@ action enablement
 		fLayout = layoutMode;
 		fFailuresOnlyFilterAction.setChecked(failuresOnly);
 		fTestViewer.setShowFailuresOnly(failuresOnly, layoutMode);
-	}
-
-	private void setShowExecutionTime(boolean showTime) {
-		fTestViewer.setShowTime(showTime);
-		fShowTimeAction.setChecked(showTime);
-
 	}
 
 	TestElement[] getAllFailures() {

@@ -42,7 +42,6 @@ import org.eclipse.jdt.internal.junit.launcher.TestKindRegistry;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.model.TestRunSession;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -167,7 +166,6 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 				return;
 			}
 			try {
-				activeWorkbenchWindow.getActivePage().showView(TestRunnerViewPart.NAME);
 				IViewPart testsView = activeWorkbenchWindow.getActivePage().showView(TestResultsView.ID);
 				/*if (testsView != null && testsView instanceof TestResultsView) {
 					((TestResultsView) testsView).setTestsResult(buildKey, testResults);
