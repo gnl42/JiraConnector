@@ -37,7 +37,6 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
     }
 
     public void configureJira() {
-        System.out.println("!!!!!!!!!!Configuring JIRA");
         administration.restoreData("jira1-export.xml");
         setUpTest();
     }
