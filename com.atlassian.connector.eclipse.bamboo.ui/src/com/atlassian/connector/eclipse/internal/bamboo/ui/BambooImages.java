@@ -31,8 +31,6 @@ public class BambooImages {
 
 	public static final ImageDescriptor STATUS_PASSED = create(T_OBJ, "icn_plan_passed.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor STATUS_WAITING = create(T_OBJ, "icn_plan_waiting.gif"); //$NON-NLS-1$
-
 	public static final ImageDescriptor[] STATUS_BUILDING = { create(T_OBJ, "icn_building_1.gif"),
 			create(T_OBJ, "icn_building_2.gif"), create(T_OBJ, "icn_building_3.gif"),
 			create(T_OBJ, "icn_building_4.gif"), create(T_OBJ, "icn_building_5.gif"),
@@ -51,10 +49,6 @@ public class BambooImages {
 
 	public static final ImageDescriptor JUNIT = create(T_OBJ, "junit.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor LABEL = create(T_OBJ, "annotate.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor COMMENT = create(T_OBJ, "pin_addcomment.png"); //$NON-NLS-1$
-
 	public static final ImageDescriptor RUN_BUILD = create(T_OBJ, "run_exc.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor ADD_REPOSITORY = create(T_OBJ, "repository-new.gif"); //$NON-NLS-1$
@@ -62,14 +56,6 @@ public class BambooImages {
 	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "bamboo_repository.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor REPOSITORIES = create(T_OBJ, "repositories.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor FILE = create(T_OBJ, "file_obj.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor FOLDER = create(T_OBJ, "folder_obj.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor CHANGESET = create(T_OBJ, "changeset_obj.gif"); //$NON-NLS-1$
-
-	public static final ImageDescriptor FAILED_TESTS = create(T_OBJ, "failedTests.png"); //$NON-NLS-1$
 
 	private static ImageDescriptor create(String prefix, String name) {
 		try {

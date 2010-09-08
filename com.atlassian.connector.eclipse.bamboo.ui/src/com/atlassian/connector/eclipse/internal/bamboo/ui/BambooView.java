@@ -18,10 +18,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
@@ -211,10 +208,6 @@ public class BambooView extends ViewPart {
 
 	private BaseSelectionListenerAction showTestResultsAction;
 
-	private BaseSelectionListenerAction addLabelToBuildAction;
-
-	private BaseSelectionListenerAction addCommentToBuildAction;
-
 	private BaseSelectionListenerAction runBuildAction;
 
 	private BaseSelectionListenerAction newTaskFromFailedBuildAction;
@@ -228,8 +221,6 @@ public class BambooView extends ViewPart {
 	private IStatusLineManager statusLineManager;
 
 	private ToggleAutoRefreshAction toggleAutoRefreshAction;
-
-	private OpenBambooEditorAction openBambooEditorAction;
 
 	public BambooView() {
 		builds = MiscUtil.buildArrayList();
@@ -429,8 +420,8 @@ public class BambooView extends ViewPart {
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				if (openBambooEditorAction.isEnabled()) {
-					openBambooEditorAction.run();
+				if (openInBrowserAction.isEnabled()) {
+					openInBrowserAction.run();
 				}
 			}
 		});
@@ -507,15 +498,12 @@ public class BambooView extends ViewPart {
 
 	private void fillTreeContextMenu() {
 		MenuManager contextMenuManager = new MenuManager("BAMBOO");
-		contextMenuManager.add(openBambooEditorAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(showBuildLogAction);
 		contextMenuManager.add(showTestResultsAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(runBuildAction);
-		contextMenuManager.add(addLabelToBuildAction);
-		contextMenuManager.add(addCommentToBuildAction);
 		contextMenuManager.add(newTaskFromFailedBuildAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(refreshAction);
@@ -579,14 +567,6 @@ public class BambooView extends ViewPart {
 		showTestResultsAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
-		addLabelToBuildAction = new AddLabelToBuildAction();
-		addLabelToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
-
-		addCommentToBuildAction = new AddCommentToBuildAction();
-		addCommentToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
-
 		newTaskFromFailedBuildAction = new NewTaskFromFailedBuildAction();
 		newTaskFromFailedBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(newTaskFromFailedBuildAction);
@@ -603,10 +583,6 @@ public class BambooView extends ViewPart {
 		openRepoConfigAction = new OpenRepositoryConfigurationAction();
 		openRepoConfigAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openRepoConfigAction);
-
-		openBambooEditorAction = new OpenBambooEditorAction();
-		openBambooEditorAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(openBambooEditorAction);
 
 		IActionBars actionBars = getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);
