@@ -6,7 +6,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.tests;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManagerTest;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsActionTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -27,7 +26,6 @@ public class AllBambooCoreTests {
 		suite.addTestSuite(BambooClientManagerTest.class);
 		suite.addTestSuite(BambooRepositoryConnectorTest.class);
 		suite.addTestSuite(BuildPlanManagerTest.class);
-		suite.addTestSuite(ShowTestResultsActionTest.class);
 		// $JUnit-END$
 		return suite;
 	}

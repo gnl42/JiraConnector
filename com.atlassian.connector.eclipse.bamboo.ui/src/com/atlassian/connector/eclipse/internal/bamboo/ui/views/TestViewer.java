@@ -37,7 +37,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -61,11 +60,9 @@ import org.eclipse.ui.part.PageBook;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class TestViewer {
 	private final class TestSelectionListener implements ISelectionChangedListener {
@@ -157,8 +154,6 @@ public class TestViewer {
 	private boolean fTableNeedsRefresh;
 
 	private HashSet/*<TestElement>*/fNeedUpdate;
-
-	private TestCaseElement fAutoScrollTarget;
 
 	private LinkedList/*<TestSuiteElement>*/fAutoClose;
 
@@ -258,7 +253,6 @@ public class TestViewer {
 
 	public synchronized void registerActiveSession(TestRunSession testRunSession) {
 		fTestRunSession = testRunSession;
-		registerAutoScrollTarget(null);
 		registerViewersRefresh();
 	}
 
@@ -461,7 +455,6 @@ public class TestViewer {
 				}
 			}
 		}
-		autoScrollInUI();
 	}
 
 	private void updateElementInTree(final TestElement testElement) {
@@ -520,58 +513,6 @@ public class TestViewer {
 
 	private boolean isShown(TestElement current) {
 		return fFailuresOnlyFilter.select(current);
-	}
-
-	private void autoScrollInUI() {
-		if (!fTestRunnerPart.isAutoScroll()) {
-			clearAutoExpand();
-			fAutoClose.clear();
-			return;
-		}
-
-		if (fLayoutMode == TestResultsView.LAYOUT_FLAT) {
-			if (fAutoScrollTarget != null) {
-				fTableViewer.reveal(fAutoScrollTarget);
-			}
-			return;
-		}
-
-		synchronized (this) {
-			for (Iterator iter = fAutoExpand.iterator(); iter.hasNext();) {
-				TestSuiteElement suite = (TestSuiteElement) iter.next();
-				fTreeViewer.setExpandedState(suite, true);
-			}
-			clearAutoExpand();
-		}
-
-		TestCaseElement current = fAutoScrollTarget;
-		fAutoScrollTarget = null;
-
-		TestSuiteElement parent = current == null ? null : (TestSuiteElement) fTreeContentProvider.getParent(current);
-		if (fAutoClose.isEmpty() || !fAutoClose.getLast().equals(parent)) {
-			// we're in a new branch, so let's close old OK branches:
-			for (ListIterator iter = fAutoClose.listIterator(fAutoClose.size()); iter.hasPrevious();) {
-				TestSuiteElement previousAutoOpened = (TestSuiteElement) iter.previous();
-				if (previousAutoOpened.equals(parent)) {
-					break;
-				}
-
-				if (previousAutoOpened.getStatus() == TestElement.Status.OK) {
-					// auto-opened the element, and all children are OK -> auto close
-					iter.remove();
-					fTreeViewer.collapseToLevel(previousAutoOpened, AbstractTreeViewer.ALL_LEVELS);
-				}
-			}
-
-			while (parent != null && !fTestRunSession.getTestRoot().equals(parent)
-					&& fTreeViewer.getExpandedState(parent) == false) {
-				fAutoClose.add(parent); // add to auto-opened elements -> close later if STATUS_OK
-				parent = (TestSuiteElement) fTreeContentProvider.getParent(parent);
-			}
-		}
-		if (current != null) {
-			fTreeViewer.reveal(current);
-		}
 	}
 
 	public void selectFirstFailure() {
@@ -678,10 +619,6 @@ public class TestViewer {
 
 	private synchronized void clearAutoExpand() {
 		fAutoExpand.clear();
-	}
-
-	public void registerAutoScrollTarget(TestCaseElement testCaseElement) {
-		fAutoScrollTarget = testCaseElement;
 	}
 
 	public synchronized void registerFailedForAutoScroll(TestElement testElement) {

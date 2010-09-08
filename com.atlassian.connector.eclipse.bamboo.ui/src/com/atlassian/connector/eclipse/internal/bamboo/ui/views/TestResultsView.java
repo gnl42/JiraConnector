@@ -26,6 +26,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -123,11 +125,6 @@ public class TestResultsView extends ViewPart {
 	static final int LAYOUT_HIERARCHICAL = 1;
 
 	/**
-	 * Whether the output scrolls and reveals tests as they are executed.
-	 */
-	protected boolean fAutoScroll = true;
-
-	/**
 	 * The current orientation; either <code>VIEW_ORIENTATION_HORIZONTAL</code> <code>VIEW_ORIENTATION_VERTICAL</code>,
 	 * or <code>VIEW_ORIENTATION_AUTOMATIC</code>.
 	 */
@@ -175,13 +172,9 @@ public class TestResultsView extends ViewPart {
 
 	private Action fPreviousAction;
 
-	private StopAction fStopAction;
-
 	private JUnitCopyAction fCopyAction;
 
 	private Action fFailuresOnlyFilterAction;
-
-	private ScrollLockAction fScrollLockAction;
 
 	private ToggleOrientationAction[] fToggleOrientationActions;
 
@@ -451,13 +444,9 @@ public class TestResultsView extends ViewPart {
 			fTestViewer.registerViewersRefresh();
 
 			startUpdateJobs();
-
-			fStopAction.setEnabled(true);
 		}
 
 		public void sessionEnded(long elapsedTime) {
-			fTestViewer.registerAutoScrollTarget(null);
-
 			String[] keys = { elapsedTimeAsString(elapsedTime) };
 			String msg = Messages.format(JUnitMessages.TestRunnerViewPart_message_finish, keys);
 			registerInfoMessage(msg);
@@ -467,7 +456,6 @@ public class TestResultsView extends ViewPart {
 					if (isDisposed()) {
 						return;
 					}
-					fStopAction.setEnabled(lastLaunchIsKeptAlive());
 					processChangesInUI();
 					if (hasErrorsOrFailures()) {
 						selectFirstFailure();
@@ -483,15 +471,11 @@ public class TestResultsView extends ViewPart {
 		}
 
 		public void sessionStopped(final long elapsedTime) {
-			fTestViewer.registerAutoScrollTarget(null);
-
 			registerInfoMessage(JUnitMessages.TestRunnerViewPart_message_stopped);
 			handleStopped();
 		}
 
 		public void sessionTerminated() {
-			fTestViewer.registerAutoScrollTarget(null);
-
 			registerInfoMessage(JUnitMessages.TestRunnerViewPart_message_terminated);
 			handleStopped();
 		}
@@ -503,7 +487,6 @@ public class TestResultsView extends ViewPart {
 		}
 
 		public void testStarted(TestCaseElement testCaseElement) {
-			fTestViewer.registerAutoScrollTarget(testCaseElement);
 			fTestViewer.registerViewerUpdate(testCaseElement);
 
 			String className = BasicElementLabels.getJavaElementName(testCaseElement.getClassName());
@@ -515,9 +498,6 @@ public class TestResultsView extends ViewPart {
 
 		public void testFailed(TestElement testElement, TestElement.Status status, String trace, String expected,
 				String actual) {
-			if (isAutoScroll()) {
-				fTestViewer.registerFailedForAutoScroll(testElement);
-			}
 			fTestViewer.registerViewerUpdate(testElement);
 
 			// show the view on the first error only
@@ -787,7 +767,6 @@ public class TestResultsView extends ViewPart {
 
 //		int activePage= fTabFolder.getSelectionIndex();
 //		memento.putInteger(TAG_PAGE, activePage);
-		memento.putString(TAG_SCROLL, fScrollLockAction.isChecked() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		int weigths[] = fSashForm.getWeights();
 		int ratio = (weigths[0] * 1000) / (weigths[0] + weigths[1]);
 		memento.putInteger(TAG_RATIO, ratio);
@@ -815,11 +794,6 @@ public class TestResultsView extends ViewPart {
 			fOrientation = orientation.intValue();
 		}
 		computeOrientation();
-		String scrollLock = memento.getString(TAG_SCROLL);
-		if (scrollLock != null) {
-			fScrollLockAction.setChecked(scrollLock.equals("true")); //$NON-NLS-1$
-			setAutoScroll(!fScrollLockAction.isChecked());
-		}
 
 		Integer layout = memento.getInteger(TAG_LAYOUT);
 		int layoutValue = LAYOUT_HIERARCHICAL;
@@ -921,14 +895,6 @@ public class TestResultsView extends ViewPart {
 		}
 	}
 
-	public void setAutoScroll(boolean scroll) {
-		fAutoScroll = scroll;
-	}
-
-	public boolean isAutoScroll() {
-		return fAutoScroll;
-	}
-
 	public void selectNextFailure() {
 		fTestViewer.selectFailure(true);
 	}
@@ -964,7 +930,6 @@ public class TestResultsView extends ViewPart {
 					return;
 				}
 				resetViewIcon();
-				fStopAction.setEnabled(false);
 			}
 		});
 		stopUpdateJobs();
@@ -1055,8 +1020,6 @@ action enablement
 
 			registerInfoMessage(" "); //$NON-NLS-1$
 			stopUpdateJobs();
-
-			fStopAction.setEnabled(false);
 		} else {
 			fTestSessionListener = new TestSessionListener();
 			fTestRunSession.addTestSessionListener(fTestSessionListener);
@@ -1069,13 +1032,8 @@ action enablement
 
 			if (fTestRunSession.isRunning()) {
 				startUpdateJobs();
-
-				fStopAction.setEnabled(true);
-
 			} else /* old or fresh session: don't want jobs at this stage */{
 				stopUpdateJobs();
-
-				fStopAction.setEnabled(fTestRunSession.isKeptAlive());
 				fTestViewer.expandFirstLevel();
 			}
 		}
@@ -1362,13 +1320,7 @@ action enablement
 		fPreviousAction.setEnabled(false);
 		actionBars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), fPreviousAction);
 
-		fStopAction = new StopAction();
-		fStopAction.setEnabled(false);
-
 		fFailuresOnlyFilterAction = new FailuresOnlyFilterAction();
-
-		fScrollLockAction = new ScrollLockAction(this);
-		fScrollLockAction.setChecked(!fAutoScroll);
 
 		fToggleOrientationActions = new ToggleOrientationAction[] {
 				new ToggleOrientationAction(VIEW_ORIENTATION_VERTICAL),
@@ -1380,9 +1332,7 @@ action enablement
 		toolBar.add(fNextAction);
 		toolBar.add(fPreviousAction);
 		toolBar.add(fFailuresOnlyFilterAction);
-		toolBar.add(fScrollLockAction);
 		toolBar.add(new Separator());
-		toolBar.add(fStopAction);
 
 		viewMenu.add(fShowTestHierarchyAction);
 		viewMenu.add(new Separator());
@@ -1571,5 +1521,9 @@ action enablement
 
 	TestElement[] getAllFailures() {
 		return fTestRunSession.getAllFailedTestElements();
+	}
+
+	public void setTestsResult(String buildKey, BuildDetails testResults) {
+
 	}
 }
