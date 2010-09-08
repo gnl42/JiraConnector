@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.views.TestResultsView;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.CoreException;
@@ -47,6 +48,7 @@ import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -166,6 +168,10 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 			}
 			try {
 				activeWorkbenchWindow.getActivePage().showView(TestRunnerViewPart.NAME);
+				IViewPart testsView = activeWorkbenchWindow.getActivePage().showView(TestResultsView.ID);
+				/*if (testsView != null && testsView instanceof TestResultsView) {
+					((TestResultsView) testsView).setTestsResult(buildKey, testResults);
+				}*/
 			} catch (PartInitException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
 				return;
