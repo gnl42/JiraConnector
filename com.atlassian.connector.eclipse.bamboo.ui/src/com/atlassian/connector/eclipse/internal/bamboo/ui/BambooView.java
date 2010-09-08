@@ -18,8 +18,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
@@ -210,10 +208,6 @@ public class BambooView extends ViewPart {
 	private BaseSelectionListenerAction showBuildLogAction;
 
 	private BaseSelectionListenerAction showTestResultsAction;
-
-	private BaseSelectionListenerAction addLabelToBuildAction;
-
-	private BaseSelectionListenerAction addCommentToBuildAction;
 
 	private BaseSelectionListenerAction runBuildAction;
 
@@ -514,8 +508,6 @@ public class BambooView extends ViewPart {
 		contextMenuManager.add(showTestResultsAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(runBuildAction);
-		contextMenuManager.add(addLabelToBuildAction);
-		contextMenuManager.add(addCommentToBuildAction);
 		contextMenuManager.add(newTaskFromFailedBuildAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(refreshAction);
@@ -578,14 +570,6 @@ public class BambooView extends ViewPart {
 		showTestResultsAction = new ShowTestResultsAction();
 		showTestResultsAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
-
-		addLabelToBuildAction = new AddLabelToBuildAction();
-		addLabelToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
-
-		addCommentToBuildAction = new AddCommentToBuildAction();
-		addCommentToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
 
 		newTaskFromFailedBuildAction = new NewTaskFromFailedBuildAction();
 		newTaskFromFailedBuildAction.setEnabled(false);

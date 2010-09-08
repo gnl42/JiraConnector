@@ -12,11 +12,9 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
@@ -260,14 +258,6 @@ public class BambooEditor extends SharedHeaderFormEditor {
 		toolBarManager.add(runBuildAction);
 
 		toolBarManager.add(new Separator());
-
-		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
-		addLabelToBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
-		toolBarManager.add(addLabelToBuildAction);
-
-		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
-		addCommentToBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
-		toolBarManager.add(addCommentToBuildAction);
 
 		BaseSelectionListenerAction newTaskFromFailedBuildAction = new NewTaskFromFailedBuildAction();
 		newTaskFromFailedBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
