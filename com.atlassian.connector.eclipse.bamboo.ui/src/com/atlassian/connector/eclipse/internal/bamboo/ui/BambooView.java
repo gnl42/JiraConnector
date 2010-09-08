@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
@@ -223,8 +222,6 @@ public class BambooView extends ViewPart {
 
 	private ToggleAutoRefreshAction toggleAutoRefreshAction;
 
-	private OpenBambooEditorAction openBambooEditorAction;
-
 	public BambooView() {
 		builds = MiscUtil.buildArrayList();
 	}
@@ -423,8 +420,8 @@ public class BambooView extends ViewPart {
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				if (openBambooEditorAction.isEnabled()) {
-					openBambooEditorAction.run();
+				if (openInBrowserAction.isEnabled()) {
+					openInBrowserAction.run();
 				}
 			}
 		});
@@ -501,7 +498,6 @@ public class BambooView extends ViewPart {
 
 	private void fillTreeContextMenu() {
 		MenuManager contextMenuManager = new MenuManager("BAMBOO");
-		contextMenuManager.add(openBambooEditorAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(showBuildLogAction);
@@ -587,10 +583,6 @@ public class BambooView extends ViewPart {
 		openRepoConfigAction = new OpenRepositoryConfigurationAction();
 		openRepoConfigAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openRepoConfigAction);
-
-		openBambooEditorAction = new OpenBambooEditorAction();
-		openBambooEditorAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(openBambooEditorAction);
 
 		IActionBars actionBars = getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);

@@ -38,10 +38,6 @@ public final class BambooConstants {
 
 	public static final String OPEN_REPOSITORY_PROPERTIES_ACTION_LABEL = "Properties...";
 
-	public static final String ADD_COMMENT_TO_BUILD_ACTION_LABEL = "Add Comment to Build...";
-
-	public static final String ADD_LABEL_TO_BUILD_ACTION_LABEL = "Add Label to Build...";
-
 	public static final String SHOW_TEST_RESULTS_ACTION_LABEL = "Show Test Results";
 
 	public static final String OPEN_WITH_BROWSER_ACTION_LABEL = "Open with Browser";

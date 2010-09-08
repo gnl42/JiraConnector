@@ -12,17 +12,14 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.notifications;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.AbstractNotification;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import java.util.Date;
 
@@ -95,9 +92,9 @@ public class BambooNotification extends AbstractNotification {
 	public void open() {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			public void run() {
-				BaseSelectionListenerAction openAction = new OpenBambooEditorAction();
-				openAction.selectionChanged(new StructuredSelection(build));
-				openAction.run();
+//				BaseSelectionListenerAction openAction = new OpenBambooEditorAction();
+//				openAction.selectionChanged(new StructuredSelection(build));
+//				openAction.run();
 			}
 		});
 	}
