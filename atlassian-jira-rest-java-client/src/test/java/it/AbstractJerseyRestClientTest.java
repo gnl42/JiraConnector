@@ -43,14 +43,12 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
 
     @Override
     protected void setUpTest() {
-        System.out.println("!!!!!!!!!!Test Setup");
         try {
             jiraUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI())/*.path(environmentData.getContext())*/.build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
         jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
-        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUU [" + jiraRestRootUri.toString() + "]");
         client = new JerseyJiraRestClient(jiraUri);
     }
 }
