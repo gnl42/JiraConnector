@@ -162,7 +162,11 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return fixVersions;
 	}
 
-	public Iterable<Version> getAffectedVersions() {
+    public URI getTransitionsUri() {
+        return transitionsUri;
+    }
+
+    public Iterable<Version> getAffectedVersions() {
 		return affectedVersions;
 	}
 

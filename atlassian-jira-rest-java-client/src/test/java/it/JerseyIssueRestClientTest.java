@@ -19,10 +19,7 @@ package it;
 import com.atlassian.jira.restjavaclient.IsIterableOf;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.domain.User;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
+import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
@@ -30,6 +27,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -78,5 +76,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		System.out.println(issue);
 
     }
-    
+
+    @Test
+    public void testGetTransitions() throws Exception {
+        final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+        assertEquals(3, Iterables.size(transitions));
+        assertTrue(Iterables.contains(transitions, new Transition("Start Progress", "4", Collections.<Transition.Field>emptyList())));
+    }
+
 }

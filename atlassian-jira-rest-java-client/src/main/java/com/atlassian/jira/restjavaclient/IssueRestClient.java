@@ -17,6 +17,7 @@
 package com.atlassian.jira.restjavaclient;
 
 import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 
 /**
@@ -27,5 +28,5 @@ import com.atlassian.jira.restjavaclient.domain.Watchers;
 public interface IssueRestClient {
     Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
     Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
-
+    Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
 }

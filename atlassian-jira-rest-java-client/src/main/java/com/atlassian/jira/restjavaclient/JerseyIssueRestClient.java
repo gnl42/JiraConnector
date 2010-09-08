@@ -17,9 +17,11 @@
 package com.atlassian.jira.restjavaclient;
 
 import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
+import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
 import com.google.common.base.Joiner;
 import com.sun.jersey.api.client.WebResource;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * TODO: Document this class / interface here
@@ -45,6 +48,7 @@ public class JerseyIssueRestClient implements IssueRestClient {
 
     private final IssueJsonParser issueParser = new IssueJsonParser();
     private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
+    private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 
     public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
         this.baseUri = baseUri;
@@ -82,6 +86,25 @@ public class JerseyIssueRestClient implements IssueRestClient {
         } catch (JSONException e) {
             throw new RestClientException(e);
         }
+    }
+
+    @Override
+    public Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor) {
+        final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
+        final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
+        final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
+        @SuppressWarnings("unchecked")
+        final Iterator<String> iterator = jsonObject.keys();
+        while (iterator.hasNext()) {
+            final String key = iterator.next();
+            try {
+                final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), key);
+                transitions.add(transition);
+            } catch (JSONException e) {
+                throw new RestClientException(e);
+            }
+        }
+        return transitions;
     }
 
 

@@ -1,0 +1,25 @@
+{
+    "name":"Resolve Issue",
+    "fields":[
+        {
+            "name":"resolution",
+            "required":true,
+            "type":"com.atlassian.jira.issue.resolution.Resolution"
+        },
+        {
+            "name":"fixVersions",
+            "required":false,
+            "type":"com.atlassian.jira.project.version.Version"
+        },
+        {
+            "name":"worklog",
+            "required":false,
+            "type":"com.atlassian.jira.issue.fields.WorklogSystemField"
+        },
+        {
+            "name":"assignee",
+            "required":false,
+            "type":"com.opensymphony.user.User"
+        }
+    ]
+}
