@@ -4,8 +4,8 @@
 
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>atlassian-plugin-pom</artifactId>
-        <version>18</version>
+        <artifactId>atlassian-public-pom</artifactId>
+        <version>28</version>
     </parent>
 
     <groupId>com.atlassian.jira.rest-java-client</groupId>
@@ -21,7 +21,7 @@
         <jira.version>4.2-SNAPSHOT</jira.version>
         <jira.data.version>4.2-SNAPSHOT</jira.data.version>
         <jira.test-lib.version>4.2-SNAPSHOT</jira.test-lib.version>
-        <jdkLevel>1.5</jdkLevel>
+        <jdkLevel>1.6</jdkLevel>
     </properties>
     <build>
         <plugins>
@@ -42,14 +42,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
