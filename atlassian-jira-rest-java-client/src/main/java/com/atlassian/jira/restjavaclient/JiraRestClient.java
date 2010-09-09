@@ -24,7 +24,5 @@ import com.atlassian.jira.restjavaclient.domain.User;
  * @since v0.1
  */
 public interface JiraRestClient {
-	void login();
-	User getUser();
     public IssueRestClient getIssueClient();
 }

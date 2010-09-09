@@ -17,7 +17,7 @@
 package it;
 
 import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.restjavaclient.IsIterableOf;
+import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.domain.*;
@@ -40,7 +40,8 @@ import static org.junit.Assert.assertThat;
  */
 public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
-    private final DateTime dateTime = ISODateTimeFormat.dateTime().parseDateTime("2010-08-04T17:46:45.454+0200");
+    // no timezone here, as JIRA does not store timezone information in its dump file
+    private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
 
     @Test
     public void testGetWatchers() throws Exception {
@@ -49,7 +50,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
         final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
         assertEquals(1, watchers.getNumWatchers());
         assertFalse(watchers.isWatching());
-        assertThat(watchers.getWatchers(), IsIterableOf.hasOnlyElements(IntegrationTestUtil.USER1));
+        assertThat(watchers.getWatchers(), IterableMatcher.hasOnlyElements(IntegrationTestUtil.USER1));
     }
 
     public URI jiraRestUri(String path) {
@@ -66,7 +67,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
         assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 
         assertEquals(3, Iterables.size(issue.getComments()));
-        assertThat(issue.getExpandos(), IsIterableOf.hasOnlyElements("html"));
+        assertThat(issue.getExpandos(), IterableMatcher.hasOnlyElements("html"));
 
         assertEquals(4, Iterables.size(issue.getAttachments()));
         final Iterable<Attachment> items = issue.getAttachments();

@@ -17,7 +17,8 @@
 package it;
 
 import com.atlassian.jira.functest.framework.FuncTestCase;
-import com.atlassian.jira.restjavaclient.JerseyJiraRestClient;
+import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
+import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -49,6 +50,6 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
             throw new RuntimeException(e);
         }
         jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
-        client = new JerseyJiraRestClient(jiraUri);
+        client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler("admin", "admin"));
     }
 }

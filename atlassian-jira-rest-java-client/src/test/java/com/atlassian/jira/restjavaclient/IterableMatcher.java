@@ -29,18 +29,19 @@ import java.util.Set;
 *
 * @since v0.1
 */
-public class IsIterableOf<T> extends TypeSafeMatcher<Iterable<T>> {
+public class IterableMatcher<T> extends TypeSafeMatcher<Iterable<T>> {
     private final Iterable<T> expected;
 
-    public IsIterableOf(Iterable<T> expected) {
+    public IterableMatcher(Iterable<T> expected) {
         this.expected = expected;
     }
 
 
-    public static <T> IsIterableOf<T> hasOnlyElements(T... elements) {
-        return new IsIterableOf<T>(Arrays.asList(elements));
+    public static <T> IterableMatcher<T> hasOnlyElements(T... elements) {
+        return new IterableMatcher<T>(Arrays.asList(elements));
     }
 
+    @Override
     public boolean matchesSafely(Iterable<T> given) {
         final Set<T> s = asSet(expected);
 
@@ -62,10 +63,7 @@ public class IsIterableOf<T> extends TypeSafeMatcher<Iterable<T>> {
         return s;
     }
 
-    public static <T> Matcher<Iterable<T>> ofItems(T... items) {
-        return new IsIterableOf<T>(Arrays.asList(items));
-    }
-
+    @Override
     public void describeTo(Description description) {
         description.appendText("an iterable containing just elements " + asSet(expected));
     }

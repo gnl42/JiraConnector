@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.IsIterableOf;
+import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
@@ -47,7 +47,7 @@ public class IssueJsonParserTest {
 		assertEquals(new Project(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		
 		// issue links
-		Assert.assertThat(issue.getIssueLinks(), IsIterableOf.hasOnlyElements(
+		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"), 

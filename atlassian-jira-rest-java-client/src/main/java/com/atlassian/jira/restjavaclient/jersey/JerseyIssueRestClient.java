@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.jersey;
 
+import com.atlassian.jira.restjavaclient.IssueArgs;
+import com.atlassian.jira.restjavaclient.IssueRestClient;
+import com.atlassian.jira.restjavaclient.ProgressMonitor;
+import com.atlassian.jira.restjavaclient.RestClientException;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.Watchers;

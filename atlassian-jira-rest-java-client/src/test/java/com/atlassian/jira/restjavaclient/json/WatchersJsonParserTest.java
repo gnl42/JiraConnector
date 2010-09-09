@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.IsIterableOf;
+import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
 import com.atlassian.jira.restjavaclient.domain.User;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
@@ -45,7 +45,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        assertThat(watcher.getWatchers(), IsIterableOf.< User >hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
+        assertThat(watcher.getWatchers(), IterableMatcher.< User >hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
 
     }
 

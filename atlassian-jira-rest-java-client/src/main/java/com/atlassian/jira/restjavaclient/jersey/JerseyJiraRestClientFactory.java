@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.jersey;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethodBase;
+import com.atlassian.jira.restjavaclient.AuthenticationHandler;
+import com.atlassian.jira.restjavaclient.JiraRestClient;
+import com.atlassian.jira.restjavaclient.JiraRestClientFactory;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface HttpClientConfigurer {
-	void configure(HttpClient httpClient);
-	void configureMethod(HttpMethodBase method);
-	void handleLogin(HttpClient httpClient);
+public class JerseyJiraRestClientFactory implements JiraRestClientFactory {
+    @Override
+    public JiraRestClient create(URI serverUri, AuthenticationHandler authenticationHandler) {
+        return new JerseyJiraRestClient(serverUri, authenticationHandler);
+    }
 }

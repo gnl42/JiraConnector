@@ -16,6 +16,10 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.Filterable;
+import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 import org.apache.commons.httpclient.HttpClient;
 
 /**
@@ -23,14 +27,7 @@ import org.apache.commons.httpclient.HttpClient;
  *
  * @since v0.1
  */
-public class BasicHttpAuthRestLoginHandler implements RestLoginHandler {
-    public void handleLogin(HttpClient httpClient) {
-//        HttpRequestBase method;
-//        BasicHttpContext localcontext = new BasicHttpContext();
-//
-//        method.set
-//
-//        HttpB
-//        httpClient.execute()
-    }
+public interface AuthenticationHandler {
+    void configure(ApacheHttpClientConfig apacheHttpClientConfig);
+    void configure(Filterable filterable, Client client);
 }
