@@ -24,6 +24,11 @@
             id="com.atlassian.connector.eclipse.bamboo.ui.plans"
             name="Bamboo">
       </view>
+      <view id="com.atlassian.connector.eclipse.bamboo.ui.views.testResultView" 
+			name="Bamboo Test Results" 
+			class="com.atlassian.connector.eclipse.internal.bamboo.ui.views.TestResultsView" 
+			icon="icons/obj16/failedTests.png" 
+			category="com.atlassian.connector.eclipse.ui.category"/>
       <category
             id="com.atlassian.connector.eclipse.ui.category"
             name="Atlassian">

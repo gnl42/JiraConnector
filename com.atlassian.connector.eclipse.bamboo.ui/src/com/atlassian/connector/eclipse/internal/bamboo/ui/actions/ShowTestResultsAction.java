@@ -16,34 +16,17 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.views.TestResultsView;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.JavaModelManager;
-import org.eclipse.jdt.internal.junit.launcher.AssertionVMArg;
-import org.eclipse.jdt.internal.junit.launcher.JUnitLaunchConfigurationConstants;
-import org.eclipse.jdt.internal.junit.launcher.JUnitMigrationDelegate;
-import org.eclipse.jdt.internal.junit.launcher.TestKindRegistry;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.model.TestRunSession;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
@@ -155,8 +138,6 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 	 */
 	private class ShowTestResultsExecution {
 
-		private static final String EMPTY_STRING = "";
-
 		public void execute(final File testResults, final String buildKey) {
 			IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			if (activeWorkbenchWindow == null) {
@@ -165,48 +146,16 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 				return;
 			}
 			try {
-				activeWorkbenchWindow.getActivePage().showView(TestRunnerViewPart.NAME);
+				activeWorkbenchWindow.getActivePage().showView(TestResultsView.ID);
+				/*if (testsView != null && testsView instanceof TestResultsView) {
+					((TestResultsView) testsView).setTestsResult(buildKey, testResults);
+				}*/
 			} catch (PartInitException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
 				return;
 			}
-			final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null) {
-				// entry point for e3.6
-				public boolean rerunTest(String testId, String className, String testName, String launchMode,
-						boolean buildBeforeLaunch) throws CoreException {
-					return rerunTest(testId, className, testName, launchMode);
-				}
+			final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null);
 
-				// entry point for e<3.6
-				public boolean rerunTest(String testId, String className, String testName, String launchMode)
-						throws CoreException {
-					String name = className;
-					if (testName != null) {
-						name += "." + testName;
-					}
-					final IType testElement = /*compositeProject.*/findType(className);
-					if (testElement == null) {
-						throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-								"Cannot find Java project which contains class " + className + "."));
-					}
-					final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
-					newCfg.launch(launchMode, null);
-					return true;
-				}
-
-				private IType findType(String fullyQualifiedName) throws JavaModelException {
-					final IJavaProject[] projects = JavaModelManager.getJavaModelManager()
-							.getJavaModel()
-							.getJavaProjects();
-					for (IJavaProject project : projects) {
-						final IType itype = project.findType(fullyQualifiedName);
-						if (itype != null && itype.getResource().getProject().equals(project.getProject())) {
-							return itype;
-						}
-					}
-					return null;
-				}
-			};
 			try {
 				JUnitModel.importIntoTestRunSession(testResults, trs);
 			} catch (CoreException e) {
@@ -219,75 +168,6 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 			}
 		}
 
-		/**
-		 * this method is practically stolen "as is" from
-		 * {@link org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut#createLaunchConfiguration(IJavaElement)}
-		 * 
-		 * The only meaningful difference is the following line:
-		 * 
-		 * <pre>
-		 * ILaunchConfigurationType configType = getLaunchManager().getLaunchConfigurationType(
-		 * 		JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
-		 * </pre>
-		 */
-		protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement element) throws CoreException {
-			final String testName;
-			final String mainTypeQualifiedName;
-			final String containerHandleId;
-
-			switch (element.getElementType()) {
-			case IJavaElement.JAVA_PROJECT:
-			case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-			case IJavaElement.PACKAGE_FRAGMENT: {
-				String name = JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED);
-				containerHandleId = element.getHandleIdentifier();
-				mainTypeQualifiedName = EMPTY_STRING;
-				testName = name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
-			}
-				break;
-			case IJavaElement.TYPE: {
-				containerHandleId = EMPTY_STRING;
-				mainTypeQualifiedName = ((IType) element).getFullyQualifiedName('.'); // don't replace, fix for binary inner types
-				testName = element.getElementName();
-			}
-				break;
-			case IJavaElement.METHOD: {
-				IMethod method = (IMethod) element;
-				containerHandleId = EMPTY_STRING;
-				mainTypeQualifiedName = method.getDeclaringType().getFullyQualifiedName('.');
-				testName = method.getDeclaringType().getElementName() + '.' + method.getElementName();
-			}
-				break;
-			default:
-				throw new IllegalArgumentException("Invalid element type to create a launch configuration: "
-						+ element.getClass().getName());
-			}
-
-			String testKindId = TestKindRegistry.getContainerTestKindId(element);
-
-			ILaunchConfigurationType configType = getLaunchManager().getLaunchConfigurationType(
-					JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
-			ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
-					getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
-
-			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainTypeQualifiedName);
-			wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, element.getJavaProject()
-					.getElementName());
-			wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_KEEPRUNNING, false);
-			wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER, containerHandleId);
-			wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND, testKindId);
-			JUnitMigrationDelegate.mapResources(wc);
-			AssertionVMArg.setArgDefault(wc);
-			if (element instanceof IMethod) {
-				// only set for methods
-				wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME, element.getElementName());
-			}
-			return wc;
-		}
-
-		private ILaunchManager getLaunchManager() {
-			return DebugPlugin.getDefault().getLaunchManager();
-		}
 	}
 
 }
