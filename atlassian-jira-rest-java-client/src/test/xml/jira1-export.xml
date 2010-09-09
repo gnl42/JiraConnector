@@ -1113,7 +1113,7 @@ ___ Trusted Applications ___________________
     <OSPropertyString id="10011" value="Your Company JIRA"/>
     <OSPropertyString id="10012" value="http://localhost:8090/jira"/>
     <OSPropertyString id="10013" value="public"/>
-    <OSPropertyString id="10016" value="/home/wseliga/lab/jira/jirahome/data/attachments"/>
+    <OSPropertyString id="10016" value="jirahome/data/attachments"/>
     <OSPropertyString id="10019" value="true"/>
     <OSPropertyString id="10020" value="zip"/>
     <OSPropertyString id="10021" value="jirahome/export"/>
