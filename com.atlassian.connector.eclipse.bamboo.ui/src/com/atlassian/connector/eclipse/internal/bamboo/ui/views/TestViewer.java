@@ -30,6 +30,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.viewsupport.ColoringLabelProvider;
@@ -65,6 +66,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class TestViewer {
 	private final class TestSelectionListener implements ISelectionChangedListener {
@@ -255,20 +257,28 @@ public class TestViewer {
 		fBuildDetails = buildDetails;
 		fTestRoot = new TestRoot(buildKey, fBuildDetails);
 
+		Map<String, TestSuiteElement> testSuites = MiscUtil.buildHashMap();
+
 		for (TestDetails test : buildDetails.getFailedTestDetails()) {
-			TestCaseElement tce = new TestCaseElement(fTestRoot, test.getTestMethodName());
+			if (!testSuites.containsKey(test.getTestClassName())) {
+				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+			}
+
+			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
 			tce.setName(test.getTestMethodName());
 			tce.setStatus(Status.ERROR);
-			fTestRoot.addChild(tce);
 		}
 
 		for (TestDetails test : buildDetails.getSuccessfulTestDetails()) {
-			TestCaseElement tce = new TestCaseElement(fTestRoot, test.getTestMethodName());
+			if (!testSuites.containsKey(test.getTestClassName())) {
+				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+			}
+
+			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
 			tce.setName(test.getTestMethodName());
 			tce.setStatus(Status.ERROR);
-			fTestRoot.addChild(tce);
 		}
 
 		registerViewersRefresh();
