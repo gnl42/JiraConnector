@@ -267,7 +267,7 @@ public class TestViewer {
 			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
 			tce.setName(test.getTestMethodName());
-			tce.setStatus(Status.ERROR);
+			tce.setStatus(Status.ERROR, test.getErrors(), null, null);
 		}
 
 		for (TestDetails test : buildDetails.getSuccessfulTestDetails()) {
@@ -278,7 +278,7 @@ public class TestViewer {
 			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
 			tce.setName(test.getTestMethodName());
-			tce.setStatus(Status.ERROR);
+			tce.setStatus(Status.OK, test.getErrors(), null, null);
 		}
 
 		registerViewersRefresh();
