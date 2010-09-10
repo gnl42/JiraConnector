@@ -21,8 +21,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
-import org.eclipse.jdt.internal.junit.model.TestElement;
-import org.eclipse.jdt.internal.junit.ui.IJUnitHelpContextIds;
+import com.atlassian.theplugin.commons.bamboo.TestDetails;
+
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.action.Action;
@@ -32,7 +32,8 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.PlatformUI;
+
+import java.util.List;
 
 /**
  * Copies the names of the methods that failed and their traces to the clipboard.
@@ -47,7 +48,6 @@ public class CopyFailureListAction extends Action {
 		super(JUnitMessages.CopyFailureList_action_label);
 		fRunner = runner;
 		fClipboard = clipboard;
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJUnitHelpContextIds.COPYFAILURELIST_ACTION);
 	}
 
 	/*
@@ -71,12 +71,12 @@ public class CopyFailureListAction extends Action {
 
 	public String getAllFailureTraces() {
 		StringBuffer buf = new StringBuffer();
-		TestElement[] failures = fRunner.getAllFailures();
+		List<TestDetails> failures = fRunner.getAllFailures();
 
 		String lineDelim = System.getProperty("line.separator", "\n"); //$NON-NLS-1$//$NON-NLS-2$
-		for (TestElement failure : failures) {
-			buf.append(failure.getTestName()).append(lineDelim);
-			String failureTrace = failure.getTrace();
+		for (TestDetails failure : failures) {
+			buf.append(failure.getTestMethodName()).append(lineDelim);
+			String failureTrace = failure.getErrors();
 			if (failureTrace != null) {
 				int start = 0;
 				while (start < failureTrace.length()) {

@@ -22,9 +22,10 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.eclipse.jdt.internal.junit.model.TestElement;
-import org.eclipse.jdt.internal.junit.model.TestRoot;
-import org.eclipse.jdt.internal.junit.model.TestSuiteElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestRoot;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

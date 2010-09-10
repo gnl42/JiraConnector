@@ -24,8 +24,9 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     Johan Walles: walles@mailblocks.com bug 68737
  *******************************************************************************/
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.junit.model.TestElement;
 import org.eclipse.jdt.internal.junit.ui.JUnitPreferencePage;
 import org.eclipse.jdt.internal.junit.ui.TextualTrace;
 import org.eclipse.jface.action.Action;

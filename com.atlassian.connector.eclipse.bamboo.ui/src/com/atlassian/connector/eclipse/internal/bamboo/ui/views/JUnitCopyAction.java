@@ -22,9 +22,9 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.junit.model.TestElement;
-import org.eclipse.jdt.internal.junit.ui.IJUnitHelpContextIds;
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWTError;
@@ -32,7 +32,6 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionListenerAction;
 
 import java.io.BufferedReader;
@@ -54,7 +53,6 @@ public class JUnitCopyAction extends SelectionListenerAction {
 	public JUnitCopyAction(FailureTrace view, Clipboard clipboard) {
 		super(JUnitMessages.CopyTrace_action_label);
 		Assert.isNotNull(clipboard);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJUnitHelpContextIds.COPYTRACE_ACTION);
 		fView = view;
 		fClipboard = clipboard;
 	}

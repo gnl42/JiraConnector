@@ -23,16 +23,16 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
-import org.eclipse.jdt.internal.junit.BasicElementLabels;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.ITestCaseElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.ITestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.ITestSuiteElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
+
 import org.eclipse.jdt.internal.junit.Messages;
-import org.eclipse.jdt.internal.junit.model.TestCaseElement;
-import org.eclipse.jdt.internal.junit.model.TestSuiteElement;
-import org.eclipse.jdt.internal.junit.model.TestElement.Status;
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
-import org.eclipse.jdt.junit.model.ITestCaseElement;
-import org.eclipse.jdt.junit.model.ITestElement;
-import org.eclipse.jdt.junit.model.ITestRunSession;
-import org.eclipse.jdt.junit.model.ITestSuiteElement;
+import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -72,17 +72,7 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 		StyledString text = new StyledString(label);
 
 		ITestElement testElement = (ITestElement) element;
-		if (fLayoutMode == TestResultsView.LAYOUT_HIERARCHICAL) {
-			if (testElement.getParentContainer() instanceof ITestRunSession) {
-				String testKindDisplayName = fTestRunnerPart.getTestKindDisplayName();
-				if (testKindDisplayName != null) {
-					String decorated = Messages.format(JUnitMessages.TestSessionLabelProvider_testName_JUnitVersion,
-							new Object[] { label, testKindDisplayName });
-					text = StyledCellLabelProvider.styleDecoratedString(decorated, StyledString.QUALIFIER_STYLER, text);
-				}
-			}
-
-		} else {
+		if (fLayoutMode != TestResultsView.LAYOUT_HIERARCHICAL) {
 			if (element instanceof ITestCaseElement) {
 				String className = BasicElementLabels.getJavaElementName(((ITestCaseElement) element).getTestClassName());
 				String decorated = Messages.format(JUnitMessages.TestSessionLabelProvider_testMethodName_className,
@@ -123,15 +113,7 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 			return element.toString();
 		}
 		ITestElement testElement = (ITestElement) element;
-		if (fLayoutMode == TestResultsView.LAYOUT_HIERARCHICAL) {
-			if (testElement.getParentContainer() instanceof ITestRunSession) {
-				String testKindDisplayName = fTestRunnerPart.getTestKindDisplayName();
-				if (testKindDisplayName != null) {
-					label = Messages.format(JUnitMessages.TestSessionLabelProvider_testName_JUnitVersion, new Object[] {
-							label, testKindDisplayName });
-				}
-			}
-		} else {
+		if (fLayoutMode != TestResultsView.LAYOUT_HIERARCHICAL) {
 			if (element instanceof ITestCaseElement) {
 				String className = BasicElementLabels.getJavaElementName(((ITestCaseElement) element).getTestClassName());
 				label = Messages.format(JUnitMessages.TestSessionLabelProvider_testMethodName_className, new Object[] {
@@ -144,19 +126,9 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 	public Image getImage(Object element) {
 		if (element instanceof TestCaseElement) {
 			TestCaseElement testCaseElement = ((TestCaseElement) element);
-			if (testCaseElement.isIgnored()) {
-				return fTestRunnerPart.fTestIgnoredIcon;
-			}
-
 			Status status = testCaseElement.getStatus();
-			if (status.isNotRun()) {
-				return fTestRunnerPart.fTestIcon;
-			} else if (status.isRunning()) {
-				return fTestRunnerPart.fTestRunningIcon;
-			} else if (status.isError()) {
+			if (status.isError()) {
 				return fTestRunnerPart.fTestErrorIcon;
-			} else if (status.isFailure()) {
-				return fTestRunnerPart.fTestFailIcon;
 			} else if (status.isOK()) {
 				return fTestRunnerPart.fTestOkIcon;
 			} else {
@@ -165,14 +137,8 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 
 		} else if (element instanceof TestSuiteElement) {
 			Status status = ((TestSuiteElement) element).getStatus();
-			if (status.isNotRun()) {
-				return fTestRunnerPart.fSuiteIcon;
-			} else if (status.isRunning()) {
-				return fTestRunnerPart.fSuiteRunningIcon;
-			} else if (status.isError()) {
+			if (status.isError()) {
 				return fTestRunnerPart.fSuiteErrorIcon;
-			} else if (status.isFailure()) {
-				return fTestRunnerPart.fSuiteFailIcon;
 			} else if (status.isOK()) {
 				return fTestRunnerPart.fSuiteOkIcon;
 			} else {

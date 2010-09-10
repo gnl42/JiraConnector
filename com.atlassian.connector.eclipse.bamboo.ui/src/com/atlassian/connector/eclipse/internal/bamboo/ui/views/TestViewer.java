@@ -23,12 +23,14 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
-import org.eclipse.jdt.internal.junit.model.TestCaseElement;
-import org.eclipse.jdt.internal.junit.model.TestElement;
-import org.eclipse.jdt.internal.junit.model.TestRoot;
-import org.eclipse.jdt.internal.junit.model.TestRunSession;
-import org.eclipse.jdt.internal.junit.model.TestSuiteElement;
-import org.eclipse.jdt.internal.junit.model.TestElement.Status;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestRoot;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
+import com.atlassian.theplugin.commons.bamboo.TestDetails;
+
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.viewsupport.ColoringLabelProvider;
 import org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator;
@@ -84,11 +86,7 @@ public class TestViewer {
 
 		public boolean select(TestElement testElement) {
 			Status status = testElement.getStatus();
-			if (status.isErrorOrFailure()) {
-				return true;
-			} else {
-				return !fTestRunSession.isRunning() && status == Status.RUNNING; // rerunning
-			}
+			return status.isError();
 		}
 	}
 
@@ -147,8 +145,6 @@ public class TestViewer {
 
 	private boolean fTableHasFilter;
 
-	private TestRunSession fTestRunSession;
-
 	private boolean fTreeNeedsRefresh;
 
 	private boolean fTableNeedsRefresh;
@@ -158,6 +154,10 @@ public class TestViewer {
 	private LinkedList/*<TestSuiteElement>*/fAutoClose;
 
 	private HashSet/*<TestSuite>*/fAutoExpand;
+
+	private BuildDetails fBuildDetails;
+
+	private TestRoot fTestRoot;
 
 	public TestViewer(Composite parent, Clipboard clipboard, TestResultsView runner) {
 		fTestRunnerPart = runner;
@@ -237,7 +237,7 @@ public class TestViewer {
 			}
 
 		}
-		if (fTestRunSession != null && fTestRunSession.getFailureCount() + fTestRunSession.getErrorCount() > 0) {
+		if (fBuildDetails != null && fBuildDetails.getFailedTestDetails().size() > 0) {
 			if (fLayoutMode != TestResultsView.LAYOUT_HIERARCHICAL) {
 				manager.add(new Separator());
 			}
@@ -251,8 +251,26 @@ public class TestViewer {
 		return fViewerbook;
 	}
 
-	public synchronized void registerActiveSession(TestRunSession testRunSession) {
-		fTestRunSession = testRunSession;
+	public synchronized void setBuildDetails(String buildKey, BuildDetails buildDetails) {
+		fBuildDetails = buildDetails;
+		fTestRoot = new TestRoot(buildKey, fBuildDetails);
+
+		for (TestDetails test : buildDetails.getFailedTestDetails()) {
+			TestCaseElement tce = new TestCaseElement(fTestRoot, test.getTestMethodName());
+			tce.setElapsedTimeInSeconds(test.getTestDuration());
+			tce.setName(test.getTestMethodName());
+			tce.setStatus(Status.ERROR);
+			fTestRoot.addChild(tce);
+		}
+
+		for (TestDetails test : buildDetails.getSuccessfulTestDetails()) {
+			TestCaseElement tce = new TestCaseElement(fTestRoot, test.getTestMethodName());
+			tce.setElapsedTimeInSeconds(test.getTestDuration());
+			tce.setName(test.getTestMethodName());
+			tce.setStatus(Status.ERROR);
+			fTestRoot.addChild(tce);
+		}
+
 		registerViewersRefresh();
 	}
 
@@ -403,8 +421,7 @@ public class TestViewer {
 	 * To be called periodically by the TestRunnerViewPart (in the UI thread).
 	 */
 	public void processChangesInUI() {
-		TestRoot testRoot;
-		if (fTestRunSession == null) {
+		if (fBuildDetails == null) {
 			registerViewersRefresh();
 			fTreeNeedsRefresh = false;
 			fTableNeedsRefresh = false;
@@ -413,14 +430,11 @@ public class TestViewer {
 			return;
 		}
 
-		testRoot = fTestRunSession.getTestRoot();
-
 		StructuredViewer viewer = getActiveViewer();
 		if (getActiveViewerNeedsRefresh()) {
 			clearUpdateAndExpansion();
 			setActiveViewerNeedsRefresh(false);
-			viewer.setInput(testRoot);
-
+			viewer.setInput(fTestRoot);
 		} else {
 			Object[] toUpdate;
 			synchronized (this) {
@@ -516,7 +530,7 @@ public class TestViewer {
 	}
 
 	public void selectFirstFailure() {
-		TestCaseElement firstFailure = getNextChildFailure(fTestRunSession.getTestRoot(), true);
+		TestCaseElement firstFailure = getNextChildFailure(fTestRoot, true);
 		if (firstFailure != null) {
 			getActiveViewer().setSelection(new StructuredSelection(firstFailure), true);
 		}
@@ -528,7 +542,7 @@ public class TestViewer {
 		TestElement next;
 
 		if (selected == null) {
-			next = getNextChildFailure(fTestRunSession.getTestRoot(), showNext);
+			next = getNextChildFailure(fTestRoot, showNext);
 		} else {
 			next = getNextFailure(selected, showNext);
 		}
@@ -562,7 +576,7 @@ public class TestViewer {
 		int nextIndex = siblings.indexOf(current) + 1;
 		for (int i = nextIndex; i < siblings.size(); i++) {
 			TestElement sibling = (TestElement) siblings.get(i);
-			if (sibling.getStatus().isErrorOrFailure()) {
+			if (sibling.getStatus().isError()) {
 				if (sibling instanceof TestCaseElement) {
 					return (TestCaseElement) sibling;
 				} else {
@@ -580,7 +594,7 @@ public class TestViewer {
 		}
 		for (int i = 0; i < children.size(); i++) {
 			TestElement child = (TestElement) children.get(i);
-			if (child.getStatus().isErrorOrFailure()) {
+			if (child.getStatus().isError()) {
 				if (child instanceof TestCaseElement) {
 					return (TestCaseElement) child;
 				} else {
@@ -601,31 +615,6 @@ public class TestViewer {
 		fNeedUpdate = new LinkedHashSet();
 		fAutoClose = new LinkedList();
 		fAutoExpand = new HashSet();
-	}
-
-	/**
-	 * @param testElement
-	 *            the added test
-	 */
-	public synchronized void registerTestAdded(TestElement testElement) {
-		//TODO: performance: would only need to refresh parent of added element
-		fTreeNeedsRefresh = true;
-		fTableNeedsRefresh = true;
-	}
-
-	public synchronized void registerViewerUpdate(final TestElement testElement) {
-		fNeedUpdate.add(testElement);
-	}
-
-	private synchronized void clearAutoExpand() {
-		fAutoExpand.clear();
-	}
-
-	public synchronized void registerFailedForAutoScroll(TestElement testElement) {
-		Object parent = fTreeContentProvider.getParent(testElement);
-		if (parent != null) {
-			fAutoExpand.add(parent);
-		}
 	}
 
 	public void expandFirstLevel() {

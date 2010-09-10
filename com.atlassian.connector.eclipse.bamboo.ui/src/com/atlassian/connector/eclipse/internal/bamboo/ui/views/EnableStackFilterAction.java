@@ -22,12 +22,10 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.eclipse.jdt.internal.junit.ui.IJUnitHelpContextIds;
 import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jdt.internal.junit.ui.JUnitPreferencePage;
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Action to enable/disable stack trace filtering.
@@ -44,7 +42,6 @@ public class EnableStackFilterAction extends Action {
 		setDisabledImageDescriptor(JUnitPlugin.getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
 		setHoverImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
 		setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJUnitHelpContextIds.ENABLEFILTER_ACTION);
 
 		fView = view;
 		setChecked(JUnitPreferencePage.getFilterStack());
