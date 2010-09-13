@@ -26,6 +26,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
@@ -34,11 +35,6 @@ import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
-import org.eclipse.jdt.internal.junit.ui.CounterPanel;
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.ProgressImages;
-import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -73,7 +69,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.EditorActionBarContributor;
@@ -110,10 +105,6 @@ public class TestResultsView extends ViewPart {
 	 * The current layout mode (LAYOUT_FLAT or LAYOUT_HIERARCHICAL).
 	 */
 	private int fLayout = LAYOUT_HIERARCHICAL;
-
-//	private boolean fTestIsRunning= false;
-
-	protected ProgressImages fProgressImages;
 
 	protected Image fViewImage;
 
@@ -171,15 +162,15 @@ public class TestResultsView extends ViewPart {
 
 	final Image fTestIgnoredIcon;
 
-	final ImageDescriptor fSuiteIconDescriptor = JUnitPlugin.getImageDescriptor("obj16/tsuite.gif"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuite.gif"); //$NON-NLS-1$
 
-	final ImageDescriptor fSuiteOkIconDescriptor = JUnitPlugin.getImageDescriptor("obj16/tsuiteok.gif"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteOkIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiteok.gif"); //$NON-NLS-1$
 
-	final ImageDescriptor fSuiteErrorIconDescriptor = JUnitPlugin.getImageDescriptor("obj16/tsuiteerror.gif"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteErrorIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiteerror.gif"); //$NON-NLS-1$
 
-	final ImageDescriptor fSuiteFailIconDescriptor = JUnitPlugin.getImageDescriptor("obj16/tsuitefail.gif"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteFailIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuitefail.gif"); //$NON-NLS-1$
 
-	final ImageDescriptor fSuiteRunningIconDescriptor = JUnitPlugin.getImageDescriptor("obj16/tsuiterun.gif"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteRunningIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiterun.gif"); //$NON-NLS-1$
 
 	final Image fSuiteIcon;
 
@@ -279,14 +270,14 @@ public class TestResultsView extends ViewPart {
 		public ToggleOrientationAction(int orientation) {
 			super("", AS_RADIO_BUTTON); //$NON-NLS-1$
 			if (orientation == VIEW_ORIENTATION_HORIZONTAL) {
-				setText(JUnitMessages.TestRunnerViewPart_toggle_horizontal_label);
-				setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
+				setText("&Horizontal View Orientation");
+				setImageDescriptor(BambooImages.getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
 			} else if (orientation == VIEW_ORIENTATION_VERTICAL) {
-				setText(JUnitMessages.TestRunnerViewPart_toggle_vertical_label);
-				setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
+				setText("&Vertical View Orientation");
+				setImageDescriptor(BambooImages.getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
 			} else if (orientation == VIEW_ORIENTATION_AUTOMATIC) {
-				setText(JUnitMessages.TestRunnerViewPart_toggle_automatic_label);
-				setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
+				setText("&Automatic View Orientation");
+				setImageDescriptor(BambooImages.getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
 			}
 			fActionOrientation = orientation;
 		}
@@ -361,9 +352,9 @@ public class TestResultsView extends ViewPart {
 
 	private class FailuresOnlyFilterAction extends Action {
 		public FailuresOnlyFilterAction() {
-			super(JUnitMessages.TestRunnerViewPart_show_failures_only, AS_CHECK_BOX);
-			setToolTipText(JUnitMessages.TestRunnerViewPart_show_failures_only);
-			setImageDescriptor(JUnitPlugin.getImageDescriptor("obj16/failures.gif")); //$NON-NLS-1$
+			super("Show &Failures Only", AS_CHECK_BOX);
+			setToolTipText("Show &Failures Only");
+			setImageDescriptor(BambooImages.getImageDescriptor("obj16/failures.gif")); //$NON-NLS-1$
 		}
 
 		public void run() {
@@ -374,8 +365,8 @@ public class TestResultsView extends ViewPart {
 	private class ShowTestHierarchyAction extends Action {
 
 		public ShowTestHierarchyAction() {
-			super(JUnitMessages.TestRunnerViewPart_hierarchical_layout, IAction.AS_CHECK_BOX);
-			setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/hierarchicalLayout.gif")); //$NON-NLS-1$
+			super("Show Tests in &Hierarchy", IAction.AS_CHECK_BOX);
+			setImageDescriptor(BambooImages.getImageDescriptor("elcl16/hierarchicalLayout.gif")); //$NON-NLS-1$
 		}
 
 		public void run() {
@@ -408,7 +399,7 @@ public class TestResultsView extends ViewPart {
 	}
 
 	private Image createManagedImage(String path) {
-		return createManagedImage(JUnitPlugin.getImageDescriptor(path));
+		return createManagedImage(BambooImages.getImageDescriptor(path));
 	}
 
 	private Image createManagedImage(ImageDescriptor descriptor) {
@@ -425,7 +416,7 @@ public class TestResultsView extends ViewPart {
 		fMemento = memento;
 		IWorkbenchSiteProgressService progressService = getProgressService();
 		if (progressService != null) {
-			progressService.showBusyForFamily(TestRunnerViewPart.FAMILY_JUNIT_RUN);
+			progressService.showBusyForFamily(TestResultsView.FAMILY_JUNIT_RUN);
 		}
 	}
 
@@ -577,9 +568,6 @@ public class TestResultsView extends ViewPart {
 	public synchronized void dispose() {
 		fIsDisposed = true;
 
-		if (fProgressImages != null) {
-			fProgressImages.dispose();
-		}
 		getViewSite().getPage().removePartListener(fPartListener);
 
 		disposeImages();
@@ -620,39 +608,6 @@ public class TestResultsView extends ViewPart {
 		fCounterPanel.setErrorValue(errorCount);
 	}
 
-	protected void postShowTestResultsView() {
-		postSyncRunnable(new Runnable() {
-			public void run() {
-				if (isDisposed()) {
-					return;
-				}
-				showTestResultsView();
-			}
-		});
-	}
-
-	public void showTestResultsView() {
-		IWorkbenchWindow window = getSite().getWorkbenchWindow();
-		IWorkbenchPage page = window.getActivePage();
-		TestResultsView testRunner = null;
-
-		if (page != null) {
-			try { // show the result view
-				testRunner = (TestResultsView) page.findView(TestResultsView.ID);
-				if (testRunner == null) {
-					IWorkbenchPart activePart = page.getActivePart();
-					testRunner = (TestResultsView) page.showView(TestResultsView.ID);
-					//restore focus
-					page.activate(activePart);
-				} else {
-					page.bringToTop(testRunner);
-				}
-			} catch (PartInitException pie) {
-				JUnitPlugin.log(pie);
-			}
-		}
-	}
-
 	protected void doShowInfoMessage() {
 		if (fInfoMessage != null) {
 			setContentDescription(fInfoMessage);
@@ -685,7 +640,7 @@ public class TestResultsView extends ViewPart {
 		ViewForm bottom = new ViewForm(fSashForm, SWT.NONE);
 
 		CLabel label = new CLabel(bottom, SWT.NONE);
-		label.setText(JUnitMessages.TestRunnerViewPart_label_failure);
+		label.setText("Failures: ");
 		label.setImage(fStackViewIcon);
 		bottom.setTopLeft(label);
 		ToolBar failureToolBar = new ToolBar(bottom, SWT.FLAT | SWT.WRAP);
@@ -730,7 +685,6 @@ public class TestResultsView extends ViewPart {
 		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), fCopyAction);
 
 		fOriginalViewImage = getTitleImage();
-		fProgressImages = new ProgressImages();
 
 		getViewSite().getPage().addPartListener(fPartListener);
 
@@ -799,7 +753,7 @@ public class TestResultsView extends ViewPart {
 		viewMenu.add(fShowTestHierarchyAction);
 		viewMenu.add(new Separator());
 
-		MenuManager layoutSubMenu = new MenuManager(JUnitMessages.TestRunnerViewPart_layout_menu);
+		MenuManager layoutSubMenu = new MenuManager("&Layout");
 		for (int i = 0; i < fToggleOrientationActions.length; ++i) {
 			layoutSubMenu.add(fToggleOrientationActions[i]);
 		}

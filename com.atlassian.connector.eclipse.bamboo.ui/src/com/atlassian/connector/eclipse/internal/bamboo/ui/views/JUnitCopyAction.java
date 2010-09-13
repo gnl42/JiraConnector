@@ -25,7 +25,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
@@ -51,7 +50,7 @@ public class JUnitCopyAction extends SelectionListenerAction {
 	private TestElement fTestElement;
 
 	public JUnitCopyAction(FailureTrace view, Clipboard clipboard) {
-		super(JUnitMessages.CopyTrace_action_label);
+		super("Copy Trace");
 		Assert.isNotNull(clipboard);
 		fView = view;
 		fClipboard = clipboard;
@@ -80,8 +79,8 @@ public class JUnitCopyAction extends SelectionListenerAction {
 			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
 			}
-			if (MessageDialog.openQuestion(fView.getComposite().getShell(), JUnitMessages.CopyTraceAction_problem,
-					JUnitMessages.CopyTraceAction_clipboard_busy)) {
+			if (MessageDialog.openQuestion(fView.getComposite().getShell(), "Problem Copying to Clipboard",
+					"There was a problem when accessing the system clipboard. Retry?")) {
 				run();
 			}
 		}

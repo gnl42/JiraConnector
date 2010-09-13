@@ -11,7 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.osgi.framework.Bundle;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +26,8 @@ import java.net.URL;
 public class BambooImages {
 
 	private static final URL BASE_URL = BambooUiPlugin.getDefault().getBundle().getEntry("/icons/"); //$NON-NLS-1$
+
+	private static final IPath ICONS_PATH = new Path("$nl$/icons"); //$NON-NLS-1$
 
 	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
@@ -74,6 +80,22 @@ public class BambooImages {
 		buffer.append('/');
 		buffer.append(name);
 		return new URL(BASE_URL, buffer.toString());
+	}
+
+	public static ImageDescriptor getImageDescriptor(String relativePath) {
+		IPath path = ICONS_PATH.append(relativePath);
+		return createImageDescriptor(BambooUiPlugin.getDefault().getBundle(), path, true);
+	}
+
+	private static ImageDescriptor createImageDescriptor(Bundle bundle, IPath path, boolean useMissingImageDescriptor) {
+		URL url = FileLocator.find(bundle, path, null);
+		if (url != null) {
+			return ImageDescriptor.createFromURL(url);
+		}
+		if (useMissingImageDescriptor) {
+			return ImageDescriptor.getMissingImageDescriptor();
+		}
+		return null;
 	}
 
 }

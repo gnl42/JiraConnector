@@ -32,7 +32,6 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.viewsupport.ColoringLabelProvider;
 import org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.jface.action.Action;
@@ -110,8 +109,8 @@ public class TestViewer {
 
 	private class ExpandAllAction extends Action {
 		public ExpandAllAction() {
-			setText(JUnitMessages.ExpandAllAction_text);
-			setToolTipText(JUnitMessages.ExpandAllAction_tooltip);
+			setText("Expand All");
+			setToolTipText("Expand All Nodes");
 		}
 
 		public void run() {

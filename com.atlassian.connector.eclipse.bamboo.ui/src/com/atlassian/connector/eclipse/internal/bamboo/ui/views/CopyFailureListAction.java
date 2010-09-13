@@ -23,7 +23,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,7 +44,7 @@ public class CopyFailureListAction extends Action {
 	private final TestResultsView fRunner;
 
 	public CopyFailureListAction(TestResultsView runner, Clipboard clipboard) {
-		super(JUnitMessages.CopyFailureList_action_label);
+		super("Copy Failure List");
 		fRunner = runner;
 		fClipboard = clipboard;
 	}
@@ -62,8 +61,9 @@ public class CopyFailureListAction extends Action {
 			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
 			}
-			if (MessageDialog.openQuestion(JavaPlugin.getActiveWorkbenchShell(), JUnitMessages.CopyFailureList_problem,
-					JUnitMessages.CopyFailureList_clipboard_busy)) {
+			if (MessageDialog.openQuestion(JavaPlugin.getActiveWorkbenchShell(),
+					"Problem Copying Failure List to Clipboard",
+					"There was a problem when accessing the system clipboard. Retry?")) {
 				run();
 			}
 		}

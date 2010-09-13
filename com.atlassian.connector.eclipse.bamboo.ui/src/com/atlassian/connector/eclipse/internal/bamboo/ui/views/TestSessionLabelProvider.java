@@ -30,14 +30,13 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
 
-import org.eclipse.jdt.internal.junit.Messages;
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 
 import java.text.NumberFormat;
@@ -75,8 +74,7 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 		if (fLayoutMode != TestResultsView.LAYOUT_HIERARCHICAL) {
 			if (element instanceof ITestCaseElement) {
 				String className = BasicElementLabels.getJavaElementName(((ITestCaseElement) element).getTestClassName());
-				String decorated = Messages.format(JUnitMessages.TestSessionLabelProvider_testMethodName_className,
-						new Object[] { label, className });
+				String decorated = NLS.bind("{0} - {1}", new Object[] { label, className });
 				text = StyledCellLabelProvider.styleDecoratedString(decorated, StyledString.QUALIFIER_STYLER, text);
 			}
 		}
@@ -94,8 +92,7 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 			return string;
 		}
 		String formattedTime = timeFormat.format(time);
-		return Messages.format(JUnitMessages.TestSessionLabelProvider_testName_elapsedTimeInSeconds, new String[] {
-				string, formattedTime });
+		return NLS.bind("{0} ({1} s)", new String[] { string, formattedTime });
 	}
 
 	private String getSimpleLabel(Object element) {
@@ -116,8 +113,7 @@ public class TestSessionLabelProvider extends LabelProvider implements IStyledLa
 		if (fLayoutMode != TestResultsView.LAYOUT_HIERARCHICAL) {
 			if (element instanceof ITestCaseElement) {
 				String className = BasicElementLabels.getJavaElementName(((ITestCaseElement) element).getTestClassName());
-				label = Messages.format(JUnitMessages.TestSessionLabelProvider_testMethodName_className, new Object[] {
-						label, className });
+				label = NLS.bind("{0} - {1}", new Object[] { label, className });
 			}
 		}
 		return addElapsedTime(label, testElement.getElapsedTimeInSeconds());

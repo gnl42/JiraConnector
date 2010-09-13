@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
@@ -39,21 +38,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga
  */
-@SuppressWarnings("restriction")
 public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAction {
-
-	private static boolean isJUnitAvailable = false;
-
-	static {
-		try {
-			if (JUnitPlugin.getDefault() != null) {
-				isJUnitAvailable = true;
-			}
-
-		} catch (Throwable e) {
-			//ignore - swallow exception
-		}
-	}
 
 	public ShowTestResultsAction() {
 		super(null);
@@ -97,9 +82,6 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 
 	@Override
 	boolean onUpdateSelection(EclipseBambooBuild eclipseBambooBuild) {
-		if (!isJUnitAvailable) {
-			return false;
-		}
 		final BambooBuild build = eclipseBambooBuild.getBuild();
 		return (build.getTestsFailed() + build.getTestsPassed()) > 0;
 	}

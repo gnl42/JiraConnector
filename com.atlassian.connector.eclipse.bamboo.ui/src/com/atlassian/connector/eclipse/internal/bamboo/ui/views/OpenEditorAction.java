@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaModelManager;
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -55,7 +54,7 @@ public abstract class OpenEditorAction extends Action {
 	}
 
 	public OpenEditorAction(TestResultsView testRunner, String className, boolean activate) {
-		super(JUnitMessages.OpenEditorAction_action_label);
+		super("&Go to File");
 		fClassName = className;
 		fTestRunner = testRunner;
 		fActivate = activate;
@@ -69,18 +68,16 @@ public abstract class OpenEditorAction extends Action {
 		try {
 			IJavaElement element = findElement(fClassName);
 			if (element == null) {
-				MessageDialog.openError(getShell(), JUnitMessages.OpenEditorAction_error_cannotopen_title,
-						JUnitMessages.OpenEditorAction_error_cannotopen_message);
+				MessageDialog.openError(getShell(), "Cannot Open Editor", "Test class not found in selected project");
 				return;
 			}
 			textEditor = (ITextEditor) JavaUI.openInEditor(element, fActivate, false);
 		} catch (CoreException e) {
-			ErrorDialog.openError(getShell(), JUnitMessages.OpenEditorAction_error_dialog_title,
-					JUnitMessages.OpenEditorAction_error_dialog_message, e.getStatus());
+			ErrorDialog.openError(getShell(), "Error", "Cannot open editor", e.getStatus());
 			return;
 		}
 		if (textEditor == null) {
-			fTestRunner.registerInfoMessage(JUnitMessages.OpenEditorAction_message_cannotopen);
+			fTestRunner.registerInfoMessage("Cannot open editor");
 			return;
 		}
 		reveal(textEditor);
