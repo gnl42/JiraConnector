@@ -24,5 +24,5 @@ import com.atlassian.jira.restjavaclient.domain.Session;
  * @since v0.1
  */
 public interface SessionRestClient {
-	Session getCurrentSession();
+	Session getCurrentSession(ProgressMonitor progressMonitor);
 }

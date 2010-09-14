@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.jersey;
 
+import com.atlassian.jira.restjavaclient.ProgressMonitor;
 import com.atlassian.jira.restjavaclient.RestClientException;
 import com.atlassian.jira.restjavaclient.SessionRestClient;
 import com.atlassian.jira.restjavaclient.domain.Session;
@@ -43,7 +44,7 @@ public class JerseySessionRestClient implements SessionRestClient {
 	}
 
 	@Override
-	public Session getCurrentSession() {
+	public Session getCurrentSession(ProgressMonitor progressMonitor) {
 		final JSONObject jsonObject = client.resource(UriBuilder.fromUri(serverUri).path("rest/auth/latest/session").build()).get(JSONObject.class);
 		try {
 			return sessionJsonParser.parse(jsonObject);

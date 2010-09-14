@@ -41,18 +41,6 @@ public class JerseyJiraRestClientTest extends AbstractJerseyRestClientTest {
     @Test
     public void testEmpty() throws JSONException {
         // for the sake of mvn integration-test
-        final ApacheHttpClient httpClient = ApacheHttpClient.create();
-        final WebResource sessionResource = httpClient.resource(IntegrationTestUtil.concat(jiraAuthRootUri, "/session"));
-        JSONObject json = new JSONObject();
-        json.put("username", "admin");
-        json.put("password", "admin2");
-        final JSONObject resJs = sessionResource.post(JSONObject.class, json);
-        AuthenticationJsonParser parser = new AuthenticationJsonParser();
-        final Authentication authentication = parser.parse(resJs);
-        System.out.println(authentication);
-        sessionResource.cookie(new Cookie(authentication.getSession().getName(), authentication.getSession().getValue()));
-        final JSONObject jsonObject = sessionResource.get(JSONObject.class);
-        System.out.println(jsonObject);
     }
 
 

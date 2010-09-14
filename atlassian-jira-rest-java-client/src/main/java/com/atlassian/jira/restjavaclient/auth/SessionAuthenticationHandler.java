@@ -42,6 +42,7 @@ public class SessionAuthenticationHandler implements AuthenticationHandler {
 
     @Override
     public void configure(Filterable filterable, Client client) {
+//		webResource.cookie(new Comp)
 //        client.
     }
 }

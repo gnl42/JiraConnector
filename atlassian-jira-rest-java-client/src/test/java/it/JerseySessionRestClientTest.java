@@ -16,27 +16,31 @@
 
 package it;
 
-import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.restjavaclient.auth.SessionAuthenticationHandler;
+import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.Session;
 import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
-import static org.junit.Assert.*;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class SessionAuthenticationHandlerTest extends AbstractJerseyRestClientTest {
-	@Override
-	protected void setUpTest() {
-		super.setUpTest();
-        client = new JerseyJiraRestClient(jiraUri, new SessionAuthenticationHandler("admin", "admin"));
-	}
-
-	public void testGetCurrentSession() {
+public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
+	public void testValidSession() {
 		final Session session = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
 		assertEquals(ADMIN_USERNAME, session.getUsername());
+
+	}
+
+	public void testInvalidCredentials() {
+		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(ADMIN_USERNAME, ADMIN_PASSWORD + "invalid"));
+		try {
+			client.getSessionClient().getCurrentSession(new NullProgressMonitor());
+			fail(UniformInterfaceException.class + " exception expected");
+		} catch (UniformInterfaceException e) {
+			assertEquals(401, e.getResponse().getStatus());
+		}
 	}
 }
