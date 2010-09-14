@@ -16,35 +16,25 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import org.apache.commons.io.IOUtils;
+import com.atlassian.jira.restjavaclient.domain.LoginInfo;
+import com.atlassian.jira.restjavaclient.domain.Session;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class ResourceUtil {
-	public static JSONObject getJsonObjectFromResource(String resourcePath) {
-		final String s;
-		try {
-            final InputStream is = VersionJsonParserTest.class.getResourceAsStream(resourcePath);
-            if (is == null) {
-                throw new IOException("Cannot open resource [" + resourcePath + "]");
-            }
-            s = IOUtils.toString(is);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-
+public class SessionJsonParser implements JsonParser<Session> {
+	private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
+	@Override
+	public Session parse(JSONObject json) throws JSONException {
+		final URI userUri = JsonParseUtil.getSelfUri(json);
+		final String username = json.getString("name");
+		final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
+		return new Session(userUri, username, loginInfo);
 	}
 }

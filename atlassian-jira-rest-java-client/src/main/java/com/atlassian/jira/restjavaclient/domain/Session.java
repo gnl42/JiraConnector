@@ -14,16 +14,35 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.domain;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    public IssueRestClient getIssueClient();
-    public SessionRestClient getSessionClient();
+public class Session {
+	private final URI userUri;
+	private final String username;
+	private final LoginInfo loginInfo;
+
+	public Session(URI userUri, String username, LoginInfo loginInfo) {
+		this.userUri = userUri;
+		this.username = username;
+		this.loginInfo = loginInfo;
+	}
+
+	public URI getUserUri() {
+		return userUri;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public LoginInfo getLoginInfo() {
+		return loginInfo;
+	}
 }

@@ -16,35 +16,23 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import org.apache.commons.io.IOUtils;
+import com.atlassian.jira.restjavaclient.domain.LoginInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
+import org.joda.time.DateTime;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class ResourceUtil {
-	public static JSONObject getJsonObjectFromResource(String resourcePath) {
-		final String s;
-		try {
-            final InputStream is = VersionJsonParserTest.class.getResourceAsStream(resourcePath);
-            if (is == null) {
-                throw new IOException("Cannot open resource [" + resourcePath + "]");
-            }
-            s = IOUtils.toString(is);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
+public class LoginInfoJsonParser implements JsonParser<LoginInfo> {
+    @Override
+    public LoginInfo parse(JSONObject json) throws JSONException {
+        final int failedLoginCount = json.getInt("failedLoginCount");
+        final int loginCount = json.getInt("loginCount");
+        final DateTime lastFailedLoginTime = JsonParseUtil.parseDateTime(json, "lastFailedLoginTime");
+        final DateTime previousLoginTime = JsonParseUtil.parseDateTime(json, "previousLoginTime");
+        return new LoginInfo(failedLoginCount, loginCount, lastFailedLoginTime, previousLoginTime);
+    }
 }

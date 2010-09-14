@@ -16,35 +16,19 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import org.apache.commons.io.IOUtils;
+import com.atlassian.jira.restjavaclient.domain.SessionCookie;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class ResourceUtil {
-	public static JSONObject getJsonObjectFromResource(String resourcePath) {
-		final String s;
-		try {
-            final InputStream is = VersionJsonParserTest.class.getResourceAsStream(resourcePath);
-            if (is == null) {
-                throw new IOException("Cannot open resource [" + resourcePath + "]");
-            }
-            s = IOUtils.toString(is);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
+public class SessionCookieJsonParser implements JsonParser<SessionCookie> {
+    @Override
+    public SessionCookie parse(JSONObject json) throws JSONException {
+        return new SessionCookie(json.getString("name"), json.getString("value"));
+    }
 
-	}
 }

@@ -16,14 +16,13 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.Session;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    public IssueRestClient getIssueClient();
-    public SessionRestClient getSessionClient();
+public interface SessionRestClient {
+	Session getCurrentSession();
 }

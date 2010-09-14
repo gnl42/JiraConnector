@@ -33,8 +33,11 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
     protected URI jiraUri;
     protected JerseyJiraRestClient client;
     protected URI jiraRestRootUri;
+    protected URI jiraAuthRootUri;
+	protected static final String ADMIN_USERNAME = "admin";
+	protected static final String ADMIN_PASSWORD = "admin";
 
-    public AbstractJerseyRestClientTest() {
+	public AbstractJerseyRestClientTest() {
     }
 
     public void configureJira() {
@@ -50,6 +53,7 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
             throw new RuntimeException(e);
         }
         jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
-        client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler("admin", "admin"));
+        jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
+        client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(ADMIN_USERNAME, ADMIN_PASSWORD));
     }
 }

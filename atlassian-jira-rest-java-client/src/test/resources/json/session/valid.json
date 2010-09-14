@@ -1,0 +1,10 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+	"name":"admin",
+	"loginInfo":	{
+		"failedLoginCount":12,
+		"loginCount":413,
+		"lastFailedLoginTime":"2010-09-14T16:15:47.554+0200",
+		"previousLoginTime":"2010-09-14T16:48:33.002+0200"
+	}
+}

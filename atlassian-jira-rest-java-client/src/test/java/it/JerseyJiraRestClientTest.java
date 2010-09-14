@@ -16,10 +16,20 @@
 
 package it;
 
+import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.Authentication;
 import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.json.AuthenticationJsonParser;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.client.apache.ApacheHttpClient;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
+
+import javax.ws.rs.core.Cookie;
 
 /**
  * TODO: Document this class / interface here
@@ -28,8 +38,21 @@ import org.junit.Test;
  */
 public class JerseyJiraRestClientTest extends AbstractJerseyRestClientTest {
 
-    public void testEmpty() {
+    @Test
+    public void testEmpty() throws JSONException {
         // for the sake of mvn integration-test
+        final ApacheHttpClient httpClient = ApacheHttpClient.create();
+        final WebResource sessionResource = httpClient.resource(IntegrationTestUtil.concat(jiraAuthRootUri, "/session"));
+        JSONObject json = new JSONObject();
+        json.put("username", "admin");
+        json.put("password", "admin2");
+        final JSONObject resJs = sessionResource.post(JSONObject.class, json);
+        AuthenticationJsonParser parser = new AuthenticationJsonParser();
+        final Authentication authentication = parser.parse(resJs);
+        System.out.println(authentication);
+        sessionResource.cookie(new Cookie(authentication.getSession().getName(), authentication.getSession().getValue()));
+        final JSONObject jsonObject = sessionResource.get(JSONObject.class);
+        System.out.println(jsonObject);
     }
 
 
