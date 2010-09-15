@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse;
 
 import com.atlassian.connector.eclipse.internal.bamboo.tests.AllBambooUiTests;
+import com.atlassian.connector.eclipse.internal.crucible.tests.AllCrucibleUiTests;
 import com.atlassian.connector.eclipse.internal.fisheye.tests.AllFisheyeUiTests;
 
 import junit.framework.Test;
@@ -25,6 +26,7 @@ public final class AllConnectorUiTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Ui Test for com.atlassian.connector.eclipse.tests");
 
+		suite.addTest(AllCrucibleUiTests.suite());
 		suite.addTest(AllBambooUiTests.suite());
 		suite.addTest(AllFisheyeUiTests.suite());
 		suite.addTest(AllEclipseUiTests.suite());

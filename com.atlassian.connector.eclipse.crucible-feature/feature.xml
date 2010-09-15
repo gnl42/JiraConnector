@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.atlassian.connector.eclipse.crucible"
+      label="%featureName"
+      version="2.3.0.qualifier"
+      provider-name="%providerName"
+      plugin="com.atlassian.connector.eclipse.branding.ui">
+
+   <description url="http://atlassian.com">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="license.html">
+      %license
+   </license>
+
+   <includes
+         id="com.atlassian.connector.eclipse"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.apache.commons.logging"/>
+      <import plugin="org.eclipse.mylyn.wikitext.core" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.wikitext.tasks.ui" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.wikitext.confluence.core" version="1.2.0" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.mylyn.monitor.core"/>
+      <import plugin="org.apache.axis"/>
+      <import plugin="javax.xml.rpc"/>
+      <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
+   </requires>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.crucible.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.crucible.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.fisheye.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.fisheye.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.team.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.joda.time"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.thoughtworks.xstream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdom_jaxen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.directclickthrough.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

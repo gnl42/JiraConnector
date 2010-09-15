@@ -7,6 +7,9 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: 
  com.atlassian.connector.commons,
  com.atlassian.connector.eclipse.core,
+ com.atlassian.connector.eclipse.crucible.core,
+ com.atlassian.connector.eclipse.crucible.tests,
+ com.atlassian.connector.eclipse.crucible.ui,
  com.atlassian.connector.eclipse.ui,
  com.atlassian.connector.eclipse.bamboo.core,
  com.atlassian.connector.eclipse.bamboo.tests,
