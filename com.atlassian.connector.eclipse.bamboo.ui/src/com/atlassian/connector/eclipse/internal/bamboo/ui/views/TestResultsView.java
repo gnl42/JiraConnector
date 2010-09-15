@@ -30,6 +30,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
@@ -76,7 +77,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestResultsView extends ViewPart {
@@ -156,21 +156,11 @@ public class TestResultsView extends ViewPart {
 
 	final Image fTestErrorIcon;
 
-	final Image fTestFailIcon;
-
-	final Image fTestRunningIcon;
-
-	final Image fTestIgnoredIcon;
-
 	final ImageDescriptor fSuiteIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuite.gif"); //$NON-NLS-1$
 
 	final ImageDescriptor fSuiteOkIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiteok.gif"); //$NON-NLS-1$
 
 	final ImageDescriptor fSuiteErrorIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiteerror.gif"); //$NON-NLS-1$
-
-	final ImageDescriptor fSuiteFailIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuitefail.gif"); //$NON-NLS-1$
-
-	final ImageDescriptor fSuiteRunningIconDescriptor = BambooImages.getImageDescriptor("obj16/tsuiterun.gif"); //$NON-NLS-1$
 
 	final Image fSuiteIcon;
 
@@ -178,11 +168,7 @@ public class TestResultsView extends ViewPart {
 
 	final Image fSuiteErrorIcon;
 
-	final Image fSuiteFailIcon;
-
-	final Image fSuiteRunningIcon;
-
-	final List fImagesToDispose;
+	final List<Image> fImagesToDispose;
 
 	// Persistence tags.
 	static final String TAG_PAGE = "page"; //$NON-NLS-1$
@@ -376,7 +362,7 @@ public class TestResultsView extends ViewPart {
 	}
 
 	public TestResultsView() {
-		fImagesToDispose = new ArrayList();
+		fImagesToDispose = MiscUtil.buildArrayList();
 
 		fStackViewIcon = createManagedImage("eview16/stackframe.gif");//$NON-NLS-1$
 		fTestRunOKIcon = createManagedImage("eview16/junitsucc.gif"); //$NON-NLS-1$
@@ -387,15 +373,10 @@ public class TestResultsView extends ViewPart {
 		fTestIcon = createManagedImage("obj16/test.gif"); //$NON-NLS-1$
 		fTestOkIcon = createManagedImage("obj16/testok.gif"); //$NON-NLS-1$
 		fTestErrorIcon = createManagedImage("obj16/testerr.gif"); //$NON-NLS-1$
-		fTestFailIcon = createManagedImage("obj16/testfail.gif"); //$NON-NLS-1$
-		fTestRunningIcon = createManagedImage("obj16/testrun.gif"); //$NON-NLS-1$
-		fTestIgnoredIcon = createManagedImage("obj16/testignored.gif"); //$NON-NLS-1$
 
 		fSuiteIcon = createManagedImage(fSuiteIconDescriptor);
 		fSuiteOkIcon = createManagedImage(fSuiteOkIconDescriptor);
 		fSuiteErrorIcon = createManagedImage(fSuiteErrorIconDescriptor);
-		fSuiteFailIcon = createManagedImage(fSuiteFailIconDescriptor);
-		fSuiteRunningIcon = createManagedImage(fSuiteRunningIconDescriptor);
 	}
 
 	private Image createManagedImage(String path) {
@@ -578,7 +559,7 @@ public class TestResultsView extends ViewPart {
 
 	private void disposeImages() {
 		for (int i = 0; i < fImagesToDispose.size(); i++) {
-			((Image) fImagesToDispose.get(i)).dispose();
+			(fImagesToDispose.get(i)).dispose();
 		}
 	}
 

@@ -222,13 +222,11 @@ public class TestViewer {
 			TestElement testElement = (TestElement) selection.getFirstElement();
 
 			String testLabel = testElement.getTestName();
-			String className = testElement.getClassName();
 			if (testElement instanceof TestSuiteElement) {
 				manager.add(new OpenTestAction(fTestRunnerPart, testLabel));
 				manager.add(new Separator());
 			} else {
 				TestCaseElement testCaseElement = (TestCaseElement) testElement;
-				String testMethodName = testCaseElement.getTestMethodName();
 				manager.add(new OpenTestAction(fTestRunnerPart, testCaseElement));
 				manager.add(new Separator());
 			}
@@ -263,9 +261,9 @@ public class TestViewer {
 				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
 			}
 
-			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
+			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format("%s(%s)",
+					test.getTestMethodName(), test.getTestClassName()));
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
-			tce.setName(test.getTestMethodName());
 			tce.setStatus(Status.ERROR, test.getErrors(), null, null);
 		}
 
@@ -274,9 +272,9 @@ public class TestViewer {
 				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
 			}
 
-			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), test.getTestMethodName());
+			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format("%s(%s)",
+					test.getTestMethodName(), test.getTestClassName()));
 			tce.setElapsedTimeInSeconds(test.getTestDuration());
-			tce.setName(test.getTestMethodName());
 			tce.setStatus(Status.OK, test.getErrors(), null, null);
 		}
 
