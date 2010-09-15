@@ -19,11 +19,6 @@
    </license>
 
    <includes
-         id="com.atlassian.connector.eclipse.crucible"
-         version="0.0.0"
-         name="Crucible Integration"/>
-
-   <includes
          id="com.atlassian.connector.eclipse.bamboo"
          version="0.0.0"
          name="Bamboo Integration"/>
@@ -39,8 +34,6 @@
 
    <requires>
       <import plugin="org.junit"/>
-      <import plugin="com.atlassian.connector.eclipse.crucible.core"/>
-      <import plugin="com.atlassian.connector.eclipse.crucible.ui"/>
       <import plugin="com.atlassian.connector.eclipse.core"/>
       <import plugin="com.atlassian.connector.eclipse.ui"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.core"/>
