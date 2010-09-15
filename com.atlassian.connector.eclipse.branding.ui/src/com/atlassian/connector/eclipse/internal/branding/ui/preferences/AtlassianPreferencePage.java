@@ -1,10 +1,5 @@
 package com.atlassian.connector.eclipse.internal.branding.ui.preferences;
 
-import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
-import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
-import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
-import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -26,14 +21,18 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.atlassian.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianBundlesInfo;
+import com.atlassian.connector.eclipse.internal.ui.AtlassianLogo;
+import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
+
 public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static final String TEXT_MAIN = "The Atlassian Eclipse Connector is an Eclipse plugin that lets you "
 			+ "work with the Atlassian products within your IDE. Now you don't "
 			+ "have to switch between websites, email messages and news feeds to "
 			+ "see what's happening to your project and your code. Instead, you "
-			+ "can see the relevant <a href=\"http://www.atlassian.com/software/jira\">JIRA</a> issues, "
-			+ "<a href=\"http://www.atlassian.com/software/crucible\">Crucible</a> reviews "
+			+ "can see the relevant <a href=\"http://www.atlassian.com/software/jira\">JIRA</a> issues "
 			+ "and <a href=\"http://www.atlassian.com/software/bamboo\">Bamboo</a> build "
 			+ "information right there in your development environment. Viewing your "
 			+ "code in <a href=\"http://www.atlassian.com/software/fisheye\">FishEye</a> is just a click away.";

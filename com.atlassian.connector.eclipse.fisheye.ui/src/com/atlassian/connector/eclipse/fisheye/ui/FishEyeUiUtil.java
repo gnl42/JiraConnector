@@ -13,9 +13,8 @@ package com.atlassian.connector.eclipse.fisheye.ui;
 
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeMappingConfiguration;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -154,8 +153,7 @@ public final class FishEyeUiUtil {
 		final Set<TaskRepository> fishEyeLikeRepos = MiscUtil.buildHashSet();
 		final List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
 		for (TaskRepository taskRepository : allRepositories) {
-			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)
-					|| taskRepository.getConnectorKind().equals(CrucibleCorePlugin.CONNECTOR_KIND)) {
+			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
 				fishEyeLikeRepos.add(taskRepository);
 			}
 		}

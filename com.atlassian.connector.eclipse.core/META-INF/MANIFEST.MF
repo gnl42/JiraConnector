@@ -17,8 +17,6 @@ Require-Bundle:
 Export-Package: com.atlassian.connector.eclipse.internal.core;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.crucible.core,
-   com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.fisheye.core,
    com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.ui,
@@ -26,16 +24,12 @@ Export-Package: com.atlassian.connector.eclipse.internal.core;
  com.atlassian.connector.eclipse.internal.core.client;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.crucible.core,
-   com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.fisheye.core,
    com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.ui",
  com.atlassian.connector.eclipse.internal.core.jobs;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.crucible.core,
-   com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.fisheye.core,
    com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.ui,

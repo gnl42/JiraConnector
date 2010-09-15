@@ -12,20 +12,15 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
-import com.atlassian.connector.eclipse.internal.fisheye.core.client.IClientDataProvider;
-import com.atlassian.connector.eclipse.internal.fisheye.core.client.IUpdateRepositoryData;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
@@ -78,21 +73,10 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	private final class UpdateRepositoryDataRunnable implements IRunnableWithProgress {
 
 			public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				final Object client;
-
-				if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
-					client = fishEyeClientManager.getClient(taskRepository);
-				} else {
-					client = crucibleClientManager.getClient(taskRepository);
-				}
+				final FishEyeClient client = fishEyeClientManager.getClient(taskRepository);
 
 				try {
-					if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
-						((IUpdateRepositoryData) client).updateRepositoryData(monitor, taskRepository);
-					} else {
-						((IUpdateRepositoryData) client).updateRepositoryData(monitor, taskRepository);
-					}
-
+					client.updateRepositoryData(monitor, taskRepository);
 				} catch (final CoreException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
 					Display.getDefault().asyncExec(new Runnable() {
@@ -109,7 +93,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					public void run() {
 						if (!monitor.isCanceled()) {
 							final ISelection oldSelection = sourceRepositoryCombo.getSelection();
-							sourceRepositoryCombo.setInput(getSortedRepositories(getRepositoriesFromClient((IClientDataProvider) client)));
+							sourceRepositoryCombo.setInput(getSortedRepositories(getRepositoriesFromClient(client)));
 							sourceRepositoryCombo.setSelection(oldSelection);
 							setErrorMessage(null);
 						}
@@ -208,8 +192,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private final FishEyeClientManager fishEyeClientManager;
 
-	private final CrucibleClientManager crucibleClientManager;
-
 	private Collection<ScmRepository> scmRepositories;
 
 	private Button updateServerDataButton;
@@ -260,8 +242,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		this.sourceRepository = sourceRepository;
 		this.taskRepository = taskRepository;
 		this.fishEyeClientManager = FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager();
-		CrucibleCorePlugin.getDefault();
-		this.crucibleClientManager = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
 	}
 
 	private Label createLabel(Composite parent, String text) {
@@ -359,8 +339,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					if (selection.getFirstElement() instanceof TaskRepository) {
 						taskRepository = (TaskRepository) selection.getFirstElement();
-						final IClientDataProvider client = taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND) ?
-							fishEyeClientManager.getClient(taskRepository) : crucibleClientManager.getClient(taskRepository);
+						final FishEyeClient client = fishEyeClientManager.getClient(taskRepository);
 						if (!client.hasRepositoryData()) {
 							updateServerData(taskRepository);
 						} else {
@@ -479,16 +458,10 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 
-	protected Collection<String> getRepositoriesFromClient(IClientDataProvider client) {
+	protected Collection<String> getRepositoriesFromClient(FishEyeClient client) {
 		Collection<String> repositories = MiscUtil.buildArrayList();
-		Object clientData = client.getClientData();
-		if (clientData instanceof FishEyeClientData) {
-			repositories.addAll(((FishEyeClientData) clientData).getCachedRepositories());
-		} else if (clientData instanceof CrucibleClientData) {
-			for(Repository repo : ((CrucibleClientData) clientData).getCachedRepositories()) {
-				repositories.add(repo.getName());
-			}
-		}
+		FishEyeClientData clientData = client.getClientData();
+		repositories.addAll(clientData.getCachedRepositories());
 		return repositories;
 	}
 

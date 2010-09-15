@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.core;
+package com.atlassian.connector.eclipse.internal.fisheye.core;
 
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.thoughtworks.xstream.XStream;
@@ -51,10 +51,10 @@ public final class TaskRepositoryUtil {
 				XStream xs = new XStream(new JDomDriver());
 				return (Map<String, String>) xs.fromXML(property);
 			} catch (XStreamException e) {
-				StatusHandler.log(new Status(IStatus.WARNING, CrucibleCorePlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.WARNING, FishEyeCorePlugin.PLUGIN_ID,
 						FAILED_TO_DE_SERIALIZE_MAPPINGS, e));
 			} catch (ClassCastException e) {
-				StatusHandler.log(new Status(IStatus.WARNING, CrucibleCorePlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.WARNING, FishEyeCorePlugin.PLUGIN_ID,
 						FAILED_TO_DE_SERIALIZE_MAPPINGS, e));
 			}
 		}
@@ -66,7 +66,7 @@ public final class TaskRepositoryUtil {
 			XStream xs = new XStream(new JDomDriver());
 			taskRepository.setProperty(TASK_REPOSITORY_SCM_MAPPINGS_KEY, xs.toXML(mappings));
 		} catch (XStreamException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleCorePlugin.PLUGIN_ID, "Failed to serialize mappings",
+			StatusHandler.log(new Status(IStatus.WARNING, FishEyeCorePlugin.PLUGIN_ID, "Failed to serialize mappings",
 					e));
 		}
 	}

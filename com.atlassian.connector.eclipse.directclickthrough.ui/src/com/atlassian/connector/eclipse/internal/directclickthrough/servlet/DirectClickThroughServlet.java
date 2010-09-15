@@ -84,9 +84,6 @@ public class DirectClickThroughServlet extends HttpServlet {
 		} else if ("/issue".equals(path)) {
 			writeIcon(resp);
 			handleOpenIssueRequest(req);
-		} else if ("/review".equals(path)) {
-			writeIcon(resp);
-			handleOpenReviewRequest(req);
 		} else if ("/build".equals(path)) {
 			writeIcon(resp);
 			handleOpenBuildRequest(req);
@@ -406,54 +403,6 @@ public class DirectClickThroughServlet extends HttpServlet {
 			});
 		}
 
-	}
-
-	@SuppressWarnings("restriction")
-	private void handleOpenReviewRequest(final HttpServletRequest req) {
-		final String taskId = req.getParameter("review_key");
-		final String repositoryUrl = req.getParameter("server_url");
-		// TODO: add support for those two
-		// final String filePath = req.getParameter("file_path");
-		// final String commentId = req.getParameter("comment_id");
-
-		if (taskId == null || repositoryUrl == null) {
-			StatusHandler
-					.log(new Status(IStatus.WARNING,
-							DirectClickThroughUiPlugin.PLUGIN_ID,
-							"Cannot open issue: review_key or server_url parameter is null"));
-		}
-
-		try {
-			Class<?> cls = Class
-					.forName("com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin");
-
-			Field connectorKindField = cls.getDeclaredField("CONNECTOR_KIND");
-
-			String connectorKind = (String) connectorKindField.get(null);
-
-			IRepositoryManager repositoryManager = TasksUi
-					.getRepositoryManager();
-			AbstractRepositoryConnector connector = repositoryManager
-					.getRepositoryConnector(connectorKind);
-			String taskUrl = connector == null ? null : connector.getTaskUrl(
-					repositoryUrl, taskId);
-
-			new OpenRepositoryTaskJob(connectorKind, repositoryUrl, taskId,
-					taskUrl, null).schedule();
-		} catch (Exception e) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					new MessageDialog(
-							WorkbenchUtil.getShell(),
-							"Unable to handle request",
-							null,
-							"Direct Click Through failed to open issue because Atlassian Crucible & FishEye Integration is missing.",
-							MessageDialog.INFORMATION,
-							new String[] { IDialogConstants.OK_LABEL }, 0)
-							.open();
-				}
-			});
-		}
 	}
 
 	@SuppressWarnings("restriction")

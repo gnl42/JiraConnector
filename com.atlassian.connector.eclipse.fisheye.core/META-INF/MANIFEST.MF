@@ -12,11 +12,12 @@ Require-Bundle: org.eclipse.core.runtime,
  com.atlassian.connector.commons,
  com.atlassian.connector.eclipse.core,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.2.0,4.0.0)",
- com.atlassian.connector.eclipse.commons.core;visibility:=reexport
+ com.atlassian.connector.eclipse.commons.core;visibility:=reexport,
+ com.thoughtworks.xstream
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.fisheye.core;x-friends:="com.atlassian.connector.eclipse.fisheye.ui, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.ui",
- com.atlassian.connector.eclipse.internal.fisheye.core.client;x-friends:="com.atlassian.connector.eclipse.fisheye.ui, com.atlassian.connector.eclipse.crucible.core, com.atlassian.connector.eclipse.crucible.ui"
+Export-Package: com.atlassian.connector.eclipse.internal.fisheye.core;x-friends:="com.atlassian.connector.eclipse.fisheye.ui",
+ com.atlassian.connector.eclipse.internal.fisheye.core.client;x-friends:="com.atlassian.connector.eclipse.fisheye.ui"
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.core.data,

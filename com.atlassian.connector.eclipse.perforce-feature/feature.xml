@@ -31,7 +31,6 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="com.atlassian.connector.eclipse.crucible" version="2.3.0.qualifier" match="equivalent"/>
       <import plugin="org.eclipse.team.svn"/>
       <import plugin="org.eclipse.team.svn.core"/>
       <import plugin="org.eclipse.team.svn.ui"/>
