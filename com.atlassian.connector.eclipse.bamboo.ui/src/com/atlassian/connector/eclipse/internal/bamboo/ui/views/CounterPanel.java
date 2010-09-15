@@ -24,7 +24,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -43,11 +42,7 @@ public class CounterPanel extends Composite {
 
 	protected Text fNumberOfRuns;
 
-	protected int fTotal;
-
 	private final Image fErrorIcon = BambooImages.getImageDescriptor("ovr16/error_ovr.gif").createImage(); //$NON-NLS-1$
-
-	private final Image fFailureIcon = BambooImages.getImageDescriptor("ovr16/failed_ovr.gif").createImage(); //$NON-NLS-1$
 
 	public CounterPanel(Composite parent) {
 		super(parent, SWT.WRAP);
@@ -57,7 +52,7 @@ public class CounterPanel extends Composite {
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 
-		fNumberOfRuns = createLabel("Runs:", null, " 0/0  "); //$NON-NLS-1$
+		fNumberOfRuns = createLabel("Total:", null, " 0 "); //$NON-NLS-1$
 		fNumberOfErrors = createLabel("Errors:", fErrorIcon, " 0 "); //$NON-NLS-1$
 
 		addDisposeListener(new DisposeListener() {
@@ -69,7 +64,6 @@ public class CounterPanel extends Composite {
 
 	private void disposeIcons() {
 		fErrorIcon.dispose();
-		fFailureIcon.dispose();
 	}
 
 	private Text createLabel(String name, Image image, String init) {
@@ -95,23 +89,11 @@ public class CounterPanel extends Composite {
 
 	public void reset() {
 		setErrorValue(0);
-		setRunValue(0, 0);
-		fTotal = 0;
+		setRunValue(0);
 	}
 
-	public void setTotal(int value) {
-		fTotal = value;
-	}
-
-	public int getTotal() {
-		return fTotal;
-	}
-
-	public void setRunValue(int value, int ignoredCount) {
-		String runString = NLS.bind("{0}/{1}", new String[] { Integer.toString(value), Integer.toString(fTotal) });
-		fNumberOfRuns.setText(runString);
-
-		fNumberOfRuns.redraw();
+	public void setRunValue(int value) {
+		fNumberOfRuns.setText(Integer.toString(value));
 		redraw();
 	}
 

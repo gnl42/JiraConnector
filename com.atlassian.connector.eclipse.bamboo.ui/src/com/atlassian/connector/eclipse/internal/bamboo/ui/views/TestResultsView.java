@@ -585,7 +585,7 @@ public class TestResultsView extends ViewPart {
 			errorCount = 0;
 		}
 
-		fCounterPanel.setTotal(totalCount);
+		fCounterPanel.setRunValue(totalCount);
 		fCounterPanel.setErrorValue(errorCount);
 	}
 
@@ -889,6 +889,8 @@ public class TestResultsView extends ViewPart {
 	}
 
 	public void setTestsResult(String buildKey, BuildDetails testResults) {
+		fBuildDetails = testResults;
+
 		if (testResults != null) {
 			setContentDescription(NLS.bind("Bamboo build {0}", buildKey));
 
