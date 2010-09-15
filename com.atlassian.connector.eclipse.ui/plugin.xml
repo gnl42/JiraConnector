@@ -12,4 +12,19 @@
             class="com.atlassian.connector.eclipse.ui.AtlassianUiPlugin$AtlassianUiPluginEarlyStartup">
       </startup>
    </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+         <!-- I declare that I can adapt from IAdaptable in order actually to make it work in as many contexts as possible -
+         not only for instanceofs IResource, but also for CompilationUnit, IJavaProject, etc. which do adapt to IResource, but 
+         do not implement this interface. It also handles IEditorInput -->
+      <factory
+            adaptableType="org.eclipse.core.runtime.IAdaptable"
+            class="com.atlassian.connector.eclipse.ui.commons.EditorResourceAdapterFactory">
+         <adapter
+               type="com.atlassian.connector.eclipse.ui.commons.IEditorResource">
+         </adapter>
+      </factory>
+   </extension>
+   
 </plugin>
