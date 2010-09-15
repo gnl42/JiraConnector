@@ -22,8 +22,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
+
 import org.eclipse.jface.action.Action;
 
 class ShowPreviousFailureAction extends Action {
@@ -31,11 +31,11 @@ class ShowPreviousFailureAction extends Action {
 	private final TestResultsView fPart;
 
 	public ShowPreviousFailureAction(TestResultsView part) {
-		super(JUnitMessages.ShowPreviousFailureAction_label);
-		setDisabledImageDescriptor(JUnitPlugin.getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
-		setHoverImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
-		setImageDescriptor(JUnitPlugin.getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
-		setToolTipText(JUnitMessages.ShowPreviousFailureAction_tooltip);
+		super("Previous Failure");
+		setDisabledImageDescriptor(BambooImages.getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
+		setHoverImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+		setImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+		setToolTipText("Previous Failed Test");
 		fPart = part;
 	}
 

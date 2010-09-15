@@ -18,25 +18,19 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.views.TestResultsView;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jdt.internal.junit.model.JUnitModel;
-import org.eclipse.jdt.internal.junit.model.TestRunSession;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Action to open the Test Results
@@ -44,21 +38,7 @@ import java.lang.reflect.Method;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga
  */
-@SuppressWarnings("restriction")
 public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAction {
-
-	private static boolean isJUnitAvailable = false;
-
-	static {
-		try {
-			if (JUnitPlugin.getDefault() != null) {
-				isJUnitAvailable = true;
-			}
-
-		} catch (Throwable e) {
-			//ignore - swallow exception
-		}
-	}
 
 	public ShowTestResultsAction() {
 		super(null);
@@ -82,7 +62,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 			@Override
 			public void done(IJobChangeEvent event) {
 				if (event.getResult() == Status.OK_STATUS) {
-					File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
+					BuildDetails testResults = ((RetrieveTestResultsJob) event.getJob()).getBuildDetails();
 					if (testResults != null) {
 						showJUnitView(testResults, build.getPlanKey() + "-" + build.getNumber());
 					} else {
@@ -102,32 +82,16 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 
 	@Override
 	boolean onUpdateSelection(EclipseBambooBuild eclipseBambooBuild) {
-		if (!isJUnitAvailable) {
-			return false;
-		}
 		final BambooBuild build = eclipseBambooBuild.getBuild();
 		return (build.getTestsFailed() + build.getTestsPassed()) > 0;
 	}
 
-	private void showJUnitView(final File testResults, final String buildKey) {
+	private void showJUnitView(final BuildDetails testResults, final String buildKey) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				new ShowTestResultsExecution().execute(testResults, buildKey);
 			}
 		});
-	}
-
-	// see PLE-712, Eclipse 3.6 has a different API for JUnit plugin than older versions. 
-	public static JUnitModel getJunitModel() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-		Method getModelMethod;
-		try {
-			getModelMethod = JUnitPlugin.class.getMethod("getModel");
-		} catch (NoSuchMethodException e) {
-			// on e3.6 this stuff has been moved to a new class, which does not even exist on e3.5
-			getModelMethod = Class.forName("org.eclipse.jdt.internal.junit.JUnitCorePlugin").getMethod("getModel");
-		}
-		return (JUnitModel) getModelMethod.invoke(null);
 	}
 
 	/**
@@ -138,7 +102,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 	 */
 	private class ShowTestResultsExecution {
 
-		public void execute(final File testResults, final String buildKey) {
+		public void execute(final BuildDetails testResults, final String buildKey) {
 			IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			if (activeWorkbenchWindow == null) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
@@ -146,25 +110,13 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 				return;
 			}
 			try {
-				activeWorkbenchWindow.getActivePage().showView(TestResultsView.ID);
-				/*if (testsView != null && testsView instanceof TestResultsView) {
+				IViewPart testsView = activeWorkbenchWindow.getActivePage().showView(TestResultsView.ID);
+				if (testsView != null && testsView instanceof TestResultsView) {
 					((TestResultsView) testsView).setTestsResult(buildKey, testResults);
-				}*/
+				}
 			} catch (PartInitException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
 				return;
-			}
-			final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null);
-
-			try {
-				JUnitModel.importIntoTestRunSession(testResults, trs);
-			} catch (CoreException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
-			}
-			try {
-				getJunitModel().addTestRunSession(trs);
-			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
 			}
 		}
 

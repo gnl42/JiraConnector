@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.operations;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.core.TestResultExternalizer;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -26,15 +25,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-import java.io.File;
-import java.io.IOException;
-
 public class RetrieveTestResultsJob extends Job {
 	private final BambooBuild build;
 
 	private final TaskRepository repository;
 
-	private File testResults;
+	private BuildDetails testResults;
 
 	public RetrieveTestResultsJob(BambooBuild build, TaskRepository repository) {
 		super("Retrieving test results");
@@ -46,20 +42,15 @@ public class RetrieveTestResultsJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
 		try {
-			BuildDetails details = client.getBuildDetails(monitor, repository, build);
-			TestResultExternalizer tre = new TestResultExternalizer();
-			testResults = tre.writeApplicationsToXML(build, details, File.createTempFile("bamboo_result", ".xml"));
+			testResults = client.getBuildDetails(monitor, repository, build);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 					"Failed to retrieve test results for build " + build.getPlanKey(), e));
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to process test results for build " + build.getPlanKey(), e));
 		}
 		return Status.OK_STATUS;
 	}
 
-	public File getTestResultsFile() {
+	public BuildDetails getBuildDetails() {
 		return testResults;
 	}
 }

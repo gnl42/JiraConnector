@@ -22,9 +22,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.eclipse.jdt.internal.junit.ui.ITraceDisplay;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.TextualTrace;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -35,9 +34,9 @@ import org.eclipse.swt.widgets.TableItem;
 public class FailureTableDisplay implements ITraceDisplay {
 	private final Table fTable;
 
-	private final Image fExceptionIcon = JUnitPlugin.createImage("obj16/exc_catch.gif"); //$NON-NLS-1$
+	private final Image fExceptionIcon = BambooImages.getImageDescriptor("obj16/exc_catch.gif").createImage(); //$NON-NLS-1$
 
-	private final Image fStackIcon = JUnitPlugin.createImage("obj16/stkfrm_obj.gif"); //$NON-NLS-1$
+	private final Image fStackIcon = BambooImages.getImageDescriptor("obj16/stkfrm_obj.gif").createImage(); //$NON-NLS-1$
 
 	public FailureTableDisplay(Table table) {
 		fTable = table;

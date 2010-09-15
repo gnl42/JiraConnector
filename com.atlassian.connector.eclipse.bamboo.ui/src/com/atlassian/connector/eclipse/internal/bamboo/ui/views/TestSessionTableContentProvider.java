@@ -22,10 +22,11 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import org.eclipse.jdt.internal.junit.model.TestCaseElement;
-import org.eclipse.jdt.internal.junit.model.TestRoot;
-import org.eclipse.jdt.internal.junit.model.TestSuiteElement;
-import org.eclipse.jdt.junit.model.ITestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.ITestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestRoot;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -44,10 +45,9 @@ public class TestSessionTableContentProvider implements IStructuredContentProvid
 
 	private void addAll(ArrayList all, TestSuiteElement suite) {
 		ITestElement[] children = suite.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			ITestElement element = children[i];
+		for (ITestElement element : children) {
 			if (element instanceof TestSuiteElement) {
-				if (((TestSuiteElement) element).getSuiteStatus().isErrorOrFailure()) {
+				if (((TestSuiteElement) element).getSuiteStatus().isError()) {
 					all.add(element); // add failed suite to flat list too
 				}
 				addAll(all, (TestSuiteElement) element);

@@ -24,15 +24,13 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     Johan Walles: walles@mailblocks.com bug 68737
  *******************************************************************************/
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.junit.model.TestElement;
-import org.eclipse.jdt.internal.junit.ui.JUnitPreferencePage;
-import org.eclipse.jdt.internal.junit.ui.TextualTrace;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.IOpenEventListener;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.swt.SWT;
@@ -67,11 +65,6 @@ public class FailureTrace implements IMenuListener {
 
 	public FailureTrace(Composite parent, Clipboard clipboard, TestResultsView testRunner, ToolBar toolBar) {
 		Assert.isNotNull(clipboard);
-
-		// fill the failure trace viewer toolbar
-		ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
-		failureToolBarmanager.add(new EnableStackFilterAction(this));
-		failureToolBarmanager.update(true);
 
 		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
 		fTestRunner = testRunner;
@@ -189,9 +182,6 @@ public class FailureTrace implements IMenuListener {
 	}
 
 	private String[] getFilterPatterns() {
-		if (JUnitPreferencePage.getFilterStack()) {
-			return JUnitPreferencePage.getFilterPatterns();
-		}
 		return new String[0];
 	}
 

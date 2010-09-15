@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
+package com.atlassian.connector.eclipse.internal.bamboo.ui.model;
 
 /*******************************************************************************
  * Copyright (c) 2000, 2008 IBM Corporation and others.
@@ -22,24 +22,27 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 
-import org.eclipse.jface.action.Action;
+/**
+ * Common protocol for test elements containers. This set consists of {@link ITestSuiteElement} and
+ * {@link ITestRunSession}
+ * 
+ * <p>
+ * This interface is not intended to be implemented by clients.
+ * </p>
+ * 
+ * @since 3.3
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
+ */
+public interface ITestElementContainer extends ITestElement {
 
-class ShowNextFailureAction extends Action {
+	/**
+	 * Returns all tests (and test suites) contained in the suite.
+	 * 
+	 * @return returns all tests (and test suites) contained in the suite.
+	 */
+	public ITestElement[] getChildren();
 
-	private final TestResultsView fPart;
-
-	public ShowNextFailureAction(TestResultsView part) {
-		super("Next Failure");
-		setDisabledImageDescriptor(BambooImages.getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
-		setHoverImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-		setImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-		setToolTipText("Next Failed Test");
-		fPart = part;
-	}
-
-	public void run() {
-		fPart.selectNextFailure();
-	}
 }

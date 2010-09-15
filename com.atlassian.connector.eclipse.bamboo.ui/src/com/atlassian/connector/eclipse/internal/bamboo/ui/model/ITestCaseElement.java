@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
+package com.atlassian.connector.eclipse.internal.bamboo.ui.model;
 
 /*******************************************************************************
  * Copyright (c) 2000, 2008 IBM Corporation and others.
@@ -22,24 +22,32 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 
-import org.eclipse.jface.action.Action;
+/**
+ * Represents a test case element.
+ * <p>
+ * This interface is not intended to be implemented by clients.
+ * </p>
+ * 
+ * @since 3.3
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
+ */
+public interface ITestCaseElement extends ITestElement {
 
-class ShowNextFailureAction extends Action {
+	/**
+	 * Returns the name of the test method.
+	 * 
+	 * @return returns the name of the test method.
+	 */
+	public String getTestMethodName();
 
-	private final TestResultsView fPart;
+	/**
+	 * Returns the qualified type name of the class the test is contained in.
+	 * 
+	 * @return the qualified type name of the class the test is contained in.
+	 */
+	public String getTestClassName();
 
-	public ShowNextFailureAction(TestResultsView part) {
-		super("Next Failure");
-		setDisabledImageDescriptor(BambooImages.getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
-		setHoverImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-		setImageDescriptor(BambooImages.getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
-		setToolTipText("Next Failed Test");
-		fPart = part;
-	}
-
-	public void run() {
-		fPart.selectNextFailure();
-	}
 }
