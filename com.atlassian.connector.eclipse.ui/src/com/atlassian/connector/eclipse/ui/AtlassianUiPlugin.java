@@ -11,14 +11,8 @@
 
 package com.atlassian.connector.eclipse.ui;
 
-import com.atlassian.connector.eclipse.ui.internal.monitor.TaskEditorMonitor;
-
-import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IStartup;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -32,8 +26,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static AtlassianUiPlugin plugin;
-
-	protected TaskEditorMonitor taskEditorMonitor;
 
 	/**
 	 * The constructor
@@ -59,8 +51,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-
-		MonitorUiPlugin.getDefault().removeWindowPerspectiveListener(taskEditorMonitor);
 	}
 
 	/**
@@ -82,20 +72,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 			return window.getShell();
 		}
 		return null;
-	}
-
-	public static class AtlassianUiPluginEarlyStartup implements IStartup {
-
-		public void earlyStartup() {
-			final IWorkbench workbench = PlatformUI.getWorkbench();
-			workbench.getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					AtlassianUiPlugin.getDefault().taskEditorMonitor = new TaskEditorMonitor();
-					MonitorUiPlugin.getDefault().addWindowPerspectiveListener(
-							AtlassianUiPlugin.getDefault().taskEditorMonitor);
-				}
-			});
-		}
 	}
 
 }

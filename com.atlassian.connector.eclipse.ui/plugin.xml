@@ -1,18 +1,5 @@
 <plugin>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="com.atlassian.connector.eclipse.ui.preferences.PreferenceInitializer">
-      </initializer>
-   </extension>
   
-   <extension
-         point="org.eclipse.ui.startup">
-      <startup
-            class="com.atlassian.connector.eclipse.ui.AtlassianUiPlugin$AtlassianUiPluginEarlyStartup">
-      </startup>
-   </extension>
-   
    <extension
          point="org.eclipse.core.runtime.adapters">
          <!-- I declare that I can adapt from IAdaptable in order actually to make it work in as many contexts as possible -
