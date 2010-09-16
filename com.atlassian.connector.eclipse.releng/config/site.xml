@@ -6,24 +6,14 @@
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
-   <feature url="features/com.atlassian.connector.eclipse.jira_@core@.jar" id="com.atlassian.connector.eclipse.jira" version="@core@">
-      <category name="Connector"/>
-   </feature>
    <feature url="features/com.atlassian.connector.eclipse.perforce_@core@.jar" id="com.atlassian.connector.eclipse.perforce" version="@core@">
-      <category name="Integrations"/>
+	   <category name="Connector"/>
    </feature>
    <feature url="features/com.atlassian.connector.eclipse.subclipse_@core@.jar" id="com.atlassian.connector.eclipse.subclipse" version="@core@">
-      <category name="Integrations"/>
+   		<category name="Connector"/>
    </feature>
    <feature url="features/com.atlassian.connector.eclipse.subversive_@core@.jar" id="com.atlassian.connector.eclipse.subversive" version="@core@">
-      <category name="Integrations"/>
-   </feature>
-   <feature url="features/com.atlassian.connector.eclipse.cvs_@core@.jar" id="com.atlassian.connector.eclipse.cvs" version="@core@">
-      <category name="Integrations"/>
-   </feature>
-   <feature url="features/com.atlassian.connector.eclipse.bamboo_@core@.jar" id="com.atlassian.connector.eclipse.bamboo" version="@core@">
-      <category name="Integrations"/>
+	   <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="Atlassian Connector"/>
-   <category-def name="Integrations" label="Atlassian Integrations (optional)"/>
 </site>

@@ -31,6 +31,21 @@
          version="0.0.0"
          optional="true"/>
 
+   <includes
+         id="com.atlassian.connector.eclipse.bamboo"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
+         id="com.atlassian.connector.eclipse.jira"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
+         id="com.atlassian.connector.eclipse.crucible"
+         version="0.0.0"
+         optional="true"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
