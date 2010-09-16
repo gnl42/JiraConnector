@@ -51,7 +51,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
+	<plugin
+         id="com.atlassian.connector.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+                  
    <plugin
          id="com.atlassian.connector.eclipse.bamboo.core"
          download-size="0"
