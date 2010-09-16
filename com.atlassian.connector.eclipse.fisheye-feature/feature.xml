@@ -18,8 +18,4 @@
       %license
    </license>
 
-   <includes
-         id="com.atlassian.connector.eclipse"
-         version="0.0.0"/>
-
 </feature>
