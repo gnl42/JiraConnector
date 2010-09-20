@@ -6,13 +6,4 @@ Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.eclipse.team.core,
- org.eclipse.mylyn.commons.core,
- org.tigris.subversion.subclipse.core;bundle-version="[1.4.0,2.0.0)";visibility:=reexport,
- org.jetbrains.annotations;resolution:=optional,
- com.atlassian.connector.commons,
- org.tigris.subversion.clientadapter
-
 
