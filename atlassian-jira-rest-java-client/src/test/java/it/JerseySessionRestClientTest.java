@@ -31,6 +31,13 @@ import org.junit.Test;
  * @since v0.1
  */
 public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
+
+	@Override
+	protected void setUpTest() {
+		super.setUpTest();
+		configureJira();
+	}
+
 	public void testValidSession() {
 		final Session session = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
 		assertEquals(ADMIN_USERNAME, session.getUsername());

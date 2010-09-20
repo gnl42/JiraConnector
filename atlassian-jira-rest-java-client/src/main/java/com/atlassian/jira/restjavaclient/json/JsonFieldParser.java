@@ -20,7 +20,6 @@ import com.atlassian.jira.restjavaclient.domain.Field;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ import java.util.Map;
  *
  * @since v0.1
  */
-public class JsonFieldParser implements JsonParser<Field>{
+public class JsonFieldParser {
     private static final String VALUE_ATTRIBUTE = "value";
 
     private Map<String, JsonParser> registeredValueParsers = new HashMap<String, JsonParser>() {{
@@ -37,8 +36,7 @@ public class JsonFieldParser implements JsonParser<Field>{
         put("java.lang.String", new StringFieldValueParser());
     }};
 
-    @Override
-    public Field parse(JSONObject jsonObject) throws JSONException {
+    public Field parse(JSONObject jsonObject, String id) throws JSONException {
         String type = jsonObject.getString("type");
         final String name = jsonObject.getString("name");
         final Object valueObject = jsonObject.opt(VALUE_ATTRIBUTE);
@@ -58,7 +56,7 @@ public class JsonFieldParser implements JsonParser<Field>{
                 value = valueObject.toString();
         }
         }
-        return new Field(name, type, value);
+        return new Field(id, name, type, value);
     }
 
 

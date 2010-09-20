@@ -20,14 +20,13 @@ import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.ProgressMonitor;
 import com.atlassian.jira.restjavaclient.RestClientException;
-import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.domain.Transition;
-import com.atlassian.jira.restjavaclient.domain.Watchers;
+import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
 import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
 import com.google.common.base.Joiner;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
@@ -36,9 +35,7 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * TODO: Document this class / interface here
@@ -47,94 +44,125 @@ import java.util.Iterator;
  */
 public class JerseyIssueRestClient implements IssueRestClient {
 
-    private final ApacheHttpClient client;
-    private final URI baseUri;
+	private final ApacheHttpClient client;
+	private final URI baseUri;
 
-    private final IssueJsonParser issueParser = new IssueJsonParser();
-    private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
-    private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
+	private final IssueJsonParser issueParser = new IssueJsonParser();
+	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
+	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 
-    public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
-        this.baseUri = baseUri;
-        this.client = client;
-    }
+	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
+		this.baseUri = baseUri;
+		this.client = client;
+	}
 
-    @Override
-    public Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor) {
-        final WebResource watchersResource = client.resource(issue.getWatchers().getSelf());
+	@Override
+	public Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor) {
+		final WebResource watchersResource = client.resource(issue.getWatchers().getSelf());
 
-        final JSONObject s = watchersResource.get(JSONObject.class);
-        try {
-            return watchersParser.parse(s);
-        } catch (JSONException e) {
-            throw new RestClientException(e);
-        }
-    }
+		final JSONObject s = watchersResource.get(JSONObject.class);
+		try {
+			return watchersParser.parse(s);
+		} catch (JSONException e) {
+			throw new RestClientException(e);
+		}
+	}
 
-    @Override
-    public Issue getIssue(final IssueArgs args, ProgressMonitor progressMonitor) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-        uriBuilder.path("issue").path(args.getKey());
-        final String expandoString = getExpandoString(args);
-        if (expandoString != null) {
-            uriBuilder.queryParam("expand", expandoString);
-        }
+	@Override
+	public Issue getIssue(final IssueArgs args, ProgressMonitor progressMonitor) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+		uriBuilder.path("issue").path(args.getKey());
+		final String expandoString = getExpandoString(args);
+		if (expandoString != null) {
+			uriBuilder.queryParam("expand", expandoString);
+		}
 
-        final WebResource issueResource = client.resource(uriBuilder.build());
+		final WebResource issueResource = client.resource(uriBuilder.build());
 
-        final JSONObject s = issueResource.get(JSONObject.class);
+		final JSONObject s = issueResource.get(JSONObject.class);
 
-        try {
+		try {
 //            System.out.println(s.toString(4));
-            return issueParser.parseIssue(args, s);
-        } catch (JSONException e) {
-            throw new RestClientException(e);
-        }
-    }
+			return issueParser.parseIssue(args, s);
+		} catch (JSONException e) {
+			throw new RestClientException(e);
+		}
+	}
 
-    @Override
-    public Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor) {
-        final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
-        final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
-        final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
-        @SuppressWarnings("unchecked")
-        final Iterator<String> iterator = jsonObject.keys();
-        while (iterator.hasNext()) {
-            final String key = iterator.next();
-            try {
-                final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), key);
-                transitions.add(transition);
-            } catch (JSONException e) {
-                throw new RestClientException(e);
-            }
-        }
-        return transitions;
-    }
+	@Override
+	public Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor) {
+		final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
+		final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
+		final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
+		@SuppressWarnings("unchecked")
+		final Iterator<String> iterator = jsonObject.keys();
+		while (iterator.hasNext()) {
+			final String key = iterator.next();
+			try {
+				final int id = Integer.parseInt(key);
+				final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
+				transitions.add(transition);
+			} catch (JSONException e) {
+				throw new RestClientException(e);
+			} catch (NumberFormatException e) {
+				throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+			}
+		}
+		return transitions;
+	}
+
+	@Override
+	public void transition(Issue issue, TransitionInput transitionInput) {
+		final URI uri = issue.getTransitionsUri();
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("transition", transitionInput.getId());
+			if (transitionInput.getComment() != null) {
+				jsonObject.put("comment", transitionInput.getComment());
+			}
+			Map<String, Object> fieldsMap = new HashMap<String, Object>();
+			final Iterable<FieldInput> fields = transitionInput.getFields();
+			if (fields.iterator().hasNext()) {
+				for (FieldInput fieldInput : fields) {
+					fieldsMap.put(fieldInput.getId(), fieldInput.getValue().toString());
+				}
+			}
+			jsonObject.put("fields", fieldsMap);
+			final WebResource issueResource = client.resource(uri);
+			issueResource.post(jsonObject);
+		} catch (JSONException e) {
+			throw new RestClientException(e);
+		} catch (UniformInterfaceException e) {
+			throw new RestClientException(e.getResponse().getEntity(String.class), e);
+		}
 
 
-    @Nullable
-    private String getExpandoString(IssueArgs args) {
-        Collection<String> expandos = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
-        if (args.withAttachments()) {
-            expandos.add("attachments");
-        }
-        if (args.withComments()) {
-            expandos.add("comments");
-        }
-        if (args.withHtml()) {
-            expandos.add("html");
-        }
-        if (args.withWorklogs()) {
-            expandos.add("worklogs");
-        }
-        if (args.withWatchers()) {
-            expandos.add("watchers.list");
-        }
-        if (expandos.size() == 0) {
-            return null;
-        }
-        return Joiner.on(',').join(expandos);
-    }
+	}
+
+
+	@Nullable
+	private String getExpandoString(IssueArgs args) {
+		Collection<String> expandos = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
+		if (args.withAttachments()) {
+			expandos.add("attachments");
+		}
+		if (args.withComments()) {
+			expandos.add("comments");
+		}
+		if (args.withHtml()) {
+			expandos.add("html");
+		}
+		if (args.withWorklogs()) {
+			expandos.add("worklogs");
+		}
+		if (args.withWatchers()) {
+			expandos.add("watchers.list");
+		}
+		if (expandos.size() == 0) {
+			return null;
+		}
+		return Joiner.on(',').join(expandos);
+	}
 
 }

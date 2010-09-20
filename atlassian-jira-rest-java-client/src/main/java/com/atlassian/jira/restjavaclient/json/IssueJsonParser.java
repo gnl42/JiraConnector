@@ -152,7 +152,7 @@ public class IssueJsonParser {
 				continue;
 			}
             try {
-                res.add(fieldParser.parse(json.getJSONObject(key)));
+                res.add(fieldParser.parse(json.getJSONObject(key), key));
             } catch (JSONException e) {
                 final JSONException jsonException = new JSONException("Cannot parse field [" + key + "]");
                 jsonException.initCause(e);

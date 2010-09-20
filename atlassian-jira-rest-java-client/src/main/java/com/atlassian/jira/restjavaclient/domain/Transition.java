@@ -27,10 +27,10 @@ import java.util.Collection;
  */
 public class Transition {
     private final String name;
-    private final String id;
+    private final int id;
     private final Collection<Field> fields;
 
-    public Transition(String name, String id, Collection<Field> fields) {
+    public Transition(String name, int id, Collection<Field> fields) {
         this.name = name;
         this.id = id;
         this.fields = fields;
@@ -40,7 +40,7 @@ public class Transition {
         return name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -76,18 +76,18 @@ public class Transition {
 
 
     public static class Field {
-        private final String name;
+        private final String id;
         private final boolean isRequired;
         private final String type;
 
-        public Field(String name, boolean isRequired, String type) {
-            this.name = name;
+        public Field(String id, boolean isRequired, String type) {
+            this.id = id;
             this.isRequired = isRequired;
             this.type = type;
         }
 
-        public String getName() {
-            return name;
+        public String getId() {
+            return id;
         }
 
         public boolean isRequired() {
@@ -100,14 +100,14 @@ public class Transition {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(name, isRequired, type);
+            return Objects.hashCode(id, isRequired, type);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Field) {
                 Field that = (Field) obj;
-                return Objects.equal(this.name, that.name)
+                return Objects.equal(this.id, that.id)
                         && Objects.equal(this.isRequired, that.isRequired)
                         && Objects.equal(this.type, that.type);
             }
@@ -117,7 +117,7 @@ public class Transition {
         @Override
         public String toString() {
             return Objects.toStringHelper(this).
-                    add("name", name).
+                    add("id", id).
                     add("isRequired", isRequired).
                     add("type", type).
                     toString();

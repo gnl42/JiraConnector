@@ -35,9 +35,9 @@ public class TransitionJsonParserTest {
     public void testParse() throws Exception {
         final TransitionJsonParser parser = new TransitionJsonParser();
 
-        final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), "5");
+        final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
         assertEquals(4, Iterables.size(transition.getFields()));
         assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Iterables.getLast(transition.getFields()));
-        assertEquals("5", transition.getId());
+        assertEquals(5, transition.getId());
     }
 }

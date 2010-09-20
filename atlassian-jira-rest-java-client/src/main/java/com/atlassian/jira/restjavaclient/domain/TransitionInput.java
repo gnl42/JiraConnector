@@ -14,19 +14,38 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.domain;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class RestClientException extends RuntimeException {
-    public RestClientException(Throwable cause) {
-        super(cause);
-    }
+public class TransitionInput {
+	private final int id;
+	@Nullable
+	private final String comment;
 
-	public RestClientException(String message, Throwable cause) {
-		super(message, cause);
+	private final Collection<FieldInput> fields;
+
+	public TransitionInput(int id, Collection<FieldInput> fields, String comment) {
+		this.id = id;
+		this.comment = comment;
+		this.fields = fields;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public Iterable<FieldInput> getFields() {
+		return fields;
 	}
 }

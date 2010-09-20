@@ -117,14 +117,26 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return fields;
 	}
 
+	@Nullable
+	public Field getField(String id) {
+		for (Field field : fields) {
+			if (field.getId().equals(id)) {
+				return field;
+			}
+		}
+		return null;
+	}
+
 	public String getKey() {
 		return key;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}
 
+	@Override
 	public Iterable<String> getExpandos() {
 		return expandos;
 	}

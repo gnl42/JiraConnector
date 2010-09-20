@@ -42,7 +42,6 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
 
     public void configureJira() {
         administration.restoreData("jira1-export.xml");
-        setUpTest();
     }
 
     @Override

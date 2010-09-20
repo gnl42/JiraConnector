@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.domain.input;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class RestClientException extends RuntimeException {
-    public RestClientException(Throwable cause) {
-        super(cause);
-    }
-
-	public RestClientException(String message, Throwable cause) {
-		super(message, cause);
-	}
+public class CommentInput {
+	
 }

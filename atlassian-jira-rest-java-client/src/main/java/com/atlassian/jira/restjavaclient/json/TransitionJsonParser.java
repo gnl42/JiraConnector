@@ -30,7 +30,7 @@ import java.util.Collection;
 public class TransitionJsonParser {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
-    public Transition parse(JSONObject json, String id) throws JSONException {
+    public Transition parse(JSONObject json, int id) throws JSONException {
         final String name = json.getString("name");
         final Collection<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
                 transitionFieldJsonParser);
