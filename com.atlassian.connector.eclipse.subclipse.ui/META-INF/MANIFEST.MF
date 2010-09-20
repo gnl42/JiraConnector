@@ -3,11 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Subclipse UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.ui;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.ui.AtlassianSubclipseUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.ui,
- com.atlassian.connector.eclipse.team.ui,
  com.atlassian.connector.eclipse.subclipse.core,
  org.eclipse.mylyn.commons.core,
  org.tigris.subversion.subclipse.ui;bundle-version="[1.4.0,2.0.0)",
@@ -24,6 +22,5 @@ Require-Bundle: org.eclipse.ui,
  org.jetbrains.annotations;resolution:=optional,
  com.collabnet.subversion.merge;resolution:=optional
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
