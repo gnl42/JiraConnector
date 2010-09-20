@@ -3,11 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse CVS UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.cvs.ui;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.cvs.ui.AtlassianCvsUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.ui,
- com.atlassian.connector.eclipse.team.ui,
  com.atlassian.connector.eclipse.cvs.core,
  org.eclipse.mylyn.commons.core,
  org.eclipse.team.core,
@@ -23,6 +21,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.cvs.ui,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.cvs.ui;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

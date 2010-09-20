@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse FishEye Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.core;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core;bundle-version="[3.2.0,4.0.0)",
@@ -16,8 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  com.thoughtworks.xstream
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.fisheye.core;x-friends:="com.atlassian.connector.eclipse.fisheye.ui",
- com.atlassian.connector.eclipse.internal.fisheye.core.client;x-friends:="com.atlassian.connector.eclipse.fisheye.ui"
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.core.data,

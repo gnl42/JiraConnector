@@ -3,10 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Subversive UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.subversive.ui;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.subversive.ui.AtlassianSubversiveUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.atlassian.connector.eclipse.team.ui,
  com.atlassian.connector.eclipse.subversive.core,
  org.eclipse.mylyn.commons.core,
  org.eclipse.team.core,
@@ -23,6 +21,5 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.io,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.subversive.ui;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

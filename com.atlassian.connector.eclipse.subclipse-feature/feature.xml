@@ -22,7 +22,6 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="com.atlassian.connector.eclipse.ui"/>
-      <import plugin="com.atlassian.connector.eclipse.team.ui"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
