@@ -17,10 +17,13 @@
 package it;
 
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
+import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.Session;
 import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
-import com.sun.jersey.api.client.UniformInterfaceException;
+import com.atlassian.jira.restjavaclient.json.TestConstants;
+import org.joda.time.DateTime;
+import org.junit.Test;
 
 /**
  * TODO: Document this class / interface here
@@ -36,11 +39,42 @@ public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
 
 	public void testInvalidCredentials() {
 		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(ADMIN_USERNAME, ADMIN_PASSWORD + "invalid"));
-		try {
-			client.getSessionClient().getCurrentSession(new NullProgressMonitor());
-			fail(UniformInterfaceException.class + " exception expected");
-		} catch (UniformInterfaceException e) {
-			assertEquals(401, e.getResponse().getStatus());
-		}
+		TestUtil.assertErrorCode(401, new Runnable() {
+			@Override
+			public void run() {
+				client.getSessionClient().getCurrentSession(new NullProgressMonitor());
+			}
+		});
 	}
+
+	@Test
+	public void testGetCurrentSession() throws Exception {
+		final Session session = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
+		assertEquals(ADMIN_USERNAME, session.getUsername());
+
+		// that is not a mistake - username and the password for this user is the same
+		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(),
+				TestConstants.USER1.getName()));
+		final Session session2 = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
+		assertEquals(TestConstants.USER1.getName(), session2.getUsername());
+		final DateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
+
+		final JerseyJiraRestClient client2 = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(),
+				"bad-password"));
+		final DateTime now = new DateTime();
+		TestUtil.assertErrorCode(401, new Runnable() {
+			@Override
+			public void run() {
+				client2.getSessionClient().getCurrentSession(new NullProgressMonitor());
+			}
+		});
+		while (!new DateTime().isAfter(lastFailedLoginDate)) {
+			Thread.sleep(20);
+		}
+
+		final Session sessionAfterFailedLogin = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
+		assertTrue(sessionAfterFailedLogin.getLoginInfo().getLastFailedLoginDate().isAfter(lastFailedLoginDate));
+		assertTrue(sessionAfterFailedLogin.getLoginInfo().getLastFailedLoginDate().isAfter(now));
+	}
+
 }

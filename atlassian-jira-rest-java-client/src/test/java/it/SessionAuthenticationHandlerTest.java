@@ -16,12 +16,8 @@
 
 package it;
 
-import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.restjavaclient.auth.SessionAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.Session;
-import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
-import static org.junit.Assert.*;
 
 /**
  * TODO: Document this class / interface here

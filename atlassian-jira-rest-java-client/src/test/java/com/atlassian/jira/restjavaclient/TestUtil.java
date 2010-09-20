@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
+import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -41,5 +43,15 @@ public class TestUtil {
 
 	public static DateTime toDateTime(String isoDateTimeSt) {
 		return formatter.parseDateTime(isoDateTimeSt);
+	}
+
+	public static void assertErrorCode(int errorCode, Runnable runnable) {
+		try {
+			runnable.run();
+			Assert.fail(UniformInterfaceException.class + " exception expected");
+		} catch (UniformInterfaceException e) {
+			Assert.assertEquals(errorCode, e.getResponse().getStatus());
+		}
+
 	}
 }
