@@ -113,7 +113,6 @@
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.core/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.ui/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.tests/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.help/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.ui/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.core/build.xml"/>
