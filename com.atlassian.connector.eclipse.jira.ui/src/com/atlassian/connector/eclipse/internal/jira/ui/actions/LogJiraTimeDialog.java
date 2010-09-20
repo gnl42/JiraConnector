@@ -245,7 +245,6 @@ public class LogJiraTimeDialog extends MessageDialog {
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);
 				adjustEstimate = JiraWorkLog.AdjustEstimateMethod.REDUCE;
-//				reduceEstimate = true;
 				reduceRemainigEstimateText.setEnabled(reduceRemainingTimeButton.getSelection());
 				validateSettings();
 				JiraUiUtil.updateAdjustEstimateOption(adjustEstimate, repository);
@@ -319,15 +318,21 @@ public class LogJiraTimeDialog extends MessageDialog {
 			if (estimate == null) {
 				estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
 			}
+			long estimateLong = (estimate == null ? 0 : Long.parseLong(estimate.getValue()));
+
 			try {
-				remainingEstimateInSeconds = (estimate == null ? 0 : Long.parseLong(estimate.getValue()))
-						- formatter.parse(reduceRemainigEstimateText.getText());
+				remainingEstimateInSeconds = estimateLong - formatter.parse(reduceRemainigEstimateText.getText());
 			} catch (ParseException ex) {
 				controlIsOk = false;
 			}
 
-			if (!controlIsOk || remainingEstimateInSeconds < 0) {
+			if (!controlIsOk) {
 				JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, true);
+				ok = false;
+			} else if (remainingEstimateInSeconds < 0) {
+				JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, NLS.bind(
+						Messages.LogJiraTimeDialog_cant_reduce_estimate_below_zero, formatter.format(estimateLong)),
+						true);
 				ok = false;
 			}
 		}

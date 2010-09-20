@@ -43,6 +43,13 @@ public class JiraEditorUtil {
 	}
 
 	public static void showTimeSpentDecorator(Text toDecorate, TaskRepository repository, boolean show) {
+		String errorDescription = NLS.bind(Messages.JiraEditorUtil_Time_Spent_Error_Decorator_Hover,
+				JiraUtil.getWorkDaysPerWeek(repository), JiraUtil.getWorkHoursPerDay(repository));
+		showTimeSpentDecorator(toDecorate, repository, errorDescription, show);
+	}
+
+	public static void showTimeSpentDecorator(Text toDecorate, TaskRepository repository, String errorDescription,
+			boolean show) {
 		if (toDecorate == null || toDecorate.isDisposed()) {
 			return;
 		}
@@ -55,10 +62,9 @@ public class JiraEditorUtil {
 			amountTextControlDecoration = new ControlDecoration(toDecorate, SWT.TOP | SWT.LEFT);
 			toDecorate.setData(DECORATOR_KEY, amountTextControlDecoration);
 			amountTextControlDecoration.setShowOnlyOnFocus(false);
-			amountTextControlDecoration.setDescriptionText(NLS.bind(
-					Messages.JiraEditorUtil_Time_Spent_Error_Decorator_Hover, JiraUtil.getWorkDaysPerWeek(repository),
-					JiraUtil.getWorkHoursPerDay(repository)));
 		}
+		amountTextControlDecoration.setDescriptionText(errorDescription);
+
 		FieldDecoration errorImage = FieldDecorationRegistry.getDefault().getFieldDecoration(decorationId);
 		amountTextControlDecoration.setImage(errorImage.getImage());
 		if (show) {
