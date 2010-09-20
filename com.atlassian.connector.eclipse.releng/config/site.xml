@@ -6,14 +6,5 @@
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
-   <feature url="features/com.atlassian.connector.eclipse.perforce_@core@.jar" id="com.atlassian.connector.eclipse.perforce" version="@core@">
-	   <category name="Connector"/>
-   </feature>
-   <feature url="features/com.atlassian.connector.eclipse.subclipse_@core@.jar" id="com.atlassian.connector.eclipse.subclipse" version="@core@">
-   		<category name="Connector"/>
-   </feature>
-   <feature url="features/com.atlassian.connector.eclipse.subversive_@core@.jar" id="com.atlassian.connector.eclipse.subversive" version="@core@">
-	   <category name="Connector"/>
-   </feature>
    <category-def name="Connector" label="Atlassian Connector"/>
 </site>
