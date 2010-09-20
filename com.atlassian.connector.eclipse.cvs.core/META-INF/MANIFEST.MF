@@ -3,8 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse CVS Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.cvs.core;singleton:=true
 Bundle-Version: 3.0.0.qualifier
-Require-Bundle: org.eclipse.core.runtime,
- org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

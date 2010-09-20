@@ -6,21 +6,4 @@ Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylyn.commons.core,
- org.eclipse.team.core,
- org.eclipse.core.filesystem,
- org.eclipse.core.resources,
- org.eclipse.compare,
- com.atlassian.connector.commons,
- org.eclipse.core.runtime,
- org.eclipse.mylyn.commons.net,
- org.apache.commons.io,
- org.eclipse.ui,
- org.eclipse.jface,
- org.jetbrains.annotations;resolution:=optional,
- com.perforce.p4api,
- com.perforce.p4wsad,
- com.perforce.p4java,
- com.perforce.team.core
 
