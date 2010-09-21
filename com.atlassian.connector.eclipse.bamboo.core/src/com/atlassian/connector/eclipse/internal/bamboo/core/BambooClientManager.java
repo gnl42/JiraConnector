@@ -52,6 +52,20 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		BambooClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, false);
+		// we can have different credentials here for taskRepo and client
+//		if (!client.getServerData().equals(serverCfg)) {
+//			client = createClient(taskRepository, client.getClientData());
+//		}
+		updateHttpSessionCallback(location, serverCfg);
+
+		return client;
+	}
+
+	public BambooClient getNewClient(TaskRepository repository) {
+		BambooClient client = createClient(repository, new BambooClientData(), false);
+
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(repository);
+		ConnectionCfg serverCfg = getServerData(location, repository, false);
 		updateHttpSessionCallback(location, serverCfg);
 
 		return client;
@@ -159,4 +173,5 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 			}
 		}
 	}
+
 }
