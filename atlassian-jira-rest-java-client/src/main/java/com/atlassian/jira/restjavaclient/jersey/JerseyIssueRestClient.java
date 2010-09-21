@@ -124,7 +124,7 @@ public class JerseyIssueRestClient implements IssueRestClient {
 			final Iterable<FieldInput> fields = transitionInput.getFields();
 			if (fields.iterator().hasNext()) {
 				for (FieldInput fieldInput : fields) {
-					fieldsMap.put(fieldInput.getId(), fieldInput.getValue().toString());
+					fieldsMap.put(fieldInput.getId(), fieldInput.getValue());
 				}
 			}
 			jsonObject.put("fields", fieldsMap);

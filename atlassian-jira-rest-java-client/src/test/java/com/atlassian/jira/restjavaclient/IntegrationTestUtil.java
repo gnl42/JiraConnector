@@ -32,7 +32,11 @@ public class IntegrationTestUtil {
     public static final User USER1;
 
     public static final User USER_ADMIN;
-    static {
+	public static final int START_PROGRESS_TRANSITION_ID = 4;
+	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
+	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
+
+	static {
         LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
         try {
             final URI userRestUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user/").build();

@@ -26,11 +26,11 @@ import org.junit.Test;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
+import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
 import static org.junit.Assert.assertThat;
 
 
@@ -43,8 +43,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
     // no timezone here, as JIRA does not store timezone information in its dump file
     private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
-	private static final int START_PROGRESS_TRANSITION_ID = 4;
-	private static final int STOP_PROGRESS_TRANSITION_ID = 301;
 
 	@Test
     public void testGetWatchers() throws Exception {
@@ -72,7 +70,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
         assertEquals(3, Iterables.size(issue.getComments()));
         assertThat(issue.getExpandos(), IterableMatcher.hasOnlyElements("html"));
 
-        assertEquals(START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
+        assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
         final Iterable<Attachment> items = issue.getAttachments();
         assertNotNull(items);
         final User user = new User(jiraRestUri("/user/admin"),
@@ -93,7 +91,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
         final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
         final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
         assertEquals(4, Iterables.size(transitions));
-        assertTrue(Iterables.contains(transitions, new Transition("Start Progress", START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList())));
+        assertTrue(Iterables.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList())));
     }
 
 	@Test
@@ -102,15 +100,15 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertEquals(4, Iterables.size(transitions));
-		final Transition startProgressTransition = new Transition("Start Progress", START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
+		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitions, startProgressTransition));
 
-		client.getIssueClient().transition(issue, new TransitionInput(START_PROGRESS_TRANSITION_ID, Collections.<FieldInput>emptyList(), "My test comment"));
+		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<FieldInput>emptyList(), "My test comment"));
 		final Issue transitionedIssue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
 		assertEquals("In Progress", transitionedIssue.getStatus().getName());
 		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
-		final Transition stopProgressTransition = new Transition("Stop Progress", STOP_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
+		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
@@ -120,27 +118,50 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testTransitionWithNumericCustomField() throws Exception {
 		configureJira();
-		final String numericFieldId = "customfield_10000";
 		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
 		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
-		assertNull(issue.getField(numericFieldId).getValue());
+		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+		Transition transitionFound = getTransitionByName(transitions, "Estimate");
+
+		assertNotNull(transitionFound);
+		assertTrue(Iterables.contains(transitionFound.getFields(), new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, "com.atlassian.jira.issue.fields.CustomFieldImpl")));
+		final double newValue = 123.45;
+		// @todo put double directly here instead of formatting it for expected locale, when JIRA is fixed - 
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
+				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput), "My test comment"));
+		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
+	}
+
+	//@Test
+	public void xtestTransitionWithNumericCustomFieldAndInteger() throws Exception {
+		configureJira();
+		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
+		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+		Transition transitionFound = getTransitionByName(transitions, "Estimate");
+
+		assertNotNull(transitionFound);
+		assertTrue(Iterables.contains(transitionFound.getFields(), new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, "com.atlassian.jira.issue.fields.CustomFieldImpl")));
+		final int newValue = 123;
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput), "My test comment"));
+		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
+	}
+
+	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
 		Transition transitionFound = null;
 		for (Transition transition : transitions) {
-			if (transition.getName().equals("Estimate")) {
+			if (transition.getName().equals(transitionName)) {
 				transitionFound = transition;
 				break;
 			}
 		}
-
-		assertNotNull(transitionFound);
-		assertTrue(Iterables.contains(transitionFound.getFields(), new Transition.Field(numericFieldId, false, "com.atlassian.jira.issue.fields.CustomFieldImpl")));
-		final double newValue = 123.43;
-		final FieldInput fieldInput = new FieldInput(numericFieldId,
-				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
-		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput), "My test comment"));
-		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
-		assertTrue(changedIssue.getField(numericFieldId).getValue().equals(newValue));
+		return transitionFound;
 	}
 
 
