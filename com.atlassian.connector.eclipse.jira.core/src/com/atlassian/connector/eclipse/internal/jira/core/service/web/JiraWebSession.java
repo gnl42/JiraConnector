@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
@@ -374,7 +375,9 @@ public class JiraWebSession {
 		}
 
 		try {
-			location.requestCredentials(authenticationType, null, monitor);
+			// we don't want a background monitor here, we want to force requestCredentials to prompt the user
+			location.requestCredentials(authenticationType, null,
+					Policy.isBackgroundMonitor(monitor) ? SubMonitor.convert(monitor) : monitor);
 		} catch (UnsupportedRequestException ignored) {
 			throw new JiraAuthenticationException("Login failed."); //$NON-NLS-1$
 		}
