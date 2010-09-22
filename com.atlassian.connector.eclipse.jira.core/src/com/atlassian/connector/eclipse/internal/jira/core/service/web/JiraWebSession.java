@@ -375,7 +375,7 @@ public class JiraWebSession {
 		}
 
 		try {
-			// we don't want a background monitor here, we want to force requestCredentials to prompt the user
+			// PLE-960, PLE-1259 - we don't want a background monitor here, we want to force requestCredentials to prompt the user
 			location.requestCredentials(authenticationType, null,
 					Policy.isBackgroundMonitor(monitor) ? SubMonitor.convert(monitor) : monitor);
 		} catch (UnsupportedRequestException ignored) {
