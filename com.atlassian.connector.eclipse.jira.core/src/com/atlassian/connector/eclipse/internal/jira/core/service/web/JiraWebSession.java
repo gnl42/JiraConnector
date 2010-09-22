@@ -237,14 +237,18 @@ public class JiraWebSession {
 	private HostConfiguration login(HttpClient httpClient, IProgressMonitor monitor) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
-		//String url = baseUrl + "/login.jsp"; //$NON-NLS-1$
-		String url = baseUrl + "/secure/Dashboard.jspa"; //$NON-NLS-1$
+		final String restLogin = "/rest/gadget/1.0/login"; //$NON-NLS-1$ // JIRA 4.x has additional endpoint for login that tells if CAPTCHA limit was hit
+		final String loginAction = "/secure/Dashboard.jspa"; //$NON-NLS-1$;
+		boolean jira4x = true;
+
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (credentials == null) {
 				// TODO prompt user?
 				credentials = new AuthenticationCredentials("", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+
+			String url = baseUrl + (jira4x ? restLogin : loginAction);
 
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
@@ -258,6 +262,12 @@ public class JiraWebSession {
 			try {
 				HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location, monitor);
 				int statusCode = WebUtil.execute(httpClient, hostConfiguration, login, monitor);
+
+				if (statusCode == HttpStatus.SC_NOT_FOUND) {
+					jira4x = false;
+					continue;
+				}
+
 				if (needsReauthentication(httpClient, login, monitor)) {
 					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
@@ -288,7 +298,6 @@ public class JiraWebSession {
 					} else {
 						// need to login to make sure HttpClient picks up the session cookie
 						baseUrl = newBaseUrl;
-						url = newBaseUrl + "/login.jsp"; //$NON-NLS-1$
 					}
 				}
 			} catch (IOException e) {
@@ -336,7 +345,7 @@ public class JiraWebSession {
 	}
 
 	private boolean needsReauthentication(HttpClient httpClient, PostMethod method, IProgressMonitor monitor)
-			throws JiraAuthenticationException {
+			throws JiraAuthenticationException, IOException, JiraServiceUnavailableException {
 		final AuthenticationType authenticationType;
 		int code = method.getStatusCode();
 		if (code == HttpStatus.SC_OK) {
@@ -353,13 +362,14 @@ public class JiraWebSession {
 			return true;
 		}
 
-		try {
-			client.getSoapClient().login(Policy.backgroundMonitorFor(monitor)); // pass NPM so there will be no request credentials dialog
-		} catch (JiraException e) {
-			if (e instanceof JiraCaptchaRequiredException) {
-				throw (JiraCaptchaRequiredException) e;
-			} else {
-				// just skip it
+		if (method.getResponseHeader("Content-Type").getValue().startsWith("application/json")) { //$NON-NLS-1$//$NON-NLS-2$
+			// we're talking to JIRA 4.x
+			String json = method.getResponseBodyAsString(1024);
+			if (json.contains("\"captchaFailure\":true")) { //$NON-NLS-1$
+				throw new JiraCaptchaRequiredException(null);
+			}
+			if (json.contains("\"loginFailedByPermissions\":true")) { //$NON-NLS-1$
+				throw new JiraServiceUnavailableException("You don't have permission to login"); //$NON-NLS-1$
 			}
 		}
 

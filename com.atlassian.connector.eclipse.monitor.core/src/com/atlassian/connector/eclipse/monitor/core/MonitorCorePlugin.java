@@ -55,8 +55,6 @@ public class MonitorCorePlugin extends Plugin {
 
 	private static final long SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
 
-	private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
-
 	private InteractionEventLogger interactionLogger;
 
 	private static MonitorCorePlugin plugin;
@@ -76,18 +74,6 @@ public class MonitorCorePlugin extends Plugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-
-		File oldMonitorFile = new File(getLogFilesRootDir(), MONITOR_LOG_NAME_OLD);
-		if (oldMonitorFile.exists() && oldMonitorFile.canWrite()) {
-			oldMonitorFile.delete();
-		}
-
-		try {
-			interactionLogger = new InteractionEventLogger(getMonitorLogFile());
-		} catch (Throwable t) {
-			StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
-					Messages.MonitorCorePlugin_failed_to_start, t));
-		}
 	}
 
 	private void logPlatformDetails(InteractionEventLogger log) {
@@ -109,7 +95,7 @@ public class MonitorCorePlugin extends Plugin {
 	}
 
 	public void startMonitoring() {
-		interactionLogger.startMonitoring();
+		getInteractionLogger().startMonitoring();
 		logPlatformDetails(interactionLogger);
 		logInstalledFeatures(interactionLogger);
 
@@ -121,7 +107,9 @@ public class MonitorCorePlugin extends Plugin {
 		// stop statistics upload
 		stopUploadStatisticsJob();
 
-		interactionLogger.stopMonitoring();
+		if (interactionLogger != null) {
+			interactionLogger.stopMonitoring();
+		}
 	}
 
 	@Override
@@ -184,6 +172,19 @@ public class MonitorCorePlugin extends Plugin {
 	}
 
 	public InteractionEventLogger getInteractionLogger() {
+		if (interactionLogger == null) {
+			File oldMonitorFile = new File(getLogFilesRootDir(), MONITOR_LOG_NAME_OLD);
+			if (oldMonitorFile.exists() && oldMonitorFile.canWrite()) {
+				oldMonitorFile.delete();
+			}
+
+			try {
+				interactionLogger = new InteractionEventLogger(getMonitorLogFile());
+			} catch (Throwable t) {
+				StatusHandler.log(new Status(IStatus.ERROR, MonitorCorePlugin.ID_PLUGIN,
+						Messages.MonitorCorePlugin_failed_to_start, t));
+			}
+		}
 		return interactionLogger;
 	}
 
