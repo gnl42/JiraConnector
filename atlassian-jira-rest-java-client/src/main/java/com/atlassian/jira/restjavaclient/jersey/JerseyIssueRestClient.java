@@ -143,6 +143,29 @@ public class JerseyIssueRestClient implements IssueRestClient {
 
 	}
 
+	@Override
+	public void vote(Issue issue) {
+		final WebResource votesResource = client.resource(getVotesUri(issue));
+		try {
+			votesResource.post();
+		} catch (UniformInterfaceException e) {
+			throw new RestClientException(e.getResponse().getEntity(String.class), e);
+		}
+	}
+
+	private URI getVotesUri(Issue issue) {
+		return UriBuilder.fromUri(issue.getSelf()).path("votes").build();
+	}
+
+	@Override
+	public void unvote(Issue issue) {
+		final WebResource votesResource = client.resource(getVotesUri(issue));
+		try {
+			votesResource.delete();
+		} catch (UniformInterfaceException e) {
+			throw new RestClientException(e.getResponse().getEntity(String.class), e);
+		}
+	}
 
 	@Nullable
 	private String getExpandoString(IssueArgs args) {

@@ -30,7 +30,18 @@ import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
  * @since v0.1
  */
 public class TestConstants {
-	public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), "wseliga", "Wojciech Seliga");
+	public static final String USER1_USERNAME = "wseliga";
+
+	public static final String USER1_PASSWORD = "wseliga";
+
+	public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER1_USERNAME, "Wojciech Seliga");
 
 	public static final User USER_ADMIN = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/admin"), "admin", "Administrator");
+
+	public static final String USER2_USERNAME = "user";
+
+	public static final String USER2_PASSWORD = "user";
+
+	public static final User USER2 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER2_USERNAME, "My Test User");
+
 }

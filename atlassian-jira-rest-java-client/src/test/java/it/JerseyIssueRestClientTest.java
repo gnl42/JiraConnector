@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.restjavaclient.*;
 import com.atlassian.jira.restjavaclient.domain.*;
+import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -48,7 +49,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
     public void testGetWatchers() throws Exception {
-        configureJira();
         final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
         final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
         assertEquals(1, watchers.getNumWatchers());
@@ -194,6 +194,64 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertEquals(comment.getRoleLevel(), lastComment.getRoleLevel());
 	}
 
+	@Test
+	public void testVoteUnvote() {
+		final Issue issue1 = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		assertFalse(issue1.getVotes().hasVoted());
+		assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
+
+		TestUtil.assertErrorCode(404, new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().vote(issue1);
+			}
+		});
+
+
+		final IssueArgs issueArgs = new IssueArgsBuilder("TST-7").build();
+		Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertFalse(issue.getVotes().hasVoted());
+		assertEquals(0, issue.getVotes().getVotes());
+
+		client.getIssueClient().vote(issue);
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertTrue(issue.getVotes().hasVoted());
+		assertEquals(1, issue.getVotes().getVotes());
+
+		client.getIssueClient().unvote(issue);
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertFalse(issue.getVotes().hasVoted());
+		assertEquals(0, issue.getVotes().getVotes());
+
+		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertFalse(issue.getVotes().hasVoted());
+		assertEquals(0, issue.getVotes().getVotes());
+		final Issue finalIssue = issue;
+		TestUtil.assertErrorCode(404, new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().unvote(finalIssue);
+			}
+		});
+
+
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertFalse(issue.getVotes().hasVoted());
+		assertEquals(0, issue.getVotes().getVotes());
+		client.getIssueClient().vote(issue);
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertTrue(issue.getVotes().hasVoted());
+		assertEquals(1, issue.getVotes().getVotes());
+
+		setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
+		client.getIssueClient().vote(issue);
+		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		assertTrue(issue.getVotes().hasVoted());
+		assertEquals(2, issue.getVotes().getVotes());
+	}
+
+
 	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
 		Transition transitionFound = null;
 		for (Transition transition : transitions) {
@@ -204,6 +262,8 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		}
 		return transitionFound;
 	}
+
+
 
 	@Override
 	protected void setUpTest() {

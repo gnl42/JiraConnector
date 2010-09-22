@@ -37,6 +37,7 @@ public class Votes implements AddressableEntity {
 		this.hasVoted = hasVoted;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}
@@ -45,7 +46,7 @@ public class Votes implements AddressableEntity {
 		return votes;
 	}
 
-	public boolean isHasVoted() {
+	public boolean hasVoted() {
 		return hasVoted;
 	}
 

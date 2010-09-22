@@ -28,4 +28,7 @@ public interface IssueRestClient {
     Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
     Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
 	void transition(Issue issue, TransitionInput transitionInput);
+
+	void vote(Issue issue);
+	void unvote(Issue issue);
 }

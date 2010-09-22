@@ -51,6 +51,9 @@ public class TestUtil {
 			Assert.fail(UniformInterfaceException.class + " exception expected");
 		} catch (UniformInterfaceException e) {
 			Assert.assertEquals(errorCode, e.getResponse().getStatus());
+		} catch (RestClientException e) {
+			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
+			Assert.assertEquals(errorCode, ((UniformInterfaceException)e.getCause()).getResponse().getStatus());
 		}
 
 	}
