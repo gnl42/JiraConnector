@@ -1,0 +1,56 @@
+{
+	"name":"comment",
+	"type":"com.atlassian.jira.issue.fields.CommentSystemField",
+	"value":[
+		{
+			"self":"http://localhost:8090/jira/rest/api/latest/comment/10020",
+			"author":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+				"name":"admin",
+				"displayName":"Administrator"
+			},
+			"body":"some comment",
+			"updateAuthor":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+				"name":"admin",
+				"displayName":"Administrator"
+			},
+			"created":"2010-08-17T16:40:57.791+0200",
+			"updated":"2010-08-17T16:40:57.791+0200",
+			"role":10002
+		},
+		{
+			"self":"http://localhost:8090/jira/rest/api/latest/comment/10021",
+			"author":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"name":"wseliga",
+				"displayName":"Wojciech Seliga"
+			},
+			"body":"a comment by user",
+			"updateAuthor":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"name":"wseliga",
+				"displayName":"Wojciech Seliga"
+			},
+			"created":"2010-08-17T16:41:15.360+0200",
+			"updated":"2010-08-17T16:41:15.360+0200"
+		},
+		{
+			"self":"http://localhost:8090/jira/rest/api/latest/comment/10022",
+			"author":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"name":"wseliga",
+				"displayName":"Wojciech Seliga"
+			},
+			"body":"a comment viewable only by jira-users",
+			"groupLevel":"jira-users",
+			"updateAuthor":{
+				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"name":"wseliga",
+				"displayName":"Wojciech Seliga"
+			},
+			"created":"2010-08-17T16:49:31.528+0200",
+			"updated":"2010-08-17T16:49:31.528+0200"
+		}
+	]
+}

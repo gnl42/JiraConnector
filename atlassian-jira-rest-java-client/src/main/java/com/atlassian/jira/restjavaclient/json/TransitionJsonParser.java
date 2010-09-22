@@ -41,7 +41,7 @@ public class TransitionJsonParser {
 
         @Override
         public Transition.Field parse(JSONObject json) throws JSONException {
-            final String name = json.getString("name");
+            final String name = json.getString("id");
             final boolean isRequired = json.getBoolean("required");
             final String type = json.getString("type");
             return new Transition.Field(name, isRequired, type);

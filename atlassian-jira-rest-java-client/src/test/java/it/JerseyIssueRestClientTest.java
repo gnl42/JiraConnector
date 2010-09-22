@@ -21,6 +21,7 @@ import com.atlassian.jira.restjavaclient.domain.*;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.UriBuilder;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
+import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE;
 import static org.junit.Assert.assertThat;
 
 
@@ -60,7 +62,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
     public void testGetIssue() throws Exception {
-        configureJira();
         final Issue issue = client.getIssueClient().getIssue(
 				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),
                 new NullProgressMonitor());
@@ -87,7 +88,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
     public void testGetTransitions() throws Exception {
-        configureJira();
         final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
         final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
         assertEquals(4, Iterables.size(transitions));
@@ -103,7 +103,8 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitions, startProgressTransition));
 
-		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<FieldInput>emptyList(), "My test comment"));
+		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
+				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment")));
 		final Issue transitionedIssue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
 		assertEquals("In Progress", transitionedIssue.getStatus().getName());
 		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
@@ -117,7 +118,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testTransitionWithNumericCustomField() throws Exception {
-		configureJira();
 		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
 		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
@@ -125,16 +125,19 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
-		assertTrue(Iterables.contains(transitionFound.getFields(), new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, "com.atlassian.jira.issue.fields.CustomFieldImpl")));
+		assertTrue(Iterables.contains(transitionFound.getFields(),
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
 		final double newValue = 123.45;
 		// @todo put double directly here instead of formatting it for expected locale, when JIRA is fixed - 
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
-		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput), "My test comment"));
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+				Comment.valueOf("My test comment")));
 		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
 	}
 
+	@Ignore
 	//@Test
 	public void xtestTransitionWithNumericCustomFieldAndInteger() throws Exception {
 		configureJira();
@@ -145,12 +148,50 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
-		assertTrue(Iterables.contains(transitionFound.getFields(), new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, "com.atlassian.jira.issue.fields.CustomFieldImpl")));
+		assertTrue(Iterables.contains(transitionFound.getFields(),
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
 		final int newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
-		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput), "My test comment"));
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+				Comment.valueOf("My test comment")));
 		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
+	}
+
+	public void testTransitionWithNoRoleOrGroup() {
+		Comment comment = Comment.valueOf("My text which I am just adding " + new DateTime());
+		testTransitionImpl(comment);
+	}
+
+	@Test
+	public void testTransitionWithRoleLevel() {
+		Comment comment = Comment.createWithRoleLevel("My text which I am just adding " + new DateTime(), "Users");
+		testTransitionImpl(comment);
+	}
+
+	@Test
+	public void testTransitionWithGroupLevel() {
+		Comment comment = Comment.createWithGroupLevel("My text which I am just adding " + new DateTime(), "jira-users");
+		testTransitionImpl(comment);
+	}
+
+	private void testTransitionImpl(Comment comment) {
+		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
+		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+		Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		DateTime now = new DateTime();
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment));
+
+		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Comment lastComment = Iterables.getLast(changedIssue.getComments());
+		assertEquals(comment.getBody(), lastComment.getBody());
+		assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getAuthor());
+		assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getUpdateAuthor());
+		assertEquals(lastComment.getCreationDate(), lastComment.getUpdateDate());
+		assertTrue(lastComment.getCreationDate().isAfter(now) || lastComment.getCreationDate().isEqual(now));
+		assertEquals(comment.getGroupLevel(), lastComment.getGroupLevel());
+		assertEquals(comment.getRoleLevel(), lastComment.getRoleLevel());
 	}
 
 	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
@@ -164,5 +205,9 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		return transitionFound;
 	}
 
-
+	@Override
+	protected void setUpTest() {
+		super.setUpTest();
+		configureJira();
+	}
 }

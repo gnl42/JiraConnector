@@ -26,5 +26,5 @@ import org.junit.Test;
 public class StatusJsonParserTest {
     @Test
     public void testParse() throws Exception {
-    }
+	}
 }

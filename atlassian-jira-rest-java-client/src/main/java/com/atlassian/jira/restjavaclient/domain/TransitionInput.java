@@ -18,6 +18,7 @@ package com.atlassian.jira.restjavaclient.domain;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * TODO: Document this class / interface here
@@ -27,21 +28,25 @@ import java.util.Collection;
 public class TransitionInput {
 	private final int id;
 	@Nullable
-	private final String comment;
+	private final Comment comment;
 
 	private final Collection<FieldInput> fields;
 
-	public TransitionInput(int id, Collection<FieldInput> fields, String comment) {
+	public TransitionInput(int id, Collection<FieldInput> fields, Comment comment) {
 		this.id = id;
 		this.comment = comment;
 		this.fields = fields;
+	}
+
+	public TransitionInput(int id, Comment comment) {
+		this(id, Collections.<FieldInput>emptyList(), comment);
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public String getComment() {
+	public Comment getComment() {
 		return comment;
 	}
 

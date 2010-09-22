@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.json;
+package com.atlassian.jira.restjavaclient.json.gen;
 
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Test;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class JsonFieldParserTest {
-    @Test
-    public void testParse() throws Exception {
-        
-    }
+public interface JsonGenerator<T> {
+	public JSONObject generate(T comment) throws JSONException;
 }

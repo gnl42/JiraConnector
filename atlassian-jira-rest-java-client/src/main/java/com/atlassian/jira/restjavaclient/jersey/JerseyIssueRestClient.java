@@ -25,6 +25,7 @@ import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
 import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
+import com.atlassian.jira.restjavaclient.json.gen.CommentJsonGenerator;
 import com.google.common.base.Joiner;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -50,6 +51,7 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	private final IssueJsonParser issueParser = new IssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
+	private final CommentJsonGenerator commentJsonGenerator = new CommentJsonGenerator();
 
 	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
 		this.baseUri = baseUri;
@@ -118,16 +120,18 @@ public class JerseyIssueRestClient implements IssueRestClient {
 		try {
 			jsonObject.put("transition", transitionInput.getId());
 			if (transitionInput.getComment() != null) {
-				jsonObject.put("comment", transitionInput.getComment());
+				jsonObject.put("comment", commentJsonGenerator.generate(transitionInput.getComment()));
 			}
-			Map<String, Object> fieldsMap = new HashMap<String, Object>();
+			JSONObject fieldsJs = new JSONObject();
 			final Iterable<FieldInput> fields = transitionInput.getFields();
 			if (fields.iterator().hasNext()) {
 				for (FieldInput fieldInput : fields) {
-					fieldsMap.put(fieldInput.getId(), fieldInput.getValue());
+					fieldsJs.put(fieldInput.getId(), fieldInput.getValue());
 				}
 			}
-			jsonObject.put("fields", fieldsMap);
+			if (fieldsJs.keys().hasNext()) {
+				jsonObject.put("fields", fieldsJs);
+			}
 			final WebResource issueResource = client.resource(uri);
 			issueResource.post(jsonObject);
 		} catch (JSONException e) {

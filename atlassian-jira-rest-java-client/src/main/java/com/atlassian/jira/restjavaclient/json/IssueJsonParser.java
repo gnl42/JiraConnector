@@ -67,7 +67,7 @@ public class IssueJsonParser {
 	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
     private final JsonFieldParser fieldParser = new JsonFieldParser();
-    private final CommentJsonParser commentJsonParser = new CommentJsonParser("");
+    private final CommentJsonParser commentJsonParser = new CommentJsonParser();
     private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
     private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();
 

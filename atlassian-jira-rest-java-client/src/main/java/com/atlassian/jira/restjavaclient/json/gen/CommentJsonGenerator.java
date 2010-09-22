@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.json;
+package com.atlassian.jira.restjavaclient.json.gen;
 
 import com.atlassian.jira.restjavaclient.domain.Comment;
-import com.atlassian.jira.restjavaclient.domain.User;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class CommentJsonParser implements JsonParser<Comment> {
-
+public class CommentJsonGenerator implements JsonGenerator<Comment> {
 	@Override
-	public Comment parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String body = json.getString("body");
-		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
-		final String roleLevel = json.optString("role", null);
-		final String groupLevel = json.optString("groupLevel", null);
-		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
-				JsonParseUtil.parseDateTime(json.getString("updated")), roleLevel, groupLevel);
+	public JSONObject generate(Comment comment) throws JSONException {
+		JSONObject res = new JSONObject();
+		if (comment.getBody() != null) {
+			res.put("body", comment.getBody());
+		}
+		if (comment.getRoleLevel() != null) {
+			res.put("role", comment.getRoleLevel());
+		}
+		if (comment.getGroupLevel() != null) {
+			res.put("group", comment.getGroupLevel());
+		}
+		return res;
 	}
 }

@@ -35,6 +35,7 @@ public class IntegrationTestUtil {
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
+	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
 
 	static {
         LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
