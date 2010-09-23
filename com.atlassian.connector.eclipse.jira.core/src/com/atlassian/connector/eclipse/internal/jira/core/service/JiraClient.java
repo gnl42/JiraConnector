@@ -38,7 +38,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguratio
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -326,10 +325,7 @@ public class JiraClient {
 	 */
 	public IssueField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getEditableAttributes", null); //$NON-NLS-1$
-		// work around for bug 205015
-		String version = getCache().getServerInfo(monitor).getVersion();
-		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);
-		return soapClient.getEditableAttributes(issueKey, workAround, monitor);
+		return soapClient.getEditableAttributes(issueKey, monitor);
 	}
 
 	/**

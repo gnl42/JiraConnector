@@ -19,18 +19,6 @@ package com.atlassian.connector.eclipse.internal.jira.core.model;
  */
 public class JiraVersion implements Comparable<JiraVersion> {
 
-	public static final JiraVersion JIRA_3_3 = new JiraVersion("3.3"); //$NON-NLS-1$
-
-	public static final JiraVersion JIRA_3_4 = new JiraVersion("3.4"); //$NON-NLS-1$
-
-	public static final JiraVersion JIRA_3_7 = new JiraVersion("3.7"); //$NON-NLS-1$
-
-	public static final JiraVersion JIRA_3_10 = new JiraVersion("3.10"); //$NON-NLS-1$
-
-	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11"); //$NON-NLS-1$
-
-	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12"); //$NON-NLS-1$
-
 	public static final JiraVersion JIRA_3_13 = new JiraVersion("3.13"); //$NON-NLS-1$
 
 	public static final JiraVersion JIRA_4_1 = new JiraVersion("4.1"); //$NON-NLS-1$
@@ -115,10 +103,6 @@ public class JiraVersion implements Comparable<JiraVersion> {
 			sb.append("-").append(qualifier);
 		}
 		return sb.toString();
-	}
-
-	public boolean supportsPerProjectIssueTypes() {
-		return this.compareTo(JiraVersion.JIRA_3_12) >= 0;
 	}
 
 }

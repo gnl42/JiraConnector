@@ -91,19 +91,18 @@ public class JiraClientCache {
 			project.setComponents(jiraClient.getComponents(project.getKey(), subMonitor.newChild(1)));
 			project.setVersions(jiraClient.getVersions(project.getKey(), subMonitor.newChild(1)));
 
-			if (version.supportsPerProjectIssueTypes()) {
-				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), subMonitor.newChild(1));
-				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
-				for (IssueType issueType : subTaskIssueTypes) {
-					issueType.setSubTaskType(true);
-				}
-
-				IssueType[] projectIssueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
-				System.arraycopy(issueTypes, 0, projectIssueTypes, 0, issueTypes.length);
-				System.arraycopy(subTaskIssueTypes, 0, projectIssueTypes, issueTypes.length, subTaskIssueTypes.length);
-
-				project.setIssueTypes(projectIssueTypes);
+			IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), subMonitor.newChild(1));
+			IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
+			for (IssueType issueType : subTaskIssueTypes) {
+				issueType.setSubTaskType(true);
 			}
+
+			IssueType[] projectIssueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
+			System.arraycopy(issueTypes, 0, projectIssueTypes, 0, issueTypes.length);
+			System.arraycopy(subTaskIssueTypes, 0, projectIssueTypes, issueTypes.length, subTaskIssueTypes.length);
+
+			project.setIssueTypes(projectIssueTypes);
+
 			if (version.compareTo(JiraVersion.JIRA_3_13) >= 0) {
 				try {
 					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(),
@@ -170,14 +169,8 @@ public class JiraClientCache {
 	private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
 
-		String version = data.serverInfo.getVersion();
 		IssueType[] issueTypes = jiraClient.getIssueTypes(submonitor.newChild(1));
-		IssueType[] subTaskIssueTypes;
-		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
-			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
-		} else {
-			subTaskIssueTypes = new IssueType[0];
-		}
+		IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
 
 		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
 

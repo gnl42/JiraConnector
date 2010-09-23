@@ -17,7 +17,6 @@ import java.net.URLEncoder;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
@@ -52,19 +51,10 @@ public class JiraRssClient {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo(monitor).getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
-					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append( //$NON-NLS-1$
-							"/SearchRequest-").append(filter.getId()).append(".xml"); //$NON-NLS-1$ //$NON-NLS-2$
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("?tempMax=").append(collector.getMaxHits()); //$NON-NLS-1$
-					}
-				} else {
-					rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&"); //$NON-NLS-1$
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
-					}
-					rssUrlBuffer.append("requestId=").append(filter.getId()); //$NON-NLS-1$
+				rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append( //$NON-NLS-1$
+						"/SearchRequest-").append(filter.getId()).append(".xml"); //$NON-NLS-1$ //$NON-NLS-2$
+				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+					rssUrlBuffer.append("?tempMax=").append(collector.getMaxHits()); //$NON-NLS-1$
 				}
 				return rssUrlBuffer.toString();
 			}
@@ -77,17 +67,9 @@ public class JiraRssClient {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo(monitor).getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
-					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&"); //$NON-NLS-1$
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
-					}
-				} else {
-					rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&"); //$NON-NLS-1$
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
-					}
+				rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&"); //$NON-NLS-1$
+				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+					rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
 				}
 				FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(
 						client.getCharacterEncoding(monitor), client.getLocalConfiguration().getDateFormat());
@@ -104,18 +86,11 @@ public class JiraRssClient {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo(monitor).getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
-					rssUrlBuffer.append("/si/jira.issueviews:issue-xml/"); //$NON-NLS-1$
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append("/"); //$NON-NLS-1$
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append(".xml"); //$NON-NLS-1$
-				} else {
-					rssUrlBuffer.append("/browse/"); //$NON-NLS-1$
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append("?view=rss&decorator=none&reset=true&tempMax=1"); //$NON-NLS-1$
-				}
+				rssUrlBuffer.append("/si/jira.issueviews:issue-xml/"); //$NON-NLS-1$
+				rssUrlBuffer.append(issueKey);
+				rssUrlBuffer.append("/"); //$NON-NLS-1$
+				rssUrlBuffer.append(issueKey);
+				rssUrlBuffer.append(".xml"); //$NON-NLS-1$
 				return rssUrlBuffer.toString();
 			}
 		});

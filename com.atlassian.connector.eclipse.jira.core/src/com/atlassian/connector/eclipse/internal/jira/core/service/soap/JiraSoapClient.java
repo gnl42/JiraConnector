@@ -277,8 +277,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
-	public IssueField[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
-			IProgressMonitor monitor) throws JiraException {
+	public IssueField[] getEditableAttributes(final String taskKey, IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<IssueField[]>() {
 			public IssueField[] call() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] fields = getSoapService().getFieldsForEdit(loginToken.getCurrentValue(), taskKey);
@@ -286,24 +285,11 @@ public class JiraSoapClient extends AbstractSoapClient {
 					return new IssueField[0];
 				}
 
-				int add = 0;
-				if (workAroundBug205015) {
-					add += 2;
-				}
-
-				IssueField[] attributes = new IssueField[fields.length + add];
+				IssueField[] attributes = new IssueField[fields.length];
 				for (int i = 0; i < fields.length; i++) {
 					RemoteField field = fields[i];
 					attributes[i] = new IssueField(field.getId(), field.getName());
 				}
-
-				if (add > 0) {
-					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
-					attributes[attributes.length - 2] = new IssueField("duedate", Messages.JiraSoapClient_Due_Date); //$NON-NLS-1$
-					attributes[attributes.length - 1] = new IssueField(
-							"fixVersions", Messages.JiraSoapClient_Fix_Version_s); //$NON-NLS-1$
-				}
-
 				return attributes;
 			}
 		});
@@ -343,15 +329,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 	public ProjectRole[] getProjectRoles(final IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<ProjectRole[]>() {
 			public ProjectRole[] call() throws java.rmi.RemoteException, JiraException {
-				String version = jiraClient.getCache().getServerInfo(monitor).getVersion();
-				boolean hasApi = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0);
-				if (hasApi) {
-					RemoteProjectRole[] remoteProjectRoles = getSoapService().getProjectRoles(
-							loginToken.getCurrentValue());
-					return JiraSoapConverter.convert(remoteProjectRoles);
-				} else {
-					return null;
-				}
+				RemoteProjectRole[] remoteProjectRoles = getSoapService().getProjectRoles(loginToken.getCurrentValue());
+				return JiraSoapConverter.convert(remoteProjectRoles);
 			}
 		});
 	}
@@ -416,14 +395,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 	public JiraWorkLog[] getWorkLogs(final String issueKey, final IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<JiraWorkLog[]>() {
 			public JiraWorkLog[] call() throws java.rmi.RemoteException, JiraException {
-				String version = jiraClient.getCache().getServerInfo(monitor).getVersion();
-				boolean hasApi = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0);
-				if (hasApi) {
-					return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(),
-							issueKey));
-				} else {
-					return null;
-				}
+				return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(), issueKey));
 			}
 		});
 	}
