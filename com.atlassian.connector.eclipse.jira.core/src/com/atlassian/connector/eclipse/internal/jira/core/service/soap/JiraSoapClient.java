@@ -19,6 +19,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -836,28 +838,50 @@ public class JiraSoapClient extends AbstractSoapClient {
 		}
 	}
 
+	private DecimalFormat getDecimalFormat() {
+		DecimalFormat displayFormat = new DecimalFormat();
+		displayFormat.setGroupingUsed(false);
+		displayFormat.setMinimumFractionDigits(0);
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(jiraClient.getLocalConfiguration().getLocale());
+		displayFormat.setDecimalFormatSymbols(formatSymbols);
+		return displayFormat;
+	}
+
 	private void addCustomField(List<RemoteFieldValue> fields, CustomField customField) {
 		for (String value : customField.getValues()) {
 			String key = customField.getKey();
 			if (includeCustomField(key, value)) {
-				if (value != null
-						&& (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key))) {
-					try {
-						Date date = JiraRssHandler.getDateTimeFormat().parse(value);
-						DateFormat format;
-						if (JiraFieldType.DATE.getKey().equals(key)) {
-							format = jiraClient.getLocalConfiguration().getDateFormat();
-						} else {
-							format = jiraClient.getLocalConfiguration().getDateTimeFormat();
+				if (value != null) {
+					if (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key)) {
+						try {
+							Date date = JiraRssHandler.getDateTimeFormat().parse(value);
+							DateFormat format;
+							if (JiraFieldType.DATE.getKey().equals(key)) {
+								format = jiraClient.getLocalConfiguration().getDateFormat();
+							} else {
+								format = jiraClient.getLocalConfiguration().getDateTimeFormat();
+							}
+							value = format.format(date);
+						} catch (ParseException e) {
+							// XXX ignore
 						}
-						value = format.format(date);
-					} catch (ParseException e) {
-						// XXX ignore
+					} else if (JiraFieldType.FLOATFIELD.getKey().equals(key) && !jiraOlderThan42()) {
+						try {
+							// PLE-1258 - Jira >= 4.2 requires numbers formatted using locale
+							value = getDecimalFormat().format(Double.parseDouble(value));
+						} catch (NumberFormatException e) {
+							// XXX ignore
+						}
 					}
 				}
 				fields.add(new RemoteFieldValue(customField.getId(), new String[] { value == null ? "" : value })); //$NON-NLS-1$
 			}
 		}
+	}
+
+	private boolean jiraOlderThan42() {
+		return !jiraClient.getCache().hasDetails()
+				|| new JiraVersion(jiraClient.getCache().getServerInfo().getVersion()).compareTo(JiraVersion.JIRA_4_2) < 0;
 	}
 
 	private boolean includeCustomField(String key, String value) {

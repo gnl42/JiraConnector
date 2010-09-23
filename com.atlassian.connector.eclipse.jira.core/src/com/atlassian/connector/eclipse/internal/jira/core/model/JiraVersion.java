@@ -19,8 +19,6 @@ package com.atlassian.connector.eclipse.internal.jira.core.model;
  */
 public class JiraVersion implements Comparable<JiraVersion> {
 
-	public final static JiraVersion MIN_VERSION = new JiraVersion("3.3.3"); //$NON-NLS-1$
-
 	public static final JiraVersion JIRA_3_3 = new JiraVersion("3.3"); //$NON-NLS-1$
 
 	public static final JiraVersion JIRA_3_4 = new JiraVersion("3.4"); //$NON-NLS-1$
@@ -37,6 +35,10 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	public static final JiraVersion JIRA_4_1 = new JiraVersion("4.1"); //$NON-NLS-1$
 
+	public static final JiraVersion JIRA_4_2 = new JiraVersion("4.2"); //$NON-NLS-1$
+
+	public final static JiraVersion MIN_VERSION = JIRA_3_13;
+
 	private final int major;
 
 	private final int minor;
@@ -50,7 +52,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		major = segments.length > 0 ? parse(segments[0]) : 0;
 		minor = segments.length > 1 ? parse(segments[1]) : 0;
 		micro = segments.length > 2 ? parse(segments[2]) : 0;
-		qualifier = segments.length == 0 ? "" : getQualifier(segments[segments.length - 1]); //$NON-NLS-1$
+		qualifier = segments.length == 0 ? "" : getQualifier(segments[segments.length - 1]);
 	}
 
 	private int parse(String segment) {
@@ -68,7 +70,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	private String getQualifier(String segment) {
 		int n = segment.indexOf('-');
-		return n == -1 ? "" : segment.substring(n + 1); //$NON-NLS-1$
+		return n == -1 ? "" : segment.substring(n + 1);
 	}
 
 	public boolean isSmallerOrEquals(JiraVersion v) {
@@ -105,12 +107,12 @@ public class JiraVersion implements Comparable<JiraVersion> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Integer.toString(major));
-		sb.append(".").append(Integer.toString(minor)); //$NON-NLS-1$
+		sb.append(".").append(Integer.toString(minor));
 		if (micro > 0) {
-			sb.append(".").append(Integer.toString(micro)); //$NON-NLS-1$
+			sb.append(".").append(Integer.toString(micro));
 		}
 		if (qualifier.length() > 0) {
-			sb.append("-").append(qualifier); //$NON-NLS-1$
+			sb.append("-").append(qualifier);
 		}
 		return sb.toString();
 	}
