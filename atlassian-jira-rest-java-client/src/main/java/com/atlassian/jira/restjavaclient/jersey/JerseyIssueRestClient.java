@@ -80,13 +80,13 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
-	public Issue getIssue(final IssueArgs args, ProgressMonitor progressMonitor) {
+	public Issue getIssue(final String issueKey, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-		uriBuilder.path("issue").path(args.getKey());
-		final String expandoString = getExpandoString(args);
-		if (expandoString != null) {
-			uriBuilder.queryParam("expand", expandoString);
-		}
+		uriBuilder.path("issue").path(issueKey);
+//		final String expandoString = getExpandoString(args);
+//		if (expandoString != null) {
+//			uriBuilder.queryParam("expand", expandoString);
+//		}
 
 		final WebResource issueResource = client.resource(uriBuilder.build());
 
@@ -94,7 +94,7 @@ public class JerseyIssueRestClient implements IssueRestClient {
 
 		try {
 //            System.out.println(s.toString(4));
-			return issueParser.parseIssue(args, s);
+			return issueParser.parse(s);
 		} catch (JSONException e) {
 			throw new RestClientException(e);
 		}
@@ -203,6 +203,14 @@ public class JerseyIssueRestClient implements IssueRestClient {
 			}
 		});
 
+	}
+
+	@Override
+	public void watch(Issue issue, ProgressMonitor progressMonitor) {
+	}
+
+	@Override
+	public void unwatch(Issue issue, ProgressMonitor progressMonitor) {
 	}
 
 	@Nullable

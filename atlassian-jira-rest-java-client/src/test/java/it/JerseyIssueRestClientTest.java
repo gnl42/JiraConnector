@@ -49,7 +49,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetWatchers() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
 		assertEquals(1, watchers.getNumWatchers());
 		assertFalse(watchers.isWatching());
@@ -62,9 +62,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetIssue() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue(
-				new IssueArgsBuilder("TST-1").withAttachments(true).withComments(true).withWorklogs(true).withWatchers(true).build(),
-				new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertEquals("TST-1", issue.getKey());
 		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 
@@ -88,7 +86,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetTransitions() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertEquals(4, Iterables.size(transitions));
 		assertTrue(Iterables.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList())));
@@ -97,7 +95,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testTransition() throws Exception {
 		configureJira();
-		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertEquals(4, Iterables.size(transitions));
 		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
@@ -105,7 +103,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
 				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment")), new NullProgressMonitor()) ;
-		final Issue transitionedIssue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertEquals("In Progress", transitionedIssue.getStatus().getName());
 		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
@@ -116,8 +114,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testTransitionWithNumericCustomField() throws Exception {
-		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
-		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
@@ -131,16 +128,14 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
-		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
 	}
 
 	@Ignore
 	//@Test
 	public void xtestTransitionWithNumericCustomFieldAndInteger() throws Exception {
-		configureJira();
-		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
-		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
@@ -152,7 +147,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
-		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
 	}
 
@@ -174,15 +169,14 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 	private void testTransitionImpl(Comment comment) {
-		final IssueArgs issueArgs = new IssueArgsBuilder("TST-1").build();
-		final Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		DateTime now = new DateTime();
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment),
 				new NullProgressMonitor());
 
-		final Issue changedIssue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Comment lastComment = Iterables.getLast(changedIssue.getComments());
 		assertEquals(comment.getBody(), lastComment.getBody());
 		assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getAuthor());
@@ -196,7 +190,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testVoteUnvote() {
-		final Issue issue1 = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-1").build(), new NullProgressMonitor());
+		final Issue issue1 = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertFalse(issue1.getVotes().hasVoted());
 		assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
 
@@ -210,23 +204,23 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		});
 
 
-		final IssueArgs issueArgs = new IssueArgsBuilder("TST-7").build();
-		Issue issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		final String issueKey = "TST-7";
+		Issue issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 
 		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(1, issue.getVotes().getVotes());
 
 		client.getIssueClient().unvote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 
 		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
@@ -238,17 +232,17 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		});
 
 
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(1, issue.getVotes().getVotes());
 
 		setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
 		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueArgs, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(2, issue.getVotes().getVotes());
 	}

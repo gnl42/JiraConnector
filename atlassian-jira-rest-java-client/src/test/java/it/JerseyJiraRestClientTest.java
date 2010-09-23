@@ -47,8 +47,7 @@ public class JerseyJiraRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void temporaryOnly() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue(new IssueArgsBuilder("TST-2").withAttachments(false).withComments(true).build(),
-				new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-2", new NullProgressMonitor());
 		System.out.println(issue);
 	}
 

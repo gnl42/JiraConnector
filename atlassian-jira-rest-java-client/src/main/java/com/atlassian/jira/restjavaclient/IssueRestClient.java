@@ -25,10 +25,13 @@ import com.atlassian.jira.restjavaclient.domain.*;
  */
 public interface IssueRestClient {
     Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
-    Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
+    Issue getIssue(String issueKey, ProgressMonitor progressMonitor);
     Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
 	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
 	void vote(Issue issue, ProgressMonitor progressMonitor);
 	void unvote(Issue issue, ProgressMonitor progressMonitor);
+
+	void watch(Issue issue, ProgressMonitor progressMonitor);
+	void unwatch(Issue issue, ProgressMonitor progressMonitor);
 }

@@ -36,7 +36,7 @@ import static com.atlassian.jira.restjavaclient.json.JsonParseUtil.getNestedStri
  *
  * @since v0.1
  */
-public class IssueJsonParser {
+public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String UPDATED_ATTR = "updated";
 	private static final String CREATED_ATTR = "created";
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
@@ -104,7 +104,8 @@ public class IssueJsonParser {
         return parseArray(js, jsonParser);
     }
 
-	public Issue parseIssue(IssueArgs args, JSONObject s) throws JSONException {
+	@Override
+	public Issue parse(JSONObject s) throws JSONException {
         final JSONObject commentsJs = JsonParseUtil.getNestedObject(s, FIELDS, COMMENT_ATTR);
 
         Collection<Comment> comments;
