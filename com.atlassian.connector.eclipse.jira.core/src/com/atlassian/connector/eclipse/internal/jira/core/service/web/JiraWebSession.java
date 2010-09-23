@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -110,6 +111,7 @@ public class JiraWebSession {
 					httpClient = new HttpClient(WebUtil.getConnectionManager());
 					WebUtil.configureHttpClient(httpClient, "JiraConnector"); //$NON-NLS-1$
 					httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+					httpClient.getParams().setParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, Boolean.TRUE);
 				}
 				if (doLogin) {
 					reauthenticate = false;
