@@ -44,17 +44,24 @@ public class TestUtil {
 	public static DateTime toDateTime(String isoDateTimeSt) {
 		return formatter.parseDateTime(isoDateTimeSt);
 	}
-
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
+		assertErrorCode(errorCode, null, runnable);
+	}
+
+	public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
 		try {
 			runnable.run();
 			Assert.fail(UniformInterfaceException.class + " exception expected");
 		} catch (UniformInterfaceException e) {
 			Assert.assertEquals(errorCode, e.getResponse().getStatus());
 		} catch (RestClientException e) {
+			if (message != null) {
+				Assert.assertEquals(message, e.getMessage());
+			}
 			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
-			Assert.assertEquals(errorCode, ((UniformInterfaceException)e.getCause()).getResponse().getStatus());
+			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
 		}
-
 	}
+	
+
 }

@@ -20,8 +20,13 @@ import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.ProgressMonitor;
 import com.atlassian.jira.restjavaclient.RestClientException;
-import com.atlassian.jira.restjavaclient.domain.*;
+import com.atlassian.jira.restjavaclient.domain.FieldInput;
+import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Transition;
+import com.atlassian.jira.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
+import com.atlassian.jira.restjavaclient.json.JsonParseUtil;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
 import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
@@ -30,13 +35,17 @@ import com.google.common.base.Joiner;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
 
 /**
  * TODO: Document this class / interface here
@@ -92,65 +101,91 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
-	public Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor) {
-		final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
-		final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
-		final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
-		@SuppressWarnings("unchecked")
-		final Iterator<String> iterator = jsonObject.keys();
-		while (iterator.hasNext()) {
-			final String key = iterator.next();
-			try {
-				final int id = Integer.parseInt(key);
-				final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
-				transitions.add(transition);
-			} catch (JSONException e) {
-				throw new RestClientException(e);
-			} catch (NumberFormatException e) {
-				throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
-			}
-		}
-		return transitions;
-	}
-
-	@Override
-	public void transition(Issue issue, TransitionInput transitionInput) {
-		final URI uri = issue.getTransitionsUri();
-		JSONObject jsonObject = new JSONObject();
-		try {
-			jsonObject.put("transition", transitionInput.getId());
-			if (transitionInput.getComment() != null) {
-				jsonObject.put("comment", commentJsonGenerator.generate(transitionInput.getComment()));
-			}
-			JSONObject fieldsJs = new JSONObject();
-			final Iterable<FieldInput> fields = transitionInput.getFields();
-			if (fields.iterator().hasNext()) {
-				for (FieldInput fieldInput : fields) {
-					fieldsJs.put(fieldInput.getId(), fieldInput.getValue());
+	public Iterable<Transition> getTransitions(final Issue issue, ProgressMonitor progressMonitor) {
+		return invoke(new Callable<Iterable<Transition>>() {
+			@Override
+			public Iterable<Transition> call() throws Exception {
+				final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
+				final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
+				final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
+				@SuppressWarnings("unchecked")
+				final Iterator<String> iterator = jsonObject.keys();
+				while (iterator.hasNext()) {
+					final String key = iterator.next();
+					try {
+						final int id = Integer.parseInt(key);
+						final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
+						transitions.add(transition);
+					} catch (JSONException e) {
+						throw new RestClientException(e);
+					} catch (NumberFormatException e) {
+						throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+					}
 				}
+				return transitions;
 			}
-			if (fieldsJs.keys().hasNext()) {
-				jsonObject.put("fields", fieldsJs);
-			}
-			final WebResource issueResource = client.resource(uri);
-			issueResource.post(jsonObject);
-		} catch (JSONException e) {
-			throw new RestClientException(e);
-		} catch (UniformInterfaceException e) {
-			throw new RestClientException(e.getResponse().getEntity(String.class), e);
-		}
-
+		});
 
 	}
 
 	@Override
-	public void vote(Issue issue) {
-		final WebResource votesResource = client.resource(getVotesUri(issue));
+	public void transition(final Issue issue, final TransitionInput transitionInput, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final URI uri = issue.getTransitionsUri();
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("transition", transitionInput.getId());
+				if (transitionInput.getComment() != null) {
+					jsonObject.put("comment", commentJsonGenerator.generate(transitionInput.getComment()));
+				}
+				JSONObject fieldsJs = new JSONObject();
+				final Iterable<FieldInput> fields = transitionInput.getFields();
+				if (fields.iterator().hasNext()) {
+					for (FieldInput fieldInput : fields) {
+						fieldsJs.put(fieldInput.getId(), fieldInput.getValue());
+					}
+				}
+				if (fieldsJs.keys().hasNext()) {
+					jsonObject.put("fields", fieldsJs);
+				}
+				final WebResource issueResource = client.resource(uri);
+				issueResource.post(jsonObject);
+				return null;
+			}
+		});
+	}
+
+
+	private <T> T invoke(Callable<T> callable) {
 		try {
-			votesResource.post();
+			return callable.call();
 		} catch (UniformInterfaceException e) {
-			throw new RestClientException(e.getResponse().getEntity(String.class), e);
+			final String body = e.getResponse().getEntity(String.class);
+			try {
+				JSONObject jsonObject = new JSONObject(body);
+				final JSONArray errorMessages = jsonObject.getJSONArray("errorMessages");
+				throw new RestClientException(JsonParseUtil.toStringCollection(errorMessages), e);
+			} catch (JSONException e1) {
+				throw new RestClientException(e);
+			}
+		} catch (RestClientException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RestClientException(e);
 		}
+	}
+
+	@Override
+	public void vote(final Issue issue, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final WebResource votesResource = client.resource(getVotesUri(issue));
+				votesResource.post();
+				return null;
+			}
+		});
 	}
 
 	private URI getVotesUri(Issue issue) {
@@ -158,13 +193,16 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
-	public void unvote(Issue issue) {
-		final WebResource votesResource = client.resource(getVotesUri(issue));
-		try {
-			votesResource.delete();
-		} catch (UniformInterfaceException e) {
-			throw new RestClientException(e.getResponse().getEntity(String.class), e);
-		}
+	public void unvote(final Issue issue, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final WebResource votesResource = client.resource(getVotesUri(issue));
+				votesResource.delete();
+				return null;
+			}
+		});
+
 	}
 
 	@Nullable

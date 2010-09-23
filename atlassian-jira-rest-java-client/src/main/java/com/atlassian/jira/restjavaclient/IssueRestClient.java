@@ -27,8 +27,8 @@ public interface IssueRestClient {
     Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
     Issue getIssue(IssueArgs args, ProgressMonitor progressMonitor);
     Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
-	void transition(Issue issue, TransitionInput transitionInput);
+	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
-	void vote(Issue issue);
-	void unvote(Issue issue);
+	void vote(Issue issue, ProgressMonitor progressMonitor);
+	void unvote(Issue issue, ProgressMonitor progressMonitor);
 }

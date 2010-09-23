@@ -176,4 +176,12 @@ public class JsonParseUtil {
     public static String getOptionalString(JSONObject jsonObject, String attributeName) {
         return jsonObject.optString(attributeName, null);
     }
+
+	public static Collection<String> toStringCollection(JSONArray jsonArray) throws JSONException {
+		final ArrayList<String> res = new ArrayList<String>(jsonArray.length());
+		for (int i = 0; i < jsonArray.length(); i++) {
+			res.add(jsonArray.getString(i));
+		}
+		return res;
+	}
 }

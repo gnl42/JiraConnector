@@ -16,17 +16,37 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import com.google.common.base.Joiner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
 public class RestClientException extends RuntimeException {
+	private final Collection<String> errorMessages;
+
     public RestClientException(Throwable cause) {
         super(cause);
+		errorMessages = Collections.emptyList();
     }
+	public RestClientException(String errorMessage, Throwable cause) {
+		super(errorMessage, cause);
+		this.errorMessages = Arrays.asList(errorMessage);
+	}
 
-	public RestClientException(String message, Throwable cause) {
-		super(message, cause);
+
+	public RestClientException(Collection<String> errorMessages, Throwable cause) {
+		super(Joiner.on("\n").join(errorMessages), cause);
+		this.errorMessages = new ArrayList<String>(errorMessages);
+	}
+
+	public Iterable<String> getErrorMessages() {
+		return errorMessages;
 	}
 }
