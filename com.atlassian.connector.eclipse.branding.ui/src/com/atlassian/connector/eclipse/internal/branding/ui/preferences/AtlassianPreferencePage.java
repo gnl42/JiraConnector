@@ -34,8 +34,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 			+ "see what's happening to your project and your code. Instead, you "
 			+ "can see the relevant <a href=\"http://www.atlassian.com/software/jira\">JIRA</a> issues "
 			+ "and <a href=\"http://www.atlassian.com/software/bamboo\">Bamboo</a> build "
-			+ "information right there in your development environment. Viewing your "
-			+ "code in <a href=\"http://www.atlassian.com/software/fisheye\">FishEye</a> is just a click away.";
+			+ "information right there in your development environment.";
 
 	@Override
 	protected Control createContents(Composite parent) {
