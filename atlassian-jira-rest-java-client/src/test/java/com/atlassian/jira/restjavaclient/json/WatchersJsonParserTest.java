@@ -45,7 +45,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        assertThat(watcher.getWatchers(), IterableMatcher.< User >hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
+        assertThat(watcher.getUsers(), IterableMatcher.< User >hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
 
     }
 

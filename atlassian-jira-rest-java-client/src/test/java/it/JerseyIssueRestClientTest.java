@@ -20,7 +20,6 @@ import com.atlassian.jira.restjavaclient.*;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.hamcrest.Matchers;
@@ -61,7 +60,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
 		assertEquals(1, watchers.getNumWatchers());
 		assertFalse(watchers.isWatching());
-		assertThat(watchers.getWatchers(), IterableMatcher.hasOnlyElements(USER1));
+		assertThat(watchers.getUsers(), IterableMatcher.hasOnlyElements(USER1));
 	}
 
 	public URI jiraRestUri(String path) {
@@ -261,16 +260,16 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final NullProgressMonitor pm = new NullProgressMonitor();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
 
-		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(),
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(),
 				Matchers.not(IterableMatcher.contains(USER_ADMIN)));
 
 		issueClient.watch(issue1, pm);
-		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER_ADMIN));
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER_ADMIN));
 
 		issueClient.unwatch(issue1, pm);
-		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
 
-		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER1));
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER1));
 		// @todo that's a bug in JIRA JRADEV-3517 - that should be allowed
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
 				"User 'admin' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
@@ -301,6 +300,17 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				issueClient2.removeWatcher(issue1, ADMIN_USERNAME, pm);
 			}
 		});
+	}
+
+	@Test
+	public void testWatchAlreadyWatched() {
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-1", pm);
+		Assert.assertThat(client.getIssueClient().getWatchers(issue, pm).getUsers(), IterableMatcher.contains(USER1));
+		// JIRA allows to watch already watched issue by you - such action effectively has no effect
+		issueClient.watch(issue, pm);
+		Assert.assertThat(client.getIssueClient().getWatchers(issue, pm).getUsers(), IterableMatcher.contains(USER1));
 	}
 
 	@Test
