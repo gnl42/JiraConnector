@@ -16,20 +16,10 @@
 
 package it;
 
-import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.restjavaclient.TestUtil;
-import com.atlassian.jira.restjavaclient.domain.Authentication;
 import com.atlassian.jira.restjavaclient.domain.Issue;
-import com.atlassian.jira.restjavaclient.json.AuthenticationJsonParser;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
-
-import javax.ws.rs.core.Cookie;
 
 /**
  * TODO: Document this class / interface here

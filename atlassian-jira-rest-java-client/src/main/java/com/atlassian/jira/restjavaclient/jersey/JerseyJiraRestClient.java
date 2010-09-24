@@ -75,8 +75,8 @@ public class JerseyJiraRestClient implements JiraRestClient {
                 return resource;
             }
         };
-        issueRestClient = new JerseyIssueRestClient(baseUri, client);
         sessionRestClient = new JerseySessionRestClient(client, serverUri);
+		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient);
     }
 
     @Override

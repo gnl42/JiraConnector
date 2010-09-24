@@ -16,12 +16,13 @@
 
 package com.atlassian.jira.restjavaclient.jersey;
 
-import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.ProgressMonitor;
 import com.atlassian.jira.restjavaclient.RestClientException;
+import com.atlassian.jira.restjavaclient.SessionRestClient;
 import com.atlassian.jira.restjavaclient.domain.FieldInput;
 import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Session;
 import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.TransitionInput;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
@@ -40,6 +41,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import java.util.concurrent.Callable;
 public class JerseyIssueRestClient implements IssueRestClient {
 
 	private final ApacheHttpClient client;
+	private final SessionRestClient sessionRestClient;
 	private final URI baseUri;
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
@@ -62,9 +65,10 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final CommentJsonGenerator commentJsonGenerator = new CommentJsonGenerator();
 
-	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client) {
+	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient) {
 		this.baseUri = baseUri;
 		this.client = client;
+		this.sessionRestClient = sessionRestClient;
 	}
 
 	@Override
@@ -206,36 +210,45 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	}
 
 	@Override
-	public void watch(Issue issue, ProgressMonitor progressMonitor) {
+	public void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				client.resource(issue.getWatchers().getSelf()).type(MediaType.APPLICATION_JSON_TYPE).post(username);
+				return null;
+			}
+		});
+
+	}
+
+	private String getLoggedUsername(ProgressMonitor progressMonitor) {
+		final Session session = sessionRestClient.getCurrentSession(progressMonitor);
+		return session.getUsername();
 	}
 
 	@Override
-	public void unwatch(Issue issue, ProgressMonitor progressMonitor) {
+	public void removeWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final URI uri = UriBuilder.fromUri(issue.getWatchers().getSelf()).path(username).build();
+				final WebResource watchersResource = client.resource(uri);
+				watchersResource.delete();
+				return null;
+			}
+		});
+
 	}
 
-	@Nullable
-	private String getExpandoString(IssueArgs args) {
-		Collection<String> expandos = new ArrayList<String>();
-		StringBuilder sb = new StringBuilder();
-		if (args.withAttachments()) {
-			expandos.add("attachments");
-		}
-		if (args.withComments()) {
-			expandos.add("comments");
-		}
-		if (args.withHtml()) {
-			expandos.add("html");
-		}
-		if (args.withWorklogs()) {
-			expandos.add("worklogs");
-		}
-		if (args.withWatchers()) {
-			expandos.add("watchers.list");
-		}
-		if (expandos.size() == 0) {
-			return null;
-		}
-		return Joiner.on(',').join(expandos);
+
+	@Override
+	public void watch(final Issue issue, ProgressMonitor progressMonitor) {
+		addWatcher(issue, getLoggedUsername(progressMonitor), progressMonitor);
+	}
+
+	@Override
+	public void unwatch(final Issue issue, ProgressMonitor progressMonitor) {
+		removeWatcher(issue, getLoggedUsername(progressMonitor), progressMonitor);
 	}
 
 }

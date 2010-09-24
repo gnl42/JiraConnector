@@ -34,4 +34,7 @@ public interface IssueRestClient {
 
 	void watch(Issue issue, ProgressMonitor progressMonitor);
 	void unwatch(Issue issue, ProgressMonitor progressMonitor);
+	void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
+	void removeWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
+
 }

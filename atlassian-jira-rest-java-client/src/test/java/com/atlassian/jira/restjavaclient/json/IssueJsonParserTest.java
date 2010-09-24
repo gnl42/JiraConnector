@@ -17,7 +17,6 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.IterableMatcher;
-import com.atlassian.jira.restjavaclient.IssueArgsBuilder;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
 import com.google.common.collect.Iterables;

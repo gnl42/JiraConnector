@@ -20,11 +20,17 @@ import com.atlassian.jira.restjavaclient.*;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.text.NumberFormat;
@@ -32,8 +38,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
-import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
-import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE;
+import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
+import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_PASSWORD;
+import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
 import static org.junit.Assert.assertThat;
 
 
@@ -46,6 +53,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
+	final NullProgressMonitor pm = new NullProgressMonitor();
 
 	@Test
 	public void testGetWatchers() throws Exception {
@@ -53,7 +61,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Watchers watchers = client.getIssueClient().getWatchers(issue, new NullProgressMonitor());
 		assertEquals(1, watchers.getNumWatchers());
 		assertFalse(watchers.isWatching());
-		assertThat(watchers.getWatchers(), IterableMatcher.hasOnlyElements(IntegrationTestUtil.USER1));
+		assertThat(watchers.getWatchers(), IterableMatcher.hasOnlyElements(USER1));
 	}
 
 	public URI jiraRestUri(String path) {
@@ -179,8 +187,8 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Comment lastComment = Iterables.getLast(changedIssue.getComments());
 		assertEquals(comment.getBody(), lastComment.getBody());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getAuthor());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getUpdateAuthor());
+		assertEquals(USER_ADMIN, lastComment.getAuthor());
+		assertEquals(USER_ADMIN, lastComment.getUpdateAuthor());
 		assertEquals(lastComment.getCreationDate(), lastComment.getUpdateDate());
 		assertTrue(lastComment.getCreationDate().isAfter(now) || lastComment.getCreationDate().isEqual(now));
 		assertEquals(comment.getGroupLevel(), lastComment.getGroupLevel());
@@ -247,6 +255,67 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertEquals(2, issue.getVotes().getVotes());
 	}
 
+	@Test
+	public void testWatchUnwatch() {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final NullProgressMonitor pm = new NullProgressMonitor();
+		final Issue issue1 = issueClient.getIssue("TST-1", pm);
+
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(),
+				Matchers.not(IterableMatcher.contains(USER_ADMIN)));
+
+		issueClient.watch(issue1, pm);
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER_ADMIN));
+
+		issueClient.unwatch(issue1, pm);
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
+
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER1));
+		// @todo that's a bug in JIRA JRADEV-3517 - that should be allowed
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
+				"User 'admin' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
+			@Override
+			public void run() {
+				issueClient.removeWatcher(issue1, USER1.getName(), pm);
+			}
+		});
+
+		// @todo restore it when JRADEV-3517 is fixed
+//		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), Matchers.not(IterableMatcher.contains(USER1)));
+//		issueClient.addWatcher(issue1, USER1.getName(), pm);
+//		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER1));
+	}
+
+	@Test
+	public void testRemoveWatcherUnauthorized() {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue1 = issueClient.getIssue("TST-1", pm);
+		issueClient.watch(issue1, pm);
+
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+		final IssueRestClient issueClient2 = client.getIssueClient();
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
+				"User 'wseliga' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
+			@Override
+			public void run() {
+				issueClient2.removeWatcher(issue1, ADMIN_USERNAME, pm);
+			}
+		});
+	}
+
+	@Test
+	public void testAddWatcherUnauthorized() {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue1 = issueClient.getIssue("TST-1", pm);
+		try {
+			issueClient.addWatcher(issue1, USER1_USERNAME, pm);
+		} catch (RestClientException e) {
+			if (e.getCause() instanceof UniformInterfaceException && ((UniformInterfaceException) e.getCause()).getResponse().getClientResponseStatus()
+					== ClientResponse.Status.UNAUTHORIZED) {
+				fail("JIRA bug JRADEV-3517. Fix this test when JIRA is fixed");
+			}
+		}
+	}
 
 	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
 		Transition transitionFound = null;

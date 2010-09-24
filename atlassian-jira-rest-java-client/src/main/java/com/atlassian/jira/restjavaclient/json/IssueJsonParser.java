@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.IssueArgs;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.google.common.base.Splitter;
 import org.codehaus.jettison.json.JSONArray;

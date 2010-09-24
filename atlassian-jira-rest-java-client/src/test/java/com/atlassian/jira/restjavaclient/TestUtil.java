@@ -22,6 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -46,6 +47,11 @@ public class TestUtil {
 	}
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
 		assertErrorCode(errorCode, null, runnable);
+	}
+
+
+	public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
+		assertErrorCode(status.getStatusCode(), message, runnable);
 	}
 
 	public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
