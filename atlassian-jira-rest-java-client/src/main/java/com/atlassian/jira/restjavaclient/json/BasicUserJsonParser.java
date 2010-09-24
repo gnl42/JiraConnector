@@ -17,28 +17,17 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicUser;
-import com.atlassian.jira.restjavaclient.domain.Comment;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class CommentJsonParser implements JsonParser<Comment> {
-
+public class BasicUserJsonParser implements JsonParser<BasicUser> {
 	@Override
-	public Comment parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String body = json.getString("body");
-		final BasicUser author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
-		final String roleLevel = json.optString("role", null);
-		final String groupLevel = json.optString("groupLevel", null);
-		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
-				JsonParseUtil.parseDateTime(json.getString("updated")), roleLevel, groupLevel);
+	public BasicUser parse(JSONObject jsonObject) throws JSONException {
+		return JsonParseUtil.parseUser(jsonObject);
 	}
 }

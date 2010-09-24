@@ -35,6 +35,7 @@ public class BasicStatus implements AddressableEntity {
 		this.name = name;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}

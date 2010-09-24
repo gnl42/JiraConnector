@@ -16,9 +16,15 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.ExpandableProperty;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.User;
+import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
+import java.util.ArrayList;
 
 /**
  * TODO: Document this class / interface here
@@ -27,7 +33,21 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class UserJsonParser implements JsonParser<User> {
 	@Override
-	public User parse(JSONObject jsonObject) throws JSONException {
-		return JsonParseUtil.parseUser(jsonObject);
+	public User parse(JSONObject json) throws JSONException {
+		final BasicUser basicUser = JsonParseUtil.parseUser(json);
+		final URI avatarUri = JsonParseUtil.parseURI(json.getString("avatarUrl"));
+		final String emailAddress = json.getString("emailAddress");
+		// we expect always expanded groups, serving them is anyway cheap
+		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json.getJSONObject("groups"), new JsonParser<String>() {
+			@Override
+			public String parse(JSONObject json) throws JSONException {
+				return json.getString("name");
+			}
+		});
+		ArrayList<String> groupList = new ArrayList<String>();
+		if (groups.getSize() > 0) {
+			Iterables.addAll(groupList, groups.getItems());
+		}
+		return new User(basicUser.getSelf(), basicUser.getName(), basicUser.getDisplayName(), emailAddress, avatarUri, groupList);
 	}
 }

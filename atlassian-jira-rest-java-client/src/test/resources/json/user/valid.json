@@ -1,0 +1,22 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+   "name":"admin",
+   "emailAddress":"user@atlassian.com",
+   "avatarUrl":"http://localhost:8090/jira/secure/useravatar?size=large&ownerId=admin&avatarId=10054",
+   "displayName":"Administrator",
+   "groups":{
+      "size":3,
+      "items":[
+         {
+            "name":"jira-administrators"
+         },
+         {
+            "name":"jira-developers"
+         },
+         {
+            "name":"jira-users"
+         }
+      ]
+   },
+   "expand":"groups"
+}

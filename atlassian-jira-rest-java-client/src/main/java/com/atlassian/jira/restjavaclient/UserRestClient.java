@@ -14,33 +14,16 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.domain;
+package com.atlassian.jira.restjavaclient;
 
-import com.google.common.base.Objects;
-
-import java.net.URI;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
+import com.atlassian.jira.restjavaclient.domain.User;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class Component extends BasicComponent {
-	private final BasicUser lead;
-
-	public Component(URI self, String name, String description, BasicUser lead) {
-		super(self, name, description);
-		this.lead = lead;
-	}
-
-	public BasicUser getLead() {
-		return lead;
-	}
-
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("lead", lead).
-				toString();
-	}
+public interface UserRestClient {
+	User getUser(String username, ProgressMonitor progressMonitor);
 }

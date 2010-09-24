@@ -66,8 +66,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
     private final String summary;
-	private User reporter;
-	private User assignee;
+	private BasicUser reporter;
+	private BasicUser assignee;
 	private String key;
 	private Collection<Field> fields;
 	private DateTime creationDate;
@@ -92,11 +92,11 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return status;
 	}
 
-	public User getReporter() {
+	public BasicUser getReporter() {
 		return reporter;
 	}
 
-	public User getAssignee() {
+	public BasicUser getAssignee() {
 		return assignee;
 	}
 

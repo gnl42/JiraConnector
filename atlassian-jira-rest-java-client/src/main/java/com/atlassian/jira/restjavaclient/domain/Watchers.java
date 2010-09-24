@@ -26,14 +26,14 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Watchers extends BasicWatchers {
-    private final Collection<User> users;
+    private final Collection<BasicUser> users;
 
-    public Watchers(BasicWatchers basicWatchers, Collection<User> users) {
+    public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
         super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
         this.users = users;
     }
 
-    public Iterable<User> getUsers() {
+    public Iterable<BasicUser> getUsers() {
         return users;
     }
 

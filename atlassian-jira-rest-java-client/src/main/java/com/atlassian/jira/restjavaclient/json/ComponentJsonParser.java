@@ -18,7 +18,7 @@ package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicComponent;
 import com.atlassian.jira.restjavaclient.domain.Component;
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -62,7 +62,7 @@ public class ComponentJsonParser {
 
 	private static Component parseComponent(JSONObject json) throws JSONException {
 		final BasicComponent basicComponent = parseBasicComponent(json);
-		final User lead = JsonParseUtil.parseUser(json.getJSONObject("lead"));
+		final BasicUser lead = JsonParseUtil.parseUser(json.getJSONObject("lead"));
 		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
 	}
 }

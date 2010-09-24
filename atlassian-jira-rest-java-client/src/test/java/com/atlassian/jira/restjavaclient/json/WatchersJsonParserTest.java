@@ -18,7 +18,7 @@ package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        assertThat(watcher.getUsers(), IterableMatcher.< User >hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
+        assertThat(watcher.getUsers(), IterableMatcher.<BasicUser>hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
 
     }
 

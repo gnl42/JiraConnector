@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.Worklog;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,8 +35,8 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 	public Worklog parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
-		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final User updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
+		final BasicUser author = JsonParseUtil.parseUser(json.getJSONObject("author"));
+		final BasicUser updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
 		final String comment = json.getString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");

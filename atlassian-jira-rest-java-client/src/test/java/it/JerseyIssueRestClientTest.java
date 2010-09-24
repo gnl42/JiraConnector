@@ -52,7 +52,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
-	final NullProgressMonitor pm = new NullProgressMonitor();
 
 	@Test
 	public void testGetWatchers() throws Exception {
@@ -79,7 +78,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();
 		assertNotNull(items);
-		final User user = new User(jiraRestUri("/user/admin"),
+		final BasicUser user = new BasicUser(jiraRestUri("/user/admin"),
 				"admin", "Administrator");
 		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(jiraRestRootUri, "/attachment/10040"),
 				"dla Paw\u0142a.txt", user, dateTime, 643, "text/plain",

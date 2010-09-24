@@ -17,7 +17,7 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
@@ -37,7 +37,7 @@ public class AttachmentJsonParser implements JsonParser<Attachment> {
 	public Attachment parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String filename = json.getString("filename");
-		final User author = JsonParseUtil.parseUser(json.getJSONObject("author"));
+		final BasicUser author = JsonParseUtil.parseUser(json.getJSONObject("author"));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
 		final int size = json.getInt("size");
 		final String mimeType = json.getString("mimeType");

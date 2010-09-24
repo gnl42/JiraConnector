@@ -17,6 +17,7 @@
 package it;
 
 import com.atlassian.jira.functest.framework.FuncTestCase;
+import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 
@@ -36,6 +37,7 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
     protected URI jiraAuthRootUri;
 	protected static final String ADMIN_USERNAME = "admin";
 	protected static final String ADMIN_PASSWORD = "admin";
+	protected final NullProgressMonitor pm = new NullProgressMonitor();
 
 	public AbstractJerseyRestClientTest() {
     }

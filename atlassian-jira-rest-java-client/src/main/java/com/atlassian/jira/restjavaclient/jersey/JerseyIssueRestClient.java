@@ -54,11 +54,9 @@ import java.util.concurrent.Callable;
  *
  * @since v0.1
  */
-public class JerseyIssueRestClient implements IssueRestClient {
+public class JerseyIssueRestClient extends AbstractJerseyRestClient implements IssueRestClient {
 
-	private final ApacheHttpClient client;
 	private final SessionRestClient sessionRestClient;
-	private final URI baseUri;
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
@@ -66,8 +64,7 @@ public class JerseyIssueRestClient implements IssueRestClient {
 	private final CommentJsonGenerator commentJsonGenerator = new CommentJsonGenerator();
 
 	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient) {
-		this.baseUri = baseUri;
-		this.client = client;
+		super(baseUri, client);
 		this.sessionRestClient = sessionRestClient;
 	}
 
@@ -160,25 +157,6 @@ public class JerseyIssueRestClient implements IssueRestClient {
 		});
 	}
 
-
-	private <T> T invoke(Callable<T> callable) {
-		try {
-			return callable.call();
-		} catch (UniformInterfaceException e) {
-			final String body = e.getResponse().getEntity(String.class);
-			try {
-				JSONObject jsonObject = new JSONObject(body);
-				final JSONArray errorMessages = jsonObject.getJSONArray("errorMessages");
-				throw new RestClientException(JsonParseUtil.toStringCollection(errorMessages), e);
-			} catch (JSONException e1) {
-				throw new RestClientException(e);
-			}
-		} catch (RestClientException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RestClientException(e);
-		}
-	}
 
 	@Override
 	public void vote(final Issue issue, ProgressMonitor progressMonitor) {

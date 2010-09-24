@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 
 import javax.ws.rs.core.UriBuilder;
@@ -29,20 +29,21 @@ import java.net.URISyntaxException;
  * @since v0.1
  */
 public class IntegrationTestUtil {
-    public static final User USER1;
+    public static final BasicUser USER1;
 
-    public static final User USER_ADMIN;
+    public static final BasicUser USER_ADMIN;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
+	public static final URI USER_REST_URI;
 
 	static {
         LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
         try {
-            final URI userRestUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user/").build();
-            USER1 = new User(concat(userRestUri, "wseliga"), "wseliga", "Wojciech Seliga");
-            USER_ADMIN = new User(concat(userRestUri, "admin"), "admin", "Administrator");
+            USER_REST_URI = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user/").build();
+            USER1 = new BasicUser(concat(USER_REST_URI, "wseliga"), "wseliga", "Wojciech Seliga");
+            USER_ADMIN = new BasicUser(concat(USER_REST_URI, "admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

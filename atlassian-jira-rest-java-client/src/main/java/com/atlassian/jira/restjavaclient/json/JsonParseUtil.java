@@ -18,7 +18,7 @@ package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.ExpandableProperty;
 import com.atlassian.jira.restjavaclient.RestClientException;
-import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -140,8 +140,8 @@ public class JsonParseUtil {
 		return s != null ? parseURI(s) : null;
 	}
 
-	public static User parseUser(JSONObject json) throws JSONException {
-		return new User(getSelfUri(json), json.getString("name"), json.optString("displayName", null));
+	public static BasicUser parseUser(JSONObject json) throws JSONException {
+		return new BasicUser(getSelfUri(json), json.getString("name"), json.optString("displayName", null));
 	}
 
 	public static DateTime parseDateTime(JSONObject jsonObject, String attributeName) throws JSONException {

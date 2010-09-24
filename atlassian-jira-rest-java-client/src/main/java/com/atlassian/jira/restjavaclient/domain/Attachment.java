@@ -31,7 +31,7 @@ import java.net.URI;
 public class Attachment implements AddressableEntity {
     private final URI self;
     private final String filename;
-    private final User author;
+    private final BasicUser author;
     private final DateTime creationDate;
     private final int size;
     private final String mimeType;
@@ -40,7 +40,7 @@ public class Attachment implements AddressableEntity {
     @Nullable
     private final URI thumbnailUri;
 
-    public Attachment(URI self, String filename, User author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
+    public Attachment(URI self, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
         this.self = self;
         this.filename = filename;
         this.author = author;
@@ -55,7 +55,8 @@ public class Attachment implements AddressableEntity {
         return thumbnailUri != null;
     }
 
-    public URI getSelf() {
+    @Override
+	public URI getSelf() {
         return null;
     }
 
@@ -63,7 +64,7 @@ public class Attachment implements AddressableEntity {
         return filename;
     }
 
-    public User getAuthor() {
+    public BasicUser getAuthor() {
         return author;
     }
 

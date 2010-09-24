@@ -16,11 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.TestUtil;
-import com.atlassian.jira.restjavaclient.domain.User;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 
 import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
 
@@ -34,14 +30,14 @@ public class TestConstants {
 
 	public static final String USER1_PASSWORD = "wseliga";
 
-	public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER1_USERNAME, "Wojciech Seliga");
+	public static final BasicUser USER1 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER1_USERNAME, "Wojciech Seliga");
 
-	public static final User USER_ADMIN = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/admin"), "admin", "Administrator");
+	public static final BasicUser USER_ADMIN = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user/admin"), "admin", "Administrator");
 
 	public static final String USER2_USERNAME = "user";
 
 	public static final String USER2_PASSWORD = "user";
 
-	public static final User USER2 = new User(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER2_USERNAME, "My Test User");
+	public static final BasicUser USER2 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER2_USERNAME, "My Test User");
 
 }

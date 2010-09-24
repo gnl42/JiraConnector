@@ -16,8 +16,6 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.User;
-
 /**
  * TODO: Document this class / interface here
  *
@@ -26,4 +24,5 @@ import com.atlassian.jira.restjavaclient.domain.User;
 public interface JiraRestClient {
     public IssueRestClient getIssueClient();
     public SessionRestClient getSessionClient();
+	public UserRestClient getUserClient();
 }

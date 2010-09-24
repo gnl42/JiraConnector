@@ -30,8 +30,8 @@ import java.net.URI;
 public class Worklog {
 	private final URI self;
 	private final URI issueUri;
-	private final User author;
-	private final User updateAuthor;
+	private final BasicUser author;
+	private final BasicUser updateAuthor;
 	private final String comment;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -42,7 +42,7 @@ public class Worklog {
 	@Nullable
 	private final String roleLevel;
 
-	public Worklog(URI self, URI issueUri, User author, User updateAuthor, String comment, DateTime creationDate,
+	public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, String comment, DateTime creationDate,
                    DateTime updateDate, DateTime startDate, int minutesSpent, String roleLevel, String groupLevel) {
 		this.self = self;
 		this.issueUri = issueUri;
@@ -65,11 +65,11 @@ public class Worklog {
 		return issueUri;
 	}
 
-	public User getAuthor() {
+	public BasicUser getAuthor() {
 		return author;
 	}
 
-	public User getUpdateAuthor() {
+	public BasicUser getUpdateAuthor() {
 		return updateAuthor;
 	}
 
