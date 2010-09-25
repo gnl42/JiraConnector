@@ -43,7 +43,7 @@ public class IssueJsonParserTest {
 		assertEquals("TST-2", issue.getKey());
 		assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
-		assertEquals(new Project(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
+		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		
 		// issue links
 		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(

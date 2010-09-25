@@ -46,6 +46,7 @@ public class Version implements AddressableEntity {
 		this.releaseDate = releaseDate;
 	}
 
+	@Override
 	public URI getSelf() {
 		return self;
 	}
@@ -82,4 +83,24 @@ public class Version implements AddressableEntity {
 				add("releaseDate", releaseDate).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Version) {
+			Version that = (Version) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.name, that.name)
+					&& Objects.equal(this.description, that.description)
+					&& Objects.equal(this.isArchived, that.isArchived)
+					&& Objects.equal(this.isReleased, that.isReleased)
+					&& Objects.equal(this.releaseDate, that.releaseDate);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, name, description, isArchived, isReleased, releaseDate);
+	}
+
 }

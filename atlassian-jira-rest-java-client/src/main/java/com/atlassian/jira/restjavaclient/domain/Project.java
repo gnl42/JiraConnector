@@ -16,54 +16,69 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
-import com.atlassian.jira.restjavaclient.AddressableEntity;
-import com.google.common.base.Objects;
-
+import javax.annotation.Nullable;
 import java.net.URI;
+import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Complete information about single JIRA project.
+ * Many REST resources instead include just @{}BasicProject 
  *
  * @since v0.1
  */
-public class Project implements AddressableEntity {
-	private final URI self;
-	private final String key;
+public class Project extends BasicProject {
+	private final String description;
+	private final BasicUser lead;
+	@Nullable
+	private final URI uri;
+	private final Collection<Version> versions;
+	private final Collection<BasicComponent> components;
 
-	public Project(URI self, String key) {
-		this.self = self;
-		this.key = key;
+	public Project(URI self, String key, String description, BasicUser lead, URI uri, Collection<Version> versions,
+				   Collection<BasicComponent> components) {
+		super(self, key);
+		this.description = description;
+		this.lead = lead;
+		this.uri = uri;
+		this.versions = versions;
+		this.components = components;
 	}
 
-	public URI getSelf() {
-		return self;
+	/**
+	 * @return description provided for this project or empty string if there is no description specific for this project. 
+	 */
+	public String getDescription() {
+		return description;
 	}
 
-	public String getKey() {
-		return key;
+	/**
+	 *
+	 * @return the person who leads this project
+	 */
+	public BasicUser getLead() {
+		return lead;
 	}
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("key", key).
-				toString();
+	/**
+	 * @return user-defined URI to a web page for this project, or <code>null</code> if not defined.
+	 */
+	@Nullable
+	public URI getUri() {
+		return uri;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Project) {
-			Project that = (Project) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.key, that.key);
-		}
-		return false;
+	/**
+	 * @return versions defined for this project
+	 */
+	public Iterable<Version> getVersions() {
+		return versions;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, key);
+	/**
+	 *
+	 * @return components defined for this project
+	 */
+	public Iterable<BasicComponent> getComponents() {
+		return components;
 	}
-
 }

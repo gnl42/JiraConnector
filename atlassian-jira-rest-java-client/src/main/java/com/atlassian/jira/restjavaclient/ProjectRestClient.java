@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.json;
+package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.BasicUser;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.atlassian.jira.restjavaclient.domain.Project;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class BasicUserJsonParser implements JsonParser<BasicUser> {
-	@Override
-	public BasicUser parse(JSONObject jsonObject) throws JSONException {
-		return JsonParseUtil.parseBasicUser(jsonObject);
-	}
+public interface ProjectRestClient {
+	/**
+	 * Retrieves complete information about given project 
+	 * @param key unique key of the project (usually 2+ characters)
+	 * @param progressMonitor progress monitor
+	 * @return complete information about given project
+	 */
+	Project getProject(String key, ProgressMonitor progressMonitor);
 }

@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
+import com.atlassian.jira.restjavaclient.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 
@@ -30,7 +31,7 @@ import java.net.URISyntaxException;
  *
  * @since v0.1
  */
-public class AbstractJerseyRestClientTest extends FuncTestCase {
+public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
     protected URI jiraUri;
     protected JerseyJiraRestClient client;
     protected URI jiraRestRootUri;
@@ -38,12 +39,13 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
 	protected static final String ADMIN_USERNAME = "admin";
 	protected static final String ADMIN_PASSWORD = "admin";
 	protected final NullProgressMonitor pm = new NullProgressMonitor();
+	protected static final String DEFAULT_JIRA_DUMP_FILE = "jira1-export.xml";
 
 	public AbstractJerseyRestClientTest() {
     }
 
     public void configureJira() {
-        administration.restoreData("jira1-export.xml");
+        administration.restoreData(DEFAULT_JIRA_DUMP_FILE);
     }
 
     @Override
@@ -61,4 +63,9 @@ public class AbstractJerseyRestClientTest extends FuncTestCase {
 	protected void setClient(String username, String password) {
 		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(username, password));
 	}
+
+	protected void setAnonymousMode() {
+		client = new JerseyJiraRestClient(jiraUri, new AnonymousAuthenticationHandler());
+	}
+	
 }

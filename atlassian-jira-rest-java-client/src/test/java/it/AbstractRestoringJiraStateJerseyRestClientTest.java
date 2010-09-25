@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.json;
-
-import com.atlassian.jira.restjavaclient.domain.BasicUser;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+package it;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class BasicUserJsonParser implements JsonParser<BasicUser> {
+public abstract class AbstractRestoringJiraStateJerseyRestClientTest extends AbstractJerseyRestClientTest {
 	@Override
-	public BasicUser parse(JSONObject jsonObject) throws JSONException {
-		return JsonParseUtil.parseBasicUser(jsonObject);
+	protected void setUpTest() {
+		super.setUpTest();
+		administration.restoreData(getJiraDumpFile());
+	}
+
+
+	protected String getJiraDumpFile() {
+		return DEFAULT_JIRA_DUMP_FILE;
 	}
 }

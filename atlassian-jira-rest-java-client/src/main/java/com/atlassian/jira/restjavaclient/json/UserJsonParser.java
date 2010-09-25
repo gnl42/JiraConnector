@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class UserJsonParser implements JsonParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {
-		final BasicUser basicUser = JsonParseUtil.parseUser(json);
+		final BasicUser basicUser = JsonParseUtil.parseBasicUser(json);
 		final URI avatarUri = JsonParseUtil.parseURI(json.getString("avatarUrl"));
 		final String emailAddress = json.getString("emailAddress");
 		// we expect always expanded groups, serving them is anyway cheap

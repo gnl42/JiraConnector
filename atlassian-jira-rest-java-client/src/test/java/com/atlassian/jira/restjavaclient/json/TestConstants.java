@@ -16,12 +16,17 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.BasicComponent;
 import com.atlassian.jira.restjavaclient.domain.BasicUser;
+import com.atlassian.jira.restjavaclient.domain.Version;
 
 import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
 
 /**
- * TODO: Document this class / interface here
+ * Constants used in various unit tests.
+ * All constants including full URIs are usually useless in integration tests though, as during integration
+ * tests we may be testing against a JIRA running on a different port and with a different web context 
  *
  * @since v0.1
  */
@@ -40,4 +45,15 @@ public class TestConstants {
 
 	public static final BasicUser USER2 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user/wseliga"), USER2_USERNAME, "My Test User");
 
+	public static final Version VERSION_1 = new Version(toUri("http://localhost:8090/jira/rest/api/latest/version/10001"),
+			"1", "initial version", false, false, null);
+
+	public static final Version VERSION_1_1 = new Version(toUri("http://localhost:8090/jira/rest/api/latest/version/10000"),
+			"1.1", "Some version", true, false, TestUtil.toDateTime("2010-08-25T00:00:00.000+0200"));
+
+	public static final BasicComponent BCOMPONENT_A = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10000"),
+			"Component A", "this is some description of component A");
+
+	public static final BasicComponent BCOMPONENT_B = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10001"),
+			"Component B", "another description");
 }

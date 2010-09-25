@@ -19,9 +19,7 @@ package it;
 import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.TestUtil;
-import com.atlassian.jira.restjavaclient.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.User;
-import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
@@ -35,7 +33,7 @@ import static org.junit.Assert.assertThat;
  *
  * @since v0.1
  */
-public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
+public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
     @Test
     public void testGetUser() throws JSONException {
@@ -66,18 +64,11 @@ public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
-				client = new JerseyJiraRestClient(jiraUri, new AnonymousAuthenticationHandler());
+				setAnonymousMode();
 				client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
 			}
 		});
 
-	}
-
-
-	@Override
-	protected void setUpTest() {
-		super.setUpTest();
-		configureJira();
 	}
 
 }

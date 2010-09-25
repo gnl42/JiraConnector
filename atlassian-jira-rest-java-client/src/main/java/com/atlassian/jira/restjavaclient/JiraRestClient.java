@@ -22,7 +22,8 @@ package com.atlassian.jira.restjavaclient;
  * @since v0.1
  */
 public interface JiraRestClient {
-    public IssueRestClient getIssueClient();
-    public SessionRestClient getSessionClient();
-	public UserRestClient getUserClient();
+    IssueRestClient getIssueClient();
+    SessionRestClient getSessionClient();
+	UserRestClient getUserClient();
+	ProjectRestClient getProjectClient();
 }

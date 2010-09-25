@@ -19,6 +19,7 @@ package com.atlassian.jira.restjavaclient.jersey;
 import com.atlassian.jira.restjavaclient.AuthenticationHandler;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.JiraRestClient;
+import com.atlassian.jira.restjavaclient.ProjectRestClient;
 import com.atlassian.jira.restjavaclient.SessionRestClient;
 import com.atlassian.jira.restjavaclient.UserRestClient;
 import com.sun.jersey.api.client.*;
@@ -42,7 +43,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
     private final IssueRestClient issueRestClient;
     private final SessionRestClient sessionRestClient;
 	private final UserRestClient userRestClient;
-	
+	private final ProjectRestClient projectRestClient;
 
 
     public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
@@ -81,6 +82,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
         sessionRestClient = new JerseySessionRestClient(client, serverUri);
 		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient);
 		userRestClient = new JerseyUserRestClient(baseUri, client);
+		projectRestClient = new JerseyProjectRestClient(baseUri, client);
     }
 
     @Override
@@ -96,6 +98,11 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	@Override
 	public UserRestClient getUserClient() {
 		return userRestClient;
+	}
+
+	@Override
+	public ProjectRestClient getProjectClient() {
+		return projectRestClient;
 	}
 
 	private static ApacheHttpClientHandler createDefaultClientHander() {

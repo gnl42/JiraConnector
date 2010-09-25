@@ -16,18 +16,22 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.domain.BasicUser;
+import com.atlassian.jira.restjavaclient.domain.BasicProject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class BasicUserJsonParser implements JsonParser<BasicUser> {
-	@Override
-	public BasicUser parse(JSONObject jsonObject) throws JSONException {
-		return JsonParseUtil.parseBasicUser(jsonObject);
-	}
+public class BasicProjectJsonParser extends JsonParserWithJsonObjectValue<BasicProject> {
+    @Override
+    public BasicProject parseValue(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String key = json.getString("key");
+        return new BasicProject(selfUri, key);
+    }
 }

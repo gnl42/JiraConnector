@@ -26,15 +26,13 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicComponent implements AddressableEntity {
+public class BasicProject implements AddressableEntity {
 	private final URI self;
-	private final String name;
-	private final String description;
+	private final String key;
 
-	public BasicComponent(URI self, String name, String description) {
+	public BasicProject(URI self, String key) {
 		this.self = self;
-		this.name = name;
-		this.description = description;
+		this.key = key;
 	}
 
 	@Override
@@ -42,37 +40,31 @@ public class BasicComponent implements AddressableEntity {
 		return self;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getDescription() {
-		return description;
+	public String getKey() {
+		return key;
 	}
 
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).
-				add("name", name).
-				add("description", description).
+				add("key", key).
 				toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof BasicComponent) {
-			BasicComponent that = (BasicComponent) obj;
+		if (obj instanceof BasicProject) {
+			BasicProject that = (BasicProject) obj;
 			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.description, that.description);
+					&& Objects.equal(this.key, that.key);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, description);
+		return Objects.hashCode(self, key);
 	}
 
 }

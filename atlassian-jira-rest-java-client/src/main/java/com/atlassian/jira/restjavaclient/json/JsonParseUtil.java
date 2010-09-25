@@ -140,7 +140,7 @@ public class JsonParseUtil {
 		return s != null ? parseURI(s) : null;
 	}
 
-	public static BasicUser parseUser(JSONObject json) throws JSONException {
+	public static BasicUser parseBasicUser(JSONObject json) throws JSONException {
 		return new BasicUser(getSelfUri(json), json.getString("name"), json.optString("displayName", null));
 	}
 

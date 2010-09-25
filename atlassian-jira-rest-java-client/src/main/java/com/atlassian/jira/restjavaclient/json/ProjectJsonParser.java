@@ -16,22 +16,41 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.domain.BasicComponent;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.Project;
+import com.atlassian.jira.restjavaclient.domain.Version;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class ProjectJsonParser extends JsonParserWithJsonObjectValue<Project> {
-    @Override
-    public Project parseValue(JSONObject json) throws JSONException {
-        final URI selfUri = JsonParseUtil.getSelfUri(json);
-        final String key = json.getString("key");
-        return new Project(selfUri, key);
-    }
+public class ProjectJsonParser implements JsonParser<Project> {
+	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
+	private final JsonParser<BasicComponent> componentJsonParser = ComponentJsonParser.createBasicComponentParser();
+	@Override
+	public Project parse(JSONObject json) throws JSONException {
+		URI self = JsonParseUtil.getSelfUri(json);
+		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
+		final String key = json.getString("key");
+		final String urlStr = json.getString("url");
+		URI uri;
+		try {
+			 uri = "".equals(urlStr) ? null : new URI(urlStr);
+		} catch (URISyntaxException e) {
+			uri = null;
+		}
+		final String description = json.getString("description");
+		final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
+		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
+		return new Project(self, key, description, lead, uri, versions, components);
+
+	}
 }

@@ -62,7 +62,7 @@ public class ComponentJsonParser {
 
 	private static Component parseComponent(JSONObject json) throws JSONException {
 		final BasicComponent basicComponent = parseBasicComponent(json);
-		final BasicUser lead = JsonParseUtil.parseUser(json.getJSONObject("lead"));
+		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
 	}
 }

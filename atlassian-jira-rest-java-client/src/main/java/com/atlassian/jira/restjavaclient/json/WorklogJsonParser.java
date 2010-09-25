@@ -35,8 +35,8 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 	public Worklog parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
-		final BasicUser author = JsonParseUtil.parseUser(json.getJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseUser(json.getJSONObject("updateAuthor"));
+		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
+		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
 		final String comment = json.getString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");

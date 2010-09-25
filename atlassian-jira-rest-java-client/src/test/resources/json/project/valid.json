@@ -1,0 +1,40 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/project/TST",
+   "key":"TST",
+   "description":"This is my description here.\r\nAnother line.",
+   "lead":{
+      "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+      "name":"admin",
+      "displayName":"Administrator"
+   },
+   "components":[
+      {
+         "self":"http://localhost:8090/jira/rest/api/latest/component/10000",
+         "name":"Component A",
+         "description":"this is some description of component A"
+      },
+      {
+         "self":"http://localhost:8090/jira/rest/api/latest/component/10001",
+         "name":"Component B",
+         "description":"another description"
+      }
+   ],
+   "url":"",
+   "versions":[
+      {
+         "self":"http://localhost:8090/jira/rest/api/latest/version/10001",
+         "description":"initial version",
+         "name":"1",
+         "archived":false,
+         "released":false
+      },
+      {
+         "self":"http://localhost:8090/jira/rest/api/latest/version/10000",
+         "description":"Some version",
+         "name":"1.1",
+         "archived":true,
+         "released":false,
+         "releaseDate":"2010-08-25T00:00:00.000+0200"
+      }
+   ]
+}

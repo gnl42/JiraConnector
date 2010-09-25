@@ -68,7 +68,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
     private final JsonFieldParser fieldParser = new JsonFieldParser();
     private final CommentJsonParser commentJsonParser = new CommentJsonParser();
     private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
-    private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();
+    private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 
     private static final String FIELDS = "fields";
     private static final String VALUE_ATTR = "value";
@@ -122,7 +122,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, CREATED_ATTR, VALUE_ATTR));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, UPDATED_ATTR, VALUE_ATTR));
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
-		final Project project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
+		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
         final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
 		final Votes votes = votesJsonParser.parse(getNestedObject(s, FIELDS, VOTES_ATTR));
 		final BasicStatus status = statusJsonParser.parse(getNestedObject(s, FIELDS, STATUS_ATTR));
