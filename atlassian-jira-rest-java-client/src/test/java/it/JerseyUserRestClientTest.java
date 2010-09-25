@@ -18,10 +18,15 @@ package it;
 
 import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IterableMatcher;
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.User;
+import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
+
+import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -45,10 +50,29 @@ public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
 		assertThat(user2.getGroups(), IterableMatcher.hasOnlyElements("jira-users"));
-
     }
 
+	public void testGetNonExistingUser() {
+		final String username = "same-fake-user-which-does-not-exist";
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user named '" + username + "' does not exist",
+				new Runnable() {
+			@Override
+			public void run() {
+				client.getUserClient().getUser(username, pm);
+			}
+		});
+	}
 
+	public void testGetUserAnonymously() {
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
+			@Override
+			public void run() {
+				client = new JerseyJiraRestClient(jiraUri, new AnonymousAuthenticationHandler());
+				client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
+			}
+		});
+
+	}
 
 
 }

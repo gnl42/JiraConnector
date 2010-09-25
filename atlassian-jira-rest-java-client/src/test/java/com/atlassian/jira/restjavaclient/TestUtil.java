@@ -54,6 +54,10 @@ public class TestUtil {
 		assertErrorCode(status.getStatusCode(), message, runnable);
 	}
 
+	public static void assertErrorCode(Response.Status status, Runnable runnable) {
+		assertErrorCode(status.getStatusCode(), null, runnable);
+	}
+
 	public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
 		try {
 			runnable.run();
