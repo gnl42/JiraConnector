@@ -74,4 +74,10 @@ public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 
+	@Override
+	protected void setUpTest() {
+		super.setUpTest();
+		configureJira();
+	}
+
 }
