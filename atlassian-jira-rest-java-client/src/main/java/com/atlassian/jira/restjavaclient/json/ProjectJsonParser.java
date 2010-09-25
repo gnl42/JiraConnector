@@ -34,7 +34,7 @@ import java.util.Collection;
  */
 public class ProjectJsonParser implements JsonParser<Project> {
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
-	private final JsonParser<BasicComponent> componentJsonParser = ComponentJsonParser.createBasicComponentParser();
+	private final BasicComponentJsonParser componentJsonParser = new BasicComponentJsonParser();
 	@Override
 	public Project parse(JSONObject json) throws JSONException {
 		URI self = JsonParseUtil.getSelfUri(json);

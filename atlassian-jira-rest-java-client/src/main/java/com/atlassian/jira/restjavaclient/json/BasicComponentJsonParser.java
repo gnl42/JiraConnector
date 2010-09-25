@@ -17,21 +17,29 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicComponent;
-import com.atlassian.jira.restjavaclient.domain.Component;
-import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class ComponentJsonParser implements JsonParser<Component> {
+public class BasicComponentJsonParser implements JsonParser<BasicComponent> {
+
 	@Override
-	public Component parse(JSONObject json) throws JSONException {
-		final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);
-		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
-		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
+	public BasicComponent parse(JSONObject json) throws JSONException {
+		return parseBasicComponent(json);
 	}
+
+	static BasicComponent parseBasicComponent(JSONObject json) throws JSONException {
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final String name = json.getString("name");
+		final String description = json.getString("description");
+		return new BasicComponent(selfUri, name, description);
+	}
+
+
 }

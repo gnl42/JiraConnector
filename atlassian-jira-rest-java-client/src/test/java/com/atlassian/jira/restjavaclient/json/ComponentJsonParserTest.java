@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 public class ComponentJsonParserTest {
 	@Test
 	public void testParseBasicComponent() throws Exception {
-		JsonParser<BasicComponent> parser = ComponentJsonParser.createBasicComponentParser();
+		BasicComponentJsonParser parser = new BasicComponentJsonParser();
 		final BasicComponent component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/basic-valid.json"));
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
 		assertEquals("Component A", component.getName());
@@ -41,7 +41,7 @@ public class ComponentJsonParserTest {
 
 	@Test
 	public void testParseComponent() throws Exception {
-		JsonParser<Component> parser = ComponentJsonParser.createComponentParser();
+		ComponentJsonParser parser = new ComponentJsonParser();
 		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		assertEquals("Component B", component.getName());

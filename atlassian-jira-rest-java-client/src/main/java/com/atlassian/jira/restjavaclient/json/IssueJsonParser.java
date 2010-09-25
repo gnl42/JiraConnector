@@ -63,7 +63,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final JsonParserWithJsonObjectValue<BasicWatchers> watchersJsonParser
             = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
-	private final JsonParser<BasicComponent> basicComponentJsonParser = ComponentJsonParser.createBasicComponentParser();
+	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
     private final JsonFieldParser fieldParser = new JsonFieldParser();
     private final CommentJsonParser commentJsonParser = new CommentJsonParser();
