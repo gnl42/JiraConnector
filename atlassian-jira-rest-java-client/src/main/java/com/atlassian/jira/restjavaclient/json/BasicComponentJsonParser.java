@@ -37,7 +37,7 @@ public class BasicComponentJsonParser implements JsonParser<BasicComponent> {
 	static BasicComponent parseBasicComponent(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
-		final String description = json.getString("description");
+		final String description = JsonParseUtil.getOptionalString(json, "description");
 		return new BasicComponent(selfUri, name, description);
 	}
 

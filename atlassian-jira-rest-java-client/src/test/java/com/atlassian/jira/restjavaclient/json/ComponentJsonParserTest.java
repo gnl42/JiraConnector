@@ -23,6 +23,7 @@ import org.junit.Test;
 import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * TODO: Document this class / interface here
@@ -40,12 +41,31 @@ public class ComponentJsonParserTest {
 	}
 
 	@Test
+	public void testParseBasicComponentWithNoDescription() throws Exception {
+		BasicComponentJsonParser parser = new BasicComponentJsonParser();
+		final BasicComponent component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/basic-no-description-valid.json"));
+		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
+		assertEquals("Component A", component.getName());
+		assertNull(component.getDescription());
+	}
+
+	@Test
 	public void testParseComponent() throws Exception {
 		ComponentJsonParser parser = new ComponentJsonParser();
 		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		assertEquals("Component B", component.getName());
 		assertEquals(TestConstants.USER1, component.getLead());
+		assertEquals("another description", component.getDescription());
+	}
+
+	@Test
+	public void testParseComponenWithNoLead() throws Exception {
+		ComponentJsonParser parser = new ComponentJsonParser();
+		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-no-lead-valid.json"));
+		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
+		assertEquals("Component B", component.getName());
+		assertNull(component.getLead());
 		assertEquals("another description", component.getDescription());
 	}
 

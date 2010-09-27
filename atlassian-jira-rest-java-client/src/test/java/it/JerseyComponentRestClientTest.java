@@ -20,6 +20,7 @@ import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.BasicComponent;
 import com.atlassian.jira.restjavaclient.domain.Component;
+import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
 
 import javax.ws.rs.core.Response;
@@ -46,6 +47,29 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 			@Override
 			public void run() {
 				client.getComponentClient().getComponent(TestUtil.toUri(uriForUnexistingComponent), pm);
+			}
+		});
+	}
+
+	public void testGetComponentFromRestrictedProject() throws Exception {
+		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("RST", pm).getComponents(), 0);
+		assertEquals("One Great Component", client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName());
+
+		// @todo these fail now due to JRADEV-3532
+		// now as unauthorized user
+		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
+			}
+		});
+
+		setAnonymousMode();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
 			}
 		});
 	}

@@ -31,7 +31,8 @@ public class ComponentJsonParser implements JsonParser<Component> {
 	@Override
 	public Component parse(JSONObject json) throws JSONException {
 		final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);
-		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
+		final JSONObject leadJson = json.optJSONObject("lead");
+		final BasicUser lead = leadJson != null ? JsonParseUtil.parseBasicUser(leadJson) : null;
 		return new Component(basicComponent.getSelf(), basicComponent.getName(), basicComponent.getDescription(), lead);
 	}
 }

@@ -19,6 +19,7 @@ package com.atlassian.jira.restjavaclient.domain;
 import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -29,6 +30,7 @@ import java.net.URI;
 public class BasicComponent implements AddressableEntity {
 	private final URI self;
 	private final String name;
+	@Nullable
 	private final String description;
 
 	public BasicComponent(URI self, String name, String description) {
@@ -46,6 +48,10 @@ public class BasicComponent implements AddressableEntity {
 		return name;
 	}
 
+	/**
+	 * @return optional description for this project (as defined by the project admin)
+	 */
+	@Nullable
 	public String getDescription() {
 		return description;
 	}
