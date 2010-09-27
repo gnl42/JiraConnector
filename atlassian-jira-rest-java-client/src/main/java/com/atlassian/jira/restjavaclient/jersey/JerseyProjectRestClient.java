@@ -41,15 +41,21 @@ public class JerseyProjectRestClient extends AbstractJerseyRestClient implements
 	}
 
 	@Override
-	public Project getProject(final String key, ProgressMonitor progressMonitor) {
+	public Project getProject(final URI uri, ProgressMonitor progressMonitor) {
 		return invoke(new Callable<Project>() {
 			@Override
 			public Project call() throws Exception {
-				final WebResource projectResource = client.resource(UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX)
-						.path(key).build());
+				final WebResource projectResource = client.resource(uri);
 				final JSONObject jsonObject = projectResource.get(JSONObject.class);
 				return projectJsonParser.parse(jsonObject);
 			}
 		});
+
+	}
+
+	@Override
+	public Project getProject(final String key, ProgressMonitor progressMonitor) {
+		final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).path(key).build();
+		return getProject(uri, progressMonitor);
 	}
 }

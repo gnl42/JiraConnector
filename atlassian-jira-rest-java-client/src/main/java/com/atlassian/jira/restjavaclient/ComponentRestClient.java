@@ -16,15 +16,15 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import com.atlassian.jira.restjavaclient.domain.Component;
+
+import java.net.URI;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    IssueRestClient getIssueClient();
-    SessionRestClient getSessionClient();
-	UserRestClient getUserClient();
-	ProjectRestClient getProjectClient();
-	ComponentRestClient getComponentClient();
+public interface ComponentRestClient {
+	Component getComponent(URI uri, ProgressMonitor progressMonitor);
 }

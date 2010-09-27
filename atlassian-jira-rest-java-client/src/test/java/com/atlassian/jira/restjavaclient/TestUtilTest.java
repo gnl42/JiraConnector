@@ -16,15 +16,21 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    IssueRestClient getIssueClient();
-    SessionRestClient getSessionClient();
-	UserRestClient getUserClient();
-	ProjectRestClient getProjectClient();
-	ComponentRestClient getComponentClient();
+public class TestUtilTest {
+	@Test
+	public void testGetLastPathSegment() {
+		assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost")));
+		assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080")));
+		assertEquals("abc", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080/abc")));
+		assertEquals("cde", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost/abc/cde?fds")));
+	}
 }

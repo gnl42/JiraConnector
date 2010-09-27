@@ -18,6 +18,8 @@ package com.atlassian.jira.restjavaclient;
 
 import com.atlassian.jira.restjavaclient.domain.Project;
 
+import java.net.URI;
+
 /**
  * TODO: Document this class / interface here
  *
@@ -25,10 +27,24 @@ import com.atlassian.jira.restjavaclient.domain.Project;
  */
 public interface ProjectRestClient {
 	/**
-	 * Retrieves complete information about given project 
+	 * Retrieves complete information about given project.
+	 * 
 	 * @param key unique key of the project (usually 2+ characters)
 	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
 	 */
 	Project getProject(String key, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves complete information about given project.
+	 * Use this method rather than {@link com.atlassian.jira.restjavaclient.ProjectRestClient#getProject(String, ProgressMonitor)}
+	 * wheever you can, as this method is proof for potential changes of URI scheme used for exposing various
+	 * resources by JIRA REST API.
+	 *
+	 * @param uri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
+	 * @param progressMonitor progress monitor
+	 * @return complete information about given project
+	 */
+	public Project getProject(URI uri, ProgressMonitor progressMonitor);
+
 }

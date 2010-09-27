@@ -1,0 +1,52 @@
+/*
+ * Copyright (C) 2010 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package it;
+
+import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.BasicComponent;
+import com.atlassian.jira.restjavaclient.domain.Component;
+import com.google.common.collect.Iterables;
+
+import javax.ws.rs.core.Response;
+
+/**
+ * TODO: Document this class / interface here
+ *
+ * @since v0.1
+ */
+public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+	public void testGetComponent() throws Exception {
+		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
+		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
+		assertEquals("Component A", component.getName());
+		assertEquals("this is some description of component A", component.getDescription());
+		assertEquals(IntegrationTestUtil.USER_ADMIN, component.getLead());
+	}
+
+	public void testGetInvalidComponent() throws Exception {
+		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
+		final String uriForUnexistingComponent = basicComponent.getSelf().toString() + "1234";
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND,  "The component with id "
+				+ TestUtil.getLastPathSegment(basicComponent.getSelf()) + "1234 does not exist.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponent(TestUtil.toUri(uriForUnexistingComponent), pm);
+			}
+		});
+	}
+}

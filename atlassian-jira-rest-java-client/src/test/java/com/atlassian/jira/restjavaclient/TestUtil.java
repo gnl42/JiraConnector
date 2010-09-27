@@ -72,6 +72,17 @@ public class TestUtil {
 			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
 		}
 	}
-	
 
+
+	public static String getLastPathSegment(URI uri) {
+		final String path = uri.getPath();
+		final int index = path.lastIndexOf('/');
+		if (index == -1) {
+			return path;
+		}
+		if (index == path.length()) {
+			return "";
+		}
+		return path.substring(index + 1);
+	}
 }
