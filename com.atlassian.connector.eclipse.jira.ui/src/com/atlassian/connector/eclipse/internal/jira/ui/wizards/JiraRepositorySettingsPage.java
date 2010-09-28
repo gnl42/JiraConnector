@@ -34,6 +34,8 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -358,10 +360,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@SuppressWarnings("restriction")
 	@Override
 	public void applyTo(final TaskRepository repository) {
-		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+//		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+//		super.applyTo(repository);
+
+		this.repository = applyToValidate(repository);
+
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
 
-		super.applyTo(repository);
 		configuration.setDatePattern(datePatternText.getText());
 		configuration.setDateTimePattern(dateTimePatternText.getText());
 		if (localeCombo.getSelectionIndex() != -1) {
@@ -413,6 +418,43 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 //		}
 //
 //		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
+	}
+
+	/**
+	 * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
+	 * in the superclass)
+	 */
+	public TaskRepository applyToValidate(TaskRepository repository) {
+		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+		super.applyTo(repository);
+		return repository;
+	}
+
+	@Override
+	public TaskRepository createTaskRepository() {
+		TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
+		return applyToValidate(repository);
+	}
+
+	@Override
+	protected void validateSettings() {
+		if (repository != null) {
+			AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
+			AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
+			AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
+
+			super.validateSettings();
+
+			repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
+					repository.getSavePassword(AuthenticationType.REPOSITORY));
+			repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
+					repository.getSavePassword(AuthenticationType.HTTP));
+			repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
+					repository.getSavePassword(AuthenticationType.PROXY));
+		} else {
+			super.validateSettings();
+		}
+
 	}
 
 	@Override

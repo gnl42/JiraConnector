@@ -31,6 +31,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
@@ -371,10 +373,29 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	@Override
 	protected void validateSettings() {
-		super.validateSettings();
-		if (validSettings && !btnUseFavourites.getSelection()) {
-			refreshBuildPlans();
+		if (repository != null) {
+			AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
+			AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
+			AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
+
+			super.validateSettings();
+			if (validSettings && !btnUseFavourites.getSelection()) {
+				refreshBuildPlans();
+			}
+
+			repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
+					repository.getSavePassword(AuthenticationType.REPOSITORY));
+			repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
+					repository.getSavePassword(AuthenticationType.HTTP));
+			repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
+					repository.getSavePassword(AuthenticationType.PROXY));
+		} else {
+			super.validateSettings();
+			if (validSettings && !btnUseFavourites.getSelection()) {
+				refreshBuildPlans();
+			}
 		}
+
 	}
 
 	private void refreshBuildPlans() {
