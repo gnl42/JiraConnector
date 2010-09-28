@@ -25,11 +25,6 @@ import com.google.common.collect.Iterables;
 
 import javax.ws.rs.core.Response;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	public void testGetComponent() throws Exception {
 		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
@@ -55,10 +50,9 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("RST", pm).getComponents(), 0);
 		assertEquals("One Great Component", client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName());
 
-		// @todo these fail now due to JRADEV-3532
 		// now as unauthorized user
 		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
@@ -66,7 +60,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		});
 
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
