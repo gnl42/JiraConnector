@@ -35,6 +35,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
@@ -488,7 +489,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCharacterEncoding() throws Exception {
-		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
 		client.getLocalConfiguration().setCharacterEncoding("UTF-8");
 		assertEquals("UTF-8", client.getCharacterEncoding(new NullProgressMonitor()));
 	}
@@ -497,7 +497,8 @@ public class JiraClientTest extends TestCase {
 		ServerInfo serverInfo = client.getCache().getServerInfo(null);
 		assertEquals(JiraFixture.current().getVersion(), serverInfo.getVersion());
 		assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
-		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
+		boolean jira4x = new JiraVersion(serverInfo.getVersion()).compareTo(JiraVersion.JIRA_4_1) >= 0;
+		assertEquals(jira4x ? "UTF-8" : "ISO-8859-1", serverInfo.getCharacterEncoding());
 		//assertEquals(JiraFixture.current().getRepositoryUrl(), serverInfo.getBaseUrl());
 	}
 
