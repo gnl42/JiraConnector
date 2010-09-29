@@ -16,12 +16,21 @@
 
 package it;
 
-import com.atlassian.jira.restjavaclient.*;
-import com.atlassian.jira.restjavaclient.domain.*;
+import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
+import com.atlassian.jira.restjavaclient.IssueRestClient;
+import com.atlassian.jira.restjavaclient.IterableMatcher;
+import com.atlassian.jira.restjavaclient.NullProgressMonitor;
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.Attachment;
+import com.atlassian.jira.restjavaclient.domain.BasicUser;
+import com.atlassian.jira.restjavaclient.domain.Comment;
+import com.atlassian.jira.restjavaclient.domain.FieldInput;
+import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Transition;
+import com.atlassian.jira.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -324,14 +333,11 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testAddWatcherUnauthorized() {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
-		try {
-			issueClient.addWatcher(issue1, USER1_USERNAME, pm);
-		} catch (RestClientException e) {
-			if (e.getCause() instanceof UniformInterfaceException && ((UniformInterfaceException) e.getCause()).getResponse().getClientResponseStatus()
-					== ClientResponse.Status.UNAUTHORIZED) {
-				fail("JIRA bug JRADEV-3517. Fix this test when JIRA is fixed");
-			}
-		}
+		issueClient.addWatcher(issue1, USER1_USERNAME, pm);
+		assertThat(client.getIssueClient().getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER1));
+
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
 	}
 
 	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
