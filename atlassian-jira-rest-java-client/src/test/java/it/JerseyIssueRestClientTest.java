@@ -26,7 +26,6 @@ import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -138,9 +137,8 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
 	}
 
-	@Ignore
-	//@Test
-	public void xtestTransitionWithNumericCustomFieldAndInteger() throws Exception {
+	@Test
+	public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
@@ -149,12 +147,12 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
-		final int newValue = 123;
+		final double newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
-		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
+		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 	}
 
 	public void testTransitionWithNoRoleOrGroup() {
@@ -269,19 +267,10 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
 
 		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER1));
-		// @todo that's a bug in JIRA JRADEV-3517 - that should be allowed
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
-				"User 'admin' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
-			@Override
-			public void run() {
-				issueClient.removeWatcher(issue1, USER1.getName(), pm);
-			}
-		});
-
-		// @todo restore it when JRADEV-3517 is fixed
-//		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), Matchers.not(IterableMatcher.contains(USER1)));
-//		issueClient.addWatcher(issue1, USER1.getName(), pm);
-//		Assert.assertThat(issueClient.getWatchers(issue1, pm).getWatchers(), IterableMatcher.contains(USER1));
+		issueClient.removeWatcher(issue1, USER1.getName(), pm);
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), Matchers.not(IterableMatcher.contains(USER1)));
+		issueClient.addWatcher(issue1, USER1.getName(), pm);
+		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER1));
 	}
 
 	@Test
