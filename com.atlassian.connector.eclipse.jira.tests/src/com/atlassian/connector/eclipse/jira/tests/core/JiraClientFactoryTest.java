@@ -29,6 +29,7 @@ import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
@@ -111,13 +112,19 @@ public class JiraClientFactoryTest extends TestCase {
 		assertFalse(JiraUtil.getCharacterEncodingValidated(repository));
 
 		JiraClient client = clientFactory.getJiraClient(repository);
-		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
+
+		// Due to different login mechanism for JIRA 4.x default encoding is set to UTF-8
+		// where JIRA 3.x returns ISO8859-1
+		boolean jira4x = new JiraVersion(client.getServerInfo(new NullProgressMonitor()).getVersion()).compareTo(JiraVersion.JIRA_4_1) >= 0;
+		String expectedEncoding = jira4x ? "UTF-8" : "ISO-8859-1";
+
+		assertEquals(expectedEncoding, client.getCharacterEncoding(new NullProgressMonitor()));
 
 		repository.setCharacterEncoding("UTF-8");
 		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
 				Type.PROPERTY)));
 		client = clientFactory.getJiraClient(repository);
-		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
+		assertEquals(expectedEncoding, client.getCharacterEncoding(new NullProgressMonitor()));
 
 		JiraUtil.setCharacterEncodingValidated(repository, true);
 		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
@@ -125,5 +132,4 @@ public class JiraClientFactoryTest extends TestCase {
 		client = clientFactory.getJiraClient(repository);
 		assertEquals("UTF-8", client.getCharacterEncoding(new NullProgressMonitor()));
 	}
-
 }
