@@ -29,10 +29,10 @@ import org.joda.time.DateTime;
 public class LoginInfoJsonParser implements JsonParser<LoginInfo> {
     @Override
     public LoginInfo parse(JSONObject json) throws JSONException {
-        final int failedLoginCount = json.getInt("failedLoginCount");
+        final int failedLoginCount = json.optInt("failedLoginCount");
         final int loginCount = json.getInt("loginCount");
-        final DateTime lastFailedLoginTime = JsonParseUtil.parseDateTime(json, "lastFailedLoginTime");
-        final DateTime previousLoginTime = JsonParseUtil.parseDateTime(json, "previousLoginTime");
+        final DateTime lastFailedLoginTime = JsonParseUtil.parseOptionalDateTime(json, "lastFailedLoginTime");
+        final DateTime previousLoginTime = JsonParseUtil.parseOptionalDateTime(json, "previousLoginTime");
         return new LoginInfo(failedLoginCount, loginCount, lastFailedLoginTime, previousLoginTime);
     }
 }

@@ -19,6 +19,8 @@ package com.atlassian.jira.restjavaclient.domain;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
+import javax.annotation.Nullable;
+
 /**
  * TODO: Document this class / interface here
  *
@@ -27,15 +29,18 @@ import org.joda.time.DateTime;
 public class LoginInfo {
 	private final int failedLoginCount;
 	private final int loginCount;
+	@Nullable
 	private final DateTime lastFailedLoginDate;
+	@Nullable
 	private final DateTime previousLoginDate;
 
-	public LoginInfo(int failedLoginCount, int loginCount, DateTime lastFailedLoginDate, DateTime previousLoginDate) {
+	public LoginInfo(int failedLoginCount, int loginCount, @Nullable DateTime lastFailedLoginDate, @Nullable DateTime previousLoginDate) {
 		this.failedLoginCount = failedLoginCount;
 		this.loginCount = loginCount;
 		this.lastFailedLoginDate = lastFailedLoginDate;
 		this.previousLoginDate = previousLoginDate;
 	}
+
 
 	public int getFailedLoginCount() {
 		return failedLoginCount;
@@ -45,10 +50,12 @@ public class LoginInfo {
 		return loginCount;
 	}
 
+	@Nullable
 	public DateTime getLastFailedLoginDate() {
 		return lastFailedLoginDate;
 	}
 
+	@Nullable
 	public DateTime getPreviousLoginDate() {
 		return previousLoginDate;
 	}

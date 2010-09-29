@@ -56,7 +56,7 @@ import static org.junit.Assert.assertThat;
  *
  * @since v0.1
  */
-public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
+public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
@@ -94,8 +94,23 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		assertEquals(attachment1, items.iterator().next());
 
-		System.out.println(issue);
+	}
 
+	public void testGetIssueWithNoViewWatchersPermission() {
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
+
+		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
+		assertFalse(issue.getWatchers().isWatching());
+		client.getIssueClient().watch(issue, pm);
+		final Issue watchedIssue = client.getIssueClient().getIssue("TST-1", pm);
+		assertTrue(watchedIssue.getWatchers().isWatching());
+		assertEquals(2, watchedIssue.getWatchers().getNumWatchers());
+
+		// although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
+		// have view watchers and voters permission 
+		assertThat(client.getIssueClient().getWatchers(watchedIssue, pm).getUsers(), IterableMatcher.hasOnlyElements(USER2));
 	}
 
 	@Test
@@ -349,12 +364,5 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 			}
 		}
 		return transitionFound;
-	}
-
-
-	@Override
-	protected void setUpTest() {
-		super.setUpTest();
-		configureJira();
 	}
 }

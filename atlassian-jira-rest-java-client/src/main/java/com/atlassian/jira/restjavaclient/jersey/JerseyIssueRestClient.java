@@ -27,20 +27,15 @@ import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.TransitionInput;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
-import com.atlassian.jira.restjavaclient.json.JsonParseUtil;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
 import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.restjavaclient.json.gen.CommentJsonGenerator;
-import com.google.common.base.Joiner;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -88,17 +83,14 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 //		if (expandoString != null) {
 //			uriBuilder.queryParam("expand", expandoString);
 //		}
-
-		final WebResource issueResource = client.resource(uriBuilder.build());
-
-		final JSONObject s = issueResource.get(JSONObject.class);
-
-		try {
-//            System.out.println(s.toString(4));
-			return issueParser.parse(s);
-		} catch (JSONException e) {
-			throw new RestClientException(e);
-		}
+		return invoke(new Callable<Issue>() {
+			@Override
+			public Issue call() throws Exception {
+				final WebResource issueResource = client.resource(uriBuilder.build());
+				final JSONObject s = issueResource.get(JSONObject.class);
+				return issueParser.parse(s);
+			}
+		});
 	}
 
 	@Override

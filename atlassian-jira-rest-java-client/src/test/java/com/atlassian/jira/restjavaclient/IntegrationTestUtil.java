@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
  */
 public class IntegrationTestUtil {
     public static final BasicUser USER1;
+    public static final BasicUser USER2;
 
     public static final BasicUser USER_ADMIN;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
@@ -43,6 +44,7 @@ public class IntegrationTestUtil {
         try {
             USER_REST_URI = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user/").build();
             USER1 = new BasicUser(concat(USER_REST_URI, "wseliga"), "wseliga", "Wojciech Seliga");
+            USER2 = new BasicUser(concat(USER_REST_URI, "user"), "user", "My Test User");
             USER_ADMIN = new BasicUser(concat(USER_REST_URI, "admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
