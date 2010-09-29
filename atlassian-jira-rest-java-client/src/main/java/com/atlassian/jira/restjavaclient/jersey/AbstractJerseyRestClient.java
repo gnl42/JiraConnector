@@ -25,6 +25,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
 /**
@@ -45,11 +47,10 @@ public class AbstractJerseyRestClient {
 		try {
 			return callable.call();
 		} catch (UniformInterfaceException e) {
-			final String body = e.getResponse().getEntity(String.class);
 			try {
-				JSONObject jsonObject = new JSONObject(body);
-				final JSONArray errorMessages = jsonObject.getJSONArray("errorMessages");
-				throw new RestClientException(JsonParseUtil.toStringCollection(errorMessages), e);
+				final String body = e.getResponse().getEntity(String.class);
+				final Collection<String> errorMessages = extractErrors(body);
+				throw new RestClientException(errorMessages, e);
 			} catch (JSONException e1) {
 				throw new RestClientException(e);
 			}
@@ -58,6 +59,23 @@ public class AbstractJerseyRestClient {
 		} catch (Exception e) {
 			throw new RestClientException(e);
 		}
+	}
+
+	static Collection<String> extractErrors(String body) throws JSONException {
+		JSONObject jsonObject = new JSONObject(body);
+		final Collection<String> errorMessages = new ArrayList<String>();
+		final JSONArray errorMessagesJsonArray = jsonObject.optJSONArray("errorMessages");
+		if (errorMessagesJsonArray != null) {
+			errorMessages.addAll(JsonParseUtil.toStringCollection(errorMessagesJsonArray));
+		}
+		final JSONObject errorJsonObject = jsonObject.optJSONObject("errors");
+		if (errorJsonObject != null) {
+			final JSONArray valuesJsonArray = errorJsonObject.toJSONArray(errorJsonObject.names());
+			if (valuesJsonArray != null) {
+				errorMessages.addAll(JsonParseUtil.toStringCollection(valuesJsonArray));
+			}
+		}
+		return errorMessages;
 	}
 
 

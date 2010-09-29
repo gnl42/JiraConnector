@@ -30,9 +30,19 @@ import java.io.InputStream;
  */
 public class ResourceUtil {
 	public static JSONObject getJsonObjectFromResource(String resourcePath) {
+		final String s = getStringFromResource(resourcePath);
+		try {
+			return new JSONObject(s);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	public static String getStringFromResource(String resourcePath) {
 		final String s;
 		try {
-            final InputStream is = VersionJsonParserTest.class.getResourceAsStream(resourcePath);
+            final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath);
             if (is == null) {
                 throw new IOException("Cannot open resource [" + resourcePath + "]");
             }
@@ -40,11 +50,6 @@ public class ResourceUtil {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-
+		return s;
 	}
 }

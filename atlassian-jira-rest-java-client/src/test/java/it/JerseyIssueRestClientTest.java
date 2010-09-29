@@ -128,20 +128,20 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertTrue(Iterables.contains(transitionFound.getFields(),
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
 		final double newValue = 123.45;
-		// @todo put double directly here instead of formatting it for expected locale, when JIRA is fixed - 
+		// @todo put double directly here instead of formatting it for expected locale, when JIRA is fixed - JRADEV-3472
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
-		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
 	}
 
 	@Test
 	public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
@@ -150,10 +150,32 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final double newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
-				Comment.valueOf("My test comment")), new NullProgressMonitor());
-		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+				Comment.valueOf("My test comment")), pm);
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 	}
+
+	@Test
+	public void testTransitionWithInvalidNumericField() throws Exception {
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
+		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
+		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
+
+		assertNotNull(transitionFound);
+		assertTrue(Iterables.contains(transitionFound.getFields(),
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
+		// warning: Polish language here - I am asserting if the messages are indeed localized
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+						Comment.valueOf("My test comment")), pm);
+			}
+		});
+	}
+
 
 	public void testTransitionWithNoRoleOrGroup() {
 		Comment comment = Comment.valueOf("My text which I am just adding " + new DateTime());
@@ -173,14 +195,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 	private void testTransitionImpl(Comment comment) {
-		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		DateTime now = new DateTime();
-		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment),
-				new NullProgressMonitor());
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment), pm);
 
-		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		final Comment lastComment = Iterables.getLast(changedIssue.getComments());
 		assertEquals(comment.getBody(), lastComment.getBody());
 		assertEquals(USER_ADMIN, lastComment.getAuthor());
@@ -194,59 +215,58 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testVoteUnvote() {
-		final Issue issue1 = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+		final Issue issue1 = client.getIssueClient().getIssue("TST-1", pm);
 		assertFalse(issue1.getVotes().hasVoted());
 		assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
 
 		// I hope that such Polish special characters (for better testing local specific behaviour of REST
-		// will work correctly as this file is UTF-8 encoded
-		TestUtil.assertErrorCode(404, "Nie możesz głosować na zadanie które utworzyłeś.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Nie mo\u017cesz g\u0142osowa\u0107 na zadanie kt\u00f3re utworzy\u0142e\u015b.", new Runnable() {
 			@Override
 			public void run() {
-				client.getIssueClient().vote(issue1, new NullProgressMonitor());
+				client.getIssueClient().vote(issue1, pm);
 			}
 		});
 
 
 		final String issueKey = "TST-7";
-		Issue issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		Issue issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 
-		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		client.getIssueClient().vote(issue, pm);
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(1, issue.getVotes().getVotes());
 
-		client.getIssueClient().unvote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		client.getIssueClient().unvote(issue, pm);
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 
 		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
-		TestUtil.assertErrorCode(404, "Cannot remove a vote for an issue that the user has not already voted for.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.", new Runnable() {
 			@Override
 			public void run() {
-				client.getIssueClient().unvote(finalIssue, new NullProgressMonitor());
+				client.getIssueClient().unvote(finalIssue, pm);
 			}
 		});
 
 
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
-		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		client.getIssueClient().vote(issue, pm);
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(1, issue.getVotes().getVotes());
 
 		setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
-		client.getIssueClient().vote(issue, new NullProgressMonitor());
-		issue = client.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+		client.getIssueClient().vote(issue, pm);
+		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertTrue(issue.getVotes().hasVoted());
 		assertEquals(2, issue.getVotes().getVotes());
 	}
@@ -254,7 +274,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testWatchUnwatch() {
 		final IssueRestClient issueClient = client.getIssueClient();
-		final NullProgressMonitor pm = new NullProgressMonitor();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
 
 		Assert.assertThat(issueClient.getWatchers(issue1, pm).getUsers(),
