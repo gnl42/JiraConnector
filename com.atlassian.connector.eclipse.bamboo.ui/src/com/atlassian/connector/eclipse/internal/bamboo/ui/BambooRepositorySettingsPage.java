@@ -146,6 +146,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private Button refreshButton;
 
+	private Collection<BambooPlan> allPlans;
+
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
 		setNeedsHttpAuth(true);
@@ -158,6 +160,12 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	public void applyTo(final TaskRepository repository) {
 		this.repository = applyToValidate(repository);
 		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUILD);
+
+		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+		final BambooClient client = clientManager.getClient(repository);
+		if (this.allPlans != null && client != null && client.getClientData() != null) {
+			client.getClientData().setPlans(this.allPlans);
+		}
 
 		BambooUtil.setUseFavourites(repository, btnUseFavourites.getSelection());
 
@@ -408,11 +416,13 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			// update configuration
 			final BambooClientData[] data = new BambooClientData[1];
 			CommonUiUtil.run(getContainer(), new ICoreRunnable() {
+
 				public void run(IProgressMonitor monitor) throws CoreException {
 					BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 //					final BambooClient client = clientManager.getClient(repository);
 					final BambooClient client = clientManager.getNewClient(repository);
 					data[0] = client.updateRepositoryData(monitor, repository);
+					rememberPlans(client.getClientData().getPlans());
 					clientManager.removeClient(repository);
 				}
 			});
@@ -426,6 +436,10 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		} catch (OperationCanceledException e) {
 			// ignore
 		}
+	}
+
+	private void rememberPlans(Collection<BambooPlan> plans) {
+		this.allPlans = plans;
 	}
 
 	private void updateUIRestoreState(Object[] checkedElements, final BambooClientData data) {
