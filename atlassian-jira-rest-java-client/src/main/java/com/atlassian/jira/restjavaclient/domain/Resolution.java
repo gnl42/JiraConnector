@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.domain;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    IssueRestClient getIssueClient();
-    SessionRestClient getSessionClient();
-	UserRestClient getUserClient();
-	ProjectRestClient getProjectClient();
-	ComponentRestClient getComponentClient();
-	MetadataRestClient getMetadataClient();
+public class Resolution {
 }

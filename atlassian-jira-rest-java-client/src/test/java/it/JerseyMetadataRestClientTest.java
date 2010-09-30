@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package it;
+
+import com.atlassian.jira.restjavaclient.domain.ServerInfo;
+import junit.framework.TestCase;
+import org.joda.time.DateTime;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    IssueRestClient getIssueClient();
-    SessionRestClient getSessionClient();
-	UserRestClient getUserClient();
-	ProjectRestClient getProjectClient();
-	ComponentRestClient getComponentClient();
-	MetadataRestClient getMetadataClient();
+public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+	public void testGetServerInfo() throws Exception {
+		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo(pm);
+		assertEquals("Your Company JIRA", serverInfo.getServerTitle());
+		assertTrue(serverInfo.getBuildDate().isBeforeNow());
+		assertTrue(serverInfo.getServerTime().isAfter(new DateTime().minusMinutes(5)));
+		assertTrue(serverInfo.getServerTime().isBefore(new DateTime().plusMinutes(5)));
+	}
 }

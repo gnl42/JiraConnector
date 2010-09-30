@@ -20,6 +20,7 @@ import com.atlassian.jira.restjavaclient.AuthenticationHandler;
 import com.atlassian.jira.restjavaclient.ComponentRestClient;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.JiraRestClient;
+import com.atlassian.jira.restjavaclient.MetadataRestClient;
 import com.atlassian.jira.restjavaclient.ProjectRestClient;
 import com.atlassian.jira.restjavaclient.SessionRestClient;
 import com.atlassian.jira.restjavaclient.UserRestClient;
@@ -46,9 +47,10 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	private final UserRestClient userRestClient;
 	private final ProjectRestClient projectRestClient;
 	private final ComponentRestClient componentRestClient;
+	private final MetadataRestClient metadataRestClient;
 
 
-    public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
         this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
         DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
         authenticationHandler.configure(config);
@@ -86,6 +88,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		userRestClient = new JerseyUserRestClient(baseUri, client);
 		projectRestClient = new JerseyProjectRestClient(baseUri, client);
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
+		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
     }
 
     @Override
@@ -111,6 +114,11 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	@Override
 	public ComponentRestClient getComponentClient() {
 		return componentRestClient;
+	}
+
+	@Override
+	public MetadataRestClient getMetadataClient() {
+		return metadataRestClient;
 	}
 
 	private static ApacheHttpClientHandler createDefaultClientHander() {

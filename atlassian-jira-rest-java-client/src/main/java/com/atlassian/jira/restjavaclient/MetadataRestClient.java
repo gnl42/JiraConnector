@@ -16,16 +16,24 @@
 
 package com.atlassian.jira.restjavaclient;
 
+import com.atlassian.jira.restjavaclient.domain.IssueType;
+import com.atlassian.jira.restjavaclient.domain.Priority;
+import com.atlassian.jira.restjavaclient.domain.Resolution;
+import com.atlassian.jira.restjavaclient.domain.ServerInfo;
+import com.atlassian.jira.restjavaclient.domain.Status;
+
+import java.net.URI;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface JiraRestClient {
-    IssueRestClient getIssueClient();
-    SessionRestClient getSessionClient();
-	UserRestClient getUserClient();
-	ProjectRestClient getProjectClient();
-	ComponentRestClient getComponentClient();
-	MetadataRestClient getMetadataClient();
+public interface MetadataRestClient {
+	IssueType getIssueType(URI uri, ProgressMonitor progressMonitor);
+	Status getStatus(URI uri, ProgressMonitor progressMonitor);
+	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
+	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
+
+	ServerInfo getServerInfo(ProgressMonitor progressMonitor);
 }
