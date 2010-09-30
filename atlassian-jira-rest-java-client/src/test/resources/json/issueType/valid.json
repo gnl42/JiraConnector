@@ -1,9 +1,5 @@
 {
-    "name":"issuetype",
-    "type":"com.atlassian.jira.issue.issuetype.IssueType",
-    "value":{
-        "self":"http://localhost:8090/jira/rest/api/latest/issueType/1",
-        "name":"Bug",
-        "subtask":true
-    }
+	"self":"http://localhost:8090/jira/rest/api/latest/issueType/1",
+	"name":"Bug",
+	"subtask":true
 }

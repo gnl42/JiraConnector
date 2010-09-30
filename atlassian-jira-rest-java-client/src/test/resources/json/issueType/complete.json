@@ -1,0 +1,7 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/issueType/1",
+   "description":"A problem which impairs or prevents the functions of the product.",
+   "iconUrl":"http://localhost:8090/jira/images/icons/bug.gif",
+   "name":"Bug",
+   "subtask":true
+}

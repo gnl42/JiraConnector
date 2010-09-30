@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
@@ -29,10 +31,13 @@ import static org.junit.Assert.assertEquals;
  * @since v0.1
  */
 public class IssueTypeJsonParserTest {
-    @Test
-    public void testParse() throws JSONException {
-        IssueTypeJsonParser parser = new IssueTypeJsonParser();
-        final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));
-        assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", true), issueType);
-    }
+	@Test
+	public void testParse() throws JSONException {
+		IssueTypeJsonParser parser = new IssueTypeJsonParser();
+		final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/complete.json"));
+		assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", true,
+				"A problem which impairs or prevents the functions of the product.",
+				TestUtil.toUri("http://localhost:8090/jira/images/icons/bug.gif")), issueType);
+	}
+
 }

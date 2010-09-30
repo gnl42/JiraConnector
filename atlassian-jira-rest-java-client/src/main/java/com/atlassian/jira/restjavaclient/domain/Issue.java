@@ -32,7 +32,7 @@ import java.util.Collection;
  */
 public class Issue implements AddressableEntity, ExpandableResource {
 
-    public Issue(String summary, URI self, String key, BasicProject project, IssueType issueType, BasicStatus status, Iterable<String> expandos,
+    public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status, Iterable<String> expandos,
                  Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
                  DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, Collection<Worklog> worklogs,
                  BasicWatchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
@@ -60,7 +60,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 
 	private final BasicStatus status;
     private final URI self;
-	private IssueType issueType;
+	private BasicIssueType issueType;
 	private BasicProject project;
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
@@ -142,7 +142,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	}
 
 
-	public IssueType getIssueType() {
+	public BasicIssueType getIssueType() {
 		return issueType;
 	}
 

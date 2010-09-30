@@ -17,24 +17,20 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
-import com.atlassian.jira.restjavaclient.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
- *
  * @since v0.1
  */
-public class IssueTypeJsonParser implements JsonParser<IssueType> {
-	private final BasicIssueTypeJsonParser basicIssueTypeJsonParser = new BasicIssueTypeJsonParser();
-	@Override
-	public IssueType parse(JSONObject json) throws JSONException {
-		final BasicIssueType basicIssueType = basicIssueTypeJsonParser.parse(json);
-		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		final String description = json.optString("description");
-		return new IssueType(basicIssueType.getSelf(), basicIssueType.getName(), basicIssueType.isSubtask(), description, iconUri);
-	}
+public class BasicIssueTypeJsonParser implements JsonParser<BasicIssueType> {
+    @Override
+    public BasicIssueType parse(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String name = json.getString("name");
+        final boolean isSubtask = json.getBoolean("subtask");
+        return new BasicIssueType(selfUri, name, isSubtask);
+    }
 }

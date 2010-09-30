@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
-import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -26,37 +25,29 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class IssueType implements AddressableEntity {
-	private final URI self;
+public class IssueType extends BasicIssueType {
+	private final String description;
+	private final URI iconUri;
 
-	private final String name;
-
-	private final boolean isSubtask;
-
-	public IssueType(URI self, String name, boolean isSubtask) {
-		this.self = self;
-		this.name = name;
-		this.isSubtask = isSubtask;
+	public IssueType(URI self, String name, boolean isSubtask, String description, URI iconUri) {
+		super(self, name, isSubtask);
+		this.description = description;
+		this.iconUri = iconUri;
 	}
 
-	public String getName() {
-		return name;
+	public String getDescription() {
+		return description;
 	}
 
-	public boolean isSubtask() {
-		return isSubtask;
-	}
-
-	public URI getSelf() {
-		return self;
+	public URI getIconUri() {
+		return iconUri;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("name", name).
-				add("isSubtask", isSubtask).
+		return Objects.toStringHelper(this).addValue(super.toString()).
+				add("description", description).
+				add("iconUri", iconUri).
 				toString();
 	}
 
@@ -65,15 +56,15 @@ public class IssueType implements AddressableEntity {
 	public boolean equals(Object obj) {
 		if (obj instanceof IssueType) {
 			IssueType that = (IssueType) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.isSubtask, that.isSubtask);
+			return super.equals(obj) && Objects.equal(this.description, that.description)
+					&& Objects.equal(this.iconUri, that.iconUri);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, isSubtask);
+		return Objects.hashCode(super.hashCode(), description, iconUri);
 	}
+
 }

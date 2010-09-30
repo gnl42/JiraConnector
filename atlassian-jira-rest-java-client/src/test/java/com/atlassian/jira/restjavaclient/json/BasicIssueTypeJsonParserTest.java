@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient;
+package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
-import com.atlassian.jira.restjavaclient.domain.IssueType;
-import com.atlassian.jira.restjavaclient.domain.Priority;
-import com.atlassian.jira.restjavaclient.domain.Resolution;
-import com.atlassian.jira.restjavaclient.domain.ServerInfo;
-import com.atlassian.jira.restjavaclient.domain.Status;
+import org.codehaus.jettison.json.JSONException;
+import org.junit.Test;
 
-import java.net.URI;
+import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public interface MetadataRestClient {
-	IssueType getIssueType(URI uri, ProgressMonitor progressMonitor);
-	Status getStatus(URI uri, ProgressMonitor progressMonitor);
-	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
-	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
-
-	ServerInfo getServerInfo(ProgressMonitor progressMonitor);
+public class BasicIssueTypeJsonParserTest {
+    @Test
+    public void testParse() throws JSONException {
+        BasicIssueTypeJsonParser parser = new BasicIssueTypeJsonParser();
+        final BasicIssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));
+        assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", true), issueType);
+    }
 }

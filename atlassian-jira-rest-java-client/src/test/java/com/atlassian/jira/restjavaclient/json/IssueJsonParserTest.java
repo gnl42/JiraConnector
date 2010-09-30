@@ -41,7 +41,7 @@ public class IssueJsonParserTest {
 		final Issue issue = parser.parse(issueJson);
         assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
-		assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
+		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		

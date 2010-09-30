@@ -67,7 +67,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
     private final JsonFieldParser fieldParser = new JsonFieldParser();
     private final CommentJsonParser commentJsonParser = new CommentJsonParser();
-    private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
+    private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
     private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 
     private static final String FIELDS = "fields";
@@ -118,7 +118,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final Collection<Attachment> attachments = parseOptionalArray(s, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_ATTR);
 		final Iterable<String> expandos = parseExpandos(s);
 		final Collection<Field> fields = parseFields(s.getJSONObject(FIELDS));
-		final IssueType issueType = issueTypeJsonParser.parse(getNestedObject(s, FIELDS, ISSUE_TYPE_ATTR));
+		final BasicIssueType issueType = issueTypeJsonParser.parse(getNestedObject(s, FIELDS, ISSUE_TYPE_ATTR, VALUE_ATTR));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, CREATED_ATTR, VALUE_ATTR));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, UPDATED_ATTR, VALUE_ATTR));
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
