@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.restjavaclient.domain.ServerInfo;
-import junit.framework.TestCase;
 import org.joda.time.DateTime;
 
 /**
