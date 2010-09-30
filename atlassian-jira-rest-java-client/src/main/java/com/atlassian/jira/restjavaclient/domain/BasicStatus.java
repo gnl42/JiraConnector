@@ -51,4 +51,19 @@ public class BasicStatus implements AddressableEntity {
 				add("name", name).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicStatus) {
+			BasicStatus that = (BasicStatus) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.name, that.name);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, name);
+	}
 }

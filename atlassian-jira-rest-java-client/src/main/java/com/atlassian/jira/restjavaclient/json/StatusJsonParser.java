@@ -17,21 +17,22 @@
 package com.atlassian.jira.restjavaclient.json;
 
 import com.atlassian.jira.restjavaclient.domain.BasicStatus;
+import com.atlassian.jira.restjavaclient.domain.Status;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
- *
  * @since v0.1
  */
-public class StatusJsonParser extends JsonParserWithJsonObjectValue<BasicStatus> {
+public class StatusJsonParser implements JsonParser<Status> {
+	private final BasicStatusJsonParser basicStatusJsonParser = new BasicStatusJsonParser();
 	@Override
-    public BasicStatus parseValue(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final String name = json.getString("name");
-		return new BasicStatus(self, name);
+	public Status parse(JSONObject json) throws JSONException {
+		final BasicStatus basicStatus = basicStatusJsonParser.parse(json);
+		final String description = json.getString("description");
+		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
+		return new Status(basicStatus.getSelf(), basicStatus.getName(), description, iconUri);
 	}
 }

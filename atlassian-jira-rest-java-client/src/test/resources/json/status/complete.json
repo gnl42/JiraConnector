@@ -1,0 +1,6 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/status/1",
+   "description":"The issue is open and ready for the assignee to start work on it.",
+   "iconUrl":"http://localhost:8090/jira/images/icons/status_open.gif",
+   "name":"Open"
+}

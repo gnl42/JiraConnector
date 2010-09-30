@@ -16,23 +16,10 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
-import com.atlassian.jira.restjavaclient.TestUtil;
-import com.atlassian.jira.restjavaclient.domain.Status;
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class StatusJsonParserTest {
-    @Test
-    public void testParse() throws Exception {
-		final StatusJsonParser parser = new StatusJsonParser();
-		final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/complete.json"));
-		Assert.assertEquals(new Status(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
-				"Open", "The issue is open and ready for the assignee to start work on it.",
-				TestUtil.toUri("http://localhost:8090/jira/images/icons/status_open.gif")), status);
-	}
+public class BasicStatusJsonParserTest {
 }

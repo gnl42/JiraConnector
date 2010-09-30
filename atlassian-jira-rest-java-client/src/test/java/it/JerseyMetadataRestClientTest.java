@@ -18,13 +18,13 @@ package it;
 
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
+import com.atlassian.jira.restjavaclient.domain.BasicStatus;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.ServerInfo;
+import com.atlassian.jira.restjavaclient.domain.Status;
 import org.joda.time.DateTime;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
@@ -59,6 +59,26 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
 
+	}
+
+	public void testGetStatus() {
+		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
+		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf(), pm);
+		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
+		assertTrue(status.getIconUrl().toString().endsWith("status_open.gif"));
+		assertEquals("Open", status.getName());
+	}
+
+	public void testGetStatusNonExisting() throws Exception {
+		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The status with id '" +
+				TestUtil.getLastPathSegment(basicStatus.getSelf()) + "fake" +
+				"' does not exist", new Runnable() {
+			@Override
+			public void run() {
+				client.getMetadataClient().getStatus(TestUtil.toUri(basicStatus.getSelf() + "fake"), pm);
+			}
+		});
 	}
 
 }

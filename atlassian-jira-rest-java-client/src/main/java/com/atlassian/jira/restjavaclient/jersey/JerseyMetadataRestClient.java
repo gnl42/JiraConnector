@@ -18,7 +18,6 @@ package com.atlassian.jira.restjavaclient.jersey;
 
 import com.atlassian.jira.restjavaclient.MetadataRestClient;
 import com.atlassian.jira.restjavaclient.ProgressMonitor;
-import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Priority;
 import com.atlassian.jira.restjavaclient.domain.Resolution;
@@ -26,6 +25,7 @@ import com.atlassian.jira.restjavaclient.domain.ServerInfo;
 import com.atlassian.jira.restjavaclient.domain.Status;
 import com.atlassian.jira.restjavaclient.json.IssueTypeJsonParser;
 import com.atlassian.jira.restjavaclient.json.ServerInfoJsonParser;
+import com.atlassian.jira.restjavaclient.json.StatusJsonParser;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONObject;
@@ -43,6 +43,7 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	private final String SERVER_INFO_RESOURCE = "/server-info";
 	private final ServerInfoJsonParser serverInfoJsonParser = new ServerInfoJsonParser();
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
+	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 
 	public JerseyMetadataRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
@@ -60,8 +61,14 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	}
 
 	@Override
-	public Status getStatus(URI uri, ProgressMonitor progressMonitor) {
-		return null;
+	public Status getStatus(final URI uri, ProgressMonitor progressMonitor) {
+		return invoke(new Callable<Status>() {
+			@Override
+			public Status call() throws Exception {
+				final WebResource statusResource = client.resource(uri);
+				return statusJsonParser.parse(statusResource.get(JSONObject.class));
+			}
+		});
 	}
 
 	@Override

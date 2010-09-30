@@ -50,4 +50,20 @@ public class Status extends BasicStatus {
 				add("iconUrl", iconUrl).
 				toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Status) {
+			Status that = (Status) obj;
+			return super.equals(obj) && Objects.equal(this.description, that.description)
+					&& Objects.equal(this.iconUrl, that.iconUrl);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), description, iconUrl);
+	}
+
 }
