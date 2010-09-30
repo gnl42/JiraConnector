@@ -16,10 +16,17 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
 public class BasicStatusJsonParserTest {
+	@Test
+	public void testParse() {
+		Assert.fail("implement me");
+	}
 }
