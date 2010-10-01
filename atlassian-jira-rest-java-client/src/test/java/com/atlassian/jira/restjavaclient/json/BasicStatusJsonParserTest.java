@@ -16,6 +16,9 @@
 
 package com.atlassian.jira.restjavaclient.json;
 
+import com.atlassian.jira.restjavaclient.TestUtil;
+import com.atlassian.jira.restjavaclient.domain.BasicStatus;
+import org.codehaus.jettison.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +29,9 @@ import org.junit.Test;
  */
 public class BasicStatusJsonParserTest {
 	@Test
-	public void testParse() {
-		Assert.fail("implement me");
+	public void testParse() throws JSONException {
+		final BasicStatusJsonParser parser = new BasicStatusJsonParser();
+		final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
+		Assert.assertEquals(new BasicStatus(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/status/1"), "Open"), basicStatus);
 	}
 }
