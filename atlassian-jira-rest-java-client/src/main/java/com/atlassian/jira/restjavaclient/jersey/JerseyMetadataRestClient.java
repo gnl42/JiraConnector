@@ -40,7 +40,7 @@ import java.util.concurrent.Callable;
  * @since v0.1
  */
 public class JerseyMetadataRestClient extends AbstractJerseyRestClient implements MetadataRestClient {
-	private final String SERVER_INFO_RESOURCE = "/server-info";
+	private final String SERVER_INFO_RESOURCE = "/serverInfo";
 	private final ServerInfoJsonParser serverInfoJsonParser = new ServerInfoJsonParser();
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
