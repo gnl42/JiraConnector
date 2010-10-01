@@ -25,10 +25,12 @@ import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.Session;
 import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.restjavaclient.domain.Votes;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
 import com.atlassian.jira.restjavaclient.json.IssueJsonParser;
 import com.atlassian.jira.restjavaclient.json.JsonParser;
 import com.atlassian.jira.restjavaclient.json.TransitionJsonParser;
+import com.atlassian.jira.restjavaclient.json.VotesJsonParser;
 import com.atlassian.jira.restjavaclient.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.restjavaclient.json.gen.CommentJsonGenerator;
 import com.sun.jersey.api.client.WebResource;
@@ -57,6 +59,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final CommentJsonGenerator commentJsonGenerator = new CommentJsonGenerator();
+	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
 
 	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient) {
 		super(baseUri, client);
@@ -65,14 +68,13 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor) {
-		final WebResource watchersResource = client.resource(issue.getWatchers().getSelf());
+		return getAndParse(issue.getWatchers().getSelf(), watchersParser, progressMonitor);
+	}
 
-		final JSONObject s = watchersResource.get(JSONObject.class);
-		try {
-			return watchersParser.parse(s);
-		} catch (JSONException e) {
-			throw new RestClientException(e);
-		}
+
+	@Override
+	public Votes getVotes(Issue issue, ProgressMonitor progressMonitor) {
+		return getAndParse(issue.getVotes().getSelf(), votesJsonParser, progressMonitor);
 	}
 
 	@Override

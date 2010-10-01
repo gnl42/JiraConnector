@@ -16,33 +16,46 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
+import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
-import java.util.Collection;
 
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class Votes extends BasicVotes {
-	private final Collection<BasicUser> users;
+public class BasicVotes implements AddressableEntity {
+	private final URI self;
+	private final int votes;
+	private final boolean hasVoted;
 
-	public Votes(URI self, int votes, boolean hasVoted, Collection<BasicUser> users) {
-		super(self, votes, hasVoted);
-		this.users = users;
+	public BasicVotes(URI self, int votes, boolean hasVoted) {
+		this.self = self;
+		this.votes = votes;
+		this.hasVoted = hasVoted;
 	}
 
-	public Iterable<BasicUser> getUsers() {
-		return users;
+	@Override
+	public URI getSelf() {
+		return self;
+	}
+
+	public int getVotes() {
+		return votes;
+	}
+
+	public boolean hasVoted() {
+		return hasVoted;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("users", users).
+		return Objects.toStringHelper(this).
+				add("self", self).
+				add("votes", votes).
+				add("hasVoted", hasVoted).
 				toString();
 	}
-
 }

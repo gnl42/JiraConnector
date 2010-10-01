@@ -1,0 +1,17 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes",
+   "votes":2,
+   "hasVoted":false,
+   "voters":[
+      {
+         "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+         "name":"wseliga",
+         "displayName":"Wojciech Seliga"
+      },
+	   {
+		  "self":"http://localhost:8090/jira/rest/api/latest/user/abc",
+		  "name":"abc",
+		  "displayName":"ABC"
+	   }
+   ]
+}

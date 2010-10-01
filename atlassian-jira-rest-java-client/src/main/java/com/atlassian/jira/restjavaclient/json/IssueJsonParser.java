@@ -57,7 +57,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
             WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
-	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
+	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
 	private final JsonParserWithJsonObjectValue<BasicWatchers> watchersJsonParser
@@ -124,7 +124,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
         final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
-		final Votes votes = votesJsonParser.parse(getNestedObject(s, FIELDS, VOTES_ATTR));
+		final BasicVotes votes = votesJsonParser.parse(getNestedObject(s, FIELDS, VOTES_ATTR, VALUE_ATTR));
 		final BasicStatus status = statusJsonParser.parse(getNestedObject(s, FIELDS, STATUS_ATTR, VALUE_ATTR));
 
         final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_ATTR);

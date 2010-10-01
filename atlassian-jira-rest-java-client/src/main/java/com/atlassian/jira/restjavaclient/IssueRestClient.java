@@ -24,9 +24,14 @@ import com.atlassian.jira.restjavaclient.domain.*;
  * @since v0.1
  */
 public interface IssueRestClient {
+	Issue getIssue(String issueKey, ProgressMonitor progressMonitor);
+
     Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
-    Issue getIssue(String issueKey, ProgressMonitor progressMonitor);
-    Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
+
+	Votes getVotes(Issue issue, ProgressMonitor progressMonitor);
+    
+	Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
+
 	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
 	void vote(Issue issue, ProgressMonitor progressMonitor);

@@ -28,8 +28,8 @@ import com.atlassian.jira.restjavaclient.domain.FieldInput;
 import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.restjavaclient.domain.Votes;
 import com.atlassian.jira.restjavaclient.domain.Watchers;
-import com.atlassian.jira.restjavaclient.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
-import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_PASSWORD;
 import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
 import static org.junit.Assert.assertThat;
 
@@ -69,6 +68,16 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertFalse(watchers.isWatching());
 		assertThat(watchers.getUsers(), IterableMatcher.hasOnlyElements(USER1));
 	}
+
+	public void testGetWatcherForAnonymouslyAccessibleIssue() {
+		setAnonymousMode();
+		final Issue issue = client.getIssueClient().getIssue("ANNON-1", new NullProgressMonitor());
+		final Watchers watchers = client.getIssueClient().getWatchers(issue, pm);
+		assertEquals(1, watchers.getNumWatchers());
+		assertFalse(watchers.isWatching());
+		assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
+	}
+
 
 	public URI jiraRestUri(String path) {
 		return UriBuilder.fromUri(jiraRestRootUri).path(path).build();
@@ -97,10 +106,10 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 	public void testGetIssueWithNoViewWatchersPermission() {
-		setClient(USER1_USERNAME, USER1_PASSWORD);
+		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
 
-		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
+		setUser2();
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertFalse(issue.getWatchers().isWatching());
 		client.getIssueClient().watch(issue, pm);
@@ -114,6 +123,39 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 	@Test
+	public void testGetVoter() {
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
+		final Votes votes = client.getIssueClient().getVotes(issue, pm);
+		assertFalse(votes.hasVoted());
+		assertThat(votes.getUsers(), IterableMatcher.hasOnlyElements(USER1));
+	}
+
+
+	@Test
+	public void testGetVotersWithoutViewVotersPermission() {
+		setUser2();
+		assertNumVotesAndNoVotersDetails("TST-1", 1);
+	}
+
+	@Test
+	public void testGetVotersAnonymously() {
+		setAnonymousMode();
+		assertNumVotesAndNoVotersDetails("ANNON-1", 0);
+	}
+
+
+	private void assertNumVotesAndNoVotersDetails(final String issueKey, final int numVotes) {
+		final Issue issue = client.getIssueClient().getIssue(issueKey, pm);
+		assertEquals(numVotes, issue.getVotes().getVotes());
+		assertFalse(issue.getVotes().hasVoted());
+		final Votes votes = client.getIssueClient().getVotes(issue, pm);
+		assertFalse(votes.hasVoted());
+		assertEquals(numVotes, votes.getVotes());
+		assertTrue(Iterables.isEmpty(votes.getUsers()));
+	}
+
+
+	@Test
 	public void testGetTransitions() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
@@ -123,7 +165,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testTransition() throws Exception {
-		configureJira();
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
 		assertEquals(4, Iterables.size(transitions));
@@ -267,7 +308,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 
-		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
+		setUser2();
 		issue = client.getIssueClient().getIssue(issueKey, pm);
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
@@ -322,7 +363,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
 		issueClient.watch(issue1, pm);
 
-		setClient(USER1_USERNAME, USER1_PASSWORD);
+		setUser1();
 		final IssueRestClient issueClient2 = client.getIssueClient();
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
 				"User 'wseliga' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
@@ -333,9 +374,10 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		});
 	}
 
+
 	@Test
 	public void testWatchAlreadyWatched() {
-		setClient(USER1_USERNAME, USER1_PASSWORD);
+		setUser1();
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue("TST-1", pm);
 		Assert.assertThat(client.getIssueClient().getWatchers(issue, pm).getUsers(), IterableMatcher.contains(USER1));
@@ -351,9 +393,10 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		issueClient.addWatcher(issue1, USER1_USERNAME, pm);
 		assertThat(client.getIssueClient().getWatchers(issue1, pm).getUsers(), IterableMatcher.contains(USER1));
 
-		setClient(USER1_USERNAME, USER1_PASSWORD);
+		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
 	}
+
 
 	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
 		Transition transitionFound = null;

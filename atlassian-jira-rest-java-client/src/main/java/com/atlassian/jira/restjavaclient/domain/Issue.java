@@ -34,7 +34,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status, Iterable<String> expandos,
                  Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
-                 DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, Votes votes, Collection<Worklog> worklogs,
+                 DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, BasicVotes votes, Collection<Worklog> worklogs,
                  BasicWatchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
         this.summary = summary;
         this.self = self;
@@ -72,7 +72,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private Collection<Field> fields;
 	private DateTime creationDate;
 	private DateTime updateDate;
-	private final Votes votes;
+	private final BasicVotes votes;
 	@Nullable
 	private final Collection<Version> fixVersions;
 	@Nullable
@@ -158,7 +158,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return project;
 	}
 
-	public Votes getVotes() {
+	public BasicVotes getVotes() {
 		return votes;
 	}
 

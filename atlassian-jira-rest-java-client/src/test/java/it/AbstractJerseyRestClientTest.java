@@ -26,6 +26,8 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.atlassian.jira.restjavaclient.json.TestConstants.*;
+
 /**
  * TODO: Document this class / interface here
  *
@@ -67,5 +69,14 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 	protected void setAnonymousMode() {
 		client = new JerseyJiraRestClient(jiraUri, new AnonymousAuthenticationHandler());
 	}
+
+	protected void setUser2() {
+		setClient(USER2_USERNAME, USER2_PASSWORD);
+	}
+
+	protected void setUser1() {
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+	}
+	
 	
 }
