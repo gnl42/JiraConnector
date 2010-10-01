@@ -35,9 +35,9 @@ public class ServerInfoJsonParser implements JsonParser<ServerInfo> {
 		final String version = json.getString("version");
 		final int buildNumber = json.getInt("buildNumber");
 		final DateTime buildDate = JsonParseUtil.parseDateTime(json, "buildDate");
-		final DateTime serverTime = JsonParseUtil.parseDateTime(json, "serverTime");
-		final int svnRevision = json.getInt("svnRevision");
+		final DateTime serverTime = JsonParseUtil.parseOptionalDateTime(json, "serverTime");
+		final String scmInfo = json.getString("scmInfo");
 		final String serverTitle = json.getString("serverTitle");
-		return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, svnRevision, serverTitle);
+		return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
 	}
 }

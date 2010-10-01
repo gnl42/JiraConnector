@@ -1,0 +1,8 @@
+{
+   "baseUrl":"http://localhost:8090/jira",
+   "version":"4.2-SNAPSHOT",
+   "buildNumber":580,
+   "buildDate":"2010-09-23T00:00:00.000+0200",
+   "scmInfo":"128082",
+   "serverTitle":"Your Company JIRA"
+}
