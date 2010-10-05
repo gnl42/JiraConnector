@@ -79,7 +79,7 @@
 	<target name="preFetch">
 		<exec executable="hg" failonerror="true">
 			<arg value="clone" />
-			<arg value="https://jjaroczynski@bitbucket.org/atlassian/connector-commons" />
+			<arg value="https://bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../" />
 		</exec>
 	</target>
