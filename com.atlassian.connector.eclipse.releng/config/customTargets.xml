@@ -77,7 +77,10 @@
 	<!-- Steps to do before fetching the build elements -->
 	<!-- ===================================================================== -->
 	<target name="preFetch">
-		<exec executable="hg clone https://jjaroczynski@bitbucket.org/atlassian/connector-commons ${buildDirectory}/../../../" failonerror="true">
+		<exec executable="hg" failonerror="true">
+			<arg value="clone" />
+			<arg value="https://jjaroczynski@bitbucket.org/atlassian/connector-commons" />
+			<arg value="${buildDirectory}/../../../" />
 		</exec>
 	</target>
 
