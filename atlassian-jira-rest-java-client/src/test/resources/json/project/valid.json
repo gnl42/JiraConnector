@@ -3,7 +3,7 @@
    "key":"TST",
    "description":"This is my description here.\r\nAnother line.",
    "lead":{
-      "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+      "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
       "name":"admin",
       "displayName":"Administrator"
    },

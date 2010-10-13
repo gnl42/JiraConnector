@@ -32,7 +32,7 @@ public class SessionJsonParserTest {
 	public void testParse() throws Exception {
 		SessionJsonParser parser = new SessionJsonParser();
 		final Session session = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/session/valid.json"));
-		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/user/admin"), session.getUserUri());
+		assertEquals(TestConstants.USER_ADMIN.getSelf(), session.getUserUri());
 		assertEquals("admin", session.getUsername());
 		assertEquals(new LoginInfo(12, 413, TestUtil.toDateTime("2010-09-14T16:15:47.554+0200"),
 				TestUtil.toDateTime("2010-09-14T16:48:33.002+0200")), session.getLoginInfo());

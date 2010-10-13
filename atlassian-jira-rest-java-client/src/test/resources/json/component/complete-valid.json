@@ -3,7 +3,7 @@
 	"name":"Component B",
 	"description":"another description",
 	"lead":{
-		"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+		"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 		"name":"wseliga",
 		"displayName":"Wojciech Seliga"
 	}

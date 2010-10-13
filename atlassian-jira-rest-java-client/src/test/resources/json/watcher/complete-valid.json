@@ -4,12 +4,12 @@
     "watchCount":1,
     "watchers":[
         {
-            "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+            "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
             "name":"wseliga",
             "displayName":"Wojciech Seliga"
         },
         {
-            "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+            "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
             "name":"admin",
             "displayName":"Administrator"
         }

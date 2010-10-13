@@ -2,12 +2,12 @@
     "self":"http://localhost:8090/jira/rest/api/latest/worklog/10011",
     "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
     "author":{
-        "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+        "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
         "name":"wseliga",
         "displayName":"Wojciech Seliga"
     },
     "updateAuthor":{
-        "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+        "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
         "name":"wseliga",
         "displayName":"Wojciech Seliga"
     },

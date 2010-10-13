@@ -26,22 +26,36 @@ import com.atlassian.jira.restjavaclient.domain.Status;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Serves information about JIRA metadata like server information, issue types defined, stati, priorities and resolutions.
+ * This data constitutes a data dictionary which then JIRA issues base on.
  *
  * @since v0.1
  */
 public interface MetadataRestClient {
 	/**
-	 * Serves complete information about selected issue type defined b 
+	 * Serves complete information about selected issue type defined
 	 * @param uri URI to issue type resource (one can get it e.g. from <code>self</code> attribute
-	 * of issueType field of an issue.
+	 * of issueType field of an issue).
 	 * @param progressMonitor progress monitor
 	 * @return complete information about issue type resource
 	 */
 	IssueType getIssueType(URI uri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves complete information about selected status
+	 * @param uri URI to this status resource (one can get it e.g. from <code>self</code> attribute
+	 * of <code>status</code> field of an issue)
+	 * @param progressMonitor progress monitor
+	 * @return complete information about selected status
+	 */
 	Status getStatus(URI uri, ProgressMonitor progressMonitor);
 	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
 	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
 
+	/**
+	 * Retrieves information about this JIRA instance
+	 * @param progressMonitor progress monitor
+	 * @return information about this JIRA instance
+	 */
 	ServerInfo getServerInfo(ProgressMonitor progressMonitor);
 }

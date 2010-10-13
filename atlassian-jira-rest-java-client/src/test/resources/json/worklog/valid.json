@@ -2,12 +2,12 @@
     "self":"http://localhost:8090/jira/rest/api/latest/worklog/10010",
     "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
     "author":{
-        "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+        "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
         "name":"admin",
         "displayName":"Administrator"
     },
     "updateAuthor":{
-        "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+        "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
         "name":"admin",
         "displayName":"Administrator"
     },

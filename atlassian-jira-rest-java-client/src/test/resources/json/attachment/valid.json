@@ -2,7 +2,7 @@
 	"self":"http://localhost:8090/jira/rest/api/latest/attachment/10031",
 	"filename":"snipe.png",
 	"author": {
-		"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+		"self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
 		"name":"admin","displayName":"Administrator"
 	},
 	"created":"2010-07-26T13:31:35.577+0200",

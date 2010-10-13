@@ -186,7 +186,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				client.resource(issue.getWatchers().getSelf()).type(MediaType.APPLICATION_JSON_TYPE).post(username);
+				client.resource(issue.getWatchers().getSelf()).type(MediaType.APPLICATION_JSON_TYPE).post(JSONObject.quote(username));
 				return null;
 			}
 		});

@@ -5,13 +5,13 @@
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10020",
 			"author":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
 				"name":"admin",
 				"displayName":"Administrator"
 			},
 			"body":"some comment",
 			"updateAuthor":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
 				"name":"admin",
 				"displayName":"Administrator"
 			},
@@ -22,13 +22,13 @@
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10021",
 			"author":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",
 				"displayName":"Wojciech Seliga"
 			},
 			"body":"a comment by user",
 			"updateAuthor":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",
 				"displayName":"Wojciech Seliga"
 			},
@@ -38,14 +38,14 @@
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10022",
 			"author":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",
 				"displayName":"Wojciech Seliga"
 			},
 			"body":"a comment viewable only by jira-users",
 			"groupLevel":"jira-users",
 			"updateAuthor":{
-				"self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",
 				"displayName":"Wojciech Seliga"
 			},

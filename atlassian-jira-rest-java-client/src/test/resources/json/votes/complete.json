@@ -4,12 +4,12 @@
    "hasVoted":false,
    "voters":[
       {
-         "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+         "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
          "name":"wseliga",
          "displayName":"Wojciech Seliga"
       },
 	   {
-		  "self":"http://localhost:8090/jira/rest/api/latest/user/abc",
+		  "self":"http://localhost:8090/jira/rest/api/latest/user?username=abc",
 		  "name":"abc",
 		  "displayName":"ABC"
 	   }

@@ -191,7 +191,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testTransitionWithNumericCustomFieldEnglishLocale() throws Exception {
-		setClient(USER1_USERNAME, USER1_PASSWORD);
+		setUser1();;
 		final double newValue = 123.45;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
