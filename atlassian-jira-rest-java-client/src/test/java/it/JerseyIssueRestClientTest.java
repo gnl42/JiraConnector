@@ -20,7 +20,6 @@ import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IssueRestClient;
 import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
 import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.FieldInput;
@@ -185,7 +184,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testTransitionWithNumericCustomFieldEnglishLocale() throws Exception {
-		setUser1();;
+		setUser1();
 		final double newValue = 123.45;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
