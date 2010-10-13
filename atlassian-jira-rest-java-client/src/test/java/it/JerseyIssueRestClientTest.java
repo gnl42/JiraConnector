@@ -122,6 +122,17 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertThat(votes.getUsers(), IterableMatcher.hasOnlyElements(USER1));
 	}
 
+	@Test
+	public void testGetVotersWithoutViewIssuePermission() {
+		final Issue issue = client.getIssueClient().getIssue("RST-1", pm);
+		setUser2();
+		assertErrorCode(Response.Status.FORBIDDEN, "You do not have the permission to see the specified issue", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().getVotes(issue, pm);
+			}
+		});
+	}
 
 	@Test
 	public void testGetVotersWithoutViewVotersPermission() {
