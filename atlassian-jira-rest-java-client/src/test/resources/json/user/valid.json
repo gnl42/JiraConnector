@@ -1,5 +1,5 @@
 {
-   "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+   "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
    "name":"admin",
    "emailAddress":"user@atlassian.com",
    "avatarUrl":"http://localhost:8090/jira/secure/useravatar?size=large&ownerId=admin&avatarId=10054",

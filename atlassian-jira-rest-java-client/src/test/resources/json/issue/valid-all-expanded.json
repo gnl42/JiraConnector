@@ -107,12 +107,12 @@
                "self":"http://localhost:8090/jira/rest/api/latest/worklog/10010",
                "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -126,12 +126,12 @@
                "self":"http://localhost:8090/jira/rest/api/latest/worklog/10011",
                "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
@@ -146,12 +146,12 @@
                "self":"http://localhost:8090/jira/rest/api/latest/worklog/10012",
                "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
@@ -166,12 +166,12 @@
                "self":"http://localhost:8090/jira/rest/api/latest/worklog/10020",
                "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -185,12 +185,12 @@
                "self":"http://localhost:8090/jira/rest/api/latest/worklog/10021",
                "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -226,7 +226,7 @@
          "name":"assignee",
          "type":"com.opensymphony.user.User",
          "value":{
-            "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+            "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
             "name":"admin",
             "displayName":"Administrator"
          }
@@ -263,7 +263,7 @@
                "self":"http://localhost:8090/jira/rest/api/latest/attachment/10036",
                "filename":"jira_logo.gif",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -277,7 +277,7 @@
                "self":"http://localhost:8090/jira/rest/api/latest/attachment/10031",
                "filename":"snipe.png",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -291,7 +291,7 @@
                "self":"http://localhost:8090/jira/rest/api/latest/attachment/10035",
                "filename":"transparent-png.png",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -367,13 +367,13 @@
             {
                "self":"http://localhost:8090/jira/rest/api/latest/comment/10020",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
                "body":"some comment",
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/admin",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
                   "name":"admin",
                   "displayName":"Administrator"
                },
@@ -384,13 +384,13 @@
             {
                "self":"http://localhost:8090/jira/rest/api/latest/comment/10021",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
                "body":"a comment by user",
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
@@ -400,14 +400,14 @@
             {
                "self":"http://localhost:8090/jira/rest/api/latest/comment/10022",
                "author":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
                "body":"a comment viewable only by jira-users",
                "groupLevel":"jira-users",
                "updateAuthor":{
-                  "self":"http://localhost:8090/jira/rest/api/latest/user/wseliga",
+                  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
                   "name":"wseliga",
                   "displayName":"Wojciech Seliga"
                },
