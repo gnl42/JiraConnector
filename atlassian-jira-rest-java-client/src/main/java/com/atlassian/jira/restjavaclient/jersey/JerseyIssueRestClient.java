@@ -38,6 +38,7 @@ import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -182,11 +183,16 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor) {
+	public void addWatcher(final Issue issue, @Nullable final String username, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				client.resource(issue.getWatchers().getSelf()).type(MediaType.APPLICATION_JSON_TYPE).post(JSONObject.quote(username));
+				final WebResource.Builder builder = client.resource(issue.getWatchers().getSelf()).type(MediaType.APPLICATION_JSON_TYPE);
+				if (username != null) {
+					builder.post(JSONObject.quote(username));
+				} else {
+					builder.post();
+				}
 				return null;
 			}
 		});
@@ -215,7 +221,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public void watch(final Issue issue, ProgressMonitor progressMonitor) {
-		addWatcher(issue, getLoggedUsername(progressMonitor), progressMonitor);
+		addWatcher(issue, null, progressMonitor);
 	}
 
 	@Override
