@@ -79,7 +79,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testGetIssue() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
+		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals("TST-1", issue.getKey());
 		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 
@@ -94,6 +94,21 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 
 		assertEquals(attachment1, items.iterator().next());
+
+	}
+
+
+	public void testGetIssueWithNonTrivialComments() {
+		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
+		final Iterable<Comment> comments = issue.getComments();
+		assertEquals(3, Iterables.size(comments));
+		final Comment c1 = Iterables.get(comments, 0);
+		assertEquals("Administrators", c1.getRoleLevel());
+		assertNull(c1.getGroupLevel());
+
+		final Comment c3 = Iterables.get(comments, 2);
+		assertEquals("jira-users", c3.getGroupLevel());
+		assertNull(c3.getRoleLevel());
 
 	}
 
@@ -300,8 +315,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(lastComment.getCreationDate(), lastComment.getUpdateDate());
 		assertTrue(lastComment.getCreationDate().isAfter(now) || lastComment.getCreationDate().isEqual(now));
 		assertEquals(comment.getGroupLevel(), lastComment.getGroupLevel());
-		// @todo restore it when JIRA REST is fixed
-//		assertEquals(comment.getRoleLevel(), lastComment.getRoleLevel());
+		assertEquals(comment.getRoleLevel(), lastComment.getRoleLevel());
 	}
 
 	@Test

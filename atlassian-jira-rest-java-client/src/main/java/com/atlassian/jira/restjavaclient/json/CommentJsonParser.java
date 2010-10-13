@@ -36,7 +36,7 @@ public class CommentJsonParser implements JsonParser<Comment> {
 		final String body = json.getString("body");
 		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
 		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
-		final String roleLevel = json.optString("role", null);
+		final String roleLevel = json.optString("roleLevel", null);
 		final String groupLevel = json.optString("groupLevel", null);
 		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
 				JsonParseUtil.parseDateTime(json.getString("updated")), roleLevel, groupLevel);

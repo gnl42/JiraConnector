@@ -42,7 +42,7 @@ public class CommentJsonParserTest {
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
-		assertEquals("10002", comment1.getRoleLevel());
+		assertEquals("Administrators", comment1.getRoleLevel());
 		assertNull(comment1.getGroupLevel());
 
 		final JSONObject comment3Json = commentsJson.getJSONArray("value").getJSONObject(2);
