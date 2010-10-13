@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
+import static com.atlassian.jira.restjavaclient.TestUtil.assertErrorCode;
 import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
 import static com.atlassian.jira.restjavaclient.json.TestConstants.USER2_USERNAME;
 import static org.junit.Assert.assertThat;
@@ -189,7 +190,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 
-		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "'" + fieldInput.getValue() + "' is an invalid number", new Runnable() {
+		assertErrorCode(Response.Status.BAD_REQUEST, "'" + fieldInput.getValue() + "' is an invalid number", new Runnable() {
 			@Override
 			public void run() {
 				assertTransitionWithNumericCustomField(fieldInput, newValue);
@@ -247,7 +248,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
 		// warning: Polish language here - I am asserting if the messages are indeed localized
-		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
+		assertErrorCode(Response.Status.BAD_REQUEST, "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
@@ -300,7 +301,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
 
 		// I hope that such Polish special characters (for better testing local specific behaviour of REST
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Nie mo\u017cesz g\u0142osowa\u0107 na zadanie kt\u00f3re utworzy\u0142e\u015b.", new Runnable() {
+		assertErrorCode(Response.Status.NOT_FOUND, "Nie mo\u017cesz g\u0142osowa\u0107 na zadanie kt\u00f3re utworzy\u0142e\u015b.", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().vote(issue1, pm);
@@ -328,7 +329,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.", new Runnable() {
+		assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().unvote(finalIssue, pm);
@@ -380,7 +381,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		setUser1();
 		final IssueRestClient issueClient2 = client.getIssueClient();
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED,
+		assertErrorCode(Response.Status.UNAUTHORIZED,
 				"User 'wseliga' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
 			@Override
 			public void run() {
@@ -410,6 +411,14 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
+
+		assertErrorCode(Response.Status.UNAUTHORIZED, "User '" + USER1_USERNAME
+				+ "' is not allowed to add watchers to issue 'TST-1'", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().addWatcher(issue1, ADMIN_USERNAME, pm);
+			}
+		});
 	}
 
 
@@ -428,7 +437,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	public void xtestAddWatcherWhoDoesNotHaveViewIssuePermissions() {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("RST-1", pm);
-		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "The user \"" + USER2_USERNAME
+		assertErrorCode(Response.Status.BAD_REQUEST, "The user \"" + USER2_USERNAME
 				+ "\" does not have permission to view this issue. This user will not be added to the watch list.",
 				new Runnable() {
 					@Override
