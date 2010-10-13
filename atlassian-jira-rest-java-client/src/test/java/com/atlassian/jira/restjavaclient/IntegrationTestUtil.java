@@ -37,20 +37,22 @@ public class IntegrationTestUtil {
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
-	public static final URI USER_REST_URI;
+	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
 
 	static {
-        LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
         try {
-            USER_REST_URI = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user/").build();
-            USER1 = new BasicUser(concat(USER_REST_URI, "wseliga"), "wseliga", "Wojciech Seliga");
-            USER2 = new BasicUser(concat(USER_REST_URI, "user"), "user", "My Test User");
-            USER_ADMIN = new BasicUser(concat(USER_REST_URI, "admin"), "admin", "Administrator");
+            USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
+            USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
+            USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
     }
+
+	private static URI getUserUri(String username) throws URISyntaxException {
+		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user").queryParam("username", username).build();
+	}
 
     public static URI concat(URI uri, String path) {
         return UriBuilder.fromUri(uri).path(path).build();

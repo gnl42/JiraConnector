@@ -96,10 +96,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();
 		assertNotNull(items);
-		final BasicUser user = new BasicUser(jiraRestUri("/user/admin"),
-				"admin", "Administrator");
 		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(jiraRestRootUri, "/attachment/10040"),
-				"dla Paw\u0142a.txt", user, dateTime, 643, "text/plain",
+				"dla Paw\u0142a.txt", IntegrationTestUtil.USER_ADMIN, dateTime, 643, "text/plain",
 				IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 
 		assertEquals(attachment1, items.iterator().next());

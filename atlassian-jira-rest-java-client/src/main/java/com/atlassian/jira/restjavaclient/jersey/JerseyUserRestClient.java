@@ -44,7 +44,7 @@ public class JerseyUserRestClient extends AbstractJerseyRestClient implements Us
 	@Override
 	public User getUser(String username, ProgressMonitor progressMonitor) {
 		final WebResource userResource = client.resource(UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX)
-				.path(username).queryParam("expand", "groups").build());
+				.queryParam("username", username).queryParam("expand", "groups").build());
 		return invoke(new Callable<User>() {
 			@Override
 			public User call() throws Exception {
