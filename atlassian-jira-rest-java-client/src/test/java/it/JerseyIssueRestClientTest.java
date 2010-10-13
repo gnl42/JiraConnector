@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
+import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_PASSWORD;
 import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
 import static org.junit.Assert.assertThat;
 
@@ -183,23 +184,46 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 
 	@Test
-	public void testTransitionWithNumericCustomField() throws Exception {
+	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
+		final double newValue = 123.45;
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
+				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
+		assertTransitionWithNumericCustomField(fieldInput, newValue);
+	}
+
+	@Test
+	public void testTransitionWithNumericCustomFieldEnglishLocale() throws Exception {
+		setClient(USER1_USERNAME, USER1_PASSWORD);
+		final double newValue = 123.45;
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
+				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
+
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "'" + fieldInput.getValue() + "' is an invalid number", new Runnable() {
+			@Override
+			public void run() {
+				assertTransitionWithNumericCustomField(fieldInput, newValue);
+			}
+		});
+
+		final FieldInput fieldInput2 = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue); // this will be serialized always with "." according to JSL
+		assertTransitionWithNumericCustomField(fieldInput2, newValue);
+
+	}
+
+
+	private void assertTransitionWithNumericCustomField(FieldInput fieldInput, Double expectedValue) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, new NullProgressMonitor());
-		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
+		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
-		final double newValue = 123.45;
-		// @todo put double directly here instead of formatting it for expected locale, when JIRA is fixed - JRADEV-3472
-		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
-				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
-		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(newValue));
+		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(expectedValue));
 	}
 
 	@Test
