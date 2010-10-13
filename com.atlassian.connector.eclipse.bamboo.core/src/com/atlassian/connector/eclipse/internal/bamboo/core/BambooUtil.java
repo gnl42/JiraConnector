@@ -86,14 +86,15 @@ public final class BambooUtil {
 	}
 
 	public static String getUrlFromBuild(BambooBuild build) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(build.getServerUrl());
-		builder.append("/build/viewBuildResults.action?buildKey=");
-		builder.append(build.getPlanKey());
-		builder.append("&buildNumber=");
-		builder.append(build.getNumber());
-		// ignore
-		return builder.toString();
+		return build.getBuildUrl() + "-" + build.getNumber();
+//		StringBuilder builder = new StringBuilder();
+//		builder.append(build.getServerUrl());
+//		builder.append("/build/viewBuildResults.action?buildKey=");
+//		builder.append(build.getPlanKey());
+//		builder.append("&buildNumber=");
+//		builder.append(build.getNumber());
+//		// ignore
+//		return builder.toString();
 	}
 
 	public static void runActionForChangedBuild(BuildsChangedEvent event, BambooUtil.BuildChangeAction buildChangeAction) {
