@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.USER_SLASH;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -48,6 +49,12 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
 		assertThat(user2.getGroups(), IterableMatcher.hasOnlyElements("jira-users"));
     }
+
+	public void testGetUserWithSlash() {
+		final User user = client.getUserClient().getUser(USER_SLASH.getName(), pm);
+		assertEquals(USER_SLASH.getSelf(), user.getSelf());
+		assertEquals(USER_SLASH.getDisplayName(), user.getDisplayName());
+	}
 
 	public void testGetNonExistingUser() {
 		final String username = "same-fake-user-which-does-not-exist";
