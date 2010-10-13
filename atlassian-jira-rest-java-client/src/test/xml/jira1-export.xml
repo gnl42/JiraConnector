@@ -1163,7 +1163,7 @@ ___ Trusted Applications ___________________
     <OSPropertyString id="10054" value="3"/>
     <OSPropertyString id="10071" value="workaround"/>
     <OSPropertyString id="10442" value="false"/>
-    <OSPropertyString id="10033" value="586"/>
+    <OSPropertyString id="10033" value="580"/>
     <OSPropertyString id="10450" value="4954"/>
     <OSPropertyString id="10470" value="user@example.com"/>
     <OSPropertyString id="10471" value="A User with / in its username"/>
@@ -1523,7 +1523,6 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UpgradeVersionHistory id="10010" timeperformed="2010-08-02 12:23:09.495" targetbuild="565" targetversion="4.2-SNAPSHOT"/>
     <UpgradeVersionHistory id="10020" timeperformed="2010-08-20 12:25:58.439" targetbuild="571" targetversion="4.2-SNAPSHOT"/>
     <UpgradeVersionHistory id="10000" timeperformed="2010-07-23 10:40:16.301" targetbuild="560" targetversion="4.2-SNAPSHOT"/>
-    <UpgradeVersionHistory id="10050" timeperformed="2010-10-13 15:42:51.404" targetbuild="586" targetversion="4.2.1-SNAPSHOT"/>
     <UpgradeVersionHistory id="10040" timeperformed="2010-09-22 18:06:05.935" targetbuild="580" targetversion="4.2-SNAPSHOT"/>
     <UpgradeVersionHistory id="10030" timeperformed="2010-08-31 19:17:48.58" targetbuild="575" targetversion="4.2-SNAPSHOT"/>
     <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="VoteIssue"/>
