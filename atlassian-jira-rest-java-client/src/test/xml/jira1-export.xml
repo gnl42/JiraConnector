@@ -4,7 +4,7 @@
 
 ___ Exported on _____________________________
 
-     on                                            : Wednesday, October 13, 2010 3:44:46 PM CEST
+     on                                            : Wednesday, October 13, 2010 5:44:50 PM CEST
      by                                            : admin ( Administrator )
 
 ___ Environment ____________________________
@@ -15,14 +15,14 @@ ___ Environment ____________________________
      Java Version                                  : 1.6.0_20 - Sun Microsystems Inc.
      Current Working Directory                     : /home/wseliga/lab/jira
      Maximum Allowable Memory                      : 910MB
-     Total Memory                                  : 375MB
-     Free Memory                                   : 68MB
-     Used Memory                                   : 307MB
-     Memory Pool: Code Cache                       : Code Cache: init = 2359296(2304K) used = 11817152(11540K) committed = 11894784(11616K) max = 50331648(49152K)
-     Memory Pool: PS Eden Space                    : PS Eden Space: init = 33554432(32768K) used = 126730576(123760K) committed = 155516928(151872K) max = 336265216(328384K)
-     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 5570560(5440K) used = 9946448(9713K) committed = 10289152(10048K) max = 10289152(10048K)
-     Memory Pool: PS Old Gen                       : PS Old Gen: init = 89522176(87424K) used = 184688360(180359K) committed = 227606528(222272K) max = 715849728(699072K)
-     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 16777216(16384K) used = 71327528(69655K) committed = 99614720(97280K) max = 134217728(131072K)
+     Total Memory                                  : 261MB
+     Free Memory                                   : 35MB
+     Used Memory                                   : 226MB
+     Memory Pool: Code Cache                       : Code Cache: init = 2359296(2304K) used = 13116928(12809K) committed = 13238272(12928K) max = 50331648(49152K)
+     Memory Pool: PS Eden Space                    : PS Eden Space: init = 33554432(32768K) used = 35199752(34374K) committed = 41877504(40896K) max = 347930624(339776K)
+     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 5570560(5440K) used = 3773152(3684K) committed = 4849664(4736K) max = 4849664(4736K)
+     Memory Pool: PS Old Gen                       : PS Old Gen: init = 89522176(87424K) used = 198379992(193730K) committed = 227606528(222272K) max = 715849728(699072K)
+     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 16777216(16384K) used = 75369216(73602K) committed = 99614720(97280K) max = 134217728(131072K)
      JVM Input Arguments                           : -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:41464,suspend=y,server=n -Dcatalina.home=/opt/apache-tomcat-5.5.30 -Dcatalina.base=tomcat -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Xms128m -Xmx1024m -XX:MaxPermSize=128m -XX:+HeapDumpOnOutOfMemoryError -Djira.i18n.texthighlight=false -Dmail.debug=false -Djira.jelly.on=true -Datlassian.mail.popdisabled=true -Djira.trackback.senddisabled=true -Dorg.apache.jasper.runtime.BodyContentImpl.LIMIT_BUFFER=true -Datlassian.mail.senddisabled=true -Djira.home=jirahome -Djira.dev.mode=true -Djira.plugins.bundled.disable=false -Datlassian.disable.caches=true -Dfile.encoding=UTF-8
 
 ___ Database Configuration _________________
@@ -221,7 +221,7 @@ ___ Application Properties _________________
      jira.view.issue.links.sort.order              : type, status, priority
      jira.view.issue.show.quicksubtask.when.no.subtasks : false
      jira.viewcvs.root.type                        : cvsroot
-     jira.webresource.flushcounter                 : 4954
+     jira.webresource.flushcounter                 : 5002
      jira.webresource.superbatch.flushcounter      : 1
      user.default.share.private                    : true
      user.issues.per.page                          : 50
@@ -246,7 +246,7 @@ ___ License Details ________________________
 
 ___ Database Statistics ____________________
 
-     Issues                                        : 8
+     Issues                                        : 9
      Projects                                      : 3
      Custom Fields                                 : 4
      Workflows                                     : 1
@@ -258,7 +258,7 @@ ___ Database Statistics ____________________
 ___ Upgrade History ________________________
 
      4.2.1-SNAPSHOT#586
-          Time Performed                                : 2010-10-13 15:42:51.404
+          Time Performed                                : 2010-10-13 17:36:57.688
           Original Version                              : 4.2-SNAPSHOT#580
 
      4.2-SNAPSHOT#580
@@ -541,9 +541,9 @@ ___ Listeners ______________________________
 
      Instance Count                                : 3
 
-     Issue Index Listener                          : com.atlassian.jira.event.listeners.search.IssueIndexListener
      Issue Cache Listener                          : com.atlassian.jira.event.listeners.cache.IssueCacheListener
      Mail Listener                                 : com.atlassian.jira.event.listeners.mail.MailListener
+     Issue Index Listener                          : com.atlassian.jira.event.listeners.search.IssueIndexListener
 
 ___ Services _______________________________
 
@@ -551,18 +551,18 @@ ___ Services _______________________________
 
      Backup Service                                : com.atlassian.jira.service.services.export.ExportService
           Service Delay                                 : 43200000ms
-     Last Run                                      : 10/13/10 3:42 PM
+     Last Run                                      : 10/13/10 5:36 PM
           USEZIP                                        : admin.service.export.backup.as.zip
           USE_DEFAULT_DIRECTORY                         : true
      Mail Queue Service                            : com.atlassian.jira.service.services.mail.MailQueueService
           Service Delay                                 : 60000ms
-     Last Run                                      : 10/13/10 3:42 PM
+     Last Run                                      : 10/13/10 5:43 PM
      Sample                                        : com.atlassian.jira.service.services.pop.PopService
           Service Delay                                 : 60000ms
-     Last Run                                      : 10/13/10 3:43 PM
+     Last Run                                      : 10/13/10 5:43 PM
      Service Provider Token Remover                : com.atlassian.sal.jira.scheduling.JiraPluginSchedulerService
           Service Delay                                 : 28800000ms
-     Last Run                                      : 10/13/10 3:42 PM
+     Last Run                                      : 10/13/10 5:36 PM
           pluginJobName                                 : Service Provider Token Remover
 
 ___ Trusted Applications ___________________
@@ -572,979 +572,984 @@ ___ Trusted Applications ___________________
 
  -->
 <entity-engine-xml>
-    <Action id="10020" issue="10010" author="admin" type="comment" rolelevel="10002" body="some comment" created="2010-08-17 16:40:57.791" updateauthor="admin" updated="2010-08-17 16:40:57.791"/>
     <Action id="10011" issue="10000" author="admin" type="comment" created="2010-07-28 18:41:34.583" updateauthor="admin" updated="2010-07-28 18:41:34.583">
         <body><![CDATA[* fd
 * fdsfds]]></body>
     </Action>
     <Action id="10021" issue="10010" author="wseliga" type="comment" body="a comment by user" created="2010-08-17 16:41:15.36" updateauthor="wseliga" updated="2010-08-17 16:41:15.36"/>
+    <Action id="10010" issue="10000" author="admin" type="comment" body="another comment" created="2010-07-28 17:58:19.435" updateauthor="admin" updated="2010-07-28 17:58:19.435"/>
+    <Action id="10020" issue="10010" author="admin" type="comment" rolelevel="10002" body="some comment" created="2010-08-17 16:40:57.791" updateauthor="admin" updated="2010-08-17 16:40:57.791"/>
     <Action id="10000" issue="10000" author="admin" type="comment" body="abc" created="2010-07-23 12:17:59.676" updateauthor="admin" updated="2010-07-23 12:17:59.676"/>
     <Action id="10030" issue="10030" author="admin" type="comment" body="rwewerr" created="2010-08-20 17:02:09.882" updateauthor="admin" updated="2010-08-20 17:02:09.882"/>
     <Action id="10022" issue="10010" author="wseliga" type="comment" level="jira-users" body="a comment viewable only by jira-users" created="2010-08-17 16:49:31.528" updateauthor="wseliga" updated="2010-08-17 16:49:31.528"/>
-    <Action id="10010" issue="10000" author="admin" type="comment" body="another comment" created="2010-07-28 17:58:19.435" updateauthor="admin" updated="2010-07-28 17:58:19.435"/>
-    <Avatar id="10016" fileName="doctor.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10027" fileName="user_headphones.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10026" fileName="user3.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
     <Avatar id="10024" fileName="user1.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10013" fileName="businessman.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10005" fileName="jm_red.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10006" fileName="jm_white.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10031" fileName="jira_logo.gif" contentType="image/gif" avatarType="user" owner="admin" systemAvatar="0"/>
-    <Avatar id="10020" fileName="dude4.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
     <Avatar id="10011" fileName="rocket.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10022" fileName="ghost.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10002" fileName="jm_black.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10053" fileName="DSC00213.JPG" contentType="image/jpeg" avatarType="user" owner="admin" systemAvatar="0"/>
-    <Avatar id="10000" fileName="codegeist.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10009" fileName="rainbow.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10017" fileName="dude1.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10003" fileName="jm_brown.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10021" fileName="dude5.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10051" fileName="spartez-logo.gif" contentType="image/gif" avatarType="user" owner="admin" systemAvatar="0"/>
     <Avatar id="10012" fileName="angel.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10025" fileName="user2.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10007" fileName="jm_yellow.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10041" fileName="transparent-gif.gif" contentType="image/gif" avatarType="project" owner="10000" systemAvatar="0"/>
     <Avatar id="10052" fileName="jira-million-issues.png" contentType="image/png" avatarType="user" owner="admin" systemAvatar="0"/>
-    <Avatar id="10023" fileName="security_agent.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10016" fileName="doctor.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10006" fileName="jm_white.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10000" fileName="codegeist.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10041" fileName="transparent-gif.gif" contentType="image/gif" avatarType="project" owner="10000" systemAvatar="0"/>
+    <Avatar id="10054" fileName="opaque-png.png" contentType="image/png" avatarType="user" owner="admin" systemAvatar="0"/>
+    <Avatar id="10040" fileName="jira_logo.png" contentType="image/png" avatarType="project" owner="10000" systemAvatar="0"/>
+    <Avatar id="10026" fileName="user3.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10007" fileName="jm_yellow.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
     <Avatar id="10015" fileName="devil.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10030" fileName="jira_logo.gif" contentType="image/gif" avatarType="project" owner="10000" systemAvatar="0"/>
+    <Avatar id="10018" fileName="dude2.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10005" fileName="jm_red.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10020" fileName="dude4.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10009" fileName="rainbow.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10025" fileName="user2.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10019" fileName="dude3.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10010" fileName="kangaroo.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10027" fileName="user_headphones.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10002" fileName="jm_black.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10017" fileName="dude1.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10023" fileName="security_agent.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
     <Avatar id="10014" fileName="businessman2.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
     <Avatar id="10028" fileName="userprofile_silhouette.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10019" fileName="dude3.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
-    <Avatar id="10054" fileName="opaque-png.png" contentType="image/png" avatarType="user" owner="admin" systemAvatar="0"/>
-    <Avatar id="10004" fileName="jm_orange.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10030" fileName="jira_logo.gif" contentType="image/gif" avatarType="project" owner="10000" systemAvatar="0"/>
-    <Avatar id="10010" fileName="kangaroo.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10040" fileName="jira_logo.png" contentType="image/png" avatarType="project" owner="10000" systemAvatar="0"/>
-    <Avatar id="10001" fileName="eamesbird.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
-    <Avatar id="10018" fileName="dude2.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
     <Avatar id="10008" fileName="monster.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10013" fileName="businessman.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10031" fileName="jira_logo.gif" contentType="image/gif" avatarType="user" owner="admin" systemAvatar="0"/>
+    <Avatar id="10003" fileName="jm_brown.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10051" fileName="spartez-logo.gif" contentType="image/gif" avatarType="user" owner="admin" systemAvatar="0"/>
+    <Avatar id="10001" fileName="eamesbird.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
+    <Avatar id="10022" fileName="ghost.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10053" fileName="DSC00213.JPG" contentType="image/jpeg" avatarType="user" owner="admin" systemAvatar="0"/>
+    <Avatar id="10021" fileName="dude5.png" contentType="image/png" avatarType="user" systemAvatar="1"/>
+    <Avatar id="10004" fileName="jm_orange.png" contentType="image/png" avatarType="project" systemAvatar="1"/>
     <Avatar id="10050" fileName="spartez-logo.png" contentType="image/png" avatarType="project" owner="10000" systemAvatar="0"/>
-    <ChangeGroup id="10050" issue="10000" author="admin" created="2010-07-28 18:34:36.524"/>
     <ChangeGroup id="10110" issue="10030" author="admin" created="2010-08-20 17:01:42.173"/>
-    <ChangeGroup id="10091" issue="10010" author="admin" created="2010-08-17 16:35:47.477"/>
+    <ChangeGroup id="10095" issue="10010" author="wseliga" created="2010-08-17 16:38:24.955"/>
+    <ChangeGroup id="10150" issue="10000" author="admin" created="2010-09-20 18:35:56.886"/>
+    <ChangeGroup id="10037" issue="10010" author="admin" created="2010-07-26 14:41:52.162"/>
+    <ChangeGroup id="10034" issue="10010" author="admin" created="2010-07-26 13:35:44.766"/>
+    <ChangeGroup id="10086" issue="10000" author="admin" created="2010-08-10 15:46:24.086"/>
+    <ChangeGroup id="10085" issue="10000" author="admin" created="2010-08-10 15:45:44.844"/>
+    <ChangeGroup id="10083" issue="10000" author="admin" created="2010-08-10 13:15:09.222"/>
     <ChangeGroup id="10000" issue="10000" author="admin" created="2010-07-23 12:17:59.703"/>
+    <ChangeGroup id="10033" issue="10010" author="admin" created="2010-07-26 13:35:00.924"/>
+    <ChangeGroup id="10092" issue="10010" author="admin" created="2010-08-17 16:36:29.178"/>
+    <ChangeGroup id="10031" issue="10010" author="admin" created="2010-07-26 13:31:35.582"/>
+    <ChangeGroup id="10120" issue="10010" author="admin" created="2010-08-24 16:10:23.468"/>
+    <ChangeGroup id="10152" issue="10021" author="admin" created="2010-09-20 18:35:57.124"/>
+    <ChangeGroup id="10094" issue="10010" author="wseliga" created="2010-08-17 16:38:00.017"/>
+    <ChangeGroup id="10040" issue="10000" author="admin" created="2010-07-27 08:58:11.456"/>
+    <ChangeGroup id="10072" issue="10000" author="admin" created="2010-08-09 18:49:23.184"/>
+    <ChangeGroup id="10050" issue="10000" author="admin" created="2010-07-28 18:34:36.524"/>
     <ChangeGroup id="10087" issue="10010" author="admin" created="2010-08-10 17:39:19.927"/>
+    <ChangeGroup id="10039" issue="10000" author="admin" created="2010-07-26 14:48:49.392"/>
+    <ChangeGroup id="10022" issue="10000" author="admin" created="2010-07-26 11:06:45.78"/>
+    <ChangeGroup id="10155" issue="10030" author="admin" created="2010-09-20 18:35:57.305"/>
+    <ChangeGroup id="10081" issue="10010" author="admin" created="2010-08-10 13:13:44.81"/>
+    <ChangeGroup id="10154" issue="10010" author="admin" created="2010-09-20 18:35:57.253"/>
+    <ChangeGroup id="10153" issue="10022" author="admin" created="2010-09-20 18:35:57.162"/>
+    <ChangeGroup id="10051" issue="10000" author="admin" created="2010-07-28 18:39:33.633"/>
+    <ChangeGroup id="10080" issue="10000" author="admin" created="2010-08-10 13:13:44.804"/>
+    <ChangeGroup id="10091" issue="10010" author="admin" created="2010-08-17 16:35:47.477"/>
     <ChangeGroup id="10082" issue="10020" author="admin" created="2010-08-10 13:15:09.218"/>
     <ChangeGroup id="10060" issue="10000" author="admin" created="2010-08-04 17:46:45.571"/>
-    <ChangeGroup id="10095" issue="10010" author="wseliga" created="2010-08-17 16:38:24.955"/>
-    <ChangeGroup id="10033" issue="10010" author="admin" created="2010-07-26 13:35:00.924"/>
-    <ChangeGroup id="10140" issue="10010" author="admin" created="2010-08-27 14:58:37.158"/>
-    <ChangeGroup id="10073" issue="10000" author="admin" created="2010-08-09 19:00:16.372"/>
-    <ChangeGroup id="10039" issue="10000" author="admin" created="2010-07-26 14:48:49.392"/>
-    <ChangeGroup id="10084" issue="10000" author="admin" created="2010-08-10 13:15:36.485"/>
-    <ChangeGroup id="10092" issue="10010" author="admin" created="2010-08-17 16:36:29.178"/>
-    <ChangeGroup id="10150" issue="10000" author="admin" created="2010-09-20 18:35:56.886"/>
     <ChangeGroup id="10096" issue="10010" author="admin" created="2010-08-17 16:39:54.382"/>
-    <ChangeGroup id="10099" issue="10010" author="admin" created="2010-08-17 16:40:34.924"/>
-    <ChangeGroup id="10022" issue="10000" author="admin" created="2010-07-26 11:06:45.78"/>
-    <ChangeGroup id="10098" issue="10010" author="admin" created="2010-08-17 16:40:09.68"/>
-    <ChangeGroup id="10097" issue="10010" author="admin" created="2010-08-17 16:39:59.386"/>
-    <ChangeGroup id="10031" issue="10010" author="admin" created="2010-07-26 13:31:35.582"/>
-    <ChangeGroup id="10010" issue="10000" author="admin" created="2010-07-23 16:29:43.202"/>
-    <ChangeGroup id="10155" issue="10030" author="admin" created="2010-09-20 18:35:57.305"/>
-    <ChangeGroup id="10037" issue="10010" author="admin" created="2010-07-26 14:41:52.162"/>
     <ChangeGroup id="10035" issue="10010" author="admin" created="2010-07-26 13:38:32.647"/>
-    <ChangeGroup id="10032" issue="10010" author="admin" created="2010-07-26 13:34:12.36"/>
-    <ChangeGroup id="10090" issue="10010" author="admin" created="2010-08-17 14:28:14.72"/>
-    <ChangeGroup id="10142" issue="10010" author="admin" created="2010-08-30 10:49:33.45"/>
-    <ChangeGroup id="10120" issue="10010" author="admin" created="2010-08-24 16:10:23.468"/>
     <ChangeGroup id="10030" issue="10010" author="admin" created="2010-07-26 13:29:53.82"/>
-    <ChangeGroup id="10081" issue="10010" author="admin" created="2010-08-10 13:13:44.81"/>
-    <ChangeGroup id="10020" issue="10000" author="admin" created="2010-07-26 10:41:02.337"/>
-    <ChangeGroup id="10034" issue="10010" author="admin" created="2010-07-26 13:35:44.766"/>
-    <ChangeGroup id="10152" issue="10021" author="admin" created="2010-09-20 18:35:57.124"/>
-    <ChangeGroup id="10086" issue="10000" author="admin" created="2010-08-10 15:46:24.086"/>
-    <ChangeGroup id="10100" issue="10010" author="wseliga" created="2010-08-17 16:53:15.852"/>
-    <ChangeGroup id="10154" issue="10010" author="admin" created="2010-09-20 18:35:57.253"/>
     <ChangeGroup id="10023" issue="10000" author="admin" created="2010-07-26 11:07:16.584"/>
-    <ChangeGroup id="10132" issue="10010" author="admin" created="2010-08-26 13:09:49.493"/>
-    <ChangeGroup id="10111" issue="10030" author="admin" created="2010-08-20 17:02:09.887"/>
-    <ChangeGroup id="10085" issue="10000" author="admin" created="2010-08-10 15:45:44.844"/>
-    <ChangeGroup id="10141" issue="10010" author="admin" created="2010-08-27 15:00:02.11"/>
-    <ChangeGroup id="10153" issue="10022" author="admin" created="2010-09-20 18:35:57.162"/>
     <ChangeGroup id="10021" issue="10000" author="admin" created="2010-07-26 10:41:24.713"/>
-    <ChangeGroup id="10094" issue="10010" author="wseliga" created="2010-08-17 16:38:00.017"/>
-    <ChangeGroup id="10131" issue="10010" author="admin" created="2010-08-24 17:37:13.274"/>
-    <ChangeGroup id="10052" issue="10000" author="admin" created="2010-07-28 18:55:01.753"/>
-    <ChangeGroup id="10051" issue="10000" author="admin" created="2010-07-28 18:39:33.633"/>
-    <ChangeGroup id="10036" issue="10010" author="admin" created="2010-07-26 14:41:27.866"/>
     <ChangeGroup id="10093" issue="10000" author="admin" created="2010-08-17 16:36:29.182"/>
-    <ChangeGroup id="10040" issue="10000" author="admin" created="2010-07-27 08:58:11.456"/>
-    <ChangeGroup id="10130" issue="10010" author="admin" created="2010-08-24 17:16:39.529"/>
     <ChangeGroup id="10038" issue="10000" author="admin" created="2010-07-26 14:48:43.045"/>
-    <ChangeGroup id="10151" issue="10020" author="admin" created="2010-09-20 18:35:57.023"/>
-    <ChangeGroup id="10083" issue="10000" author="admin" created="2010-08-10 13:15:09.222"/>
-    <ChangeGroup id="10080" issue="10000" author="admin" created="2010-08-10 13:13:44.804"/>
-    <ChangeGroup id="10071" issue="10000" author="admin" created="2010-08-09 18:43:39.324"/>
     <ChangeGroup id="10070" issue="10000" author="admin" created="2010-08-09 16:10:49.275"/>
+    <ChangeGroup id="10098" issue="10010" author="admin" created="2010-08-17 16:40:09.68"/>
+    <ChangeGroup id="10010" issue="10000" author="admin" created="2010-07-23 16:29:43.202"/>
+    <ChangeGroup id="10090" issue="10010" author="admin" created="2010-08-17 14:28:14.72"/>
+    <ChangeGroup id="10132" issue="10010" author="admin" created="2010-08-26 13:09:49.493"/>
+    <ChangeGroup id="10141" issue="10010" author="admin" created="2010-08-27 15:00:02.11"/>
+    <ChangeGroup id="10036" issue="10010" author="admin" created="2010-07-26 14:41:27.866"/>
+    <ChangeGroup id="10071" issue="10000" author="admin" created="2010-08-09 18:43:39.324"/>
+    <ChangeGroup id="10140" issue="10010" author="admin" created="2010-08-27 14:58:37.158"/>
+    <ChangeGroup id="10099" issue="10010" author="admin" created="2010-08-17 16:40:34.924"/>
+    <ChangeGroup id="10032" issue="10010" author="admin" created="2010-07-26 13:34:12.36"/>
+    <ChangeGroup id="10020" issue="10000" author="admin" created="2010-07-26 10:41:02.337"/>
+    <ChangeGroup id="10111" issue="10030" author="admin" created="2010-08-20 17:02:09.887"/>
+    <ChangeGroup id="10131" issue="10010" author="admin" created="2010-08-24 17:37:13.274"/>
+    <ChangeGroup id="10151" issue="10020" author="admin" created="2010-09-20 18:35:57.023"/>
+    <ChangeGroup id="10073" issue="10000" author="admin" created="2010-08-09 19:00:16.372"/>
+    <ChangeGroup id="10084" issue="10000" author="admin" created="2010-08-10 13:15:36.485"/>
+    <ChangeGroup id="10097" issue="10010" author="admin" created="2010-08-17 16:39:59.386"/>
+    <ChangeGroup id="10142" issue="10010" author="admin" created="2010-08-30 10:49:33.45"/>
+    <ChangeGroup id="10100" issue="10010" author="wseliga" created="2010-08-17 16:53:15.852"/>
+    <ChangeGroup id="10052" issue="10000" author="admin" created="2010-07-28 18:55:01.753"/>
+    <ChangeGroup id="10130" issue="10010" author="admin" created="2010-08-24 17:16:39.529"/>
     <ChangeGroup id="10112" issue="10030" author="admin" created="2010-08-20 17:19:28.852"/>
-    <ChangeGroup id="10072" issue="10000" author="admin" created="2010-08-09 18:49:23.184"/>
-    <ChangeItem id="10036" group="10036" fieldtype="jira" field="Attachment" oldvalue="10032" oldstring="spartez-logo-new.gif"/>
-    <ChangeItem id="10150" group="10140" fieldtype="jira" field="timespent" oldvalue="4680" oldstring="4680" newvalue="8280" newstring="8280"/>
-    <ChangeItem id="10156" group="10142" fieldtype="jira" field="Attachment" newvalue="10062" newstring="10000_thumb_snipe.jpg"/>
-    <ChangeItem id="10071" group="10071" fieldtype="jira" field="labels" oldstring="" newstring="abc"/>
     <ChangeItem id="10155" group="10142" fieldtype="jira" field="Attachment" newvalue="10061" newstring="apache-tomcat-5.5.30.zip"/>
-    <ChangeItem id="10030" group="10030" fieldtype="jira" field="Attachment" newvalue="10030" newstring="DSC_0051.jpg"/>
-    <ChangeItem id="10052" group="10052" fieldtype="custom" field="My Radio buttons" newstring="Another"/>
-    <ChangeItem id="10131" group="10120" fieldtype="custom" field="My Radio buttons" newstring="Another"/>
-    <ChangeItem id="10153" group="10141" fieldtype="jira" field="WorklogId" oldvalue="10021" oldstring="10021"/>
-    <ChangeItem id="10121" group="10110" fieldtype="jira" field="resolution" newvalue="1" newstring="Fixed"/>
     <ChangeItem id="10000" group="10000" fieldtype="jira" field="Attachment" newvalue="10000" newstring="snipe.png"/>
-    <ChangeItem id="10022" group="10022" fieldtype="jira" field="Attachment" newvalue="10021" newstring="DSC_0001.jpg"/>
-    <ChangeItem id="10084" group="10084" fieldtype="jira" field="labels" oldstring="a" newstring="a bcds"/>
-    <ChangeItem id="10141" group="10131" fieldtype="jira" field="environment" newstring="abc"/>
-    <ChangeItem id="10105" group="10093" fieldtype="jira" field="Link" newvalue="TST-2" newstring="This issue is duplicated by TST-2"/>
-    <ChangeItem id="10039" group="10039" fieldtype="jira" field="Attachment" oldvalue="10022" oldstring="spartez-logo.gif"/>
-    <ChangeItem id="10163" group="10153" fieldtype="jira" field="Workflow" oldvalue="10022" oldstring="jira" newvalue="10043" newstring="test-workflow"/>
     <ChangeItem id="10112" group="10099" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="3" newstring="In Progress"/>
-    <ChangeItem id="10151" group="10140" fieldtype="jira" field="WorklogId" oldvalue="10020" oldstring="10020"/>
-    <ChangeItem id="10140" group="10130" fieldtype="custom" field="My Number Field New" oldstring="1,45" newstring="1,457"/>
-    <ChangeItem id="10023" group="10023" fieldtype="jira" field="Attachment" newvalue="10022" newstring="spartez-logo.gif"/>
-    <ChangeItem id="10120" group="10110" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="6" newstring="Closed"/>
     <ChangeItem id="10081" group="10081" fieldtype="jira" field="Link" newvalue="TST-1" newstring="This issue is duplicated by TST-1"/>
-    <ChangeItem id="10085" group="10085" fieldtype="jira" field="timeestimate" newvalue="0" newstring="0"/>
-    <ChangeItem id="10161" group="10151" fieldtype="jira" field="Workflow" oldvalue="10020" oldstring="jira" newvalue="10041" newstring="test-workflow"/>
-    <ChangeItem id="10106" group="10094" fieldtype="jira" field="timespent" oldvalue="3600" oldstring="3600" newvalue="4500" newstring="4500"/>
-    <ChangeItem id="10133" group="10120" fieldtype="custom" field="My Number Field New" newstring="1.45"/>
-    <ChangeItem id="10032" group="10032" fieldtype="jira" field="Attachment" newvalue="10032" newstring="spartez-logo-new.gif"/>
-    <ChangeItem id="10037" group="10037" fieldtype="jira" field="Attachment" newvalue="10036" newstring="jira_logo.gif"/>
     <ChangeItem id="10111" group="10098" fieldtype="jira" field="Attachment" oldvalue="10034" oldstring="jira-million-issues.png"/>
-    <ChangeItem id="10100" group="10090" fieldtype="jira" field="Component" newvalue="10000" newstring="Component A"/>
-    <ChangeItem id="10124" group="10112" fieldtype="jira" field="Attachment" newvalue="10050" newstring="snipe (copy).png"/>
-    <ChangeItem id="10051" group="10051" fieldtype="jira" field="duedate" newstring="2010-07-05 00:00:00.0"/>
-    <ChangeItem id="10108" group="10095" fieldtype="jira" field="WorklogId" oldvalue="10011" oldstring="10011"/>
-    <ChangeItem id="10152" group="10141" fieldtype="jira" field="timespent" oldvalue="8280" oldstring="8280" newvalue="8700" newstring="8700"/>
     <ChangeItem id="10160" group="10150" fieldtype="jira" field="Workflow" oldvalue="10000" oldstring="jira" newvalue="10040" newstring="test-workflow"/>
-    <ChangeItem id="10102" group="10091" fieldtype="jira" field="timespent" newvalue="3600" newstring="3600"/>
-    <ChangeItem id="10033" group="10033" fieldtype="jira" field="Attachment" newvalue="10033" newstring="skitch2.png"/>
-    <ChangeItem id="10086" group="10085" fieldtype="jira" field="timespent" newvalue="3600" newstring="3600"/>
     <ChangeItem id="10132" group="10120" fieldtype="custom" field="project3" newvalue="10000" newstring="Test Project"/>
-    <ChangeItem id="10113" group="10100" fieldtype="jira" field="timespent" oldvalue="4500" oldstring="4500" newvalue="4680" newstring="4680"/>
-    <ChangeItem id="10154" group="10142" fieldtype="jira" field="Attachment" newvalue="10060" newstring="Admal pompa ciepła.pdf"/>
-    <ChangeItem id="10093" group="10087" fieldtype="jira" field="Component" newvalue="10001" newstring="Component B"/>
-    <ChangeItem id="10087" group="10085" fieldtype="jira" field="WorklogId" oldvalue="10000" oldstring="10000"/>
     <ChangeItem id="10101" group="10091" fieldtype="jira" field="timeestimate" newvalue="0" newstring="0"/>
-    <ChangeItem id="10090" group="10087" fieldtype="jira" field="Fix Version" newvalue="10000" newstring="1.1"/>
-    <ChangeItem id="10070" group="10070" fieldtype="custom" field="My Number Field New" oldstring="123.43" newstring=""/>
-    <ChangeItem id="10109" group="10096" fieldtype="jira" field="Attachment" oldvalue="10033" oldstring="skitch2.png"/>
-    <ChangeItem id="10038" group="10038" fieldtype="jira" field="Attachment" oldvalue="10021" oldstring="DSC_0001.jpg"/>
-    <ChangeItem id="10091" group="10087" fieldtype="jira" field="Version" newvalue="10001" newstring="1"/>
-    <ChangeItem id="10050" group="10050" fieldtype="custom" field="My Number Field" newstring="123.43"/>
-    <ChangeItem id="10073" group="10073" fieldtype="jira" field="labels" oldstring="" newstring="a"/>
-    <ChangeItem id="10083" group="10083" fieldtype="jira" field="Link" newvalue="TST-3" newstring="This issue is duplicated by TST-3"/>
-    <ChangeItem id="10103" group="10091" fieldtype="jira" field="WorklogId" oldvalue="10010" oldstring="10010"/>
     <ChangeItem id="10021" group="10021" fieldtype="jira" field="Attachment" newvalue="10020" newstring="snipe (copy).png"/>
-    <ChangeItem id="10104" group="10092" fieldtype="jira" field="Link" newvalue="TST-1" newstring="This issue duplicates TST-1"/>
-    <ChangeItem id="10089" group="10086" fieldtype="jira" field="WorklogId" oldvalue="10001" oldstring="10001"/>
-    <ChangeItem id="10162" group="10152" fieldtype="jira" field="Workflow" oldvalue="10021" oldstring="jira" newvalue="10042" newstring="test-workflow"/>
-    <ChangeItem id="10110" group="10097" fieldtype="jira" field="Attachment" oldvalue="10030" oldstring="DSC_0051.jpg"/>
     <ChangeItem id="10031" group="10031" fieldtype="jira" field="Attachment" newvalue="10031" newstring="snipe.png"/>
-    <ChangeItem id="10020" group="10020" fieldtype="jira" field="Attachment" oldvalue="10010" oldstring="snipe (copy).png"/>
-    <ChangeItem id="10122" group="10111" fieldtype="jira" field="resolution" oldvalue="1" oldstring="Fixed"/>
-    <ChangeItem id="10060" group="10060" fieldtype="jira" field="Attachment" newvalue="10040" newstring="dla Pawła.txt"/>
-    <ChangeItem id="10142" group="10132" fieldtype="jira" field="description" newstring="my description"/>
-    <ChangeItem id="10034" group="10034" fieldtype="jira" field="Attachment" newvalue="10034" newstring="jira-million-issues.png"/>
-    <ChangeItem id="10130" group="10120" fieldtype="jira" field="timeoriginalestimate" newvalue="0" newstring="0"/>
     <ChangeItem id="10123" group="10111" fieldtype="jira" field="status" oldvalue="6" oldstring="Closed" newvalue="4" newstring="Reopened"/>
-    <ChangeItem id="10080" group="10080" fieldtype="jira" field="Link" newvalue="TST-2" newstring="This issue duplicates TST-2"/>
-    <ChangeItem id="10072" group="10072" fieldtype="jira" field="labels" oldstring="abc" newstring=""/>
-    <ChangeItem id="10035" group="10035" fieldtype="jira" field="Attachment" newvalue="10035" newstring="transparent-png.png"/>
     <ChangeItem id="10164" group="10154" fieldtype="jira" field="Workflow" oldvalue="10010" oldstring="jira" newvalue="10044" newstring="test-workflow"/>
-    <ChangeItem id="10114" group="10100" fieldtype="jira" field="WorklogId" oldvalue="10012" oldstring="10012"/>
-    <ChangeItem id="10010" group="10010" fieldtype="jira" field="Attachment" newvalue="10010" newstring="snipe (copy).png"/>
     <ChangeItem id="10092" group="10087" fieldtype="jira" field="Version" newvalue="10000" newstring="1.1"/>
-    <ChangeItem id="10082" group="10082" fieldtype="jira" field="Link" newvalue="TST-1" newstring="This issue duplicates TST-1"/>
-    <ChangeItem id="10088" group="10086" fieldtype="jira" field="timespent" oldvalue="3600" oldstring="3600" newvalue="11400" newstring="11400"/>
+    <ChangeItem id="10121" group="10110" fieldtype="jira" field="resolution" newvalue="1" newstring="Fixed"/>
+    <ChangeItem id="10163" group="10153" fieldtype="jira" field="Workflow" oldvalue="10022" oldstring="jira" newvalue="10043" newstring="test-workflow"/>
+    <ChangeItem id="10120" group="10110" fieldtype="jira" field="status" oldvalue="1" oldstring="Open" newvalue="6" newstring="Closed"/>
+    <ChangeItem id="10032" group="10032" fieldtype="jira" field="Attachment" newvalue="10032" newstring="spartez-logo-new.gif"/>
+    <ChangeItem id="10033" group="10033" fieldtype="jira" field="Attachment" newvalue="10033" newstring="skitch2.png"/>
+    <ChangeItem id="10109" group="10096" fieldtype="jira" field="Attachment" oldvalue="10033" oldstring="skitch2.png"/>
+    <ChangeItem id="10083" group="10083" fieldtype="jira" field="Link" newvalue="TST-3" newstring="This issue is duplicated by TST-3"/>
+    <ChangeItem id="10110" group="10097" fieldtype="jira" field="Attachment" oldvalue="10030" oldstring="DSC_0051.jpg"/>
+    <ChangeItem id="10034" group="10034" fieldtype="jira" field="Attachment" newvalue="10034" newstring="jira-million-issues.png"/>
+    <ChangeItem id="10080" group="10080" fieldtype="jira" field="Link" newvalue="TST-2" newstring="This issue duplicates TST-2"/>
     <ChangeItem id="10040" group="10040" fieldtype="jira" field="Attachment" newvalue="10037" newstring="thumb_ScreenSnip.png"/>
+    <ChangeItem id="10156" group="10142" fieldtype="jira" field="Attachment" newvalue="10062" newstring="10000_thumb_snipe.jpg"/>
+    <ChangeItem id="10153" group="10141" fieldtype="jira" field="WorklogId" oldvalue="10021" oldstring="10021"/>
+    <ChangeItem id="10141" group="10131" fieldtype="jira" field="environment" newstring="abc"/>
+    <ChangeItem id="10151" group="10140" fieldtype="jira" field="WorklogId" oldvalue="10020" oldstring="10020"/>
+    <ChangeItem id="10161" group="10151" fieldtype="jira" field="Workflow" oldvalue="10020" oldstring="jira" newvalue="10041" newstring="test-workflow"/>
+    <ChangeItem id="10100" group="10090" fieldtype="jira" field="Component" newvalue="10000" newstring="Component A"/>
+    <ChangeItem id="10102" group="10091" fieldtype="jira" field="timespent" newvalue="3600" newstring="3600"/>
+    <ChangeItem id="10154" group="10142" fieldtype="jira" field="Attachment" newvalue="10060" newstring="Admal pompa ciepła.pdf"/>
+    <ChangeItem id="10070" group="10070" fieldtype="custom" field="My Number Field New" oldstring="123.43" newstring=""/>
+    <ChangeItem id="10103" group="10091" fieldtype="jira" field="WorklogId" oldvalue="10010" oldstring="10010"/>
+    <ChangeItem id="10020" group="10020" fieldtype="jira" field="Attachment" oldvalue="10010" oldstring="snipe (copy).png"/>
+    <ChangeItem id="10036" group="10036" fieldtype="jira" field="Attachment" oldvalue="10032" oldstring="spartez-logo-new.gif"/>
+    <ChangeItem id="10030" group="10030" fieldtype="jira" field="Attachment" newvalue="10030" newstring="DSC_0051.jpg"/>
+    <ChangeItem id="10022" group="10022" fieldtype="jira" field="Attachment" newvalue="10021" newstring="DSC_0001.jpg"/>
+    <ChangeItem id="10023" group="10023" fieldtype="jira" field="Attachment" newvalue="10022" newstring="spartez-logo.gif"/>
+    <ChangeItem id="10106" group="10094" fieldtype="jira" field="timespent" oldvalue="3600" oldstring="3600" newvalue="4500" newstring="4500"/>
+    <ChangeItem id="10124" group="10112" fieldtype="jira" field="Attachment" newvalue="10050" newstring="snipe (copy).png"/>
+    <ChangeItem id="10152" group="10141" fieldtype="jira" field="timespent" oldvalue="8280" oldstring="8280" newvalue="8700" newstring="8700"/>
+    <ChangeItem id="10086" group="10085" fieldtype="jira" field="timespent" newvalue="3600" newstring="3600"/>
+    <ChangeItem id="10087" group="10085" fieldtype="jira" field="WorklogId" oldvalue="10000" oldstring="10000"/>
+    <ChangeItem id="10050" group="10050" fieldtype="custom" field="My Number Field" newstring="123.43"/>
+    <ChangeItem id="10162" group="10152" fieldtype="jira" field="Workflow" oldvalue="10021" oldstring="jira" newvalue="10042" newstring="test-workflow"/>
+    <ChangeItem id="10060" group="10060" fieldtype="jira" field="Attachment" newvalue="10040" newstring="dla Pawła.txt"/>
+    <ChangeItem id="10114" group="10100" fieldtype="jira" field="WorklogId" oldvalue="10012" oldstring="10012"/>
+    <ChangeItem id="10088" group="10086" fieldtype="jira" field="timespent" oldvalue="3600" oldstring="3600" newvalue="11400" newstring="11400"/>
+    <ChangeItem id="10071" group="10071" fieldtype="jira" field="labels" oldstring="" newstring="abc"/>
+    <ChangeItem id="10084" group="10084" fieldtype="jira" field="labels" oldstring="a" newstring="a bcds"/>
+    <ChangeItem id="10038" group="10038" fieldtype="jira" field="Attachment" oldvalue="10021" oldstring="DSC_0001.jpg"/>
     <ChangeItem id="10165" group="10155" fieldtype="jira" field="Workflow" oldvalue="10030" oldstring="jira" newvalue="10045" newstring="test-workflow"/>
+    <ChangeItem id="10150" group="10140" fieldtype="jira" field="timespent" oldvalue="4680" oldstring="4680" newvalue="8280" newstring="8280"/>
+    <ChangeItem id="10052" group="10052" fieldtype="custom" field="My Radio buttons" newstring="Another"/>
+    <ChangeItem id="10039" group="10039" fieldtype="jira" field="Attachment" oldvalue="10022" oldstring="spartez-logo.gif"/>
+    <ChangeItem id="10140" group="10130" fieldtype="custom" field="My Number Field New" oldstring="1,45" newstring="1,457"/>
+    <ChangeItem id="10133" group="10120" fieldtype="custom" field="My Number Field New" newstring="1.45"/>
+    <ChangeItem id="10051" group="10051" fieldtype="jira" field="duedate" newstring="2010-07-05 00:00:00.0"/>
+    <ChangeItem id="10090" group="10087" fieldtype="jira" field="Fix Version" newvalue="10000" newstring="1.1"/>
+    <ChangeItem id="10073" group="10073" fieldtype="jira" field="labels" oldstring="" newstring="a"/>
+    <ChangeItem id="10089" group="10086" fieldtype="jira" field="WorklogId" oldvalue="10001" oldstring="10001"/>
+    <ChangeItem id="10142" group="10132" fieldtype="jira" field="description" newstring="my description"/>
+    <ChangeItem id="10131" group="10120" fieldtype="custom" field="My Radio buttons" newstring="Another"/>
+    <ChangeItem id="10105" group="10093" fieldtype="jira" field="Link" newvalue="TST-2" newstring="This issue is duplicated by TST-2"/>
+    <ChangeItem id="10085" group="10085" fieldtype="jira" field="timeestimate" newvalue="0" newstring="0"/>
+    <ChangeItem id="10037" group="10037" fieldtype="jira" field="Attachment" newvalue="10036" newstring="jira_logo.gif"/>
+    <ChangeItem id="10108" group="10095" fieldtype="jira" field="WorklogId" oldvalue="10011" oldstring="10011"/>
+    <ChangeItem id="10113" group="10100" fieldtype="jira" field="timespent" oldvalue="4500" oldstring="4500" newvalue="4680" newstring="4680"/>
+    <ChangeItem id="10093" group="10087" fieldtype="jira" field="Component" newvalue="10001" newstring="Component B"/>
+    <ChangeItem id="10091" group="10087" fieldtype="jira" field="Version" newvalue="10001" newstring="1"/>
+    <ChangeItem id="10104" group="10092" fieldtype="jira" field="Link" newvalue="TST-1" newstring="This issue duplicates TST-1"/>
+    <ChangeItem id="10122" group="10111" fieldtype="jira" field="resolution" oldvalue="1" oldstring="Fixed"/>
+    <ChangeItem id="10035" group="10035" fieldtype="jira" field="Attachment" newvalue="10035" newstring="transparent-png.png"/>
+    <ChangeItem id="10010" group="10010" fieldtype="jira" field="Attachment" newvalue="10010" newstring="snipe (copy).png"/>
     <ChangeItem id="10107" group="10094" fieldtype="jira" field="WorklogId" oldvalue="10011" oldstring="10011"/>
+    <ChangeItem id="10130" group="10120" fieldtype="jira" field="timeoriginalestimate" newvalue="0" newstring="0"/>
+    <ChangeItem id="10072" group="10072" fieldtype="jira" field="labels" oldstring="abc" newstring=""/>
+    <ChangeItem id="10082" group="10082" fieldtype="jira" field="Link" newvalue="TST-1" newstring="This issue duplicates TST-1"/>
     <ColumnLayout id="10000" username="admin"/>
-    <ColumnLayoutItem id="10002" columnlayout="10000" fieldidentifier="summary" horizontalposition="2"/>
-    <ColumnLayoutItem id="10009" columnlayout="10000" fieldidentifier="updated" horizontalposition="9"/>
     <ColumnLayoutItem id="10008" columnlayout="10000" fieldidentifier="created" horizontalposition="8"/>
-    <ColumnLayoutItem id="10005" columnlayout="10000" fieldidentifier="priority" horizontalposition="5"/>
-    <ColumnLayoutItem id="10000" columnlayout="10000" fieldidentifier="issuetype" horizontalposition="0"/>
-    <ColumnLayoutItem id="10010" columnlayout="10000" fieldidentifier="duedate" horizontalposition="10"/>
-    <ColumnLayoutItem id="10004" columnlayout="10000" fieldidentifier="reporter" horizontalposition="4"/>
-    <ColumnLayoutItem id="10011" columnlayout="10000" fieldidentifier="customfield_10000" horizontalposition="11"/>
     <ColumnLayoutItem id="10003" columnlayout="10000" fieldidentifier="assignee" horizontalposition="3"/>
-    <ColumnLayoutItem id="10007" columnlayout="10000" fieldidentifier="resolution" horizontalposition="7"/>
-    <ColumnLayoutItem id="10001" columnlayout="10000" fieldidentifier="issuekey" horizontalposition="1"/>
     <ColumnLayoutItem id="10006" columnlayout="10000" fieldidentifier="status" horizontalposition="6"/>
-    <Component id="10000" project="10000" name="Component A" description="this is some description of component A" lead="admin" assigneetype="0"/>
+    <ColumnLayoutItem id="10002" columnlayout="10000" fieldidentifier="summary" horizontalposition="2"/>
+    <ColumnLayoutItem id="10010" columnlayout="10000" fieldidentifier="duedate" horizontalposition="10"/>
+    <ColumnLayoutItem id="10001" columnlayout="10000" fieldidentifier="issuekey" horizontalposition="1"/>
+    <ColumnLayoutItem id="10005" columnlayout="10000" fieldidentifier="priority" horizontalposition="5"/>
+    <ColumnLayoutItem id="10009" columnlayout="10000" fieldidentifier="updated" horizontalposition="9"/>
+    <ColumnLayoutItem id="10011" columnlayout="10000" fieldidentifier="customfield_10000" horizontalposition="11"/>
+    <ColumnLayoutItem id="10000" columnlayout="10000" fieldidentifier="issuetype" horizontalposition="0"/>
+    <ColumnLayoutItem id="10007" columnlayout="10000" fieldidentifier="resolution" horizontalposition="7"/>
+    <ColumnLayoutItem id="10004" columnlayout="10000" fieldidentifier="reporter" horizontalposition="4"/>
     <Component id="10010" project="10010" name="One Great Component" assigneetype="0"/>
+    <Component id="10000" project="10000" name="Component A" description="this is some description of component A" lead="admin" assigneetype="0"/>
     <Component id="10001" project="10000" name="Component B" description="another description" lead="wseliga" assigneetype="0"/>
     <ConfigurationContext id="10020" key="customfield_10010" fieldconfigscheme="10020"/>
+    <ConfigurationContext id="10021" key="customfield_10011" fieldconfigscheme="10021"/>
+    <ConfigurationContext id="10000" key="issuetype" fieldconfigscheme="10000"/>
     <ConfigurationContext id="10011" key="customfield_10001" fieldconfigscheme="10011"/>
     <ConfigurationContext id="10010" key="customfield_10000" fieldconfigscheme="10010"/>
-    <ConfigurationContext id="10000" key="issuetype" fieldconfigscheme="10000"/>
-    <ConfigurationContext id="10021" key="customfield_10011" fieldconfigscheme="10021"/>
     <CustomField id="10001" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:radiosearcher" name="My Radio buttons"/>
     <CustomField id="10000" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:float" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:numberrange" name="My Number Field New" description=""/>
-    <CustomField id="10011" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:textarea" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:textsearcher" name="project2" description="some blah blah about project"/>
     <CustomField id="10010" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:project" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:projectsearcher" name="project3" description=""/>
+    <CustomField id="10011" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:textarea" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:textsearcher" name="project2" description="some blah blah about project"/>
     <CustomFieldOption id="10002" customfield="10001" customfieldconfig="10011" sequence="2" value="The last option"/>
-    <CustomFieldOption id="10000" customfield="10001" customfieldconfig="10011" sequence="0" value="abc"/>
     <CustomFieldOption id="10001" customfield="10001" customfieldconfig="10011" sequence="1" value="Another"/>
-    <CustomFieldValue id="10003" issue="10021" customfield="10000" numbervalue="-15.0"/>
-    <CustomFieldValue id="10011" issue="10010" customfield="10010" numbervalue="10000.0"/>
-    <CustomFieldValue id="10004" issue="10022" customfield="10000" numbervalue="-5.0"/>
-    <CustomFieldValue id="10001" issue="10000" customfield="10001" stringvalue="Another"/>
+    <CustomFieldOption id="10000" customfield="10001" customfieldconfig="10011" sequence="0" value="abc"/>
     <CustomFieldValue id="10010" issue="10010" customfield="10001" stringvalue="Another"/>
+    <CustomFieldValue id="10001" issue="10000" customfield="10001" stringvalue="Another"/>
+    <CustomFieldValue id="10004" issue="10022" customfield="10000" numbervalue="-5.0"/>
     <CustomFieldValue id="10020" issue="10010" customfield="10000" numbervalue="1.457"/>
+    <CustomFieldValue id="10003" issue="10021" customfield="10000" numbervalue="-15.0"/>
     <CustomFieldValue id="10002" issue="10020" customfield="10000" numbervalue="-17.0"/>
-    <EventType id="13" name="Generic Event" description="This is the &apos;generic event&apos; event." type="jira.system.event.type"/>
-    <EventType id="1" name="Issue Created" description="This is the &apos;issue created&apos; event." type="jira.system.event.type"/>
-    <EventType id="4" name="Issue Resolved" description="This is the &apos;issue resolved&apos; event." type="jira.system.event.type"/>
-    <EventType id="12" name="Work Stopped On Issue" description="This is the &apos;work stopped on issue&apos; event." type="jira.system.event.type"/>
+    <CustomFieldValue id="10011" issue="10010" customfield="10010" numbervalue="10000.0"/>
     <EventType id="8" name="Issue Deleted" description="This is the &apos;issue deleted&apos; event." type="jira.system.event.type"/>
-    <EventType id="14" name="Issue Comment Edited" description="This is the &apos;issue comment edited&apos; event." type="jira.system.event.type"/>
-    <EventType id="6" name="Issue Commented" description="This is the &apos;issue commented&apos; event." type="jira.system.event.type"/>
-    <EventType id="7" name="Issue Reopened" description="This is the &apos;issue reopened&apos; event." type="jira.system.event.type"/>
-    <EventType id="15" name="Issue Worklog Updated" description="This is the &apos;issue worklog updated&apos; event." type="jira.system.event.type"/>
     <EventType id="5" name="Issue Closed" description="This is the &apos;issue closed&apos; event." type="jira.system.event.type"/>
-    <EventType id="16" name="Issue Worklog Deleted" description="This is the &apos;issue worklog deleted&apos; event." type="jira.system.event.type"/>
-    <EventType id="3" name="Issue Assigned" description="This is the &apos;issue assigned&apos; event." type="jira.system.event.type"/>
-    <EventType id="11" name="Work Started On Issue" description="This is the &apos;work started on issue&apos; event." type="jira.system.event.type"/>
-    <EventType id="9" name="Issue Moved" description="This is the &apos;issue moved&apos; event." type="jira.system.event.type"/>
     <EventType id="2" name="Issue Updated" description="This is the &apos;issue updated&apos; event." type="jira.system.event.type"/>
+    <EventType id="13" name="Generic Event" description="This is the &apos;generic event&apos; event." type="jira.system.event.type"/>
+    <EventType id="6" name="Issue Commented" description="This is the &apos;issue commented&apos; event." type="jira.system.event.type"/>
+    <EventType id="11" name="Work Started On Issue" description="This is the &apos;work started on issue&apos; event." type="jira.system.event.type"/>
+    <EventType id="12" name="Work Stopped On Issue" description="This is the &apos;work stopped on issue&apos; event." type="jira.system.event.type"/>
+    <EventType id="16" name="Issue Worklog Deleted" description="This is the &apos;issue worklog deleted&apos; event." type="jira.system.event.type"/>
+    <EventType id="1" name="Issue Created" description="This is the &apos;issue created&apos; event." type="jira.system.event.type"/>
+    <EventType id="15" name="Issue Worklog Updated" description="This is the &apos;issue worklog updated&apos; event." type="jira.system.event.type"/>
     <EventType id="10" name="Work Logged On Issue" description="This is the &apos;work logged on issue&apos; event." type="jira.system.event.type"/>
+    <EventType id="14" name="Issue Comment Edited" description="This is the &apos;issue comment edited&apos; event." type="jira.system.event.type"/>
+    <EventType id="9" name="Issue Moved" description="This is the &apos;issue moved&apos; event." type="jira.system.event.type"/>
+    <EventType id="3" name="Issue Assigned" description="This is the &apos;issue assigned&apos; event." type="jira.system.event.type"/>
+    <EventType id="4" name="Issue Resolved" description="This is the &apos;issue resolved&apos; event." type="jira.system.event.type"/>
+    <EventType id="7" name="Issue Reopened" description="This is the &apos;issue reopened&apos; event." type="jira.system.event.type"/>
     <FavouriteAssociations id="10000" username="admin" entityType="PortalPage" entityId="10010" sequence="0"/>
+    <FieldConfigScheme id="10000" name="Default Issue Type Scheme" description="Default issue type scheme is the list of global issue types. All newly created issue types will automatically be added to this scheme." fieldid="issuetype"/>
+    <FieldConfigScheme id="10010" name="Default Configuration Scheme for My Number Field" description="Default configuration scheme generated by JIRA" fieldid="customfield_10000"/>
     <FieldConfigScheme id="10021" name="Default Configuration Scheme for project" description="Default configuration scheme generated by JIRA" fieldid="customfield_10011"/>
     <FieldConfigScheme id="10020" name="Default Configuration Scheme for project" description="Default configuration scheme generated by JIRA" fieldid="customfield_10010"/>
-    <FieldConfigScheme id="10010" name="Default Configuration Scheme for My Number Field" description="Default configuration scheme generated by JIRA" fieldid="customfield_10000"/>
-    <FieldConfigScheme id="10000" name="Default Issue Type Scheme" description="Default issue type scheme is the list of global issue types. All newly created issue types will automatically be added to this scheme." fieldid="issuetype"/>
     <FieldConfigScheme id="10011" name="Default Configuration Scheme for My Radio buttons" description="Default configuration scheme generated by JIRA" fieldid="customfield_10001"/>
+    <FieldConfigSchemeIssueType id="10002" fieldconfigscheme="10000" fieldconfiguration="10000"/>
+    <FieldConfigSchemeIssueType id="10010" issuetype="1" fieldconfigscheme="10010" fieldconfiguration="10010"/>
     <FieldConfigSchemeIssueType id="10020" fieldconfigscheme="10020" fieldconfiguration="10020"/>
     <FieldConfigSchemeIssueType id="10011" fieldconfigscheme="10011" fieldconfiguration="10011"/>
-    <FieldConfigSchemeIssueType id="10002" fieldconfigscheme="10000" fieldconfiguration="10000"/>
     <FieldConfigSchemeIssueType id="10021" fieldconfigscheme="10021" fieldconfiguration="10021"/>
-    <FieldConfigSchemeIssueType id="10010" issuetype="1" fieldconfigscheme="10010" fieldconfiguration="10010"/>
-    <FieldConfiguration id="10010" name="Default Configuration for My Number Field" description="Default configuration generated by JIRA" fieldid="customfield_10000"/>
-    <FieldConfiguration id="10021" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10011"/>
-    <FieldConfiguration id="10020" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10010"/>
     <FieldConfiguration id="10000" name="Default Configuration for Issue Type" description="Default configuration generated by JIRA" fieldid="issuetype"/>
+    <FieldConfiguration id="10021" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10011"/>
+    <FieldConfiguration id="10010" name="Default Configuration for My Number Field" description="Default configuration generated by JIRA" fieldid="customfield_10000"/>
     <FieldConfiguration id="10011" name="Default Configuration for My Radio buttons" description="Default configuration generated by JIRA" fieldid="customfield_10001"/>
+    <FieldConfiguration id="10020" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10010"/>
     <FieldLayout id="10000" name="Default Field Configuration" description="The default field configuration" type="default"/>
-    <FieldLayoutItem id="10002" fieldlayout="10000" fieldidentifier="security" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10003" fieldlayout="10000" fieldidentifier="priority" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
     <FieldLayoutItem id="10000" fieldlayout="10000" fieldidentifier="summary" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10014" fieldlayout="10000" fieldidentifier="attachment" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
     <FieldLayoutItem id="10005" fieldlayout="10000" fieldidentifier="components" ishidden="false" isrequired="false" renderertype="frother-control-renderer"/>
-    <FieldLayoutItem id="10011" fieldlayout="10000" fieldidentifier="description" ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
-    <FieldLayoutItem id="10013" fieldlayout="10000" fieldidentifier="resolution" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10007" fieldlayout="10000" fieldidentifier="fixVersions" ishidden="false" isrequired="false" renderertype="frother-control-renderer"/>
-    <FieldLayoutItem id="10006" fieldlayout="10000" fieldidentifier="versions" ishidden="false" isrequired="false" renderertype="frother-control-renderer"/>
-    <FieldLayoutItem id="10016" fieldlayout="10000" fieldidentifier="labels" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10001" fieldlayout="10000" fieldidentifier="issuetype" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10010" fieldlayout="10000" fieldidentifier="environment" description="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)." ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
     <FieldLayoutItem id="10017" fieldlayout="10000" fieldidentifier="worklog" description="Allows work to be logged whilst creating, editing or transitioning issues." ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
-    <FieldLayoutItem id="10009" fieldlayout="10000" fieldidentifier="reporter" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10012" fieldlayout="10000" fieldidentifier="timetracking" description="An estimate of how much work remains until this issue will be resolved.&lt;br&gt;The format of this is &apos; *w *d *h *m &apos; (representing weeks, days, hours and minutes - where * can be any number)&lt;br&gt;Examples: 4d, 5h 30m, 60m and 3w.&lt;br&gt;" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
-    <FieldLayoutItem id="10015" fieldlayout="10000" fieldidentifier="comment" ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
+    <FieldLayoutItem id="10014" fieldlayout="10000" fieldidentifier="attachment" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10001" fieldlayout="10000" fieldidentifier="issuetype" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
     <FieldLayoutItem id="10008" fieldlayout="10000" fieldidentifier="assignee" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10003" fieldlayout="10000" fieldidentifier="priority" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10006" fieldlayout="10000" fieldidentifier="versions" ishidden="false" isrequired="false" renderertype="frother-control-renderer"/>
+    <FieldLayoutItem id="10015" fieldlayout="10000" fieldidentifier="comment" ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
+    <FieldLayoutItem id="10016" fieldlayout="10000" fieldidentifier="labels" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
     <FieldLayoutItem id="10004" fieldlayout="10000" fieldidentifier="duedate" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10002" fieldlayout="10000" fieldidentifier="security" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10011" fieldlayout="10000" fieldidentifier="description" ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
+    <FieldLayoutItem id="10009" fieldlayout="10000" fieldidentifier="reporter" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10013" fieldlayout="10000" fieldidentifier="resolution" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldLayoutItem id="10010" fieldlayout="10000" fieldidentifier="environment" description="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)." ishidden="false" isrequired="false" renderertype="atlassian-wiki-renderer"/>
+    <FieldLayoutItem id="10007" fieldlayout="10000" fieldidentifier="fixVersions" ishidden="false" isrequired="false" renderertype="frother-control-renderer"/>
+    <FieldLayoutItem id="10012" fieldlayout="10000" fieldidentifier="timetracking" description="An estimate of how much work remains until this issue will be resolved.&lt;br&gt;The format of this is &apos; *w *d *h *m &apos; (representing weeks, days, hours and minutes - where * can be any number)&lt;br&gt;Examples: 4d, 5h 30m, 60m and 3w.&lt;br&gt;" ishidden="false" isrequired="false" renderertype="jira-text-renderer"/>
+    <FieldScreen id="10000" name="Estimate Screen" description=""/>
     <FieldScreen id="3" name="Resolve Issue Screen" description="Allows to set resolution, change fix versions and assign an issue."/>
     <FieldScreen id="1" name="Default Screen" description="Allows to update all system fields."/>
-    <FieldScreen id="10000" name="Estimate Screen" description=""/>
     <FieldScreen id="2" name="Workflow Screen" description="This screen is used in the workflow and enables you to assign issues"/>
-    <FieldScreenLayoutItem id="10015" fieldidentifier="resolution" sequence="0" fieldscreentab="10002"/>
-    <FieldScreenLayoutItem id="10002" fieldidentifier="security" sequence="2" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10006" fieldidentifier="versions" sequence="6" fieldscreentab="10000"/>
     <FieldScreenLayoutItem id="10020" fieldidentifier="labels" sequence="14" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10011" fieldidentifier="description" sequence="11" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10004" fieldidentifier="duedate" sequence="4" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10003" fieldidentifier="priority" sequence="3" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10040" fieldidentifier="customfield_10010" sequence="17" fieldscreentab="10000"/>
     <FieldScreenLayoutItem id="10009" fieldidentifier="reporter" sequence="9" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10007" fieldidentifier="fixVersions" sequence="7" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10001" fieldidentifier="issuetype" sequence="1" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10041" fieldidentifier="customfield_10011" sequence="18" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10005" fieldidentifier="components" sequence="5" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10018" fieldidentifier="worklog" sequence="3" fieldscreentab="10002"/>
-    <FieldScreenLayoutItem id="10012" fieldidentifier="timetracking" sequence="12" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10014" fieldidentifier="assignee" sequence="0" fieldscreentab="10001"/>
     <FieldScreenLayoutItem id="10051" fieldidentifier="labels" sequence="1" fieldscreentab="10010"/>
-    <FieldScreenLayoutItem id="10016" fieldidentifier="fixVersions" sequence="1" fieldscreentab="10002"/>
-    <FieldScreenLayoutItem id="10010" fieldidentifier="environment" sequence="10" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10017" fieldidentifier="assignee" sequence="2" fieldscreentab="10002"/>
-    <FieldScreenLayoutItem id="10030" fieldidentifier="customfield_10000" sequence="15" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10013" fieldidentifier="attachment" sequence="13" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10000" fieldidentifier="summary" sequence="0" fieldscreentab="10000"/>
     <FieldScreenLayoutItem id="10008" fieldidentifier="assignee" sequence="8" fieldscreentab="10000"/>
-    <FieldScreenLayoutItem id="10031" fieldidentifier="customfield_10001" sequence="16" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10011" fieldidentifier="description" sequence="11" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10018" fieldidentifier="worklog" sequence="3" fieldscreentab="10002"/>
+    <FieldScreenLayoutItem id="10000" fieldidentifier="summary" sequence="0" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10006" fieldidentifier="versions" sequence="6" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10001" fieldidentifier="issuetype" sequence="1" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10014" fieldidentifier="assignee" sequence="0" fieldscreentab="10001"/>
+    <FieldScreenLayoutItem id="10013" fieldidentifier="attachment" sequence="13" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10002" fieldidentifier="security" sequence="2" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10003" fieldidentifier="priority" sequence="3" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10005" fieldidentifier="components" sequence="5" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10010" fieldidentifier="environment" sequence="10" fieldscreentab="10000"/>
     <FieldScreenLayoutItem id="10050" fieldidentifier="customfield_10000" sequence="0" fieldscreentab="10010"/>
+    <FieldScreenLayoutItem id="10015" fieldidentifier="resolution" sequence="0" fieldscreentab="10002"/>
+    <FieldScreenLayoutItem id="10007" fieldidentifier="fixVersions" sequence="7" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10016" fieldidentifier="fixVersions" sequence="1" fieldscreentab="10002"/>
+    <FieldScreenLayoutItem id="10031" fieldidentifier="customfield_10001" sequence="16" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10040" fieldidentifier="customfield_10010" sequence="17" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10012" fieldidentifier="timetracking" sequence="12" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10030" fieldidentifier="customfield_10000" sequence="15" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10004" fieldidentifier="duedate" sequence="4" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10041" fieldidentifier="customfield_10011" sequence="18" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10017" fieldidentifier="assignee" sequence="2" fieldscreentab="10002"/>
     <FieldScreenScheme id="1" name="Default Screen Scheme" description="Default Screen Scheme"/>
     <FieldScreenSchemeItem id="10000" fieldscreen="1" fieldscreenscheme="1"/>
     <FieldScreenTab id="10002" name="Field Tab" sequence="0" fieldscreen="3"/>
-    <FieldScreenTab id="10001" name="Field Tab" sequence="0" fieldscreen="2"/>
     <FieldScreenTab id="10000" name="Field Tab" sequence="0" fieldscreen="1"/>
+    <FieldScreenTab id="10001" name="Field Tab" sequence="0" fieldscreen="2"/>
     <FieldScreenTab id="10010" name="Field Tab" sequence="0" fieldscreen="10000"/>
-    <FileAttachment id="10060" issue="10010" mimetype="application/force-download" filename="Admal pompa ciepła.pdf" created="2010-08-30 10:49:33.39" filesize="306939" author="admin"/>
-    <FileAttachment id="10020" issue="10000" mimetype="image/png" filename="snipe (copy).png" created="2010-07-26 10:41:24.682" filesize="31020" author="admin"/>
-    <FileAttachment id="10036" issue="10010" mimetype="image/gif" filename="jira_logo.gif" created="2010-07-26 14:41:52.159" filesize="2517" author="admin"/>
-    <FileAttachment id="10040" issue="10000" mimetype="text/plain" filename="dla Pawła.txt" created="2010-08-04 17:46:45.454" filesize="643" author="admin"/>
     <FileAttachment id="10035" issue="10010" mimetype="image/png" filename="transparent-png.png" created="2010-07-26 13:38:32.643" filesize="30347" author="admin"/>
-    <FileAttachment id="10062" issue="10010" mimetype="image/jpeg" filename="10000_thumb_snipe.jpg" created="2010-08-30 10:49:33.412" filesize="10260" author="admin"/>
-    <FileAttachment id="10061" issue="10010" mimetype="application/zip" filename="apache-tomcat-5.5.30.zip" created="2010-08-30 10:49:33.41" filesize="9144101" author="admin"/>
-    <FileAttachment id="10050" issue="10030" mimetype="image/png" filename="snipe (copy).png" created="2010-08-20 17:19:28.812" filesize="31020" author="admin"/>
     <FileAttachment id="10037" issue="10000" mimetype="image/png" filename="thumb_ScreenSnip.png" created="2010-07-27 08:58:11.452" filesize="19974" author="admin"/>
+    <FileAttachment id="10060" issue="10010" mimetype="application/force-download" filename="Admal pompa ciepła.pdf" created="2010-08-30 10:49:33.39" filesize="306939" author="admin"/>
+    <FileAttachment id="10061" issue="10010" mimetype="application/zip" filename="apache-tomcat-5.5.30.zip" created="2010-08-30 10:49:33.41" filesize="9144101" author="admin"/>
+    <FileAttachment id="10040" issue="10000" mimetype="text/plain" filename="dla Pawła.txt" created="2010-08-04 17:46:45.454" filesize="643" author="admin"/>
+    <FileAttachment id="10050" issue="10030" mimetype="image/png" filename="snipe (copy).png" created="2010-08-20 17:19:28.812" filesize="31020" author="admin"/>
+    <FileAttachment id="10020" issue="10000" mimetype="image/png" filename="snipe (copy).png" created="2010-07-26 10:41:24.682" filesize="31020" author="admin"/>
     <FileAttachment id="10031" issue="10010" mimetype="image/png" filename="snipe.png" created="2010-07-26 13:31:35.577" filesize="31020" author="admin"/>
+    <FileAttachment id="10036" issue="10010" mimetype="image/gif" filename="jira_logo.gif" created="2010-07-26 14:41:52.159" filesize="2517" author="admin"/>
+    <FileAttachment id="10062" issue="10010" mimetype="image/jpeg" filename="10000_thumb_snipe.jpg" created="2010-08-30 10:49:33.412" filesize="10260" author="admin"/>
     <FileAttachment id="10000" issue="10000" mimetype="image/png" filename="snipe.png" created="2010-07-23 12:17:59.643" filesize="31020" author="admin"/>
-    <GadgetUserPreference id="10005" portletconfiguration="10003" userprefkey="isConfigured" userprefvalue="true"/>
-    <GadgetUserPreference id="10012" portletconfiguration="10010" userprefkey="show_events" userprefvalue="true"/>
     <GadgetUserPreference id="10004" portletconfiguration="10002" userprefkey="isConfigured" userprefvalue="true"/>
-    <GadgetUserPreference id="10002" portletconfiguration="10001" userprefkey="title" userprefvalue="Your Company JIRA"/>
-    <GadgetUserPreference id="10001" portletconfiguration="10001" userprefkey="isConfigured" userprefvalue="true"/>
-    <GadgetUserPreference id="10003" portletconfiguration="10001" userprefkey="numofentries" userprefvalue="5"/>
-    <GadgetUserPreference id="10011" portletconfiguration="10010" userprefkey="show_ads" userprefvalue="true"/>
     <GadgetUserPreference id="10000" portletconfiguration="10001" userprefkey="keys" userprefvalue="__all_projects__"/>
+    <GadgetUserPreference id="10011" portletconfiguration="10010" userprefkey="show_ads" userprefvalue="true"/>
+    <GadgetUserPreference id="10005" portletconfiguration="10003" userprefkey="isConfigured" userprefvalue="true"/>
+    <GadgetUserPreference id="10003" portletconfiguration="10001" userprefkey="numofentries" userprefvalue="5"/>
+    <GadgetUserPreference id="10002" portletconfiguration="10001" userprefkey="title" userprefvalue="Your Company JIRA"/>
+    <GadgetUserPreference id="10012" portletconfiguration="10010" userprefkey="show_events" userprefvalue="true"/>
     <GadgetUserPreference id="10010" portletconfiguration="10010" userprefkey="show_news" userprefvalue="true"/>
+    <GadgetUserPreference id="10001" portletconfiguration="10001" userprefkey="isConfigured" userprefvalue="true"/>
     <GenericConfiguration id="10000" datatype="DefaultValue" datakey="10000" xmlvalue="&lt;string&gt;1&lt;/string&gt;"/>
+    <Issue id="10060" key="RST-1" project="10010" reporter="admin" assignee="admin" type="2" summary="A restricted issue" priority="3" status="1" created="2010-10-13 17:41:39.145" updated="2010-10-13 17:41:39.145" votes="0" workflowId="10070"/>
+    <Issue id="10010" key="TST-2" project="10000" reporter="admin" assignee="admin" type="1" summary="Testing attachem2" description="my description" environment="abc" priority="3" status="3" created="2010-07-26 13:29:18.262" updated="2010-08-30 10:49:33.447" votes="1" timeoriginalestimate="0" timeestimate="0" timespent="8700" workflowId="10044"/>
+    <Issue id="10050" key="ANNON-1" project="10020" reporter="admin" assignee="user" type="4" summary="An anonymously accessible issue" priority="1" status="1" created="2010-10-01 18:02:06.178" updated="2010-10-01 18:02:06.178" duedate="2010-10-21 00:00:00.0" votes="0" timeoriginalestimate="162000" timeestimate="144000" workflowId="10060"/>
     <Issue id="10000" key="TST-1" project="10000" reporter="admin" assignee="admin" type="1" summary="My sample test" description="dfasfsd" priority="3" status="1" created="2010-07-23 12:16:56.928" updated="2010-08-17 16:36:29.18" duedate="2010-07-05 00:00:00.0" votes="1" timeestimate="0" timespent="11400" workflowId="10040"/>
     <Issue id="10030" key="TST-6" project="10000" reporter="admin" assignee="admin" type="1" summary="fsdsfdfds" priority="3" status="4" created="2010-08-20 17:01:32.121" updated="2010-08-20 17:19:28.849" votes="0" workflowId="10045"/>
-    <Issue id="10022" key="TST-5" project="10000" reporter="admin" assignee="admin" type="1" summary="-5" priority="3" status="1" created="2010-07-30 13:57:20.582" updated="2010-07-30 13:57:20.582" votes="0" workflowId="10043"/>
-    <Issue id="10050" key="ANNON-1" project="10020" reporter="admin" assignee="user" type="4" summary="An anonymously accessible issue" priority="1" status="1" created="2010-10-01 18:02:06.178" updated="2010-10-01 18:02:06.178" duedate="2010-10-21 00:00:00.0" votes="0" timeoriginalestimate="162000" timeestimate="144000" workflowId="10060"/>
-    <Issue id="10010" key="TST-2" project="10000" reporter="admin" assignee="admin" type="1" summary="Testing attachem2" description="my description" environment="abc" priority="3" status="3" created="2010-07-26 13:29:18.262" updated="2010-08-30 10:49:33.447" votes="1" timeoriginalestimate="0" timeestimate="0" timespent="8700" workflowId="10044"/>
     <Issue id="10020" key="TST-3" project="10000" reporter="admin" assignee="admin" type="1" summary="-17" priority="3" status="1" created="2010-07-30 13:56:39.001" updated="2010-08-10 13:15:09.216" votes="0" workflowId="10041"/>
     <Issue id="10021" key="TST-4" project="10000" reporter="admin" assignee="admin" type="1" summary="-15" priority="3" status="1" created="2010-07-30 13:56:54.341" updated="2010-07-30 13:56:54.341" votes="0" workflowId="10042"/>
+    <Issue id="10022" key="TST-5" project="10000" reporter="admin" assignee="admin" type="1" summary="-5" priority="3" status="1" created="2010-07-30 13:57:20.582" updated="2010-07-30 13:57:20.582" votes="0" workflowId="10043"/>
     <Issue id="10040" key="TST-7" project="10000" reporter="wseliga" assignee="admin" type="3" summary="A task where someone will vote" priority="3" status="1" created="2010-09-22 18:06:32.747" updated="2010-09-22 18:06:32.747" votes="0" workflowId="10050"/>
-    <IssueLink id="10010" linktype="10010" source="10010" destination="10000"/>
     <IssueLink id="10001" linktype="10010" source="10020" destination="10000"/>
     <IssueLink id="10000" linktype="10010" source="10000" destination="10010"/>
+    <IssueLink id="10010" linktype="10010" source="10010" destination="10000"/>
     <IssueLinkType id="10010" linkname="Duplicate" inward="is duplicated by" outward="duplicates"/>
     <IssueLinkType id="10000" linkname="jira_subtask_link" inward="jira_subtask_inward" outward="jira_subtask_outward" style="jira_subtask"/>
-    <IssueType id="4" sequence="4" name="Improvement" description="An improvement or enhancement to an existing feature or task." iconurl="/images/icons/improvement.gif"/>
-    <IssueType id="5" sequence="0" name="Sub-task" style="jira_subtask" description="The sub-task of the issue" iconurl="/images/icons/issue_subtask.gif"/>
     <IssueType id="3" sequence="3" name="Task" description="A task that needs to be done." iconurl="/images/icons/task.gif"/>
+    <IssueType id="5" sequence="0" name="Sub-task" style="jira_subtask" description="The sub-task of the issue" iconurl="/images/icons/issue_subtask.gif"/>
     <IssueType id="2" sequence="2" name="New Feature" description="A new feature of the product, which has yet to be developed." iconurl="/images/icons/newfeature.gif"/>
     <IssueType id="1" sequence="1" name="Bug" description="A problem which impairs or prevents the functions of the product." iconurl="/images/icons/bug.gif"/>
+    <IssueType id="4" sequence="4" name="Improvement" description="An improvement or enhancement to an existing feature or task." iconurl="/images/icons/improvement.gif"/>
     <IssueTypeScreenScheme id="1" name="Default Issue Type Screen Scheme" description="The default issue type screen scheme"/>
     <IssueTypeScreenSchemeEntity id="10000" scheme="1" fieldscreenscheme="1"/>
+    <Label id="10010" issue="10000" label="a"/>
     <Label id="10011" issue="10000" label="bcds"/>
     <Label id="10020" issue="10050" label="a"/>
-    <Label id="10010" issue="10000" label="a"/>
-    <ListenerConfig id="10070" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
     <ListenerConfig id="10000" clazz="com.atlassian.jira.event.listeners.cache.IssueCacheListener" name="Issue Cache Listener"/>
     <ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
+    <ListenerConfig id="10080" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
     <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10001" sinkNodeEntity="Component" associationType="IssueComponent"/>
+    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
+    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
+    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10001" sinkNodeEntity="Version" associationType="IssueVersion"/>
     <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
     <NodeAssociation sourceNodeId="10020" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
     <NodeAssociation sourceNodeId="10020" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
-    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10000" sinkNodeEntity="Version" associationType="IssueFixVersion"/>
-    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10000" sinkNodeEntity="Version" associationType="IssueVersion"/>
-    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
-    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="WorkflowScheme" associationType="ProjectScheme"/>
-    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10001" sinkNodeEntity="Version" associationType="IssueVersion"/>
-    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
     <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10000" sinkNodeEntity="Component" associationType="IssueComponent"/>
+    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10000" sinkNodeEntity="Version" associationType="IssueVersion"/>
     <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
-    <Notification id="10038" scheme="10000" eventTypeId="13" type="All_Watchers"/>
-    <Notification id="10017" scheme="10000" eventTypeId="6" type="All_Watchers"/>
-    <Notification id="10037" scheme="10000" eventTypeId="13" type="Current_Reporter"/>
-    <Notification id="10029" scheme="10000" eventTypeId="10" type="All_Watchers"/>
-    <Notification id="10001" scheme="10000" eventTypeId="1" type="Current_Reporter"/>
-    <Notification id="10014" scheme="10000" eventTypeId="5" type="All_Watchers"/>
+    <NodeAssociation sourceNodeId="10010" sourceNodeEntity="Issue" sinkNodeId="10000" sinkNodeEntity="Version" associationType="IssueFixVersion"/>
+    <NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="WorkflowScheme" associationType="ProjectScheme"/>
     <Notification id="10034" scheme="10000" eventTypeId="12" type="Current_Reporter"/>
-    <Notification id="10044" scheme="10000" eventTypeId="15" type="Current_Reporter"/>
-    <Notification id="10007" scheme="10000" eventTypeId="3" type="Current_Reporter"/>
-    <Notification id="10019" scheme="10000" eventTypeId="7" type="Current_Reporter"/>
-    <Notification id="10015" scheme="10000" eventTypeId="6" type="Current_Assignee"/>
-    <Notification id="10020" scheme="10000" eventTypeId="7" type="All_Watchers"/>
     <Notification id="10035" scheme="10000" eventTypeId="12" type="All_Watchers"/>
-    <Notification id="10013" scheme="10000" eventTypeId="5" type="Current_Reporter"/>
-    <Notification id="10011" scheme="10000" eventTypeId="4" type="All_Watchers"/>
-    <Notification id="10040" scheme="10000" eventTypeId="14" type="All_Watchers"/>
-    <Notification id="10000" scheme="10000" eventTypeId="1" type="Current_Assignee"/>
-    <Notification id="10022" scheme="10000" eventTypeId="8" type="Current_Reporter"/>
-    <Notification id="10023" scheme="10000" eventTypeId="8" type="All_Watchers"/>
-    <Notification id="10004" scheme="10000" eventTypeId="2" type="Current_Reporter"/>
     <Notification id="10003" scheme="10000" eventTypeId="2" type="Current_Assignee"/>
-    <Notification id="10010" scheme="10000" eventTypeId="4" type="Current_Reporter"/>
-    <Notification id="10018" scheme="10000" eventTypeId="7" type="Current_Assignee"/>
-    <Notification id="10016" scheme="10000" eventTypeId="6" type="Current_Reporter"/>
-    <Notification id="10047" scheme="10000" eventTypeId="16" type="Current_Reporter"/>
-    <Notification id="10030" scheme="10000" eventTypeId="11" type="Current_Assignee"/>
-    <Notification id="10005" scheme="10000" eventTypeId="2" type="All_Watchers"/>
-    <Notification id="10042" scheme="10000" eventTypeId="14" type="Current_Assignee"/>
     <Notification id="10032" scheme="10000" eventTypeId="11" type="All_Watchers"/>
-    <Notification id="10046" scheme="10000" eventTypeId="16" type="All_Watchers"/>
-    <Notification id="10027" scheme="10000" eventTypeId="10" type="Current_Assignee"/>
-    <Notification id="10045" scheme="10000" eventTypeId="15" type="Current_Assignee"/>
-    <Notification id="10009" scheme="10000" eventTypeId="4" type="Current_Assignee"/>
     <Notification id="10006" scheme="10000" eventTypeId="3" type="Current_Assignee"/>
-    <Notification id="10041" scheme="10000" eventTypeId="14" type="Current_Reporter"/>
-    <Notification id="10028" scheme="10000" eventTypeId="10" type="Current_Reporter"/>
-    <Notification id="10048" scheme="10000" eventTypeId="16" type="Current_Assignee"/>
-    <Notification id="10031" scheme="10000" eventTypeId="11" type="Current_Reporter"/>
-    <Notification id="10026" scheme="10000" eventTypeId="9" type="All_Watchers"/>
-    <Notification id="10033" scheme="10000" eventTypeId="12" type="Current_Assignee"/>
-    <Notification id="10043" scheme="10000" eventTypeId="15" type="All_Watchers"/>
-    <Notification id="10002" scheme="10000" eventTypeId="1" type="All_Watchers"/>
     <Notification id="10036" scheme="10000" eventTypeId="13" type="Current_Assignee"/>
-    <Notification id="10021" scheme="10000" eventTypeId="8" type="Current_Assignee"/>
-    <Notification id="10008" scheme="10000" eventTypeId="3" type="All_Watchers"/>
-    <Notification id="10025" scheme="10000" eventTypeId="9" type="Current_Reporter"/>
-    <Notification id="10024" scheme="10000" eventTypeId="9" type="Current_Assignee"/>
     <Notification id="10012" scheme="10000" eventTypeId="5" type="Current_Assignee"/>
+    <Notification id="10037" scheme="10000" eventTypeId="13" type="Current_Reporter"/>
+    <Notification id="10019" scheme="10000" eventTypeId="7" type="Current_Reporter"/>
+    <Notification id="10000" scheme="10000" eventTypeId="1" type="Current_Assignee"/>
+    <Notification id="10016" scheme="10000" eventTypeId="6" type="Current_Reporter"/>
+    <Notification id="10046" scheme="10000" eventTypeId="16" type="All_Watchers"/>
+    <Notification id="10028" scheme="10000" eventTypeId="10" type="Current_Reporter"/>
+    <Notification id="10043" scheme="10000" eventTypeId="15" type="All_Watchers"/>
+    <Notification id="10029" scheme="10000" eventTypeId="10" type="All_Watchers"/>
+    <Notification id="10013" scheme="10000" eventTypeId="5" type="Current_Reporter"/>
+    <Notification id="10023" scheme="10000" eventTypeId="8" type="All_Watchers"/>
+    <Notification id="10047" scheme="10000" eventTypeId="16" type="Current_Reporter"/>
+    <Notification id="10045" scheme="10000" eventTypeId="15" type="Current_Assignee"/>
+    <Notification id="10033" scheme="10000" eventTypeId="12" type="Current_Assignee"/>
+    <Notification id="10008" scheme="10000" eventTypeId="3" type="All_Watchers"/>
+    <Notification id="10017" scheme="10000" eventTypeId="6" type="All_Watchers"/>
+    <Notification id="10014" scheme="10000" eventTypeId="5" type="All_Watchers"/>
+    <Notification id="10020" scheme="10000" eventTypeId="7" type="All_Watchers"/>
+    <Notification id="10010" scheme="10000" eventTypeId="4" type="Current_Reporter"/>
+    <Notification id="10005" scheme="10000" eventTypeId="2" type="All_Watchers"/>
+    <Notification id="10048" scheme="10000" eventTypeId="16" type="Current_Assignee"/>
+    <Notification id="10021" scheme="10000" eventTypeId="8" type="Current_Assignee"/>
+    <Notification id="10038" scheme="10000" eventTypeId="13" type="All_Watchers"/>
+    <Notification id="10044" scheme="10000" eventTypeId="15" type="Current_Reporter"/>
+    <Notification id="10015" scheme="10000" eventTypeId="6" type="Current_Assignee"/>
+    <Notification id="10004" scheme="10000" eventTypeId="2" type="Current_Reporter"/>
+    <Notification id="10030" scheme="10000" eventTypeId="11" type="Current_Assignee"/>
+    <Notification id="10009" scheme="10000" eventTypeId="4" type="Current_Assignee"/>
+    <Notification id="10026" scheme="10000" eventTypeId="9" type="All_Watchers"/>
+    <Notification id="10025" scheme="10000" eventTypeId="9" type="Current_Reporter"/>
+    <Notification id="10007" scheme="10000" eventTypeId="3" type="Current_Reporter"/>
+    <Notification id="10040" scheme="10000" eventTypeId="14" type="All_Watchers"/>
+    <Notification id="10018" scheme="10000" eventTypeId="7" type="Current_Assignee"/>
+    <Notification id="10042" scheme="10000" eventTypeId="14" type="Current_Assignee"/>
+    <Notification id="10031" scheme="10000" eventTypeId="11" type="Current_Reporter"/>
+    <Notification id="10024" scheme="10000" eventTypeId="9" type="Current_Assignee"/>
+    <Notification id="10001" scheme="10000" eventTypeId="1" type="Current_Reporter"/>
+    <Notification id="10011" scheme="10000" eventTypeId="4" type="All_Watchers"/>
+    <Notification id="10022" scheme="10000" eventTypeId="8" type="Current_Reporter"/>
+    <Notification id="10027" scheme="10000" eventTypeId="10" type="Current_Assignee"/>
+    <Notification id="10041" scheme="10000" eventTypeId="14" type="Current_Reporter"/>
+    <Notification id="10002" scheme="10000" eventTypeId="1" type="All_Watchers"/>
     <NotificationScheme id="10000" name="Default Notification Scheme"/>
-    <OSCurrentStep id="10060" entryId="10050" stepId="1" actionId="0" owner="" startDate="2010-09-22 18:06:32.743" status="Open"/>
+    <OSCurrentStep id="10070" entryId="10060" stepId="1" actionId="0" owner="" startDate="2010-10-01 18:02:06.174" status="Open"/>
+    <OSCurrentStep id="10080" entryId="10070" stepId="1" actionId="0" owner="" startDate="2010-10-13 17:41:39.142" status="Open"/>
+    <OSCurrentStep id="10051" entryId="10041" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:38.997" status="Open"/>
     <OSCurrentStep id="10053" entryId="10043" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:57:20.581" status="Open"/>
+    <OSCurrentStep id="10052" entryId="10042" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:54.34" status="Open"/>
     <OSCurrentStep id="10054" entryId="10044" stepId="3" actionId="0" owner="" startDate="2010-08-17 16:40:34.883" status="Underway"/>
+    <OSCurrentStep id="10060" entryId="10050" stepId="1" actionId="0" owner="" startDate="2010-09-22 18:06:32.743" status="Open"/>
     <OSCurrentStep id="10055" entryId="10045" stepId="5" actionId="0" owner="" startDate="2010-08-20 17:02:09.879" status="Reopened"/>
     <OSCurrentStep id="10050" entryId="10040" stepId="1" actionId="0" owner="" startDate="2010-07-23 12:16:56.921" status="Open"/>
-    <OSCurrentStep id="10070" entryId="10060" stepId="1" actionId="0" owner="" startDate="2010-10-01 18:02:06.174" status="Open"/>
-    <OSCurrentStep id="10051" entryId="10041" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:38.997" status="Open"/>
-    <OSCurrentStep id="10052" entryId="10042" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:54.34" status="Open"/>
-    <OSCurrentStepPrev id="10041" previousId="10040"/>
-    <OSCurrentStepPrev id="10042" previousId="10041"/>
     <OSCurrentStepPrev id="10030" previousId="10010"/>
+    <OSCurrentStepPrev id="10042" previousId="10041"/>
+    <OSCurrentStepPrev id="10041" previousId="10040"/>
     <OSGroup id="10000" name="jira-administrators"/>
     <OSGroup id="10002" name="jira-users"/>
     <OSGroup id="10001" name="jira-developers"/>
+    <OSHistoryStep id="10022" entryId="10022" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:57:20.581" status="Open"/>
+    <OSHistoryStep id="10041" entryId="10030" stepId="6" actionId="3" owner="" startDate="2010-08-20 17:01:42.164" finishDate="2010-08-20 17:02:09.843" status="Finished" caller="admin"/>
+    <OSHistoryStep id="10010" entryId="10010" stepId="1" actionId="4" owner="" startDate="2010-07-26 13:29:18.256" finishDate="2010-08-17 16:40:34.775" status="Finished" caller="admin"/>
     <OSHistoryStep id="10021" entryId="10021" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:54.34" status="Open"/>
     <OSHistoryStep id="10030" entryId="10010" stepId="3" actionId="0" owner="" startDate="2010-08-17 16:40:34.883" status="Underway"/>
-    <OSHistoryStep id="10020" entryId="10020" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:38.997" status="Open"/>
     <OSHistoryStep id="10042" entryId="10030" stepId="5" actionId="0" owner="" startDate="2010-08-20 17:02:09.879" status="Reopened"/>
-    <OSHistoryStep id="10041" entryId="10030" stepId="6" actionId="3" owner="" startDate="2010-08-20 17:01:42.164" finishDate="2010-08-20 17:02:09.843" status="Finished" caller="admin"/>
-    <OSHistoryStep id="10022" entryId="10022" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:57:20.581" status="Open"/>
-    <OSHistoryStep id="10010" entryId="10010" stepId="1" actionId="4" owner="" startDate="2010-07-26 13:29:18.256" finishDate="2010-08-17 16:40:34.775" status="Finished" caller="admin"/>
     <OSHistoryStep id="10000" entryId="10000" stepId="1" actionId="0" owner="" startDate="2010-07-23 12:16:56.921" status="Open"/>
+    <OSHistoryStep id="10020" entryId="10020" stepId="1" actionId="0" owner="" startDate="2010-07-30 13:56:38.997" status="Open"/>
     <OSHistoryStep id="10040" entryId="10030" stepId="1" actionId="2" owner="" startDate="2010-08-20 17:01:32.117" finishDate="2010-08-20 17:01:42.161" status="Finished" caller="admin"/>
     <OSHistoryStepPrev id="10030" previousId="10010"/>
-    <OSHistoryStepPrev id="10041" previousId="10040"/>
     <OSHistoryStepPrev id="10042" previousId="10041"/>
+    <OSHistoryStepPrev id="10041" previousId="10040"/>
+    <OSMembership id="10030" userName="a/user/with/slash" groupName="jira-users"/>
     <OSMembership id="10001" userName="admin" groupName="jira-developers"/>
+    <OSMembership id="10010" userName="wseliga" groupName="jira-users"/>
     <OSMembership id="10002" userName="admin" groupName="jira-users"/>
     <OSMembership id="10000" userName="admin" groupName="jira-administrators"/>
     <OSMembership id="10020" userName="user" groupName="jira-users"/>
-    <OSMembership id="10010" userName="wseliga" groupName="jira-users"/>
-    <OSMembership id="10030" userName="a/user/with/slash" groupName="jira-users"/>
     <OSPropertyDate id="10400" value="2010-08-30 11:19:18.499"/>
-    <OSPropertyEntry id="10027" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowunassigned" type="1"/>
-    <OSPropertyEntry id="10025" entityName="OSUser" entityId="10000" propertyKey="fullName" type="5"/>
-    <OSPropertyEntry id="10038" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.format" type="5"/>
-    <OSPropertyEntry id="10081" entityName="jira.properties" entityId="1" propertyKey="com.atlassian.sal.jira:build" type="5"/>
     <OSPropertyEntry id="10243" entityName="OSUser" entityId="10010" propertyKey="login.currentFailedCount" type="5"/>
-    <OSPropertyEntry id="10244" entityName="OSUser" entityId="10010" propertyKey="login.lastLoginMillis" type="5"/>
-    <OSPropertyEntry id="10055" entityName="jira.properties" entityId="1" propertyKey="jira.avatar.user.default.id" type="5"/>
-    <OSPropertyEntry id="10231" entityName="OSUser" entityId="10000" propertyKey="login.lastFailedLoginMillis" type="5"/>
-    <OSPropertyEntry id="10071" entityName="jira.properties" entityId="1" propertyKey="jira.attachment.download.mime.sniffing.workaround" type="5"/>
-    <OSPropertyEntry id="10001" entityName="jira.properties" entityId="1" propertyKey="org.apache.shindig.common.crypto.BlobCrypter:key" type="5"/>
     <OSPropertyEntry id="10010" entityName="jira.properties" entityId="1" propertyKey="jira.sid.key" type="5"/>
-    <OSPropertyEntry id="10061" entityName="jira.properties" entityId="1" propertyKey="jira.option.captcha.on.signup" type="1"/>
-    <OSPropertyEntry id="10006" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkExternal" type="5"/>
-    <OSPropertyEntry id="10060" entityName="jira.properties" entityId="1" propertyKey="jira.email.fromheader.format" type="5"/>
-    <OSPropertyEntry id="10068" entityName="jira.properties" entityId="1" propertyKey="jira.comment.level.visibility.groups" type="1"/>
-    <OSPropertyEntry id="10056" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowsubtasks" type="1"/>
-    <OSPropertyEntry id="10030" entityName="jira.properties" entityId="1" propertyKey="jira.option.watching" type="1"/>
     <OSPropertyEntry id="10450" entityName="jira.properties" entityId="1" propertyKey="jira.webresource.flushcounter" type="5"/>
-    <OSPropertyEntry id="10461" entityName="OSUser" entityId="10020" propertyKey="fullName" type="5"/>
-    <OSPropertyEntry id="10032" entityName="jira.properties" entityId="1" propertyKey="jira.option.emailvisible" type="5"/>
-    <OSPropertyEntry id="10366" entityName="OSUser" entityId="10000" propertyKey="jira.user.locale" type="5"/>
-    <OSPropertyEntry id="10003" entityName="user.format.mapping" entityId="1" propertyKey="profileLink" type="5"/>
-    <OSPropertyEntry id="10042" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.original.timetrack" type="5"/>
-    <OSPropertyEntry id="10066" entityName="jira.properties" entityId="1" propertyKey="jira.option.rpc.allow" type="1"/>
-    <OSPropertyEntry id="10000" entityName="jira.properties" entityId="1" propertyKey="webwork.i18n.encoding" type="5"/>
-    <OSPropertyEntry id="10009" entityName="jira.properties" entityId="1" propertyKey="jira.i18n.language.index" type="5"/>
-    <OSPropertyEntry id="10247" entityName="OSUser" entityId="10010" propertyKey="login.totalFailedCount" type="5"/>
     <OSPropertyEntry id="10017" entityName="jira.properties" entityId="1" propertyKey="jira.path.attachments.use.default.directory" type="1"/>
-    <OSPropertyEntry id="10002" entityName="BambooServerProperties" entityId="1" propertyKey="bamboo.config.version" type="2"/>
-    <OSPropertyEntry id="10442" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
-    <OSPropertyEntry id="10008" entityName="user.format.mapping" entityId="1" propertyKey="fullProfile" type="5"/>
-    <OSPropertyEntry id="10024" entityName="OSUser" entityId="10000" propertyKey="email" type="5"/>
-    <OSPropertyEntry id="10460" entityName="OSUser" entityId="10020" propertyKey="email" type="5"/>
     <OSPropertyEntry id="10020" entityName="ServiceConfig" entityId="10001" propertyKey="USEZIP" type="5"/>
-    <OSPropertyEntry id="10241" entityName="OSUser" entityId="10010" propertyKey="email" type="5"/>
-    <OSPropertyEntry id="10031" entityName="jira.properties" entityId="1" propertyKey="jira.option.issuelinking" type="1"/>
-    <OSPropertyEntry id="10022" entityName="jira.properties" entityId="1" propertyKey="License20" type="6"/>
-    <OSPropertyEntry id="10050" entityName="jira.properties" entityId="1" propertyKey="jira.scheme.default.issue.type" type="5"/>
-    <OSPropertyEntry id="10363" entityName="OSUser" entityId="10000" propertyKey="user.default.share.private" type="1"/>
     <OSPropertyEntry id="10004" entityName="user.format.mapping" entityId="1" propertyKey="fullName" type="5"/>
-    <OSPropertyEntry id="10005" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkSearcher" type="5"/>
-    <OSPropertyEntry id="10058" entityName="OSUser" entityId="10000" propertyKey="login.lastLoginMillis" type="5"/>
-    <OSPropertyEntry id="10362" entityName="OSUser" entityId="10000" propertyKey="user.notifications.mimetype" type="5"/>
-    <OSPropertyEntry id="10361" entityName="OSUser" entityId="10000" propertyKey="user.issues.per.page" type="3"/>
-    <OSPropertyEntry id="10014" entityName="jira.properties" entityId="1" propertyKey="jira.path.index.use.default.directory" type="1"/>
-    <OSPropertyEntry id="10053" entityName="jira.properties" entityId="1" propertyKey="jira.avatar.default.id" type="5"/>
     <OSPropertyEntry id="10041" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.hours.per.day" type="5"/>
-    <OSPropertyEntry id="10021" entityName="jira.properties" entityId="1" propertyKey="jira.path.backup" type="5"/>
-    <OSPropertyEntry id="10246" entityName="OSUser" entityId="10010" propertyKey="login.lastFailedLoginMillis" type="5"/>
-    <OSPropertyEntry id="10037" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.estimates.legacy.behaviour" type="1"/>
-    <OSPropertyEntry id="10036" entityName="jira.properties" entityId="1" propertyKey="jira.option.timetracking" type="1"/>
-    <OSPropertyEntry id="10023" entityName="jira.properties" entityId="1" propertyKey="jira.edition" type="5"/>
     <OSPropertyEntry id="10057" entityName="OSUser" entityId="10000" propertyKey="login.currentFailedCount" type="5"/>
-    <OSPropertyEntry id="10007" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkActionHeader" type="5"/>
-    <OSPropertyEntry id="10065" entityName="jira.properties" entityId="1" propertyKey="jira.option.web.usegzip" type="1"/>
-    <OSPropertyEntry id="10403" entityName="ScreenSnipeSettings" entityId="1" propertyKey="pluginInitialized" type="1"/>
-    <OSPropertyEntry id="10083" entityName="fisheye-jira-plugin.properties" entityId="1" propertyKey="FISH-375-fixed" type="5"/>
-    <OSPropertyEntry id="10012" entityName="jira.properties" entityId="1" propertyKey="jira.baseurl" type="5"/>
-    <OSPropertyEntry id="10018" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowattachments" type="1"/>
     <OSPropertyEntry id="10063" entityName="jira.properties" entityId="1" propertyKey="jira.option.cache.issues" type="1"/>
-    <OSPropertyEntry id="10070" entityName="jira.properties" entityId="1" propertyKey="jira.jql.autocomplete.disabled" type="1"/>
-    <OSPropertyEntry id="10365" entityName="OSUser" entityId="10000" propertyKey="user.keyboard.shortcuts.enabled" type="1"/>
-    <OSPropertyEntry id="10059" entityName="OSUser" entityId="10000" propertyKey="login.count" type="5"/>
-    <OSPropertyEntry id="10039" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.default.unit" type="5"/>
-    <OSPropertyEntry id="10242" entityName="OSUser" entityId="10010" propertyKey="fullName" type="5"/>
-    <OSPropertyEntry id="10011" entityName="jira.properties" entityId="1" propertyKey="jira.title" type="5"/>
     <OSPropertyEntry id="10051" entityName="jira.properties" entityId="1" propertyKey="jira.constant.default.resolution" type="5"/>
-    <OSPropertyEntry id="10470" entityName="OSUser" entityId="10030" propertyKey="email" type="5"/>
-    <OSPropertyEntry id="10471" entityName="OSUser" entityId="10030" propertyKey="fullName" type="5"/>
-    <OSPropertyEntry id="10271" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.copy.comment.to.work.desc.on.transition" type="1"/>
-    <OSPropertyEntry id="10034" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.environment" type="5"/>
-    <OSPropertyEntry id="10064" entityName="jira.properties" entityId="1" propertyKey="jira.option.logoutconfirm" type="5"/>
     <OSPropertyEntry id="10035" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.timetrack" type="5"/>
-    <OSPropertyEntry id="10400" entityName="ScreenSnipeSettings" entityId="1" propertyKey="firstRunDate" type="7"/>
-    <OSPropertyEntry id="10019" entityName="ServiceConfig" entityId="10001" propertyKey="USE_DEFAULT_DIRECTORY" type="5"/>
-    <OSPropertyEntry id="10040" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.days.per.week" type="5"/>
-    <OSPropertyEntry id="10062" entityName="jira.properties" entityId="1" propertyKey="jira.option.user.externalpasswordmanagement" type="1"/>
-    <OSPropertyEntry id="10245" entityName="OSUser" entityId="10010" propertyKey="login.count" type="5"/>
-    <OSPropertyEntry id="10443" entityName="ServiceConfig" entityId="10370" propertyKey="pluginJobName" type="5"/>
-    <OSPropertyEntry id="10084" entityName="fisheye-jira-plugin.properties" entityId="1" propertyKey="fisheye.applinks.piggyback.enabled" type="5"/>
     <OSPropertyEntry id="10067" entityName="jira.properties" entityId="1" propertyKey="jira.option.precedence.header.exclude" type="1"/>
-    <OSPropertyEntry id="10029" entityName="jira.properties" entityId="1" propertyKey="jira.option.voting" type="1"/>
-    <OSPropertyEntry id="10013" entityName="jira.properties" entityId="1" propertyKey="jira.mode" type="5"/>
-    <OSPropertyEntry id="10364" entityName="OSUser" entityId="10000" propertyKey="user.notify.own.changes" type="1"/>
-    <OSPropertyEntry id="10052" entityName="jira.properties" entityId="1" propertyKey="webwork.multipart.maxSize" type="5"/>
-    <OSPropertyEntry id="10026" entityName="jira.properties" entityId="1" propertyKey="jira.setup" type="5"/>
     <OSPropertyEntry id="10054" entityName="jira.properties" entityId="1" propertyKey="jira.maximum.authentication.attempts.allowed" type="5"/>
-    <OSPropertyEntry id="10161" entityName="OSUser" entityId="10000" propertyKey="user.avatar.id" type="3"/>
-    <OSPropertyEntry id="10085" entityName="OSUser" entityId="10000" propertyKey="login.previousLoginMillis" type="5"/>
-    <OSPropertyEntry id="10033" entityName="jira.properties" entityId="1" propertyKey="jira.version.patched" type="5"/>
     <OSPropertyEntry id="10016" entityName="jira.properties" entityId="1" propertyKey="jira.path.attachments" type="5"/>
-    <OSPropertyEntry id="10028" entityName="jira.properties" entityId="1" propertyKey="jira.option.user.externalmanagement" type="1"/>
+    <OSPropertyEntry id="10055" entityName="jira.properties" entityId="1" propertyKey="jira.avatar.user.default.id" type="5"/>
+    <OSPropertyEntry id="10068" entityName="jira.properties" entityId="1" propertyKey="jira.comment.level.visibility.groups" type="1"/>
+    <OSPropertyEntry id="10366" entityName="OSUser" entityId="10000" propertyKey="jira.user.locale" type="5"/>
+    <OSPropertyEntry id="10000" entityName="jira.properties" entityId="1" propertyKey="webwork.i18n.encoding" type="5"/>
+    <OSPropertyEntry id="10024" entityName="OSUser" entityId="10000" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10363" entityName="OSUser" entityId="10000" propertyKey="user.default.share.private" type="1"/>
+    <OSPropertyEntry id="10021" entityName="jira.properties" entityId="1" propertyKey="jira.path.backup" type="5"/>
+    <OSPropertyEntry id="10083" entityName="fisheye-jira-plugin.properties" entityId="1" propertyKey="FISH-375-fixed" type="5"/>
+    <OSPropertyEntry id="10039" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.default.unit" type="5"/>
+    <OSPropertyEntry id="10064" entityName="jira.properties" entityId="1" propertyKey="jira.option.logoutconfirm" type="5"/>
+    <OSPropertyEntry id="10443" entityName="ServiceConfig" entityId="10370" propertyKey="pluginJobName" type="5"/>
+    <OSPropertyEntry id="10161" entityName="OSUser" entityId="10000" propertyKey="user.avatar.id" type="3"/>
     <OSPropertyEntry id="10232" entityName="OSUser" entityId="10000" propertyKey="login.totalFailedCount" type="5"/>
-    <OSPropertyEntry id="10248" entityName="OSUser" entityId="10010" propertyKey="login.previousLoginMillis" type="5"/>
+    <OSPropertyEntry id="10038" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.format" type="5"/>
+    <OSPropertyEntry id="10001" entityName="jira.properties" entityId="1" propertyKey="org.apache.shindig.common.crypto.BlobCrypter:key" type="5"/>
+    <OSPropertyEntry id="10030" entityName="jira.properties" entityId="1" propertyKey="jira.option.watching" type="1"/>
+    <OSPropertyEntry id="10066" entityName="jira.properties" entityId="1" propertyKey="jira.option.rpc.allow" type="1"/>
+    <OSPropertyEntry id="10442" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
+    <OSPropertyEntry id="10050" entityName="jira.properties" entityId="1" propertyKey="jira.scheme.default.issue.type" type="5"/>
+    <OSPropertyEntry id="10361" entityName="OSUser" entityId="10000" propertyKey="user.issues.per.page" type="3"/>
+    <OSPropertyEntry id="10023" entityName="jira.properties" entityId="1" propertyKey="jira.edition" type="5"/>
+    <OSPropertyEntry id="10018" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowattachments" type="1"/>
+    <OSPropertyEntry id="10070" entityName="jira.properties" entityId="1" propertyKey="jira.jql.autocomplete.disabled" type="1"/>
+    <OSPropertyEntry id="10470" entityName="OSUser" entityId="10030" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10245" entityName="OSUser" entityId="10010" propertyKey="login.count" type="5"/>
+    <OSPropertyEntry id="10364" entityName="OSUser" entityId="10000" propertyKey="user.notify.own.changes" type="1"/>
+    <OSPropertyEntry id="10085" entityName="OSUser" entityId="10000" propertyKey="login.previousLoginMillis" type="5"/>
     <OSPropertyEntry id="10069" entityName="jira.properties" entityId="1" propertyKey="jira.ajax.autocomplete.issuepicker.enabled" type="1"/>
+    <OSPropertyEntry id="10025" entityName="OSUser" entityId="10000" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10061" entityName="jira.properties" entityId="1" propertyKey="jira.option.captcha.on.signup" type="1"/>
+    <OSPropertyEntry id="10003" entityName="user.format.mapping" entityId="1" propertyKey="profileLink" type="5"/>
+    <OSPropertyEntry id="10002" entityName="BambooServerProperties" entityId="1" propertyKey="bamboo.config.version" type="2"/>
+    <OSPropertyEntry id="10241" entityName="OSUser" entityId="10010" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10005" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkSearcher" type="5"/>
+    <OSPropertyEntry id="10053" entityName="jira.properties" entityId="1" propertyKey="jira.avatar.default.id" type="5"/>
+    <OSPropertyEntry id="10007" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkActionHeader" type="5"/>
+    <OSPropertyEntry id="10059" entityName="OSUser" entityId="10000" propertyKey="login.count" type="5"/>
+    <OSPropertyEntry id="10471" entityName="OSUser" entityId="10030" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10040" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.days.per.week" type="5"/>
+    <OSPropertyEntry id="10013" entityName="jira.properties" entityId="1" propertyKey="jira.mode" type="5"/>
+    <OSPropertyEntry id="10026" entityName="jira.properties" entityId="1" propertyKey="jira.setup" type="5"/>
+    <OSPropertyEntry id="10248" entityName="OSUser" entityId="10010" propertyKey="login.previousLoginMillis" type="5"/>
+    <OSPropertyEntry id="10027" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowunassigned" type="1"/>
+    <OSPropertyEntry id="10244" entityName="OSUser" entityId="10010" propertyKey="login.lastLoginMillis" type="5"/>
+    <OSPropertyEntry id="10056" entityName="jira.properties" entityId="1" propertyKey="jira.option.allowsubtasks" type="1"/>
+    <OSPropertyEntry id="10042" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.original.timetrack" type="5"/>
+    <OSPropertyEntry id="10008" entityName="user.format.mapping" entityId="1" propertyKey="fullProfile" type="5"/>
+    <OSPropertyEntry id="10022" entityName="jira.properties" entityId="1" propertyKey="License20" type="6"/>
+    <OSPropertyEntry id="10362" entityName="OSUser" entityId="10000" propertyKey="user.notifications.mimetype" type="5"/>
+    <OSPropertyEntry id="10037" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.estimates.legacy.behaviour" type="1"/>
+    <OSPropertyEntry id="10403" entityName="ScreenSnipeSettings" entityId="1" propertyKey="pluginInitialized" type="1"/>
+    <OSPropertyEntry id="10365" entityName="OSUser" entityId="10000" propertyKey="user.keyboard.shortcuts.enabled" type="1"/>
+    <OSPropertyEntry id="10271" entityName="jira.properties" entityId="1" propertyKey="jira.timetracking.copy.comment.to.work.desc.on.transition" type="1"/>
+    <OSPropertyEntry id="10019" entityName="ServiceConfig" entityId="10001" propertyKey="USE_DEFAULT_DIRECTORY" type="5"/>
+    <OSPropertyEntry id="10029" entityName="jira.properties" entityId="1" propertyKey="jira.option.voting" type="1"/>
+    <OSPropertyEntry id="10028" entityName="jira.properties" entityId="1" propertyKey="jira.option.user.externalmanagement" type="1"/>
+    <OSPropertyEntry id="10231" entityName="OSUser" entityId="10000" propertyKey="login.lastFailedLoginMillis" type="5"/>
+    <OSPropertyEntry id="10060" entityName="jira.properties" entityId="1" propertyKey="jira.email.fromheader.format" type="5"/>
+    <OSPropertyEntry id="10461" entityName="OSUser" entityId="10020" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10009" entityName="jira.properties" entityId="1" propertyKey="jira.i18n.language.index" type="5"/>
+    <OSPropertyEntry id="10460" entityName="OSUser" entityId="10020" propertyKey="email" type="5"/>
+    <OSPropertyEntry id="10058" entityName="OSUser" entityId="10000" propertyKey="login.lastLoginMillis" type="5"/>
+    <OSPropertyEntry id="10246" entityName="OSUser" entityId="10010" propertyKey="login.lastFailedLoginMillis" type="5"/>
+    <OSPropertyEntry id="10065" entityName="jira.properties" entityId="1" propertyKey="jira.option.web.usegzip" type="1"/>
+    <OSPropertyEntry id="10242" entityName="OSUser" entityId="10010" propertyKey="fullName" type="5"/>
+    <OSPropertyEntry id="10034" entityName="jira.properties" entityId="1" propertyKey="jira.issue.desc.environment" type="5"/>
+    <OSPropertyEntry id="10062" entityName="jira.properties" entityId="1" propertyKey="jira.option.user.externalpasswordmanagement" type="1"/>
+    <OSPropertyEntry id="10052" entityName="jira.properties" entityId="1" propertyKey="webwork.multipart.maxSize" type="5"/>
+    <OSPropertyEntry id="10081" entityName="jira.properties" entityId="1" propertyKey="com.atlassian.sal.jira:build" type="5"/>
+    <OSPropertyEntry id="10071" entityName="jira.properties" entityId="1" propertyKey="jira.attachment.download.mime.sniffing.workaround" type="5"/>
+    <OSPropertyEntry id="10006" entityName="user.format.mapping" entityId="1" propertyKey="profileLinkExternal" type="5"/>
+    <OSPropertyEntry id="10032" entityName="jira.properties" entityId="1" propertyKey="jira.option.emailvisible" type="5"/>
+    <OSPropertyEntry id="10247" entityName="OSUser" entityId="10010" propertyKey="login.totalFailedCount" type="5"/>
+    <OSPropertyEntry id="10031" entityName="jira.properties" entityId="1" propertyKey="jira.option.issuelinking" type="1"/>
+    <OSPropertyEntry id="10014" entityName="jira.properties" entityId="1" propertyKey="jira.path.index.use.default.directory" type="1"/>
+    <OSPropertyEntry id="10036" entityName="jira.properties" entityId="1" propertyKey="jira.option.timetracking" type="1"/>
+    <OSPropertyEntry id="10012" entityName="jira.properties" entityId="1" propertyKey="jira.baseurl" type="5"/>
+    <OSPropertyEntry id="10011" entityName="jira.properties" entityId="1" propertyKey="jira.title" type="5"/>
+    <OSPropertyEntry id="10400" entityName="ScreenSnipeSettings" entityId="1" propertyKey="firstRunDate" type="7"/>
+    <OSPropertyEntry id="10084" entityName="fisheye-jira-plugin.properties" entityId="1" propertyKey="fisheye.applinks.piggyback.enabled" type="5"/>
+    <OSPropertyEntry id="10033" entityName="jira.properties" entityId="1" propertyKey="jira.version.patched" type="5"/>
     <OSPropertyEntry id="10015" entityName="jira.properties" entityId="1" propertyKey="jira.option.indexing" type="1"/>
-    <OSPropertyNumber id="10161" value="10054"/>
-    <OSPropertyNumber id="10028" value="0"/>
-    <OSPropertyNumber id="10066" value="1"/>
-    <OSPropertyNumber id="10363" value="1"/>
-    <OSPropertyNumber id="10061" value="0"/>
     <OSPropertyNumber id="10361" value="50"/>
-    <OSPropertyNumber id="10063" value="0"/>
     <OSPropertyNumber id="10027" value="0"/>
-    <OSPropertyNumber id="10365" value="1"/>
-    <OSPropertyNumber id="10030" value="1"/>
-    <OSPropertyNumber id="10062" value="0"/>
-    <OSPropertyNumber id="10068" value="1"/>
-    <OSPropertyNumber id="10271" value="1"/>
-    <OSPropertyNumber id="10029" value="1"/>
     <OSPropertyNumber id="10002" value="22"/>
-    <OSPropertyNumber id="10017" value="1"/>
-    <OSPropertyNumber id="10065" value="0"/>
-    <OSPropertyNumber id="10014" value="1"/>
-    <OSPropertyNumber id="10070" value="0"/>
-    <OSPropertyNumber id="10037" value="0"/>
-    <OSPropertyNumber id="10069" value="1"/>
-    <OSPropertyNumber id="10056" value="1"/>
     <OSPropertyNumber id="10036" value="1"/>
-    <OSPropertyNumber id="10364" value="1"/>
-    <OSPropertyNumber id="10031" value="1"/>
-    <OSPropertyNumber id="10067" value="0"/>
-    <OSPropertyNumber id="10018" value="1"/>
-    <OSPropertyNumber id="10403" value="1"/>
     <OSPropertyNumber id="10015" value="1"/>
-    <OSPropertyString id="10009" value="english"/>
-    <OSPropertyString id="10000" value="UTF-8"/>
-    <OSPropertyString id="10020" value="zip"/>
-    <OSPropertyString id="10081" value="2"/>
+    <OSPropertyNumber id="10061" value="0"/>
+    <OSPropertyNumber id="10271" value="1"/>
+    <OSPropertyNumber id="10037" value="0"/>
+    <OSPropertyNumber id="10067" value="0"/>
+    <OSPropertyNumber id="10029" value="1"/>
+    <OSPropertyNumber id="10069" value="1"/>
+    <OSPropertyNumber id="10403" value="1"/>
+    <OSPropertyNumber id="10028" value="0"/>
+    <OSPropertyNumber id="10365" value="1"/>
+    <OSPropertyNumber id="10017" value="1"/>
+    <OSPropertyNumber id="10364" value="1"/>
+    <OSPropertyNumber id="10066" value="1"/>
+    <OSPropertyNumber id="10030" value="1"/>
+    <OSPropertyNumber id="10014" value="1"/>
+    <OSPropertyNumber id="10031" value="1"/>
+    <OSPropertyNumber id="10363" value="1"/>
+    <OSPropertyNumber id="10062" value="0"/>
+    <OSPropertyNumber id="10065" value="0"/>
+    <OSPropertyNumber id="10056" value="1"/>
+    <OSPropertyNumber id="10161" value="10054"/>
+    <OSPropertyNumber id="10063" value="0"/>
+    <OSPropertyNumber id="10068" value="1"/>
+    <OSPropertyNumber id="10070" value="0"/>
+    <OSPropertyNumber id="10018" value="1"/>
     <OSPropertyString id="10362" value="text"/>
-    <OSPropertyString id="10007" value="jira.user.format:profile-link-action-header-user-format"/>
-    <OSPropertyString id="10023" value="enterprise"/>
-    <OSPropertyString id="10051" value="1"/>
-    <OSPropertyString id="10058" value="1286977375069"/>
-    <OSPropertyString id="10021" value="jirahome/export"/>
     <OSPropertyString id="10012" value="http://localhost:8090/jira"/>
-    <OSPropertyString id="10019" value="true"/>
-    <OSPropertyString id="10057" value="0"/>
-    <OSPropertyString id="10054" value="3"/>
-    <OSPropertyString id="10071" value="workaround"/>
-    <OSPropertyString id="10442" value="false"/>
-    <OSPropertyString id="10033" value="580"/>
-    <OSPropertyString id="10450" value="4954"/>
-    <OSPropertyString id="10470" value="user@example.com"/>
-    <OSPropertyString id="10471" value="A User with / in its username"/>
     <OSPropertyString id="10052" value="10485760"/>
-    <OSPropertyString id="10053" value="10011"/>
-    <OSPropertyString id="10060" value="${fullname} (JIRA)"/>
-    <OSPropertyString id="10013" value="public"/>
-    <OSPropertyString id="10083" value="1"/>
-    <OSPropertyString id="10016" value="jirahome/data/attachments"/>
-    <OSPropertyString id="10460" value="testmail@example.com"/>
     <OSPropertyString id="10001" value="FvwxToEefhMJ9aJjat9vwEVd86NVcZOSwnMGN4AIZe4="/>
-    <OSPropertyString id="10040" value="5"/>
-    <OSPropertyString id="10003" value="jira.user.format:profile-link-user-format"/>
-    <OSPropertyString id="10461" value="My Test User"/>
-    <OSPropertyString id="10246" value="1281082979187"/>
-    <OSPropertyString id="10243" value="0"/>
+    <OSPropertyString id="10032" value="show"/>
+    <OSPropertyString id="10025" value="Administrator"/>
+    <OSPropertyString id="10038" value="pretty"/>
+    <OSPropertyString id="10366" value="pl_PL"/>
+    <OSPropertyString id="10085" value="1286984218015"/>
+    <OSPropertyString id="10450" value="5002"/>
+    <OSPropertyString id="10007" value="jira.user.format:profile-link-action-header-user-format"/>
+    <OSPropertyString id="10019" value="true"/>
+    <OSPropertyString id="10016" value="jirahome/data/attachments"/>
     <OSPropertyString id="10035">
         <value><![CDATA[An estimate of how much work remains until this issue will be resolved.<br>
 The format of this is ' *w *d *h *m ' (representing weeks, days, hours and minutes - where * can be any number)<br>
 Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     </OSPropertyString>
-    <OSPropertyString id="10032" value="show"/>
-    <OSPropertyString id="10231" value="1280843860402"/>
-    <OSPropertyString id="10050" value="10000"/>
-    <OSPropertyString id="10042" value="This value can not be changed after work has begun on the issue."/>
-    <OSPropertyString id="10241" value="wojciech.seliga@spartez.com"/>
-    <OSPropertyString id="10039" value="MINUTE"/>
     <OSPropertyString id="10006" value="jira.user.format:profile-link-external-user-format"/>
-    <OSPropertyString id="10244" value="1285429488282"/>
-    <OSPropertyString id="10443" value="Service Provider Token Remover"/>
-    <OSPropertyString id="10026" value="true"/>
-    <OSPropertyString id="10025" value="Administrator"/>
     <OSPropertyString id="10055" value="10028"/>
-    <OSPropertyString id="10059" value="432"/>
-    <OSPropertyString id="10010" value="BWU2-SJPU-J495-LC4Y"/>
-    <OSPropertyString id="10064" value="never"/>
-    <OSPropertyString id="10245" value="5"/>
-    <OSPropertyString id="10242" value="Wojciech Seliga"/>
     <OSPropertyString id="10005" value="jira.user.format:profile-link-searcher-user-format"/>
-    <OSPropertyString id="10248" value="1282146099696"/>
-    <OSPropertyString id="10038" value="pretty"/>
-    <OSPropertyString id="10008" value="jira.user.format:full-profile-user-format"/>
-    <OSPropertyString id="10004" value="jira.user.format:full-name-user-format"/>
-    <OSPropertyString id="10232" value="4"/>
-    <OSPropertyString id="10247" value="1"/>
-    <OSPropertyString id="10041" value="8"/>
     <OSPropertyString id="10084" value="0"/>
-    <OSPropertyString id="10366" value="pl_PL"/>
+    <OSPropertyString id="10081" value="2"/>
+    <OSPropertyString id="10054" value="3"/>
+    <OSPropertyString id="10471" value="A User with / in its username"/>
+    <OSPropertyString id="10460" value="testmail@example.com"/>
+    <OSPropertyString id="10246" value="1281082979187"/>
+    <OSPropertyString id="10241" value="wojciech.seliga@spartez.com"/>
+    <OSPropertyString id="10008" value="jira.user.format:full-profile-user-format"/>
     <OSPropertyString id="10024" value="wojciech.seliga@spartez.com"/>
+    <OSPropertyString id="10059" value="434"/>
+    <OSPropertyString id="10023" value="enterprise"/>
+    <OSPropertyString id="10057" value="0"/>
+    <OSPropertyString id="10470" value="user@example.com"/>
+    <OSPropertyString id="10083" value="1"/>
+    <OSPropertyString id="10243" value="0"/>
+    <OSPropertyString id="10039" value="MINUTE"/>
+    <OSPropertyString id="10010" value="BWU2-SJPU-J495-LC4Y"/>
+    <OSPropertyString id="10248" value="1282146099696"/>
+    <OSPropertyString id="10041" value="8"/>
+    <OSPropertyString id="10009" value="english"/>
+    <OSPropertyString id="10051" value="1"/>
+    <OSPropertyString id="10071" value="workaround"/>
+    <OSPropertyString id="10013" value="public"/>
+    <OSPropertyString id="10461" value="My Test User"/>
+    <OSPropertyString id="10042" value="This value can not be changed after work has begun on the issue."/>
+    <OSPropertyString id="10443" value="Service Provider Token Remover"/>
+    <OSPropertyString id="10245" value="5"/>
+    <OSPropertyString id="10232" value="4"/>
     <OSPropertyString id="10011" value="Your Company JIRA"/>
+    <OSPropertyString id="10020" value="zip"/>
+    <OSPropertyString id="10442" value="false"/>
+    <OSPropertyString id="10060" value="${fullname} (JIRA)"/>
+    <OSPropertyString id="10003" value="jira.user.format:profile-link-user-format"/>
+    <OSPropertyString id="10050" value="10000"/>
+    <OSPropertyString id="10244" value="1285429488282"/>
+    <OSPropertyString id="10064" value="never"/>
+    <OSPropertyString id="10004" value="jira.user.format:full-name-user-format"/>
     <OSPropertyString id="10034" value="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)."/>
-    <OSPropertyString id="10085" value="1286977374795"/>
+    <OSPropertyString id="10058" value="1286984220344"/>
+    <OSPropertyString id="10000" value="UTF-8"/>
+    <OSPropertyString id="10021" value="jirahome/export"/>
+    <OSPropertyString id="10053" value="10011"/>
+    <OSPropertyString id="10040" value="5"/>
+    <OSPropertyString id="10231" value="1280843860402"/>
+    <OSPropertyString id="10026" value="true"/>
+    <OSPropertyString id="10242" value="Wojciech Seliga"/>
+    <OSPropertyString id="10247" value="1"/>
+    <OSPropertyString id="10033" value="580"/>
     <OSPropertyText id="10022" value="AAABBA0ODAoPeNptj1FPgzAUhd/7K5r4jGmZmkDSBwaNogMWYM4svtTuOmtGR27L4v69bOiL8ek+nJzvO/dqDVuaDDvKbim/i2cs5iGVTUtDxiKSgdNoem8OVjzmdUKl9YA9GgevMU0PXQeojdrTBvAISMqhewOs3lcO0ImAkxRBnduZ8iBCNosCHgaMk0+D6nphNFgHcmsuAlm2sl7WeSOnWGlvjiA8DkAKZUazVVaD/OoNniZgFEUj7QyscKescReZSPxeOWeUJdOuPBPz+6gNXlbPN8HTZvMQzBlfk0aWogXnx0t+t/wL/wnbUw+l6kCkVVHIOs2TBVkOqD+Ug78PfgPSNG6BMC0CFBZN4P8f7FRdIKPx3oWYkJwGfM9tAhUAllLN8BrljKaWmkSeRtRCiwHCZ7g=X02dd"/>
-    <OSUser id="10000" name="admin" passwordHash="x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A=="/>
     <OSUser id="10030" name="a/user/with/slash" passwordHash="7uA8NE8ylKDMwOkZ4m+mZLXDwdBDpunmYQZavB6UEfUXLvYZ6QBxJomU8Yftv5u34vW6Mzyi71jMFpqSXjffqw=="/>
-    <OSUser id="10020" name="user" passwordHash="sUNhQEwHj/1UnAPbRDw/7eLz5TTXP3j3cwHtl9SkNqn9nbBe6LMlwK02Q4tD/shRDCBPwcHtsh0JQcAOniwc4g=="/>
+    <OSUser id="10000" name="admin" passwordHash="x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A=="/>
     <OSUser id="10010" name="wseliga" passwordHash="h+FWjzwI6AxNOy84IsvY1ijksjsbOtkPgxkVk3cFUCgj2keeYpQw5tnEnZRgHMX54ykRzp46Bgp3EpG055k7Sg=="/>
-    <OSWorkflowEntry id="10044" name="test-workflow" state="1"/>
-    <OSWorkflowEntry id="10030" name="jira" state="3"/>
-    <OSWorkflowEntry id="10022" name="jira" state="3"/>
-    <OSWorkflowEntry id="10060" name="jira" state="1"/>
+    <OSUser id="10020" name="user" passwordHash="sUNhQEwHj/1UnAPbRDw/7eLz5TTXP3j3cwHtl9SkNqn9nbBe6LMlwK02Q4tD/shRDCBPwcHtsh0JQcAOniwc4g=="/>
     <OSWorkflowEntry id="10041" name="test-workflow" state="1"/>
-    <OSWorkflowEntry id="10040" name="test-workflow" state="1"/>
-    <OSWorkflowEntry id="10000" name="jira" state="3"/>
-    <OSWorkflowEntry id="10021" name="jira" state="3"/>
-    <OSWorkflowEntry id="10042" name="test-workflow" state="1"/>
-    <OSWorkflowEntry id="10050" name="test-workflow" state="1"/>
-    <OSWorkflowEntry id="10043" name="test-workflow" state="1"/>
     <OSWorkflowEntry id="10045" name="test-workflow" state="1"/>
+    <OSWorkflowEntry id="10000" name="jira" state="3"/>
     <OSWorkflowEntry id="10010" name="jira" state="3"/>
+    <OSWorkflowEntry id="10070" name="jira" state="1"/>
+    <OSWorkflowEntry id="10044" name="test-workflow" state="1"/>
+    <OSWorkflowEntry id="10050" name="test-workflow" state="1"/>
+    <OSWorkflowEntry id="10030" name="jira" state="3"/>
+    <OSWorkflowEntry id="10042" name="test-workflow" state="1"/>
     <OSWorkflowEntry id="10020" name="jira" state="3"/>
-    <OptionConfiguration id="10007" fieldid="issuetype" optionid="4" fieldconfig="10000" sequence="3"/>
-    <OptionConfiguration id="10006" fieldid="issuetype" optionid="3" fieldconfig="10000" sequence="2"/>
-    <OptionConfiguration id="10005" fieldid="issuetype" optionid="2" fieldconfig="10000" sequence="1"/>
-    <OptionConfiguration id="10008" fieldid="issuetype" optionid="5" fieldconfig="10000" sequence="4"/>
+    <OSWorkflowEntry id="10021" name="jira" state="3"/>
+    <OSWorkflowEntry id="10022" name="jira" state="3"/>
+    <OSWorkflowEntry id="10040" name="test-workflow" state="1"/>
+    <OSWorkflowEntry id="10060" name="jira" state="1"/>
+    <OSWorkflowEntry id="10043" name="test-workflow" state="1"/>
     <OptionConfiguration id="10004" fieldid="issuetype" optionid="1" fieldconfig="10000" sequence="0"/>
-    <PermissionScheme id="0" name="Default Permission Scheme" description="This is the default Permission Scheme. Any new projects that are created will be assigned this scheme."/>
+    <OptionConfiguration id="10005" fieldid="issuetype" optionid="2" fieldconfig="10000" sequence="1"/>
+    <OptionConfiguration id="10006" fieldid="issuetype" optionid="3" fieldconfig="10000" sequence="2"/>
+    <OptionConfiguration id="10008" fieldid="issuetype" optionid="5" fieldconfig="10000" sequence="4"/>
+    <OptionConfiguration id="10007" fieldid="issuetype" optionid="4" fieldconfig="10000" sequence="3"/>
     <PermissionScheme id="10000" name="Anonymous Permission Scheme" description="This is the default Permission Scheme modified slightly so that anonymous users can browse project."/>
-    <PluginVersion id="10037" name="JIRA OAuth Service Provider SPI Plugin" key="com.atlassian.jira.oauth.serviceprovider" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.367"/>
-    <PluginVersion id="10022" name="JIRA OAuth Consumer SPI Plugin" key="com.atlassian.jira.oauth.consumer" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.349"/>
-    <PluginVersion id="10050" name="Webwork Plugin" key="com.atlassian.jira.plugin.system.webwork1" version="1.0" created="2010-07-23 10:34:35.382"/>
-    <PluginVersion id="10041" name="ICU4J" key="com.atlassian.bundles.icu4j-3.8.0.1" version="3.8.0.1" created="2010-07-23 10:34:35.373"/>
+    <PermissionScheme id="0" name="Default Permission Scheme" description="This is the default Permission Scheme. Any new projects that are created will be assigned this scheme."/>
     <PluginVersion id="10033" name="Web Resources Plugin" key="jira.webresources" version="1.0" created="2010-07-23 10:34:35.363"/>
-    <PluginVersion id="10010" name="JIRA Activity Stream Plugin" key="com.atlassian.streams.streams-jira-plugin" version="3.0.19" created="2010-07-23 10:34:35.331"/>
-    <PluginVersion id="10044" name="Renderer Component Factories Plugin" key="com.atlassian.jira.plugin.wiki.renderercomponentfactories" version="1.0" created="2010-07-23 10:34:35.376"/>
-    <PluginVersion id="10019" name="Atlassian OAuth Service Provider SPI" key="com.atlassian.oauth.atlassian-oauth-service-provider-spi-1.0.12" version="1.0.12" created="2010-07-23 10:34:35.343"/>
-    <PluginVersion id="10032" name="Atlassian Gadgets OAuth Service Provider Plugin" key="com.atlassian.gadgets.oauth.serviceprovider" version="1.1.5.6" created="2010-08-03 14:14:24.537"/>
-    <PluginVersion id="10017" name="Joda-Time" key="joda-time-1.6" version="1.6" created="2010-07-23 10:34:35.341"/>
     <PluginVersion id="10030" name="Apache HttpClient OSGi bundle" key="org.apache.httpcomponents.httpclient-4.0" version="4.0" created="2010-07-23 10:34:35.358"/>
-    <PluginVersion id="10048" name="ROME, RSS and atOM utilitiEs for Java" key="rome.rome-1.0" version="1.0" created="2010-07-23 10:34:35.38"/>
-    <PluginVersion id="10043" name="Reports Plugin" key="com.atlassian.jira.plugin.system.reports" version="1.0" created="2010-07-23 10:34:35.375"/>
-    <PluginVersion id="10018" name="Content Link Resolvers Plugin" key="com.atlassian.jira.plugin.wiki.contentlinkresolvers" version="1.0" created="2010-07-23 10:34:35.342"/>
-    <PluginVersion id="10049" name="Atlassian Template Renderer API" key="com.atlassian.templaterenderer.api" version="1.1.1" created="2010-07-23 10:34:35.381"/>
-    <PluginVersion id="10028" name="JQL Functions" key="jira.jql.function" version="1.0" created="2010-07-23 10:34:35.356"/>
-    <PluginVersion id="10080" name="${project.name}" key="com.atlassian.pdkinstall" version="1.0-SNAPSHOT" created="2010-08-20 12:25:55.471"/>
-    <PluginVersion id="10025" name="Atlassian UI Plugin" key="com.atlassian.auiplugin" version="3.0.9" created="2010-07-28 17:02:32.699"/>
-    <PluginVersion id="10023" name="Shared Application Access Layer API" key="com.atlassian.sal.sal-api-2.1.0" version="2.1.0" created="2010-07-23 10:34:35.35"/>
-    <PluginVersion id="10052" name="JIRA Bamboo Plugin" key="com.atlassian.jira.plugin.ext.bamboo" version="4.1.3" created="2010-07-23 10:34:35.386"/>
     <PluginVersion id="10003" name="Atlassian OAuth Admin Plugin" key="com.atlassian.oauth.admin" version="1.0.12" created="2010-07-23 10:34:35.323"/>
-    <PluginVersion id="10024" name="JIRA Gadgets Plugin" key="com.atlassian.jira.gadgets" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.351"/>
-    <PluginVersion id="10047" name="JIRA REST Plugin" key="com.atlassian.jira.rest" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.379"/>
-    <PluginVersion id="10046" name="Gadget Spec Publisher Plugin" key="com.atlassian.gadgets.publisher" version="1.1.5.6" created="2010-08-03 14:14:24.54"/>
-    <PluginVersion id="10013" name="Gadget Dashboard Plugin" key="com.atlassian.gadgets.dashboard" version="1.1.5.6" created="2010-08-03 14:14:24.533"/>
-    <PluginVersion id="10015" name="Portlets Plugin" key="com.atlassian.jira.plugin.system.portlets" version="1.0" created="2010-07-23 10:34:35.338"/>
     <PluginVersion id="10027" name="Atlassian REST - Module Types" key="com.atlassian.plugins.rest.atlassian-rest-module" version="2.1.0" created="2010-08-03 14:14:24.535"/>
+    <PluginVersion id="10054" name="Neko HTML" key="com.atlassian.bundles.nekohtml-1.9.12.1" version="1.9.12.1" created="2010-07-23 10:34:35.389"/>
+    <PluginVersion id="10058" name="Atlassian OAuth Consumer Plugin" key="com.atlassian.oauth.consumer" version="1.0.12" created="2010-07-23 10:34:35.393"/>
+    <PluginVersion id="10016" name="JSON Library" key="com.atlassian.bundles.json-20070829.0.0.1" version="20070829.0.0.1" created="2010-07-23 10:34:35.34"/>
+    <PluginVersion id="10002" name="Custom Field Types &amp; Searchers" key="com.atlassian.jira.plugin.system.customfieldtypes" version="1.0" created="2010-07-23 10:34:35.322"/>
+    <PluginVersion id="10041" name="ICU4J" key="com.atlassian.bundles.icu4j-3.8.0.1" version="3.8.0.1" created="2010-07-23 10:34:35.373"/>
+    <PluginVersion id="10028" name="JQL Functions" key="jira.jql.function" version="1.0" created="2010-07-23 10:34:35.356"/>
+    <PluginVersion id="10046" name="Gadget Spec Publisher Plugin" key="com.atlassian.gadgets.publisher" version="1.1.5.6" created="2010-08-03 14:14:24.54"/>
+    <PluginVersion id="10009" name="Keyboard Shortcuts Plugin" key="jira.keyboard.shortcuts" version="1.0" created="2010-07-23 10:34:35.33"/>
+    <PluginVersion id="10031" name="User Profile Panels" key="jira.user.profile.panels" version="1.0" created="2010-07-23 10:34:35.361"/>
+    <PluginVersion id="10026" name="JIRA Footer" key="jira.footer" version="1.0" created="2010-07-23 10:34:35.354"/>
+    <PluginVersion id="10012" name="Top Navigation Bar" key="jira.top.navigation.bar" version="1.0" created="2010-07-23 10:34:35.335"/>
+    <PluginVersion id="10020" name="Wiki Renderer Macros Plugin" key="com.atlassian.jira.plugin.system.renderers.wiki.macros" version="1.0" created="2010-07-23 10:34:35.345"/>
+    <PluginVersion id="10039" name="Workflow Plugin" key="com.atlassian.jira.plugin.system.workflow" version="1.0" created="2010-07-23 10:34:35.369"/>
+    <PluginVersion id="10050" name="Webwork Plugin" key="com.atlassian.jira.plugin.system.webwork1" version="1.0" created="2010-07-23 10:34:35.382"/>
+    <PluginVersion id="10017" name="Joda-Time" key="joda-time-1.6" version="1.6" created="2010-07-23 10:34:35.341"/>
+    <PluginVersion id="10025" name="Atlassian UI Plugin" key="com.atlassian.auiplugin" version="3.0.9" created="2010-07-28 17:02:32.699"/>
+    <PluginVersion id="10045" name="ROME: RSS/Atom syndication and publishing tools" key="com.springsource.com.sun.syndication-0.9.0" version="0.9.0" created="2010-07-23 10:34:35.377"/>
+    <PluginVersion id="10000" name="User Format" key="jira.user.format" version="1.0" created="2010-07-23 10:34:35.315"/>
+    <PluginVersion id="10034" name="JDOM DOM Processor" key="com.springsource.org.jdom-1.0.0" version="1.0.0" created="2010-07-23 10:34:35.364"/>
+    <PluginVersion id="10001" name="Gadget Directory Plugin" key="com.atlassian.gadgets.directory" version="1.1.5.6" created="2010-08-03 14:14:24.524"/>
+    <PluginVersion id="10040" name="Apache HttpCore OSGi bundle" key="org.apache.httpcomponents.httpcore-4.0" version="4.0" created="2010-07-23 10:34:35.37"/>
+    <PluginVersion id="10005" name="Issue Tab Panels Plugin" key="com.atlassian.jira.plugin.system.issuetabpanels" version="1.0" created="2010-07-23 10:34:35.326"/>
+    <PluginVersion id="10037" name="JIRA OAuth Service Provider SPI Plugin" key="com.atlassian.jira.oauth.serviceprovider" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.367"/>
+    <PluginVersion id="10032" name="Atlassian Gadgets OAuth Service Provider Plugin" key="com.atlassian.gadgets.oauth.serviceprovider" version="1.1.5.6" created="2010-08-03 14:14:24.537"/>
+    <PluginVersion id="10048" name="ROME, RSS and atOM utilitiEs for Java" key="rome.rome-1.0" version="1.0" created="2010-07-23 10:34:35.38"/>
+    <PluginVersion id="10018" name="Content Link Resolvers Plugin" key="com.atlassian.jira.plugin.wiki.contentlinkresolvers" version="1.0" created="2010-07-23 10:34:35.342"/>
+    <PluginVersion id="10024" name="JIRA Gadgets Plugin" key="com.atlassian.jira.gadgets" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.351"/>
+    <PluginVersion id="10015" name="Portlets Plugin" key="com.atlassian.jira.plugin.system.portlets" version="1.0" created="2010-07-23 10:34:35.338"/>
     <PluginVersion id="10053" name="User Profile Links" key="jira.webfragments.user.profile.links" version="1.0" created="2010-07-23 10:34:35.387"/>
     <PluginVersion id="10008" name="JIRA Shared Application Access Layer (SAL) Plugin" key="com.atlassian.sal.jira" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.329"/>
-    <PluginVersion id="10009" name="Keyboard Shortcuts Plugin" key="jira.keyboard.shortcuts" version="1.0" created="2010-07-23 10:34:35.33"/>
-    <PluginVersion id="10045" name="ROME: RSS/Atom syndication and publishing tools" key="com.springsource.com.sun.syndication-0.9.0" version="0.9.0" created="2010-07-23 10:34:35.377"/>
-    <PluginVersion id="10029" name="Admin Menu Sections" key="jira.webfragments.admin" version="1.0" created="2010-07-23 10:34:35.357"/>
-    <PluginVersion id="10000" name="User Format" key="jira.user.format" version="1.0" created="2010-07-23 10:34:35.315"/>
-    <PluginVersion id="10054" name="Neko HTML" key="com.atlassian.bundles.nekohtml-1.9.12.1" version="1.9.12.1" created="2010-07-23 10:34:35.389"/>
-    <PluginVersion id="10036" name="BND Library" key="biz.aQute.bndlib-0.0.255" version="0.0.255" created="2010-07-23 10:34:35.366"/>
-    <PluginVersion id="10007" name="Renderer Plugin" key="com.atlassian.jira.plugin.system.jirarenderers" version="1.0" created="2010-07-23 10:34:35.328"/>
-    <PluginVersion id="10031" name="User Profile Panels" key="jira.user.profile.panels" version="1.0" created="2010-07-23 10:34:35.361"/>
-    <PluginVersion id="10021" name="Atlassian Template Renderer Velocity 1.6 Plugin" key="com.atlassian.templaterenderer.atlassian-template-renderer-velocity1.6-plugin" version="1.1.1" created="2010-07-23 10:34:35.348"/>
     <PluginVersion id="10035" name="Issue Operations Plugin" key="com.atlassian.jira.plugin.system.issueoperations" version="1.0" created="2010-07-23 10:34:35.365"/>
-    <PluginVersion id="10014" name="Issue Views Plugin" key="jira.issueviews" version="1.0" created="2010-07-23 10:34:35.337"/>
-    <PluginVersion id="10034" name="JDOM DOM Processor" key="com.springsource.org.jdom-1.0.0" version="1.0.0" created="2010-07-23 10:34:35.364"/>
-    <PluginVersion id="10026" name="JIRA Footer" key="jira.footer" version="1.0" created="2010-07-23 10:34:35.354"/>
-    <PluginVersion id="10058" name="Atlassian OAuth Consumer Plugin" key="com.atlassian.oauth.consumer" version="1.0.12" created="2010-07-23 10:34:35.393"/>
-    <PluginVersion id="10011" name="Atlassian OAuth Consumer SPI" key="com.atlassian.oauth.atlassian-oauth-consumer-spi-1.0.12" version="1.0.12" created="2010-07-23 10:34:35.334"/>
     <PluginVersion id="10056" name="View Project Operations Sections" key="jira.webfragments.view.project.operations" version="1.0" created="2010-07-23 10:34:35.391"/>
-    <PluginVersion id="10012" name="Top Navigation Bar" key="jira.top.navigation.bar" version="1.0" created="2010-07-23 10:34:35.335"/>
-    <PluginVersion id="10004" name="User Navigation Bar Sections" key="jira.webfragments.user.navigation.bar" version="1.0" created="2010-07-23 10:34:35.325"/>
-    <PluginVersion id="10016" name="JSON Library" key="com.atlassian.bundles.json-20070829.0.0.1" version="20070829.0.0.1" created="2010-07-23 10:34:35.34"/>
-    <PluginVersion id="10059" name="Project Role Actors Plugin" key="com.atlassian.jira.plugin.system.projectroleactors" version="1.0" created="2010-07-23 10:34:35.394"/>
-    <PluginVersion id="10001" name="Gadget Directory Plugin" key="com.atlassian.gadgets.directory" version="1.1.5.6" created="2010-08-03 14:14:24.524"/>
-    <PluginVersion id="10060" name="JIRA Usage Hints" key="jira.usage.hints" version="1.0" created="2010-07-23 10:34:35.395"/>
-    <PluginVersion id="10006" name="Embedded Gadgets Plugin" key="com.atlassian.gadgets.embedded" version="1.1.5.6" created="2010-08-03 14:14:24.532"/>
     <PluginVersion id="10042" name="FishEye Plugin" key="com.atlassian.jirafisheyeplugin" version="3.0.21" created="2010-08-16 15:41:28.243"/>
-    <PluginVersion id="10040" name="Apache HttpCore OSGi bundle" key="org.apache.httpcomponents.httpcore-4.0" version="4.0" created="2010-07-23 10:34:35.37"/>
-    <PluginVersion id="10020" name="Wiki Renderer Macros Plugin" key="com.atlassian.jira.plugin.system.renderers.wiki.macros" version="1.0" created="2010-07-23 10:34:35.345"/>
     <PluginVersion id="10055" name="Project Panels Plugin" key="com.atlassian.jira.plugin.system.project" version="1.0" created="2010-07-23 10:34:35.39"/>
-    <PluginVersion id="10100" name="JIRA Issue Links Matrix Plugin" key="com.spartez.plugin.jira.issuelinksreport" version="2.0" created="2010-08-26 17:13:43.1"/>
-    <PluginVersion id="10038" name="Gadget Renderer Plugin" key="com.atlassian.gadgets.renderer" version="1.1.5.6" created="2010-08-03 14:14:24.538"/>
-    <PluginVersion id="10051" name="Preset Filters Sections" key="jira.webfragments.preset.filters" version="1.0" created="2010-07-23 10:34:35.385"/>
-    <PluginVersion id="10005" name="Issue Tab Panels Plugin" key="com.atlassian.jira.plugin.system.issuetabpanels" version="1.0" created="2010-07-23 10:34:35.326"/>
-    <PluginVersion id="10002" name="Custom Field Types &amp; Searchers" key="com.atlassian.jira.plugin.system.customfieldtypes" version="1.0" created="2010-07-23 10:34:35.322"/>
-    <PluginVersion id="10039" name="Workflow Plugin" key="com.atlassian.jira.plugin.system.workflow" version="1.0" created="2010-07-23 10:34:35.369"/>
     <PluginVersion id="10057" name="Atlassian OAuth Service Provider Plugin" key="com.atlassian.oauth.serviceprovider" version="1.0.12" created="2010-07-23 10:34:35.392"/>
+    <PluginVersion id="10044" name="Renderer Component Factories Plugin" key="com.atlassian.jira.plugin.wiki.renderercomponentfactories" version="1.0" created="2010-07-23 10:34:35.376"/>
+    <PluginVersion id="10043" name="Reports Plugin" key="com.atlassian.jira.plugin.system.reports" version="1.0" created="2010-07-23 10:34:35.375"/>
+    <PluginVersion id="10023" name="Shared Application Access Layer API" key="com.atlassian.sal.sal-api-2.1.0" version="2.1.0" created="2010-07-23 10:34:35.35"/>
+    <PluginVersion id="10036" name="BND Library" key="biz.aQute.bndlib-0.0.255" version="0.0.255" created="2010-07-23 10:34:35.366"/>
+    <PluginVersion id="10014" name="Issue Views Plugin" key="jira.issueviews" version="1.0" created="2010-07-23 10:34:35.337"/>
+    <PluginVersion id="10011" name="Atlassian OAuth Consumer SPI" key="com.atlassian.oauth.atlassian-oauth-consumer-spi-1.0.12" version="1.0.12" created="2010-07-23 10:34:35.334"/>
+    <PluginVersion id="10060" name="JIRA Usage Hints" key="jira.usage.hints" version="1.0" created="2010-07-23 10:34:35.395"/>
+    <PluginVersion id="10051" name="Preset Filters Sections" key="jira.webfragments.preset.filters" version="1.0" created="2010-07-23 10:34:35.385"/>
+    <PluginVersion id="10010" name="JIRA Activity Stream Plugin" key="com.atlassian.streams.streams-jira-plugin" version="3.0.19" created="2010-07-23 10:34:35.331"/>
+    <PluginVersion id="10047" name="JIRA REST Plugin" key="com.atlassian.jira.rest" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.379"/>
+    <PluginVersion id="10021" name="Atlassian Template Renderer Velocity 1.6 Plugin" key="com.atlassian.templaterenderer.atlassian-template-renderer-velocity1.6-plugin" version="1.1.1" created="2010-07-23 10:34:35.348"/>
+    <PluginVersion id="10004" name="User Navigation Bar Sections" key="jira.webfragments.user.navigation.bar" version="1.0" created="2010-07-23 10:34:35.325"/>
+    <PluginVersion id="10006" name="Embedded Gadgets Plugin" key="com.atlassian.gadgets.embedded" version="1.1.5.6" created="2010-08-03 14:14:24.532"/>
+    <PluginVersion id="10038" name="Gadget Renderer Plugin" key="com.atlassian.gadgets.renderer" version="1.1.5.6" created="2010-08-03 14:14:24.538"/>
+    <PluginVersion id="10022" name="JIRA OAuth Consumer SPI Plugin" key="com.atlassian.jira.oauth.consumer" version="4.2-SNAPSHOT" created="2010-07-23 10:34:35.349"/>
+    <PluginVersion id="10019" name="Atlassian OAuth Service Provider SPI" key="com.atlassian.oauth.atlassian-oauth-service-provider-spi-1.0.12" version="1.0.12" created="2010-07-23 10:34:35.343"/>
+    <PluginVersion id="10049" name="Atlassian Template Renderer API" key="com.atlassian.templaterenderer.api" version="1.1.1" created="2010-07-23 10:34:35.381"/>
+    <PluginVersion id="10080" name="${project.name}" key="com.atlassian.pdkinstall" version="1.0-SNAPSHOT" created="2010-08-20 12:25:55.471"/>
+    <PluginVersion id="10052" name="JIRA Bamboo Plugin" key="com.atlassian.jira.plugin.ext.bamboo" version="4.1.3" created="2010-07-23 10:34:35.386"/>
+    <PluginVersion id="10013" name="Gadget Dashboard Plugin" key="com.atlassian.gadgets.dashboard" version="1.1.5.6" created="2010-08-03 14:14:24.533"/>
+    <PluginVersion id="10029" name="Admin Menu Sections" key="jira.webfragments.admin" version="1.0" created="2010-07-23 10:34:35.357"/>
+    <PluginVersion id="10007" name="Renderer Plugin" key="com.atlassian.jira.plugin.system.jirarenderers" version="1.0" created="2010-07-23 10:34:35.328"/>
+    <PluginVersion id="10059" name="Project Role Actors Plugin" key="com.atlassian.jira.plugin.system.projectroleactors" version="1.0" created="2010-07-23 10:34:35.394"/>
+    <PluginVersion id="10100" name="JIRA Issue Links Matrix Plugin" key="com.spartez.plugin.jira.issuelinksreport" version="2.0" created="2010-08-26 17:13:43.1"/>
     <PortalPage id="10000" pagename="System Dashboard" sequence="0" favCount="0" layout="AA" version="0"/>
     <PortalPage id="10010" username="admin" pagename="My test" favCount="1" layout="AA" version="1"/>
-    <PortletConfiguration id="10004" portalpage="10000" columnNumber="1" position="2" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:admin-gadget/gadgets/admin-gadget.xml"/>
     <PortletConfiguration id="10010" portalpage="10010" columnNumber="0" position="0" gadgetXml="http://www.atlassian.com/gadgets/news.xml" color="color1"/>
+    <PortletConfiguration id="10003" portalpage="10000" columnNumber="1" position="1" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:favourite-filters-gadget/gadgets/favourite-filters-gadget.xml"/>
+    <PortletConfiguration id="10004" portalpage="10000" columnNumber="1" position="2" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:admin-gadget/gadgets/admin-gadget.xml"/>
     <PortletConfiguration id="10000" portalpage="10000" columnNumber="0" position="0" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:introduction-gadget/gadgets/introduction-gadget.xml"/>
     <PortletConfiguration id="10002" portalpage="10000" columnNumber="1" position="0" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:assigned-to-me-gadget/gadgets/assigned-to-me-gadget.xml"/>
-    <PortletConfiguration id="10003" portalpage="10000" columnNumber="1" position="1" gadgetXml="rest/gadgets/1.0/g/com.atlassian.jira.gadgets:favourite-filters-gadget/gadgets/favourite-filters-gadget.xml"/>
     <PortletConfiguration id="10001" portalpage="10000" columnNumber="0" position="1" gadgetXml="rest/gadgets/1.0/g/com.atlassian.streams.streams-jira-plugin:activitystream-gadget/gadgets/activitystream-gadget.xml"/>
-    <Priority id="2" sequence="2" name="Critical" description="Crashes, loss of data, severe memory leak." iconurl="/images/icons/priority_critical.gif" statusColor="#ff0000"/>
+    <Priority id="1" sequence="1" name="Blocker" description="Blocks development and/or testing work, production could not run." iconurl="/images/icons/priority_blocker.gif" statusColor="#cc0000"/>
     <Priority id="3" sequence="3" name="Major" description="Major loss of function." iconurl="/images/icons/priority_major.gif" statusColor="#009900"/>
     <Priority id="4" sequence="4" name="Minor" description="Minor loss of function, or other problem where easy workaround is present." iconurl="/images/icons/priority_minor.gif" statusColor="#006600"/>
-    <Priority id="1" sequence="1" name="Blocker" description="Blocks development and/or testing work, production could not run." iconurl="/images/icons/priority_blocker.gif" statusColor="#cc0000"/>
+    <Priority id="2" sequence="2" name="Critical" description="Crashes, loss of data, severe memory leak." iconurl="/images/icons/priority_critical.gif" statusColor="#ff0000"/>
     <Priority id="5" sequence="5" name="Trivial" description="Cosmetic problem like misspelt words or misaligned text." iconurl="/images/icons/priority_trivial.gif" statusColor="#003300"/>
     <Project id="10000" name="Test Project" url="" lead="admin" description="" key="TST" counter="7" assigneetype="2" avatar="10050"/>
-    <Project id="10010" name="Restricted Project" url="http://atlassian.com" lead="admin" description="This project is visible only by Administrator" key="RST" counter="0" assigneetype="2" avatar="10011"/>
+    <Project id="10010" name="Restricted Project" url="http://atlassian.com" lead="admin" description="This project is visible only by Administrator" key="RST" counter="1" assigneetype="2" avatar="10011"/>
     <Project id="10020" name="Anonymously Accessible Project" url="" lead="user" description="" key="ANNON" counter="1" assigneetype="2" avatar="10011"/>
     <ProjectCategory id="10000" name="Category A" description="This is a description of category A"/>
     <ProjectRole id="10000" name="Users" description="A project role that represents users in a project"/>
     <ProjectRole id="10002" name="Administrators" description="A project role that represents administrators in a project"/>
     <ProjectRole id="10001" name="Developers" description="A project role that represents developers in a project"/>
-    <ProjectRoleActor id="10030" pid="10000" projectroleid="10000" roletype="atlassian-user-role-actor" roletypeparameter="wseliga"/>
-    <ProjectRoleActor id="10061" pid="10020" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
-    <ProjectRoleActor id="10001" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
     <ProjectRoleActor id="10050" pid="10010" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
+    <ProjectRoleActor id="10062" pid="10020" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
+    <ProjectRoleActor id="10001" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
+    <ProjectRoleActor id="10010" pid="10000" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
     <ProjectRoleActor id="10041" pid="10000" projectroleid="10001" roletype="atlassian-user-role-actor" roletypeparameter="wseliga"/>
+    <ProjectRoleActor id="10011" pid="10000" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
+    <ProjectRoleActor id="10060" pid="10020" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
+    <ProjectRoleActor id="10020" pid="10000" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
+    <ProjectRoleActor id="10030" pid="10000" projectroleid="10000" roletype="atlassian-user-role-actor" roletypeparameter="wseliga"/>
     <ProjectRoleActor id="10063" pid="10020" projectroleid="10001" roletype="atlassian-user-role-actor" roletypeparameter="user"/>
     <ProjectRoleActor id="10051" pid="10010" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
-    <ProjectRoleActor id="10060" pid="10020" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
-    <ProjectRoleActor id="10053" pid="10010" projectroleid="10000" roletype="atlassian-user-role-actor" roletypeparameter="admin"/>
-    <ProjectRoleActor id="10020" pid="10000" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
-    <ProjectRoleActor id="10062" pid="10020" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
-    <ProjectRoleActor id="10002" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
-    <ProjectRoleActor id="10010" pid="10000" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
-    <ProjectRoleActor id="10011" pid="10000" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
     <ProjectRoleActor id="10000" projectroleid="10000" roletype="atlassian-group-role-actor" roletypeparameter="jira-users"/>
-    <RememberMeToken id="10010" created="2010-08-03 15:37:19.524" token="9fOs0Kl+CK337qchIjReujs5a9bnm2+APKUgsZBO0SLDf7d1GFdedB3urkP0f0h9/qcbMf4zGLqFmUMnVpD2Mg==" username="admin"/>
+    <ProjectRoleActor id="10061" pid="10020" projectroleid="10001" roletype="atlassian-group-role-actor" roletypeparameter="jira-developers"/>
+    <ProjectRoleActor id="10053" pid="10010" projectroleid="10000" roletype="atlassian-user-role-actor" roletypeparameter="admin"/>
+    <ProjectRoleActor id="10002" projectroleid="10002" roletype="atlassian-group-role-actor" roletypeparameter="jira-administrators"/>
     <RememberMeToken id="10020" created="2010-08-19 13:16:29.986" token="75b8802372f13b37c8172ee614018f5af7f17637" username="admin"/>
-    <Resolution id="2" sequence="2" name="Won&apos;t Fix" description="The problem described is an issue which will never be fixed."/>
-    <Resolution id="1" sequence="1" name="Fixed" description="A fix for this issue is checked into the tree and tested."/>
+    <RememberMeToken id="10010" created="2010-08-03 15:37:19.524" token="9fOs0Kl+CK337qchIjReujs5a9bnm2+APKUgsZBO0SLDf7d1GFdedB3urkP0f0h9/qcbMf4zGLqFmUMnVpD2Mg==" username="admin"/>
     <Resolution id="4" sequence="4" name="Incomplete" description="The problem is not completely described."/>
+    <Resolution id="1" sequence="1" name="Fixed" description="A fix for this issue is checked into the tree and tested."/>
+    <Resolution id="2" sequence="2" name="Won&apos;t Fix" description="The problem described is an issue which will never be fixed."/>
     <Resolution id="5" sequence="5" name="Cannot Reproduce" description="All attempts at reproducing this issue failed, or not enough information was available to reproduce the issue. Reading the code produces no clues as to why this behavior would occur. If more information appears later, please reopen the issue."/>
     <Resolution id="3" sequence="3" name="Duplicate" description="The problem is a duplicate of an existing issue."/>
-    <SchemePermissions id="10030" scheme="0" permission="38" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10029" scheme="0" permission="37" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10066" scheme="10000" permission="37" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10032" permission="22" type="group" parameter="jira-users"/>
     <SchemePermissions id="10072" scheme="10000" permission="40" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10014" scheme="0" permission="16" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10011" scheme="0" permission="14" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10068" scheme="10000" permission="20" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10055" scheme="10000" permission="25" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10017" scheme="0" permission="28" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10077" scheme="10000" permission="39" type="projectrole" parameter="10000"/>
     <SchemePermissions id="10012" scheme="0" permission="21" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10019" scheme="0" permission="20" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10079" scheme="10000" permission="10" type="group"/>
-    <SchemePermissions id="10059" scheme="10000" permission="31" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10018" scheme="0" permission="30" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10020" scheme="0" permission="43" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10006" scheme="0" permission="11" type="projectrole" parameter="10000"/>
     <SchemePermissions id="10009" scheme="0" permission="13" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10041" permission="44" type="group" parameter="jira-administrators"/>
-    <SchemePermissions id="10023" scheme="0" permission="40" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10063" scheme="10000" permission="13" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10056" scheme="10000" permission="38" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10015" scheme="0" permission="18" type="projectrole" parameter="10001"/>
     <SchemePermissions id="10013" scheme="0" permission="12" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10053" scheme="10000" permission="15" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10073" scheme="10000" permission="42" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10062" scheme="10000" permission="28" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10054" scheme="10000" permission="16" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10022" scheme="0" permission="41" type="projectrole" parameter="10001"/>
     <SchemePermissions id="10007" scheme="0" permission="15" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10076" scheme="10000" permission="12" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10031" scheme="0" permission="39" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10065" scheme="10000" permission="14" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10001" permission="1" type="group" parameter="jira-users"/>
-    <SchemePermissions id="10075" scheme="10000" permission="43" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10052" scheme="10000" permission="36" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10069" scheme="10000" permission="17" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10002" permission="27" type="group" parameter="jira-developers"/>
-    <SchemePermissions id="10024" scheme="0" permission="31" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10016" scheme="0" permission="25" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10071" scheme="10000" permission="21" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10028" scheme="0" permission="36" type="projectrole" parameter="10002"/>
     <SchemePermissions id="10010" scheme="0" permission="17" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10064" scheme="10000" permission="34" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10078" scheme="10000" permission="29" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10040" permission="33" type="group" parameter="jira-users"/>
-    <SchemePermissions id="10025" scheme="0" permission="32" type="projectrole" parameter="10002"/>
     <SchemePermissions id="10067" scheme="10000" permission="18" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10003" permission="24" type="group" parameter="jira-developers"/>
-    <SchemePermissions id="10070" scheme="10000" permission="35" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10051" scheme="10000" permission="30" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10008" scheme="0" permission="19" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10027" scheme="0" permission="35" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10026" scheme="0" permission="34" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10061" scheme="10000" permission="41" type="projectrole" parameter="10001"/>
     <SchemePermissions id="10074" scheme="10000" permission="23" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10033" scheme="0" permission="29" type="projectrole" parameter="10001"/>
-    <SchemePermissions id="10057" scheme="10000" permission="10" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10004" scheme="0" permission="23" type="projectrole" parameter="10002"/>
-    <SchemePermissions id="10050" scheme="10000" permission="11" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10021" scheme="0" permission="42" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10058" scheme="10000" permission="19" type="projectrole" parameter="10000"/>
-    <SchemePermissions id="10005" scheme="0" permission="10" type="projectrole" parameter="10000"/>
     <SchemePermissions id="10000" permission="0" type="group" parameter="jira-administrators"/>
+    <SchemePermissions id="10011" scheme="0" permission="14" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10018" scheme="0" permission="30" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10056" scheme="10000" permission="38" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10076" scheme="10000" permission="12" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10016" scheme="0" permission="25" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10078" scheme="10000" permission="29" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10008" scheme="0" permission="19" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10050" scheme="10000" permission="11" type="projectrole" parameter="10000"/>
     <SchemePermissions id="10060" scheme="10000" permission="32" type="projectrole" parameter="10002"/>
-    <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
-    <SequenceValueItem seqName="Action" seqId="10040"/>
-    <SequenceValueItem seqName="ChangeItem" seqId="10170"/>
-    <SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
-    <SequenceValueItem seqName="Workflow" seqId="10010"/>
+    <SchemePermissions id="10029" scheme="0" permission="37" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10014" scheme="0" permission="16" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10079" scheme="10000" permission="10" type="group"/>
+    <SchemePermissions id="10041" permission="44" type="group" parameter="jira-administrators"/>
+    <SchemePermissions id="10065" scheme="10000" permission="14" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10075" scheme="10000" permission="43" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10069" scheme="10000" permission="17" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10064" scheme="10000" permission="34" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10027" scheme="0" permission="35" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10057" scheme="10000" permission="10" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10030" scheme="0" permission="38" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10068" scheme="10000" permission="20" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10020" scheme="0" permission="43" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10053" scheme="10000" permission="15" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10062" scheme="10000" permission="28" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10052" scheme="10000" permission="36" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10071" scheme="10000" permission="21" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10070" scheme="10000" permission="35" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10061" scheme="10000" permission="41" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10005" scheme="0" permission="10" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10032" permission="22" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10017" scheme="0" permission="28" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10019" scheme="0" permission="20" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10023" scheme="0" permission="40" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10073" scheme="10000" permission="42" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10031" scheme="0" permission="39" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10028" scheme="0" permission="36" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10003" permission="24" type="group" parameter="jira-developers"/>
+    <SchemePermissions id="10033" scheme="0" permission="29" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10058" scheme="10000" permission="19" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10066" scheme="10000" permission="37" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10077" scheme="10000" permission="39" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10006" scheme="0" permission="11" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10063" scheme="10000" permission="13" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10022" scheme="0" permission="41" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10001" permission="1" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10024" scheme="0" permission="31" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10025" scheme="0" permission="32" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10026" scheme="0" permission="34" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10021" scheme="0" permission="42" type="projectrole" parameter="10000"/>
+    <SchemePermissions id="10055" scheme="10000" permission="25" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10059" scheme="10000" permission="31" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10015" scheme="0" permission="18" type="projectrole" parameter="10001"/>
+    <SchemePermissions id="10054" scheme="10000" permission="16" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10002" permission="27" type="group" parameter="jira-developers"/>
+    <SchemePermissions id="10040" permission="33" type="group" parameter="jira-users"/>
+    <SchemePermissions id="10051" scheme="10000" permission="30" type="projectrole" parameter="10002"/>
+    <SchemePermissions id="10004" scheme="0" permission="23" type="projectrole" parameter="10002"/>
     <SequenceValueItem seqName="FieldConfiguration" seqId="10030"/>
-    <SequenceValueItem seqName="FieldScreen" seqId="10010"/>
-    <SequenceValueItem seqName="WorkflowScheme" seqId="10010"/>
-    <SequenceValueItem seqName="Issue" seqId="10060"/>
-    <SequenceValueItem seqName="CustomField" seqId="10020"/>
-    <SequenceValueItem seqName="ColumnLayoutItem" seqId="10020"/>
-    <SequenceValueItem seqName="ServiceConfig" seqId="10380"/>
     <SequenceValueItem seqName="FieldConfigScheme" seqId="10030"/>
-    <SequenceValueItem seqName="Notification" seqId="10050"/>
-    <SequenceValueItem seqName="ProjectCategory" seqId="10010"/>
-    <SequenceValueItem seqName="IssueLink" seqId="10020"/>
-    <SequenceValueItem seqName="UpgradeVersionHistory" seqId="10060"/>
     <SequenceValueItem seqName="PermissionScheme" seqId="10010"/>
-    <SequenceValueItem seqName="FieldScreenTab" seqId="10020"/>
-    <SequenceValueItem seqName="Worklog" seqId="10030"/>
-    <SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
-    <SequenceValueItem seqName="FieldScreenSchemeItem" seqId="10010"/>
-    <SequenceValueItem seqName="PortletConfiguration" seqId="10020"/>
     <SequenceValueItem seqName="ConfigurationContext" seqId="10030"/>
-    <SequenceValueItem seqName="WorkflowSchemeEntity" seqId="10010"/>
-    <SequenceValueItem seqName="IssueLinkType" seqId="10020"/>
-    <SequenceValueItem seqName="Project" seqId="10030"/>
-    <SequenceValueItem seqName="Component" seqId="10020"/>
-    <SequenceValueItem seqName="ProjectRoleActor" seqId="10070"/>
-    <SequenceValueItem seqName="OSGroup" seqId="10010"/>
-    <SequenceValueItem seqName="OSCurrentStep" seqId="10080"/>
-    <SequenceValueItem seqName="OSPropertyEntry" seqId="10480"/>
-    <SequenceValueItem seqName="OSMembership" seqId="10040"/>
-    <SequenceValueItem seqName="Avatar" seqId="10060"/>
-    <SequenceValueItem seqName="Version" seqId="10010"/>
-    <SequenceValueItem seqName="FieldScreenLayoutItem" seqId="10060"/>
-    <SequenceValueItem seqName="GadgetUserPreference" seqId="10020"/>
-    <SequenceValueItem seqName="CustomFieldValue" seqId="10030"/>
-    <SequenceValueItem seqName="ProjectRole" seqId="10010"/>
     <SequenceValueItem seqName="FieldScreenScheme" seqId="10000"/>
-    <SequenceValueItem seqName="UserHistoryItem" seqId="10080"/>
-    <SequenceValueItem seqName="Label" seqId="10030"/>
-    <SequenceValueItem seqName="OSUser" seqId="10040"/>
-    <SequenceValueItem seqName="SharePermissions" seqId="10010"/>
-    <SequenceValueItem seqName="FileAttachment" seqId="10070"/>
-    <SequenceValueItem seqName="ColumnLayout" seqId="10010"/>
     <SequenceValueItem seqName="FieldConfigSchemeIssueType" seqId="10030"/>
-    <SequenceValueItem seqName="FieldLayoutItem" seqId="10020"/>
-    <SequenceValueItem seqName="PortalPage" seqId="10020"/>
-    <SequenceValueItem seqName="RememberMeToken" seqId="10030"/>
-    <SequenceValueItem seqName="ListenerConfig" seqId="10080"/>
-    <SequenceValueItem seqName="ChangeGroup" seqId="10160"/>
     <SequenceValueItem seqName="FieldLayout" seqId="10010"/>
-    <SequenceValueItem seqName="PluginVersion" seqId="10120"/>
-    <SequenceValueItem seqName="GenericConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="OSWorkflowEntry" seqId="10080"/>
+    <SequenceValueItem seqName="OSCurrentStep" seqId="10090"/>
+    <SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
+    <SequenceValueItem seqName="ServiceConfig" seqId="10380"/>
+    <SequenceValueItem seqName="FieldScreenTab" seqId="10020"/>
+    <SequenceValueItem seqName="IssueLinkType" seqId="10020"/>
+    <SequenceValueItem seqName="OSPropertyEntry" seqId="10480"/>
+    <SequenceValueItem seqName="Version" seqId="10010"/>
+    <SequenceValueItem seqName="ProjectRole" seqId="10010"/>
+    <SequenceValueItem seqName="FieldLayoutItem" seqId="10020"/>
     <SequenceValueItem seqName="CustomFieldOption" seqId="10010"/>
-    <SequenceValueItem seqName="SchemePermissions" seqId="10080"/>
-    <SequenceValueItem seqName="UpgradeHistory" seqId="10060"/>
+    <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="Notification" seqId="10050"/>
+    <SequenceValueItem seqName="PortletConfiguration" seqId="10020"/>
+    <SequenceValueItem seqName="OSGroup" seqId="10010"/>
+    <SequenceValueItem seqName="GadgetUserPreference" seqId="10020"/>
+    <SequenceValueItem seqName="FileAttachment" seqId="10070"/>
+    <SequenceValueItem seqName="ChangeGroup" seqId="10160"/>
     <SequenceValueItem seqName="FavouriteAssociations" seqId="10010"/>
-    <SequenceValueItem seqName="OSWorkflowEntry" seqId="10070"/>
-    <ServiceConfig id="10000" time="60000" clazz="com.atlassian.jira.service.services.mail.MailQueueService" name="Mail Queue Service"/>
+    <SequenceValueItem seqName="Issue" seqId="10070"/>
+    <SequenceValueItem seqName="Action" seqId="10040"/>
+    <SequenceValueItem seqName="CustomField" seqId="10020"/>
+    <SequenceValueItem seqName="ProjectCategory" seqId="10010"/>
+    <SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
+    <SequenceValueItem seqName="Component" seqId="10020"/>
+    <SequenceValueItem seqName="CustomFieldValue" seqId="10030"/>
+    <SequenceValueItem seqName="SharePermissions" seqId="10010"/>
+    <SequenceValueItem seqName="PortalPage" seqId="10020"/>
+    <SequenceValueItem seqName="UpgradeHistory" seqId="10060"/>
+    <SequenceValueItem seqName="ChangeItem" seqId="10170"/>
+    <SequenceValueItem seqName="WorkflowScheme" seqId="10010"/>
+    <SequenceValueItem seqName="ColumnLayoutItem" seqId="10020"/>
+    <SequenceValueItem seqName="Worklog" seqId="10030"/>
+    <SequenceValueItem seqName="Project" seqId="10030"/>
+    <SequenceValueItem seqName="OSMembership" seqId="10040"/>
+    <SequenceValueItem seqName="ColumnLayout" seqId="10010"/>
+    <SequenceValueItem seqName="PluginVersion" seqId="10120"/>
+    <SequenceValueItem seqName="UserHistoryItem" seqId="10090"/>
+    <SequenceValueItem seqName="Workflow" seqId="10010"/>
+    <SequenceValueItem seqName="IssueLink" seqId="10020"/>
+    <SequenceValueItem seqName="FieldScreenSchemeItem" seqId="10010"/>
+    <SequenceValueItem seqName="Avatar" seqId="10060"/>
+    <SequenceValueItem seqName="Label" seqId="10030"/>
+    <SequenceValueItem seqName="RememberMeToken" seqId="10030"/>
+    <SequenceValueItem seqName="GenericConfiguration" seqId="10010"/>
+    <SequenceValueItem seqName="FieldScreen" seqId="10010"/>
+    <SequenceValueItem seqName="WorkflowSchemeEntity" seqId="10010"/>
+    <SequenceValueItem seqName="ProjectRoleActor" seqId="10070"/>
+    <SequenceValueItem seqName="FieldScreenLayoutItem" seqId="10060"/>
+    <SequenceValueItem seqName="OSUser" seqId="10040"/>
+    <SequenceValueItem seqName="SchemePermissions" seqId="10080"/>
+    <SequenceValueItem seqName="ListenerConfig" seqId="10090"/>
+    <SequenceValueItem seqName="UpgradeVersionHistory" seqId="10070"/>
     <ServiceConfig id="10370" time="28800000" clazz="com.atlassian.sal.jira.scheduling.JiraPluginSchedulerService" name="Service Provider Token Remover"/>
     <ServiceConfig id="10001" time="43200000" clazz="com.atlassian.jira.service.services.export.ExportService" name="Backup Service"/>
+    <ServiceConfig id="10000" time="60000" clazz="com.atlassian.jira.service.services.mail.MailQueueService" name="Mail Queue Service"/>
     <ServiceConfig id="10161" time="60000" clazz="com.atlassian.jira.service.services.pop.PopService" name="Sample"/>
     <SharePermissions id="10000" entityId="10000" entityType="PortalPage" type="global"/>
-    <Status id="1" sequence="1" name="Open" description="The issue is open and ready for the assignee to start work on it." iconurl="/images/icons/status_open.gif"/>
-    <Status id="4" sequence="4" name="Reopened" description="This issue was once resolved, but the resolution was deemed incorrect. From here issues are either marked assigned or resolved." iconurl="/images/icons/status_reopened.gif"/>
-    <Status id="6" sequence="6" name="Closed" description="The issue is considered finished, the resolution is correct. Issues which are closed can be reopened." iconurl="/images/icons/status_closed.gif"/>
     <Status id="3" sequence="3" name="In Progress" description="This issue is being actively worked on at the moment by the assignee." iconurl="/images/icons/status_inprogress.gif"/>
     <Status id="5" sequence="5" name="Resolved" description="A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed." iconurl="/images/icons/status_resolved.gif"/>
-    <UpgradeHistory id="10006" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build47" targetbuild="560"/>
-    <UpgradeHistory id="10008" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build51" targetbuild="560"/>
-    <UpgradeHistory id="10050" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build571" targetbuild="571"/>
-    <UpgradeHistory id="10032" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build257" targetbuild="560"/>
-    <UpgradeHistory id="10021" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build101" targetbuild="560"/>
+    <Status id="1" sequence="1" name="Open" description="The issue is open and ready for the assignee to start work on it." iconurl="/images/icons/status_open.gif"/>
+    <Status id="6" sequence="6" name="Closed" description="The issue is considered finished, the resolution is correct. Issues which are closed can be reopened." iconurl="/images/icons/status_closed.gif"/>
+    <Status id="4" sequence="4" name="Reopened" description="This issue was once resolved, but the resolution was deemed incorrect. From here issues are either marked assigned or resolved." iconurl="/images/icons/status_reopened.gif"/>
     <UpgradeHistory id="10042" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build520" targetbuild="560"/>
-    <UpgradeHistory id="10031" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build207" targetbuild="560"/>
-    <UpgradeHistory id="10010" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build60" targetbuild="560"/>
-    <UpgradeHistory id="10024" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build132" targetbuild="560"/>
-    <UpgradeHistory id="10004" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build27" targetbuild="560"/>
     <UpgradeHistory id="10020" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build83" targetbuild="560"/>
-    <UpgradeHistory id="10028" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build175" targetbuild="560"/>
-    <UpgradeHistory id="10003" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build11" targetbuild="560"/>
-    <UpgradeHistory id="10034" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build296" targetbuild="560"/>
-    <UpgradeHistory id="10041" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build438" targetbuild="560"/>
-    <UpgradeHistory id="10026" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build151" targetbuild="560"/>
-    <UpgradeHistory id="10043" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build551" targetbuild="560"/>
-    <UpgradeHistory id="10023" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build130" targetbuild="560"/>
-    <UpgradeHistory id="10030" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build205" targetbuild="560"/>
     <UpgradeHistory id="10029" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build176" targetbuild="560"/>
-    <UpgradeHistory id="10005" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build35" targetbuild="560"/>
-    <UpgradeHistory id="10027" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build152" targetbuild="560"/>
-    <UpgradeHistory id="10007" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build48" targetbuild="560"/>
-    <UpgradeHistory id="10038" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build412" targetbuild="560"/>
     <UpgradeHistory id="10000" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask1_2" targetbuild="560"/>
-    <UpgradeHistory id="10039" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build418" targetbuild="560"/>
+    <UpgradeHistory id="10035" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build317" targetbuild="560"/>
+    <UpgradeHistory id="10021" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build101" targetbuild="560"/>
+    <UpgradeHistory id="10034" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build296" targetbuild="560"/>
+    <UpgradeHistory id="10030" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build205" targetbuild="560"/>
     <UpgradeHistory id="10002" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build10" targetbuild="560"/>
-    <UpgradeHistory id="10022" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build102" targetbuild="560"/>
-    <UpgradeHistory id="10037" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build326" targetbuild="560"/>
+    <UpgradeHistory id="10009" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build56" targetbuild="560"/>
+    <UpgradeHistory id="10006" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build47" targetbuild="560"/>
+    <UpgradeHistory id="10024" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build132" targetbuild="560"/>
+    <UpgradeHistory id="10043" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build551" targetbuild="560"/>
+    <UpgradeHistory id="10007" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build48" targetbuild="560"/>
     <UpgradeHistory id="10036" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build325" targetbuild="560"/>
-    <UpgradeHistory id="10040" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build437" targetbuild="560"/>
     <UpgradeHistory id="10044" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build554" targetbuild="560"/>
     <UpgradeHistory id="10001" upgradeclass="com.atlassian.jira.upgrade.tasks.professional.UpgradeTask1_2_1" targetbuild="560"/>
-    <UpgradeHistory id="10009" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build56" targetbuild="560"/>
-    <UpgradeHistory id="10025" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build150" targetbuild="560"/>
+    <UpgradeHistory id="10050" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build571" targetbuild="571"/>
+    <UpgradeHistory id="10004" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build27" targetbuild="560"/>
+    <UpgradeHistory id="10026" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build151" targetbuild="560"/>
+    <UpgradeHistory id="10027" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build152" targetbuild="560"/>
+    <UpgradeHistory id="10037" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build326" targetbuild="560"/>
+    <UpgradeHistory id="10008" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build51" targetbuild="560"/>
+    <UpgradeHistory id="10010" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build60" targetbuild="560"/>
+    <UpgradeHistory id="10041" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build438" targetbuild="560"/>
+    <UpgradeHistory id="10005" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build35" targetbuild="560"/>
+    <UpgradeHistory id="10022" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build102" targetbuild="560"/>
+    <UpgradeHistory id="10032" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build257" targetbuild="560"/>
+    <UpgradeHistory id="10028" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build175" targetbuild="560"/>
+    <UpgradeHistory id="10038" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build412" targetbuild="560"/>
+    <UpgradeHistory id="10040" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build437" targetbuild="560"/>
     <UpgradeHistory id="10033" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build258" targetbuild="560"/>
-    <UpgradeHistory id="10035" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build317" targetbuild="560"/>
-    <UpgradeVersionHistory id="10010" timeperformed="2010-08-02 12:23:09.495" targetbuild="565" targetversion="4.2-SNAPSHOT"/>
-    <UpgradeVersionHistory id="10020" timeperformed="2010-08-20 12:25:58.439" targetbuild="571" targetversion="4.2-SNAPSHOT"/>
-    <UpgradeVersionHistory id="10000" timeperformed="2010-07-23 10:40:16.301" targetbuild="560" targetversion="4.2-SNAPSHOT"/>
+    <UpgradeHistory id="10031" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build207" targetbuild="560"/>
+    <UpgradeHistory id="10003" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build11" targetbuild="560"/>
+    <UpgradeHistory id="10023" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build130" targetbuild="560"/>
+    <UpgradeHistory id="10039" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build418" targetbuild="560"/>
+    <UpgradeHistory id="10025" upgradeclass="com.atlassian.jira.upgrade.tasks.UpgradeTask_Build150" targetbuild="560"/>
     <UpgradeVersionHistory id="10040" timeperformed="2010-09-22 18:06:05.935" targetbuild="580" targetversion="4.2-SNAPSHOT"/>
+    <UpgradeVersionHistory id="10010" timeperformed="2010-08-02 12:23:09.495" targetbuild="565" targetversion="4.2-SNAPSHOT"/>
+    <UpgradeVersionHistory id="10000" timeperformed="2010-07-23 10:40:16.301" targetbuild="560" targetversion="4.2-SNAPSHOT"/>
+    <UpgradeVersionHistory id="10020" timeperformed="2010-08-20 12:25:58.439" targetbuild="571" targetversion="4.2-SNAPSHOT"/>
     <UpgradeVersionHistory id="10030" timeperformed="2010-08-31 19:17:48.58" targetbuild="575" targetversion="4.2-SNAPSHOT"/>
-    <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="VoteIssue"/>
     <UserAssociation sourceName="wseliga" sinkNodeId="10000" sinkNodeEntity="Issue" associationType="WatchIssue"/>
     <UserAssociation sourceName="admin" sinkNodeId="10050" sinkNodeEntity="Issue" associationType="WatchIssue"/>
-    <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="WatchIssue"/>
+    <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="VoteIssue"/>
     <UserAssociation sourceName="wseliga" sinkNodeId="10000" sinkNodeEntity="Issue" associationType="VoteIssue"/>
-    <UserHistoryItem id="10050" type="Issue" entityId="10030" username="admin" lastViewed="1283161285823"/>
-    <UserHistoryItem id="10060" type="Issue" entityId="10040" username="wseliga" lastViewed="1285171592835"/>
-    <UserHistoryItem id="10030" type="Issue" entityId="10000" username="wseliga" lastViewed="1281083927502"/>
-    <UserHistoryItem id="10071" type="Issue" entityId="10050" username="admin" lastViewed="1285949013692"/>
+    <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="WatchIssue"/>
     <UserHistoryItem id="10020" type="Issue" entityId="10020" username="admin" lastViewed="1280490999089"/>
-    <UserHistoryItem id="10010" type="Issue" entityId="10010" username="admin" lastViewed="1283158182197"/>
-    <UserHistoryItem id="10021" type="Issue" entityId="10021" username="admin" lastViewed="1280491014413"/>
-    <UserHistoryItem id="10000" type="Project" entityId="10000" username="admin" lastViewed="1286977391889"/>
-    <UserHistoryItem id="10040" type="Issue" entityId="10010" username="wseliga" lastViewed="1282146099743"/>
-    <UserHistoryItem id="10001" type="Issue" entityId="10000" username="admin" lastViewed="1286977391865"/>
     <UserHistoryItem id="10031" type="Project" entityId="10000" username="wseliga" lastViewed="1285171592839"/>
+    <UserHistoryItem id="10000" type="Project" entityId="10000" username="admin" lastViewed="1286977391889"/>
+    <UserHistoryItem id="10080" type="Project" entityId="10010" username="admin" lastViewed="1286984499356"/>
+    <UserHistoryItem id="10081" type="Issue" entityId="10060" username="admin" lastViewed="1286984533308"/>
+    <UserHistoryItem id="10071" type="Issue" entityId="10050" username="admin" lastViewed="1285949013692"/>
+    <UserHistoryItem id="10001" type="Issue" entityId="10000" username="admin" lastViewed="1286977391865"/>
+    <UserHistoryItem id="10050" type="Issue" entityId="10030" username="admin" lastViewed="1283161285823"/>
     <UserHistoryItem id="10022" type="Issue" entityId="10022" username="admin" lastViewed="1280491040637"/>
+    <UserHistoryItem id="10060" type="Issue" entityId="10040" username="wseliga" lastViewed="1285171592835"/>
+    <UserHistoryItem id="10040" type="Issue" entityId="10010" username="wseliga" lastViewed="1282146099743"/>
+    <UserHistoryItem id="10030" type="Issue" entityId="10000" username="wseliga" lastViewed="1281083927502"/>
+    <UserHistoryItem id="10021" type="Issue" entityId="10021" username="admin" lastViewed="1280491014413"/>
+    <UserHistoryItem id="10010" type="Issue" entityId="10010" username="admin" lastViewed="1283158182197"/>
     <UserHistoryItem id="10070" type="Project" entityId="10020" username="admin" lastViewed="1285949013694"/>
-    <Version id="10001" project="10000" name="1" description="initial version" sequence="1"/>
     <Version id="10000" project="10000" name="1.1" description="Some version" sequence="2" releasedate="2010-08-25 00:00:00.0"/>
+    <Version id="10001" project="10000" name="1" description="initial version" sequence="1"/>
     <Workflow id="10000" name="test-workflow">
         <descriptor><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
@@ -1881,19 +1886,19 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     </Workflow>
     <WorkflowScheme id="10000" name="My Test Workflow Scheme" description="abc - just for testing &amp; validation"/>
     <WorkflowSchemeEntity id="10000" scheme="10000" workflow="test-workflow" issuetype="0"/>
-    <Worklog id="10020" issue="10010" author="admin" body="" created="2010-08-27 14:58:37.13" updateauthor="admin" updated="2010-08-27 14:58:37.13" startdate="2010-08-27 14:57:00.0" timeworked="3600"/>
-    <Worklog id="10000" issue="10000" author="admin" body="abc" created="2010-08-10 15:45:44.683" updateauthor="admin" updated="2010-08-10 15:45:44.683" startdate="2010-08-10 15:45:00.0" timeworked="3600"/>
-    <Worklog id="10021" issue="10010" author="admin" body="Another work for 7 min" created="2010-08-27 15:00:02.104" updateauthor="admin" updated="2010-08-27 15:00:02.104" startdate="2010-08-27 14:59:00.0" timeworked="420"/>
     <Worklog id="10001" issue="10000" author="admin" body="some other work" created="2010-08-10 15:46:24.08" updateauthor="admin" updated="2010-08-10 15:46:24.08" startdate="2010-08-08 15:46:00.0" timeworked="7800"/>
-    <Worklog id="10012" issue="10010" author="wseliga" grouplevel="jira-users" body="a worklog viewable just by jira-users" created="2010-08-17 16:53:15.848" updateauthor="wseliga" updated="2010-08-17 16:53:15.848" startdate="2010-08-11 16:52:00.0" timeworked="180"/>
+    <Worklog id="10000" issue="10000" author="admin" body="abc" created="2010-08-10 15:45:44.683" updateauthor="admin" updated="2010-08-10 15:45:44.683" startdate="2010-08-10 15:45:00.0" timeworked="3600"/>
+    <Worklog id="10020" issue="10010" author="admin" body="" created="2010-08-27 14:58:37.13" updateauthor="admin" updated="2010-08-27 14:58:37.13" startdate="2010-08-27 14:57:00.0" timeworked="3600"/>
     <Worklog id="10011" issue="10010" author="wseliga" rolelevel="10001" body="another piece of work" created="2010-08-17 16:38:00.013" updateauthor="wseliga" updated="2010-08-17 16:38:24.948" startdate="2010-08-17 16:37:00.0" timeworked="900"/>
+    <Worklog id="10021" issue="10010" author="admin" body="Another work for 7 min" created="2010-08-27 15:00:02.104" updateauthor="admin" updated="2010-08-27 15:00:02.104" startdate="2010-08-27 14:59:00.0" timeworked="420"/>
     <Worklog id="10010" issue="10010" author="admin" body="my first work" created="2010-08-17 16:35:47.466" updateauthor="admin" updated="2010-08-17 16:35:47.466" startdate="2010-08-15 16:35:00.0" timeworked="3600"/>
+    <Worklog id="10012" issue="10010" author="wseliga" grouplevel="jira-users" body="a worklog viewable just by jira-users" created="2010-08-17 16:53:15.848" updateauthor="wseliga" updated="2010-08-17 16:53:15.848" startdate="2010-08-11 16:52:00.0" timeworked="180"/>
 <!-- 
 
 
 ___ Entities ________________________________
 
-     Total                                         : 977
+     Total                                         : 982
 
      Action                                        : 7
      Avatar                                        : 38
@@ -1921,7 +1926,7 @@ ___ Entities ________________________________
      FileAttachment                                : 11
      GadgetUserPreference                          : 9
      GenericConfiguration                          : 1
-     Issue                                         : 8
+     Issue                                         : 9
      IssueLink                                     : 3
      IssueLinkType                                 : 2
      IssueType                                     : 5
@@ -1932,7 +1937,7 @@ ___ Entities ________________________________
      NodeAssociation                               : 12
      Notification                                  : 48
      NotificationScheme                            : 1
-     OSCurrentStep                                 : 8
+     OSCurrentStep                                 : 9
      OSCurrentStepPrev                             : 3
      OSGroup                                       : 3
      OSHistoryStep                                 : 9
@@ -1944,7 +1949,7 @@ ___ Entities ________________________________
      OSPropertyString                              : 65
      OSPropertyText                                : 1
      OSUser                                        : 4
-     OSWorkflowEntry                               : 14
+     OSWorkflowEntry                               : 15
      OptionConfiguration                           : 5
      PermissionScheme                              : 2
      PluginVersion                                 : 63
@@ -1965,7 +1970,7 @@ ___ Entities ________________________________
      UpgradeHistory                                : 37
      UpgradeVersionHistory                         : 6
      UserAssociation                               : 5
-     UserHistoryItem                               : 13
+     UserHistoryItem                               : 15
      Version                                       : 2
      Workflow                                      : 1
      WorkflowScheme                                : 1

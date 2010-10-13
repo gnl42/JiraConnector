@@ -22,7 +22,6 @@ import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.Attachment;
-import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.Comment;
 import com.atlassian.jira.restjavaclient.domain.FieldInput;
 import com.atlassian.jira.restjavaclient.domain.Issue;
@@ -38,16 +37,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
-import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_PASSWORD;
 import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
+import static com.atlassian.jira.restjavaclient.json.TestConstants.USER2_USERNAME;
 import static org.junit.Assert.assertThat;
 
 
@@ -79,10 +76,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
 	}
 
-
-	public URI jiraRestUri(String path) {
-		return UriBuilder.fromUri(jiraRestRootUri).path(path).build();
-	}
 
 	@Test
 	public void testGetIssue() throws Exception {
@@ -429,5 +422,20 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 			}
 		}
 		return transitionFound;
+	}
+
+	//@Test restore when JRADEV-3666 is fixed (I don't want to pollute JRJC integration test results)
+	public void xtestAddWatcherWhoDoesNotHaveViewIssuePermissions() {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue1 = issueClient.getIssue("RST-1", pm);
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "The user \"" + USER2_USERNAME
+				+ "\" does not have permission to view this issue. This user will not be added to the watch list.",
+				new Runnable() {
+					@Override
+					public void run() {
+						issueClient.addWatcher(issue1, USER2_USERNAME, pm);
+					}
+				});
+
 	}
 }
