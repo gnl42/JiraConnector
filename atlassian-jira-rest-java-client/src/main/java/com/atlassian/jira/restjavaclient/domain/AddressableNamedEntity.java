@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
+import com.atlassian.jira.restjavaclient.AddressableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -25,45 +26,47 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class Status extends BasicStatus {
-	private final String description;
-	private final URI iconUrl;
+public class AddressableNamedEntity implements AddressableEntity {
+	protected final URI self;
+	protected final String name;
 
-	public Status(URI self, String name, String description, URI iconUrl) {
-		super(self, name);
-		this.description = description;
-		this.iconUrl = iconUrl;
+	public AddressableNamedEntity(URI self, String name) {
+		this.name = name;
+		this.self = self;
 	}
 
-	public String getDescription() {
-		return description;
+	@Override
+	public URI getSelf() {
+		return self;
 	}
 
-	public URI getIconUrl() {
-		return iconUrl;
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public String toString() {
-		return getToStringHelper().
-				add("description", description).
-				add("iconUrl", iconUrl).
-				toString();
+		return getToStringHelper().toString();
+	}
+
+	protected Objects.ToStringHelper getToStringHelper() {
+		return Objects.toStringHelper(this).
+				add("self", self).
+				add("name", name);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Status) {
-			Status that = (Status) obj;
-			return super.equals(obj) && Objects.equal(this.description, that.description)
-					&& Objects.equal(this.iconUrl, that.iconUrl);
+		if (obj instanceof AddressableNamedEntity) {
+			AddressableNamedEntity that = (AddressableNamedEntity) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.name, that.name);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, iconUrl);
+		return Objects.hashCode(self, name);
 	}
-
 }

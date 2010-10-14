@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.restjavaclient.domain;
+package com.atlassian.jira.restjavaclient.json;
+
+import com.atlassian.jira.restjavaclient.domain.BasicPriority;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
@@ -23,10 +27,11 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicStatus extends AddressableNamedEntity {
-
-	public BasicStatus(URI self, String name) {
-		super(self, name);
+public class BasicPriorityJsonParser implements JsonParser<BasicPriority> {
+	@Override
+	public BasicPriority parse(JSONObject json) throws JSONException {
+		final String name = json.getString("name");
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		return new BasicPriority(selfUri, name);
 	}
-	
 }

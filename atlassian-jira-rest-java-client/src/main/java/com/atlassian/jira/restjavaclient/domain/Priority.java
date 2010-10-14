@@ -16,10 +16,62 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
+import com.google.common.base.Objects;
+
+import java.net.URI;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
-public class Priority {
+public class Priority extends BasicPriority {
+	private final String statusColor;
+	private final String description;
+	private final URI iconUrl;
+
+	public Priority(URI self, String name, String statusColor, String description, URI iconUri) {
+		super(self, name);
+		this.statusColor = statusColor;
+		this.description = description;
+		this.iconUrl = iconUri;
+	}
+
+	public String getStatusColor() {
+		return statusColor;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public URI getIconUri() {
+		return iconUrl;
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().
+				add("description", description).
+				add("statusColor", statusColor).
+				add("iconUrl", iconUrl).
+				toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Priority) {
+			Priority that = (Priority) obj;
+			return super.equals(obj) && Objects.equal(this.description, that.description)
+					&& Objects.equal(this.statusColor, that.statusColor)
+					&& Objects.equal(this.iconUrl, that.iconUrl);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), description, statusColor, iconUrl);
+	}
+
 }

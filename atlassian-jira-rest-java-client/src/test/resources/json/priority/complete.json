@@ -1,0 +1,7 @@
+{
+   "self":"http://localhost:8090/jira/rest/api/latest/priority/4",
+   "statusColor":"#006600",
+   "description":"Minor loss of function, or other problem where easy workaround is present.",
+   "iconUrl":"http://localhost:8090/jira/images/icons/priority_minor.gif",
+   "name":"Minor"
+}

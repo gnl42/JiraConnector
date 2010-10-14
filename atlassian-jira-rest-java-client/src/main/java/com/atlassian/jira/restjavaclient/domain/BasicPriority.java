@@ -23,10 +23,8 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicStatus extends AddressableNamedEntity {
-
-	public BasicStatus(URI self, String name) {
+public class BasicPriority extends AddressableNamedEntity {
+	public BasicPriority(URI self, String name) {
 		super(self, name);
 	}
-	
 }

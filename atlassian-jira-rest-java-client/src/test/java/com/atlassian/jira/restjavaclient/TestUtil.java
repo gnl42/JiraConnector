@@ -45,6 +45,7 @@ public class TestUtil {
 	public static DateTime toDateTime(String isoDateTimeSt) {
 		return formatter.parseDateTime(isoDateTimeSt);
 	}
+
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
 		assertErrorCode(errorCode, null, runnable);
 	}
@@ -84,5 +85,20 @@ public class TestUtil {
 			return "";
 		}
 		return path.substring(index + 1);
+	}
+
+	public static <E> void assertEqualsSymmetrical(E a, E b) {
+		Assert.assertEquals(a, b);
+		Assert.assertEquals(b, a);
+	}
+
+	public static <E> void assertNotEquals(E a, E b) {
+		if (a == null) {
+			Assert.assertFalse("[" + a + "] not equals [" + b + "]", b.equals(a));
+		} else if (b == null) {
+			Assert.assertFalse("[" + a + "] not equals [" + b + "]", a.equals(b));
+		} else if (a.equals(b) || b.equals(a)) {
+			Assert.fail("[" + a + "] not equals [" + b + "]");
+		}
 	}
 }

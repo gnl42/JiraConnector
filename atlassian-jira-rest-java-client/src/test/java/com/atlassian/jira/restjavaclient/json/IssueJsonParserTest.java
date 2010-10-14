@@ -44,6 +44,7 @@ public class IssueJsonParserTest {
 		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
+		assertEquals("Major", issue.getPriority().getName());
 		
 		// issue links
 		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(

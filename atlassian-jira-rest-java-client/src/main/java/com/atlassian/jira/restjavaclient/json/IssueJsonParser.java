@@ -49,12 +49,14 @@ public class IssueJsonParser implements JsonParser<Issue> {
     private static final String PROJECT_ATTR = "project";
     private static final String STATUS_ATTR = "status";
     private static final String COMMENT_ATTR = "comment";
+    private static final String PRIORITY_ATTR = "priority";
     private static final String ATTACHMENT_ATTR = "attachment";
     private static final String SUMMARY_ATTR = "summary";
 
     private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, ISSUE_TYPE_ATTR, VOTES_ATTR,
-            WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR));
+            WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR,
+			PRIORITY_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
@@ -69,6 +71,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
     private final CommentJsonParser commentJsonParser = new CommentJsonParser();
     private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
     private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
+	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
 
     private static final String FIELDS = "fields";
     private static final String VALUE_ATTR = "value";
@@ -121,6 +124,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicIssueType issueType = issueTypeJsonParser.parse(getNestedObject(s, FIELDS, ISSUE_TYPE_ATTR, VALUE_ATTR));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, CREATED_ATTR, VALUE_ATTR));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, UPDATED_ATTR, VALUE_ATTR));
+		final JSONObject priorityJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, PRIORITY_ATTR);
+		final BasicPriority priority = priorityJson != null ? priorityJsonParser.parse(priorityJson.getJSONObject(VALUE_ATTR)) : null;
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
         final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
@@ -135,7 +140,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		final BasicWatchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
 
-		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, expandos, comments,
+		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, priority, expandos, comments,
 				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);
 	}
 
