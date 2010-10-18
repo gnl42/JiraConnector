@@ -37,12 +37,12 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
@@ -184,8 +184,10 @@ public class JiraClientTest extends TestCase {
 			client.updateIssue(issue, "comment", null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), either(containsString("User 'nonexistantuser' cannot be assigned issues.")).or(
-					equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
+			assertThat(
+					e.getMessage(),
+					either(containsString("User 'nonexistantuser' cannot be assigned issues.")).or(
+							equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
 		}
 
 		try {
@@ -205,9 +207,10 @@ public class JiraClientTest extends TestCase {
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
-			assertThat(e.getHtmlMessage(), either(
-					containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
-					equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
+			assertThat(
+					e.getHtmlMessage(),
+					either(containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
+							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "", null);

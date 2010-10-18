@@ -46,8 +46,8 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.commons.net.HtmlTag;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
+import org.eclipse.mylyn.commons.net.HtmlTag;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;

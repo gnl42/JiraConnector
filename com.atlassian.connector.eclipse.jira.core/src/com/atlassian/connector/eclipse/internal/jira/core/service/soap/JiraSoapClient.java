@@ -714,6 +714,16 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
+	public boolean addAttachmentsBase64EncodedToIssue(final String issueKey, final String[] filenames,
+			final String[] files, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<Boolean>() {
+			public Boolean call() throws java.rmi.RemoteException, JiraException {
+				return getSoapService().addBase64EncodedAttachmentsToIssue(loginToken.getCurrentValue(), issueKey,
+						filenames, files);
+			}
+		});
+	}
+
 	public void updateIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		call(monitor, new Callable<Object>() {
 			public Object call() throws java.rmi.RemoteException, JiraException {

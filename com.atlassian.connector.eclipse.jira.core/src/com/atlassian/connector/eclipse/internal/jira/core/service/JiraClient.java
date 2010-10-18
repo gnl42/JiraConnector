@@ -19,9 +19,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
@@ -169,7 +173,19 @@ public class JiraClient {
 	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] content, IProgressMonitor monitor)
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addAttachment", null); //$NON-NLS-1$
-		soapClient.addAttachmentsToIssue(issue.getKey(), new String[] { filename }, new byte[][] { content }, monitor);
+
+		String[] encodedContents = new String[] { new String(new Base64().encode(content)) };
+		String[] names = new String[] { filename };
+
+		try {
+			soapClient.addAttachmentsBase64EncodedToIssue(issue.getKey(), names, encodedContents, monitor);
+		} catch (Throwable e) {
+			if (e.toString().contains("java.lang.OutOfMemoryError")) { //$NON-NLS-1$
+				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+				throw new JiraException(Messages.JiraClient_attachment_too_large, e);
+			}
+			throw new JiraException(e.toString(), e);
+		}
 
 		if (!StringUtils.isEmpty(comment)) {
 			addCommentToIssue(issue.getKey(), comment, monitor);

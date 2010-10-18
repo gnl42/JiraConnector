@@ -44,4 +44,6 @@ public class Messages {
 	public static String JiraClientCache_getting_project_roles;
 
 	public static String JiraClientCache_getting_configuration;
+
+	public static String JiraClient_attachment_too_large;
 }
