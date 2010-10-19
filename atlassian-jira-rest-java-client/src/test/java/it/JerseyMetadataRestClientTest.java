@@ -18,8 +18,10 @@ package it;
 
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
+import com.atlassian.jira.restjavaclient.domain.BasicPriority;
 import com.atlassian.jira.restjavaclient.domain.BasicStatus;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
+import com.atlassian.jira.restjavaclient.domain.Priority;
 import com.atlassian.jira.restjavaclient.domain.ServerInfo;
 import com.atlassian.jira.restjavaclient.domain.Status;
 import org.joda.time.DateTime;
@@ -79,6 +81,18 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 				client.getMetadataClient().getStatus(TestUtil.toUri(basicStatus.getSelf() + "fake"), pm);
 			}
 		});
+	}
+
+	public void testGetPriority() {
+		final BasicPriority basicPriority = client.getIssueClient().getIssue("TST-2", pm).getPriority();
+		final Priority priority = client.getMetadataClient().getPriority(basicPriority.getSelf(), pm);
+		assertEquals(basicPriority.getSelf(), priority.getSelf());
+		assertEquals("Major", priority.getName());
+		assertEquals("#009900", priority.getStatusColor());
+		assertEquals("Major loss of function.", priority.getDescription());
+		assertTrue(priority.getIconUri().toString().startsWith(jiraUri.toString()));
+		assertTrue(priority.getIconUri().toString().endsWith("/images/icons/priority_major.gif"));
+
 	}
 
 }

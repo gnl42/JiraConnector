@@ -24,6 +24,7 @@ import com.atlassian.jira.restjavaclient.domain.Resolution;
 import com.atlassian.jira.restjavaclient.domain.ServerInfo;
 import com.atlassian.jira.restjavaclient.domain.Status;
 import com.atlassian.jira.restjavaclient.json.IssueTypeJsonParser;
+import com.atlassian.jira.restjavaclient.json.PriorityJsonParser;
 import com.atlassian.jira.restjavaclient.json.ServerInfoJsonParser;
 import com.atlassian.jira.restjavaclient.json.StatusJsonParser;
 import com.sun.jersey.api.client.WebResource;
@@ -44,6 +45,7 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	private final ServerInfoJsonParser serverInfoJsonParser = new ServerInfoJsonParser();
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
+	private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
 
 	public JerseyMetadataRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
@@ -51,29 +53,17 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 
 	@Override
 	public IssueType getIssueType(final URI uri, ProgressMonitor progressMonitor) {
-		return invoke(new Callable<IssueType>() {
-			@Override
-			public IssueType call() throws Exception {
-				final WebResource serverInfoResource = client.resource(uri);
-				return issueTypeJsonParser.parse(serverInfoResource.get(JSONObject.class));
-			}
-		});
+		return getAndParse(uri, issueTypeJsonParser, progressMonitor);
 	}
 
 	@Override
 	public Status getStatus(final URI uri, ProgressMonitor progressMonitor) {
-		return invoke(new Callable<Status>() {
-			@Override
-			public Status call() throws Exception {
-				final WebResource statusResource = client.resource(uri);
-				return statusJsonParser.parse(statusResource.get(JSONObject.class));
-			}
-		});
+		return getAndParse(uri, statusJsonParser, progressMonitor);
 	}
 
 	@Override
-	public Priority getPriority(URI uri, ProgressMonitor progressMonitor) {
-		return null;
+	public Priority getPriority(final URI uri, ProgressMonitor progressMonitor) {
+		return getAndParse(uri, priorityJsonParser, progressMonitor);
 	}
 
 	@Override

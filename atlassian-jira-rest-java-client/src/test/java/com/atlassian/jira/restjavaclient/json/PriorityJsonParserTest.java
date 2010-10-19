@@ -22,11 +22,6 @@ import org.junit.Test;
 
 import static com.atlassian.jira.restjavaclient.TestUtil.toUri;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class PriorityJsonParserTest {
 	@Test
 	public void testParse() throws Exception {

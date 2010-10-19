@@ -33,7 +33,7 @@ import java.net.URI;
  */
 public interface MetadataRestClient {
 	/**
-	 * Serves complete information about selected issue type defined
+	 * Retrieves from the server complete information about selected issue type
 	 * @param uri URI to issue type resource (one can get it e.g. from <code>self</code> attribute
 	 * of issueType field of an issue).
 	 * @param progressMonitor progress monitor
@@ -49,6 +49,13 @@ public interface MetadataRestClient {
 	 * @return complete information about selected status
 	 */
 	Status getStatus(URI uri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves from the server complete information about selected priority
+	 * @param uri URI for this priority resource
+	 * @param progressMonitor progress monitor
+	 * @return complete information about selected priority
+	 */
 	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
 	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
 
