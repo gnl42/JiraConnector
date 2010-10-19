@@ -226,9 +226,9 @@
          "name":"assignee",
          "type":"com.opensymphony.user.User",
          "value":{
-            "self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
-            "name":"admin",
-            "displayName":"Administrator"
+            "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
+            "name":"wseliga",
+            "displayName":"Wojciech Seliga"
          }
       },
       "links":{

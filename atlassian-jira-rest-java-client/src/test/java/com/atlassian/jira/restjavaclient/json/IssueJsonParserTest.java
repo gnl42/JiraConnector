@@ -45,7 +45,10 @@ public class IssueJsonParserTest {
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		assertEquals("Major", issue.getPriority().getName());
 		assertNull(issue.getResolution());
-		
+
+		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
+		assertEquals(TestConstants.USER1, issue.getAssignee());
+
 		// issue links
 		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),

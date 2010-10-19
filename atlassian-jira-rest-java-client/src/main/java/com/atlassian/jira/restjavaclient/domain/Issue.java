@@ -33,10 +33,12 @@ import java.util.Collection;
 public class Issue implements AddressableEntity, ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
-				 @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Iterable<String> expandos,
-                 Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
-                 DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, BasicVotes votes, Collection<Worklog> worklogs,
-                 BasicWatchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
+				 @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+				 @Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
+				 Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
+				 Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
+				 BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos
+	) {
         this.summary = summary;
         this.self = self;
         this.key = key;
@@ -48,6 +50,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
         this.attachments = attachments;
 		this.fields = fields;
 		this.issueType = issueType;
+		this.reporter = reporter;
+		this.assignee = assignee;
 		this.creationDate = creationDate;
 		this.updateDate = updateDate;
 		this.transitionsUri = transitionsUri;
@@ -98,10 +102,17 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return status;
 	}
 
+	/**
+	 * @return reporter of this issue.
+	 */
 	public BasicUser getReporter() {
 		return reporter;
 	}
 
+	/**
+	 * @return assignee of this issue or <code>null</code> if this issue is unassigned.
+	 */
+	@Nullable
 	public BasicUser getAssignee() {
 		return assignee;
 	}
@@ -127,10 +138,18 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return issueLinks;
 	}
 
+	/**
+	 * @return fields inaccessible by concrete getter methods (e.g. all custom fields)
+	 */
 	public Iterable<Field> getFields() {
 		return fields;
 	}
 
+	/**
+	 *
+	 * @param id identifier of the field (inaccessible by concrete getter method)
+	 * @return field with given id, or <code>null</code> when when no field with given id exists for this issue 
+	 */
 	@Nullable
 	public Field getField(String id) {
 		for (Field field : fields) {
@@ -141,10 +160,16 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return null;
 	}
 
+	/**
+	 * @return issue key
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * @return URI of this issue
+	 */
 	@Override
 	public URI getSelf() {
 		return self;
@@ -156,18 +181,30 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	}
 
 
+	/**
+	 * @return issue type
+	 */
 	public BasicIssueType getIssueType() {
 		return issueType;
 	}
 
+	/**
+	 * @return attachments of this issue
+	 */
 	public Iterable<Attachment> getAttachments() {
         return attachments;
     }
 
+	/**
+	 * @return comments for this issue
+	 */
     public Iterable<Comment> getComments() {
         return comments;
     }
 
+	/**
+	 * @return project this issue belongs to
+	 */
 	public BasicProject getProject() {
 		return project;
 	}

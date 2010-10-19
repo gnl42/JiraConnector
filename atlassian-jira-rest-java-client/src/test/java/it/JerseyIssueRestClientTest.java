@@ -82,9 +82,12 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals("TST-1", issue.getKey());
 		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
+		assertEquals(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
+		assertEquals(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
 		assertEquals(3, Iterables.size(issue.getComments()));
 		assertThat(issue.getExpandos(), IterableMatcher.hasOnlyElements("html"));
+		assertTrue(Iterables.size(issue.getFields()) > 0);
 
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();

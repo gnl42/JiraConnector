@@ -52,12 +52,14 @@ public class IssueJsonParser implements JsonParser<Issue> {
     private static final String PRIORITY_ATTR = "priority";
     private static final String ATTACHMENT_ATTR = "attachment";
     private static final String RESOLUTION_ATTR = "resolution";
+    private static final String ASSIGNEE_ATTR = "assignee";
+    private static final String REPORTER_ATTR = "reporter";
     private static final String SUMMARY_ATTR = "summary";
 
     private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, ISSUE_TYPE_ATTR, VOTES_ATTR,
             WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR,
-			PRIORITY_ATTR, RESOLUTION_ATTR));
+			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR));
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
@@ -74,6 +76,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
     private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
 	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
+	private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
 
     private static final String FIELDS = "fields";
     private static final String VALUE_ATTR = "value";
@@ -126,10 +129,11 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicIssueType issueType = issueTypeJsonParser.parse(getNestedObject(s, FIELDS, ISSUE_TYPE_ATTR, VALUE_ATTR));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, CREATED_ATTR, VALUE_ATTR));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getNestedString(s, FIELDS, UPDATED_ATTR, VALUE_ATTR));
-		final JSONObject priorityJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, PRIORITY_ATTR);
-		final BasicPriority priority = priorityJson != null ? priorityJsonParser.parse(priorityJson.getJSONObject(VALUE_ATTR)) : null;
-		final JSONObject resolutionJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, RESOLUTION_ATTR);
-		final BasicResolution resolution = resolutionJson != null ? resolutionJsonParser.parse(resolutionJson.getJSONObject(VALUE_ATTR)) : null;
+
+		final BasicPriority priority = getOptionalField(s, PRIORITY_ATTR, priorityJsonParser);
+		final BasicResolution resolution = getOptionalField(s, RESOLUTION_ATTR, resolutionJsonParser);
+		final BasicUser assignee = getOptionalField(s, ASSIGNEE_ATTR, userJsonParser);
+		final BasicUser reporter = getOptionalField(s, REPORTER_ATTR, userJsonParser);
 
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
@@ -145,11 +149,16 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		final BasicWatchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
 
-		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, priority, resolution, expandos, comments,
-				attachments, fields, creationDate, updateDate, transitionsUri, issueLinks, votes, worklogs, watchers, affectedVersions, fixVersions, components);
+		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, priority, 
+				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
+				components, fields, comments, transitionsUri, issueLinks, votes, worklogs, watchers, expandos
+		);
 	}
 
-
+	private <T> T getOptionalField(JSONObject s, final String fieldId, JsonParser<T> jsonParser) throws JSONException {
+		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
+		return fieldJson != null ? jsonParser.parse(fieldJson.getJSONObject(VALUE_ATTR)) : null;
+	}
 
 
 	private Collection<Field> parseFields(JSONObject json) throws JSONException {
