@@ -20,6 +20,7 @@ import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.domain.*;
 import com.atlassian.jira.restjavaclient.domain.BasicWatchers;
 import com.google.common.collect.Iterables;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,15 +37,14 @@ import static org.junit.Assert.*;
 public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
-		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource("/json/issue/valid-all-expanded.json");
-		final IssueJsonParser parser = new IssueJsonParser();
-		final Issue issue = parser.parse(issueJson);
+		final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
         assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
 		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		assertEquals("Major", issue.getPriority().getName());
+		assertNull(issue.getResolution());
 		
 		// issue links
 		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(
@@ -87,5 +87,18 @@ public class IssueJsonParserTest {
 
         final Worklog worklog3 = Iterables.get(worklogs, 3);
         assertEquals("", worklog3.getComment());
+	}
+
+	private Issue parseIssue(final String resourcePath) throws JSONException {
+		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource(resourcePath);
+		final IssueJsonParser parser = new IssueJsonParser();
+		return parser.parse(issueJson);
+	}
+
+	@Test
+	public void testParseIssueWithResolution() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-all-expanded-with-resolution.json");
+		assertEquals("Incomplete", issue.getResolution().getName());
+
 	}
 }

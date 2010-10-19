@@ -19,11 +19,16 @@ package it;
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
 import com.atlassian.jira.restjavaclient.domain.BasicPriority;
+import com.atlassian.jira.restjavaclient.domain.BasicResolution;
 import com.atlassian.jira.restjavaclient.domain.BasicStatus;
+import com.atlassian.jira.restjavaclient.domain.Issue;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Priority;
+import com.atlassian.jira.restjavaclient.domain.Resolution;
 import com.atlassian.jira.restjavaclient.domain.ServerInfo;
 import com.atlassian.jira.restjavaclient.domain.Status;
+import com.atlassian.jira.restjavaclient.domain.Transition;
+import com.atlassian.jira.restjavaclient.domain.TransitionInput;
 import org.joda.time.DateTime;
 
 import javax.ws.rs.core.Response;
@@ -95,4 +100,22 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 
 	}
 
+
+	public void testGetResolution() {
+		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
+		assertNull(issue.getResolution());
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
+		final Transition resolveTransition = getTransitionByName(transitions, "Resolve Issue");
+
+		client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId()), pm);
+
+		final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2", pm);
+		final BasicResolution basicResolution = resolvedIssue.getResolution();
+		assertNotNull(basicResolution);
+
+		final Resolution resolution = client.getMetadataClient().getResolution(basicResolution.getSelf(), pm);
+		assertEquals(basicResolution.getName(), resolution.getName());
+		assertEquals(basicResolution.getSelf(), resolution.getSelf());
+		assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
+	}
 }

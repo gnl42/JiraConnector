@@ -16,10 +16,45 @@
 
 package com.atlassian.jira.restjavaclient.domain;
 
+import com.google.common.base.Objects;
+
+import java.net.URI;
+
 /**
- * TODO: Document this class / interface here
+ * Complete information about resolution.
  *
  * @since v0.1
  */
-public class Resolution {
+public class Resolution extends BasicResolution {
+	private final String description;
+	public Resolution(URI self, String name, String description) {
+		super(self, name);
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().
+				add("description", description).
+				toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Resolution) {
+			Resolution that = (Resolution) obj;
+			return super.equals(obj) && Objects.equal(this.description, that.description);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), description);
+	}
+
 }

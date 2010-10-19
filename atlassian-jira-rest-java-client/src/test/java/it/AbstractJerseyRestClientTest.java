@@ -20,8 +20,10 @@ import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
+import com.atlassian.jira.restjavaclient.domain.Transition;
 import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -77,6 +79,20 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 	protected void setUser1() {
 		setClient(USER1_USERNAME, USER1_PASSWORD);
 	}
-	
+
+
+	@Nullable
+	protected Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+		Transition transitionFound = null;
+		for (Transition transition : transitions) {
+			if (transition.getName().equals(transitionName)) {
+				transitionFound = transition;
+				break;
+			}
+		}
+		return transitionFound;
+	}
+
+
 	
 }

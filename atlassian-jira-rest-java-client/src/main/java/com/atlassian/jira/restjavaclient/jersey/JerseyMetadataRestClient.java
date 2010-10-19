@@ -25,6 +25,7 @@ import com.atlassian.jira.restjavaclient.domain.ServerInfo;
 import com.atlassian.jira.restjavaclient.domain.Status;
 import com.atlassian.jira.restjavaclient.json.IssueTypeJsonParser;
 import com.atlassian.jira.restjavaclient.json.PriorityJsonParser;
+import com.atlassian.jira.restjavaclient.json.ResolutionJsonParser;
 import com.atlassian.jira.restjavaclient.json.ServerInfoJsonParser;
 import com.atlassian.jira.restjavaclient.json.StatusJsonParser;
 import com.sun.jersey.api.client.WebResource;
@@ -46,6 +47,7 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 	private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
+	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 
 	public JerseyMetadataRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
@@ -68,7 +70,7 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 
 	@Override
 	public Resolution getResolution(URI uri, ProgressMonitor progressMonitor) {
-		return null;
+		return getAndParse(uri, resolutionJsonParser, progressMonitor);
 	}
 
 	@Override

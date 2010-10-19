@@ -462,17 +462,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 
-	private Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
-		Transition transitionFound = null;
-		for (Transition transition : transitions) {
-			if (transition.getName().equals(transitionName)) {
-				transitionFound = transition;
-				break;
-			}
-		}
-		return transitionFound;
-	}
-
 	//@Test restore when JRADEV-3666 is fixed (I don't want to pollute JRJC integration test results)
 	public void xtestAddWatcherWhoDoesNotHaveViewIssuePermissions() {
 		final IssueRestClient issueClient = client.getIssueClient();

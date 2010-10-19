@@ -33,7 +33,7 @@ import java.util.Collection;
 public class Issue implements AddressableEntity, ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
-				 @Nullable BasicPriority priority, Iterable<String> expandos,
+				 @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Iterable<String> expandos,
                  Collection<Comment> comments, Collection<Attachment> attachments, Collection<Field> fields,
                  DateTime creationDate, DateTime updateDate, URI transitionsUri, Collection<IssueLink> issueLinks, BasicVotes votes, Collection<Worklog> worklogs,
                  BasicWatchers watchers, Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components) {
@@ -42,6 +42,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
         this.key = key;
 		this.project = project;
 		this.status = status;
+		this.resolution = resolution;
 		this.expandos = expandos;
         this.comments = comments;
         this.attachments = attachments;
@@ -71,6 +72,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	private BasicUser reporter;
 	private BasicUser assignee;
 	private String key;
+	@Nullable
+	private final BasicResolution resolution;
 	private Collection<Field> fields;
 	private DateTime creationDate;
 	private DateTime updateDate;
@@ -197,6 +200,11 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return components;
 	}
 
+
+	public BasicResolution getResolution() {
+		return resolution;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
@@ -205,6 +213,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				add("project", project).
 				add("status", status).
 				add("expandos", expandos).
+				add("resolution", resolution).
 				add("reporter", reporter).
 				add("assignee", assignee).addValue("\n").
 				add("fields", fields).addValue("\n").

@@ -32,6 +32,11 @@ public class TransitionInput {
 
 	private final Collection<FieldInput> fields;
 
+	public TransitionInput(int id, Collection<FieldInput> fields) {
+		this(id, fields, null);
+	}
+
+
 	public TransitionInput(int id, Collection<FieldInput> fields, Comment comment) {
 		this.id = id;
 		this.comment = comment;
@@ -42,10 +47,15 @@ public class TransitionInput {
 		this(id, Collections.<FieldInput>emptyList(), comment);
 	}
 
+	public TransitionInput(int id) {
+		this(id, Collections.<FieldInput>emptyList(), null);
+	}
+
 	public int getId() {
 		return id;
 	}
 
+	@Nullable
 	public Comment getComment() {
 		return comment;
 	}
