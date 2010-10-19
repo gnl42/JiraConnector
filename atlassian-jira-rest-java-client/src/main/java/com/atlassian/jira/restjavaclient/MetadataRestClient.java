@@ -46,17 +46,25 @@ public interface MetadataRestClient {
 	 * @param uri URI to this status resource (one can get it e.g. from <code>self</code> attribute
 	 * of <code>status</code> field of an issue)
 	 * @param progressMonitor progress monitor
-	 * @return complete information about selected status
+	 * @return complete information about the selected status
 	 */
 	Status getStatus(URI uri, ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves from the server complete information about selected priority
-	 * @param uri URI for this priority resource
+	 * @param uri URI for the priority resource
 	 * @param progressMonitor progress monitor
-	 * @return complete information about selected priority
+	 * @return complete information about the selected priority
 	 */
 	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
+
+
+	/**
+	 * Retrieves from the server complete information about selected resolution
+	 * @param uri URI for the resolution resource
+	 * @param progressMonitor progress monitor
+	 * @return complete information about the selected resolution
+	 */
 	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
 
 	/**
