@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.BasicIssueType;
 import com.atlassian.jira.restjavaclient.domain.IssueType;
 import com.atlassian.jira.restjavaclient.domain.Priority;
 import com.atlassian.jira.restjavaclient.domain.Resolution;
