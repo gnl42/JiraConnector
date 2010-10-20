@@ -15,6 +15,23 @@
 
     <name>atlassian-jira-rest-java-client</name>
     <url>http://maven.apache.org</url>
+	<issueManagement>
+		<system>Jira</system>
+		<url>https://studio.atlassian.com/browse/JRJC</url>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<distributionManagement>
+		<site>
+			<id>atlassian-documentation</id>
+			<url>dav:https://docs.atlassian.com/${project.artifactId}/${project.version}</url>
+		</site>
+	</distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
