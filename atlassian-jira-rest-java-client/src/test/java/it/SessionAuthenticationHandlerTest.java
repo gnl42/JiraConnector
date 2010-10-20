@@ -16,8 +16,8 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.rest.restjavaclient.domain.Session;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.Session;
 
 /**
  * TODO: Document this class / interface here

@@ -16,17 +16,17 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.rest.restjavaclient.IterableMatcher;
-import com.atlassian.jira.rest.restjavaclient.TestUtil;
-import com.atlassian.jira.rest.restjavaclient.domain.User;
-import com.atlassian.jira.rest.restjavaclient.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.IterableMatcher;
+import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-import static com.atlassian.jira.rest.restjavaclient.IntegrationTestUtil.USER_SLASH;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH;
 import static org.junit.Assert.assertThat;
 
 public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {

@@ -16,12 +16,12 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.rest.restjavaclient.TestUtil;
-import com.atlassian.jira.rest.restjavaclient.auth.BasicHttpAuthenticationHandler;
-import com.atlassian.jira.rest.restjavaclient.domain.Session;
-import com.atlassian.jira.rest.restjavaclient.internal.jersey.JerseyJiraRestClient;
-import com.atlassian.jira.rest.restjavaclient.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
+import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
 import org.junit.Test;
 

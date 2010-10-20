@@ -16,19 +16,19 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.TestUtil;
-import com.atlassian.jira.rest.restjavaclient.domain.BasicIssueType;
-import com.atlassian.jira.rest.restjavaclient.domain.BasicPriority;
-import com.atlassian.jira.rest.restjavaclient.domain.BasicResolution;
-import com.atlassian.jira.rest.restjavaclient.domain.BasicStatus;
-import com.atlassian.jira.rest.restjavaclient.domain.Issue;
-import com.atlassian.jira.rest.restjavaclient.domain.IssueType;
-import com.atlassian.jira.rest.restjavaclient.domain.Priority;
-import com.atlassian.jira.rest.restjavaclient.domain.Resolution;
-import com.atlassian.jira.rest.restjavaclient.domain.ServerInfo;
-import com.atlassian.jira.rest.restjavaclient.domain.Status;
-import com.atlassian.jira.rest.restjavaclient.domain.Transition;
-import com.atlassian.jira.rest.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.domain.BasicResolution;
+import com.atlassian.jira.rest.client.domain.BasicStatus;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.Resolution;
+import com.atlassian.jira.rest.client.domain.ServerInfo;
+import com.atlassian.jira.rest.client.domain.Status;
+import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.TransitionInput;
 import org.joda.time.DateTime;
 
 import javax.ws.rs.core.Response;

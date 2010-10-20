@@ -16,8 +16,8 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.rest.restjavaclient.domain.Issue;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.Issue;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 

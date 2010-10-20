@@ -16,18 +16,18 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.rest.restjavaclient.IssueRestClient;
-import com.atlassian.jira.rest.restjavaclient.IterableMatcher;
-import com.atlassian.jira.rest.restjavaclient.NullProgressMonitor;
-import com.atlassian.jira.rest.restjavaclient.domain.Attachment;
-import com.atlassian.jira.rest.restjavaclient.domain.Comment;
-import com.atlassian.jira.rest.restjavaclient.domain.FieldInput;
-import com.atlassian.jira.rest.restjavaclient.domain.Issue;
-import com.atlassian.jira.rest.restjavaclient.domain.Transition;
-import com.atlassian.jira.rest.restjavaclient.domain.TransitionInput;
-import com.atlassian.jira.rest.restjavaclient.domain.Votes;
-import com.atlassian.jira.rest.restjavaclient.domain.Watchers;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.IterableMatcher;
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.FieldInput;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.TransitionInput;
+import com.atlassian.jira.rest.client.domain.Votes;
+import com.atlassian.jira.rest.client.domain.Watchers;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -41,10 +41,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
-import static com.atlassian.jira.rest.restjavaclient.IntegrationTestUtil.*;
-import static com.atlassian.jira.rest.restjavaclient.TestUtil.assertErrorCode;
-import static com.atlassian.jira.rest.restjavaclient.internal.json.TestConstants.USER1_USERNAME;
-import static com.atlassian.jira.rest.restjavaclient.internal.json.TestConstants.USER2_USERNAME;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
+import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_USERNAME;
 import static org.junit.Assert.assertThat;
 
 

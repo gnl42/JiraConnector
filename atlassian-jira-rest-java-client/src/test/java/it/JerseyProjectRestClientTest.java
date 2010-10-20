@@ -16,10 +16,10 @@
 
 package it;
 
-import com.atlassian.jira.rest.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.rest.restjavaclient.TestUtil;
-import com.atlassian.jira.rest.restjavaclient.domain.Project;
-import com.atlassian.jira.rest.restjavaclient.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
