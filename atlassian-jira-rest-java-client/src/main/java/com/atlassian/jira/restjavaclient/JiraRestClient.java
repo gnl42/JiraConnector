@@ -17,15 +17,42 @@
 package com.atlassian.jira.restjavaclient;
 
 /**
- * TODO: Document this class / interface here
+ * Main access point to REST client.
+ * As there are many types resources exposed by JIRA REST API, various resources are grouped into clusters
+ * and then handled by different specialized *RestClient classes.
  *
  * @since v0.1
  */
 public interface JiraRestClient {
+	/**
+	 *
+	 * @return client for performing operations on selected issue
+	 */
     IssueRestClient getIssueClient();
+
+	/**
+	 * @return the client handling session information
+	 */
     SessionRestClient getSessionClient();
+
+	/**
+	 * @return the client handling full user information
+	 */
 	UserRestClient getUserClient();
+
+	/**
+	 * @return the client handling project metadata
+	 */
 	ProjectRestClient getProjectClient();
+
+	/**
+	 * @return the client handling components
+	 */
 	ComponentRestClient getComponentClient();
+
+	/**
+	 * @return the client handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
+	 * priorities)
+	 */
 	MetadataRestClient getMetadataClient();
 }

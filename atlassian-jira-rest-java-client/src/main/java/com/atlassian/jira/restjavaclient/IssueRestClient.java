@@ -16,7 +16,13 @@
 
 package com.atlassian.jira.restjavaclient;
 
-import com.atlassian.jira.restjavaclient.domain.*;
+import com.atlassian.jira.restjavaclient.domain.Issue;
+import com.atlassian.jira.restjavaclient.domain.Transition;
+import com.atlassian.jira.restjavaclient.domain.TransitionInput;
+import com.atlassian.jira.restjavaclient.domain.Votes;
+import com.atlassian.jira.restjavaclient.domain.Watchers;
+
+import java.net.URI;
 
 /**
  * TODO: Document this class / interface here
@@ -24,22 +30,113 @@ import com.atlassian.jira.restjavaclient.domain.*;
  * @since v0.1
  */
 public interface IssueRestClient {
+	/**
+	 * Retrieves issue with selected issue key.
+	 *
+	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @param progressMonitor progress monitor  
+	 * @return issue with given <code>issueKey</code>
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
 	Issue getIssue(String issueKey, ProgressMonitor progressMonitor);
 
-    Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor);
+	/**
+	 * Retrieves complete information (if the caller has permission) about watchers for selected issue.
+	 *
+	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
+	 * @param progressMonitor progress monitor  
+	 * @return detailed information about watchers watching selected issue.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @see com.atlassian.jira.restjavaclient.domain.Issue#getWatchers()
+	 */
+    Watchers getWatchers(URI watchersUri, ProgressMonitor progressMonitor);
 
-	Votes getVotes(Issue issue, ProgressMonitor progressMonitor);
-    
-	Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
+	/**
+	 * Retrieves complete information (if the caller has permission) about voters for selected issue.
+	 *
+	 * @param votesUri URI of voters resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 
-	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
+	 * @return detailed information about voters of selected issue
+	 * @see com.atlassian.jira.restjavaclient.domain.Issue#getVotesUri()
+	 */
+	Votes getVotes(URI votesUri, ProgressMonitor progressMonitor);
 
-	void vote(Issue issue, ProgressMonitor progressMonitor);
-	void unvote(Issue issue, ProgressMonitor progressMonitor);
+	/**
+	 * Retrieves complete information (if the caller has permission) about transitions available for the selected issue in its current state.
+	 *
+	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
+	 * @param progressMonitor progress monitor  
+	 * @return transitions about transitions available for the selected issue in its current state.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
+	Iterable<Transition> getTransitions(URI transitionsUri, ProgressMonitor progressMonitor);
 
+	/**
+	 * Performs selected transition on selected issue.
+	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
+	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+
+	 */
+	void transition(URI transitionsUri, TransitionInput transitionInput, ProgressMonitor progressMonitor);
+
+	/**
+	 * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.
+	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
+	void vote(URI votesUri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Removes your vote from the selected issue. Removing a vote from the issue without your vote causes the exception.
+	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
+	void unvote(URI votesUri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Starts watching selected issue
+	 * @param issue
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+
+	 */
 	void watch(Issue issue, ProgressMonitor progressMonitor);
-	void unwatch(Issue issue, ProgressMonitor progressMonitor);
-	void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
-	void removeWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
 
+	/**
+	 * Stops watching selected issue
+	 * @param issue
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
+	void unwatch(Issue issue, ProgressMonitor progressMonitor);
+
+	/**
+	 * Adds selected person as a watcher for selected issue. You need to have permissions to do that (otherwise
+	 * the exception is thrown).
+	 *
+	 * @param issue
+	 * @param username user to add as a watcher
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+
+	 */
+	void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
+
+	/**
+	 * Removes selected person from the watchers list for selected issue. You need to have permissions to do that (otherwise
+	 * the exception is thrown).
+	 *
+	 * @param issue
+	 * @param username user to remove from the watcher list
+	 * @param progressMonitor progress monitor  
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+
+	 */
+	void removeWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
 }

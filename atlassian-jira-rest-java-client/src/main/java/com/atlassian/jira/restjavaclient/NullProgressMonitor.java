@@ -17,7 +17,7 @@
 package com.atlassian.jira.restjavaclient;
 
 /**
- * TODO: Document this class / interface here
+ * NOP implementation of the progress monitor
  *
  * @since v0.1
  */

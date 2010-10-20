@@ -19,7 +19,7 @@ package com.atlassian.jira.restjavaclient;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Factory for producing JIRA REST client with selected authentication handler
  *
  * @since v0.1
  */

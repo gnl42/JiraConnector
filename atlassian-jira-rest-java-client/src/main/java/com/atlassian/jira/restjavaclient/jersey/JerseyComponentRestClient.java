@@ -41,11 +41,11 @@ public class JerseyComponentRestClient extends AbstractJerseyRestClient implemen
 	}
 
 	@Override
-	public Component getComponent(final URI uri, ProgressMonitor progressMonitor) {
+	public Component getComponent(final URI componentUri, ProgressMonitor progressMonitor) {
 		return invoke(new Callable<Component>() {
 			@Override
 			public Component call() throws Exception {
-				final WebResource componentResource = client.resource(uri);
+				final WebResource componentResource = client.resource(componentUri);
 				final JSONObject jsonObject = componentResource.get(JSONObject.class);
 				return componentJsonParser.parse(jsonObject);
 			}

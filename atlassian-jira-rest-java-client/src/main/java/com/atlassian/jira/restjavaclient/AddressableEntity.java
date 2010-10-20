@@ -19,10 +19,15 @@ package com.atlassian.jira.restjavaclient;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Any REST resource representation with URI to itself (or to its complete version - when partial representation
+ * is embedded in other resources)
  *
  * @since v0.1
  */
 public interface AddressableEntity {
+	/**
+	 * @return URI to this resource or (usually) its complete version - when partial representation
+	 *         is embedded in other resources
+	 */
 	URI getSelf();
 }

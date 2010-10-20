@@ -32,6 +32,7 @@ public interface ProjectRestClient {
 	 * @param key unique key of the project (usually 2+ characters)
 	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Project getProject(String key, ProgressMonitor progressMonitor);
 
@@ -44,6 +45,7 @@ public interface ProjectRestClient {
 	 * @param uri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
 	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	public Project getProject(URI uri, ProgressMonitor progressMonitor);
 

@@ -22,6 +22,7 @@ import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
 
@@ -236,6 +237,11 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	public Iterable<BasicComponent> getComponents() {
 		return components;
 	}
+
+	public URI getVotesUri() {
+		return UriBuilder.fromUri(getSelf()).path("votes").build();
+	}
+
 
 
 	public BasicResolution getResolution() {

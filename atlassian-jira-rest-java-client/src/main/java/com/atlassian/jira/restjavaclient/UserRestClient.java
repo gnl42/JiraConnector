@@ -20,10 +20,16 @@ import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.User;
 
 /**
- * TODO: Document this class / interface here
+ * The client handling user resources.
  *
  * @since v0.1
  */
 public interface UserRestClient {
+	/**
+	 * @param username JIRA username/login
+	 * @param progressMonitor progress monitor
+	 * @return complete information about given user
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 */
 	User getUser(String username, ProgressMonitor progressMonitor);
 }

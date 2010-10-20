@@ -17,7 +17,13 @@
 package com.atlassian.jira.restjavaclient;
 
 /**
- * TODO: Document this class / interface here
+ * All remote operations take a parameter of this interface.<br>
+ * Firstly it serves as a clear marker of a remote call.
+ * Secondly, in the future, we plan to actually make this interface capable of reporting the progress
+ * and cancelling (where possible) remote requests taking too much time.
+ *
+ * So while you may blame this class for the time being, the plan is that it will actually be beneficial
+ * one day without any need to break API compatibility. 
  *
  * @since v0.1
  */

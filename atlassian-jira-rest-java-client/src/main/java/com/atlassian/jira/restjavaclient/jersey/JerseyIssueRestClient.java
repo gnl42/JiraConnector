@@ -68,40 +68,29 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public Watchers getWatchers(Issue issue, ProgressMonitor progressMonitor) {
-		return getAndParse(issue.getWatchers().getSelf(), watchersParser, progressMonitor);
+	public Watchers getWatchers(URI watchersUri, ProgressMonitor progressMonitor) {
+		return getAndParse(watchersUri, watchersParser, progressMonitor);
 	}
 
 
 	@Override
-	public Votes getVotes(Issue issue, ProgressMonitor progressMonitor) {
-		return getAndParse(issue.getVotes().getSelf(), votesJsonParser, progressMonitor);
+	public Votes getVotes(URI votesUri, ProgressMonitor progressMonitor) {
+		return getAndParse(votesUri, votesJsonParser, progressMonitor);
 	}
 
 	@Override
 	public Issue getIssue(final String issueKey, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
 		uriBuilder.path("issue").path(issueKey);
-//		final String expandoString = getExpandoString(args);
-//		if (expandoString != null) {
-//			uriBuilder.queryParam("expand", expandoString);
-//		}
-		return invoke(new Callable<Issue>() {
-			@Override
-			public Issue call() throws Exception {
-				final WebResource issueResource = client.resource(uriBuilder.build());
-				final JSONObject s = issueResource.get(JSONObject.class);
-				return issueParser.parse(s);
-			}
-		});
+		return getAndParse(uriBuilder.build(), issueParser, progressMonitor);
 	}
 
 	@Override
-	public Iterable<Transition> getTransitions(final Issue issue, ProgressMonitor progressMonitor) {
+	public Iterable<Transition> getTransitions(final URI transitionsUri, ProgressMonitor progressMonitor) {
 		return invoke(new Callable<Iterable<Transition>>() {
 			@Override
 			public Iterable<Transition> call() throws Exception {
-				final WebResource transitionsResource = client.resource(issue.getTransitionsUri());
+				final WebResource transitionsResource = client.resource(transitionsUri);
 				final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
 				final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
 				@SuppressWarnings("unchecked")
@@ -125,11 +114,10 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void transition(final Issue issue, final TransitionInput transitionInput, ProgressMonitor progressMonitor) {
+	public void transition(final URI transitionsUri, final TransitionInput transitionInput, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				final URI uri = issue.getTransitionsUri();
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("transition", transitionInput.getId());
 				if (transitionInput.getComment() != null) {
@@ -145,7 +133,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				if (fieldsJs.keys().hasNext()) {
 					jsonObject.put("fields", fieldsJs);
 				}
-				final WebResource issueResource = client.resource(uri);
+				final WebResource issueResource = client.resource(transitionsUri);
 				issueResource.post(jsonObject);
 				return null;
 			}
@@ -154,27 +142,23 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 
 	@Override
-	public void vote(final Issue issue, ProgressMonitor progressMonitor) {
+	public void vote(final URI votesUri, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				final WebResource votesResource = client.resource(getVotesUri(issue));
+				final WebResource votesResource = client.resource(votesUri);
 				votesResource.post();
 				return null;
 			}
 		});
 	}
 
-	private URI getVotesUri(Issue issue) {
-		return UriBuilder.fromUri(issue.getSelf()).path("votes").build();
-	}
-
 	@Override
-	public void unvote(final Issue issue, ProgressMonitor progressMonitor) {
+	public void unvote(final URI votesUri, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
-				final WebResource votesResource = client.resource(getVotesUri(issue));
+				final WebResource votesResource = client.resource(votesUri);
 				votesResource.delete();
 				return null;
 			}

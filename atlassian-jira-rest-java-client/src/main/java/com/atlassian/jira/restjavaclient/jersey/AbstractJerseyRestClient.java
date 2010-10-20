@@ -46,7 +46,7 @@ public class AbstractJerseyRestClient {
 		this.client = client;
 	}
 
-	protected <T> T invoke(Callable<T> callable) {
+	protected <T> T invoke(Callable<T> callable) throws RestClientException {
 		try {
 			return callable.call();
 		} catch (UniformInterfaceException e) {

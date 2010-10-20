@@ -33,24 +33,15 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class JerseySessionRestClient implements SessionRestClient {
-	private final ApacheHttpClient client;
-	private final URI serverUri;
+public class JerseySessionRestClient extends com.atlassian.jira.restjavaclient.jersey.AbstractJerseyRestClient  implements SessionRestClient {
 	private final SessionJsonParser sessionJsonParser = new SessionJsonParser();
 
 	public JerseySessionRestClient(ApacheHttpClient client, URI serverUri) {
-		this.client = client;
-		this.serverUri = serverUri;
+		super(serverUri, client);
 	}
 
 	@Override
 	public Session getCurrentSession(ProgressMonitor progressMonitor) {
-		final JSONObject jsonObject = client.resource(UriBuilder.fromUri(serverUri).path("rest/auth/latest/session").build()).get(JSONObject.class);
-		try {
-			return sessionJsonParser.parse(jsonObject);
-		} catch (JSONException e) {
-			throw new RestClientException(e);
-		}
-
+		return getAndParse(UriBuilder.fromUri(baseUri).path("rest/auth/latest/session").build(), sessionJsonParser, progressMonitor);
 	}
 }

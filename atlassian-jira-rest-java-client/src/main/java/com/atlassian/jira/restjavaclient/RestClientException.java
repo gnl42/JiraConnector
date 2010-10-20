@@ -24,7 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * TODO: Document this class / interface here
+ * Basic exception which may be thrown by any remote operation encapsulated by the REST client.
+ * Usually some more specific exception will be chained here and available via {@link #getCause()}
  *
  * @since v0.1
  */
@@ -41,11 +42,18 @@ public class RestClientException extends RuntimeException {
 	}
 
 
+	/**
+	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
+	 * @param cause the cause of this exception or <code>null</code>
+	 */
 	public RestClientException(Collection<String> errorMessages, Throwable cause) {
 		super(Joiner.on("\n").join(errorMessages), cause);
 		this.errorMessages = new ArrayList<String>(errorMessages);
 	}
 
+	/**
+	 * @return error messages used while building this exception object
+	 */
 	public Iterable<String> getErrorMessages() {
 		return errorMessages;
 	}

@@ -21,10 +21,16 @@ import com.atlassian.jira.restjavaclient.domain.Component;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * The client handling component resources
  *
  * @since v0.1
  */
 public interface ComponentRestClient {
-	Component getComponent(URI uri, ProgressMonitor progressMonitor);
+	/**
+	 * @param componentUri URI to selected component resource
+	 * @param progressMonitor progress monitor
+	 * @return complete information about selected component
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 */
+	Component getComponent(URI componentUri, ProgressMonitor progressMonitor);
 }
