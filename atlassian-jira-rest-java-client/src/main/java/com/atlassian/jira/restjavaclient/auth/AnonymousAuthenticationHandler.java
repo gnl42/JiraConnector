@@ -22,7 +22,7 @@ import com.sun.jersey.api.client.filter.Filterable;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
-* TODO: Document this class / interface here
+* Anonymous handler - no credentials passed to the server. Only anonymously accessible operations will be possible. 
 *
 * @since v0.1
 */

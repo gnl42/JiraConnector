@@ -20,7 +20,7 @@ import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.IterableMatcher;
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.User;
-import com.atlassian.jira.restjavaclient.json.TestConstants;
+import com.atlassian.jira.restjavaclient.internal.json.TestConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
@@ -29,11 +29,6 @@ import javax.ws.rs.core.Response;
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.USER_SLASH;
 import static org.junit.Assert.assertThat;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
     @Test

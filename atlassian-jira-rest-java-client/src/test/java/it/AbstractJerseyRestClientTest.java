@@ -21,14 +21,14 @@ import com.atlassian.jira.restjavaclient.NullProgressMonitor;
 import com.atlassian.jira.restjavaclient.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.restjavaclient.domain.Transition;
-import com.atlassian.jira.restjavaclient.jersey.JerseyJiraRestClient;
+import com.atlassian.jira.restjavaclient.internal.jersey.JerseyJiraRestClient;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static com.atlassian.jira.restjavaclient.json.TestConstants.*;
+import static com.atlassian.jira.restjavaclient.internal.json.TestConstants.*;
 
 /**
  * TODO: Document this class / interface here

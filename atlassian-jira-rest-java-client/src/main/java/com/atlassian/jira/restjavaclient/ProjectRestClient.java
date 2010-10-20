@@ -21,7 +21,7 @@ import com.atlassian.jira.restjavaclient.domain.Project;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * The client handling project resources.
  *
  * @since v0.1
  */
@@ -42,11 +42,11 @@ public interface ProjectRestClient {
 	 * wheever you can, as this method is proof for potential changes of URI scheme used for exposing various
 	 * resources by JIRA REST API.
 	 *
-	 * @param uri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
+	 * @param projectUri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
 	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	public Project getProject(URI uri, ProgressMonitor progressMonitor);
+	public Project getProject(URI projectUri, ProgressMonitor progressMonitor);
 
 }

@@ -26,6 +26,7 @@ import com.sun.jersey.oauth.signature.OAuthSecrets;
 
 /**
  * TODO: Document this class / interface here
+ * This class is still under construction. Do not use.
  *
  * @since v0.1
  */

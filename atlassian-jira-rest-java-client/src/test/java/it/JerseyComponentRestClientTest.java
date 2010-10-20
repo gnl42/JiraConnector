@@ -20,7 +20,7 @@ import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
 import com.atlassian.jira.restjavaclient.TestUtil;
 import com.atlassian.jira.restjavaclient.domain.BasicComponent;
 import com.atlassian.jira.restjavaclient.domain.Component;
-import com.atlassian.jira.restjavaclient.json.TestConstants;
+import com.atlassian.jira.restjavaclient.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
 
 import javax.ws.rs.core.Response;

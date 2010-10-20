@@ -19,6 +19,8 @@ package com.atlassian.jira.restjavaclient;
 import com.atlassian.jira.restjavaclient.domain.BasicUser;
 import com.atlassian.jira.restjavaclient.domain.User;
 
+import java.net.URI;
+
 /**
  * The client handling user resources.
  *
@@ -26,10 +28,24 @@ import com.atlassian.jira.restjavaclient.domain.User;
  */
 public interface UserRestClient {
 	/**
+	 * Retrieves detailed information about selected user.
+	 * Try to use {@link #getUser(URI, ProgressMonitor)} instead as that method is more RESTful (well connected)
+	 *
 	 * @param username JIRA username/login
 	 * @param progressMonitor progress monitor
 	 * @return complete information about given user
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	User getUser(String username, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves detailed information about selected user.
+	 * This method is preferred over {@link #getUser(String, ProgressMonitor)} as it's more RESTful (well connected) 
+	 *
+	 * @param userUri URI of user resource
+	 * @param progressMonitor progress monitor
+	 * @return complete information about given user
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 */
+	User getUser(URI userUri, ProgressMonitor progressMonitor);
 }

@@ -23,6 +23,7 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
  * TODO: Document this class / interface here
+ * This class is still under construction. Do not use.
  *
  * @since v0.1
  */

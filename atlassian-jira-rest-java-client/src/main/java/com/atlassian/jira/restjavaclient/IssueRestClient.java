@@ -25,7 +25,7 @@ import com.atlassian.jira.restjavaclient.domain.Watchers;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * The client handling issue resources.
  *
  * @since v0.1
  */
@@ -101,42 +101,38 @@ public interface IssueRestClient {
 
 	/**
 	 * Starts watching selected issue
-	 * @param issue
-	 * @param progressMonitor progress monitor  
+	 * @param watchersUri
+	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
 	 */
-	void watch(Issue issue, ProgressMonitor progressMonitor);
+	void watch(URI watchersUri, ProgressMonitor progressMonitor);
 
 	/**
 	 * Stops watching selected issue
-	 * @param issue
-	 * @param progressMonitor progress monitor  
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param watchersUri
+	 *@param progressMonitor progress monitor   @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
-	void unwatch(Issue issue, ProgressMonitor progressMonitor);
+	void unwatch(URI watchersUri, ProgressMonitor progressMonitor);
 
 	/**
 	 * Adds selected person as a watcher for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
-	 * @param issue
-	 * @param username user to add as a watcher
-	 * @param progressMonitor progress monitor  
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param watchersUri
+	 *@param username user to add as a watcher
+	 * @param progressMonitor progress monitor    @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 
 	 */
-	void addWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
+	void addWatcher(final URI watchersUri, final String username, ProgressMonitor progressMonitor);
 
 	/**
 	 * Removes selected person from the watchers list for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
-	 * @param issue
-	 * @param username user to remove from the watcher list
-	 * @param progressMonitor progress monitor  
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param watchersUri
+	 *@param username user to remove from the watcher list
+	 * @param progressMonitor progress monitor    @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 
 	 */
-	void removeWatcher(final Issue issue, final String username, ProgressMonitor progressMonitor);
+	void removeWatcher(final URI watchersUri, final String username, ProgressMonitor progressMonitor);
 }

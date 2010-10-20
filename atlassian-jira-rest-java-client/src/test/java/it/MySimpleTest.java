@@ -16,19 +16,9 @@
 
 package it;
 
-import com.atlassian.jira.functest.framework.FuncTestCase;
-import com.atlassian.jira.restjavaclient.IntegrationTestUtil;
-import com.atlassian.jira.restjavaclient.domain.Authentication;
-import com.atlassian.jira.restjavaclient.json.AuthenticationJsonParser;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.client.apache.ApacheHttpClient;
-import junit.framework.TestCase;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
-import javax.ws.rs.core.Cookie;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 /**

@@ -43,8 +43,8 @@ import java.util.Locale;
 
 import static com.atlassian.jira.restjavaclient.IntegrationTestUtil.*;
 import static com.atlassian.jira.restjavaclient.TestUtil.assertErrorCode;
-import static com.atlassian.jira.restjavaclient.json.TestConstants.USER1_USERNAME;
-import static com.atlassian.jira.restjavaclient.json.TestConstants.USER2_USERNAME;
+import static com.atlassian.jira.restjavaclient.internal.json.TestConstants.USER1_USERNAME;
+import static com.atlassian.jira.restjavaclient.internal.json.TestConstants.USER2_USERNAME;
 import static org.junit.Assert.assertThat;
 
 
@@ -122,7 +122,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		setUser2();
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertFalse(issue.getWatchers().isWatching());
-		client.getIssueClient().watch(issue, pm);
+		client.getIssueClient().watch(issue.getWatchers().getSelf(), pm);
 		final Issue watchedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertTrue(watchedIssue.getWatchers().isWatching());
 		assertEquals(2, watchedIssue.getWatchers().getNumWatchers());
@@ -402,16 +402,16 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(),
 				Matchers.not(IterableMatcher.contains(USER_ADMIN)));
 
-		issueClient.watch(issue1, pm);
+		issueClient.watch(issue1.getWatchers().getSelf(), pm);
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER_ADMIN));
 
-		issueClient.unwatch(issue1, pm);
+		issueClient.unwatch(issue1.getWatchers().getSelf(), pm);
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
 
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
-		issueClient.removeWatcher(issue1, USER1.getName(), pm);
+		issueClient.removeWatcher(issue1.getWatchers().getSelf(), USER1.getName(), pm);
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), Matchers.not(IterableMatcher.contains(USER1)));
-		issueClient.addWatcher(issue1, USER1.getName(), pm);
+		issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1.getName(), pm);
 		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
 	}
 
@@ -419,7 +419,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	public void testRemoveWatcherUnauthorized() {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
-		issueClient.watch(issue1, pm);
+		issueClient.watch(issue1.getWatchers().getSelf(), pm);
 
 		setUser1();
 		final IssueRestClient issueClient2 = client.getIssueClient();
@@ -427,7 +427,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				"User 'wseliga' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
 			@Override
 			public void run() {
-				issueClient2.removeWatcher(issue1, ADMIN_USERNAME, pm);
+				issueClient2.removeWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME, pm);
 			}
 		});
 	}
@@ -440,7 +440,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue = issueClient.getIssue("TST-1", pm);
 		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
 		// JIRA allows to watch already watched issue by you - such action effectively has no effect
-		issueClient.watch(issue, pm);
+		issueClient.watch(issue.getWatchers().getSelf(), pm);
 		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
 	}
 
@@ -448,7 +448,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	public void testAddWatcherUnauthorized() {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
-		issueClient.addWatcher(issue1, USER1_USERNAME, pm);
+		issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1_USERNAME, pm);
 		assertThat(client.getIssueClient().getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
 
 		setUser1();
@@ -459,7 +459,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				+ "' is not allowed to add watchers to issue 'TST-1'"*/, new Runnable() {
 			@Override
 			public void run() {
-				client.getIssueClient().addWatcher(issue1, ADMIN_USERNAME, pm);
+				client.getIssueClient().addWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME, pm);
 			}
 		});
 	}
@@ -473,7 +473,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				new Runnable() {
 					@Override
 					public void run() {
-						issueClient.addWatcher(issue1, USER2_USERNAME, pm);
+						issueClient.addWatcher(issue1.getWatchers().getSelf(), USER2_USERNAME, pm);
 					}
 				});
 
