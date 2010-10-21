@@ -25,4 +25,6 @@ import java.net.URI;
  */
 public interface JiraRestClientFactory {
     JiraRestClient create(URI serverUri, final AuthenticationHandler authenticationHandler);
+
+	JiraRestClient createWithBasicHttpAutentication(URI serverUri, String username, String password);
 }

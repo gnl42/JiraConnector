@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.internal.jersey;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
+import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 
 import java.net.URI;
 
@@ -32,4 +33,11 @@ public class JerseyJiraRestClientFactory implements JiraRestClientFactory {
     public JiraRestClient create(URI serverUri, AuthenticationHandler authenticationHandler) {
         return new JerseyJiraRestClient(serverUri, authenticationHandler);
     }
+
+	@Override
+	public JiraRestClient createWithBasicHttpAutentication(URI serverUri, String username, String password) {
+		return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
+	}
+
+
 }

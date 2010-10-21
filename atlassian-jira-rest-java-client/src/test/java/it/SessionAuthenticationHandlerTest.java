@@ -19,11 +19,6 @@ package it;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Session;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class SessionAuthenticationHandlerTest extends AbstractJerseyRestClientTest {
 	@Override
 	protected void setUpTest() {
