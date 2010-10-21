@@ -24,11 +24,6 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class AttachmentJsonParser implements JsonParser<Attachment> {
 
 	private static final String THUMBNAIL = "thumbnail";

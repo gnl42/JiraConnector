@@ -19,7 +19,7 @@ package com.atlassian.jira.rest.client.domain;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Basic information about a JIRA issue status 
  *
  * @since v0.1
  */

@@ -30,11 +30,6 @@ import java.net.URISyntaxException;
 
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
     protected URI jiraUri;
     protected JerseyJiraRestClient client;

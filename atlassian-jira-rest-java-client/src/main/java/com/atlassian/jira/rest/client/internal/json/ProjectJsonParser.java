@@ -27,11 +27,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class ProjectJsonParser implements JsonParser<Project> {
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser componentJsonParser = new BasicComponentJsonParser();

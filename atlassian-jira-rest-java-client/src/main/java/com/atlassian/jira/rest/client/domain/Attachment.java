@@ -24,9 +24,9 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * A file attachment attached to an issue
  *
- * @since v4.2
+ * @since v0.1
  */
 public class Attachment implements AddressableEntity {
     private final URI self;

@@ -23,11 +23,6 @@ import org.codehaus.jettison.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class ResourceUtil {
 	public static JSONObject getJsonObjectFromResource(String resourcePath) {
 		final String s = getStringFromResource(resourcePath);

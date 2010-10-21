@@ -23,11 +23,6 @@ import org.junit.Test;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.assertEquals;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class BasicIssueTypeJsonParserTest {
     @Test
     public void testParse() throws JSONException {

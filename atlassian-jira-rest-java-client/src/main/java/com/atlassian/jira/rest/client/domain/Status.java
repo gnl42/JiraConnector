@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Complete information about a JIRA issue status.
  *
  * @since v0.1
  */

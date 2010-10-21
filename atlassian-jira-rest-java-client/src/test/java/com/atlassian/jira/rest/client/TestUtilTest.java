@@ -20,11 +20,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class TestUtilTest {
 	@Test
 	public void testGetLastPathSegment() {

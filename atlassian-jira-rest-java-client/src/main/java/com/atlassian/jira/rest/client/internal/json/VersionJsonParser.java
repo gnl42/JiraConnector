@@ -23,11 +23,6 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class VersionJsonParser implements JsonParser<Version> {
 	@Override
 	public Version parse(JSONObject json) throws JSONException {

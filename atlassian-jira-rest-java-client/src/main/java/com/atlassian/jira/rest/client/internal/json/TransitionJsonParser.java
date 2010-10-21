@@ -22,11 +22,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Collection;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class TransitionJsonParser {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 

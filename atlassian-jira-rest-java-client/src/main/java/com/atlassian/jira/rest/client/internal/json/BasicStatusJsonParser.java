@@ -22,11 +22,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class BasicStatusJsonParser implements JsonParser<BasicStatus> {
 	@Override
     public BasicStatus parse(JSONObject json) throws JSONException {

@@ -16,16 +16,17 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.domain.Field;
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JsonFieldParserTest {
     @Test
     public void testParse() throws Exception {
-        
-    }
+        JsonFieldParser parser = new JsonFieldParser();
+		final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/field/valid-fields.json");
+		final Field field = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
+		Assert.assertEquals(1.45, (Double) field.getValue(), 0.001);
+	}
 }

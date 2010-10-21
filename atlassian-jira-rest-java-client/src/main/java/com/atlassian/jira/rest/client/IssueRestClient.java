@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 

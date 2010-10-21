@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Project component
  *
  * @since v0.1
  */

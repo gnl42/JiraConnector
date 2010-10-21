@@ -22,7 +22,7 @@ import com.google.common.base.Objects;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Any resource which is addressable (has "self" URI) and has a name.
  *
  * @since v0.1
  */

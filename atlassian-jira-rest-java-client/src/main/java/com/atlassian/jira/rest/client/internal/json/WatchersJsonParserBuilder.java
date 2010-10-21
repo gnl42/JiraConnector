@@ -25,11 +25,6 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 import java.util.Collection;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class WatchersJsonParserBuilder {
 
     public static JsonParser<Watchers> createWatchersParser() {

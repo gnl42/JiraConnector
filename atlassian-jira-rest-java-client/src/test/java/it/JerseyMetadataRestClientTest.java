@@ -28,16 +28,11 @@ import com.atlassian.jira.rest.client.domain.Resolution;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import org.joda.time.DateTime;
 
 import javax.ws.rs.core.Response;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	public void testGetServerInfo() throws Exception {
 		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo(pm);

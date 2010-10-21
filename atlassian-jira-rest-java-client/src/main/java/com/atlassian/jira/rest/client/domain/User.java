@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Complete information about a single JIRA user
  *
  * @since v0.1
  */

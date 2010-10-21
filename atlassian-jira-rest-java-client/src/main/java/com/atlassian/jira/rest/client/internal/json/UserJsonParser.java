@@ -26,11 +26,6 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 import java.util.ArrayList;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class UserJsonParser implements JsonParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {

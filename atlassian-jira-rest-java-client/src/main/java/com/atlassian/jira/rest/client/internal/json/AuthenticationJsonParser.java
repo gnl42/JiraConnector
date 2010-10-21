@@ -22,11 +22,6 @@ import com.atlassian.jira.rest.client.domain.SessionCookie;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class AuthenticationJsonParser implements JsonParser<Authentication> {
 
     private final SessionCookieJsonParser sessionCookieJsonParser = new SessionCookieJsonParser();

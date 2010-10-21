@@ -20,11 +20,6 @@ import org.hamcrest.Description;
 import org.joda.time.DateTime;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class DateTimeMatcher extends TypeSafeMatcher<DateTime> {
     private final DateTime expected;
 
@@ -37,11 +32,13 @@ public class DateTimeMatcher extends TypeSafeMatcher<DateTime> {
         return new DateTimeMatcher(dateTime);
     }
 
-    public boolean matchesSafely(DateTime given) {
+    @Override
+	public boolean matchesSafely(DateTime given) {
 		return expected == null ? given == null : expected.isEqual(given);
 	}
 
-    public void describeTo(Description description) {
+    @Override
+	public void describeTo(Description description) {
         description.appendText("datetime equal to  " + expected);
     }
 }

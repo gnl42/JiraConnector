@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of JIRA REST client.
  *
  * @since v0.1
  */

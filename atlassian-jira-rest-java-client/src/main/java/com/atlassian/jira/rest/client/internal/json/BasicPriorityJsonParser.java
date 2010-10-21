@@ -22,11 +22,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class BasicPriorityJsonParser implements JsonParser<BasicPriority> {
 	@Override
 	public BasicPriority parse(JSONObject json) throws JSONException {

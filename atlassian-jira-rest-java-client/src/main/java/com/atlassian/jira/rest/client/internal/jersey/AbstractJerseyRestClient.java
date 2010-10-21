@@ -33,11 +33,11 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 
 /**
- * TODO: Document this class / interface here
+ * Parent class for Jersey-based implementation of REST clients
  *
  * @since v0.1
  */
-public class AbstractJerseyRestClient {
+public abstract class AbstractJerseyRestClient {
 	protected final ApacheHttpClient client;
 	protected final URI baseUri;
 

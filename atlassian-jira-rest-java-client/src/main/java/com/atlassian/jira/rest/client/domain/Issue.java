@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Single JIRA issue
  *
  * @since v0.1
  */

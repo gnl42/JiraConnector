@@ -23,11 +23,6 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class IntegrationTestUtil {
 	public static final BasicUser USER_ADMIN;
     public static final BasicUser USER1;

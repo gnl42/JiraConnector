@@ -24,11 +24,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class WatchersJsonParserTest {
     @Test
     public void testParseBasicWatchers() throws JSONException {

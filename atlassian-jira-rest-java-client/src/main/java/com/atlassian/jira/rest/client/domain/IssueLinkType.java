@@ -19,7 +19,7 @@ package com.atlassian.jira.rest.client.domain;
 import com.google.common.base.Objects;
 
 /**
- * TODO: Document this class / interface here
+ * Type of a link between two JIRA issues
  *
  * @since v0.1
  */

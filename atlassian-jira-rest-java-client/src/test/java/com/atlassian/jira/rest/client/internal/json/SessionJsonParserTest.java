@@ -22,11 +22,6 @@ import com.atlassian.jira.rest.client.domain.Session;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class SessionJsonParserTest {
 	@Test
 	public void testParse() throws Exception {

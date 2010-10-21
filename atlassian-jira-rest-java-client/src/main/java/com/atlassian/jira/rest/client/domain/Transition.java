@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Information about selected transition including fields which can or must be set while performing the transition.
  *
  * @since v0.1
  */

@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * A JIRA comment
  *
  * @since v0.1
  */

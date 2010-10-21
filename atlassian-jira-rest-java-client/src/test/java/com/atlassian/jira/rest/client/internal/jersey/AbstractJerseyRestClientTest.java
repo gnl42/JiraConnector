@@ -24,11 +24,6 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class AbstractJerseyRestClientTest {
 	@Test
 	public void testExtractErrors() throws JSONException {

@@ -26,11 +26,6 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class TestUtil {
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
 

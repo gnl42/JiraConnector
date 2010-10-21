@@ -21,11 +21,6 @@ import com.atlassian.jira.rest.client.domain.ServerInfo;
 import org.junit.Test;
 import org.junit.Assert;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class ServerInfoJsonParserTest {
 	@Test
 	public void testParse() throws Exception {

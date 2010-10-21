@@ -19,7 +19,9 @@ package com.atlassian.jira.rest.client.domain;
 import com.google.common.base.Objects;
 
 /**
- * TODO: Document this class / interface here
+ * Basic Authentication information of the current user session (if the connection maintains the session)
+ * or just authentication info from the last remote call (when the connection is stateless - usually
+ * recommended for really RESTful designs).
  *
  * @since v0.1
  */

@@ -30,11 +30,6 @@ import java.util.*;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getNestedObject;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getNestedString;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String UPDATED_ATTR = "updated";
 	private static final String CREATED_ATTR = "created";

@@ -22,7 +22,9 @@ import com.sun.jersey.api.client.filter.Filterable;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
- * TODO: Document this class / interface here
+ * Handler for HTTP basic authentication.
+ * Do NOT use it in with unencrypted HTTP protocol over public networks, as credentials are passed
+ * effectively in free text.
  *
  * @since v0.1
  */

@@ -22,10 +22,10 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import com.google.common.collect.Iterables;
@@ -48,11 +48,6 @@ import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_U
 import static org.junit.Assert.assertThat;
 
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
 	// no timezone here, as JIRA does not store timezone information in its dump file

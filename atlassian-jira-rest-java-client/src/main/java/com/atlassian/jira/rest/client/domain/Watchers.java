@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Complete information about the watchers of given issue
  *
  * @since v0.1
  */

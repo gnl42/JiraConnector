@@ -22,7 +22,8 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Represents a resource which can be expandable - that is REST API is capable of sending just the number
+ * of child resources or when the entity is expanded, also the child resources themselves
  *
  * @since v0.1
  */

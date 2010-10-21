@@ -24,11 +24,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Collection;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class VotesJsonParser implements JsonParser<Votes> {
 	private final BasicVotesJsonParser basicVotesJsonParser = new BasicVotesJsonParser();
 	private final BasicUserJsonParser basicUserJsonParser = new BasicUserJsonParser();

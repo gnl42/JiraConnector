@@ -20,11 +20,6 @@ import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class IssueLinkTypeJsonParser implements JsonParser<IssueLinkType> {
 	private static final String KEY_DIRECTION = "direction";
 

@@ -29,7 +29,7 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of ProjectRestClient
  *
  * @since v0.1
  */

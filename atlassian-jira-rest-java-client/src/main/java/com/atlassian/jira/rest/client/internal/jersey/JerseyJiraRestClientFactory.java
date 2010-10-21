@@ -23,7 +23,7 @@ import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Servers Jersey-based implementations of the JiraRestClient
  *
  * @since v0.1
  */

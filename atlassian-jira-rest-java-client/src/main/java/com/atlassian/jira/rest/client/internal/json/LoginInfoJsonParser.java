@@ -21,11 +21,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class LoginInfoJsonParser implements JsonParser<LoginInfo> {
     @Override
     public LoginInfo parse(JSONObject json) throws JSONException {

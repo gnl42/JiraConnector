@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Complete information about the voters for given issue
  *
  * @since v0.1
  */

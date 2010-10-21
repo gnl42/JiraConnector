@@ -18,11 +18,6 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 
-/**
-* TODO: Document this class / interface here
-*
-* @since v0.1
-*/
 interface JsonWeakParser<T> {
     T parse(Object o) throws JSONException;
 }

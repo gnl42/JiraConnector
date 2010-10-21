@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Issue worklog - single worklog entry describing the work logged for selected issue
  *
  * @since v0.1
  */

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client.domain;
+package com.atlassian.jira.rest.client.domain.input;
 
 /**
- * TODO: Document this class / interface here
+ * New value fo selected field - used while changing issue fields - e.g. while transitioning issue. 
  *
  * @since v0.1
  */
@@ -25,15 +25,25 @@ public class FieldInput {
 	private final String id;
 	private final Object value;
 
+	/**
+	 * @param id field id
+	 * @param value new value for this issue field
+	 */
 	public FieldInput(String id, Object value) {
 		this.id = id;
 		this.value = value;
 	}
 
+	/**
+	 * @return field id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @return new value for this issue field
+	 */
 	public Object getValue() {
 		return value;
 	}

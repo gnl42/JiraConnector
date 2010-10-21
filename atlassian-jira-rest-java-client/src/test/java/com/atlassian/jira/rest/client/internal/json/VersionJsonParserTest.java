@@ -29,11 +29,6 @@ import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class VersionJsonParserTest {
 
 	@Test

@@ -23,11 +23,6 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JsonFieldParser {
     private static final String VALUE_ATTRIBUTE = "value";
 

@@ -26,11 +26,11 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of SessionRestClient.
  *
  * @since v0.1
  */
-public class JerseySessionRestClient extends com.atlassian.jira.rest.client.internal.jersey.AbstractJerseyRestClient  implements SessionRestClient {
+public class JerseySessionRestClient extends AbstractJerseyRestClient  implements SessionRestClient {
 	private final SessionJsonParser sessionJsonParser = new SessionJsonParser();
 
 	public JerseySessionRestClient(ApacheHttpClient client, URI serverUri) {

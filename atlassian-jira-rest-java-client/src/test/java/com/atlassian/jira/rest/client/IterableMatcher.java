@@ -24,11 +24,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
-* TODO: Document this class / interface here
-*
-* @since v0.1
-*/
 public class IterableMatcher<T> extends TypeSafeMatcher<Iterable<T>> {
     private final Iterable<T> expected;
 

@@ -20,11 +20,11 @@ import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
-import com.atlassian.jira.rest.client.domain.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Session;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
@@ -48,7 +48,7 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of IssueRestClient
  *
  * @since v0.1
  */

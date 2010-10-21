@@ -17,7 +17,8 @@
 package it;
 
 /**
- * TODO: Document this class / interface here
+ * Base class for tests reloading each time (before each test method) the state of JIRA from an external
+ * dump (export) XML file.
  *
  * @since v0.1
  */

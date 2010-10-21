@@ -25,11 +25,6 @@ import java.net.URI;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class ComponentJsonParserTest {
 	@Test
 	public void testParseBasicComponent() throws Exception {

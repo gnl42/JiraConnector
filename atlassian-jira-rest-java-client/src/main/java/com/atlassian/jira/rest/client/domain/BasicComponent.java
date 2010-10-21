@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Basic information about a project component
  *
  * @since v0.1
  */

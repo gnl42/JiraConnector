@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client.domain;
+package com.atlassian.jira.rest.client.domain.input;
+
+import com.atlassian.jira.rest.client.domain.Comment;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
 /**
- * TODO: Document this class / interface here
+ * Input data used while transitioning an issue including new values for this issue and the optional comment.  
  *
  * @since v0.1
  */
@@ -32,18 +34,34 @@ public class TransitionInput {
 
 	private final Collection<FieldInput> fields;
 
+	/**
+	 *
+	 * @param id id of the issue transition which should be performed
+	 * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
+	 */
 	public TransitionInput(int id, Collection<FieldInput> fields) {
 		this(id, fields, null);
 	}
 
 
-	public TransitionInput(int id, Collection<FieldInput> fields, Comment comment) {
+	/**
+	 *
+	 * @param id id of the issue transition which should be performed
+	 * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
+	 * @param comment optional comment
+	 */
+	public TransitionInput(int id, Collection<FieldInput> fields, @Nullable Comment comment) {
 		this.id = id;
 		this.comment = comment;
 		this.fields = fields;
 	}
 
-	public TransitionInput(int id, Comment comment) {
+	/**
+	 *
+	 * @param id id of the issue transition which should be performed
+	 * @param comment optional comment
+	 */
+	public TransitionInput(int id, @Nullable Comment comment) {
 		this(id, Collections.<FieldInput>emptyList(), comment);
 	}
 
@@ -51,6 +69,9 @@ public class TransitionInput {
 		this(id, Collections.<FieldInput>emptyList(), null);
 	}
 
+	/**
+	 * @return id of the issue transition which should be performed
+	 */
 	public int getId() {
 		return id;
 	}

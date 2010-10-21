@@ -25,11 +25,6 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	@Test
 	public void testGetNonExistingProject() throws Exception {

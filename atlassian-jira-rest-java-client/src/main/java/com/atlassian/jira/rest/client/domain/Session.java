@@ -19,7 +19,8 @@ package com.atlassian.jira.rest.client.domain;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Information about current user "session" - or in case of the recommended stateless connection (really RESTful design)
+ * just the information about the user and the user login data.   
  *
  * @since v0.1
  */

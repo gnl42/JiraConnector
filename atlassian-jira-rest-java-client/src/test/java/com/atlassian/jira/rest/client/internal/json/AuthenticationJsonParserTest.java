@@ -25,11 +25,6 @@ import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static org.junit.Assert.*;
 
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class AuthenticationJsonParserTest {
     @Test
     public void testParse() throws Exception {

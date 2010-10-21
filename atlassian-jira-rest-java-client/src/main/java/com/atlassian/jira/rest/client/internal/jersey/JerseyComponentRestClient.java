@@ -28,7 +28,7 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of ComponentRestClient
  *
  * @since v0.1
  */

@@ -24,11 +24,6 @@ import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class AttachmentJsonParserTest {
 	@Test
 	public void testParse() throws Exception {

@@ -25,11 +25,6 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Override

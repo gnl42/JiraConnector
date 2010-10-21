@@ -21,11 +21,6 @@ import com.atlassian.jira.rest.client.domain.Status;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class StatusJsonParserTest {
     @Test
     public void testParse() throws Exception {

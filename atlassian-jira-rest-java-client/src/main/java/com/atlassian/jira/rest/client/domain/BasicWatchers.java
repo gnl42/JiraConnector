@@ -22,7 +22,7 @@ import com.google.common.base.Objects;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Basic information about watchers of a JIRA issue
  *
  * @since v0.1
  */
