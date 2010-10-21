@@ -93,6 +93,7 @@
 		   <artifactId>maven-javadoc-plugin</artifactId>
 		   <version>2.7</version>
 		   <configuration>
+			   <excludePackageNames>com.atlassian.jira.rest.client.internal.*</excludePackageNames>
 		   </configuration>
 		 </plugin>
 	   </plugins>
