@@ -70,6 +70,7 @@
                     </includes>
                     <excludes>
                       <exclude>it/**</exclude>
+                      <exclude>it2/**</exclude>
                     </excludes>
                     <forkMode>once</forkMode>
                 </configuration>
