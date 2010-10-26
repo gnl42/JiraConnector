@@ -57,6 +57,7 @@
                 <version>3.2</version>
                 <configuration>
                     <productVersion>4.2-b587</productVersion>
+		    <productDataVersion>${jira.data.version}</productDataVersion>
                     <!--<restVersion>4.2-SNAPSHOT</restVersion>-->
                 </configuration>
                 <executions>
