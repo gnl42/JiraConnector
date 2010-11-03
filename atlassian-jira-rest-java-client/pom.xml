@@ -7,9 +7,9 @@
         <version>28</version>
     </parent>
 
-    <groupId>com.atlassian.jira.rest-java-client</groupId>
-    <artifactId>atlassian-jira-rest-java-client</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <groupId>com.atlassian.jira</groupId>
+    <artifactId>jira-rest-java-client</artifactId>
+    <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>atlassian-jira-rest-java-client</name>
