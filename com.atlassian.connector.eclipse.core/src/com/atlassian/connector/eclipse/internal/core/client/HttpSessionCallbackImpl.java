@@ -18,6 +18,7 @@ import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
@@ -114,4 +115,17 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		locations.clear();
 		httpClients.clear();
 	}
+
+	public void disposeClient(ConnectionCfg server) {
+		removeClient(server);
+	}
+
+	public Cookie[] getCookiesHeaders(ConnectionCfg server) {
+		try {
+			return getHttpClient(server).getState().getCookies();
+		} catch (HttpProxySettingsException e) {
+			return new Cookie[0];
+		}
+	}
+
 }
