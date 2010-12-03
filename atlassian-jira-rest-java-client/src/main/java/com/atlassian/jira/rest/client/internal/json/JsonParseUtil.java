@@ -136,7 +136,7 @@ public class JsonParseUtil {
 
 	@Nullable
 	public static URI parseOptionalURI(JSONObject jsonObject, String attributeName) {
-		final String s = jsonObject.optString(attributeName, null);
+		final String s = getOptionalString(jsonObject, attributeName);
 		return s != null ? parseURI(s) : null;
 	}
 
@@ -150,7 +150,7 @@ public class JsonParseUtil {
 
 	@Nullable
 	public static DateTime parseOptionalDateTime(JSONObject jsonObject, String attributeName) throws JSONException {
-		final String s = jsonObject.optString(attributeName, null);
+		final String s = getOptionalString(jsonObject, attributeName);
 		return s != null ? parseDateTime(s) : null;
 	}
 
@@ -174,7 +174,11 @@ public class JsonParseUtil {
 
     @Nullable
     public static String getOptionalString(JSONObject jsonObject, String attributeName) {
-        return jsonObject.optString(attributeName, null);
+		final Object res = jsonObject.opt(attributeName);
+		if (res == JSONObject.NULL || res == null) {
+			return null;
+		}
+		return res.toString();
     }
 
 	public static Collection<String> toStringCollection(JSONArray jsonArray) throws JSONException {

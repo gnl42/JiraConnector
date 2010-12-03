@@ -104,4 +104,11 @@ public class IssueJsonParserTest {
 		assertEquals("Incomplete", issue.getResolution().getName());
 
 	}
+
+	@Test
+	public void testParseIssueWhenWatchersAndVotersAreSwitchedOff() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-no-votes-no-watchers.json");
+		assertNull(issue.getWatchers());
+		assertNull(issue.getVotes());
+	}
 }

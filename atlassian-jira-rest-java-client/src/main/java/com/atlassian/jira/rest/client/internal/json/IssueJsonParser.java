@@ -60,7 +60,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
-	private final JsonParserWithJsonObjectValue<BasicWatchers> watchersJsonParser
+	private final JsonParser<BasicWatchers> watchersJsonParser
             = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
@@ -133,7 +133,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
         final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
-		final BasicVotes votes = votesJsonParser.parse(getNestedObject(s, FIELDS, VOTES_ATTR, VALUE_ATTR));
+		final BasicVotes votes = getOptionalField(s, VOTES_ATTR, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getNestedObject(s, FIELDS, STATUS_ATTR, VALUE_ATTR));
 
         final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_ATTR);
@@ -142,7 +142,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
         final Collection<Worklog> worklogs = parseOptionalArray(s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
-		final BasicWatchers watchers = watchersJsonParser.parse(getNestedObject(s, FIELDS, WATCHER_ATTR));
+		final BasicWatchers watchers = getOptionalField(s, WATCHER_ATTR, watchersJsonParser);
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, priority, 
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,

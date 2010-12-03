@@ -1,0 +1,7 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/version/10000",
+	"name":"1.1",
+	"archived":true,
+	"released":false,
+	"releaseDate":"2010-08-25T00:00:00.000+0200"
+}

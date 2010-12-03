@@ -210,6 +210,10 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return project;
 	}
 
+	/**
+	 * @return <code>null</code when voting is disabled in JIRA
+	 */
+	@Nullable
 	public BasicVotes getVotes() {
 		return votes;
 	}
@@ -218,6 +222,10 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return worklogs;
 	}
 
+	/**
+	 * @return <code>null</code when watching is disabled in JIRA 
+	 */
+	@Nullable
 	public BasicWatchers getWatchers() {
 		return watchers;
 	}

@@ -39,10 +39,10 @@ public class WatchersJsonParserBuilder {
         };
     }
 
-    public static JsonParserWithJsonObjectValue<BasicWatchers> createBasicWatchersParser() {
-        return new JsonParserWithJsonObjectValue<BasicWatchers>() {
+    public static JsonParser<BasicWatchers> createBasicWatchersParser() {
+        return new JsonParser<BasicWatchers>() {
             @Override
-            protected BasicWatchers parseValue(JSONObject json) throws JSONException {
+            public BasicWatchers parse(JSONObject json) throws JSONException {
                 return parseValueImpl(json);
             }
         };

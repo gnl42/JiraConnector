@@ -28,7 +28,7 @@ public class VersionJsonParser implements JsonParser<Version> {
 	public Version parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final String name = json.getString("name");
-		final String description = JsonParseUtil.getNullableString(json, "description");
+		final String description = JsonParseUtil.getOptionalString(json, "description");
 		final boolean isArchived = json.getBoolean("archived");
 		final boolean isReleased = json.getBoolean("released");
 		final DateTime releaseDate = JsonParseUtil.parseOptionalDateTime(json, "releaseDate");
