@@ -1,0 +1,18 @@
+{
+	"name":"comment",
+	"type":"com.atlassian.jira.issue.fields.CommentSystemField",
+	"value":[
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/comment/10040",
+			"author":{
+				"name":"Anonymous"
+			},
+			"body":"Comment from anonymous user",
+			"updateAuthor":{
+				"name":"Anonymous"
+			},
+			"created":"2010-12-06T13:09:30.661+0100",
+			"updated":"2010-12-06T13:09:30.661+0100"
+		}
+	]
+}

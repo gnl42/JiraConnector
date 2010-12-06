@@ -111,4 +111,10 @@ public class IssueJsonParserTest {
 		assertNull(issue.getWatchers());
 		assertNull(issue.getVotes());
 	}
+
+	@Test
+	public void testParseUnassignedIssue() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-unassigned.json");
+		assertNull(issue.getAssignee());
+	}
 }

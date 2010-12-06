@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Comment;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -49,6 +50,17 @@ public class CommentJsonParserTest {
 		final Comment comment2 = parser.parse(comment2Json);
 		assertNull(comment2.getRoleLevel());
 		assertNull(comment2.getGroupLevel());
+	}
+
+	@Test
+	public void testParseAnonymous() throws JSONException {
+		final CommentJsonParser parser = new CommentJsonParser();
+		final JSONObject json = ResourceUtil.getJsonObjectFromResource("/json/comment/valid-anonymous.json");
+		final JSONObject commentJson = json.getJSONArray("value").getJSONObject(0);
+		final Comment comment = parser.parse(commentJson);
+		assertNull(comment.getAuthor());
+		assertNull(comment.getUpdateAuthor());
+		assertEquals("Comment from anonymous user", comment.getBody());
 
 	}
 }

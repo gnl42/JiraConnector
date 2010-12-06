@@ -35,6 +35,7 @@ import java.util.Collection;
 public class JsonParseUtil {
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
     public static final String VALUE_KEY = "value";
+	public static final String SELF_ATTR = "self";
 
 //	public interface ExpandablePropertyBuilder<T> {
 //		T parse(JSONObject json) throws JSONException;
@@ -70,7 +71,7 @@ public class JsonParseUtil {
 
 
 	public static URI getSelfUri(JSONObject jsonObject) throws JSONException {
-		return parseURI(jsonObject.getString("self"));
+		return parseURI(jsonObject.getString(SELF_ATTR));
 	}
 
 	public static JSONObject getNestedObject(JSONObject json, String... path) throws JSONException {
@@ -140,8 +141,13 @@ public class JsonParseUtil {
 		return s != null ? parseURI(s) : null;
 	}
 
+	@Nullable
 	public static BasicUser parseBasicUser(JSONObject json) throws JSONException {
-		return new BasicUser(getSelfUri(json), json.getString("name"), json.optString("displayName", null));
+		final String username = json.getString("name");
+		if (!json.has(JsonParseUtil.SELF_ATTR) && "Anonymous".equals(username)) {
+			return null; // insane representation for unassigned user - JRADEV-4262
+		}
+		return new BasicUser(getSelfUri(json), username, json.optString("displayName", null));
 	}
 
 	public static DateTime parseDateTime(JSONObject jsonObject, String attributeName) throws JSONException {
