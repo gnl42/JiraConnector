@@ -335,8 +335,12 @@ public class BambooView extends ViewPart {
 					if (totalTests == 0) {
 						builder.append("Tests: Testless build");
 					} else {
-						builder.append(NLS.bind("Tests: {0} out of {1} failed", new Object[] { build.getTestsFailed(),
-								totalTests }));
+						if (build.getTestsFailed() > 0) {
+							builder.append(NLS.bind("Tests: {0} out of {1} failed",
+									new Object[] { build.getTestsFailed(), totalTests }));
+						} else {
+							builder.append(NLS.bind("Tests: All {0} tests passed", new Object[] { totalTests }));
+						}
 					}
 					if (build.getReason() != null) {
 						builder.append("  [");
