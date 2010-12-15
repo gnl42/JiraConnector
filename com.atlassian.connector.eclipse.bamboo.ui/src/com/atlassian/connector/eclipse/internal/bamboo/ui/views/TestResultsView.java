@@ -885,6 +885,7 @@ public class TestResultsView extends ViewPart {
 	}
 
 	List<TestDetails> getAllFailures() {
+		// TODO jj return failed tests for all jobs
 		return fBuildDetails.getFailedTestDetails();
 	}
 

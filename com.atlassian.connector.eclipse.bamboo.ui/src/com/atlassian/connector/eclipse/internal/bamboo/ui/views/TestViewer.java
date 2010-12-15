@@ -25,9 +25,11 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.views;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestJobElement;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestRoot;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.model.TestElement.Status;
+import com.atlassian.theplugin.commons.bamboo.BambooJob;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -254,28 +256,62 @@ public class TestViewer {
 		fBuildDetails = buildDetails;
 		fTestRoot = new TestRoot(buildKey, fBuildDetails);
 
-		Map<String, TestSuiteElement> testSuites = MiscUtil.buildHashMap();
+		if (fBuildDetails.getJobs().size() > 0) {
+			for (BambooJob job : buildDetails.getJobs()) {
+				TestJobElement jobElement = new TestJobElement(fTestRoot, job.getShortKey(), 1);
 
-		for (TestDetails test : buildDetails.getFailedTestDetails()) {
-			if (!testSuites.containsKey(test.getTestClassName())) {
-				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+				Map<String, TestSuiteElement> testSuites = MiscUtil.buildHashMap();
+
+				for (TestDetails test : job.getFailedTests()) {
+					if (!testSuites.containsKey(test.getTestClassName())) {
+						testSuites.put(test.getTestClassName(),
+								new TestSuiteElement(jobElement, test.getTestClassName(), 1));
+					}
+
+					TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format(
+							"%s(%s)", test.getTestMethodName(), test.getTestClassName()));
+					tce.setElapsedTimeInSeconds(test.getTestDuration());
+					tce.setStatus(Status.ERROR, test.getErrors(), null, null);
+				}
+
+				for (TestDetails test : job.getSuccessfulTests()) {
+					if (!testSuites.containsKey(test.getTestClassName())) {
+						testSuites.put(test.getTestClassName(),
+								new TestSuiteElement(jobElement, test.getTestClassName(), 1));
+					}
+
+					TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format(
+							"%s(%s)", test.getTestMethodName(), test.getTestClassName()));
+					tce.setElapsedTimeInSeconds(test.getTestDuration());
+					tce.setStatus(Status.OK, test.getErrors(), null, null);
+				}
+
+			}
+		} else {
+
+			Map<String, TestSuiteElement> testSuites = MiscUtil.buildHashMap();
+
+			for (TestDetails test : buildDetails.getFailedTestDetails()) {
+				if (!testSuites.containsKey(test.getTestClassName())) {
+					testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+				}
+
+				TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format(
+						"%s(%s)", test.getTestMethodName(), test.getTestClassName()));
+				tce.setElapsedTimeInSeconds(test.getTestDuration());
+				tce.setStatus(Status.ERROR, test.getErrors(), null, null);
 			}
 
-			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format("%s(%s)",
-					test.getTestMethodName(), test.getTestClassName()));
-			tce.setElapsedTimeInSeconds(test.getTestDuration());
-			tce.setStatus(Status.ERROR, test.getErrors(), null, null);
-		}
+			for (TestDetails test : buildDetails.getSuccessfulTestDetails()) {
+				if (!testSuites.containsKey(test.getTestClassName())) {
+					testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+				}
 
-		for (TestDetails test : buildDetails.getSuccessfulTestDetails()) {
-			if (!testSuites.containsKey(test.getTestClassName())) {
-				testSuites.put(test.getTestClassName(), new TestSuiteElement(fTestRoot, test.getTestClassName(), 1));
+				TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format(
+						"%s(%s)", test.getTestMethodName(), test.getTestClassName()));
+				tce.setElapsedTimeInSeconds(test.getTestDuration());
+				tce.setStatus(Status.OK, test.getErrors(), null, null);
 			}
-
-			TestCaseElement tce = new TestCaseElement(testSuites.get(test.getTestClassName()), String.format("%s(%s)",
-					test.getTestMethodName(), test.getTestClassName()));
-			tce.setElapsedTimeInSeconds(test.getTestDuration());
-			tce.setStatus(Status.OK, test.getErrors(), null, null);
 		}
 
 		registerViewersRefresh();
@@ -290,7 +326,10 @@ public class TestViewer {
 		TestElement testElement = (TestElement) selection.getFirstElement();
 
 		OpenTestAction action;
-		if (testElement instanceof TestSuiteElement) {
+		if (testElement instanceof TestJobElement) {
+			// do nothing
+			return;
+		} else if (testElement instanceof TestSuiteElement) {
 			action = new OpenTestAction(fTestRunnerPart, testElement.getTestName());
 		} else if (testElement instanceof TestCaseElement) {
 			TestCaseElement testCase = (TestCaseElement) testElement;

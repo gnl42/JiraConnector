@@ -23,18 +23,18 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
 public class TestRoot extends TestSuiteElement {
 
-	private final BuildDetails fSession;
+//	private final BuildDetails fSession;
 
 	public TestRoot(String buildKey, BuildDetails session) {
 		super(null, buildKey, 1);
-		fSession = session;
+//		fSession = session;
 	}
 
 	public TestRoot getRoot() {
 		return this;
 	}
 
-	public BuildDetails getTestRunSession() {
-		return fSession;
-	}
+//	public BuildDetails getTestRunSession() {
+//		return fSession;
+//	}
 }
