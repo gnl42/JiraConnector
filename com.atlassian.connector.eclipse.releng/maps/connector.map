@@ -69,11 +69,19 @@ plugin@com.perforce.p4java=GET,file://@buildDirectory@/../../../bundles/com.perf
 !**************************************************
 ! Mylyn's plugins that are required during release
 !**************************************************
-plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests.util
-plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
-plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tests
-plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
-plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.tests
-plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
-plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
-plugin@org.eclipse.mylyn.tasks.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.tests
+!plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests.util
+plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.tests.util
+!plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.commons/org.eclipse.mylyn.commons.tests
+!plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tests
+plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.java.tests
+!plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
+plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.resources.tests
+!plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide.tests
+plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.ide.tests
+!plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.resources.tests
+plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.resources.tests
+!plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.context.tests
+plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.context.tests
+!plugin@org.eclipse.mylyn.tasks.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tasks.tests
+plugin@org.eclipse.mylyn.tasks.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.tasks.tests
