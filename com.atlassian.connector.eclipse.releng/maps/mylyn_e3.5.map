@@ -1,13 +1,13 @@
 !*******  FEATURES   ******** 
 feature@org.eclipse.mylyn_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn-feature
 feature@org.eclipse.mylyn.context_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.context-feature
-feature@org.eclipse.mylyn.bugzilla_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla-feature
-feature@org.eclipse.mylyn.java_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java-feature
-feature@org.eclipse.mylyn.team_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team-feature
-feature@org.eclipse.mylyn.ide_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.ide-feature
-feature@org.eclipse.mylyn.pde_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.pde-feature
+feature@org.eclipse.mylyn.bugzilla_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.bugzilla-feature
+feature@org.eclipse.mylyn.java_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.java-feature
+feature@org.eclipse.mylyn.team_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.team-feature
+feature@org.eclipse.mylyn.ide_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.ide-feature
+feature@org.eclipse.mylyn.pde_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.pde-feature
 feature@org.eclipse.mylyn.sdk_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.sdk-feature
-feature@org.eclipse.mylyn.commons=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons-feature
+feature@org.eclipse.mylyn.commons=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.commons/org.eclipse.mylyn.commons-feature
 
 !******* EXTRAS ***********
 feature@org.eclipse.mylyn.trac_feature=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.trac-feature
@@ -84,16 +84,15 @@ plugin@org.eclipse.mylyn.xplanner.ui=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclips
 plugin@org.eclipse.mylyn.tests.util=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.tests.util
 plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.commons/org.eclipse.mylyn.commons.tests
 plugin@org.eclipse.mylyn.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.tests
-plugin@org.eclipse.mylyn.bugzilla.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.bugzilla.tests
-plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.bugzilla.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.bugzilla.tests
 plugin@org.eclipse.mylyn.context.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.context.tests
 plugin@org.eclipse.mylyn.ide.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.ide.tests
 plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.java.tests
-plugin@org.eclipse.mylyn.monitor.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.monitor.tests
+plugin@org.eclipse.mylyn.monitor.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.commons/org.eclipse.mylyn.monitor.tests
 plugin@org.eclipse.mylyn.resources.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.resources.tests
-plugin@org.eclipse.mylyn.sandbox.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.sandbox.tests
+plugin@org.eclipse.mylyn.sandbox.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.incubator/org.eclipse.mylyn.sandbox.tests
 plugin@org.eclipse.mylyn.tasks.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.tasks.tests
-plugin@org.eclipse.mylyn.team.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.team.tests
-plugin@org.eclipse.mylyn.trac.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.trac.tests
-plugin@org.eclipse.mylyn.wikitext.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.wikitext.tests
-plugin@org.eclipse.mylyn.xplanner.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.tests
+plugin@org.eclipse.mylyn.team.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.team.tests
+plugin@org.eclipse.mylyn.trac.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.tasks/org.eclipse.mylyn.trac.tests
+plugin@org.eclipse.mylyn.wikitext.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/zArchive/org.eclipse.mylyn.wikitext.tests
+plugin@org.eclipse.mylyn.xplanner.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/zArchive/org.eclipse.mylyn.xplanner.tests
