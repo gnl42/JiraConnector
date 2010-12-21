@@ -22,7 +22,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFai
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -204,7 +203,7 @@ public class BambooView extends ViewPart {
 
 	private Action refreshAction;
 
-	private BaseSelectionListenerAction showBuildLogAction;
+//	private BaseSelectionListenerAction showBuildLogAction;
 
 	private BaseSelectionListenerAction showTestResultsAction;
 
@@ -504,7 +503,7 @@ public class BambooView extends ViewPart {
 		MenuManager contextMenuManager = new MenuManager("BAMBOO");
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(new Separator());
-		contextMenuManager.add(showBuildLogAction);
+//		contextMenuManager.add(showBuildLogAction);
 		contextMenuManager.add(showTestResultsAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(runBuildAction);
@@ -538,7 +537,7 @@ public class BambooView extends ViewPart {
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(openInBrowserAction);
-		toolBarManager.add(showBuildLogAction);
+//		toolBarManager.add(showBuildLogAction);
 		toolBarManager.add(showTestResultsAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(runBuildAction);
@@ -563,9 +562,9 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
-		showBuildLogAction = new ShowBuildLogAction();
-		showBuildLogAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(showBuildLogAction);
+//		showBuildLogAction = new ShowBuildLogAction();
+//		showBuildLogAction.setEnabled(false);
+//		buildViewer.addSelectionChangedListener(showBuildLogAction);
 
 		showTestResultsAction = new ShowTestResultsAction();
 		showTestResultsAction.setEnabled(false);
