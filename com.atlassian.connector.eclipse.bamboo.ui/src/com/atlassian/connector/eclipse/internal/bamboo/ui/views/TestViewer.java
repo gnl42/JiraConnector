@@ -259,7 +259,8 @@ public class TestViewer {
 		if (fBuildDetails.getJobs().size() > 0) {
 			for (BambooJob job : buildDetails.getJobs()) {
 				String jobString = (job.getShortName() != null && job.getShortName().length() > 0) ? job.getShortName()
-						: job.getName() + " [" + job.getShortKey() + "]";
+						: job.getName();
+				jobString += " [" + job.getShortKey() + "]";
 				TestJobElement jobElement = new TestJobElement(fTestRoot, jobString, 1);
 
 				Map<String, TestSuiteElement> testSuites = MiscUtil.buildHashMap();
