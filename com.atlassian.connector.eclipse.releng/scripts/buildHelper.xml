@@ -681,10 +681,9 @@
 		<echo message="Eclipse base is set to ${eclipse.base}" />
 		<echo message="Base dir is set to ${basedir}" />
 		<echo message="Build target is set to ${build.target}" />
-		<echo message="Build directory is set to ${buildDirectory}" />
-		<mkdir dir="${basedir}/../workspace" />
-		<mkdir dir="${basedir}/../workspace/.metadata/.plugins" />
-		<!-- \org.eclipse.core.runtime\.settings" -->
+		<echo message="Data dir is set to ${data-dir}" />
+		<mkdir dir="${eclipse.home}/workspace" />
+		<copy file="${basedir}/com.atlassian.connector.eclipse.tests/com.atlassian.connector.eclipse.directclickthrough.ui.prefs" todir="${eclipse.home}/workspace"/>
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
@@ -698,6 +697,8 @@
 			<arg value="${application}" />
 			<arg value="-buildfile" />
 			<arg value="${script.test}" />
+			<arg value="-data" />
+			<arg value="${eclipse.home}/workspace" />
 			<arg value="-Dos=${build.os}" />
 			<arg value="-Dws=${build.ws}" />
 			<arg value="-Darch=${build.arch}" />
