@@ -681,6 +681,10 @@
 		<echo message="Eclipse base is set to ${eclipse.base}" />
 		<echo message="Base dir is set to ${basedir}" />
 		<echo message="Build target is set to ${build.target}" />
+		<echo message="Build directory is set to ${buildDirectory}" />
+		<mkdir dir="${buildDirectory}/../workspace" />
+		<mkdir dir="${buildDirectory}/../workspace/.metadata/.plugins" />
+		<!-- \org.eclipse.core.runtime\.settings" -->
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
