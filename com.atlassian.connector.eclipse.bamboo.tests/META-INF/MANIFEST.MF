@@ -14,7 +14,8 @@ Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.tasks.ui,
- org.eclipse.jface
+ org.eclipse.jface,
+ com.atlassian.connector.eclipse.directclickthrough.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.tests;x-internal:=true,

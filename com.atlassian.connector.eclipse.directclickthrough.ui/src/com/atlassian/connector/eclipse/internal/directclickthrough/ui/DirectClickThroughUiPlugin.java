@@ -68,7 +68,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 			startEmbeddedServer();
 		}
 	}
-
+	
 	private void startEmbeddedServer() {
 		if (embeddedServer != null) {
 			stopEmbeddedServer();
@@ -81,7 +81,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 					embeddedServer = new Server();
 					Connector connector = new SocketConnector();
 					connector.setHost("127.0.0.1");
-					connector.setPort(getPreferenceStore().getInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER));
+					connector.setPort(getPortNumber());
 					embeddedServer.addConnector(connector);
 					
 					Context context = new Context(embeddedServer, "/", Context.NO_SESSIONS | Context.NO_SECURITY);
@@ -103,6 +103,10 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 			}
 		});
 		serverJob.schedule();
+	}
+	
+	public int getPortNumber() {
+		return getPreferenceStore().getInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER);
 	}
 
 	/*
