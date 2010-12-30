@@ -3,8 +3,6 @@
  */
 package com.atlassian.connector.eclipse.internal.bamboo.tests;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.DicrectClickThroughTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -25,7 +23,6 @@ public class AllBambooTests {
 
 		suite.addTest(AllBambooCoreTests.suite());
 		suite.addTest(AllBambooUiTests.suite());
-		suite.addTestSuite(DicrectClickThroughTest.class);
 
 		// $JUnit-END$
 		return suite;
