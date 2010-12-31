@@ -683,6 +683,9 @@
 		<echo message="Build target is set to ${build.target}" />
 		<property name="prefs.file" value="${basedir}/../com.atlassian.connector.eclipse.tests/com.atlassian.connector.eclipse.directclickthrough.ui.prefs" />
 		<echo message="Preferences file is set to ${prefs.file}" />
+		<exec executable="echo" failonerror="true">
+			<arg value="${prefs.file}" />
+		</exec>
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
