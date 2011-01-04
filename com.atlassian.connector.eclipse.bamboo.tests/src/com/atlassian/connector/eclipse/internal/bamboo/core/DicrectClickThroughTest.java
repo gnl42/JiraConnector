@@ -20,6 +20,5 @@ public class DicrectClickThroughTest extends TestCase {
 	public void testDirectClickThroughPort() {
 		String message = "DirectClickThrough port is set to " + DirectClickThroughUiPlugin.getDefault().getPortNumber();
 		System.out.println(message);
-		fail(message);
 	}
 }
