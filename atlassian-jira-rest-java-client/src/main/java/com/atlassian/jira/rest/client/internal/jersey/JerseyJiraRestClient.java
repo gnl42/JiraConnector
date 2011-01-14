@@ -54,7 +54,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
         this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
         DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
         authenticationHandler.configure(config);
-        final ApacheHttpClient client = new ApacheHttpClient(createDefaultClientHander(), config) {
+        final ApacheHttpClient client = new ApacheHttpClient(createDefaultClientHander(config)) {
             @Override
             public WebResource resource(URI u) {
                 final WebResource resource = super.resource(u);
@@ -121,9 +121,9 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		return metadataRestClient;
 	}
 
-	private static ApacheHttpClientHandler createDefaultClientHander() {
+	private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
         final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
-        return new ApacheHttpClientHandler(client);
+        return new ApacheHttpClientHandler(client, config);
     }
 
 }
