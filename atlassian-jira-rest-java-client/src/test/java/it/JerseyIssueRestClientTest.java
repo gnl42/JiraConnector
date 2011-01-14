@@ -449,9 +449,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
 
-		// @todo restore assertion for the message when JRADEV-3516 is fixed
-		assertErrorCode(Response.Status.UNAUTHORIZED/*, "User '" + USER1_USERNAME
-				+ "' is not allowed to add watchers to issue 'TST-1'"*/, new Runnable() {
+		assertErrorCode(Response.Status.UNAUTHORIZED, "User '" + USER1_USERNAME
+				+ "' is not allowed to add watchers to issue 'TST-1'", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().addWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME, pm);
