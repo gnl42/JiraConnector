@@ -18,10 +18,14 @@ package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.ProjectRestClient;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.internal.json.BasicProjectsJsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectJsonParser;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.ws.rs.core.UriBuilder;
@@ -33,9 +37,11 @@ import java.util.concurrent.Callable;
  *
  * @since v0.1
  */
-public class JerseyProjectRestClient extends AbstractJerseyRestClient implements ProjectRestClient  {
+public class JerseyProjectRestClient extends AbstractJerseyRestClient implements ProjectRestClient {
 	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();
+	private final BasicProjectsJsonParser basicProjectsJsonParser = new BasicProjectsJsonParser();
+
 	public JerseyProjectRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
 	}
@@ -57,5 +63,16 @@ public class JerseyProjectRestClient extends AbstractJerseyRestClient implements
 	public Project getProject(final String key, ProgressMonitor progressMonitor) {
 		final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).path(key).build();
 		return getProject(uri, progressMonitor);
+	}
+
+	@Override
+	public Iterable<BasicProject> getAllProjects(ProgressMonitor progressMonitor) {
+		final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).build();
+		return getAndParse(uri, new JsonParser<Iterable<BasicProject>>() {
+			@Override
+			public Iterable<BasicProject> parse(JSONObject json) throws JSONException {
+				return basicProjectsJsonParser.parse(json.getJSONObject("projects"));
+			}
+		}, progressMonitor);
 	}
 }

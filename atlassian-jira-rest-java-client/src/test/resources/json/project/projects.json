@@ -1,0 +1,16 @@
+{
+	"projects":{
+		"TST":{
+			"self":"http://localhost:8090/jira/rest/api/latest/project/TST",
+			"key":"TST"
+		},
+		"RST":{
+			"self":"http://localhost:8090/jira/rest/api/latest/project/RST",
+			"key":"RST"
+		},
+		"ANNON":{
+			"self":"http://localhost:8090/jira/rest/api/latest/project/ANNON",
+			"key":"ANNON"
+		}
+	}
+}

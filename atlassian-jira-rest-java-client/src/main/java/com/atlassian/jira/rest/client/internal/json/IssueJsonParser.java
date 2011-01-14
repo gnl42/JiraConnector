@@ -131,7 +131,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicUser reporter = getOptionalField(s, REPORTER_ATTR, userJsonParser);
 
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
-		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR));
+		final BasicProject project = projectJsonParser.parse(getNestedObject(s, FIELDS, PROJECT_ATTR, VALUE_ATTR));
         final Collection<IssueLink> issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
 		final BasicVotes votes = getOptionalField(s, VOTES_ATTR, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getNestedObject(s, FIELDS, STATUS_ATTR, VALUE_ATTR));

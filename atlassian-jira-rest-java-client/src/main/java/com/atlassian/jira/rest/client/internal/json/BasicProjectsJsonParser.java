@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,13 +20,22 @@ import com.atlassian.jira.rest.client.domain.BasicProject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class BasicProjectJsonParser implements JsonParser<BasicProject> {
-    @Override
-    public BasicProject parse(JSONObject json) throws JSONException {
-        final URI selfUri = JsonParseUtil.getSelfUri(json);
-        final String key = json.getString("key");
-        return new BasicProject(selfUri, key);
-    }
+public class BasicProjectsJsonParser implements JsonParser<Iterable<BasicProject>> {
+
+	private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
+
+	@Override
+	public Iterable<BasicProject> parse(JSONObject json) throws JSONException {
+		ArrayList<BasicProject> res = new ArrayList<BasicProject>(json.length());
+		@SuppressWarnings("unchecked")
+		final Iterator<String> iterator = json.keys();
+		while (iterator.hasNext()) {
+			final String key = iterator.next();
+			res.add(basicProjectJsonParser.parse(json.getJSONObject(key)));
+		}
+		return res;
+	}
 }

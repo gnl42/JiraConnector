@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 
 import java.net.URI;
@@ -47,6 +48,17 @@ public interface ProjectRestClient {
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	public Project getProject(URI projectUri, ProgressMonitor progressMonitor);
+	Project getProject(URI projectUri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Returns all projects, which are visible for the currently logged in user. If no user is logged in, it returns the
+	 * list of projects that are visible when using anonymous access.
+	 *
+	 * @since client: 0.2, server 4.3
+	 *
+	 * @return projects which the currently logged user can see
+	 * @param progressMonitor
+	 */
+	Iterable<BasicProject> getAllProjects(ProgressMonitor progressMonitor);
 
 }

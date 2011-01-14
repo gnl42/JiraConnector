@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,18 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProject;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.junit.Test;
 
-import java.net.URI;
+import static org.junit.Assert.assertEquals;
 
-public class BasicProjectJsonParser implements JsonParser<BasicProject> {
-    @Override
-    public BasicProject parse(JSONObject json) throws JSONException {
-        final URI selfUri = JsonParseUtil.getSelfUri(json);
-        final String key = json.getString("key");
-        return new BasicProject(selfUri, key);
-    }
+public class BasicProjectJsonParserTest {
+	@Test
+	public void testParse() throws Exception {
+		BasicProjectJsonParser parser = new BasicProjectJsonParser();
+		final BasicProject project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/basic.json"));
+		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/RST"), project.getSelf());
+		assertEquals("RST", project.getKey());
+	}
 }

@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
@@ -86,4 +87,19 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 
 	}
 
+	@Test
+	public void testGetAllProject() {
+		final Iterable<BasicProject> projects = client.getProjectClient().getAllProjects(pm);
+		assertEquals(3, Iterables.size(projects));
+		assertEquals("TST", Iterables.get(projects, 0).getKey());
+		assertTrue(Iterables.get(projects, 0).getSelf().toString().contains(jiraRestRootUri.toString()));
+
+		setAnonymousMode();
+		final Iterable<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects(pm);
+		assertEquals(1, Iterables.size(anonymouslyAccessibleProjects));
+		assertEquals("ANNON", Iterables.get(anonymouslyAccessibleProjects, 0).getKey());
+
+		setUser1();
+		assertEquals(2, Iterables.size(client.getProjectClient().getAllProjects(pm)));
+	}
 }
