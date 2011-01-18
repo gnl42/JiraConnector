@@ -18,8 +18,11 @@ package samples;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.BasicIssue;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
@@ -41,6 +44,19 @@ public class Example1 {
 		final URI jiraServerUri = new URI("http://localhost:8090/jira");
 		final JiraRestClient restClient = factory.createWithBasicHttpAutentication(jiraServerUri, "admin", "admin");
 		final NullProgressMonitor pm = new NullProgressMonitor();
+
+		// first let's get and print all visible projects
+		final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(pm);
+		for (BasicProject project : allProjects) {
+			System.out.println(project);
+		}
+
+		// let's now print all issues matching a JQL string (here: all assigned issues)
+		final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY", pm);
+		for (BasicIssue issue : searchResult.getIssues()) {
+			System.out.println(issue.getKey());
+		}
+
 		final Issue issue = restClient.getIssueClient().getIssue("TST-1", pm);
 
 		System.out.println(issue);

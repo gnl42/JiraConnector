@@ -55,4 +55,9 @@ public interface JiraRestClient {
 	 * priorities)
 	 */
 	MetadataRestClient getMetadataClient();
+
+	/**
+	 * @return the client handling search (e.g. JQL)
+	 */
+	SearchRestClient getSearchClient();
 }

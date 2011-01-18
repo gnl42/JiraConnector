@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProjectRestClient;
+import com.atlassian.jira.rest.client.SearchRestClient;
 import com.atlassian.jira.rest.client.SessionRestClient;
 import com.atlassian.jira.rest.client.UserRestClient;
 import com.sun.jersey.api.client.*;
@@ -48,6 +49,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	private final ProjectRestClient projectRestClient;
 	private final ComponentRestClient componentRestClient;
 	private final MetadataRestClient metadataRestClient;
+	private final SearchRestClient searchRestClient;
 
 
 	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
@@ -89,6 +91,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		projectRestClient = new JerseyProjectRestClient(baseUri, client);
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
 		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
+		searchRestClient = new JerseySearchRestClient(baseUri, client);
     }
 
     @Override
@@ -119,6 +122,11 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	@Override
 	public MetadataRestClient getMetadataClient() {
 		return metadataRestClient;
+	}
+
+	@Override
+	public SearchRestClient getSearchClient() {
+		return searchRestClient;
 	}
 
 	private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {

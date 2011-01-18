@@ -1,0 +1,10 @@
+{
+	"startAt":0,
+	"maxResults":50,
+	"total":1,
+	"issues":[
+	{
+		"self":"http://localhost:8090/jira/rest/api/latest/issue/TST-7",
+		"key":"TST-7"
+	}
+]}

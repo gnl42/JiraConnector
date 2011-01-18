@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  * @since v0.1
  */
-public class Issue implements AddressableEntity, ExpandableResource {
+public class Issue extends BasicIssue implements ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
 				 @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
@@ -40,9 +40,8 @@ public class Issue implements AddressableEntity, ExpandableResource {
 				 Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
 				 BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos
 	) {
+		super(self, key);
         this.summary = summary;
-        this.self = self;
-        this.key = key;
 		this.project = project;
 		this.status = status;
 		this.resolution = resolution;
@@ -67,7 +66,6 @@ public class Issue implements AddressableEntity, ExpandableResource {
 	}
 
 	private final BasicStatus status;
-    private final URI self;
 	private BasicIssueType issueType;
 	private BasicProject project;
 	private final URI transitionsUri;
@@ -76,7 +74,6 @@ public class Issue implements AddressableEntity, ExpandableResource {
     private final String summary;
 	private BasicUser reporter;
 	private BasicUser assignee;
-	private String key;
 	@Nullable
 	private final BasicResolution resolution;
 	private Collection<Field> fields;
@@ -161,26 +158,10 @@ public class Issue implements AddressableEntity, ExpandableResource {
 		return null;
 	}
 
-	/**
-	 * @return issue key
-	 */
-	public String getKey() {
-		return key;
-	}
-
-	/**
-	 * @return URI of this issue
-	 */
-	@Override
-	public URI getSelf() {
-		return self;
-	}
-
 	@Override
 	public Iterable<String> getExpandos() {
 		return expandos;
 	}
-
 
 	/**
 	 * @return issue type
@@ -258,9 +239,7 @@ public class Issue implements AddressableEntity, ExpandableResource {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("key", key).
+		return Objects.toStringHelper(this).addValue(super.toString()).
 				add("project", project).
 				add("status", status).
 				add("expandos", expandos).
