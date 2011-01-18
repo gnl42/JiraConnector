@@ -1,7 +1,7 @@
 {
 	"startAt":0,
 	"maxResults":50,
-	"total":2,
+	"total":g2b,
 	"issues":[
 	{
 		"self":"http://localhost:8090/jira/rest/api/latest/issue/TST-7",

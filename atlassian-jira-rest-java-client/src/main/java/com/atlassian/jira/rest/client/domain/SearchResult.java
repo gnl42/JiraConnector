@@ -27,26 +27,38 @@ import com.google.common.base.Objects;
 public class SearchResult {
 	private final int startIndex;
 	private final int maxResults;
-	private final int size;
+	private final int total;
 	private final Iterable<BasicIssue> issues;
 
-	public SearchResult(int startIndex, int maxResults, int size, Iterable<BasicIssue> issues) {
+	public SearchResult(int startIndex, int maxResults, int total, Iterable<BasicIssue> issues) {
 		this.startIndex = startIndex;
 		this.maxResults = maxResults;
-		this.size = size;
+		this.total = total;
 		this.issues = issues;
 	}
 
+	/**
+	 *
+	 * @return 0-based start index of the returned issues (e.g. "3" means that 4th, 5th...maxResults issues matching given query
+	 * have been returned.
+	 */
 	public int getStartIndex() {
 		return startIndex;
 	}
 
+	/**
+	 * @return maximum page size (the window to results).
+	 */
 	public int getMaxResults() {
 		return maxResults;
 	}
 
-	public int getSize() {
-		return size;
+	/**
+	 * @return total number of issues (regardless of current maxResults and startIndex) matching given criteria.
+	 * Query JIRA another time with different startIndex to get subsequent issues
+	 */
+	public int getTotal() {
+		return total;
 	}
 
 	public Iterable<BasicIssue> getIssues() {
@@ -58,7 +70,7 @@ public class SearchResult {
 		return Objects.toStringHelper(this).
 				add("startIndex", startIndex).
 				add("maxResults", maxResults).
-				add("size", size).
+				add("total", total).
 				add("issues", issues).
 				toString();
 	}
@@ -69,7 +81,7 @@ public class SearchResult {
 			SearchResult that = (SearchResult) obj;
 			return Objects.equal(this.startIndex, that.startIndex)
 					&& Objects.equal(this.maxResults, that.maxResults)
-					&& Objects.equal(this.size, that.size)
+					&& Objects.equal(this.total, that.total)
 					&& Objects.equal(this.issues, that.issues);
 		}
 		return false;
@@ -77,7 +89,7 @@ public class SearchResult {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(startIndex, maxResults, size, issues);
+		return Objects.hashCode(startIndex, maxResults, total, issues);
 	}
 
 }

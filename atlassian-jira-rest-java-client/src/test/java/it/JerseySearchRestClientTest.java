@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.google.common.collect.Iterables;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -26,18 +27,55 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 	@Test
 	public void testJqlSearch() {
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, pm);
-		assertEquals(9, searchResultForNull.getSize());
+		assertEquals(9, searchResultForNull.getTotal());
 
 		final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga", pm);
-		assertEquals(1, searchResultForReporterWseliga.getSize());
+		assertEquals(1, searchResultForReporterWseliga.getTotal());
 
 		setAnonymousMode();
 		final SearchResult searchResultAsAnonymous = client.getSearchClient().searchJql(null, pm);
-		assertEquals(1, searchResultAsAnonymous.getSize());
+		assertEquals(1, searchResultAsAnonymous.getTotal());
 
 		final SearchResult searchResultForReporterWseligaAsAnonymous = client.getSearchClient().searchJql("reporter=wseliga", pm);
-		assertEquals(0, searchResultForReporterWseligaAsAnonymous.getSize());
+		assertEquals(0, searchResultForReporterWseligaAsAnonymous.getTotal());
 	}
+
+	@Test
+	public void testJqlSearchWithPaging() {
+		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, pm);
+		assertEquals(9, searchResultForNull.getTotal());
+		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
+		assertEquals(3, searchResultForNull.getStartIndex());
+		assertEquals(3, searchResultForNull.getMaxResults());
+
+		final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, pm);
+		assertEquals(9, search2.getTotal());
+		assertEquals(2, Iterables.size(search2.getIssues()));
+		assertEquals(0, search2.getStartIndex());
+		assertEquals(2, search2.getMaxResults());
+
+		setUser1();
+		final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, pm);
+		assertEquals(8, search3.getTotal());
+		assertEquals(8, Iterables.size(search3.getIssues()));
+		assertEquals(0, search3.getStartIndex());
+		assertEquals(10, search3.getMaxResults());
+	}
+
+	public void testVeryLongJqlWhichWillBePost() {
+		final String coreJql = "summary ~ fsdsfdfds";
+		StringBuilder sb = new StringBuilder(coreJql);
+		for (int i = 0; i < 500; i++) {
+			sb.append(" and (reporter is not empty)"); // building very long JQL query
+		}
+		sb.append(" or summary is not empty"); // so that effectively all issues are returned;
+		final SearchResult searchResultForNull = client.getSearchClient().searchJql(sb.toString(), 3, 6, pm);
+		assertEquals(9, searchResultForNull.getTotal());
+		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
+		assertEquals(6, searchResultForNull.getStartIndex());
+		assertEquals(3, searchResultForNull.getMaxResults());
+	}
+
 
 	@Test
 	public void testJqlSearchUnescapedCharacter() {

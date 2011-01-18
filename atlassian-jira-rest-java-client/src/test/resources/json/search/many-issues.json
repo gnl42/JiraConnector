@@ -1,6 +1,6 @@
 {
    "startAt":0,
-   "maxResults":50,
+   "maxResults":8,
    "total":9,
    "issues":[
       {
@@ -34,10 +34,6 @@
       {
          "self":"http://localhost:8090/jira/rest/api/latest/issue/RST-1",
          "key":"RST-1"
-      },
-      {
-         "self":"http://localhost:8090/jira/rest/api/latest/issue/ANNON-1",
-         "key":"ANNON-1"
       }
    ]
 }

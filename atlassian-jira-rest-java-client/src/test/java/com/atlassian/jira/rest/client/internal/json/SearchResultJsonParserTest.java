@@ -49,17 +49,17 @@ public class SearchResultJsonParserTest {
 	public void testParseMany() throws Exception {
 		final SearchResult searchResult = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/many-issues.json"));
 
-		assertEquals(9, searchResult.getSize());
-		assertEquals(50, searchResult.getMaxResults());
+		assertEquals(9, searchResult.getTotal());
+		assertEquals(8, searchResult.getMaxResults());
 		assertEquals(0, searchResult.getStartIndex());
-		assertEquals(9, Iterables.size(searchResult.getIssues()));
-		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/ANNON-1"), "ANNON-1"), Iterables.getLast(searchResult.getIssues()));
+		assertEquals(8, Iterables.size(searchResult.getIssues()));
+		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/RST-1"), "RST-1"), Iterables.getLast(searchResult.getIssues()));
 	}
 
 	@Test
 	public void testParseInvalidTotal() throws Exception {
 		exception.expect(JSONException.class);
-		exception.expectMessage("The number of elements of issues JSON array does not match the value of 'total' attribute");
+		exception.expectMessage("JSONObject[\"total\"] is not a number.");
 
 		parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/issues-invalid-total.json"));
 	}

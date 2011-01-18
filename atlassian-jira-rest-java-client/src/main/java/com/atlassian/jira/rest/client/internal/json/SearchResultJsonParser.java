@@ -32,10 +32,6 @@ public class SearchResultJsonParser implements JsonParser<SearchResult> {
 		final int maxResults = json.getInt("maxResults");
 		final int total = json.getInt("total");
 		final Collection<BasicIssue> issues = JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), basicIssueJsonParser);
-		if (issues.size() != total) {
-			throw new JSONException("The number of elements of issues JSON array does not match the value of 'total' attribute");
-		}
-
 		return new SearchResult(startAt, maxResults, total, issues);
 	}
 }

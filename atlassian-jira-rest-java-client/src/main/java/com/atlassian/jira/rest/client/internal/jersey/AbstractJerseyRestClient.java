@@ -27,6 +27,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +76,19 @@ public abstract class AbstractJerseyRestClient {
 		});
 
 	}
-	
+
+	protected <T> T postAndParse(final URI uri, @Nullable final JSONObject postEntity, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+		return invoke(new Callable<T>() {
+			@Override
+			public T call() throws Exception {
+				final WebResource webResource = client.resource(uri);
+				final JSONObject s = postEntity != null ? webResource.post(JSONObject.class, postEntity) : webResource.post(JSONObject.class);
+				return parser.parse(s);
+			}
+		});
+
+	}
+
 	static Collection<String> extractErrors(String body) throws JSONException {
 		JSONObject jsonObject = new JSONObject(body);
 		final Collection<String> errorMessages = new ArrayList<String>();
