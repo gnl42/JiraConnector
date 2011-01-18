@@ -31,7 +31,11 @@ public class CommentJsonParser implements JsonParser<Comment> {
 		final String body = json.getString("body");
 		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
 		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
-		final String roleLevel = json.optString("roleLevel", null);
+		String roleLevel = json.optString("roleLevel", null);
+		// in JIRA 4.2 "role" was used instead
+		if (roleLevel == null) {
+			roleLevel = JsonParseUtil.getOptionalString(json, "role");
+		}
 		final String groupLevel = json.optString("groupLevel", null);
 		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
 				JsonParseUtil.parseDateTime(json.getString("updated")), roleLevel, groupLevel);

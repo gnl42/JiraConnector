@@ -85,12 +85,12 @@ public class JerseyJiraRestClient implements JiraRestClient {
                 return resource;
             }
         };
+		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
         sessionRestClient = new JerseySessionRestClient(client, serverUri);
-		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient);
+		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient, metadataRestClient);
 		userRestClient = new JerseyUserRestClient(baseUri, client);
 		projectRestClient = new JerseyProjectRestClient(baseUri, client);
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
-		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
 		searchRestClient = new JerseySearchRestClient(baseUri, client);
     }
 

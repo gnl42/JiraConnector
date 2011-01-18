@@ -361,7 +361,7 @@
                },
                "created":"2010-08-17T16:40:57.791+0200",
                "updated":"2010-08-17T16:40:57.791+0200",
-               "role":10002
+               "roleLevel":"Administrators"
             },
             {
                "self":"http://localhost:8090/jira/rest/api/latest/comment/10021",

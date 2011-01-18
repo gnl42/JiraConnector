@@ -17,15 +17,18 @@
 package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.ServerInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public class CommentJsonGenerator implements JsonGenerator<Comment> {
+
+	private final ServerInfo serverInfo;
+
+	public CommentJsonGenerator(ServerInfo serverInfo) {
+		this.serverInfo = serverInfo;
+	}
+
 	@Override
 	public JSONObject generate(Comment comment) throws JSONException {
 		JSONObject res = new JSONObject();
@@ -33,7 +36,9 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 			res.put("body", comment.getBody());
 		}
 		if (comment.getRoleLevel() != null) {
-			res.put("role", comment.getRoleLevel());
+			// JIRA 4.3+ changes the attribute name from "role" to "roleLevel"
+			final String roleAttribute = (serverInfo.getBuildNumber() > 600) ? "roleLevel" : "role";
+			res.put(roleAttribute, comment.getRoleLevel());
 		}
 		if (comment.getGroupLevel() != null) {
 			res.put("group", comment.getGroupLevel());

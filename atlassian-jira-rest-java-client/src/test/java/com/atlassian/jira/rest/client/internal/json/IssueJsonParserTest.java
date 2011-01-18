@@ -38,7 +38,17 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
 		final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
-        assertEquals("Testing issue", issue.getSummary());
+		assertExpectedIssue(issue);
+	}
+
+	@Test
+	public void testParseIssueJira4x2() throws Exception {
+		final Issue issue = parseIssue("/json/issue/valid-all-expanded-jira-4-2.json");
+		assertExpectedIssue(issue);
+	}
+
+	private void assertExpectedIssue(Issue issue) {
+		assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
 		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
 				issue.getIssueType());
@@ -53,9 +63,9 @@ public class IssueJsonParserTest {
 		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
-				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"), 
+				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
-				));
+		));
 
 
 		// watchers
@@ -66,7 +76,7 @@ public class IssueJsonParserTest {
 
 		// attachments
 		final Iterable<Attachment> attachments = issue.getAttachments();
-        assertEquals(3, Iterables.size(attachments));
+		assertEquals(3, Iterables.size(attachments));
 		final Attachment attachment = attachments.iterator().next();
 		assertEquals("jira_logo.gif", attachment.getFilename());
 		assertEquals(TestConstants.USER_ADMIN, attachment.getAuthor());
@@ -88,8 +98,13 @@ public class IssueJsonParserTest {
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
 				toDateTime("2010-08-11T16:52:00.000+0200"), 3, null, "jira-users"), worklog);
 
-        final Worklog worklog3 = Iterables.get(worklogs, 3);
-        assertEquals("", worklog3.getComment());
+		final Worklog worklog3 = Iterables.get(worklogs, 3);
+		assertEquals("", worklog3.getComment());
+
+		// comments
+		assertEquals(3, Iterables.size(issue.getComments()));
+		final Comment comment = issue.getComments().iterator().next();
+		assertNotNull(comment.getRoleLevel());
 	}
 
 	private Issue parseIssue(final String resourcePath) throws JSONException {

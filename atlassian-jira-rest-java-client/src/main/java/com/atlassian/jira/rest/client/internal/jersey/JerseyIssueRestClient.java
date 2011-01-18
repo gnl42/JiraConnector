@@ -17,9 +17,11 @@
 package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
+import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Session;
@@ -55,16 +57,25 @@ import java.util.concurrent.Callable;
 public class JerseyIssueRestClient extends AbstractJerseyRestClient implements IssueRestClient {
 
 	private final SessionRestClient sessionRestClient;
+	private final MetadataRestClient metadataRestClient;
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
-	private final CommentJsonGenerator commentJsonGenerator = new CommentJsonGenerator();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
+	private ServerInfo serverInfo;
 
-	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient) {
+	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient, MetadataRestClient metadataRestClient) {
 		super(baseUri, client);
 		this.sessionRestClient = sessionRestClient;
+		this.metadataRestClient = metadataRestClient;
+	}
+
+	private synchronized ServerInfo getVersionInfo(ProgressMonitor progressMonitor) {
+		if (serverInfo == null) {
+			serverInfo = metadataRestClient.getServerInfo(progressMonitor);
+		}
+		return serverInfo;
 	}
 
 	@Override
@@ -114,14 +125,14 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void transition(final URI transitionsUri, final TransitionInput transitionInput, ProgressMonitor progressMonitor) {
+	public void transition(final URI transitionsUri, final TransitionInput transitionInput, final ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("transition", transitionInput.getId());
 				if (transitionInput.getComment() != null) {
-					jsonObject.put("comment", commentJsonGenerator.generate(transitionInput.getComment()));
+					jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor)).generate(transitionInput.getComment()));
 				}
 				JSONObject fieldsJs = new JSONObject();
 				final Iterable<FieldInput> fields = transitionInput.getFields();
