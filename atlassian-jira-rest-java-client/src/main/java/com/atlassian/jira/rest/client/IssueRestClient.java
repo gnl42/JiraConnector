@@ -144,6 +144,7 @@ public interface IssueRestClient {
 	 * @param linkIssuesInput details for the link and the comment (optional) to be created
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, permissions, etc.)
+	 * @since client 0.2, server 4.3
 	 */
 	void linkIssue(LinkIssuesInput linkIssuesInput, ProgressMonitor progressMonitor);
 }
