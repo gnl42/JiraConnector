@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -51,6 +53,15 @@ public abstract class AbstractJerseyRestClient {
 		try {
 			return callable.call();
 		} catch (UniformInterfaceException e) {
+//			// maybe captcha?
+//			if (e.getResponse().getClientResponseStatus() == ClientResponse.Status.FORBIDDEN || e.getResponse().getClientResponseStatus() == ClientResponse.Status.UNAUTHORIZED) {
+//
+//			}
+//			final List<String> headers = e.getResponse().getHeaders().get("X-Authentication-Denied-Reason");
+//			if (headers != null) {
+//				System.out.println(headers);
+//			}
+//
 			try {
 				final String body = e.getResponse().getEntity(String.class);
 				final Collection<String> errorMessages = extractErrors(body);
@@ -86,8 +97,35 @@ public abstract class AbstractJerseyRestClient {
 				return parser.parse(s);
 			}
 		});
+	}
+
+	protected void post(final URI uri, @Nullable final JSONObject postEntity, ProgressMonitor progressMonitor) {
+		post(uri, new Callable<JSONObject>() {
+			@Override
+			public JSONObject call() throws Exception {
+				return postEntity;
+
+			}
+		}, progressMonitor);
+	}
+
+	protected void post(final URI uri, final Callable<JSONObject> callable, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final WebResource webResource = client.resource(uri);
+				final JSONObject postEntity = callable.call();
+				if (postEntity != null) {
+					webResource.post(postEntity);
+				} else {
+					webResource.post();
+				}
+				return null;
+			}
+		});
 
 	}
+
 
 	static Collection<String> extractErrors(String body) throws JSONException {
 		JSONObject jsonObject = new JSONObject(body);

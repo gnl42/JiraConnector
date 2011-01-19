@@ -22,12 +22,16 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -35,6 +39,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -471,5 +476,127 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 					}
 				});
 
+	}
+
+	@Test
+	public void testLinkIssuesWithRoleLevel() {
+		testLinkIssuesImpl(Comment.createWithRoleLevel("A comment about linking", "Administrators"));
+	}
+
+	@Test
+	public void testLinkIssuesWithGroupLevel() {
+		testLinkIssuesImpl(Comment.createWithGroupLevel("A comment about linking", "jira-administrators"));
+	}
+
+	@Test
+	public void testLinkIssuesWithSimpleComment() {
+		testLinkIssuesImpl(Comment.valueOf("A comment about linking"));
+	}
+
+	@Test
+	public void testLinkIssuesWithoutComment() {
+		testLinkIssuesImpl(null);
+	}
+
+	@Test
+	public void testLinkIssuesWithInvalidParams() {
+		if (!doesJiraSupportRestIssueLinking()) {
+			return;
+		}
+		assertErrorCode(Response.Status.NOT_FOUND, "The issue no longer exists.", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "FAKEKEY-1", "Duplicate", null), pm);
+			}
+		});
+
+		assertErrorCode(Response.Status.NOT_FOUND, "No issue link type with name 'NonExistingLinkType' found.", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "NonExistingLinkType", null), pm);
+			}
+		});
+
+		setUser1();
+		assertErrorCode(Response.Status.NOT_FOUND, "You do not have the permission to see the specified issue", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null), pm);
+			}
+		});
+		assertErrorCode(Response.Status.BAD_REQUEST, "You are currently not a member of the project role: Administrators.", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
+						Comment.createWithRoleLevel("my body", "Administrators")), pm);
+			}
+		});
+		assertErrorCode(Response.Status.BAD_REQUEST, "You are currently not a member of the group: jira-administrators.", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
+						Comment.createWithGroupLevel("my body", "jira-administrators")), pm);
+			}
+		});
+		assertErrorCode(Response.Status.BAD_REQUEST, "Group: somefakegroup does not exist.", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
+						Comment.createWithGroupLevel("my body", "somefakegroup")), pm);
+			}
+		});
+
+
+		setUser2();
+		assertErrorCode(Response.Status.UNAUTHORIZED, "No Link Issue Permission for issue 'TST-7'", new Runnable() {
+			@Override
+			public void run() {
+				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", null), pm);
+			}
+		});
+
+	}
+
+
+	private void testLinkIssuesImpl(@Nullable Comment commentInput) {
+		if (!doesJiraSupportRestIssueLinking()) {
+			return;
+		}
+
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue originalIssue = issueClient.getIssue("TST-7", pm);
+		int origNumComments = Iterables.size(originalIssue.getComments());
+		assertFalse(originalIssue.getIssueLinks().iterator().hasNext());
+
+		issueClient.linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", commentInput), pm);
+
+		final Issue linkedIssue = issueClient.getIssue("TST-7", pm);
+		assertEquals(1, Iterables.size(linkedIssue.getIssueLinks()));
+		final IssueLink addedLink = linkedIssue.getIssueLinks().iterator().next();
+		assertEquals("Duplicate", addedLink.getIssueLinkType().getName());
+		assertEquals("TST-6", addedLink.getTargetIssueKey());
+		assertEquals(IssueLinkType.Direction.OUTBOUND, addedLink.getIssueLinkType().getDirection());
+
+		final int expectedNumComments = commentInput != null ? origNumComments + 1 : origNumComments;
+		assertEquals(expectedNumComments, Iterables.size(linkedIssue.getComments()));
+		if (commentInput != null) {
+			final Comment comment = linkedIssue.getComments().iterator().next();
+			assertEquals(commentInput.getBody(), comment.getBody());
+			assertEquals(IntegrationTestUtil.USER_ADMIN, comment.getAuthor());
+			assertEquals(commentInput.getRoleLevel(), comment.getRoleLevel());
+			assertEquals(commentInput.getGroupLevel(), comment.getGroupLevel());
+		} else {
+			assertFalse(linkedIssue.getComments().iterator().hasNext());
+		}
+
+
+		final Issue targetIssue = issueClient.getIssue("TST-6", pm);
+		final IssueLink targetLink = targetIssue.getIssueLinks().iterator().next();
+		assertEquals(IssueLinkType.Direction.INBOUND, targetLink.getIssueLinkType().getDirection());
+		assertEquals("Duplicate", targetLink.getIssueLinkType().getName());
+	}
+
+	private boolean doesJiraSupportRestIssueLinking() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 }

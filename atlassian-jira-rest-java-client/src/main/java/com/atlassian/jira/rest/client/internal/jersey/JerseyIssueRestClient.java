@@ -26,6 +26,7 @@ import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Session;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
@@ -35,6 +36,7 @@ import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
@@ -132,7 +134,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("transition", transitionInput.getId());
 				if (transitionInput.getComment() != null) {
-					jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor)).generate(transitionInput.getComment()));
+					jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor), "group").generate(transitionInput.getComment()));
 				}
 				JSONObject fieldsJs = new JSONObject();
 				final Iterable<FieldInput> fields = transitionInput.getFields();
@@ -211,6 +213,18 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 			}
 		});
 
+	}
+
+	@Override
+	public void linkIssue(final LinkIssuesInput linkIssuesInput, final ProgressMonitor progressMonitor) {
+		final URI uri = UriBuilder.fromUri(baseUri).path("issueLink").build();
+		post(uri, new Callable<JSONObject>() {
+
+			@Override
+			public JSONObject call() throws Exception {
+				return new LinkIssuesInputGenerator(getVersionInfo(progressMonitor)).generate(linkIssuesInput);
+			}
+		}, progressMonitor);
 	}
 
 

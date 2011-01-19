@@ -1,0 +1,9 @@
+{
+	"linkType":"MyLinkType",
+	"fromIssueKey":"TST-1",
+	"toIssueKey":"TST-2",
+	"comment":{
+		"body":"simple comment",
+		"groupLevel":"jira-users"
+	}
+}

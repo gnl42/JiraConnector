@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
@@ -110,7 +111,8 @@ public interface IssueRestClient {
 	/**
 	 * Stops watching selected issue
 	 * @param watchersUri
-	 *@param progressMonitor progress monitor   @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
 	void unwatch(URI watchersUri, ProgressMonitor progressMonitor);
 
@@ -119,9 +121,9 @@ public interface IssueRestClient {
 	 * the exception is thrown).
 	 *
 	 * @param watchersUri
-	 *@param username user to add as a watcher
-	 * @param progressMonitor progress monitor    @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
+	 * @param username user to add as a watcher
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
 	void addWatcher(final URI watchersUri, final String username, ProgressMonitor progressMonitor);
 
@@ -131,7 +133,17 @@ public interface IssueRestClient {
 	 *
 	 * @param watchersUri
 	 * @param username user to remove from the watcher list
-	 * @param progressMonitor progress monitor    @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
 	void removeWatcher(final URI watchersUri, final String username, ProgressMonitor progressMonitor);
+
+	/**
+	 * Creates link between two issues and adds a comment (optional) to the source issues.
+	 *
+	 * @param linkIssuesInput details for the link and the comment (optional) to be created
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, permissions, etc.)
+	 */
+	void linkIssue(LinkIssuesInput linkIssuesInput, ProgressMonitor progressMonitor);
 }

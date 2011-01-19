@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -25,8 +26,17 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
 	private final ServerInfo serverInfo;
 
+	// this has to be "configurable" as JIRA 4.2 and JIRA 4.3 EAP differently name
+	// this attribute for transitions and for issue linking
+	private final String groupLevelAttribute;
+
 	public CommentJsonGenerator(ServerInfo serverInfo) {
+		this(serverInfo, "groupLevel");
+	}
+
+	public CommentJsonGenerator(ServerInfo serverInfo, String groupLevelAttribute) {
 		this.serverInfo = serverInfo;
+		this.groupLevelAttribute = groupLevelAttribute;
 	}
 
 	@Override
@@ -37,12 +47,16 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 		}
 		if (comment.getRoleLevel() != null) {
 			// JIRA 4.3+ changes the attribute name from "role" to "roleLevel"
-			final String roleAttribute = (serverInfo.getBuildNumber() > 600) ? "roleLevel" : "role";
+			final String roleAttribute = (serverInfo.getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) ? "roleLevel" : "role";
 			res.put(roleAttribute, comment.getRoleLevel());
 		}
 		if (comment.getGroupLevel() != null) {
-			res.put("group", comment.getGroupLevel());
+			res.put(getGroupLevelAttribute(), comment.getGroupLevel());
 		}
 		return res;
+	}
+
+	protected String getGroupLevelAttribute() {
+		return groupLevelAttribute;
 	}
 }

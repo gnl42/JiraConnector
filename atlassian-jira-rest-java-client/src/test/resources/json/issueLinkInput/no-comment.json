@@ -1,0 +1,5 @@
+{
+	"linkType":"MyLinkType",
+	"fromIssueKey":"TST-1",
+	"toIssueKey":"TST-2"
+}
