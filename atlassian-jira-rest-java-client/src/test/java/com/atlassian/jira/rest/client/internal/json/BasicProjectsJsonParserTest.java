@@ -30,7 +30,7 @@ public class BasicProjectsJsonParserTest {
 	public void testParse() throws Exception {
 		BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
 
-		final Iterable<BasicProject> project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/projects.json").getJSONObject("projects"));
+		final Iterable<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects.json"));
 		assertEquals(3, Iterables.size(project));
 		assertEquals(TST_PROJECT, Iterables.get(project, 0));
 	}

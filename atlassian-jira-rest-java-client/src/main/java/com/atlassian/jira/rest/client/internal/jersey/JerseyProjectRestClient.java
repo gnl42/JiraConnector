@@ -68,11 +68,6 @@ public class JerseyProjectRestClient extends AbstractJerseyRestClient implements
 	@Override
 	public Iterable<BasicProject> getAllProjects(ProgressMonitor progressMonitor) {
 		final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).build();
-		return getAndParse(uri, new JsonParser<Iterable<BasicProject>>() {
-			@Override
-			public Iterable<BasicProject> parse(JSONObject json) throws JSONException {
-				return basicProjectsJsonParser.parse(json.getJSONObject("projects"));
-			}
-		}, progressMonitor);
+		return getAndParse(uri, basicProjectsJsonParser, progressMonitor);
 	}
 }

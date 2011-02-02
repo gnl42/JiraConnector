@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -28,6 +29,16 @@ public class ResourceUtil {
 		final String s = getStringFromResource(resourcePath);
 		try {
 			return new JSONObject(s);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	public static JSONArray getJsonArrayFromResource(String resourcePath) {
+		final String s = getStringFromResource(resourcePath);
+		try {
+			return new JSONArray(s);
 		} catch (JSONException e) {
 			throw new RuntimeException(e);
 		}

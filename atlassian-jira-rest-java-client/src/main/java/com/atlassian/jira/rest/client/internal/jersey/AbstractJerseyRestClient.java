@@ -18,9 +18,9 @@ package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
-import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -83,6 +83,18 @@ public abstract class AbstractJerseyRestClient {
 				final WebResource webResource = client.resource(uri);
 				final JSONObject s = webResource.get(JSONObject.class);
 				return parser.parse(s);
+			}
+		});
+
+	}
+
+	protected <T> T getAndParse(final URI uri, final JsonArrayParser<T> parser, ProgressMonitor progressMonitor) {
+		return invoke(new Callable<T>() {
+			@Override
+			public T call() throws Exception {
+				final WebResource webResource = client.resource(uri);
+				final JSONArray jsonArray = webResource.get(JSONArray.class);
+				return parser.parse(jsonArray);
 			}
 		});
 
