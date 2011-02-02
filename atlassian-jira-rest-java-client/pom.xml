@@ -46,7 +46,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jira.version>4.3-SNAPSHOT</jira.version>
 		<jira.data.version>4.1.1</jira.data.version>
-		<jira.test-lib.version>4.2.1-b588</jira.test-lib.version>
+		<jira.test-lib.version>4.3-SNAPSHOT</jira.test-lib.version>
+		<!--<jira.test-lib.version>4.2.1-b588</jira.test-lib.version>-->
 		<jdkLevel>1.6</jdkLevel>
 		<jersey.client.version>1.5</jersey.client.version>
 	</properties>
@@ -125,6 +126,11 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
+			<version>${jersey.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
 			<version>${jersey.client.version}</version>
 		</dependency>
 		<dependency>

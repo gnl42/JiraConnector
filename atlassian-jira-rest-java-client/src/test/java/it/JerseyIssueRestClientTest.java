@@ -22,17 +22,21 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -41,10 +45,17 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
@@ -599,4 +610,89 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	private boolean doesJiraSupportRestIssueLinking() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
+
+
+	@Test
+	public void testAddAttachment() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-3", pm);
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		String str = "Wojtek";
+		final String filename1 = "my-test-file";
+		issueClient.addAttachment(pm, issue.getAttachmentsUri(), new ByteArrayInputStream(str.getBytes("UTF-8")), filename1);
+		final String filename2 = "my-picture.png";
+		issueClient.addAttachment(pm, issue.getAttachmentsUri(), JerseyIssueRestClientTest.class.getResourceAsStream("/attachment-test/transparent-png.png"), filename2);
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-3", pm);
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(2, Iterables.size(attachments));
+		final Iterable<String> attachmentsNames = Iterables.transform(attachments, new Function<Attachment, String>() {
+			@Override
+			public String apply(@Nullable Attachment from) {
+				return from.getFilename();
+			}
+		});
+		assertThat(attachmentsNames, IterableMatcher.hasOnlyElements(filename1, filename2));
+		final Attachment pictureAttachment = Iterables.find(attachments, new Predicate<Attachment>() {
+			@Override
+			public boolean apply(@Nullable Attachment input) {
+				return filename2.equals(input.getFilename());
+			}
+		});
+
+		// let's download it now and compare it's binary content
+
+		assertTrue(
+				IOUtils.contentEquals(JerseyIssueRestClientTest.class.getResourceAsStream("/attachment-test/transparent-png.png"),
+						issueClient.getAttachment(pm, pictureAttachment.getContentUri())));
+	}
+
+	@Test
+	public void testAddAttachments() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-4", pm);
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		final AttachmentInput[] attachmentInputs = new AttachmentInput[3];
+		for (int i = 1; i <= 3; i++) {
+			attachmentInputs[i - 1] = new AttachmentInput("my-test-file-" + i + ".txt", new ByteArrayInputStream(("content-of-the-file-" + i).getBytes("UTF-8")));
+		}
+		issueClient.addAttachments(pm, issue.getAttachmentsUri(), attachmentInputs);
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-4", pm);
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(3, Iterables.size(attachments));
+		Pattern pattern = Pattern.compile("my-test-file-(\\d)\\.txt");
+		for (Attachment attachment : attachments) {
+			assertTrue(pattern.matcher(attachment.getFilename()).matches());
+			final Matcher matcher = pattern.matcher(attachment.getFilename());
+			matcher.find();
+			final String interfix = matcher.group(1);
+			assertTrue(IOUtils.contentEquals(new ByteArrayInputStream(("content-of-the-file-" + interfix).getBytes("UTF-8")),
+					issueClient.getAttachment(pm, attachment.getContentUri())));
+
+		}
+	}
+
+	@Test
+	public void testAddFileAttachments() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-5", pm);
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		final File tempFile = File.createTempFile("jim-integration-test", ".txt");
+		tempFile.deleteOnExit();
+		FileWriter writer = new FileWriter(tempFile);
+		writer.write("This is the content of my file which I am going to upload to JIRA for testing.");
+		writer.close();
+		issueClient.addAttachments(pm, issue.getAttachmentsUri(), tempFile);
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-5", pm);
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(1, Iterables.size(attachments));
+		assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
+				issueClient.getAttachment(pm, attachments.iterator().next().getContentUri())));
+	}
+
 }

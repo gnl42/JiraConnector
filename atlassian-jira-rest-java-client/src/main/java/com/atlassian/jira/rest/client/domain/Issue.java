@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.domain;
 
-import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.ExpandableResource;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
@@ -176,6 +175,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	public Iterable<Attachment> getAttachments() {
         return attachments;
     }
+
+	public URI getAttachmentsUri() {
+		return UriBuilder.fromUri(getSelf()).path("attachments").build();
+	}
 
 	/**
 	 * @return comments for this issue

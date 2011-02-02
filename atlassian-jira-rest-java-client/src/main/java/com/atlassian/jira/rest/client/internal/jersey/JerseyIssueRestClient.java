@@ -21,15 +21,16 @@ import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
-import com.atlassian.jira.rest.client.domain.ServerInfo;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Session;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
@@ -37,14 +38,22 @@ import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
+import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.BodyPart;
+import com.sun.jersey.multipart.MultiPart;
+import com.sun.jersey.multipart.MultiPartMediaTypes;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,6 +67,7 @@ import java.util.concurrent.Callable;
  */
 public class JerseyIssueRestClient extends AbstractJerseyRestClient implements IssueRestClient {
 
+	private static final String FILE_ATTACHMENT_CONTROL_NAME = "file";
 	private final SessionRestClient sessionRestClient;
 	private final MetadataRestClient metadataRestClient;
 
@@ -225,6 +235,72 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				return new LinkIssuesInputGenerator(getVersionInfo(progressMonitor)).generate(linkIssuesInput);
 			}
 		}, progressMonitor);
+	}
+
+	@Override
+	public void addAttachment(ProgressMonitor progressMonitor, final URI attachmentsUri, final InputStream in, final String filename) {
+		addAttachments(progressMonitor, attachmentsUri, new AttachmentInput(filename, in));
+	}
+
+	@Override
+	public void addAttachments(ProgressMonitor progressMonitor, final URI attachmentsUri, AttachmentInput... attachments) {
+		final ArrayList<AttachmentInput> myAttachments = Lists.newArrayList(attachments); // just to avoid concurrency issues if this arg is mutable
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final MultiPart multiPartInput = new MultiPart();
+				for (AttachmentInput attachment : myAttachments) {
+					BodyPart bp = new BodyPart(attachment.getInputStream(), MediaType.APPLICATION_OCTET_STREAM_TYPE);
+					FormDataContentDisposition.FormDataContentDispositionBuilder dispositionBuilder =
+							FormDataContentDisposition.name(FILE_ATTACHMENT_CONTROL_NAME);
+					dispositionBuilder.fileName(attachment.getFilename());
+					final FormDataContentDisposition formDataContentDisposition = dispositionBuilder.build();
+					bp.setContentDisposition(formDataContentDisposition);
+					multiPartInput.bodyPart(bp);
+				}
+
+				postFileMultiPart(multiPartInput, attachmentsUri);
+				return null;
+			}
+
+		});
+	}
+
+	@Override
+	public InputStream getAttachment(ProgressMonitor pm, final URI attachmentUri) {
+		return invoke(new Callable<InputStream>() {
+			@Override
+			public InputStream call() throws Exception {
+				final WebResource attachmentResource = client.resource(attachmentUri);
+				return attachmentResource.get(InputStream.class);
+			}
+		});
+	}
+
+	@Override
+	public void addAttachments(ProgressMonitor progressMonitor, final URI attachmentsUri, File... files) {
+		final ArrayList<File> myFiles = Lists.newArrayList(files); // just to avoid concurrency issues if this arg is mutable
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final MultiPart multiPartInput = new MultiPart();
+				for (File file : myFiles) {
+					FileDataBodyPart fileDataBodyPart = new FileDataBodyPart(FILE_ATTACHMENT_CONTROL_NAME, file);
+					multiPartInput.bodyPart(fileDataBodyPart);
+				}
+				postFileMultiPart(multiPartInput, attachmentsUri);
+				return null;
+			}
+
+		});
+
+	}
+
+	private void postFileMultiPart(MultiPart multiPartInput, URI attachmentsUri) {
+		final WebResource attachmentsResource = client.resource(attachmentsUri);
+		final WebResource.Builder builder = attachmentsResource.type(MultiPartMediaTypes.createFormData());
+		builder.header("X-Atlassian-Token", "nocheck"); // this is required by server side REST API
+		builder.post(multiPartInput);
 	}
 
 

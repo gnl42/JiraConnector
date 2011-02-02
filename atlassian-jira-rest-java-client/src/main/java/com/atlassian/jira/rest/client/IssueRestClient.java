@@ -18,11 +18,15 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.google.common.annotations.Beta;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 
 /**
@@ -147,4 +151,22 @@ public interface IssueRestClient {
 	 * @since client 0.2, server 4.3
 	 */
 	void linkIssue(LinkIssuesInput linkIssuesInput, ProgressMonitor progressMonitor);
+
+	void addAttachment(ProgressMonitor progressMonitor, URI attachmentsUri, InputStream in, String filename);
+
+	public void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, AttachmentInput ... attachments);
+
+	void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, File... files);
+
+	/**
+	 * Retrieves the content of given attachment.
+	 *
+	 *
+	 * @param pm progress monitor
+	 * @param attachmentUri URI for the attachment to retrieve
+	 * @return stream from which the caller may read the attachment content (bytes). The caller is responsible for closing the stream.
+	 */
+	@Beta
+	public InputStream getAttachment(ProgressMonitor pm, URI attachmentUri);
+
 }
