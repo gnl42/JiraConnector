@@ -317,11 +317,22 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	@Test
 	public void testTransitionWithInvalidRole() {
 		final Comment comment = Comment.createWithRoleLevel("My text which I am just adding " + new DateTime(), "some-fake-role");
+		assertInvalidCommentInput(comment, "Invalid role [some-fake-role]");
+	}
+
+	@Test
+	public void testTransitionWithInvalidGroup() {
+		final Comment comment = Comment.createWithGroupLevel("My text which I am just adding " + new DateTime(), "some-fake-group");
+		assertInvalidCommentInput(comment, "Group: some-fake-group does not exist.");
+	}
+
+	private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
 		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
-		// @todo restore asserting for error message when JRA-22516 is fixed
-		assertErrorCode(Response.Status.BAD_REQUEST, /*"Invalid role [some-fake-role]", */new Runnable() {
+		final String errorMsg = doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue()
+				? expectedErrorMsg : null;
+		assertErrorCode(Response.Status.BAD_REQUEST, errorMsg, new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), comment), pm);
@@ -611,6 +622,9 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
+	private boolean doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+	}
 
 	@Test
 	public void testAddAttachment() throws IOException {
