@@ -71,6 +71,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
     private final String summary;
+	@Nullable
 	private BasicUser reporter;
 	private BasicUser assignee;
 	@Nullable
@@ -100,8 +101,9 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 * @return reporter of this issue.
+	 * @return reporter of this issue or <code>null</code> if this issue has no reporter
 	 */
+	@Nullable
 	public BasicUser getReporter() {
 		return reporter;
 	}

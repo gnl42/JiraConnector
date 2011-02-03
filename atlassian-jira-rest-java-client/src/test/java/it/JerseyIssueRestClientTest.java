@@ -695,4 +695,34 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				issueClient.getAttachment(pm, attachments.iterator().next().getContentUri())));
 	}
 
+
+	@Test
+	public void testFetchingUnassignedIssue() {
+		administration.generalConfiguration().setAllowUnassignedIssues(true);
+		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
+
+		//		navigation.userProfile().changeUserLanguage("angielski (UK)");
+		//		navigation.issue().unassignIssue("TST-5", "unassigning issue");
+		// this single line does instead of 2 above - func test suck with non-English locale
+		navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
+
+		assertNull(client.getIssueClient().getIssue("TST-5", pm).getAssignee());
+	}
+
+	@Test
+	public void testFetchingIssueWithAnonymousComment() {
+		navigation.userProfile().changeUserLanguage("angielski (UK)");
+		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
+		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
+		navigation.logout();
+		navigation.issue().addComment("ANNON-1", "my nice comment");
+		final Issue issue = client.getIssueClient().getIssue("ANNON-1", pm);
+		assertEquals(1, Iterables.size(issue.getComments()));
+		final Comment comment = issue.getComments().iterator().next();
+		assertEquals("my nice comment", comment.getBody());
+		assertNull(comment.getAuthor());
+		assertNull(comment.getUpdateAuthor());
+
+	}
+
 }

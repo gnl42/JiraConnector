@@ -17,8 +17,15 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.IterableMatcher;
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -105,6 +112,8 @@ public class IssueJsonParserTest {
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Comment comment = issue.getComments().iterator().next();
 		assertNotNull(comment.getRoleLevel());
+		assertEquals(TestConstants.USER_ADMIN, comment.getAuthor());
+		assertEquals(TestConstants.USER_ADMIN, comment.getUpdateAuthor());
 	}
 
 	private Issue parseIssue(final String resourcePath) throws JSONException {
@@ -132,4 +141,21 @@ public class IssueJsonParserTest {
 		final Issue issue = parseIssue("/json/issue/valid-unassigned.json");
 		assertNull(issue.getAssignee());
 	}
+
+	@Test
+	public void testParseUnassignedIssueJira4x3() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-unassigned-jira-4.3.json");
+		assertNull(issue.getAssignee());
+	}
+
+	@Test
+	public void testParseIssueWithAnonymousComment() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-anonymous-comment-jira-4.3.json");
+		assertEquals(1, Iterables.size(issue.getComments()));
+		final Comment comment = issue.getComments().iterator().next();
+		assertEquals("A comment from anonymous user", comment.getBody());
+		assertNull(comment.getAuthor());
+
+	}
+
 }

@@ -29,8 +29,8 @@ public class CommentJsonParser implements JsonParser<Comment> {
 	public Comment parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String body = json.getString("body");
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
+		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
+		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
 		String roleLevel = json.optString("roleLevel", null);
 		// in JIRA 4.2 "role" was used instead
 		if (roleLevel == null) {

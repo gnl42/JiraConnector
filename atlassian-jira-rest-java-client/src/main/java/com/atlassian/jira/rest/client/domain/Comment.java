@@ -30,7 +30,9 @@ import java.net.URI;
  */
 public class Comment implements AddressableEntity {
 	private final URI self;
+	@Nullable
 	private final BasicUser author;
+	@Nullable
 	private final BasicUser updateAuthor;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -38,7 +40,7 @@ public class Comment implements AddressableEntity {
 	private final String roleLevel;
 	private final String groupLevel;
 
-	public Comment(URI self, String body, BasicUser author, BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, String roleLevel, String groupLevel) {
+	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, String roleLevel, String groupLevel) {
 		if (roleLevel != null && groupLevel != null) {
 			throw new IllegalArgumentException("Role and group visibility cannot be set at the same time");
 		}
@@ -77,10 +79,12 @@ public class Comment implements AddressableEntity {
 		return self;
 	}
 
+	@Nullable
 	public BasicUser getAuthor() {
 		return author;
 	}
 
+	@Nullable
 	public BasicUser getUpdateAuthor() {
 		return updateAuthor;
 	}

@@ -142,7 +142,10 @@ public class JsonParseUtil {
 	}
 
 	@Nullable
-	public static BasicUser parseBasicUser(JSONObject json) throws JSONException {
+	public static BasicUser parseBasicUser(@Nullable JSONObject json) throws JSONException {
+		if (json == null) {
+			return null;
+		}
 		final String username = json.getString("name");
 		if (!json.has(JsonParseUtil.SELF_ATTR) && "Anonymous".equals(username)) {
 			return null; // insane representation for unassigned user - JRADEV-4262

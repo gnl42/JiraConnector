@@ -16,7 +16,22 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicResolution;
+import com.atlassian.jira.rest.client.domain.BasicStatus;
+import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.BasicVotes;
+import com.atlassian.jira.rest.client.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Field;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.base.Splitter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -25,7 +40,12 @@ import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getNestedObject;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getNestedString;
@@ -150,9 +170,17 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		);
 	}
 
+	@Nullable
 	private <T> T getOptionalField(JSONObject s, final String fieldId, JsonParser<T> jsonParser) throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
-		return fieldJson != null ? jsonParser.parse(fieldJson.getJSONObject(VALUE_ATTR)) : null;
+		// for fields like assignee (when unassigned) value attribute may be missing completely
+		if (fieldJson != null) {
+			final JSONObject valueJsonObject = fieldJson.optJSONObject(VALUE_ATTR);
+			if (valueJsonObject != null) {
+				return jsonParser.parse(valueJsonObject);
+			}
+		}
+		return null;
 	}
 
 
