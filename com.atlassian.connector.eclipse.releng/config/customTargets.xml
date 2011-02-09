@@ -82,7 +82,7 @@
 		<mkdir dir="${buildDirectory}/../../../connector-commons" />
 		<exec executable="hg" failonerror="true">
 			<arg value="clone" />
-			<arg value="https://bitbucket.org/atlassian/connector-commons" />
+			<arg value="https://gdanskbamboo:Blah123@bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
 	</target>
