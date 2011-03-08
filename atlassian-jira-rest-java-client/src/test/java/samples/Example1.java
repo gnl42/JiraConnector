@@ -42,7 +42,7 @@ public class Example1 {
 	public static void main(String[] args) throws URISyntaxException {
 		final JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
 		final URI jiraServerUri = new URI("http://localhost:8090/jira");
-		final JiraRestClient restClient = factory.createWithBasicHttpAutentication(jiraServerUri, "admin", "admin");
+		final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
 		final NullProgressMonitor pm = new NullProgressMonitor();
 
 		// first let's get and print all visible projects

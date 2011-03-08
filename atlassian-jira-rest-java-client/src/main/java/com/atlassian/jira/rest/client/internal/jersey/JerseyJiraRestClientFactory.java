@@ -35,7 +35,7 @@ public class JerseyJiraRestClientFactory implements JiraRestClientFactory {
     }
 
 	@Override
-	public JiraRestClient createWithBasicHttpAutentication(URI serverUri, String username, String password) {
+	public JiraRestClient createWithBasicHttpAuthentication(URI serverUri, String username, String password) {
 		return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
 	}
 
