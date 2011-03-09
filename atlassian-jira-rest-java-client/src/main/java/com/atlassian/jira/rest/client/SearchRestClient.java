@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * The client handling search REST resource
  *
- * @since v0.2
+ * @since 0.2 client, 4.3 server
  */
 public interface SearchRestClient {
 	/**

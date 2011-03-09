@@ -57,7 +57,7 @@ public interface ProjectRestClient {
 	 * @since client: 0.2, server 4.3
 	 *
 	 * @return projects which the currently logged user can see
-	 * @param progressMonitor
+	 * @param progressMonitor progress monitor
 	 */
 	Iterable<BasicProject> getAllProjects(ProgressMonitor progressMonitor);
 

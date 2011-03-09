@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -91,6 +92,10 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 
 	@Test
 	public void testGetAllProject() {
+		if (!isGetAllProjectsSupported()) {
+			return;
+		}
+
 		final Iterable<BasicProject> projects = client.getProjectClient().getAllProjects(pm);
 		assertEquals(3, Iterables.size(projects));
 		final BasicProject tst = Iterables.find(projects, new Predicate<BasicProject>() {
@@ -109,4 +114,9 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		setUser1();
 		assertEquals(2, Iterables.size(client.getProjectClient().getAllProjects(pm)));
 	}
+
+	private boolean isGetAllProjectsSupported() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+	}
+
 }
