@@ -44,9 +44,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jira.version>4.3-SNAPSHOT</jira.version>
-		<jira.data.version>4.1.1</jira.data.version>
-		<jira.test-lib.version>4.3-SNAPSHOT</jira.test-lib.version>
+		<jira.version>4.3-rc1</jira.version>
+		<jira.data.version>4.3-rc1</jira.data.version>
+		<jira.test-lib.version>4.3-rc1</jira.test-lib.version>
 		<!--<jira.test-lib.version>4.2.1-b588</jira.test-lib.version>-->
 		<jdkLevel>1.6</jdkLevel>
 		<jersey.client.version>1.5</jersey.client.version>

@@ -26,6 +26,7 @@ import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
@@ -117,12 +118,10 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Iterable<Comment> comments = issue.getComments();
 		assertEquals(3, Iterables.size(comments));
 		final Comment c1 = Iterables.get(comments, 0);
-		assertEquals("Administrators", c1.getRoleLevel());
-		assertNull(c1.getGroupLevel());
+		assertEquals(Visibility.role("Administrators"), c1.getVisibility());
 
 		final Comment c3 = Iterables.get(comments, 2);
-		assertEquals("jira-users", c3.getGroupLevel());
-		assertNull(c3.getRoleLevel());
+		assertEquals(Visibility.group("jira-users"), c3.getVisibility());
 
 	}
 
@@ -354,8 +353,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(USER_ADMIN, lastComment.getUpdateAuthor());
 		assertEquals(lastComment.getCreationDate(), lastComment.getUpdateDate());
 		assertTrue(lastComment.getCreationDate().isAfter(now) || lastComment.getCreationDate().isEqual(now));
-		assertEquals(comment.getGroupLevel(), lastComment.getGroupLevel());
-		assertEquals(comment.getRoleLevel(), lastComment.getRoleLevel());
+		assertEquals(comment.getVisibility(), lastComment.getVisibility());
 	}
 
 	@Test
@@ -393,7 +391,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
-		assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.", new Runnable() {
+		assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.",
+				new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().unvote(finalIssue.getVotesUri(), pm);
@@ -475,14 +474,18 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
-
-		assertErrorCode(Response.Status.UNAUTHORIZED, "User '" + USER1_USERNAME
-				+ "' is not allowed to add watchers to issue 'TST-1'", new Runnable() {
+		String expectedErrorMsg = doesJiraHasJraDev3516Fixed() ? ("User '" + USER1_USERNAME
+				+ "' is not allowed to add watchers to issue 'TST-1'") : null;
+		assertErrorCode(Response.Status.UNAUTHORIZED, expectedErrorMsg, new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().addWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME, pm);
 			}
 		});
+	}
+
+	private boolean doesJiraHasJraDev3516Fixed() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
 	//@Test restore when JRADEV-3666 is fixed (I don't want to pollute JRJC integration test results)
@@ -546,7 +549,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null), pm);
 			}
 		});
-		assertErrorCode(Response.Status.BAD_REQUEST, "You are currently not a member of the project role: Administrators.", new Runnable() {
+		assertErrorCode(Response.Status.BAD_REQUEST, "Failed to create comment for issue 'TST-6'\nYou are currently not a member of the project role: Administrators.", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
@@ -605,8 +608,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 			final Comment comment = linkedIssue.getComments().iterator().next();
 			assertEquals(commentInput.getBody(), comment.getBody());
 			assertEquals(IntegrationTestUtil.USER_ADMIN, comment.getAuthor());
-			assertEquals(commentInput.getRoleLevel(), comment.getRoleLevel());
-			assertEquals(commentInput.getGroupLevel(), comment.getGroupLevel());
+			assertEquals(commentInput.getVisibility(), comment.getVisibility());
 		} else {
 			assertFalse(linkedIssue.getComments().iterator().hasNext());
 		}
@@ -622,12 +624,19 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
+	private boolean doesJiraSupportAddingAttachment() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+	}
+
 	private boolean doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
 	@Test
 	public void testAddAttachment() throws IOException {
+		if (!doesJiraSupportAddingAttachment()) {
+			return;
+		}
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue("TST-3", pm);
 		assertFalse(issue.getAttachments().iterator().hasNext());
@@ -664,6 +673,9 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testAddAttachments() throws IOException {
+		if (!doesJiraSupportAddingAttachment()) {
+			return;
+		}
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue("TST-4", pm);
 		assertFalse(issue.getAttachments().iterator().hasNext());
@@ -691,6 +703,9 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	@Test
 	public void testAddFileAttachments() throws IOException {
+		if (!doesJiraSupportAddingAttachment()) {
+			return;
+		}
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue("TST-5", pm);
 		assertFalse(issue.getAttachments().iterator().hasNext());

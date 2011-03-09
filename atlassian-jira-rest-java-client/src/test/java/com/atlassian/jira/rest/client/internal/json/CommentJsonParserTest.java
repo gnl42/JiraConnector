@@ -18,10 +18,13 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 public class CommentJsonParserTest {
@@ -38,18 +41,15 @@ public class CommentJsonParserTest {
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
-		assertEquals("Administrators", comment1.getRoleLevel());
-		assertNull(comment1.getGroupLevel());
+		assertEquals(Visibility.role("Administrators"), comment1.getVisibility());
 
 		final JSONObject comment3Json = commentsJson.getJSONArray("value").getJSONObject(2);
 		final Comment comment3 = parser.parse(comment3Json);
-		assertNull(comment3.getRoleLevel());
-		assertEquals("jira-users", comment3.getGroupLevel());
+		assertEquals(Visibility.group("jira-users"), comment3.getVisibility());
 
 		final JSONObject comment2Json = commentsJson.getJSONArray("value").getJSONObject(1);
 		final Comment comment2 = parser.parse(comment2Json);
-		assertNull(comment2.getRoleLevel());
-		assertNull(comment2.getGroupLevel());
+		assertNull(comment2.getVisibility());
 	}
 
 	@Test

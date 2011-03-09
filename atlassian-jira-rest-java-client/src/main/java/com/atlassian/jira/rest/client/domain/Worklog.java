@@ -38,12 +38,10 @@ public class Worklog {
 	private final DateTime startDate;
 	private final int minutesSpent;
 	@Nullable
-	private final String groupLevel;
-	@Nullable
-	private final String roleLevel;
+	private final Visibility visibility;
 
 	public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, String comment, DateTime creationDate,
-                   DateTime updateDate, DateTime startDate, int minutesSpent, String roleLevel, String groupLevel) {
+                   DateTime updateDate, DateTime startDate, int minutesSpent, Visibility visibility) {
 		this.self = self;
 		this.issueUri = issueUri;
 		this.author = author;
@@ -53,9 +51,8 @@ public class Worklog {
 		this.updateDate = updateDate;
 		this.startDate = startDate;
 		this.minutesSpent = minutesSpent;
-        this.roleLevel = roleLevel;
-        this.groupLevel = groupLevel;
-    }
+		this.visibility = visibility;
+	}
 
 	public URI getSelf() {
 		return self;
@@ -93,15 +90,11 @@ public class Worklog {
 		return minutesSpent;
 	}
 
-    public String getGroupLevel() {
-        return groupLevel;
-    }
+	public Visibility getVisibility() {
+		return visibility;
+	}
 
-    public String getRoleLevel() {
-        return roleLevel;
-    }
-
-    @Override
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).
@@ -113,8 +106,7 @@ public class Worklog {
 				add("updateDate", updateDate).
 				add("startDate", startDate).
 				add("minutesSpent", minutesSpent).
-                add("roleLevel", roleLevel).
-                add("groupLevel", groupLevel).
+				add("visibility", visibility).
 				toString();
 	}
 
@@ -127,8 +119,7 @@ public class Worklog {
 					&& Objects.equal(this.author, that.author)
 					&& Objects.equal(this.updateAuthor, that.updateAuthor)
 					&& Objects.equal(this.comment, that.comment)
-					&& Objects.equal(this.groupLevel, that.groupLevel)
-					&& Objects.equal(this.roleLevel, that.roleLevel)
+					&& Objects.equal(this.visibility, that.visibility)
 					&& this.creationDate.isEqual(that.creationDate)
 					&& this.updateDate.isEqual(that.updateDate)
 					&& this.startDate.isEqual(that.startDate)

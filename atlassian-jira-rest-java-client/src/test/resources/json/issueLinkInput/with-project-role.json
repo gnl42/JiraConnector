@@ -4,6 +4,9 @@
 	"toIssueKey":"TST-2",
 	"comment":{
 		"body":"simple comment",
-		"roleLevel":"Users"
+		"visibility":{
+    		"type":"ROLE",
+			"value":"Users"
+		}
 	}
 }

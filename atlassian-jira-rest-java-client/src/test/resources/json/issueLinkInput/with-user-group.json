@@ -4,6 +4,9 @@
 	"toIssueKey":"TST-2",
 	"comment":{
 		"body":"simple comment",
-		"groupLevel":"jira-users"
+		"visibility":{
+    		"type":"GROUP",
+			"value":"jira-users"
+		}
 	}
 }

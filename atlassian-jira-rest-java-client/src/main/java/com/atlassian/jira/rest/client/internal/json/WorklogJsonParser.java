@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -37,8 +38,7 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
 		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
 		final int minutesSpent = json.getInt("minutesSpent");
-        final String roleLevel = JsonParseUtil.getOptionalString(json, "roleLevel");
-        final String groupLevel = JsonParseUtil.getOptionalString(json, "groupLevel");
-        return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, roleLevel, groupLevel);
+		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
+        return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, visibility);
 	}
 }

@@ -37,33 +37,29 @@ public class Comment implements AddressableEntity {
 	private final DateTime creationDate;
 	private final DateTime updateDate;
 	private final String body;
-	private final String roleLevel;
-	private final String groupLevel;
+	@Nullable
+	private final Visibility visibility;
 
-	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, String roleLevel, String groupLevel) {
-		if (roleLevel != null && groupLevel != null) {
-			throw new IllegalArgumentException("Role and group visibility cannot be set at the same time");
-		}
+	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility) {
 		this.author = author;
 		this.updateAuthor = updateAuthor;
 		this.creationDate = creationDate;
 		this.updateDate = updateDate;
 		this.body = body;
 		this.self = self;
-		this.roleLevel = roleLevel;
-		this.groupLevel = groupLevel;
+		this.visibility = visibility;
 	}
 
 	public static Comment valueOf(String body) {
-		return new Comment(null, body, null, null, null, null, null, null);
+		return new Comment(null, body, null, null, null, null, null);
 	}
 
 	public static Comment createWithRoleLevel(String body, String roleLevel) {
-		return new Comment(null, body, null, null, null, null, roleLevel, null);
+		return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel));
 	}
 
 	public static Comment createWithGroupLevel(String body, String groupLevel) {
-		return new Comment(null, body, null, null, null, null, null, groupLevel);
+		return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel));
 	}
 
 	public boolean wasUpdated() {
@@ -98,13 +94,8 @@ public class Comment implements AddressableEntity {
 	}
 
 	@Nullable
-	public String getRoleLevel() {
-		return roleLevel;
-	}
-
-	@Nullable
-	public String getGroupLevel() {
-		return groupLevel;
+	public Visibility getVisibility() {
+		return visibility;
 	}
 
 	@Override
@@ -115,8 +106,7 @@ public class Comment implements AddressableEntity {
 				.add("author", author)
 				.add("updateAuthor", updateAuthor)
 				.add("creationDate", creationDate)
-				.add("roleLevel", roleLevel)
-				.add("groupLevel", groupLevel)
+				.add("visibility", visibility)
 				.add("updateDate", updateDate).toString();
 	}
 
@@ -130,8 +120,7 @@ public class Comment implements AddressableEntity {
 					&& Objects.equal(this.updateAuthor, that.updateAuthor)
 					&& Objects.equal(this.creationDate, that.creationDate)
 					&& Objects.equal(this.updateDate, that.updateDate)
-					&& Objects.equal(this.roleLevel, that.roleLevel)
-					&& Objects.equal(this.groupLevel, that.groupLevel)
+					&& Objects.equal(this.visibility, that.visibility)
 					&& Objects.equal(this.body, that.body);
 		}
 		return false;
@@ -139,7 +128,7 @@ public class Comment implements AddressableEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, body, author, updateAuthor, creationDate, updateDate, roleLevel, groupLevel);
+		return Objects.hashCode(self, body, author, updateAuthor, creationDate, updateDate, visibility);
 	}
 
 }

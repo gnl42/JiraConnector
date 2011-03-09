@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +39,7 @@ public class WorklogJsonParserTest {
         assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getUpdateDate());
         assertEquals(TestUtil.toDateTime("2010-08-15T16:35:00.000+0200"), worklog.getStartDate());
         assertEquals(60, worklog.getMinutesSpent());
-        Assert.assertNull(worklog.getRoleLevel());
-        Assert.assertNull(worklog.getGroupLevel());
+        Assert.assertNull(worklog.getVisibility());
     }
 
     @Test
@@ -54,17 +54,15 @@ public class WorklogJsonParserTest {
         assertEquals(TestUtil.toDateTime("2010-08-17T16:38:00.013+0200"), worklog.getCreationDate());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:38:24.948+0200"), worklog.getUpdateDate());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:37:00.000+0200"), worklog.getStartDate());
-        assertEquals("Developers", worklog.getRoleLevel());
+        assertEquals(Visibility.role("Developers"), worklog.getVisibility());
         assertEquals(15, worklog.getMinutesSpent());
-        Assert.assertNull(worklog.getGroupLevel());
     }
 
     @Test
     public void testParseWithGroupLevel() throws Exception {
         final WorklogJsonParser parser = new WorklogJsonParser();
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-groupLevel.json"));
-        assertEquals("jira-users", worklog.getGroupLevel());
-        Assert.assertNull(worklog.getRoleLevel());
+        assertEquals(Visibility.group("jira-users"), worklog.getVisibility());
     }
 
 }

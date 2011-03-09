@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -25,19 +26,18 @@ import java.net.URI;
 
 public class CommentJsonParser implements JsonParser<Comment> {
 
+	public static final String VISIBILITY_KEY = "visibility";
+	private final VisibilityJsonParser visibilityJsonParser = new VisibilityJsonParser();
+
 	@Override
 	public Comment parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String body = json.getString("body");
 		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
 		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
-		String roleLevel = json.optString("roleLevel", null);
-		// in JIRA 4.2 "role" was used instead
-		if (roleLevel == null) {
-			roleLevel = JsonParseUtil.getOptionalString(json, "role");
-		}
-		final String groupLevel = json.optString("groupLevel", null);
+
+		final Visibility visibility = visibilityJsonParser.parseVisibility(json);
 		return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
-				JsonParseUtil.parseDateTime(json.getString("updated")), roleLevel, groupLevel);
+				JsonParseUtil.parseDateTime(json.getString("updated")), visibility);
 	}
 }

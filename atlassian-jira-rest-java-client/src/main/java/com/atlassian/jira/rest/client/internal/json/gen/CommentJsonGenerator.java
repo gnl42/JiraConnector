@@ -18,7 +18,9 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.atlassian.jira.rest.client.internal.json.CommentJsonParser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -45,14 +47,23 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 		if (comment.getBody() != null) {
 			res.put("body", comment.getBody());
 		}
-		if (comment.getRoleLevel() != null) {
-			// JIRA 4.3+ changes the attribute name from "role" to "roleLevel"
-			final String roleAttribute = (serverInfo.getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) ? "roleLevel" : "role";
-			res.put(roleAttribute, comment.getRoleLevel());
+
+		if (comment.getVisibility() != null) {
+
+			if (serverInfo.getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) {
+				JSONObject visibilityJson = new JSONObject();
+				visibilityJson.put("type", comment.getVisibility().getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE");
+				visibilityJson.put("value", comment.getVisibility().getValue());
+				res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
+			} else {
+				if (comment.getVisibility().getType() == Visibility.Type.ROLE) {
+					res.put("role", comment.getVisibility().getValue());
+				} else {
+					res.put(getGroupLevelAttribute(), comment.getVisibility().getValue());
+				}
+			}
 		}
-		if (comment.getGroupLevel() != null) {
-			res.put(getGroupLevelAttribute(), comment.getGroupLevel());
-		}
+
 		return res;
 	}
 

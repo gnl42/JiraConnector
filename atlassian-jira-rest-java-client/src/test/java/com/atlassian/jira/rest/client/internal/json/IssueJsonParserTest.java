@@ -25,6 +25,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
@@ -103,7 +104,7 @@ public class IssueJsonParserTest {
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), TestConstants.USER1,
 				TestConstants.USER1, "a worklog viewable just by jira-users",
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
-				toDateTime("2010-08-11T16:52:00.000+0200"), 3, null, "jira-users"), worklog);
+				toDateTime("2010-08-11T16:52:00.000+0200"), 3, Visibility.group("jira-users")), worklog);
 
 		final Worklog worklog3 = Iterables.get(worklogs, 3);
 		assertEquals("", worklog3.getComment());
@@ -111,7 +112,7 @@ public class IssueJsonParserTest {
 		// comments
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Comment comment = issue.getComments().iterator().next();
-		assertNotNull(comment.getRoleLevel());
+		assertEquals(Visibility.Type.ROLE, comment.getVisibility().getType());
 		assertEquals(TestConstants.USER_ADMIN, comment.getAuthor());
 		assertEquals(TestConstants.USER_ADMIN, comment.getUpdateAuthor());
 	}
@@ -156,6 +157,14 @@ public class IssueJsonParserTest {
 		assertEquals("A comment from anonymous user", comment.getBody());
 		assertNull(comment.getAuthor());
 
+	}
+
+	@Test
+	public void testParseIssueWithVisibilityJira4x3() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-visibility-jira-4.3.json");
+		assertEquals(Visibility.role("Administrators"), issue.getComments().iterator().next().getVisibility());
+		assertEquals(Visibility.role("Developers"), Iterables.get(issue.getWorklogs(), 1).getVisibility());
+		assertEquals(Visibility.group("jira-users"), Iterables.get(issue.getWorklogs(), 2).getVisibility());
 	}
 
 }
