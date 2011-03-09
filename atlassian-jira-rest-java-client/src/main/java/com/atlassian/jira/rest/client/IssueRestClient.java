@@ -152,10 +152,34 @@ public interface IssueRestClient {
 	 */
 	void linkIssue(LinkIssuesInput linkIssuesInput, ProgressMonitor progressMonitor);
 
+	/**
+	 * Uploads attachments to JIRA (adding it to selected issue)
+	 *
+	 * @param progressMonitor progress monitor
+	 * @param attachmentsUri where to upload the attachment. You can get this URI by examining issue resource first
+	 * @param in stream from which to read data to upload
+	 * @param filename file name to use for the uploaded attachment
+	 * @since client 0.2, server 4.3
+	 */
 	void addAttachment(ProgressMonitor progressMonitor, URI attachmentsUri, InputStream in, String filename);
 
-	public void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, AttachmentInput ... attachments);
+	/**
+	 * Uploads attachments to JIRA (adding it to selected issue)
+	 *
+	 * @param progressMonitor progress monitor
+	 * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue resource first
+	 * @param attachments attachments to upload
+	 * @since client 0.2, server 4.3
+	 */
+	void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, AttachmentInput ... attachments);
 
+	/**
+	 * Uploads attachments to JIRA (adding it to selected issue)
+	 * @param progressMonitor progress monitor
+	 * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue resource first
+	 * @param files files to upload
+	 * @since client 0.2, server 4.3
+	 */
 	void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, File... files);
 
 	/**
