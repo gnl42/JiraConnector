@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
@@ -26,6 +27,9 @@ import javax.ws.rs.core.Response;
 public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	@Test
 	public void testJqlSearch() {
+		if (!isJqlSupportedByRest()) {
+			return;
+		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, pm);
 		assertEquals(9, searchResultForNull.getTotal());
 
@@ -42,6 +46,9 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 
 	@Test
 	public void testJqlSearchWithPaging() {
+		if (!isJqlSupportedByRest()) {
+			return;
+		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, pm);
 		assertEquals(9, searchResultForNull.getTotal());
 		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
@@ -62,7 +69,11 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		assertEquals(10, search3.getMaxResults());
 	}
 
+	@Test
 	public void testVeryLongJqlWhichWillBePost() {
+		if (!isJqlSupportedByRest()) {
+			return;
+		}
 		final String coreJql = "summary ~ fsdsfdfds";
 		StringBuilder sb = new StringBuilder(coreJql);
 		for (int i = 0; i < 500; i++) {
@@ -79,6 +90,9 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 
 	@Test
 	public void testJqlSearchUnescapedCharacter() {
+		if (!isJqlSupportedByRest()) {
+			return;
+		}
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST,
 				"Error in the JQL Query: The character '/' is a reserved JQL character. You must enclose it in a string or use the escape '\\u002f' instead. (line 1, character 11)", new Runnable() {
 			@Override
@@ -87,5 +101,11 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 			}
 		});
 	}
+
+
+	private boolean isJqlSupportedByRest() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+	}
+
 
 }

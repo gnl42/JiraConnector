@@ -474,7 +474,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
-		String expectedErrorMsg = doesJiraHasJraDev3516Fixed() ? ("User '" + USER1_USERNAME
+		String expectedErrorMsg = isJraDev3516Fixed() ? ("User '" + USER1_USERNAME
 				+ "' is not allowed to add watchers to issue 'TST-1'") : null;
 		assertErrorCode(Response.Status.UNAUTHORIZED, expectedErrorMsg, new Runnable() {
 			@Override
@@ -484,7 +484,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		});
 	}
 
-	private boolean doesJiraHasJraDev3516Fixed() {
+	private boolean isJraDev3516Fixed() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
