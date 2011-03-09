@@ -9,7 +9,7 @@
 
 	<groupId>com.atlassian.jira</groupId>
 	<artifactId>jira-rest-java-client</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2-m1</version>
 	<packaging>jar</packaging>
 
 	<name>atlassian-jira-rest-java-client</name>
@@ -36,10 +36,10 @@
 		<url>http://atlassian.com/</url>
 	</organization>
 	<scm>
-		<connection>scm:svn:https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client</connection>
-		<developerConnection>scm:svn:https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client
+		<connection>scm:svn:https://studio.atlassian.com/svn/JRJC/tags/jira-rest-java-client-0.2-m1</connection>
+		<developerConnection>scm:svn:https://studio.atlassian.com/svn/JRJC/tags/jira-rest-java-client-0.2-m1
 		</developerConnection>
-		<url>https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client</url>
+		<url>https://studio.atlassian.com/svn/JRJC/tags/jira-rest-java-client-0.2-m1</url>
 	</scm>
 
 	<properties>
