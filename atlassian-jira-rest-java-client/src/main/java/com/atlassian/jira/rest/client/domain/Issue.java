@@ -242,6 +242,14 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return resolution;
 	}
 
+	public DateTime getCreationDate() {
+		return creationDate;
+	}
+
+	public DateTime getUpdateDate() {
+		return updateDate;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).addValue(super.toString()).

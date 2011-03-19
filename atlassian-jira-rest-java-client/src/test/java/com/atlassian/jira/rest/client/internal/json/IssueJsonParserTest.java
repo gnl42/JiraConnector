@@ -63,6 +63,8 @@ public class IssueJsonParserTest {
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST"), issue.getProject());
 		assertEquals("Major", issue.getPriority().getName());
 		assertNull(issue.getResolution());
+		assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
+		assertEquals(toDateTime("2010-08-27T15:00:02.107+0200"), issue.getUpdateDate());
 
 		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
 		assertEquals(TestConstants.USER1, issue.getAssignee());
