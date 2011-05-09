@@ -19,7 +19,7 @@
          "description":"another description"
       }
    ],
-   "url":"",
+   "url":"http://example.com",
    "versions":[
       {
          "self":"http://localhost:8090/jira/rest/api/latest/version/10001",

@@ -18,22 +18,33 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Project;
+import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.IterableMatcher.hasOnlyElements;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class ProjectJsonParserTest {
+	private final ProjectJsonParser parser = new ProjectJsonParser();
+
 	@Test
 	public void testParse() throws Exception {
-		ProjectJsonParser parser = new ProjectJsonParser();
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/valid.json"));
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), project.getSelf());
 		assertEquals("This is my description here.\r\nAnother line.", project.getDescription());
 		assertEquals(TestConstants.USER_ADMIN, project.getLead());
+		assertEquals("http://example.com", project.getUri().toString());
 		assertEquals("TST", project.getKey());
 		assertThat(project.getVersions(), hasOnlyElements(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		assertThat(project.getComponents(), hasOnlyElements(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
+	}
+
+	@Test
+	public void testParseProjectWithNoUrl() throws JSONException {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-no-url.json"));
+		assertEquals("MYT", project.getKey());
+		assertNull(project.getUri());
+		assertNull(project.getDescription());
+
 	}
 }

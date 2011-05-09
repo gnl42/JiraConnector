@@ -35,14 +35,17 @@ public class ProjectJsonParser implements JsonParser<Project> {
 		URI self = JsonParseUtil.getSelfUri(json);
 		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		final String key = json.getString("key");
-		final String urlStr = json.getString("url");
+		final String urlStr = JsonParseUtil.getOptionalString(json, "url");
 		URI uri;
 		try {
-			 uri = "".equals(urlStr) ? null : new URI(urlStr);
+			 uri = urlStr == null || "".equals(urlStr) ? null : new URI(urlStr);
 		} catch (URISyntaxException e) {
 			uri = null;
 		}
-		final String description = json.getString("description");
+		String description = JsonParseUtil.getOptionalString(json, "description");
+		if ("".equals(description)) {
+			description = null;
+		}
 		final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
 		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
 		return new Project(self, key, description, lead, uri, versions, components);

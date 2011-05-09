@@ -27,6 +27,7 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Project extends BasicProject {
+	@Nullable
 	private final String description;
 	private final BasicUser lead;
 	@Nullable
@@ -45,8 +46,9 @@ public class Project extends BasicProject {
 	}
 
 	/**
-	 * @return description provided for this project or empty string if there is no description specific for this project. 
+	 * @return description provided for this project or null if there is no description specific for this project.
 	 */
+	@Nullable
 	public String getDescription() {
 		return description;
 	}

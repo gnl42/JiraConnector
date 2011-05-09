@@ -1,0 +1,76 @@
+{"self":"http://192.168.157.5:2990/jira/rest/api/latest/project/MYT","key":"MYT","lead":{
+	"self":"http://192.168.157.5:2990/jira/rest/api/latest/user?username=wseliga",
+	"name":"wseliga",
+	"displayName":"wseliga"
+},"components":[],"versions":[
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10010",
+		"name":"1 : 14 Feb",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-02-28T00:00:00.000+0100"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10011",
+		"name":"2 : 28 Feb",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-03-21T00:00:00.000+0100"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10012",
+		"name":"3 : 21 Mar",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-03-28T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10013",
+		"name":"4 : 28 Mar",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-04-04T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10014",
+		"name":"5 : 4 Apr",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-04-11T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10015",
+		"name":"6 : 11 Apr",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-04-18T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10016",
+		"name":"7 : 18 Apr",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-04-25T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10017",
+		"name":"8 : 25 Apr",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-05-02T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10018",
+		"name":"9 : 2 May",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-05-09T01:00:00.000+0200"
+	},
+	{
+		"self":"http://192.168.157.5:2990/jira/rest/api/latest/version/10019",
+		"name":"10 : 9 May",
+		"archived":false,
+		"released":false,
+		"releaseDate":"2011-05-16T01:00:00.000+0200"
+	}
+],"name":"My Test Project"}
