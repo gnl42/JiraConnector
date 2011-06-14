@@ -34,6 +34,7 @@ import java.util.Collection;
 
 public class JsonParseUtil {
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
+	private static final DateTimeFormatter DATE_FORMATTER = ISODateTimeFormat.date();
     public static final String VALUE_KEY = "value";
 	public static final String SELF_ATTR = "self";
 
@@ -170,6 +171,15 @@ public class JsonParseUtil {
 			throw new RestClientException(e);
 		}
 	}
+
+	public static DateTime parseDate(String str) {
+		try {
+			return DATE_FORMATTER.parseDateTime(str);
+		} catch (Exception e) {
+			throw new RestClientException(e);
+		}
+	}
+
 
 	@Nullable
 	public static String getNullableString(JSONObject jsonObject, String attributeName) throws JSONException {

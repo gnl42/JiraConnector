@@ -48,18 +48,19 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 			res.put("body", comment.getBody());
 		}
 
-		if (comment.getVisibility() != null) {
+		final Visibility commentVisibility = comment.getVisibility();
+		if (commentVisibility != null) {
 
 			if (serverInfo.getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) {
 				JSONObject visibilityJson = new JSONObject();
-				visibilityJson.put("type", comment.getVisibility().getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE");
-				visibilityJson.put("value", comment.getVisibility().getValue());
+				visibilityJson.put("type", commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE");
+				visibilityJson.put("value", commentVisibility.getValue());
 				res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
 			} else {
-				if (comment.getVisibility().getType() == Visibility.Type.ROLE) {
-					res.put("role", comment.getVisibility().getValue());
+				if (commentVisibility.getType() == Visibility.Type.ROLE) {
+					res.put("role", commentVisibility.getValue());
 				} else {
-					res.put(getGroupLevelAttribute(), comment.getVisibility().getValue());
+					res.put(getGroupLevelAttribute(), commentVisibility.getValue());
 				}
 			}
 		}

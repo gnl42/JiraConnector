@@ -1,0 +1,81 @@
+{
+   "self":"http://localhost:2990/jira/rest/api/latest/project/TST",
+   "key":"TST",
+   "lead":{
+      "self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+      "name":"admin",
+      "displayName":"Administrator",
+      "active":true
+   },
+   "components":[
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/component/10000",
+         "id":10000,
+         "name":"Component A",
+         "description":"this is some description of component A",
+         "isAssigneeTypeValid":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/component/10001",
+         "id":10001,
+         "name":"Component B",
+         "description":"another description",
+         "isAssigneeTypeValid":false
+      }
+   ],
+   "issueTypes":[
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/issueType/1",
+         "name":"Bug",
+         "subtask":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/issueType/2",
+         "name":"New Feature",
+         "subtask":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/issueType/3",
+         "name":"Task",
+         "subtask":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/issueType/4",
+         "name":"Improvement",
+         "subtask":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/issueType/5",
+         "name":"Sub-task",
+         "subtask":true
+      }
+   ],
+   "assigneeType":"PROJECT_LEAD",
+   "versions":[
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/version/10001",
+         "id":10001,
+         "description":"initial version",
+         "name":"1",
+         "archived":false,
+         "released":false
+      },
+      {
+         "self":"http://localhost:2990/jira/rest/api/latest/version/10000",
+         "id":10000,
+         "description":"Some version",
+         "name":"1.1",
+         "overdue":true,
+         "userReleaseDate":"25/sie/10",
+         "archived":false,
+         "releaseDate":"2010-08-25",
+         "released":false
+      }
+   ],
+   "name":"Test Project",
+   "roles":{
+      "Users":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10000",
+      "Administrators":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10002",
+      "Developers":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10001"
+   }
+}

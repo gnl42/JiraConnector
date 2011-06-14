@@ -18,7 +18,9 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Project;
+import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
+import org.joda.time.DateMidnight;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.IterableMatcher.hasOnlyElements;
@@ -45,6 +47,12 @@ public class ProjectJsonParserTest {
 		assertEquals("MYT", project.getKey());
 		assertNull(project.getUri());
 		assertNull(project.getDescription());
+	}
 
+	@Test
+	public void testParseProjectInJira4x4() throws JSONException {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
+		assertEquals("TST", project.getKey()); //2010-08-25
+		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
 	}
 }

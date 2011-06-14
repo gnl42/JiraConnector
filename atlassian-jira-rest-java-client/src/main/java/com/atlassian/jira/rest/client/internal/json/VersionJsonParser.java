@@ -31,7 +31,20 @@ public class VersionJsonParser implements JsonParser<Version> {
 		final String description = JsonParseUtil.getOptionalString(json, "description");
 		final boolean isArchived = json.getBoolean("archived");
 		final boolean isReleased = json.getBoolean("released");
-		final DateTime releaseDate = JsonParseUtil.parseOptionalDateTime(json, "releaseDate");
+		final String releaseDateStr = JsonParseUtil.getOptionalString(json, "releaseDate");
+		final DateTime releaseDate = parseReleaseDate(releaseDateStr);
 		return new Version(self, name, description, isArchived, isReleased, releaseDate);
+	}
+
+	private DateTime parseReleaseDate(String releaseDateStr) {
+		if (releaseDateStr != null) {
+			if (releaseDateStr.length() > "YYYY-MM-RR".length()) { // JIRA 4.4 introduces different format - just ISO date
+				return JsonParseUtil.parseDateTime(releaseDateStr);
+			} else {
+				return JsonParseUtil.parseDate(releaseDateStr);
+			}
+		} else {
+			return null;
+		}
 	}
 }
