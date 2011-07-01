@@ -86,8 +86,6 @@
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
 		
-		<echo message="*** XXX ***" />
-		
 		<echo message="Fetching Mylyn Docs (wiki packages)" />
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
 		<exec executable="git" failonerror="true">
