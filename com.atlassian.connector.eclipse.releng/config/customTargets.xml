@@ -89,7 +89,6 @@
 		
 		<echo message="Fetching Mylyn Docs (wiki packages)" />
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
-		<mkdir dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
 			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
