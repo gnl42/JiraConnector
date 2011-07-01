@@ -77,7 +77,6 @@
 	<!-- Steps to do before fetching the build elements -->
 	<!-- ===================================================================== -->
 	<target name="preFetch">
-		<echo message="*** XXX ***" />
 		<echo message="Fetching connector-commons" />
 		<delete dir="${buildDirectory}/../../../connector-commons" />
 		<mkdir dir="${buildDirectory}/../../../connector-commons" />
@@ -86,6 +85,8 @@
 			<arg value="https://gdanskbamboo:Blah123@bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
+		
+		<echo message="*** XXX ***" />
 		
 		<echo message="Fetching Mylyn Docs (wiki packages)" />
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
