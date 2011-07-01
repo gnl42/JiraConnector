@@ -77,13 +77,22 @@
 	<!-- Steps to do before fetching the build elements -->
 	<!-- ===================================================================== -->
 	<target name="preFetch">
-		<echo message="Fetching connector-commons"/>
-		<delete dir="${buildDirectory}/../../../connector-commons"/>
+		<echo message="Fetching connector-commons" />
+		<delete dir="${buildDirectory}/../../../connector-commons" />
 		<mkdir dir="${buildDirectory}/../../../connector-commons" />
 		<exec executable="hg" failonerror="true">
 			<arg value="clone" />
 			<arg value="https://gdanskbamboo:Blah123@bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../connector-commons" />
+		</exec>
+		
+		<echo message="Fetching Mylyn Docs (wiki packages)" />
+		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
+		<mkdir dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
+			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
 		</exec>
 	</target>
 
@@ -106,36 +115,36 @@
 		<antcall target="clean" />
 	</target>
 	<target name="postGenerateClover" if="buildWithClover">
-		<echo message="Cloverizing files"/>
+		<echo message="Cloverizing files" />
 		<!-- repeat this for as many plugins as you want coverage for -->
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.tests/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.branding.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.commons.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.commons.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.help/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subclipse.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subclipse.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subversive.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subversive.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.directclickthrough.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.tests/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.core/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.tests/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.tests/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.branding.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.commons.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.commons.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.help/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.perforce.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subclipse.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subclipse.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subversive.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subversive.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.directclickthrough.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.tests/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.ui/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.core/build.xml" />
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.jira.tests/build.xml" />
 	</target>
 
 	<!-- ===================================================================== -->
@@ -145,26 +154,26 @@
 		<replace dir="${buildDirectory}/features" value="${majorVersion}.${forceContextQualifier}" token="${majorVersion}.qualifier">
 			<include name="**/feature.xml" />
 		</replace>
-		<available property="patch.org.eclipse.test.performance" file="${builder}/org.eclipse.test.performance.diff"/>
+		<available property="patch.org.eclipse.test.performance" file="${builder}/org.eclipse.test.performance.diff" />
 		<antcall target="patch">
-			<param name="file" value="${builder}/org.eclipse.test.performance.diff"/>
-			<param name="dir" value="${buildDirectory}/plugins/org.eclipse.test.performance"/>
+			<param name="file" value="${builder}/org.eclipse.test.performance.diff" />
+			<param name="dir" value="${buildDirectory}/plugins/org.eclipse.test.performance" />
 		</antcall>
 		<antcall target="patch">
-			<param name="file" value="${builder}/com.atlassian.connector.commons.diff"/>
-			<param name="dir" value="${buildDirectory}/plugins/com.atlassian.connector.commons"/>
+			<param name="file" value="${builder}/com.atlassian.connector.commons.diff" />
+			<param name="dir" value="${buildDirectory}/plugins/com.atlassian.connector.commons" />
 		</antcall>
 	</target>
 
 	<target name="patch">
-		<available property="patch.exists" file="${file}"/>
-		<antcall target="patch-helper"/>
+		<available property="patch.exists" file="${file}" />
+		<antcall target="patch-helper" />
 	</target>
 
 	<target name="patch-helper" if="patch.exists">
-		<patch patchfile="${file}" dir="${dir}" strip="0"/>
+		<patch patchfile="${file}" dir="${dir}" strip="0" />
 	</target>
-			
+
 	<!-- ===================================================================== -->
 	<!-- Steps to do after running the build.xmls for the elements being built. -->
 	<!-- ===================================================================== -->
@@ -209,13 +218,15 @@
 			<arg value="${buildDirectory}" />
 		</exec>
 		-->
-  	    <condition property="build.publish.name.suffix" value="3.3" else="3.4 and 3.5"><equals arg1="${build.target}" arg2="3.3"/></condition>
+		<condition property="build.publish.name.suffix" value="3.3" else="3.4 and 3.5">
+			<equals arg1="${build.target}" arg2="3.3" />
+		</condition>
 		<antcall target="generateUpdateSite">
 			<param name="UpdateSiteLocation" value="${buildDirectory}/site" />
 			<param name="SiteXmlFile" value="site.xml" />
 			<param name="ElementsTarget" value="siteElementsDelegator" />
 			<param name="SiteName" value="standard" />
-			<param name="UpdateSiteName" value="${build.publish.name} ${build.publish.name.suffix}"/>
+			<param name="UpdateSiteName" value="${build.publish.name} ${build.publish.name.suffix}" />
 		</antcall>
 	</target>
 
@@ -226,12 +237,12 @@
 		<mkdir dir="${UpdateSiteLocation}/features" />
 		<mkdir dir="${UpdateSiteLocation}/plugins" />
 
-		<echo message="filtering ${builder}/${SiteXmlFile} with [${UpdateSiteName}]"/> 
+		<echo message="filtering ${builder}/${SiteXmlFile} with [${UpdateSiteName}]" />
 		<!-- Generate the "site.xml" file in the "updateSite folder -->
 		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
 			<filterset>
 				<filter token="core" value="${com.atlassian.connector.eclipse}" />
-				<filter token="siteName" value="${UpdateSiteName}"/>
+				<filter token="siteName" value="${UpdateSiteName}" />
 			</filterset>
 		</copy>
 
@@ -266,15 +277,15 @@
 			<property name="plugin.destination" value="${UpdateSiteLocation}/plugins" />
 		</ant>
 	</target>
-	
+
 	<macrodef name="cloverizeBuildXml">
-			<attribute name="file"/>
-			<sequential>
-				<xslt in="@{file}" out="@{file}.out" style="${builder}/buildWithClover.xsl">
-					<param name="initstring" expression="${clover.initstring}"/>
-					<param name="enabled" expression="true"/>
-				</xslt>
-				<move file="@{file}.out" tofile="@{file}"/>
-			</sequential>
-		</macrodef>	
+		<attribute name="file" />
+		<sequential>
+			<xslt in="@{file}" out="@{file}.out" style="${builder}/buildWithClover.xsl">
+				<param name="initstring" expression="${clover.initstring}" />
+				<param name="enabled" expression="true" />
+			</xslt>
+			<move file="@{file}.out" tofile="@{file}" />
+		</sequential>
+	</macrodef>
 </project>
