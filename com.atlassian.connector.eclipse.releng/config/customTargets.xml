@@ -85,13 +85,29 @@
 			<arg value="https://gdanskbamboo:Blah123@bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
-		
+
 		<echo message="Fetching Mylyn Docs (wiki packages)" />
-		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
+		
+		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x" />
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
 			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
-			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs" />
+			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x" />
+		</exec>
+		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x">
+			<arg value="checkout" />
+			<arg value="refs/remotes/origin/e_3_7_m_3_6_x" />
+		</exec>
+		
+		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
+			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />
+		</exec>
+		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x">
+			<arg value="checkout" />
+			<arg value="refs/remotes/origin/e_3_6_m_3_4_x" />
 		</exec>
 	</target>
 

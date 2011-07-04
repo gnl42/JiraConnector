@@ -28,12 +28,18 @@
 			<contains string="${targets}" substring="3.6" />
 		</not>
 	</condition>
+	<condition property="skip3.7">
+		<not>
+			<contains string="${targets}" substring="3.7" />
+		</not>
+	</condition>
 
 	<target name="for-each-target">
 		<antcall target="e3.3" />
 		<antcall target="e3.4" />
 		<antcall target="e3.5" />
 		<antcall target="e3.6" />
+		<antcall target="e3.7" />
 	</target>
 
 	<target name="e3.3" unless="skip3.3">
@@ -59,12 +65,20 @@
 			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}" />
 		</antcall>
 	</target>
-	
+
 	<target name="e3.6" unless="skip3.6">
 		<antcall target="${call}">
 			<param name="build.target" value="3.6" />
 			<param name="eclipse.sdk.url" value="${eclipse.url.3.6}" />
 			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.6}" />
+		</antcall>
+	</target>
+
+	<target name="e3.7" unless="skip3.7">
+		<antcall target="${call}">
+			<param name="build.target" value="3.7" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.7}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.7}" />
 		</antcall>
 	</target>
 
@@ -304,7 +318,7 @@
 				<include name="*.map" />
 			</fileset>
 			<filterset>
-				<filter token="buildDirectory" value="${build.home}/${build.target}"/>
+				<filter token="buildDirectory" value="${build.home}/${build.target}" />
 			</filterset>
 		</copy>
 	</target>
