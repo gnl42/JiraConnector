@@ -59,7 +59,8 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		setClient(TestConstants.USER1_USERNAME, TestConstants.USER1_PASSWORD);
 		client.getProjectClient().getProject("TST", pm);
 		// @todo when JRADEV-3519 - instead of NOT_FOUND, FORBIDDEN code should be returned by JIRA
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have the browse project permission to view this project.", new Runnable() {
+		final String message = getCannotViewProjectErrorMessage();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, message, new Runnable() {
 			@Override
 			public void run() {
 				client.getProjectClient().getProject("RST", pm);
@@ -67,18 +68,24 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		});
 	}
 
+	private String getCannotViewProjectErrorMessage() {
+		return isJira4x4OrNewer()
+				? "You cannot view this project."
+				: "You must have the browse project permission to view this project.";
+	}
+
 	@Test
 	public void testGetAnonymouslyProject() {
 		// @todo when JRADEV-3519 - instead of NOT_FOUND, UNAUTHORIZED code should be returned by JIRA
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have the browse project permission to view this project.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage(), new Runnable() {
 			@Override
 			public void run() {
 				client.getProjectClient().getProject("RST", pm);
 			}
 		});
 
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have the browse project permission to view this project.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage(), new Runnable() {
 			@Override
 			public void run() {
 				client.getProjectClient().getProject("TST", pm);
@@ -117,6 +124,10 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 
 	private boolean isGetAllProjectsSupported() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+	}
+
+	private boolean isJira4x4OrNewer() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= 646;
 	}
 
 }
