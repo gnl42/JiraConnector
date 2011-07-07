@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -136,6 +135,23 @@ public abstract class AbstractJerseyRestClient {
 			}
 		});
 
+	}
+
+	protected <T> T postAndParse(final URI uri, final Callable<JSONObject> callable, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+		return invoke(new Callable<T>() {
+			@Override
+			public T call() throws Exception {
+				final WebResource webResource = client.resource(uri);
+				final JSONObject postEntity = callable.call();
+				final JSONObject s;
+				if (postEntity != null) {
+					s = webResource.post(JSONObject.class, postEntity);
+				} else {
+					s = webResource.post(JSONObject.class);
+				}
+				return parser.parse(s);
+			}
+		});
 	}
 
 

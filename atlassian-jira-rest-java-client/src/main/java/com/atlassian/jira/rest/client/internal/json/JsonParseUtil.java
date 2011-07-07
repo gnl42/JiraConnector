@@ -180,6 +180,10 @@ public class JsonParseUtil {
 		}
 	}
 
+	public static String format(DateTime dateTime) {
+		return DATE_FORMATTER.print(dateTime);
+	}
+
 
 	@Nullable
 	public static String getNullableString(JSONObject jsonObject, String attributeName) throws JSONException {
