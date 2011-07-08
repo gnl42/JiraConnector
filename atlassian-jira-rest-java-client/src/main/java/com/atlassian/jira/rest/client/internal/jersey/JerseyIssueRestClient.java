@@ -31,6 +31,7 @@ import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
@@ -212,17 +213,14 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void removeWatcher(final URI watchersUri, final String username, ProgressMonitor progressMonitor) {
-		invoke(new Callable<Void>() {
-			@Override
-			public Void call() throws Exception {
-				final URI uri = UriBuilder.fromUri(watchersUri).path(username).build();
-				final WebResource watchersResource = client.resource(uri);
-				watchersResource.delete();
-				return null;
-			}
-		});
-
+	public void removeWatcher(final URI watchersUri, final String username, final ProgressMonitor progressMonitor) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(watchersUri);
+		if (getVersionInfo(progressMonitor).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) {
+			uriBuilder.queryParam("username", username);
+		} else {
+			uriBuilder.path(username).build();
+		}
+		delete(uriBuilder.build(), progressMonitor);
 	}
 
 	@Override
