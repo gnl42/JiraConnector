@@ -126,8 +126,5 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
 	}
 
-	private boolean isJira4x4OrNewer() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= 646;
-	}
 
 }

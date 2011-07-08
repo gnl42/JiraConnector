@@ -32,6 +32,10 @@ import static org.junit.Assert.assertThat;
 public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	@Test
 	public void testCreateAndUpdateVersion() throws Exception {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
+
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(),
 				new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1", "1"));
 
@@ -47,7 +51,6 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 				client.getVersionClient().createVersion(versionInput, pm);
 			}
 		});
-
 
 
 		final VersionInput versionInput2 = VersionInput.create("TST", "My newly created version2", "A description\nwith\new line", null, false, false);
@@ -121,6 +124,9 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 	}
 
 	public void testGetAndRemoveVersion() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
 		final Iterable<Version> versionsInTheBeggining = client.getProjectClient().getProject("TST", pm).getVersions();
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
 		final Version version = client.getVersionClient().createVersion(versionInput, pm);
