@@ -215,7 +215,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	@Override
 	public void removeWatcher(final URI watchersUri, final String username, final ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(watchersUri);
-		if (getVersionInfo(progressMonitor).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER) {
+		if (getVersionInfo(progressMonitor).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_4) {
 			uriBuilder.queryParam("username", username);
 		} else {
 			uriBuilder.path(username).build();
