@@ -50,6 +50,10 @@ public class TestUtil {
 		assertErrorCode(status.getStatusCode(), message, runnable);
 	}
 
+	public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
+		assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
+	}
+
 	public static void assertErrorCode(Response.Status status, Runnable runnable) {
 		assertErrorCode(status.getStatusCode(), null, runnable);
 	}
@@ -61,11 +65,24 @@ public class TestUtil {
 		} catch (UniformInterfaceException e) {
 			Assert.assertEquals(errorCode, e.getResponse().getStatus());
 		} catch (RestClientException e) {
+			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
+			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
 			if (message != null) {
 				Assert.assertEquals(message, e.getMessage());
 			}
+		}
+	}
+
+	public static void assertErrorCodeWithRegexp(int errorCode, String regExp, Runnable runnable) {
+		try {
+			runnable.run();
+			Assert.fail(UniformInterfaceException.class + " exception expected");
+		} catch (UniformInterfaceException e) {
+			Assert.assertEquals(errorCode, e.getResponse().getStatus());
+		} catch (RestClientException e) {
 			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
 			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
+			Assert.assertTrue("'" + e.getMessage() + "' does not match regexp '" + regExp + "'", e.getMessage().matches(regExp));
 		}
 	}
 

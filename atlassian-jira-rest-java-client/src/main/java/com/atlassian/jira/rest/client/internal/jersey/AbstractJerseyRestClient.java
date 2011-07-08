@@ -96,7 +96,17 @@ public abstract class AbstractJerseyRestClient {
 				return parser.parse(jsonArray);
 			}
 		});
+	}
 
+	protected void delete(final URI uri, ProgressMonitor progressMonitor) {
+		invoke(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				final WebResource webResource = client.resource(uri);
+				webResource.delete();
+				return null;
+			}
+		});
 	}
 
 	protected <T> T postAndParse(final URI uri, @Nullable final JSONObject postEntity, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
@@ -138,20 +148,44 @@ public abstract class AbstractJerseyRestClient {
 	}
 
 	protected <T> T postAndParse(final URI uri, final Callable<JSONObject> callable, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+		return impl(uri, Method.POST, callable, parser);
+	}
+
+	protected <T> T putAndParse(final URI uri, final Callable<JSONObject> callable, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+		return impl(uri, Method.PUT, callable, parser);
+	}
+
+	enum Method {
+		PUT, POST
+	}
+
+	private <T> T impl(final URI uri, final Method method, final Callable<JSONObject> callable, final JsonParser<T> parser) {
 		return invoke(new Callable<T>() {
 			@Override
 			public T call() throws Exception {
 				final WebResource webResource = client.resource(uri);
 				final JSONObject postEntity = callable.call();
 				final JSONObject s;
-				if (postEntity != null) {
-					s = webResource.post(JSONObject.class, postEntity);
-				} else {
-					s = webResource.post(JSONObject.class);
-				}
+				s = doHttpMethod(webResource, postEntity, method);
 				return parser.parse(s);
 			}
 		});
+	}
+
+	private JSONObject doHttpMethod(WebResource webResource, @Nullable JSONObject postEntity, Method method) {
+		if (postEntity != null) {
+			if (method == Method.POST) {
+				return webResource.post(JSONObject.class, postEntity);
+			} else {
+				return webResource.put(JSONObject.class, postEntity);
+			}
+		} else {
+			if (method == Method.POST) {
+				return webResource.post(JSONObject.class);
+			} else {
+				return webResource.put(JSONObject.class);
+			}
+		}
 	}
 
 

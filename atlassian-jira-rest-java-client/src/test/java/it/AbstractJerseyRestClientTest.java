@@ -56,8 +56,12 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
         }
         jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
         jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
-        setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
-    }
+		setAdmin();
+	}
+
+	protected void setAdmin() {
+		setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
+	}
 
 	protected void setClient(String username, String password) {
 		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(username, password));

@@ -32,6 +32,7 @@ import java.net.URI;
 public interface VersionClient {
 
 	Version createVersion(VersionInput version, ProgressMonitor progressMonitor);
+	Version updateVersion(URI versionUri, VersionInput versionInput, ProgressMonitor progressMonitor);
 	void removeVersion(URI versionUri, @Nullable String moveFixIssuesTo, @Nullable String moveAffectedIssuesTo, ProgressMonitor progressMonitor);
 	Version getVersion(URI versionUri, ProgressMonitor progressMonitor);
 	VersionRelatedIssuesCount getVersionRelatedIssuesCount(URI versionUri, ProgressMonitor progressMonitor);

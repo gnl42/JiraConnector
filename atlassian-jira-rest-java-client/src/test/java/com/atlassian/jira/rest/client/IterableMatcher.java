@@ -21,6 +21,7 @@ import org.hamcrest.Description;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,14 @@ public class IterableMatcher<T> extends TypeSafeMatcher<Iterable<T>> {
     public static <T> IterableMatcher<T> hasOnlyElements(T... elements) {
         return new IterableMatcher<T>(Arrays.asList(elements));
     }
+
+	public static <T> IterableMatcher<T> hasOnlyElements(Iterable<T> elements) {
+		return new IterableMatcher<T>(elements);
+	}
+
+	public static <T> IterableMatcher<T> isEmpty() {
+		return new IterableMatcher<T>(Collections.<T>emptyList());
+	}
 
 	public static <T> TypeSafeMatcher<Iterable<T>> contains(final T element) {
 		return new TypeSafeMatcher<Iterable<T>>() {
