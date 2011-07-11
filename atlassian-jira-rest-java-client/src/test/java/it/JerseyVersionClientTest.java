@@ -203,6 +203,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
 		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
 		final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
+		// @todo expected error code should be rather NOT FOUND in all cases below - see JRA-25045
 		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, null, "The fix version with id " +
 				getLastPathSegment(fakeVersionUri) + " does not exist.", Response.Status.BAD_REQUEST);
 		// @todo fix when bug JRA-25044 is fixed
