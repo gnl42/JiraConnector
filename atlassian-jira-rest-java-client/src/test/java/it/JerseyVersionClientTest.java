@@ -186,6 +186,9 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 
 	@Test
 	public void testDeleteAndMoveVersion() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
 		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
 		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1"));
 		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1", "1.1"));
@@ -202,7 +205,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
 		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, null, "The fix version with id " +
 				getLastPathSegment(fakeVersionUri) + " does not exist.", Response.Status.BAD_REQUEST);
-		// @todo fix when bug JRA- is fixed
+		// @todo fix when bug JRA-25044 is fixed
 		assertInvalidMoveToVersion(version.getSelf(), TestUtil.toUri("http://localhost/version/fdsa34323"), null,
 				"Could not find version for id '-1'", Response.Status.NOT_FOUND);
 		assertInvalidMoveToVersion(version.getSelf(), null, fakeVersionUri2, "The affects version with id " +
