@@ -18,15 +18,21 @@ package it;
 
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionInputBuilder;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 
+import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
 import static org.junit.Assert.assertThat;
 
 public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
@@ -123,6 +129,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		}
 	}
 
+	@Test
 	public void testGetAndRemoveVersion() {
 		if (!isJira4x4OrNewer()) {
 			return;
@@ -176,4 +183,66 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 
 	}
 
+
+	@Test
+	public void testDeleteAndMoveVersion() {
+		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
+		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1"));
+		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1", "1.1"));
+
+		final Version version1 = Iterables.find(client.getProjectClient().getProject("TST", pm).getVersions(), new Predicate<Version>() {
+			@Override
+			public boolean apply(Version input) {
+				return "1".equals(input.getName());
+			}
+		});
+
+		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
+		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
+		final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
+		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, null, "The fix version with id " +
+				getLastPathSegment(fakeVersionUri) + " does not exist.", Response.Status.BAD_REQUEST);
+		// @todo fix when bug JRA- is fixed
+		assertInvalidMoveToVersion(version.getSelf(), TestUtil.toUri("http://localhost/version/fdsa34323"), null,
+				"Could not find version for id '-1'", Response.Status.NOT_FOUND);
+		assertInvalidMoveToVersion(version.getSelf(), null, fakeVersionUri2, "The affects version with id " +
+				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
+		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, fakeVersionUri2, "The affects version with id " +
+				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
+
+		assertEquals(1, client.getVersionClient().getNumUnresolvedIssues(version.getSelf(), pm));
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
+
+		// now removing the first version
+		client.getVersionClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf(), pm);
+		final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2", pm);
+		assertThat(Iterables.transform(issueAfterVerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
+		assertThat(Iterables.transform(issueAfterVerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
+		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
+				IterableMatcher.hasOnlyElements("1"));
+
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "You cannot move the issues to the version being deleted.", new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionClient().removeVersion(version1.getSelf(), version1.getSelf(), version1.getSelf(), pm);
+			}
+		});
+
+		// now removing the other version
+		client.getVersionClient().removeVersion(version1.getSelf(), null, null, pm);
+		final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2", pm);
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
+	}
+
+	private void assertInvalidMoveToVersion(final URI versionUri, @Nullable final URI moveFixIssuesToVersionUri,
+			@Nullable final URI moveAffectedIssuesToVersionUri, final String expectedErrorMsg, final Response.Status status) {
+		TestUtil.assertErrorCode(status, expectedErrorMsg, new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri, pm);
+			}
+		});
+	}
 }

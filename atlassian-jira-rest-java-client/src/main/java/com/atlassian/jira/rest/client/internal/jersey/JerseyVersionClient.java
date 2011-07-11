@@ -22,9 +22,12 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionPosition;
+import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionJsonParser;
+import com.atlassian.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import com.sun.jersey.client.apache.ApacheHttpClient;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nullable;
@@ -57,13 +60,14 @@ public class JerseyVersionClient extends AbstractJerseyRestClient implements Ver
 	}
 
 	@Override
-	public void removeVersion(URI versionUri, @Nullable String moveFixIssuesTo, @Nullable String moveAffectedIssuesTo, ProgressMonitor progressMonitor) {
+	public void removeVersion(URI versionUri, @Nullable URI moveFixIssuesToVersionUri,
+			@Nullable URI moveAffectedIssuesToVersionUri, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(versionUri);
-		if (moveFixIssuesTo != null) {
-			uriBuilder.queryParam("moveFixIssuesTo", moveFixIssuesTo);
+		if (moveFixIssuesToVersionUri != null) {
+			uriBuilder.queryParam("moveFixIssuesTo", moveFixIssuesToVersionUri);
 		}
-		if (moveAffectedIssuesTo != null) {
-			uriBuilder.queryParam("moveAffectedIssuesTo", moveAffectedIssuesTo);
+		if (moveAffectedIssuesToVersionUri != null) {
+			uriBuilder.queryParam("moveAffectedIssuesTo", moveAffectedIssuesToVersionUri);
 		}
 		delete(uriBuilder.build(), progressMonitor);
 	}
@@ -75,12 +79,19 @@ public class JerseyVersionClient extends AbstractJerseyRestClient implements Ver
 
 	@Override
 	public VersionRelatedIssuesCount getVersionRelatedIssuesCount(URI versionUri, ProgressMonitor progressMonitor) {
-		return null;
+		final URI relatedIssueCountsUri = UriBuilder.fromUri(versionUri).path("relatedIssueCounts").build();
+		return getAndParse(relatedIssueCountsUri, new VersionRelatedIssueCountJsonParser(), progressMonitor);
 	}
 
 	@Override
 	public int getNumUnresolvedIssues(URI versionUri, ProgressMonitor progressMonitor) {
-		return 0;
+		final URI unresolvedIssueCountUri = UriBuilder.fromUri(versionUri).path("unresolvedIssueCount").build();
+		return getAndParse(unresolvedIssueCountUri, new JsonParser<Integer>() {
+			@Override
+			public Integer parse(JSONObject json) throws JSONException {
+				return json.getInt("issuesUnresolvedCount");
+			}
+		}, progressMonitor);
 	}
 
 	@Override

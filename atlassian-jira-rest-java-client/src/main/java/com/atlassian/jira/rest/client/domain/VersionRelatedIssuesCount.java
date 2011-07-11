@@ -16,36 +16,76 @@
 
 package com.atlassian.jira.rest.client.domain;
 
-import com.atlassian.jira.rest.client.AddressableEntity;
+import com.google.common.base.Objects;
 
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Represents number of issues which use given version in their FixVersion(s) and Affects Version fields.
+ * This is mostly useful when presenting per-version basic issue stats or when about to remove given version completely.
  *
- * @since v4.4
+ * @since client 0.3, server 4.4
  */
-public class VersionRelatedIssuesCount implements AddressableEntity{
+public class VersionRelatedIssuesCount {
+
+	private URI versionUri;
 
 	private final int numFixedIssues;
 
 	private final int numAffectedIssues;
 
-	public VersionRelatedIssuesCount(int numFixedIssues, int numAffectedIssues) {
+	public VersionRelatedIssuesCount(URI versionUri, int numFixedIssues, int numAffectedIssues) {
+		this.versionUri = versionUri;
 		this.numAffectedIssues = numAffectedIssues;
 		this.numFixedIssues = numFixedIssues;
 	}
 
-	@Override
-	public URI getSelf() {
-		return null;
+	/**
+	 * @return link to Version entity this object describes issue stats for
+	 */
+	public URI getVersionUri() {
+		return versionUri;
 	}
 
+	/**
+	 * @return number of issues which have this version set in their Fix Version(s) field
+	 * (as a solely set version or one of multiple values set)
+	 */
 	public int getNumFixedIssues() {
 		return numFixedIssues;
 	}
 
+	/**
+	 * @return number of issues which have this version set in their Affects Version(s) field
+	 * (as a solely set version or one of multiple values set)
+	 */
 	public int getNumAffectedIssues() {
 		return numAffectedIssues;
 	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).
+				add("versionUri", versionUri).
+				add("numFixedIssues", numFixedIssues).
+				add("numAffectedIssues", numAffectedIssues).
+				toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof VersionRelatedIssuesCount) {
+			VersionRelatedIssuesCount that = (VersionRelatedIssuesCount) obj;
+			return Objects.equal(this.numFixedIssues, that.numFixedIssues)
+					&& Objects.equal(this.versionUri, that.versionUri)
+					&& Objects.equal(this.numAffectedIssues, that.numAffectedIssues);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(versionUri, numAffectedIssues, numFixedIssues);
+	}
+
 }

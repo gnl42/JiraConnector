@@ -27,13 +27,14 @@ import java.net.URI;
 /**
  * The client responsible for Project version(s) related operations
  *
- * @since 4.4 server
+ * @since 0.3 client, 4.4 server
  */
 public interface VersionClient {
 
 	Version createVersion(VersionInput version, ProgressMonitor progressMonitor);
 	Version updateVersion(URI versionUri, VersionInput versionInput, ProgressMonitor progressMonitor);
-	void removeVersion(URI versionUri, @Nullable String moveFixIssuesTo, @Nullable String moveAffectedIssuesTo, ProgressMonitor progressMonitor);
+	void removeVersion(URI versionUri, @Nullable URI moveFixIssuesToVersionUri,
+			@Nullable URI moveAffectedIssuesToVersionUri, ProgressMonitor progressMonitor);
 	Version getVersion(URI versionUri, ProgressMonitor progressMonitor);
 	VersionRelatedIssuesCount getVersionRelatedIssuesCount(URI versionUri, ProgressMonitor progressMonitor);
 	int getNumUnresolvedIssues(URI versionUri, ProgressMonitor progressMonitor);

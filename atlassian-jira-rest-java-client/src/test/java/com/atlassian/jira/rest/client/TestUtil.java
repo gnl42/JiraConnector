@@ -63,7 +63,12 @@ public class TestUtil {
 			runnable.run();
 			Assert.fail(UniformInterfaceException.class + " exception expected");
 		} catch (UniformInterfaceException e) {
-			Assert.assertEquals(errorCode, e.getResponse().getStatus());
+			final String msg = e.getResponse().getEntity(String.class);
+			if (errorCode != e.getResponse().getStatus()) {
+				Assert.fail("Unexpected error code and message [" + msg
+						+ "]. Expected [" + errorCode + "], actual [" + e.getResponse().getStatus() + "]");
+			}
+//			Assert.assertEquals(errorCode, );
 		} catch (RestClientException e) {
 			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
 			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
