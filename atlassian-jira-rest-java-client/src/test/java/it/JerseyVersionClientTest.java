@@ -255,6 +255,9 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 
 	@Test
 	public void testMoveVersion() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
 		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
 		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
@@ -285,6 +288,9 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 
 	@Test
 	public void testMoveVersionAfter() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
 		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
 		final Version v4 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version2", "a description2", null, true, false), pm);
 		final Version v1 = Iterables.get(client.getProjectClient().getProject("TST", pm).getVersions(), 0);
