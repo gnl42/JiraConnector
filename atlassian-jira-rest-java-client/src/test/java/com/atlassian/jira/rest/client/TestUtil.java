@@ -45,6 +45,23 @@ public class TestUtil {
 		assertErrorCode(errorCode, null, runnable);
 	}
 
+	public static <T extends Throwable> void assertThrows(Class<T> clazz, String regexp, Runnable runnable) {
+		try {
+			runnable.run();
+			Assert.fail(clazz.getName() + " exception expected");
+		} catch (Throwable e) {
+			Assert.assertTrue("Expected exception of class " + clazz.getName() + " but was caught " + e.getClass().getName(),
+					clazz.isInstance(e));
+			if (e.getMessage() == null && regexp != null) {
+				Assert.fail("Exception with no message caught, while expected regexp [" + regexp + "]");
+			}
+			if (regexp != null && e.getMessage() != null) {
+				Assert.assertTrue("Message [" + e.getMessage() + "] does not match regexp [" + regexp + "]", e.getMessage().matches(regexp));
+			}
+		}
+
+	}
+
 
 	public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
 		assertErrorCode(status.getStatusCode(), message, runnable);

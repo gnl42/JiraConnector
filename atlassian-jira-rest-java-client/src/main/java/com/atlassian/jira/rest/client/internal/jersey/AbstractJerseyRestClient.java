@@ -21,6 +21,7 @@ import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
+import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -204,6 +205,27 @@ public abstract class AbstractJerseyRestClient {
 			}
 		}
 		return errorMessages;
+	}
+
+
+	protected static class InputGeneratorCallable<T> implements Callable<JSONObject> {
+
+		private final JsonGenerator<T> generator;
+		private final T bean;
+
+		public static <T> InputGeneratorCallable<T> create(JsonGenerator<T> generator, T bean) {
+			return new InputGeneratorCallable<T>(generator, bean);
+		}
+
+		public InputGeneratorCallable(JsonGenerator<T> generator, T bean) {
+			this.generator = generator;
+			this.bean = bean;
+		}
+
+		@Override
+		public JSONObject call() throws Exception {
+			return generator.generate(bean);
+		}
 	}
 
 

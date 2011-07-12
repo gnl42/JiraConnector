@@ -25,7 +25,9 @@ import com.atlassian.jira.rest.client.domain.input.VersionPosition;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
+import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -33,12 +35,11 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.concurrent.Callable;
 
 /**
- * TODO: Document this class / interface here
+ * Jersey-based implementation of VersionClient
  *
- * @since v4.4
+ * @since client 0.3, server 4.4
  */
 public class JerseyVersionClient extends AbstractJerseyRestClient implements VersionClient {
 
@@ -51,12 +52,12 @@ public class JerseyVersionClient extends AbstractJerseyRestClient implements Ver
 
 	@Override
 	public Version createVersion(final VersionInput version, ProgressMonitor progressMonitor) {
-		return postAndParse(versionRootUri, new VersionInputGeneratorCallable(version), new VersionJsonParser(), progressMonitor);
+		return postAndParse(versionRootUri, InputGeneratorCallable.create(new VersionInputJsonGenerator(), version), new VersionJsonParser(), progressMonitor);
 	}
 
 	@Override
 	public Version updateVersion(URI versionUri, final VersionInput version, ProgressMonitor progressMonitor) {
-		return putAndParse(versionUri, new VersionInputGeneratorCallable(version), new VersionJsonParser(), progressMonitor);
+		return putAndParse(versionUri, InputGeneratorCallable.create(new VersionInputJsonGenerator(), version), new VersionJsonParser(), progressMonitor);
 	}
 
 	@Override
@@ -96,24 +97,26 @@ public class JerseyVersionClient extends AbstractJerseyRestClient implements Ver
 
 	@Override
 	public Version moveVersionAfter(URI versionUri, URI afterVersionUri, ProgressMonitor progressMonitor) {
-		return null;
+		final URI moveUri = getMoveVersionUri(versionUri);
+
+		return postAndParse(moveUri, InputGeneratorCallable.create(new JsonGenerator<URI>() {
+			@Override
+			public JSONObject generate(URI uri) throws JSONException {
+				final JSONObject res = new JSONObject();
+				res.put("after", uri);
+				return res;
+			}
+		}, afterVersionUri), new VersionJsonParser(), progressMonitor);
 	}
 
 	@Override
-	public Version moveVersion(URI versionUri, VersionPosition versionPosition, ProgressMonitor progressMonitor) {
-		return null;
+	public Version moveVersion(URI versionUri, final VersionPosition versionPosition, ProgressMonitor progressMonitor) {
+		final URI moveUri = getMoveVersionUri(versionUri);
+		return postAndParse(moveUri, InputGeneratorCallable.create(new VersionPositionInputGenerator(), versionPosition),
+				new VersionJsonParser(), progressMonitor);
 	}
 
-	private static class VersionInputGeneratorCallable implements Callable<JSONObject> {
-		private final VersionInput version;
-
-		public VersionInputGeneratorCallable(VersionInput version) {
-			this.version = version;
-		}
-
-		@Override
-		public JSONObject call() throws Exception {
-			return new VersionInputJsonGenerator().generate(version);
-		}
+	private URI getMoveVersionUri(URI versionUri) {
+		return UriBuilder.fromUri(versionUri).path("move").build();
 	}
 }

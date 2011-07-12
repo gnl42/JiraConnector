@@ -23,9 +23,11 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionInputBuilder;
+import com.atlassian.jira.rest.client.domain.input.VersionPosition;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -36,6 +38,7 @@ import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
 import static org.junit.Assert.assertThat;
 
 public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+
 	@Test
 	public void testCreateAndUpdateVersion() throws Exception {
 		if (!isJira4x4OrNewer()) {
@@ -248,5 +251,48 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 				client.getVersionClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri, pm);
 			}
 		});
+	}
+
+	@Test
+	public void testMoveVersion() {
+		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
+		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
+		assertProjectHasOrderedVersions("TST", v3.getName(), "1", "1.1");
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LAST, pm);
+		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
+		assertProjectHasOrderedVersions("TST", "1", v3.getName(), "1.1");
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
+		assertProjectHasOrderedVersions("TST", v3.getName(), "1", "1.1");
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		assertProjectHasOrderedVersions("TST", "1", v3.getName(), "1.1");
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
+		// later for the last version means nothing - but also no error
+		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
+	}
+
+	@Test
+	public void testMoveVersionAfter() {
+		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
+		final Version v4 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version2", "a description2", null, true, false), pm);
+		final Version v1 = Iterables.get(client.getProjectClient().getProject("TST", pm).getVersions(), 0);
+		final String v1n = v1.getName();
+		final String v3n = v3.getName();
+		final String v4n = v4.getName();
+		assertProjectHasOrderedVersions("TST", v1n, "1.1", v3n, v4n);
+		client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+		assertProjectHasOrderedVersions("TST", v1n, "1.1", v4n, v3n);
+		client.getVersionClient().moveVersionAfter(v3.getSelf(), v1.getSelf(), pm);
+		assertProjectHasOrderedVersions("TST", v1n, v3n, "1.1", v4n);
+		client.getVersionClient().moveVersionAfter(v1.getSelf(), v4.getSelf(), pm);
+		assertProjectHasOrderedVersions("TST", v3n, "1.1", v4n, v1n);
+	}
+
+
+	private void assertProjectHasOrderedVersions(String projectKey, String... expectedVersions) {
+		assertEquals(Lists.newArrayList(expectedVersions), Lists.newArrayList(Iterables.transform(client.getProjectClient().getProject(projectKey, pm).getVersions(), new VersionToNameMapper())));
 	}
 }

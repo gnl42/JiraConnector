@@ -19,11 +19,6 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-/**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
 public interface JsonGenerator<T> {
-	public JSONObject generate(T comment) throws JSONException;
+	public JSONObject generate(T bean) throws JSONException;
 }
