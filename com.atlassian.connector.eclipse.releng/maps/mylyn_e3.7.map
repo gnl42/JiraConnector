@@ -39,6 +39,7 @@ plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../../mylyn/
 plugin@org.eclipse.mylyn.commons.repositories=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories
 plugin@org.eclipse.mylyn.commons.ui=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.ui
 plugin@org.eclipse.mylyn.commons.screenshots=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.screenshots
+plugin@org.eclipse.mylyn.commons.identity=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.identity
 !plugin@org.eclipse.mylyn.compatibility=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/zArchive/org.eclipse.mylyn.compatibility
 plugin@org.eclipse.mylyn.context.core=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.context, org.eclipse.mylyn.context.core
 plugin@org.eclipse.mylyn.context.ui=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.context, org.eclipse.mylyn.context.ui
