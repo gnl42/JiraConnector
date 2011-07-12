@@ -17,7 +17,9 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Component;
+import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -33,4 +35,12 @@ public interface ComponentRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Component getComponent(URI componentUri, ProgressMonitor progressMonitor);
+
+	Component createComponent(String projectKey, ComponentInput componentInput, ProgressMonitor progressMonitor);
+
+	Component updateComponent(URI componentUri, ComponentInput componentInput, ProgressMonitor progressMonitor);
+
+	void removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri, ProgressMonitor progressMonitor);
+
+	int getComponentRelatedIssuesCount(URI componentUri, ProgressMonitor progressMonitor);
 }

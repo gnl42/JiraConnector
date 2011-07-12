@@ -19,13 +19,15 @@ package com.atlassian.jira.rest.client.internal.jersey;
 import com.atlassian.jira.rest.client.ComponentRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Component;
+import com.atlassian.jira.rest.client.domain.input.ComponentInput;
+import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWIthProjectKey;
 import com.atlassian.jira.rest.client.internal.json.ComponentJsonParser;
-import com.sun.jersey.api.client.WebResource;
+import com.atlassian.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
 import com.sun.jersey.client.apache.ApacheHttpClient;
-import org.codehaus.jettison.json.JSONObject;
 
+import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.concurrent.Callable;
 
 /**
  * Jersey-based implementation of ComponentRestClient
@@ -35,21 +37,42 @@ import java.util.concurrent.Callable;
 public class JerseyComponentRestClient extends AbstractJerseyRestClient implements ComponentRestClient {
 
 	private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
-	
+	private final URI componentUri;
+
 	public JerseyComponentRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
+		componentUri = UriBuilder.fromUri(baseUri).path("component").build();
 	}
 
 	@Override
 	public Component getComponent(final URI componentUri, ProgressMonitor progressMonitor) {
-		return invoke(new Callable<Component>() {
-			@Override
-			public Component call() throws Exception {
-				final WebResource componentResource = client.resource(componentUri);
-				final JSONObject jsonObject = componentResource.get(JSONObject.class);
-				return componentJsonParser.parse(jsonObject);
-			}
-		});
+		return getAndParse(componentUri, componentJsonParser, progressMonitor);
+	}
+
+	@Override
+	public Component createComponent(String projectKey, ComponentInput componentInput, ProgressMonitor progressMonitor) {
+		final ComponentInputWIthProjectKey helper = new ComponentInputWIthProjectKey(projectKey, componentInput);
+		return postAndParse(componentUri, InputGeneratorCallable.create(new ComponentInputWithProjectKeyJsonGenerator(), helper),
+				new ComponentJsonParser(), progressMonitor);
+	}
+
+	@Override
+	public Component updateComponent(URI componentUri, ComponentInput componentInput, ProgressMonitor progressMonitor) {
+		return null;
+	}
+
+	@Override
+	public void removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri, ProgressMonitor progressMonitor) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(componentUri);
+		if (moveIssueToComponentUri != null) {
+			uriBuilder.queryParam("moveIssuesTo", moveIssueToComponentUri);
+		}
+		delete(uriBuilder.build(), progressMonitor);
+	}
+
+	@Override
+	public int getComponentRelatedIssuesCount(URI componentUri, ProgressMonitor progressMonitor) {
+		return 0;
 	}
 
 }
