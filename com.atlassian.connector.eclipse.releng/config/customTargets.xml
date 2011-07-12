@@ -86,6 +86,9 @@
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
 
+		<echo message="Fetching connector-commons done" />
+
+<!--		
 		<echo message="Fetching Mylyn Docs (wiki packages)" />
 		
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x" />
@@ -98,7 +101,9 @@
 			<arg value="checkout" />
 			<arg value="refs/remotes/origin/e_3_7_m_3_6_x" />
 		</exec>
-		
+-->
+
+<!--		
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
@@ -109,6 +114,8 @@
 			<arg value="checkout" />
 			<arg value="refs/remotes/origin/e_3_6_m_3_4_x" />
 		</exec>
+-->
+		
 	</target>
 
 	<!-- ===================================================================== -->
