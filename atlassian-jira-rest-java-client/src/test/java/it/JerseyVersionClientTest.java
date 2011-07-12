@@ -272,6 +272,15 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		// later for the last version means nothing - but also no error
 		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
+
+		setUser1();
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You must have global or project administrator rights in order to modify versions.", new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
+			}
+		});
+
 	}
 
 	@Test
@@ -289,6 +298,22 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		assertProjectHasOrderedVersions("TST", v1n, v3n, "1.1", v4n);
 		client.getVersionClient().moveVersionAfter(v1.getSelf(), v4.getSelf(), pm);
 		assertProjectHasOrderedVersions("TST", v3n, "1.1", v4n, v1n);
+
+		setUser1();
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You must have global or project administrator rights in order to modify versions.", new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+			}
+		});
+
+		setAnonymousMode();
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+			}
+		});
 	}
 
 
