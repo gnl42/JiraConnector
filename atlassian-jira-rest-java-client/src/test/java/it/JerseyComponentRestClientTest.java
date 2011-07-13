@@ -254,6 +254,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		client.getComponentClient().removeComponent(bc.getSelf(), component.getSelf(), pm);
 		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf(), pm));
 
+		// smelly error code/message returned here - JRA-25062
 		setAnonymousMode();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
 			@Override
@@ -269,6 +270,15 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 			@Override
 			public void run() {
 				client.getComponentClient().getComponentRelatedIssuesCount(restrictedComponent.getSelf(), pm);
+			}
+		});
+
+		setAdmin();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The component with id " + TestUtil.getLastPathSegment(restrictedComponent.getSelf())
+				+ "999 does not exist.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponentRelatedIssuesCount(TestUtil.toUri(restrictedComponent.getSelf() + "999"), pm);
 			}
 		});
 
