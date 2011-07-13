@@ -235,6 +235,46 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 	}
 
 
+	@Test
+	public void testGetComponentRelatedIssuesCount() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
+		final BasicComponent bc = Iterables.find(client.getProjectClient().getProject("TST", pm).getComponents(), new Predicate<BasicComponent>() {
+			@Override
+			public boolean apply(BasicComponent input) {
+				return "Component A".equals(input.getName());
+			}
+		});
+		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf(), pm));
+		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
+		final Component component = client.getComponentClient().createComponent("TST", componentInput, pm);
+		assertEquals(0, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf(), pm));
+
+		client.getComponentClient().removeComponent(bc.getSelf(), component.getSelf(), pm);
+		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf(), pm));
+
+		setAnonymousMode();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf(), pm);
+			}
+		});
+
+		setAdmin();
+		final BasicComponent restrictedComponent = Iterables.getOnlyElement(client.getProjectClient().getProject("RST", pm).getComponents());
+		setUser1();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user wseliga does not have permission to complete this operation.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().getComponentRelatedIssuesCount(restrictedComponent.getSelf(), pm);
+			}
+		});
+
+	}
+
+
 	private void assertProjectHasComponents(String ...names) {
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getComponents(), new Function<BasicComponent, String>() {
 			@Override
