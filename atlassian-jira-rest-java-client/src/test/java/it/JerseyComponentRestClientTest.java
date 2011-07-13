@@ -162,7 +162,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		});
 
 		// now let's try to add a component for a non existing project
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'FAKE'", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'FAKE'.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().createComponent("FAKE", componentInput, pm);
@@ -200,6 +200,37 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 	@Test
 	public void testUpdateComponent() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
+		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
+		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
+		final String newName = basicComponent.getName() + "updated";
+		Component adjustedComponent = new Component(component.getSelf(), newName, component.getDescription(), component.getLead(), component.getAssigneeInfo());
+
+		Component updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(newName, null, null, null), pm);
+		assertEquals(adjustedComponent, updatedComponent);
+		assertEquals(adjustedComponent, client.getComponentClient().getComponent(basicComponent.getSelf(), pm));
+
+		final String newDescription = "updated description";
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1, component.getAssigneeInfo());
+		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), null), pm);
+		assertEquals(adjustedComponent, updatedComponent);
+
+		final Component.AssigneeInfo ai = component.getAssigneeInfo();
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER1, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1, AssigneeType.COMPONENT_LEAD, true));
+
+		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), AssigneeType.COMPONENT_LEAD), pm);
+		assertEquals(adjustedComponent, updatedComponent);
+
+
+		// now with non-assignable assignee (thus we are inheriting assignee from project settings and component-level settings are ignored)
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER2,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER2, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN, AssigneeType.PROJECT_DEFAULT, false));
+
+		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER2.getName(), AssigneeType.COMPONENT_LEAD), pm);
+		assertEquals(adjustedComponent, updatedComponent);
 
 	}
 

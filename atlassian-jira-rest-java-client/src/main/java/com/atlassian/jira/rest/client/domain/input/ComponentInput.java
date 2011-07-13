@@ -35,7 +35,7 @@ public class ComponentInput {
 	@Nullable
 	private final AssigneeType assigneeType;
 
-	public ComponentInput(String name, String description, String leadUsername, AssigneeType assigneeType) {
+	public ComponentInput(@Nullable String name, @Nullable String description, @Nullable String leadUsername, @Nullable AssigneeType assigneeType) {
 		this.name = name;
 		this.description = description;
 		this.leadUsername = leadUsername;

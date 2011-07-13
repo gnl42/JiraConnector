@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.ComponentRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
-import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWIthProjectKey;
+import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import com.atlassian.jira.rest.client.internal.json.ComponentJsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -51,14 +51,16 @@ public class JerseyComponentRestClient extends AbstractJerseyRestClient implemen
 
 	@Override
 	public Component createComponent(String projectKey, ComponentInput componentInput, ProgressMonitor progressMonitor) {
-		final ComponentInputWIthProjectKey helper = new ComponentInputWIthProjectKey(projectKey, componentInput);
+		final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(projectKey, componentInput);
 		return postAndParse(componentUri, InputGeneratorCallable.create(new ComponentInputWithProjectKeyJsonGenerator(), helper),
 				new ComponentJsonParser(), progressMonitor);
 	}
 
 	@Override
 	public Component updateComponent(URI componentUri, ComponentInput componentInput, ProgressMonitor progressMonitor) {
-		return null;
+		final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(null, componentInput);
+		return putAndParse(componentUri, InputGeneratorCallable.create(new ComponentInputWithProjectKeyJsonGenerator(), helper),
+				new ComponentJsonParser(), progressMonitor);
 	}
 
 	@Override

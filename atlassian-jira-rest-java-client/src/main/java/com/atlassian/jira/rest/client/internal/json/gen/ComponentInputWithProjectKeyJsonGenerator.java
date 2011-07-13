@@ -19,14 +19,14 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.internal.domain.AssigneeTypeConstants;
-import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWIthProjectKey;
+import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWIthProjectKey> {
+public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWithProjectKey> {
 
 	@Override
-	public JSONObject generate(ComponentInputWIthProjectKey componentInput) throws JSONException {
+	public JSONObject generate(ComponentInputWithProjectKey componentInput) throws JSONException {
 		JSONObject res = new JSONObject();
 		if (componentInput.getProjectKey() != null) {
 			res.put("project", componentInput.getProjectKey());

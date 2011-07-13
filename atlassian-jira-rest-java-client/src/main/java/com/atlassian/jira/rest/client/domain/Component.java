@@ -137,8 +137,7 @@ public class Component extends BasicComponent {
 		public boolean equals(Object obj) {
 			if (obj instanceof AssigneeInfo) {
 				AssigneeInfo that = (AssigneeInfo) obj;
-				return super.equals(obj)
-						&& Objects.equal(this.assignee, that.assignee)
+				return Objects.equal(this.assignee, that.assignee)
 						&& Objects.equal(this.assigneeType, that.assigneeType)
 						&& Objects.equal(this.realAssignee, that.realAssignee)
 						&& Objects.equal(this.realAssigneeType, that.realAssigneeType)

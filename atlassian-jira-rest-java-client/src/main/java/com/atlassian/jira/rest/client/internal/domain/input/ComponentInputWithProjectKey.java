@@ -19,19 +19,21 @@ package com.atlassian.jira.rest.client.internal.domain.input;
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 
+import javax.annotation.Nullable;
+
 /*
  * JIRA REST API awfully treats components as top level resources and require users to additionally provide project key;
  * JRJC tries to hide this ugliness but at least requiring to specify project key separately
  */
-public class ComponentInputWIthProjectKey extends ComponentInput {
+public class ComponentInputWithProjectKey extends ComponentInput {
 	private final String projectKey;
 
-	public ComponentInputWIthProjectKey(String projectKey, String name, String description, String leadUsername, AssigneeType assigneeType) {
+	public ComponentInputWithProjectKey(@Nullable String projectKey, String name, String description, String leadUsername, AssigneeType assigneeType) {
 		super(name, description, leadUsername, assigneeType);
 		this.projectKey = projectKey;
 	}
 
-	public ComponentInputWIthProjectKey(String projectKey, ComponentInput componentInput) {
+	public ComponentInputWithProjectKey(@Nullable String projectKey, ComponentInput componentInput) {
 		this(projectKey, componentInput.getName(), componentInput.getDescription(), componentInput.getLeadUsername(),
 				componentInput.getAssigneeType());
 	}
