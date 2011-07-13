@@ -52,7 +52,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 	@Test
 	public void testGetInvalidComponent() throws Exception {
-		final BasicComponent basicComponent = Iterables.getOnlyElement(client.getProjectClient().getProject("TST", pm).getComponents());
+		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
 		final String uriForUnexistingComponent = basicComponent.getSelf().toString() + "1234";
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND,  "The component with id "
 				+ TestUtil.getLastPathSegment(basicComponent.getSelf()) + "1234 does not exist.", new Runnable() {
@@ -110,9 +110,67 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		client.getComponentClient().removeComponent(component.getSelf(), null, pm);
 		assertProjectHasComponents();
 
+	}
+
+	@Test
+	public void testCreateAndRemoveComponentAsUnauthorizedUsers() {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
+		final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST", pm).getComponents();
+		assertEquals(2, Iterables.size(components));
+		final BasicComponent basicComponent = Iterables.get(components, 0);
+		final BasicComponent basicComponent2 = Iterables.get(components, 1);
+
+		final ComponentInput componentInput = new ComponentInput("my component", "a description", null, null);
 		setUser1();
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "The user wseliga does not have permission to complete this operation.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().removeComponent(basicComponent.getSelf(), null, pm);
+			}
+		});
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You cannot edit the configuration of this project.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().createComponent("TST", componentInput, pm);
+			}
+		});
+
+		setAnonymousMode();
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().removeComponent(basicComponent.getSelf(), null, pm);
+			}
+		});
+		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You cannot edit the configuration of this project.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().createComponent("TST", componentInput, pm);
+			}
+		});
+
+		setAdmin();
+		// now let's try to add a component with colliding name
+		final ComponentInput dupeComponentInput = new ComponentInput(basicComponent.getName(), "a description", null, null);
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A component with the name Component A already exists in this project.", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().createComponent("TST", dupeComponentInput, pm);
+			}
+		});
+
+		// now let's try to add a component for a non existing project
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'FAKE'", new Runnable() {
+			@Override
+			public void run() {
+				client.getComponentClient().createComponent("FAKE", componentInput, pm);
+			}
+		});
 
 	}
+
 
 	@SuppressWarnings({"ConstantConditions"})
 	@Test
@@ -137,6 +195,12 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		assertFalse(component2.getAssigneeInfo().isAssigneeTypeValid());
 		assertEquals(IntegrationTestUtil.USER_ADMIN, component2.getAssigneeInfo().getRealAssignee());
 		assertEquals(AssigneeType.PROJECT_DEFAULT, component2.getAssigneeInfo().getRealAssigneeType());
+	}
+
+
+	@Test
+	public void testUpdateComponent() {
+
 	}
 
 
