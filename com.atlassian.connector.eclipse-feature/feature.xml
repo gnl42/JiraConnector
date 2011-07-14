@@ -54,8 +54,8 @@
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.mylyn.tasks.core"/>
       <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
-      <import plugin="org.mortbay.jetty.server" match="compatible"/>
-      <import plugin="org.mortbay.jetty.util" match="compatible"/>
+      <import plugin="org.mortbay.jetty.server"/>
+      <import plugin="org.mortbay.jetty.util"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.jasper"/>
       <import plugin="javax.servlet.jsp"/>
