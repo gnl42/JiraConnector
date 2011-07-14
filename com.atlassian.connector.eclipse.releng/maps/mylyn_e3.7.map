@@ -84,7 +84,7 @@ plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../../mylyn/e_3
 !plugin@org.eclipse.mylyn.xplanner.ui=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.ui
 
 plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tests.util
-plugin@org.eclipse.mylyn.commons.tests=@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
 plugin@org.eclipse.mylyn.tests=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn, org.eclipse.mylyn.tests
 plugin@org.eclipse.mylyn.bugzilla.tests=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.tasks, org.eclipse.mylyn.bugzilla.tests
 plugin@org.eclipse.mylyn.context.tests=COPY,@buildDirectory@/../../../../mylyn/e_3_7_m_3_6_x/org.eclipse.mylyn.context, org.eclipse.mylyn.context.tests
