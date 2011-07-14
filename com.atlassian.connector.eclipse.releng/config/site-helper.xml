@@ -75,10 +75,11 @@
 		</fileset>
 
 		<!-- org.mortbay.jetty -->
-		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
+<!--		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
 			<include name="org.mortbay.jetty*.jar"/>
 			<include name="javax.servlet*.jar"/>
 		</fileset>
+-->
 		
 		<!-- rome -->
 		<fileset dir="${buildDirectory}/plugins" id="com.sun.syndication">

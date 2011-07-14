@@ -5,12 +5,7 @@ Bundle-SymbolicName: com.atlassian.connector.commons.tests.dependencies;singleto
 Bundle-Version: 0.5.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit,
- org.mortbay.jetty.server;bundle-version="[6.1.15,7.0.0)",
- org.mortbay.jetty.util;bundle-version="[6.1.15,7.0.0)"
-Import-Package: org.mortbay.jetty;version="[6.1.15,7.0.0)",
- org.mortbay.jetty.bio;version="[6.1.15,7.0.0)",
- org.mortbay.jetty.servlet;version="[6.1.15,7.0.0)"
+Require-Bundle: org.junit
 Export-Package: com.gargoylesoftware.htmlunit,
  com.gargoylesoftware.htmlunit.html,
  com.gargoylesoftware.htmlunit.html.xpath,
@@ -153,6 +148,8 @@ Bundle-ClassPath: lib/commons-collections-3.2.jar,
  lib/ddsteps-httpserver-mock-1.0-m1.jar,
  lib/easymock.jar,
  lib/htmlunit-1.13.jar,
+ lib/jetty-6.1.10.jar,
+ lib/jetty-util-6.1.10.jar,
  lib/js-1.6R5.jar,
  lib/junit-addons-1.4.jar,
  lib/mockito-all-1.6.jar,
