@@ -1,6 +1,7 @@
 <project name="Build specific targets and properties" default="noDefault">
 
 	<import file="site-helper.xml" />
+	<echo message="Build directory is set to ${buildDirectory}" />
 
 	<!-- ===================================================================== -->
 	<!-- Run a given ${target} on all elements being built -->

@@ -29,7 +29,7 @@ Import-Package: javax.servlet,
  javax.servlet.http,
  org.mortbay.component,
  org.mortbay.jetty;version="[6.1.15,7.0.0)",
- org.mortbay.jetty.bio,
+ org.mortbay.jetty.bio;version="[6.1.15,7.0.0)",
  org.mortbay.jetty.servlet;version="[6.1.15,7.0.0)"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.directclickthrough.servlet;x-internal:=true,
