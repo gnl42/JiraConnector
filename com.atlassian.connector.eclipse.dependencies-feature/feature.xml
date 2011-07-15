@@ -45,6 +45,8 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jdt.compiler.tool"/>
+      <import plugin="org.eclipse.jdt.compiler.apt"/>
       
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import feature="org.eclipse.mylyn.commons" version="3.3.0" match="compatible"/>
