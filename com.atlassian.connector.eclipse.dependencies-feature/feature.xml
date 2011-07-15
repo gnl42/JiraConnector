@@ -54,6 +54,8 @@
       <import plugin="org.eclipse.mylyn.commons.xmlrpc" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.identity" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.repositories" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.discovery.core" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.discovery.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.ui" version="3.3.0" match="compatible"/>
@@ -216,6 +218,20 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.mylyn.discovery.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.mylyn.discovery.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>      
 
    <plugin
          id="org.eclipse.mylyn.monitor.ui"
