@@ -113,7 +113,7 @@
 			<fileset refid="org.apache.xmlrpc" />
 			<fileset refid="org.jdom" />
 			<fileset refid="org.joda.time" />
-			<fileset refid="org.mortbay.jetty" />
+<!--			<fileset refid="org.mortbay.jetty" /> -->
 			<fileset refid="com.sun.syndication" />
 			<fileset refid="com.thoughtworks.xstream" />
 			<fileset refid="com.perforce.p4java" />
