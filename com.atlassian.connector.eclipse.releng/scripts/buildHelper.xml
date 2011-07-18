@@ -420,6 +420,8 @@
 	</target>
 
 	<target name="report-helper" depends="report-helper-init,pre-report">
+		<echo message="Base dir (basedir) is set to ${basedir}" />
+		<echo message="Results home (results.home) is set to ${results.home}" />
 		<xslt style="${basedir}/scripts/JUNIT.XSL" basedir="${results.home}" includes="org*.xml" destdir="${results.home}" />
 
 		<antcall target="performance-report-helper" />
