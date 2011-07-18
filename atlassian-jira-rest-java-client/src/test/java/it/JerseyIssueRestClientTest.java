@@ -25,6 +25,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Votes;
@@ -86,6 +87,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(1, watchers.getNumWatchers());
 		assertFalse(watchers.isWatching());
 		assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
+		// to save time
+		assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
 	}
 
 
@@ -99,6 +102,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		assertEquals(3, Iterables.size(issue.getComments()));
 		assertThat(issue.getExpandos(), IterableMatcher.hasOnlyElements("html"));
+		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
 
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));

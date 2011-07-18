@@ -33,12 +33,11 @@ import java.util.Collection;
 public class Issue extends BasicIssue implements ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
-				 @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
-				 @Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
-				 Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
-				 Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
-				 BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos
-	) {
+			@Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
+			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
+			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
+			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos) {
 		super(self, key);
         this.summary = summary;
 		this.project = project;
@@ -62,6 +61,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.affectedVersions = affectedVersions;
 		this.components = components;
 		this.priority = priority;
+		this.timeTracking = timeTracking;
 	}
 
 	private final BasicStatus status;
@@ -95,6 +95,9 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 	private final Collection<Worklog> worklogs;
 	private final BasicWatchers watchers;
+
+	@Nullable
+	private final TimeTracking timeTracking;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -250,6 +253,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return updateDate;
 	}
 
+	@Nullable
+	public TimeTracking getTimeTracking() {
+		return timeTracking;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).addValue(super.toString()).
@@ -273,6 +281,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("votes", votes).addValue("\n").
 				add("worklogs", worklogs).addValue("\n").
 				add("watchers", watchers).
+				add("timeTracking", timeTracking).
 				toString();
 	}
 }

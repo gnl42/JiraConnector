@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,17 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
-    private final JsonParser<T> jsonParser;
+public class TimeTrackingJsonParser implements JsonParser<TimeTracking> {
+	@Override
+	public TimeTracking parse(JSONObject json) throws JSONException {
+		final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "timeoriginalestimate");
+		final int timeRemainingMinutes = json.getInt("timeestimate");
+		final Integer timeSpentMinutes = JsonParseUtil.parseOptionInteger(json, "timespent");
+		return new TimeTracking(originalEstimateMinutes, timeRemainingMinutes, timeSpentMinutes);
+	}
 
-    public JsonWeakParserForJsonObject(JsonParser<T> jsonParser) {
-        this.jsonParser = jsonParser;
-    }
-
-    private <T> T convert(Object o, Class<T> clazz) throws JSONException {
-        try {
-            return clazz.cast(o);
-        } catch (ClassCastException e) {
-            throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
-        }
-    }
-    
-    @Override
-    public T parse(Object o) throws JSONException {
-        return jsonParser.parse(convert(o, JSONObject.class));
-    }
 }

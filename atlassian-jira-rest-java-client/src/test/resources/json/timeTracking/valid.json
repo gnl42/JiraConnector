@@ -1,0 +1,9 @@
+{
+	"name":"timetracking",
+	"type":"com.atlassian.jira.issue.fields.TimeTrackingSystemField",
+	"value":{
+		"timeoriginalestimate":1500,
+		"timeestimate":70,
+		"timespent":190
+	}
+}

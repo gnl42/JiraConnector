@@ -30,6 +30,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.base.Splitter;
@@ -163,10 +164,11 @@ public class IssueJsonParser implements JsonParser<Issue> {
         final Collection<Worklog> worklogs = parseOptionalArray(s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
 		final BasicWatchers watchers = getOptionalField(s, WATCHER_ATTR, watchersJsonParser);
+		final TimeTracking timeTracking = getOptionalField(s, "timetracking", new TimeTrackingJsonParser());
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, priority, 
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
-				components, fields, comments, transitionsUri, issueLinks, votes, worklogs, watchers, expandos
+				components, timeTracking, fields, comments, transitionsUri, issueLinks, votes, worklogs, watchers, expandos
 		);
 	}
 

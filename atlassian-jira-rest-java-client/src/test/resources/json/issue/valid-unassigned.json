@@ -8,15 +8,6 @@
          "type":"java.lang.String",
          "value":"My sample test"
       },
-      "timetracking":{
-         "name":"timetracking",
-         "type":"com.atlassian.jira.issue.fields.TimeTrackingSystemField",
-         "value":{
-            "timeoriginalestimate":0,
-            "timeestimate":0,
-            "timespent":190
-         }
-      },
       "issuetype":{
          "name":"issuetype",
          "type":"com.atlassian.jira.issue.issuetype.IssueType",

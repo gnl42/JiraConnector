@@ -25,6 +25,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.collect.Iterables;
@@ -83,6 +84,7 @@ public class IssueJsonParserTest {
 		assertFalse(watchers.isWatching());
 		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2/watchers"), watchers.getSelf());
 		assertEquals(1, watchers.getNumWatchers());
+		assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
 
 		// attachments
 		final Iterable<Attachment> attachments = issue.getAttachments();
@@ -143,6 +145,12 @@ public class IssueJsonParserTest {
 	public void testParseUnassignedIssue() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-unassigned.json");
 		assertNull(issue.getAssignee());
+	}
+
+	@Test
+	public void testParseNoTimeTrackingInfo() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-unassigned.json");
+		assertNull(issue.getTimeTracking());
 	}
 
 	@Test

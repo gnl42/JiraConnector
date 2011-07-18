@@ -211,4 +211,8 @@ public class JsonParseUtil {
 		}
 		return res;
 	}
+
+	public static Integer parseOptionInteger(JSONObject json, final String attributeName) throws JSONException {
+		return json.has(attributeName) ? json.getInt(attributeName) : null;
+	}
 }
