@@ -435,6 +435,11 @@
 		<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value="-Xms40m -Xmx256m" />
 
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
+
 		<echo message="Creating performance test report for ${version}.${qualifier} on Eclipse ${eclipse.sdk.version}" />
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="false" classname="org.eclipse.core.launcher.Main">
 			<classpath>
@@ -544,6 +549,11 @@
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
 		<property name="vmargs" value="-Xms40m -Xmx256m" />
 
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
+
 		<echo message="Checking version for ${update.feature}" />
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${output}">
 			<classpath>
@@ -571,6 +581,11 @@
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
 		<property name="vmargs" value="-Xms40m -Xmx256m" />
 		<property name="log" value="${build.results}/install-bundle-helper-install-um-${build.target}.log" />
+
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
 
 		<echo message="Installing ${update.feature} ${update.version} into ${eclipse.home}, log at ${log}" />
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
@@ -702,6 +717,15 @@
 		<exec executable="cat" failonerror="true">
 			<arg value="${prefs.file}" />
 		</exec>
+
+		<echo message="${tools.home}/basebuilder-${basebuilder.version}" />
+		<!-- ${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL -->
+		<copyfile src="${buildDirectory}/../../scripts/JUNIT.XSL" dest="${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL" />
+		
+		<copy todir="${build.results}/test-${build.target}">
+			<fileset dir="${eclipse.home}/results" />
+		</copy>
+
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
@@ -770,6 +794,12 @@
 
 		<echo message="Packing update site ${dir}" />
 		<echo message="Output is logged to ${log}" />
+
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
+
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
@@ -798,6 +828,11 @@
 		<property name="application" value="org.eclipse.equinox.p2.metadata.generator.EclipseGenerator" />
 		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.5}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m" />
+
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
 
 		<echo message="Generating P2 meta-data for ${dir}" />
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main">
@@ -843,6 +878,11 @@
 		<property name="pde.build.script" refid="pde.build.script.id" />
 		<property name="log" value="${build.results}/package-${build.target}.log" />
 
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
+
 		<echo message="Packaging ${version}.${qualifier} on Eclipse ${eclipse.sdk.version}" />
 		<echo message="Output is logged to ${log}" />
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main">
@@ -873,6 +913,11 @@
 		<property name="eclipse.sdk.version" value="${eclipse.sdk.3.4}" />
 		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m" />
+
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
 
 		<condition property="featureMessage" value="${featureId}" else="all features">
 			<isset property="featureId" />
@@ -905,6 +950,11 @@
 		<property name="application" value="org.eclipse.ant.core.antRunner" />
 		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx1024m" />
+
+		<echo message="Eclipse home is set to ${eclipse.home}" />
+		<echo message="Eclipse base is set to ${eclipse.base}" />
+		<echo message="Base dir is set to ${basedir}" />
+		<echo message="Build target is set to ${build.target}" />
 
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main">
 			<classpath>
