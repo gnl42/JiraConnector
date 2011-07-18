@@ -720,7 +720,7 @@
 
 		<echo message="${tools.home}/basebuilder-${basebuilder.version}" />
 		<!-- ${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL -->
-		<copyfile src="${buildDirectory}/../../scripts/JUNIT.XSL" dest="${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL" />
+		<copy file="${buildDirectory}/../scripts/JUNIT.XSL" tofile="${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL" />
 		
 		<copy todir="${build.results}/test-${build.target}">
 			<fileset dir="${eclipse.home}/results" />
