@@ -723,10 +723,6 @@
 		<!-- ${eclipse-home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL -->
 		<mkdir dir="${eclipse.home}/dropins/eclipse/plugins/org.eclipse.test" />
 		<copy file="${buildDirectory}/../scripts/JUNIT.XSL" tofile="${eclipse.home}/dropins/eclipse/plugins/org.eclipse.test/JUNIT.XSL" verbose="true" failonerror="true"/>
-		
-		<copy todir="${build.results}/test-${build.target}">
-			<fileset dir="${eclipse.home}/results" />
-		</copy>
 
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
