@@ -908,7 +908,7 @@
 
 		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
-		<property name="eclipse.sdk.version" value="${eclipse.sdk.3.4}" />
+		<property name="eclipse.sdk.version" value="${eclipse.sdk.3.7}" />
 		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m" />
 
