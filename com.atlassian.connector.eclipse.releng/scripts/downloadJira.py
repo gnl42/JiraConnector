@@ -7,10 +7,10 @@ import re
 import glob
 import shutil
 
-jira_version = "4.2-SNAPSHOT"
+jira_version = "4.4-SNAPSHOT"
 
 def download(user, password):
-	p1 = Popen(shlex.split("wget -q -O - --http-user=%s --http-password=%s https://maven.atlassian.com/content/groups/internal/com/atlassian/jira/atlassian-jira-standalone/%s/maven-metadata.xml" % (user, password, jira_version)), stdout=PIPE)
+	p1 = Popen(shlex.split("wget -q -O - --http-user=%s --http-password=%s https://maven.atlassian.com/content/groups/internal/com/atlassian/jira/jira-standalone-distribution/%s/maven-metadata.xml" % (user, password, jira_version)), stdout=PIPE)
 	output = p1.communicate()[0]
 	m = re.search("<timestamp>(.*)</timestamp>", output)
 	timestamp = m.group(1)
@@ -18,14 +18,18 @@ def download(user, password):
 	m = re.search("<buildNumber>(.*)</buildNumber>", output)
 	buildNo = m.group(1)
 
-	fn = "atlassian-jira-standalone-4.2-%s-%s.tgz" % (timestamp, buildNo)
+	fn = "jira-standalone-distribution-4.4-%s-%s-standalone.tar.gz" % (timestamp, buildNo)
 
 	try:
 		os.unlink(fn)
 	except OSError:
 		pass
 
-	p1 = Popen(shlex.split("wget -q --http-user=%s --http-password=%s https://maven.atlassian.com/content/groups/internal/com/atlassian/jira/atlassian-jira-standalone/%s/%s" % (user, password, jira_version, fn)))
+	url = "https://maven.atlassian.com/content/groups/internal/com/atlassian/jira/jira-standalone-distribution/%s/%s" % (jira_version, fn)
+
+	print "Downloading JIRA from", url
+
+	p1 = Popen(shlex.split("wget -q --http-user=%s --http-password=%s %s" % (user, password, url)))
 	p1.wait()
 
 	return fn
@@ -39,7 +43,7 @@ def downloadSoap(user, password):
 	m = re.search("<buildNumber>(.*)</buildNumber>", output)
 	buildNo = m.group(1)
 
-	fn = "atlassian-jira-rpc-plugin-4.2-%s-%s.jar" % (timestamp, buildNo)
+	fn = "atlassian-jira-rpc-plugin-4.4-%s-%s.jar" % (timestamp, buildNo)
 
 	try:
 		os.unlink(fn)
@@ -101,15 +105,16 @@ if __name__ == "__main__":
 		os.environ['JAVA_HOME'] = '/opt/java/sdk/current/' 
 
 	fn = download(*sys.argv[1:3])
-	dir = "atlassian-jira-enterprise-%s-standalone" % (jira_version)
+#	dir = "atlassian-jira-enterprise-%s-standalone" % (jira_version)
+	dir = "atlassian-jira-%s-standalone" % (jira_version)
 	rpc = downloadSoap(*sys.argv[1:3])
 	shutdown(dir)
 	unpack(fn)
 	configure(dir)
 	for old_rpc in glob.glob("%s/atlassian-jira/WEB-INF/lib/atlassian-jira-rpc-plugin*" % (dir)):
 		try:
-			os.unlink()
-		except Error, e:
+			os.unlink(old_rpc)
+		except OSError:
 			pass
 	
 	shutil.copy(rpc, "%s/atlassian-jira/WEB-INF/lib/" % (dir))	
