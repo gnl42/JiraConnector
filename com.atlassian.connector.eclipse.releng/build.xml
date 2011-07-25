@@ -68,6 +68,11 @@
 
 		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
 
+		<!-- todo remove -->
+		<antcall target="mirror-helper">
+			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin" />
+		</antcall>
+
 		<antcall target="mirror-helper">
 			<param name="from" value="${mylyn.site}" />
 			<param name="to" value="${build.site}" />
@@ -235,7 +240,7 @@
 		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
 		<property name="to" value="${build.home}/mirror/e3.7" />
 		<mkdir dir="${to}" />
-		
+
 		<antcall target="mirror-helper">
 			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin" />
 		</antcall>
