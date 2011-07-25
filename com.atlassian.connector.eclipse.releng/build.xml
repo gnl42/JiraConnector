@@ -6,7 +6,7 @@
 	<property file="custom.properties" />
 	<property file="scripts/defaults-all.properties" />
 	<import file="scripts/buildHelper.xml" />
-	
+
 	<target name="all" depends="clean,build,tests">
 	</target>
 
@@ -17,213 +17,227 @@
 		<!-- only keep mylyn map that corresponds to current target -->
 		<delete>
 			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map">
-				<exclude name="*${build.target}.map"/>
+				<exclude name="*${build.target}.map" />
 			</fileset>
 		</delete>
 
-		<antcall target="pre-build-release"/>
+		<antcall target="pre-build-release" />
 	</target>
 
 	<target name="pre-build-release" if="build.release">
 		<!-- build against release version of Mylyn -->
 		<delete>
-			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map"/>
+			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map" />
 		</delete>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.commons"/>
-			<param name="update.site" value="${mylyn.site}"/>
+			<param name="update.feature" value="org.eclipse.mylyn.commons" />
+			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn_feature"/>
-			<param name="update.site" value="${mylyn.site}"/>
+			<param name="update.feature" value="org.eclipse.mylyn_feature" />
+			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.wikitext_feature"/>
-			<param name="update.site" value="${mylyn.site}"/>
+			<param name="update.feature" value="org.eclipse.mylyn.wikitext_feature" />
+			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.sdk_feature"/>
-			<param name="update.site" value="${mylyn.site}"/>
+			<param name="update.feature" value="org.eclipse.mylyn.sdk_feature" />
+			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 	</target>
-	
+
 	<target name="pack" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
-		<antcall target="init-3.5"/>
-		
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
+
 		<antcall target="for-each-target">
-			<param name="call" value="pack-sites"/>
+			<param name="call" value="pack-sites" />
 		</antcall>
 	</target>
-	
+
 	<target name="pack-sites" depends="init">
-		<property name="build.site" value="${build.home}/${build.target}/site"/>
-		<property name="publish.name" value="e${build.target}"/>
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
-			
+		<property name="build.site" value="${build.home}/${build.target}/site" />
+		<property name="publish.name" value="e${build.target}" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+
 		<antcall target="pack-helper">
-			<param name="dir" value="${build.site}"/>
+			<param name="dir" value="${build.site}" />
 		</antcall>
 
-		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
+		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
 
 		<antcall target="mirror-helper">
-			<param name="from" value="${mylyn.site}"/>
-			<param name="to" value="${build.site}"/>
+			<param name="from" value="${mylyn.site}" />
+			<param name="to" value="${build.site}" />
 		</antcall>
 
-		<fail message="Required property build.public.host is not set" unless="build.public.host"/>
+		<fail message="Required property build.public.host is not set" unless="build.public.host" />
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml">
-			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
+			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}" />
 		</xslt>
-			
-		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
 
-		<copy file="associates-e3.5.xml" todir="${build.site}"/>
+		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml" />
 
-		<zip destfile="${build.site}/../e${build.target}-site-all.zip" basedir="${build.site}"/>
+		<!-- <copy file="associates-e3.5.xml" todir="${build.site}" /> -->
+		<copy file="associates-e3.7.xml" todir="${build.site}" />
+
+		<zip destfile="${build.site}/../e${build.target}-site-all.zip" basedir="${build.site}" />
 	</target>
 
 	<target name="generate-metadata-common" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
-		<antcall target="init-3.5"/>
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
 
 		<!-- create generic site without associate sites -->
-		<property name="site.common.dir" value="${build.home}/3.5/site"/>
+		<property name="site.common.dir" value="${build.home}/3.7/site" />
 		<copy todir="${build.home}/site">
-			<fileset dir="${site.common.dir}"/>
+			<fileset dir="${site.common.dir}" />
 		</copy>
 		<antcall target="generate-metadata-helper">
-			<param name="dir" value="${build.home}/site"/>
-			<param name="name" value="${build.publish.name}"/>
+			<param name="dir" value="${build.home}/site" />
+			<param name="name" value="${build.publish.name}" />
 		</antcall>
 	</target>
-		
+
 	<target name="generate-metadata" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
-		<antcall target="init-3.5"/>
-		
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
+
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
-			<param name="call" value="generate-metadata-sites"/>
-		</antcall>		
+			<param name="call" value="generate-metadata-sites" />
+		</antcall>
 	</target>
-	
-	<target name="generate-metadata-sites" depends="init">
-  	    <condition property="build.publish.location" value="-e33" else="-e3x"><equals arg1="${build.target}" arg2="3.3"/></condition>
-  	    <condition property="build.publish.name.suffix" value="3.3" else="3.4 and 3.5"><equals arg1="${build.target}" arg2="3.3"/></condition>
 
-		<property name="site.dir" value="${build.home}/${build.target}/site"/>
+	<target name="generate-metadata-sites" depends="init">
+		<condition property="build.publish.location" value="-e33" else="-e3x">
+			<equals arg1="${build.target}" arg2="3.3" />
+		</condition>
+		<condition property="build.publish.name.suffix" value="3.3" else="3.7">
+			<equals arg1="${build.target}" arg2="3.3" />
+		</condition>
+
+		<property name="site.dir" value="${build.home}/${build.target}/site" />
 		<replace file="${site.dir}/site.xml" token="&lt;site pack200=&quot;true&quot;&gt;" value="&lt;site pack200=&quot;true&quot; associateSitesURL=&quot;${atlassian.site}/${build.publish.postfix}/e${build.target}/associates-${build.publish.postfix}e${build.target}.xml&quot;&gt;">
 		</replace>
 
-		<copy file="associates-${build.publish.postfix}e${build.target}.xml" todir="${site.dir}"/>
-		
+		<copy file="associates-${build.publish.postfix}e${build.target}.xml" todir="${site.dir}" />
+
 		<antcall target="generate-metadata-helper">
-			<param name="dir" value="${site.dir}"/>
-			<param name="name" value="${build.publish.name} ${build.publish.name.suffix}"/>
+			<param name="dir" value="${site.dir}" />
+			<param name="name" value="${build.publish.name} ${build.publish.name.suffix}" />
 		</antcall>
 	</target>
 
 	<target name="publish" depends="init">
-		<antcall target="init-3.5"/>
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
 
-		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
-		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
-		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
+		<fail message="Required property build.publish.user is not set" unless="build.publish.user" />
+		<fail message="Required property build.publish.host is not set" unless="build.publish.host" />
+		<fail message="Required property build.publish.path is not set" unless="build.publish.path" />
 		<antcall target="for-each-target">
-			<param name="call" value="publish-helper"/>
+			<param name="call" value="publish-helper" />
 		</antcall>
 	</target>
 
 	<target name="publish-helper">
 		<!-- jakarta slide downloaded from http://archive.apache.org/dist/jakarta/slide/source/ -->
 		<path id="slide.classpath">
-			<pathelement location="${basedir}/lib/jakarta-slide-ant-webdav-2.1.jar"/>
-			<pathelement location="${basedir}/lib/jakarta-slide-webdavlib-2.1.jar"/>
-			<pathelement location="${basedir}/lib/commons-httpclient.jar"/>
-			<pathelement location="${basedir}/lib/commons-logging.jar"/>
+			<pathelement location="${basedir}/lib/jakarta-slide-ant-webdav-2.1.jar" />
+			<pathelement location="${basedir}/lib/jakarta-slide-webdavlib-2.1.jar" />
+			<pathelement location="${basedir}/lib/commons-httpclient.jar" />
+			<pathelement location="${basedir}/lib/commons-logging.jar" />
 		</path>
 
-		<taskdef name="davput" classname="org.apache.webdav.ant.taskdefs.Put" classpathref="slide.classpath"/> 
-		<taskdef name="davget" classname="org.apache.webdav.ant.taskdefs.Get" classpathref="slide.classpath"/>
-		<taskdef name="lock"   classname="org.apache.webdav.ant.taskdefs.Lock" classpathref="slide.classpath"/>
-		<taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock" classpathref="slide.classpath"/>
-		<taskdef name="mkcol"  classname="org.apache.webdav.ant.taskdefs.Mkcol" classpathref="slide.classpath"/>
-		<taskdef name="davdelete" classname="org.apache.webdav.ant.taskdefs.Delete" classpathref="slide.classpath"/>
-		<taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch" classpathref="slide.classpath"/>
-		<taskdef name="davcopy" classname="org.apache.webdav.ant.taskdefs.Copy" classpathref="slide.classpath"/>
-		<taskdef name="davmove" classname="org.apache.webdav.ant.taskdefs.Move" classpathref="slide.classpath"/>
-		
+		<taskdef name="davput" classname="org.apache.webdav.ant.taskdefs.Put" classpathref="slide.classpath" />
+		<taskdef name="davget" classname="org.apache.webdav.ant.taskdefs.Get" classpathref="slide.classpath" />
+		<taskdef name="lock" classname="org.apache.webdav.ant.taskdefs.Lock" classpathref="slide.classpath" />
+		<taskdef name="unlock" classname="org.apache.webdav.ant.taskdefs.Unlock" classpathref="slide.classpath" />
+		<taskdef name="mkcol" classname="org.apache.webdav.ant.taskdefs.Mkcol" classpathref="slide.classpath" />
+		<taskdef name="davdelete" classname="org.apache.webdav.ant.taskdefs.Delete" classpathref="slide.classpath" />
+		<taskdef name="proppatch" classname="org.apache.webdav.ant.taskdefs.Proppatch" classpathref="slide.classpath" />
+		<taskdef name="davcopy" classname="org.apache.webdav.ant.taskdefs.Copy" classpathref="slide.classpath" />
+		<taskdef name="davmove" classname="org.apache.webdav.ant.taskdefs.Move" classpathref="slide.classpath" />
+
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
-		<property name="publish.name" value="e${build.target}"/>
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
-	
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
-				
+		<property name="publish.name" value="e${build.target}" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
-			<fileset dir="${build.home}/${build.target}/site/"/>
+			<fileset dir="${build.home}/${build.target}/site/" />
 		</davput>
 
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
-			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip"/>
+			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip" />
 		</davput>
-		
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
-		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"
-			destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" />
-			
+
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" />
+
 		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}"/-->
-		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true"
-			destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip"/>
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
+		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" />
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 
-		<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true"
-			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip"/>
+		<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />
 
-		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"/>
+		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}"
-			destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />
+		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />
 	</target>
 
 	<target name="init-3.3">
 		<antcall target="get-build-dependencies-helper">
-			<param name="build.target" value="3.3"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.3}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.3}"/>
+			<param name="build.target" value="3.3" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.3}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.3}" />
 		</antcall>
 	</target>
 
 	<target name="init-3.4">
 		<antcall target="get-build-dependencies-helper">
-			<param name="build.target" value="3.4"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
+			<param name="build.target" value="3.4" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}" />
 		</antcall>
 	</target>
 
 	<target name="init-3.5">
 		<antcall target="get-build-dependencies-helper">
-			<param name="build.target" value="3.5"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}"/>
+			<param name="build.target" value="3.5" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}" />
+		</antcall>
+	</target>
+
+	<target name="init-3.7">
+		<antcall target="get-build-dependencies-helper">
+			<param name="build.target" value="3.7" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.7}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.7}" />
 		</antcall>
 	</target>
 
 	<target name="mirror">
-		<antcall target="init-3.5"/>
-		
-		<property name="publish.name" value="e${build.target}"/>
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/"/>
-				
-		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
-		<property name="to" value="${build.home}/mirror/e3.5"/>
-		<mkdir dir="${to}"/>
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
+
+		<property name="publish.name" value="e${build.target}" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+
+		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
+		<property name="to" value="${build.home}/mirror/e3.7" />
+		<mkdir dir="${to}" />
 
 		<antcall target="mirror-helper">
-			<param name="from" value="${mylyn.site}"/>
+			<param name="from" value="${mylyn.site}" />
 		</antcall>
 		<!--antcall target="mirror-helper">
 			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
@@ -248,56 +262,58 @@
 		</antcall>
 		-->
 		<antcall target="mirror-helper">
-			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin"/>
+			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin" />
 		</antcall>
-		
-		<fail message="Required property build.public.host is not set" unless="build.public.host"/>
-		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml">
-			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}"/>
-		</xslt>
-		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
 
-		<copy file="associates-e3.5.xml" todir="${to}"/>
-		
+		<fail message="Required property build.public.host is not set" unless="build.public.host" />
+		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml">
+			<param name="siteUrl" expression="${build.public.host}/${publish.path}/${publish.name}" />
+		</xslt>
+		<move file="${to}/mirror.xml" tofile="${to}/site.xml" />
+
+		<!-- <copy file="associates-e3.5.xml" todir="${to}" /> -->
+		<copy file="associates-e3.7.xml" todir="${to}" />
+
 		<antcall target="generate-metadata-helper">
-			<param name="dir" value="${to}"/>
-			<param name="name" value="${build.publish.name} 3.4 and 3.5"/>
+			<param name="dir" value="${to}" />
+			<param name="name" value="${build.publish.name} 3.7" />
 		</antcall>
 	</target>
 
 	<target name="generate-clover-report" depends="init">
 		<antcall target="for-each-target">
-			<param name="call" value="clover-report-helper"/>
+			<param name="call" value="clover-report-helper" />
 		</antcall>
 	</target>
 
 
 	<target name="clover-report-helper">
-		
-			<!-- Set up Clover location and instrumentation path -->
-			<taskdef resource="cloverlib.xml" classpath="${basedir}/lib/clover.jar"/>
-		
-			<!-- 
+
+		<!-- Set up Clover location and instrumentation path -->
+		<taskdef resource="cloverlib.xml" classpath="${basedir}/lib/clover.jar" />
+
+		<!-- 
 				Produce coverage analysis docs using Clover 
 			-->
-			<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
-		       <current outfile="${build.home}/${build.target}/clover.xml">
-		          <format type="xml"/>
-		       </current>
-			</clover-report>
 		<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
-	       <current outfile="${build.home}/${build.target}/clover-html-report">
-	          <format type="html"/>
-	       </current>
+			<current outfile="${build.home}/${build.target}/clover.xml">
+				<format type="xml" />
+			</current>
 		</clover-report>
-		</target>	
+		<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
+			<current outfile="${build.home}/${build.target}/clover-html-report">
+				<format type="html" />
+			</current>
+		</clover-report>
+	</target>
 
 	<target name="composite">
-		<antcall target="init-3.5"/>
+		<!-- <antcall target="init-3.5" /> -->
+		<antcall target="init-3.7" />
 		<antcall target="ant-helper">
-			<param name="buildfile" value="${basedir}/build.xml"/>
-			<param name="targets" value="generate-composite-site"/>
-			<param name="extraArgs" value="-Dlocation=file://${build.home}/composite-site"/>
+			<param name="buildfile" value="${basedir}/build.xml" />
+			<param name="targets" value="generate-composite-site" />
+			<param name="extraArgs" value="-Dlocation=file://${build.home}/composite-site" />
 		</antcall>
 	</target>
 
@@ -305,11 +321,11 @@
 		<p2.composite.repository>
 			<repository location="${location}" name="Mirror" />
 			<add>
-				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/"/>
-				<repository location="${mylyn.site}"/>
+				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/" />
+				<repository location="${mylyn.site}" />
 				<!--repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/-->
-				<repository location="http://subclipse.tigris.org/update_1.6.x/"/>
-				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
+				<repository location="http://subclipse.tigris.org/update_1.6.x/" />
+				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/" />
 				<!--<repository location="http://update.atlassian.com/eclipse/clover/"/>-->
 			</add>
 		</p2.composite.repository>
