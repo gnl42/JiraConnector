@@ -824,7 +824,7 @@
 	<target name="generate-metadata-helper">
 		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.equinox.p2.metadata.generator.EclipseGenerator" />
-		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.5}/eclipse" />
+		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m" />
 
 		<echo message="Eclipse home is set to ${eclipse.home}" />
