@@ -99,6 +99,7 @@
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${build.home}/site" />
 			<param name="name" value="${build.publish.name}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.7}" />
 		</antcall>
 	</target>
 
