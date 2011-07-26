@@ -29,7 +29,7 @@
    </license>
 
    <requires>
-      <import feature="com.atlassian.connector.eclipse.jira" version="3.0.0.qualifier" match="greaterOrEqual"/>
+      <import feature="com.atlassian.connector.eclipse.jira" version="3.0.1.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
