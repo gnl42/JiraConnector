@@ -499,7 +499,10 @@ public class JiraClientTest extends TestCase {
 	public void testGetServerInfo() throws Exception {
 		ServerInfo serverInfo = client.getCache().getServerInfo(null);
 		assertEquals(JiraFixture.current().getVersion(), serverInfo.getVersion());
-		assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
+		// skip build number comparison for snapshot
+		if (!JiraFixture.current().getVersion().contains("SNAPSHOT")) {
+			assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
+		}
 		boolean jira4x = new JiraVersion(serverInfo.getVersion()).compareTo(JiraVersion.JIRA_4_1) >= 0;
 		assertEquals(jira4x ? "UTF-8" : "ISO-8859-1", serverInfo.getCharacterEncoding());
 		//assertEquals(JiraFixture.current().getRepositoryUrl(), serverInfo.getBaseUrl());

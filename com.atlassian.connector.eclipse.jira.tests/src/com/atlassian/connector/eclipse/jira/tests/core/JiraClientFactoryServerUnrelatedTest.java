@@ -46,7 +46,7 @@ public class JiraClientFactoryServerUnrelatedTest extends TestCase {
 
 		// not found		
 		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/not-found", "user", "password"),
+			clientFactory.validateConnection(new WebLocation("http://www.atlassian.com/not-found", "user", "password"),
 					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
