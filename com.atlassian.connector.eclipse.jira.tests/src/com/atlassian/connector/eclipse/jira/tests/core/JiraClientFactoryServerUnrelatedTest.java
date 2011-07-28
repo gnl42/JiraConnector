@@ -46,6 +46,7 @@ public class JiraClientFactoryServerUnrelatedTest extends TestCase {
 
 		// not found		
 		try {
+			// 404
 			clientFactory.validateConnection(new WebLocation("http://www.atlassian.com/not-found", "user", "password"),
 					null);
 			fail("Expected exception");
@@ -55,8 +56,9 @@ public class JiraClientFactoryServerUnrelatedTest extends TestCase {
 
 		// RPC not enabled
 		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user",
-					"password"), null);
+			// 403
+			clientFactory.validateConnection(new WebLocation("http://www.eclipse.com/.htaccess", "user", "password"),
+					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
@@ -64,6 +66,7 @@ public class JiraClientFactoryServerUnrelatedTest extends TestCase {
 
 		// HTTP error
 		try {
+			// 503
 			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-proxy-error", "user",
 					"password"), null);
 			fail("Expected exception");
