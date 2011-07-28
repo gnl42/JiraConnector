@@ -301,7 +301,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			fixVersions.putOption(version.getId(), version.getName());
 		}
 
-		createAttribute(data, JiraAttribute.ENVIRONMENT);
+		TaskAttribute env = createAttribute(data, JiraAttribute.ENVIRONMENT);
+		env.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
 
 		if (!data.isNew()) {
 			TaskAttribute commentAttribute = createAttribute(data, JiraAttribute.COMMENT_NEW);
