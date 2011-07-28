@@ -28,11 +28,13 @@ import javax.annotation.Nullable;
 public class TimeTracking {
 	@Nullable
 	private final Integer originalEstimateMinutes;
-	private final int remainingEstimateMinutes;
+
+	@Nullable
+	private final Integer remainingEstimateMinutes;
 	@Nullable
 	private final Integer timeSpentMinutes;
 
-	public TimeTracking(@Nullable Integer originalEstimateMinutes, int remainingEstimateMinutes, @Nullable Integer timeSpentMinutes) {
+	public TimeTracking(@Nullable Integer originalEstimateMinutes, @Nullable Integer remainingEstimateMinutes, @Nullable Integer timeSpentMinutes) {
 		this.originalEstimateMinutes = originalEstimateMinutes;
 		this.remainingEstimateMinutes = remainingEstimateMinutes;
 		this.timeSpentMinutes = timeSpentMinutes;
@@ -46,7 +48,11 @@ public class TimeTracking {
 		return originalEstimateMinutes;
 	}
 
-	public int getRemainingEstimateMinutes() {
+	/**
+	 * @return original remaining estimated time [in minutes] for this issue or <code>null</code> when such estimation was not provided
+	 */
+	@Nullable
+	public Integer getRemainingEstimateMinutes() {
 		return remainingEstimateMinutes;
 	}
 

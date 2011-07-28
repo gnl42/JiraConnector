@@ -36,4 +36,11 @@ public class TimeTrackingJsonParserTest {
 		assertEquals(new TimeTracking(null, 170, 9), timeTracking);
 	}
 
+	@Test
+	public void testParseJustLoggedTime() throws Exception {
+		final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
+		final TimeTracking timeTracking = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/timeTracking/valid-just-timespent.json").getJSONObject("value"));
+		assertEquals(new TimeTracking(null, null, 840), timeTracking);
+	}
+
 }

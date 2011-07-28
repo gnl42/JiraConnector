@@ -24,7 +24,7 @@ public class TimeTrackingJsonParser implements JsonParser<TimeTracking> {
 	@Override
 	public TimeTracking parse(JSONObject json) throws JSONException {
 		final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "timeoriginalestimate");
-		final int timeRemainingMinutes = json.getInt("timeestimate");
+		final Integer timeRemainingMinutes = JsonParseUtil.parseOptionInteger(json, "timeestimate");
 		final Integer timeSpentMinutes = JsonParseUtil.parseOptionInteger(json, "timespent");
 		return new TimeTracking(originalEstimateMinutes, timeRemainingMinutes, timeSpentMinutes);
 	}
