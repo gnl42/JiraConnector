@@ -69,7 +69,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 	}
 
 	protected static boolean isTaskInStop(TaskData taskData, ITask task) {
-		if (isAssignedToMe(taskData, task) && isInOpenState(taskData) && haveStartProgressOperation(taskData)) {
+		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
 			return true;
 		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
 			return true;
