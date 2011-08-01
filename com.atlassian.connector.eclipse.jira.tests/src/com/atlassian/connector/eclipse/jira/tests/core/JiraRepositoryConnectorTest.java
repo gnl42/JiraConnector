@@ -274,7 +274,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Date timestamp = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 		assertTrue(timestamp.after(start));
 		assertTrue(timestamp.before(new Date()));
-		assertEquals(issue.getUpdated(), JiraUtil.getLastUpdate(repository));
+		assertTrue(issue.getUpdated().before(new Date()));
 
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference
 
@@ -283,8 +283,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertFalse(session.needsPerformQueries());
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertEquals(0, session.getStaleTasks().size());
-		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(timestamp).equals(
-				repository.getSynchronizationTimeStamp()));
+		assertFalse("Expected updated synchronization timestamp",
+				JiraUtil.dateToString(timestamp).equals(repository.getSynchronizationTimeStamp()));
 		assertEquals(issue.getUpdated(), JiraUtil.getLastUpdate(repository));
 	}
 
@@ -304,8 +304,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		SynchronizationSession session = createSession(task);
 		connector.preSynchronization(session, null);
 		assertTrue(session.needsPerformQueries());
-		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(start).equals(
-				repository.getSynchronizationTimeStamp()));
+		assertFalse("Expected updated synchronization timestamp",
+				JiraUtil.dateToString(start).equals(repository.getSynchronizationTimeStamp()));
 		assertEquals(issue2.getUpdated(), JiraUtil.getLastUpdate(repository));
 	}
 
