@@ -7,7 +7,7 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" />
 
 	<xsl:template match="/">
-		<site pack200="true" associateSitesURL="{$siteUrl}associates-e3.6.xml">
+		<site pack200="true" associateSitesURL="{$siteUrl}/associates-e3.6.xml">
 			<description url="{$siteUrl}">Atlassian Connector for Eclipse</description>
 		    <xsl:apply-templates select="site/feature"/>
 		    <xsl:apply-templates select="site/category-def[@name='Connector']"/>

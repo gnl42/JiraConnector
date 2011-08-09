@@ -60,7 +60,7 @@
 	<target name="pack-sites" depends="init">
 		<property name="build.site" value="${build.home}/${build.target}/site" />
 		<property name="publish.name" value="e${build.target}" />
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
 
 		<antcall target="pack-helper">
 			<param name="dir" value="${build.site}" />
@@ -167,7 +167,7 @@
 
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
 		<property name="publish.name" value="e${build.target}" />
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
 
 		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 
@@ -239,7 +239,7 @@
 		<antcall target="init-3.6" />
 
 		<property name="publish.name" value="e${build.target}" />
-		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
 
 		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
 		<property name="to" value="${build.home}/mirror/e3.6" />
