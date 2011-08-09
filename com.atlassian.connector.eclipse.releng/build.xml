@@ -50,7 +50,7 @@
 	<target name="pack" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites" />
@@ -81,7 +81,7 @@
 		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml" />
 
 		<!-- <copy file="associates-e3.5.xml" todir="${build.site}" /> -->
-		<copy file="associates-e3.7.xml" todir="${build.site}" />
+		<copy file="associates-e3.6.xml" todir="${build.site}" />
 
 		<zip destfile="${build.site}/../e${build.target}-site-all.zip" basedir="${build.site}" />
 	</target>
@@ -89,24 +89,24 @@
 	<target name="generate-metadata-common" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 
 		<!-- create generic site without associate sites -->
-		<property name="site.common.dir" value="${build.home}/3.7/site" />
+		<property name="site.common.dir" value="${build.home}/3.6/site" />
 		<copy todir="${build.home}/site">
 			<fileset dir="${site.common.dir}" />
 		</copy>
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${build.home}/site" />
 			<param name="name" value="${build.publish.name}" />
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.7}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.6}" />
 		</antcall>
 	</target>
 
 	<target name="generate-metadata" depends="init">
 		<!-- make sure Eclipse 3.5 is available -->
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
@@ -118,7 +118,7 @@
 		<condition property="build.publish.location" value="-e33" else="-e3x">
 			<equals arg1="${build.target}" arg2="3.3" />
 		</condition>
-		<condition property="build.publish.name.suffix" value="3.3" else="3.7">
+		<condition property="build.publish.name.suffix" value="3.3" else="3.6">
 			<equals arg1="${build.target}" arg2="3.3" />
 		</condition>
 
@@ -136,7 +136,7 @@
 
 	<target name="publish" depends="init">
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user" />
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host" />
@@ -217,6 +217,14 @@
 			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}" />
 		</antcall>
 	</target>
+	
+	<target name="init-3.6">
+		<antcall target="get-build-dependencies-helper">
+			<param name="build.target" value="3.6" />
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.6}" />
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.6}" />
+		</antcall>
+	</target>
 
 	<target name="init-3.7">
 		<antcall target="get-build-dependencies-helper">
@@ -228,13 +236,13 @@
 
 	<target name="mirror">
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 
 		<property name="publish.name" value="e${build.target}" />
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/" />
 
 		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
-		<property name="to" value="${build.home}/mirror/e3.7" />
+		<property name="to" value="${build.home}/mirror/e3.6" />
 		<mkdir dir="${to}" />
 
 		<antcall target="mirror-helper">
@@ -273,11 +281,11 @@
 		<move file="${to}/mirror.xml" tofile="${to}/site.xml" />
 
 		<!-- <copy file="associates-e3.5.xml" todir="${to}" /> -->
-		<copy file="associates-e3.7.xml" todir="${to}" />
+		<copy file="associates-e3.6.xml" todir="${to}" />
 
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${to}" />
-			<param name="name" value="${build.publish.name} 3.7" />
+			<param name="name" value="${build.publish.name} 3.6" />
 		</antcall>
 	</target>
 
@@ -310,7 +318,7 @@
 
 	<target name="composite">
 		<!-- <antcall target="init-3.5" /> -->
-		<antcall target="init-3.7" />
+		<antcall target="init-3.6" />
 		<antcall target="ant-helper">
 			<param name="buildfile" value="${basedir}/build.xml" />
 			<param name="targets" value="generate-composite-site" />
