@@ -75,11 +75,10 @@
 		</fileset>
 
 		<!-- org.mortbay.jetty -->
-<!--		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
+		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
 			<include name="org.mortbay.jetty*.jar"/>
 			<include name="javax.servlet*.jar"/>
 		</fileset>
--->
 		
 		<!-- rome -->
 		<fileset dir="${buildDirectory}/plugins" id="com.sun.syndication">
@@ -113,7 +112,7 @@
 			<fileset refid="org.apache.xmlrpc" />
 			<fileset refid="org.jdom" />
 			<fileset refid="org.joda.time" />
-<!--			<fileset refid="org.mortbay.jetty" /> -->
+			<fileset refid="org.mortbay.jetty" /> 
 			<fileset refid="com.sun.syndication" />
 			<fileset refid="com.thoughtworks.xstream" />
 			<fileset refid="com.perforce.p4java" />
