@@ -333,8 +333,8 @@
 				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/" />
 				<repository location="${mylyn.site}" />
 				<!--repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/-->
-				<repository location="http://subclipse.tigris.org/update_1.6.x/" />
-				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/" />
+				<!--<repository location="http://subclipse.tigris.org/update_1.6.x/" />-->
+				<!--<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/" />-->
 				<!--<repository location="http://update.atlassian.com/eclipse/clover/"/>-->
 			</add>
 		</p2.composite.repository>
