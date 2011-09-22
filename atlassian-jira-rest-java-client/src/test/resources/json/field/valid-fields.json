@@ -143,6 +143,16 @@
         "type":"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
         "value":"Another"
     },
+	"customfield_10020":{
+	   "name":"Extra User",
+	   "type":"com.atlassian.jira.plugin.system.customfieldtypes:userpicker",
+	   "value":{
+		  "self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
+		  "name":"wseliga",
+		  "displayName":"Wojciech Seliga",
+		  "active":true
+	   }
+	},
     "components":{
         "name":"components",
         "type":"com.atlassian.jira.bc.project.component.ProjectComponent",

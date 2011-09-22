@@ -150,12 +150,30 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	/**
 	 *
 	 * @param id identifier of the field (inaccessible by concrete getter method)
-	 * @return field with given id, or <code>null</code> when when no field with given id exists for this issue 
+	 * @return field with given id, or <code>null</code> when no field with given id exists for this issue
 	 */
 	@Nullable
 	public Field getField(String id) {
 		for (Field field : fields) {
 			if (field.getId().equals(id)) {
+				return field;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the first field with specified name.
+	 * Names of fields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
+	 * It's added just for convenience. For identify fields you should use id rather than name.
+	 *
+	 * @param name name of the field.
+	 * @return the first field matching selected name or <code>null</code> when no field with given name exists for this issue
+	 */
+	@Nullable
+	public Field getFieldByName(String name) {
+		for (Field field : fields) {
+			if (field.getName().equals(name)) {
 				return field;
 			}
 		}

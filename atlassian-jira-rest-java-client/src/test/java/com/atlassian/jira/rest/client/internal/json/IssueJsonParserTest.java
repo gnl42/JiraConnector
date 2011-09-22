@@ -20,8 +20,10 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
@@ -175,6 +177,23 @@ public class IssueJsonParserTest {
 		assertEquals(Visibility.role("Administrators"), issue.getComments().iterator().next().getVisibility());
 		assertEquals(Visibility.role("Developers"), Iterables.get(issue.getWorklogs(), 1).getVisibility());
 		assertEquals(Visibility.group("jira-users"), Iterables.get(issue.getWorklogs(), 2).getVisibility());
+	}
+
+	@Test
+	public void testParseIssueWithUserPickerCustomFieldFilledOut() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-filled-out.json");
+		final Field extraUserField = issue.getFieldByName("Extra User");
+		assertNotNull(extraUserField);
+		assertEquals(BasicUser.class, extraUserField.getValue().getClass());
+		assertEquals(TestConstants.USER1, extraUserField.getValue());
+	}
+
+	@Test
+	public void testParseIssueWithUserPickerCustomFieldEmpty() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-empty.json");
+		final Field extraUserField = issue.getFieldByName("Extra User");
+		assertNotNull(extraUserField);
+		assertNull(extraUserField.getValue());
 	}
 
 }

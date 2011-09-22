@@ -18,15 +18,22 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.Field;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class JsonFieldParserTest {
-    @Test
-    public void testParse() throws Exception {
-        JsonFieldParser parser = new JsonFieldParser();
+	@Test
+	public void testParse() throws Exception {
+		JsonFieldParser parser = new JsonFieldParser();
 		final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/field/valid-fields.json");
 		final Field field = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
-		Assert.assertEquals(1.45, (Double) field.getValue(), 0.001);
+		assertEquals(1.45, (Double) field.getValue(), 0.001);
+
+		final Field userField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
+		assertEquals(TestConstants.USER1, userField.getValue());
+
 	}
+
+
 }

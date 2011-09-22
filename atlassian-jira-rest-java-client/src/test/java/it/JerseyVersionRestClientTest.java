@@ -37,7 +37,7 @@ import java.net.URI;
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
 import static org.junit.Assert.assertThat;
 
-public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
 	@Test
 	public void testCreateAndUpdateVersion() throws Exception {

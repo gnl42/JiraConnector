@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Field;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,6 +29,7 @@ public class JsonFieldParser {
 
     private Map<String, JsonParser> registeredValueParsers = new HashMap<String, JsonParser>() {{
         put("com.atlassian.jira.plugin.system.customfieldtypes:float", new FloatingPointFieldValueParser());
+		put("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", new FieldValueJsonParser<BasicUser>(new BasicUserJsonParser()));
         put("java.lang.String", new StringFieldValueParser());
     }};
 
@@ -54,8 +56,26 @@ public class JsonFieldParser {
         return new Field(id, name, type, value);
     }
 
+	static class FieldValueJsonParser<T> implements JsonParser<T> {
+		private final JsonParser<T> jsonParser;
 
-    class FloatingPointFieldValueParser implements JsonParser<Double> {
+		public FieldValueJsonParser(JsonParser<T> jsonParser) {
+			this.jsonParser = jsonParser;
+		}
+
+		@Override
+		public T parse(JSONObject json) throws JSONException {
+			final JSONObject valueObject = json.optJSONObject(VALUE_ATTRIBUTE);
+			if (valueObject == null) {
+				throw new JSONException("Expected JSONObject with [" + VALUE_ATTRIBUTE + "] attribute present.");
+			}
+			return jsonParser.parse(valueObject);
+		}
+	}
+
+
+
+    static class FloatingPointFieldValueParser implements JsonParser<Double> {
 
         @Override
         public Double parse(JSONObject jsonObject) throws JSONException {
@@ -71,7 +91,7 @@ public class JsonFieldParser {
         }
     }
 
-    class StringFieldValueParser implements JsonParser<String> {
+    static class StringFieldValueParser implements JsonParser<String> {
 
         @Override
         public String parse(JSONObject jsonObject) throws JSONException {
