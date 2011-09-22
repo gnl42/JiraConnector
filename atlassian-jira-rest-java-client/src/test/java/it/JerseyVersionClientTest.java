@@ -49,7 +49,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 				new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1", "1"));
 
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
-		final Version version = client.getVersionClient().createVersion(versionInput, pm);
+		final Version version = client.getVersionRestClient().createVersion(versionInput, pm);
 		assertEquals(versionInput, version);
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
 				IterableMatcher.hasOnlyElements("1.1", "1", versionInput.getName()));
@@ -57,7 +57,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A version with this name already exists in this project.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().createVersion(versionInput, pm);
+				client.getVersionRestClient().createVersion(versionInput, pm);
 			}
 		});
 
@@ -67,7 +67,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().createVersion(versionInput2, pm);
+				client.getVersionRestClient().createVersion(versionInput2, pm);
 			}
 		});
 
@@ -75,7 +75,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Project with key 'TST' either does not exist or you do not have permission to create versions in it.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().createVersion(versionInput2, pm);
+				client.getVersionRestClient().createVersion(versionInput2, pm);
 			}
 		});
 
@@ -83,15 +83,15 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		setAdmin();
 		final VersionInput newVersionInput = new VersionInputBuilder(versionInput.getProjectKey(), version)
 				.setDescription("my updated description").setReleased(true).setName("my updated name").build();
-		client.getVersionClient().updateVersion(version.getSelf(), newVersionInput, pm);
-		final Version modifiedVersion = client.getVersionClient().updateVersion(version.getSelf(), newVersionInput, pm);
+		client.getVersionRestClient().updateVersion(version.getSelf(), newVersionInput, pm);
+		final Version modifiedVersion = client.getVersionRestClient().updateVersion(version.getSelf(), newVersionInput, pm);
 		assertEquals(newVersionInput, modifiedVersion);
 
 		final VersionInput duplicateVersionInput = new VersionInputBuilder("TST", modifiedVersion).setName("1.1").build();
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A version with this name already exists in this project.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().updateVersion(modifiedVersion.getSelf(), duplicateVersionInput, pm);
+				client.getVersionRestClient().updateVersion(modifiedVersion.getSelf(), duplicateVersionInput, pm);
 			}
 		});
 
@@ -99,18 +99,18 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().updateVersion(modifiedVersion.getSelf(), newVersionInput, pm);
+				client.getVersionRestClient().updateVersion(modifiedVersion.getSelf(), newVersionInput, pm);
 			}
 		});
 
 		setAdmin();
-		final Version restrictedVersion = client.getVersionClient().createVersion(new VersionInputBuilder("RST").setName("My version").build(), pm);
+		final Version restrictedVersion = client.getVersionRestClient().createVersion(new VersionInputBuilder("RST").setName("My version").build(), pm);
 		final VersionInput restrictedVersionInput = new VersionInputBuilder("RST", restrictedVersion).setDescription("another description").build();
 		setUser2();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have browse project rights in order to view versions.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().updateVersion(restrictedVersion.getSelf(), restrictedVersionInput, pm);
+				client.getVersionRestClient().updateVersion(restrictedVersion.getSelf(), restrictedVersionInput, pm);
 			}
 		});
 
@@ -139,15 +139,15 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		}
 		final Iterable<Version> versionsInTheBeggining = client.getProjectClient().getProject("TST", pm).getVersions();
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
-		final Version version = client.getVersionClient().createVersion(versionInput, pm);
-		assertEquals(version, client.getVersionClient().getVersion(version.getSelf(), pm));
+		final Version version = client.getVersionRestClient().createVersion(versionInput, pm);
+		assertEquals(version, client.getVersionRestClient().getVersion(version.getSelf(), pm));
 
 		setAnonymousMode();
 		// weird - inconsistent with PUT/POST
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have browse project rights in order to view versions.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().getVersion(version.getSelf(), pm);
+				client.getVersionRestClient().getVersion(version.getSelf(), pm);
 			}
 		});
 
@@ -155,32 +155,32 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCodeWithRegexp(Response.Status.NOT_FOUND, "Could not find version for id .*", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().getVersion(TestUtil.toUri(version.getSelf().toString() + "9"), pm);
+				client.getVersionRestClient().getVersion(TestUtil.toUri(version.getSelf().toString() + "9"), pm);
 			}
 		});
 
 		setUser1();
-		assertEquals(version, client.getVersionClient().getVersion(version.getSelf(), pm));
+		assertEquals(version, client.getVersionRestClient().getVersion(version.getSelf(), pm));
 
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "The user wseliga does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().removeVersion(version.getSelf(), null, null, pm);
+				client.getVersionRestClient().removeVersion(version.getSelf(), null, null, pm);
 			}
 		});
 
 		setAdmin();
-		client.getVersionClient().removeVersion(version.getSelf(), null, null, pm);
+		client.getVersionRestClient().removeVersion(version.getSelf(), null, null, pm);
 		TestUtil.assertErrorCodeWithRegexp(Response.Status.NOT_FOUND, "Could not find version for id .*", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().getVersion(version.getSelf(), pm);
+				client.getVersionRestClient().getVersion(version.getSelf(), pm);
 			}
 		});
 
 		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), IterableMatcher.hasOnlyElements(versionsInTheBeggining));
 		for (Version ver : versionsInTheBeggining) {
-			client.getVersionClient().removeVersion(ver.getSelf(), null, null, pm);
+			client.getVersionRestClient().removeVersion(ver.getSelf(), null, null, pm);
 		}
 		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), IterableMatcher.<Version>isEmpty());
 
@@ -217,12 +217,12 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, fakeVersionUri2, "The affects version with id " +
 				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
 
-		assertEquals(1, client.getVersionClient().getNumUnresolvedIssues(version.getSelf(), pm));
-		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
-		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
+		assertEquals(1, client.getVersionRestClient().getNumUnresolvedIssues(version.getSelf(), pm));
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient().getVersionRelatedIssuesCount(version.getSelf(), pm));
 
 		// now removing the first version
-		client.getVersionClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf(), pm);
+		client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf(), pm);
 		final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2", pm);
 		assertThat(Iterables.transform(issueAfterVerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
 		assertThat(Iterables.transform(issueAfterVerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
@@ -232,12 +232,12 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "You cannot move the issues to the version being deleted.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().removeVersion(version1.getSelf(), version1.getSelf(), version1.getSelf(), pm);
+				client.getVersionRestClient().removeVersion(version1.getSelf(), version1.getSelf(), version1.getSelf(), pm);
 			}
 		});
 
 		// now removing the other version
-		client.getVersionClient().removeVersion(version1.getSelf(), null, null, pm);
+		client.getVersionRestClient().removeVersion(version1.getSelf(), null, null, pm);
 		final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2", pm);
 		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
 		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
@@ -248,7 +248,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(status, expectedErrorMsg, new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri, pm);
+				client.getVersionRestClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri, pm);
 			}
 		});
 	}
@@ -258,29 +258,29 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
+		final Version v3 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
 		assertProjectHasOrderedVersions("TST", v3.getName(), "1", "1.1");
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LAST, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.LAST, pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
 		assertProjectHasOrderedVersions("TST", "1", v3.getName(), "1.1");
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.EARLIER, pm);
 		assertProjectHasOrderedVersions("TST", v3.getName(), "1", "1.1");
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
 		assertProjectHasOrderedVersions("TST", "1", v3.getName(), "1.1");
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
 		// later for the last version means nothing - but also no error
-		client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
+		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.LATER, pm);
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
 
 		setUser1();
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You must have global or project administrator rights in order to modify versions.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
+				client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.FIRST, pm);
 			}
 		});
 
@@ -291,25 +291,25 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final Version v3 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
-		final Version v4 = client.getVersionClient().createVersion(VersionInput.create("TST", "my added version2", "a description2", null, true, false), pm);
+		final Version v3 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false), pm);
+		final Version v4 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version2", "a description2", null, true, false), pm);
 		final Version v1 = Iterables.get(client.getProjectClient().getProject("TST", pm).getVersions(), 0);
 		final String v1n = v1.getName();
 		final String v3n = v3.getName();
 		final String v4n = v4.getName();
 		assertProjectHasOrderedVersions("TST", v1n, "1.1", v3n, v4n);
-		client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+		client.getVersionRestClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
 		assertProjectHasOrderedVersions("TST", v1n, "1.1", v4n, v3n);
-		client.getVersionClient().moveVersionAfter(v3.getSelf(), v1.getSelf(), pm);
+		client.getVersionRestClient().moveVersionAfter(v3.getSelf(), v1.getSelf(), pm);
 		assertProjectHasOrderedVersions("TST", v1n, v3n, "1.1", v4n);
-		client.getVersionClient().moveVersionAfter(v1.getSelf(), v4.getSelf(), pm);
+		client.getVersionRestClient().moveVersionAfter(v1.getSelf(), v4.getSelf(), pm);
 		assertProjectHasOrderedVersions("TST", v3n, "1.1", v4n, v1n);
 
 		setUser1();
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You must have global or project administrator rights in order to modify versions.", new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+				client.getVersionRestClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
 			}
 		});
 
@@ -317,7 +317,7 @@ public class JerseyVersionClientTest extends AbstractRestoringJiraStateJerseyRes
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
+				client.getVersionRestClient().moveVersionAfter(v3.getSelf(), v4.getSelf(), pm);
 			}
 		});
 	}

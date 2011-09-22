@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 /**
-* Defines a new position for a project version (while moving it) by {@link com.atlassian.jira.rest.client.VersionClient#moveVersion(java.net.URI, VersionPosition, com.atlassian.jira.rest.client.ProgressMonitor)}
+* Defines a new position for a project version (while moving it) by {@link com.atlassian.jira.rest.client.VersionRestClient#moveVersion(java.net.URI, VersionPosition, com.atlassian.jira.rest.client.ProgressMonitor)}
 *
 *
 * @since 0.3 client, 4.4 server

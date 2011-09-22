@@ -29,7 +29,7 @@ import java.net.URI;
  *
  * @since 0.3 client, 4.4 server
  */
-public interface VersionClient {
+public interface VersionRestClient {
 
 	/**
 	 * Retrieves full information about selected project version

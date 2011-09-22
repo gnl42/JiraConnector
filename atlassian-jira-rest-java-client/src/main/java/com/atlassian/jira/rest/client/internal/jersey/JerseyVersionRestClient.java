@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
-import com.atlassian.jira.rest.client.VersionClient;
+import com.atlassian.jira.rest.client.VersionRestClient;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
@@ -37,15 +37,15 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 /**
- * Jersey-based implementation of VersionClient
+ * Jersey-based implementation of VersionRestClient
  *
  * @since client 0.3, server 4.4
  */
-public class JerseyVersionClient extends AbstractJerseyRestClient implements VersionClient {
+public class JerseyVersionRestClient extends AbstractJerseyRestClient implements VersionRestClient {
 
 	private final URI versionRootUri;
 
-	public JerseyVersionClient(URI baseUri, ApacheHttpClient client) {
+	public JerseyVersionRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
 		versionRootUri = UriBuilder.fromUri(baseUri).path("version").build();
 	}

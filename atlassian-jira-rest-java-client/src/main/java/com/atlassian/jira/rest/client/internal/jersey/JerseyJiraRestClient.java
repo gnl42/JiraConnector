@@ -25,7 +25,7 @@ import com.atlassian.jira.rest.client.ProjectRestClient;
 import com.atlassian.jira.rest.client.SearchRestClient;
 import com.atlassian.jira.rest.client.SessionRestClient;
 import com.atlassian.jira.rest.client.UserRestClient;
-import com.atlassian.jira.rest.client.VersionClient;
+import com.atlassian.jira.rest.client.VersionRestClient;
 import com.sun.jersey.api.client.AsyncViewResource;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.ViewResource;
@@ -54,7 +54,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	private final ComponentRestClient componentRestClient;
 	private final MetadataRestClient metadataRestClient;
 	private final SearchRestClient searchRestClient;
-	private final VersionClient versionClient;
+	private final VersionRestClient versionRestClient;
 
 
 	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
@@ -97,7 +97,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		projectRestClient = new JerseyProjectRestClient(baseUri, client);
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
 		searchRestClient = new JerseySearchRestClient(baseUri, client);
-		versionClient = new JerseyVersionClient(baseUri, client);
+		versionRestClient = new JerseyVersionRestClient(baseUri, client);
     }
 
     @Override
@@ -135,13 +135,15 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		return searchRestClient;
 	}
 
+	@Override
+	public VersionRestClient getVersionRestClient() {
+		return versionRestClient;
+	}
+
 	private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
         final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
         return new ApacheHttpClientHandler(client, config);
     }
 
-	public VersionClient getVersionClient() {
-		return versionClient;
-	}
 }
 
