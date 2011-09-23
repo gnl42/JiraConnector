@@ -16,11 +16,14 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.IterableMatcher;
+import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.User;
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 public class UserJsonParserTest {
@@ -29,9 +32,24 @@ public class UserJsonParserTest {
 		final UserJsonParser parser = new UserJsonParser();
 		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid.json"));
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/secure/useravatar?size=large&ownerId=admin&avatarId=10054"), user.getAvatarUri());
+		assertNull(user.getSmallAvatarUri());
 		assertEquals("admin", user.getName());
 		assertEquals("Administrator", user.getDisplayName());
 		assertEquals("user@atlassian.com", user.getEmailAddress());
-		assertThat(user.getGroups(), IterableMatcher.hasOnlyElements("jira-administrators", "jira-developers", "jira-users"));
+		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
 	}
+
+	@Test
+	public void testParseJira5x0User() throws Exception {
+		final UserJsonParser parser = new UserJsonParser();
+		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-5.0.json"));
+		assertEquals(TestUtil.toUri("http://localhost:2990/jira/secure/useravatar?avatarId=10082"), user.getAvatarUri());
+		assertEquals(TestUtil.toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082"), user.getSmallAvatarUri());
+		assertEquals("wseliga", user.getName());
+		assertEquals("Wojciech Seliga", user.getDisplayName());
+		assertEquals("wseliga@atlassian.com", user.getEmailAddress());
+		assertEquals(1, user.getGroups().getSize());
+		assertNull(user.getGroups().getItems());
+	}
+
 }

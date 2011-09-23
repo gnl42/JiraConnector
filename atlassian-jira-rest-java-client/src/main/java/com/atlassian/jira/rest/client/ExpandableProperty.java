@@ -40,6 +40,11 @@ public class ExpandableProperty<T> {
         this.items = items;
     }
 
+	public ExpandableProperty(Collection<T> items) {
+		this.size = items.size();
+		this.items = items;
+	}
+
     public int getSize() {
         return size;
     }
@@ -58,5 +63,21 @@ public class ExpandableProperty<T> {
 				add("size", size).
 				add("items", items).
 				toString();
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ExpandableProperty) {
+			ExpandableProperty that = (ExpandableProperty) obj;
+			return Objects.equal(this.size, that.size)
+					&& Objects.equal(this.items, that.items);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(size, items);
 	}
 }

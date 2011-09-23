@@ -19,30 +19,43 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.User;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class UserJsonParser implements JsonParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {
 		final BasicUser basicUser = JsonParseUtil.parseBasicUser(json);
-		final URI avatarUri = JsonParseUtil.parseURI(json.getString("avatarUrl"));
+		final String timezone = JsonParseUtil.getOptionalString(json, "timezone");
+		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
+		Map<String, URI> avatarUris = Maps.newHashMap();
+		if (avatarUrl != null) {
+			// JIRA prior 5.0
+			final URI avatarUri = JsonParseUtil.parseURI(avatarUrl);
+			avatarUris.put(User.S48_48, avatarUri);
+		} else {
+			// JIRA 5.0+
+			final JSONObject avatarUrlsJson = json.getJSONObject("avatarUrls");
+			@SuppressWarnings("unchecked")
+			final Iterator<String> iterator = avatarUrlsJson.keys();
+			while (iterator.hasNext()) {
+				final String key = iterator.next();
+				avatarUris.put(key, JsonParseUtil.parseURI(avatarUrlsJson.getString(key)));
+			}
+		}
 		final String emailAddress = json.getString("emailAddress");
-		// we expect always expanded groups, serving them is anyway cheap
+		// we expect always expanded groups, serving them is anyway cheap - that was the case for JIRA prior 5.0, now groups are not expanded...
 		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json.getJSONObject("groups"), new JsonParser<String>() {
 			@Override
 			public String parse(JSONObject json) throws JSONException {
 				return json.getString("name");
 			}
 		});
-		ArrayList<String> groupList = new ArrayList<String>();
-		if (groups.getSize() > 0) {
-			Iterables.addAll(groupList, groups.getItems());
-		}
-		return new User(basicUser.getSelf(), basicUser.getName(), basicUser.getDisplayName(), emailAddress, avatarUri, groupList);
+		return new User(basicUser.getSelf(), basicUser.getName(), basicUser.getDisplayName(), emailAddress, groups, avatarUris, timezone);
 	}
 }

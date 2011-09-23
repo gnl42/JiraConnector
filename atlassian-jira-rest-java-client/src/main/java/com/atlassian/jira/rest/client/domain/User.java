@@ -16,10 +16,13 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 
+import javax.annotation.Nullable;
 import java.net.URI;
-import java.util.Collection;
+import java.util.Map;
 
 /**
  * Complete information about a single JIRA user
@@ -27,14 +30,31 @@ import java.util.Collection;
  * @since v0.1
  */
 public class User extends BasicUser {
+
+	public static String S16_16 = "16x16";
+	public static String S48_48 = "48x48";
+
 	private final String emailAddress;
-	private final URI avatarUri;
-	private final Collection<String> groups;
+
+	private final ExpandableProperty<String> groups;
+
+	private Map<String, URI> avatarUris;
+
+	/**
+	 * @since client 0.5, server: 4.4
+	 */
+	@Nullable
+	private String timezone;
 	
-	public User(URI self, String name, String displayName, String emailAddress, URI avatarUri, Collection<String> groups) {
+	public User(URI self, String name, String displayName, String emailAddress, ExpandableProperty<String> groups,
+			Map<String, URI> avatarUris, @Nullable String timezone) {
 		super(self, name, displayName);
+		this.timezone = timezone;
+		if (avatarUris.get(S48_48) == null) {
+			throw new IllegalArgumentException("At least one avatar URL is expected - for 48x48");
+		}
 		this.emailAddress = emailAddress;
-		this.avatarUri = avatarUri;
+		this.avatarUris = Maps.newHashMap(avatarUris);
 		this.groups = groups;
 	}
 
@@ -43,18 +63,62 @@ public class User extends BasicUser {
 	}
 
 	public URI getAvatarUri() {
-		return avatarUri;
+		return avatarUris.get(S48_48);
 	}
 
-	public Iterable<String> getGroups() {
+	/**
+	 *
+	 * @return user avatar image URI for 16x16 pixels
+	 * @since 0.5 client, 5.0 server
+	 */
+	@Nullable
+	public URI getSmallAvatarUri() {
+		return avatarUris.get(S16_16);
+	}
+
+	/**
+	 * As of JIRA 5.0 there can be several different user avatar URIs - for different size.
+	 *
+	 * @param sizeDefinition size like "16x16" or "48x48". URI for 48x48 should be always defined.
+	 * @return URI for specified size or <code>null</code> when there is no avatar image with given dimensions specified for this user
+	 */
+	@Nullable
+	public URI getAvatarUri(String sizeDefinition) {
+		return avatarUris.get(sizeDefinition);
+	}
+
+	/**
+	 * @return groups given user belongs to
+	 */
+	public ExpandableProperty<String> getGroups() {
 		return groups;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof User) {
+			User that = (User) obj;
+			return super.equals(obj) && Objects.equal(this.emailAddress, that.emailAddress)
+					&& Objects.equal(this.avatarUris, that.avatarUris);
+		}
+		return false;
+	}
+
+
+	/**
+	 * @since client 0.5, server 4.4
+	 * @return user timezone, like "Europe/Berlin" or <code>null</code> if timezone info is not available
+	 */
+	@Nullable
+	public String getTimezone() {
+		return timezone;
 	}
 
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).addValue(super.toString()).
 				add("emailAddress", emailAddress).
-				add("avatarUri", avatarUri).
+				add("avatarUris", avatarUris).
 				add("groups", groups).
 				toString();
 	}

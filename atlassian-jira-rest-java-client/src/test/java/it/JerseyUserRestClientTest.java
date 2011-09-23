@@ -16,18 +16,18 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.google.common.collect.ImmutableList;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH;
-import static org.junit.Assert.assertThat;
 
 public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
@@ -37,12 +37,12 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 		assertEquals("wojciech.seliga@spartez.com", user.getEmailAddress());
 		assertEquals("admin", user.getName());
 		assertEquals("Administrator", user.getDisplayName());
-		assertThat(user.getGroups(), IterableMatcher.hasOnlyElements("jira-administrators", "jira-developers", "jira-users"));
+		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
 		assertEquals(IntegrationTestUtil.USER_ADMIN.getSelf(), user.getSelf());
 		assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
 
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
-		assertThat(user2.getGroups(), IterableMatcher.hasOnlyElements("jira-users"));
+		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
     }
 
 	public void testGetUserWithSlash() {
