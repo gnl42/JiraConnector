@@ -37,6 +37,7 @@ public class UserJsonParserTest {
 		assertEquals("Administrator", user.getDisplayName());
 		assertEquals("user@atlassian.com", user.getEmailAddress());
 		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
+		assertNull(user.getTimezone());
 	}
 
 	@Test
@@ -50,6 +51,7 @@ public class UserJsonParserTest {
 		assertEquals("wseliga@atlassian.com", user.getEmailAddress());
 		assertEquals(1, user.getGroups().getSize());
 		assertNull(user.getGroups().getItems());
+		assertEquals("Europe/Warsaw", user.getTimezone());
 	}
 
 }

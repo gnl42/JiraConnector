@@ -31,7 +31,7 @@ public class UserJsonParser implements JsonParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {
 		final BasicUser basicUser = JsonParseUtil.parseBasicUser(json);
-		final String timezone = JsonParseUtil.getOptionalString(json, "timezone");
+		final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
 		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
 		Map<String, URI> avatarUris = Maps.newHashMap();
 		if (avatarUrl != null) {
