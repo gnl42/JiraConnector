@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -25,7 +26,6 @@ import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
@@ -295,11 +295,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 
 	private void assertProjectHasComponents(String ...names) {
-		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getComponents(), new Function<BasicComponent, String>() {
-			@Override
-			public String apply(BasicComponent from) {
-				return from.getName();
-			}
-		}), IterableMatcher.hasOnlyElements(names));
+		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getComponents(),
+				new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements(names));
 	}
+
 }

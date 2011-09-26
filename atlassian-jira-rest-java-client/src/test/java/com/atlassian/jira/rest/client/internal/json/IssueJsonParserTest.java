@@ -16,9 +16,11 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
@@ -42,9 +44,6 @@ import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.*;
 
-/**
- * @since v0.1
- */
 public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
@@ -196,4 +195,18 @@ public class IssueJsonParserTest {
 		assertNull(extraUserField.getValue());
 	}
 
+	@Test
+	public void testParseIssueJira5x0Representation() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0.json");
+		assertEquals(3, Iterables.size(issue.getComments()));
+		final BasicPriority priority = issue.getPriority();
+		assertNotNull(priority);
+		assertEquals("Major", priority.getName());
+		assertEquals("my description", issue.getDescription());
+		assertEquals("TST", issue.getProject().getKey());
+		assertEquals(6, Iterables.size(issue.getAttachments()));
+		assertEquals(1.457, issue.getField("customfield_10000").getValue());
+		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
+
+	}
 }

@@ -33,7 +33,7 @@ import java.util.Collection;
 public class Issue extends BasicIssue implements ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
-			@Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
 			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
@@ -42,6 +42,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
         this.summary = summary;
 		this.project = project;
 		this.status = status;
+		this.description = description;
 		this.resolution = resolution;
 		this.expandos = expandos;
         this.comments = comments;
@@ -71,6 +72,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
     private final String summary;
+	@Nullable
+	private final String description;
 	@Nullable
 	private BasicUser reporter;
 	private BasicUser assignee;
@@ -120,6 +123,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 
+
 	public String getSummary() {
 		return summary;
 	}
@@ -136,6 +140,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 *
 	 * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
 	 */
+	@Nullable
 	public Iterable<IssueLink> getIssueLinks() {
 		return issueLinks;
 	}
@@ -237,6 +242,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return watchers;
 	}
 
+	@Nullable
 	public Iterable<Version> getFixVersions() {
 		return fixVersions;
 	}
@@ -245,6 +251,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
         return transitionsUri;
     }
 
+	@Nullable
     public Iterable<Version> getAffectedVersions() {
 		return affectedVersions;
 	}
@@ -259,6 +266,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 
 
+	@Nullable
 	public BasicResolution getResolution() {
 		return resolution;
 	}
@@ -276,11 +284,17 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return timeTracking;
 	}
 
+	@Nullable
+	public String getDescription() {
+		return description;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).addValue(super.toString()).
 				add("project", project).
 				add("status", status).
+				add("description", description).
 				add("expandos", expandos).
 				add("resolution", resolution).
 				add("reporter", reporter).

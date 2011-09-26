@@ -21,6 +21,7 @@ import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 
 import javax.annotation.Nullable;
@@ -95,6 +96,10 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 
 	protected boolean isJira4x4OrNewer() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= 646;
+	}
+
+	protected boolean isJira5xOrNewer() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
 	}
 
 }
