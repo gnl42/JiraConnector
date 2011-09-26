@@ -204,6 +204,16 @@ public class JsonParseUtil {
 		return res.toString();
     }
 
+	@Nullable
+	public static JSONObject getOptionalJsonObject(JSONObject jsonObject, String attributeName) {
+		final JSONObject res = jsonObject.optJSONObject(attributeName);
+		if (res == JSONObject.NULL || res == null) {
+			return null;
+		}
+		return res;
+	}
+
+
 	public static Collection<String> toStringCollection(JSONArray jsonArray) throws JSONException {
 		final ArrayList<String> res = new ArrayList<String>(jsonArray.length());
 		for (int i = 0; i < jsonArray.length(); i++) {

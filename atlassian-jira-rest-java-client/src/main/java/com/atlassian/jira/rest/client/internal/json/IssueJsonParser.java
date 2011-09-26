@@ -269,17 +269,13 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		@SuppressWarnings("unchecked")
 		final Iterator<String> iterator = json.keys();
 		while (iterator.hasNext()) {
-				final String key = iterator.next();
+			final String key = iterator.next();
 			try {
 				if (SPECIAL_FIELDS.contains(key)) {
 					continue;
 				}
-				final Object o = json.get(key);
-//				if (o instanceof JSONObject) {
-//					res.add(fieldParser.parse(json.getJSONObject(key), key));
-//				} else {
-					res.add(new Field(key, namesMap.get(key), typesMap.get("key"), o));
-//				}
+				final Object o = JsonParseUtil.getOptionalJsonObject(json, key);
+				res.add(new Field(key, namesMap.get(key), typesMap.get("key"), o));
 			} catch (final Exception e) {
 				throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
 					@Override

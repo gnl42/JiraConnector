@@ -735,10 +735,11 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
 		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 
-		//		navigation.userProfile().changeUserLanguage("angielski (UK)");
-		//		navigation.issue().unassignIssue("TST-5", "unassigning issue");
+		navigation.userProfile().changeUserLanguage("angielski (UK)");
+		navigation.issue().unassignIssue("TST-5", "unassigning issue");
 		// this single line does instead of 2 above - func test suck with non-English locale
-		navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
+		// but it does not work yet with JIRA 5.0-resthack...
+		//navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
 
 		assertNull(client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 	}

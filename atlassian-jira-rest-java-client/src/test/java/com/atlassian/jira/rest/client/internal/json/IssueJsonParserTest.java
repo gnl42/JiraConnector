@@ -209,4 +209,11 @@ public class IssueJsonParserTest {
 		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
 
 	}
+
+	@Test
+	public void testParseIssueJira5x0RepresentationNullCustomField() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-null-custom-field.json");
+		assertEquals(null, issue.getField("customfield_10000").getValue());
+	}
+
 }

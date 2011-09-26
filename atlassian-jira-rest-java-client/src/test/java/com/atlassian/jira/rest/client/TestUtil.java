@@ -87,7 +87,7 @@ public class TestUtil {
 			}
 //			Assert.assertEquals(errorCode, );
 		} catch (RestClientException e) {
-			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
+			Assert.assertTrue("Expected UniformInterfaceException cause, but was [" + e.getCause() + "]", e.getCause() instanceof UniformInterfaceException);
 			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
 			if (message != null) {
 				Assert.assertEquals(message, e.getMessage());
