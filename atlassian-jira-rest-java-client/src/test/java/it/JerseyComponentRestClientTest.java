@@ -23,6 +23,7 @@ import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -124,13 +125,15 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 		final ComponentInput componentInput = new ComponentInput("my component", "a description", null, null);
 		setUser1();
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "The user wseliga does not have permission to complete this operation.", new Runnable() {
+
+		final Response.Status expectedForbiddenErrorCode = (doesJiraReturnCorrectErrorCodeForForbiddenOperation()) ? Response.Status.FORBIDDEN : Response.Status.UNAUTHORIZED;
+		TestUtil.assertErrorCode(expectedForbiddenErrorCode, "The user wseliga does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().removeComponent(basicComponent.getSelf(), null, pm);
 			}
 		});
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You cannot edit the configuration of this project.", new Runnable() {
+		TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().createComponent("TST", componentInput, pm);
@@ -144,7 +147,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 				client.getComponentClient().removeComponent(basicComponent.getSelf(), null, pm);
 			}
 		});
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, "You cannot edit the configuration of this project.", new Runnable() {
+		// IMO for anonymous access still Response.Status.UNAUTHORIZED should be returned - JRADEV-7671
+		TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().createComponent("TST", componentInput, pm);
@@ -282,6 +286,11 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 			}
 		});
 
+	}
+
+
+	boolean doesJiraReturnCorrectErrorCodeForForbiddenOperation() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
 	}
 
 

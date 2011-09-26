@@ -123,7 +123,7 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 	}
 
 	private boolean isGetAllProjectsSupported() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 

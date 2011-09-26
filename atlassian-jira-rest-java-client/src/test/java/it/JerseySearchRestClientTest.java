@@ -104,7 +104,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 
 
 	private boolean isJqlSupportedByRest() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertThat;
 
 public class LinkIssuesInputGeneratorTest {
 
-	private final ServerInfo serverInfo = new ServerInfo(null, "1.2.3", ServerVersionConstants.BN_JIRA_4_3_OR_NEWER, null, null, null, null);
+	private final ServerInfo serverInfo = new ServerInfo(null, "1.2.3", ServerVersionConstants.BN_JIRA_4_3, null, null, null, null);
 	private final LinkIssuesInputGenerator inputGenerator = new LinkIssuesInputGenerator(serverInfo);
 
 	@Test

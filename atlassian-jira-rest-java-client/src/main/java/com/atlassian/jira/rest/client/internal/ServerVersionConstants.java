@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal;
 
 public class ServerVersionConstants {
-	public static final int BN_JIRA_4_3_OR_NEWER = 600;
+	public static final int BN_JIRA_4_3 = 600;
 	public static final int BN_JIRA_4_4 = 640;
-
+	public static final int BN_JIRA_5 = 700;
 }

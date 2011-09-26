@@ -489,7 +489,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 	private boolean isJraDev3516Fixed() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 	//@Test restore when JRADEV-3666 is fixed (I don't want to pollute JRJC integration test results)
@@ -625,15 +625,15 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 	private boolean doesJiraSupportRestIssueLinking() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 	private boolean doesJiraSupportAddingAttachment() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 	private boolean doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3_OR_NEWER;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
 	@Test
