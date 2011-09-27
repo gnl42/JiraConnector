@@ -561,7 +561,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		});
 
 		setUser1();
-		assertErrorCode(Response.Status.NOT_FOUND, "You do not have the permission to see the specified issue", new Runnable() {
+		final String optionalDot = isJira5xOrNewer() ? "." : "";
+		assertErrorCode(Response.Status.NOT_FOUND, "You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null), pm);

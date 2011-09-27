@@ -51,9 +51,16 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 		final Visibility commentVisibility = comment.getVisibility();
 		if (commentVisibility != null) {
 
-			if (serverInfo.getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3) {
+			final int buildNumber = serverInfo.getBuildNumber();
+			if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
 				JSONObject visibilityJson = new JSONObject();
-				visibilityJson.put("type", commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE");
+				final String commentVisibilityType;
+				if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+					commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
+				} else {
+					commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE";
+				}
+				visibilityJson.put("type", commentVisibilityType);
 				visibilityJson.put("value", commentVisibility.getValue());
 				res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
 			} else {
