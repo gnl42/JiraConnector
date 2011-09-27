@@ -16,7 +16,10 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 
 import javax.ws.rs.core.UriBuilder;
@@ -34,10 +37,15 @@ public class IntegrationTestUtil {
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
 	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
+	private static final String URI_INTERFIX_FOR_USER;
 
 
 	static {
         try {
+			JerseyJiraRestClient client = new JerseyJiraRestClient(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
+			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
+			URI_INTERFIX_FOR_USER = client.getMetadataClient().getServerInfo(new NullProgressMonitor()).getBuildNumber() > ServerVersionConstants.BN_JIRA_5 ? "2" : "latest";
+
             USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
             USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
@@ -49,7 +57,8 @@ public class IntegrationTestUtil {
     }
 
 	private static URI getUserUri(String username) throws URISyntaxException {
-		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user").queryParam("username", username).build();
+		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
+				URI_INTERFIX_FOR_USER + "/user").queryParam("username", username).build();
 	}
 
     public static URI concat(URI uri, String path) {
