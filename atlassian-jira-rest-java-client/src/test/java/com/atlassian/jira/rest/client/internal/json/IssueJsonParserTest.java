@@ -205,6 +205,7 @@ public class IssueJsonParserTest {
 		assertEquals("my description", issue.getDescription());
 		assertEquals("TST", issue.getProject().getKey());
 		assertEquals(4, Iterables.size(issue.getAttachments()));
+		assertEquals(3, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
 
@@ -214,6 +215,7 @@ public class IssueJsonParserTest {
 	public void testParseIssueJira5x0RepresentationNullCustomField() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-null-custom-field.json");
 		assertEquals(null, issue.getField("customfield_10000").getValue());
+		assertNull(issue.getIssueLinks());
 	}
 
 }

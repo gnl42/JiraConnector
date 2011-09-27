@@ -36,7 +36,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
 			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
-			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments, URI transitionsUri, Collection<IssueLink> issueLinks,
+			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments, URI transitionsUri,
+			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos) {
 		super(self, key);
         this.summary = summary;

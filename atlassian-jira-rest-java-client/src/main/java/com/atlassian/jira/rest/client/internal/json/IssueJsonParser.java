@@ -60,6 +60,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String FIX_VERSIONS_ATTR = "fixVersions";
 	private static final String COMPONENTS_ATTR = "components";
 	private static final String LINKS_ATTR = "links";
+	private static final String LINKS_ATTR_5_0 = "issuelinks";
 	private static final String ISSUE_TYPE_ATTR = "issuetype";
 	private static final String VOTES_ATTR = "votes";
 	private static final String WORKLOG_ATTR = "worklog";
@@ -77,7 +78,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String TIMETRACKING_ATTR = "timetracking";
 
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
-			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, ISSUE_TYPE_ATTR, VOTES_ATTR,
+			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, LINKS_ATTR_5_0, ISSUE_TYPE_ATTR, VOTES_ATTR,
 			WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR, DESCRIPTION_ATTR,
 			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR, TIMETRACKING_ATTR));
 	public static final String SCHEMA_SECTION = "schema";
@@ -226,7 +227,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_ATTR));
-		final Collection<IssueLink> issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
+		final Collection<IssueLink> issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
+				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, isJira5x0OrNewer ? LINKS_ATTR_5_0 : LINKS_ATTR);
 		final BasicVotes votes = getOptionalField(shouldUseNestedValueAttribute, s, VOTES_ATTR, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_ATTR));
 
