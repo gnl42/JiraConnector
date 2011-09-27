@@ -80,7 +80,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, ISSUE_TYPE_ATTR, VOTES_ATTR,
 			WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR, DESCRIPTION_ATTR,
 			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR, TIMETRACKING_ATTR));
-	public static final String TYPES_SECTION = "types";
+	public static final String SCHEMA_SECTION = "schema";
 	public static final String NAMES_SECTION = "names";
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
@@ -109,10 +109,10 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	}
 
 
-	private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser) throws JSONException {
+	private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser, String arrayAttribute) throws JSONException {
 //        String type = jsonObject.getString("type");
 //        final String name = jsonObject.getString("name");
-		final JSONArray valueObject = jsonObject.optJSONArray(VALUE_ATTR);
+		final JSONArray valueObject = jsonObject.optJSONArray(arrayAttribute);
 		if (valueObject == null) {
 			return new ArrayList<T>();
 		}
@@ -131,7 +131,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 			if (js == null) {
 				return null;
 			}
-			return parseArray(js, jsonParser);
+			return parseArray(js, jsonParser, VALUE_ATTR);
 		} else {
 			final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
 			if (jsonArray == null) {
@@ -194,13 +194,20 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	@Override
 	public Issue parse(JSONObject s) throws JSONException {
 		final Iterable<String> expandos = parseExpandos(s);
-		final boolean isJira5x0OrNewer = Iterables.contains(expandos, TYPES_SECTION);
-
-
+		final boolean isJira5x0OrNewer = Iterables.contains(expandos, SCHEMA_SECTION);
 		final boolean shouldUseNestedValueAttribute = !isJira5x0OrNewer;
-		final Collection<Comment> commentsTmp = parseOptionalArray(
-				shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), FIELDS, COMMENT_ATTR);
-		final Collection<Comment> comments = commentsTmp != null ? commentsTmp : Lists.<Comment>newArrayList();
+		final Collection<Comment> comments;
+		if (isJira5x0OrNewer) {
+			final JSONObject commentsJson = s.getJSONObject(FIELDS).getJSONObject(COMMENT_ATTR);
+			comments = parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
+
+		} else {
+			final Collection<Comment> commentsTmp = parseOptionalArray(
+					shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), FIELDS, COMMENT_ATTR);
+			comments = commentsTmp != null ? commentsTmp : Lists.<Comment>newArrayList();
+		}
+
+
 
 		final String summary = getFieldStringValue(s, SUMMARY_ATTR);
 		final String description = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, DESCRIPTION_ATTR);
@@ -260,8 +267,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private Collection<Field> parseFieldsJira5x0(JSONObject issueJson) throws JSONException {
 		final JSONObject names = issueJson.optJSONObject(NAMES_SECTION);
 		final Map<String, String> namesMap = parseNames(names);
-		final JSONObject types = issueJson.optJSONObject(TYPES_SECTION);
-		final Map<String, String> typesMap = parseTypes(types);
+		final JSONObject types = issueJson.optJSONObject(SCHEMA_SECTION);
+		final Map<String, String> typesMap = parseSchema(types);
 
 		final JSONObject json = issueJson.getJSONObject(FIELDS);
 		final ArrayList<Field> res = new ArrayList<Field>(json.length());
@@ -287,14 +294,14 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		return res;
 	}
 
-	private Map<String, String> parseTypes(JSONObject json) throws JSONException {
+	private Map<String, String> parseSchema(JSONObject json) throws JSONException {
 		final HashMap<String, String> res = Maps.newHashMap();
-		final JSONObject schemaJson = json.getJSONObject("schema");
+//		final JSONObject schemaJson = json.getJSONObject("schema");
 		@SuppressWarnings("unchecked")
-		final Iterator<String> it = schemaJson.keys();
+		final Iterator<String> it = json.keys();
 		while (it.hasNext()) {
 			final String fieldId = it.next();
-			JSONObject fieldDefinition = schemaJson.getJSONObject(fieldId);
+			JSONObject fieldDefinition = json.getJSONObject(fieldId);
 			res.put(fieldId, fieldDefinition.getString("type"));
 
 		}

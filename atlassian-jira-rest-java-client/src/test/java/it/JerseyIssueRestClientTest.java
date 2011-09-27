@@ -21,6 +21,7 @@ import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
@@ -37,6 +38,7 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
@@ -92,16 +94,23 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 
+	// URIs are broken in 5.0 - https://jdog.atlassian.com/browse/JRADEV-7691
+	private void assertEqualsNoUri(BasicUser expected, BasicUser actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getDisplayName(), actual.getDisplayName());
+	}
+
+
 	@Test
 	public void testGetIssue() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals("TST-1", issue.getKey());
 		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
-		assertEquals(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
+		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
+		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
 		assertEquals(3, Iterables.size(issue.getComments()));
-		assertThat(issue.getExpandos(), IterableMatcher.hasOnlyElements("html"));
+		assertThat(ImmutableList.copyOf(issue.getExpandos()), IterableMatcher.hasOnlyElements("html"));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
 
@@ -366,9 +375,12 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue1 = client.getIssueClient().getIssue("TST-1", pm);
 		assertFalse(issue1.getVotes().hasVoted());
 		assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
+		final String expectedMessage = isJira5xOrNewer() // JIRA 5.0 comes without Polish translation OOB
+				? "You cannot vote for an issue you have reported."
+				: "Nie mo\u017cesz g\u0142osowa\u0107 na zadanie kt\u00f3re utworzy\u0142e\u015b.";
 
 		// I hope that such Polish special characters (for better testing local specific behaviour of REST
-		assertErrorCode(Response.Status.NOT_FOUND, "Nie mo\u017cesz g\u0142osowa\u0107 na zadanie kt\u00f3re utworzy\u0142e\u015b.", new Runnable() {
+		assertErrorCode(Response.Status.NOT_FOUND, expectedMessage, new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().vote(issue1.getVotesUri(), pm);

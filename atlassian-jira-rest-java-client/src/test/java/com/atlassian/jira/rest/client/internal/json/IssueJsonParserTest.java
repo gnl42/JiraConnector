@@ -204,7 +204,7 @@ public class IssueJsonParserTest {
 		assertEquals("Major", priority.getName());
 		assertEquals("my description", issue.getDescription());
 		assertEquals("TST", issue.getProject().getKey());
-		assertEquals(6, Iterables.size(issue.getAttachments()));
+		assertEquals(4, Iterables.size(issue.getAttachments()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
 

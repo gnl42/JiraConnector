@@ -105,7 +105,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	@Override
 	public Issue getIssue(final String issueKey, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-		uriBuilder.path("issue").path(issueKey).queryParam("expand", IssueJsonParser.NAMES_SECTION, IssueJsonParser.TYPES_SECTION);
+		uriBuilder.path("issue").path(issueKey).queryParam("expand", IssueJsonParser.NAMES_SECTION, IssueJsonParser.SCHEMA_SECTION);
 		return getAndParse(uriBuilder.build(), issueParser, progressMonitor);
 	}
 
