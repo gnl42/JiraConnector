@@ -65,6 +65,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String VOTES_ATTR = "votes";
 	private static final String WORKLOG_ATTR = "worklog";
 	private static final String WATCHER_ATTR = "watcher";
+	private static final String WATCHER_ATTR_5_0 = "watches";
 	private static final String PROJECT_ATTR = "project";
 	private static final String STATUS_ATTR = "status";
 	private static final String COMMENT_ATTR = "comment";
@@ -238,7 +239,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		final Collection<Worklog> worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
-		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, WATCHER_ATTR, watchersJsonParser);
+		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR, new TimeTrackingJsonParser());
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
