@@ -195,7 +195,6 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	public Issue parse(JSONObject s) throws JSONException {
 		final Iterable<String> expandos = parseExpandos(s);
 		final boolean isJira5x0OrNewer = Iterables.contains(expandos, TYPES_SECTION);
-		final JSONObject commentsJs = JsonParseUtil.getNestedOptionalObject(s, FIELDS, COMMENT_ATTR);
 
 
 		final boolean shouldUseNestedValueAttribute = !isJira5x0OrNewer;
@@ -274,8 +273,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 				if (SPECIAL_FIELDS.contains(key)) {
 					continue;
 				}
-				final Object o = JsonParseUtil.getOptionalJsonObject(json, key);
-				res.add(new Field(key, namesMap.get(key), typesMap.get("key"), o));
+				final Object value = json.opt(key);
+				res.add(new Field(key, namesMap.get(key), typesMap.get("key"), value != JSONObject.NULL ? value : null));
 			} catch (final Exception e) {
 				throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
 					@Override
