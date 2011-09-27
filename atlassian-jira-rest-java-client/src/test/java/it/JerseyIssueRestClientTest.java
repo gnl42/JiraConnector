@@ -110,7 +110,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
 		assertEquals(3, Iterables.size(issue.getComments()));
-		assertThat(ImmutableList.copyOf(issue.getExpandos()), IterableMatcher.hasOnlyElements("html"));
+		final Iterable<String> expectedExpandos = isJira5xOrNewer() ? ImmutableList.of("html", "names", "schema") : ImmutableList.of("html");
+		assertThat(ImmutableList.copyOf(issue.getExpandos()), IterableMatcher.hasOnlyElements(expectedExpandos));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
 
