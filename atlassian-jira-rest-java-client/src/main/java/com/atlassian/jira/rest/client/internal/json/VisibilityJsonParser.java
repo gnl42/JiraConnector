@@ -30,9 +30,9 @@ public class VisibilityJsonParser implements JsonParser<Visibility> {
 	public Visibility parse(JSONObject json) throws JSONException {
 		final String type = json.getString("type");
 		final Visibility.Type visibilityType;
-		if (ROLE_TYPE.equals(type)) {
+		if (ROLE_TYPE.equalsIgnoreCase(type)) {
 			visibilityType = Visibility.Type.ROLE;
-		} else if (GROUP_TYPE.equals(type)) {
+		} else if (GROUP_TYPE.equalsIgnoreCase(type)) {
 			visibilityType = Visibility.Type.GROUP;
 		} else {
 			throw new JSONException("[" + type + "] does not represent a valid visibility type. Expected ["

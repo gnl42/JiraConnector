@@ -117,6 +117,10 @@
 				"comment":"abc",
 				"created":"2010-08-10T15:45:44.683+0200",
 				"updated":"2010-08-10T15:45:44.683+0200",
+				"visibility":{
+					"type":"role",
+					"value":"Developers"
+				},
 				"started":"2010-08-10T15:45:00.000+0200",
 				"minutesSpent":60
 			},
@@ -146,6 +150,10 @@
 				"comment":"some other work",
 				"created":"2010-08-10T15:46:24.080+0200",
 				"updated":"2010-08-10T15:46:24.080+0200",
+				"visibility":{
+					"type":"group",
+					"value":"jira-users"
+				},
 				"started":"2010-08-08T15:46:00.000+0200",
 				"minutesSpent":130
 			}
@@ -279,18 +287,18 @@
 		],
 		"environment":null,
 		"components":[
-		   {
-			  "self":"http://localhost:2990/jira/rest/api/2/component/10000",
-			  "id":"10000",
-			  "name":"Component A",
-			  "description":"this is some description of component A"
-		   },
-		   {
-			  "self":"http://localhost:2990/jira/rest/api/2/component/10001",
-			  "id":"10001",
-			  "name":"Component B",
-			  "description":"another description"
-		   }
+			{
+				"self":"http://localhost:2990/jira/rest/api/2/component/10000",
+				"id":"10000",
+				"name":"Component A",
+				"description":"this is some description of component A"
+			},
+			{
+				"self":"http://localhost:2990/jira/rest/api/2/component/10001",
+				"id":"10001",
+				"name":"Component B",
+				"description":"another description"
+			}
 		],
 		"customfield_10010":null,
 		"comment":{

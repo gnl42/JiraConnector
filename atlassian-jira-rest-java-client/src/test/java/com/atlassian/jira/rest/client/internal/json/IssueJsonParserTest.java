@@ -208,6 +208,10 @@ public class IssueJsonParserTest {
 		assertEquals(3, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
+		assertEquals(2, Iterables.size(issue.getWorklogs()));
+
+		assertEquals(Visibility.role("Developers"), issue.getWorklogs().iterator().next().getVisibility());
+		assertEquals(Visibility.group("jira-users"), Iterables.get(issue.getWorklogs(), 1).getVisibility());
 
 	}
 
