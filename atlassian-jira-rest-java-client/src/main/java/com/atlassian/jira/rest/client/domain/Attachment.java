@@ -57,7 +57,7 @@ public class Attachment implements AddressableEntity {
 
     @Override
 	public URI getSelf() {
-        return null;
+        return self;
     }
 
     public String getFilename() {

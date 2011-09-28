@@ -19,18 +19,20 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
+import static org.junit.Assert.assertEquals;
 
 public class AttachmentJsonParserTest {
 	@Test
 	public void testParse() throws Exception {
 		final AttachmentJsonParser parser = new AttachmentJsonParser();
 		final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid.json"));
+		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"), attachment.getSelf());
+		assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"), attachment.getContentUri());
 
-		Assert.assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
+		assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
 				"snipe.png", TestConstants.USER_ADMIN, new DateTime(2010, 7, 26, 13, 31, 35, 577, DateTimeZone.forOffsetHours(2)),
 				31020, "image/png", toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"),
 				toUri("http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png")), attachment);
