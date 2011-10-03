@@ -451,7 +451,8 @@ public class JiraRssHandler extends DefaultHandler {
 				if (commentLevel == null) {
 					commentLevel = attributes.getValue(GROUP_LEVEL_ATTR);
 				}
-				commentDate = convertToDate(attributes.getValue(CREATED_ATTR));
+				commentDate = convertToDate(attributes.getValue(CREATED_ATTR), client.getLocalConfiguration()
+						.getLocale());
 			}
 			break;
 		case IN_ISSUE_LINKS:
@@ -509,7 +510,8 @@ public class JiraRssHandler extends DefaultHandler {
 				attachmentName = attributes.getValue(NAME_ATTR);
 				attachmentSize = Long.parseLong(attributes.getValue(SIZE_ATTR));
 				attachmentAuthor = attributes.getValue(AUTHOR_ATTR);
-				attachmentCreated = convertToDate(attributes.getValue(CREATED_ATTR));
+				attachmentCreated = convertToDate(attributes.getValue(CREATED_ATTR), client.getLocalConfiguration()
+						.getLocale());
 			}
 			break;
 		case IN_SUBTASKS:
@@ -710,9 +712,11 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (SUMMARY.equals(localName)) {
 				currentIssue.setSummary(getCurrentElementText());
 			} else if (CREATED.equals(localName)) {
-				currentIssue.setCreated(convertToDate(getCurrentElementText()));
+				currentIssue.setCreated(convertToDate(getCurrentElementText(), client.getLocalConfiguration()
+						.getLocale()));
 			} else if (UPDATED.equals(localName)) {
-				currentIssue.setUpdated(convertToDate(getCurrentElementText()));
+				currentIssue.setUpdated(convertToDate(getCurrentElementText(), client.getLocalConfiguration()
+						.getLocale()));
 			} else if (VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null
 						|| !addVersionTo(currentReportedVersions, getCurrentElementText())) {
@@ -829,22 +833,29 @@ public class JiraRssHandler extends DefaultHandler {
 		currentElementText.append(ch, start, length);
 	}
 
-	private Date convertToDate(String value) {
+	private Date convertToDate(String value, Locale locale) {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
 		try {
-			// JIRA 4.1 uses new date format
-			return XML_DATE_FORMAT_41.parse(value);
-		} catch (ParseException e0) {
+			// JIRA 4.4.1 uses localized date format in RSS
+			SimpleDateFormat format441 = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z", locale); //$NON-NLS-1$
+			return format441.parse(value);
+		} catch (ParseException ex) {
+
 			try {
-				return XML_DATE_FORMAT.parse(value);
-			} catch (ParseException e) {
-				StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-						"Error parsing date: \"" + value //$NON-NLS-1$
-								+ "\"", e)); //$NON-NLS-1$
+				// JIRA 4.1 uses new date format
+				return XML_DATE_FORMAT_41.parse(value);
+			} catch (ParseException e0) {
+				try {
+					return XML_DATE_FORMAT.parse(value);
+				} catch (ParseException e) {
+					StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+							"Error parsing date: \"" + value //$NON-NLS-1$
+									+ "\"", e)); //$NON-NLS-1$
+				}
+				return null;
 			}
-			return null;
 		}
 	}
 
