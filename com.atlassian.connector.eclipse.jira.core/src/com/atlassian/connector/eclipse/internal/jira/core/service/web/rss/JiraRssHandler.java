@@ -325,10 +325,15 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private boolean markupDetected;
 
-	public static SimpleDateFormat getDateTimeFormat() {
+	public static SimpleDateFormat getDateTimeFormat(Locale locale) {
 		// the server returns the server timezone, convert to local time zone to avoid confusion
 		//return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
-		return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
+		return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", locale); //$NON-NLS-1$
+	}
+
+	public static SimpleDateFormat getDateTimeFormat() {
+		//return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
+		return getDateTimeFormat(Locale.US);
 	}
 
 	/**
@@ -734,7 +739,8 @@ public class JiraRssHandler extends DefaultHandler {
 					break;
 				}
 			} else if (DUE.equals(localName)) {
-				currentIssue.setDue(convertToSimpleDate(getCurrentElementText()));
+				currentIssue.setDue(convertToSimpleDate(getCurrentElementText(), client.getLocalConfiguration()
+						.getLocale()));
 			} else if (VOTES.equals(localName)) {
 				if (getCurrentElementText().length() > 0) {
 					try {
@@ -859,16 +865,20 @@ public class JiraRssHandler extends DefaultHandler {
 		}
 	}
 
-	private Date convertToSimpleDate(String value) {
+	private Date convertToSimpleDate(String value, Locale locale) {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
 		try {
-			return getDateTimeFormat().parse(value);
+			return getDateTimeFormat(locale).parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" //$NON-NLS-1$
-					+ value + "\"", e)); //$NON-NLS-1$
-			return null;
+			try {
+				return getDateTimeFormat().parse(value);
+			} catch (ParseException e1) {
+				StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" //$NON-NLS-1$
+						+ value + "\"", e)); //$NON-NLS-1$
+				return null;
+			}
 		}
 	}
 
