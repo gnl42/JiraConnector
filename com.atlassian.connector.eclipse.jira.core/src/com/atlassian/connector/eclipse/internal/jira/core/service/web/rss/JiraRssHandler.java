@@ -856,9 +856,11 @@ public class JiraRssHandler extends DefaultHandler {
 				try {
 					return XML_DATE_FORMAT.parse(value);
 				} catch (ParseException e) {
-					StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+					StatusHandler.log(new Status(
+							IStatus.WARNING,
+							JiraCorePlugin.ID_PLUGIN,
 							"Error parsing date: \"" + value //$NON-NLS-1$
-									+ "\"", e)); //$NON-NLS-1$
+									+ "\". Please make sure your Task Repository locale matches the JIRA language settings.", e)); //$NON-NLS-1$
 				}
 				return null;
 			}
@@ -876,7 +878,8 @@ public class JiraRssHandler extends DefaultHandler {
 				return getDateTimeFormat().parse(value);
 			} catch (ParseException e1) {
 				StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" //$NON-NLS-1$
-						+ value + "\"", e)); //$NON-NLS-1$
+						+ value
+						+ "\". Please make sure your Task Repository locale matches the JIRA language settings.", e)); //$NON-NLS-1$
 				return null;
 			}
 		}
