@@ -60,7 +60,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUna
  */
 public class JiraWebSession {
 
-	private static final int MAX_REDIRECTS = 3;
+	private static final int MAX_REDIRECTS = 10;
 
 	private final JiraClient client;
 
