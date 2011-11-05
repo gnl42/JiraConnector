@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse"
       label="%featureName"
-      version="3.0.2.qualifier"
+      version="3.0.3.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 
@@ -74,7 +74,7 @@
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.joda.time"/>
    </requires>
-   
+
    <plugin
          id="javax.servlet"
          download-size="0"
@@ -116,7 +116,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="com.atlassian.connector.eclipse.help"
          download-size="0"

@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.bamboo"
       label="%featureName"
-      version="3.0.2.qualifier"
+      version="3.0.3.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 
@@ -45,20 +45,20 @@
       <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
    </requires>
 
-	<plugin
+   <plugin
          id="com.atlassian.connector.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="com.atlassian.connector.eclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+
    <plugin
          id="com.atlassian.connector.eclipse.bamboo.core"
          download-size="0"
