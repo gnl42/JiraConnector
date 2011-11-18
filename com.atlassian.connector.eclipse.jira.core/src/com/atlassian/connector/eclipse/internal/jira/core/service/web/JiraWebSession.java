@@ -261,6 +261,8 @@ public class JiraWebSession {
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			tracker.addUrl(url);
+			setLogEnabled(true);
+			tracker.log("Log in attempt " + i + ": " + url); //$NON-NLS-1$
 
 			try {
 				HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location, monitor);
