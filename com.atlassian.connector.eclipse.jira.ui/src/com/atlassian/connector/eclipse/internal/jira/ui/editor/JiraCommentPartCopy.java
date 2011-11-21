@@ -34,9 +34,9 @@ import org.eclipse.mylyn.internal.tasks.core.TaskComment;
 import org.eclipse.mylyn.internal.tasks.ui.actions.CommentActionGroup;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractReplyToCommentAction;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CommentGroupStrategy;
+import org.eclipse.mylyn.internal.tasks.ui.editors.CommentGroupStrategy.CommentGroup;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.RichTextAttributeEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.CommentGroupStrategy.CommentGroup;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.ITaskComment;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -802,6 +802,12 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean setFormInput(Object input) {
+		// ignore
+		return super.setFormInput(input);
 	}
 
 }
