@@ -95,6 +95,14 @@
 					<forkMode>once</forkMode>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>clean test</preparationGoals>
+					<releaseProfiles>releaseProfile</releaseProfiles>
+					<!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -207,6 +215,12 @@
 				<jira.version>5.0-rc2</jira.version>
 				<jira.data.version>5.0-rc2</jira.data.version>
 				<jira.test-lib.version>5.0-rc2</jira.test-lib.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>releaseProfile</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
 			</properties>
 		</profile>
 	</profiles>
