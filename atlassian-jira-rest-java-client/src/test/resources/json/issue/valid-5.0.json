@@ -55,33 +55,37 @@
 		"duedate":"2010-07-05",
 		"issuelinks":[
 			{
-				"issueId":"10010",
-				"issueKey":"TST-2",
-				"issue":"http://localhost:2990/jira/rest/api/latest/issue/TST-2",
-				"type":{
-					"name":"Duplicate",
-					"direction":"OUTBOUND",
-					"description":"duplicates"
-				}
-			},
-			{
-				"issueId":"10010",
-				"issueKey":"TST-2",
-				"issue":"http://localhost:2990/jira/rest/api/latest/issue/TST-2",
-				"type":{
-					"name":"Duplicate",
-					"direction":"INBOUND",
-					"description":"is duplicated by"
-				}
-			},
-			{
-				"issueId":"10020",
-				"issueKey":"TST-3",
-				"issue":"http://localhost:2990/jira/rest/api/latest/issue/TST-3",
-				"type":{
-					"name":"Duplicate",
-					"direction":"INBOUND",
-					"description":"is duplicated by"
+				"id": "10007",
+				"self": "http://localhost:2990/jira/rest/api/2/issueLink/10007",
+				"type": {
+					"id": "10001",
+					"name": "Duplicate",
+					"inward": "is duplicated by",
+					"outward": "duplicates",
+					"self": "http://localhost:2990/jira/rest/api/2/issueLinkType/10001"
+				},
+				"inwardIssue": {
+					"id": "10020",
+					"key": "MUT-19",
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10020",
+					"fields": {
+						"summary": "My chore",
+						"status": {
+							"self": "http://localhost:2990/jira/rest/api/2/status/10000",
+							"description": "Mapping for IceBox in Pivotal Tracker",
+							"iconUrl": "http://localhost:2990/jira/images/icons/status_generic.gif",
+							"name": "IceBox",
+							"id": "10000"
+						},
+						"issuetype": {
+							"self": "http://localhost:2990/jira/rest/api/2/issuetype/8",
+							"id": "8",
+							"description": "",
+							"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+							"name": "Chore",
+							"subtask": false
+						}
+					}
 				}
 			}
 		],

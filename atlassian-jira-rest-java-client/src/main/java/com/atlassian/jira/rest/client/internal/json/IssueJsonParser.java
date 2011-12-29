@@ -43,7 +43,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,6 +76,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String SUMMARY_ATTR = "summary";
 	private static final String DESCRIPTION_ATTR = "description";
 	private static final String TIMETRACKING_ATTR = "timetracking";
+	private static final String TRANSITIONS_ATTR = "transitions";
 
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, LINKS_ATTR_5_0, ISSUE_TYPE_ATTR, VOTES_ATTR,
@@ -86,6 +86,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	public static final String NAMES_SECTION = "names";
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
+	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
@@ -209,8 +210,6 @@ public class IssueJsonParser implements JsonParser<Issue> {
 			comments = commentsTmp != null ? commentsTmp : Lists.<Comment>newArrayList();
 		}
 
-
-
 		final String summary = getFieldStringValue(s, SUMMARY_ATTR);
 		final String description = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, DESCRIPTION_ATTR);
 
@@ -226,10 +225,17 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicUser assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_ATTR, userJsonParser);
 		final BasicUser reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_ATTR, userJsonParser);
 
-		final URI transitionsUri = JsonParseUtil.parseURI(s.getString("transitions"));
+		final String transitions = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_ATTR);
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_ATTR));
-		final Collection<IssueLink> issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
-				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, isJira5x0OrNewer ? LINKS_ATTR_5_0 : LINKS_ATTR);
+		final Collection<IssueLink> issueLinks;
+		if (isJira5x0OrNewer) {
+			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
+				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_ATTR_5_0);
+		} else {
+			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
+				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
+		}
+
 		final BasicVotes votes = getOptionalField(shouldUseNestedValueAttribute, s, VOTES_ATTR, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_ATTR));
 
@@ -244,7 +250,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
-				components, timeTracking, fields, comments, transitionsUri, issueLinks, votes, worklogs, watchers, expandos
+				components, timeTracking, fields, comments, transitions != null ? JsonParseUtil.parseURI(transitions) : null, issueLinks, votes, worklogs, watchers, expandos
 		);
 	}
 

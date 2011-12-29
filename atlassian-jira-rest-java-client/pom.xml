@@ -9,7 +9,7 @@
 
 	<groupId>com.atlassian.jira</groupId>
 	<artifactId>jira-rest-java-client</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.5-m2</version>
 	<packaging>jar</packaging>
 
 	<name>atlassian-jira-rest-java-client</name>
@@ -44,13 +44,22 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jira.version>5.0-beta1</jira.version>
+		<jira.version>5.0-rc2</jira.version>
 		<jira.data.version>4.4</jira.data.version>
 		<jira.test-lib.version>4.4</jira.test-lib.version>
 		<jdkLevel>1.6</jdkLevel>
 		<jersey.client.version>1.5</jersey.client.version>
 	</properties>
 	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/xml</directory>
+                <targetPath>xml</targetPath>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
@@ -170,10 +179,12 @@
 			<artifactId>jira-func-tests</artifactId>
 			<version>${jira.test-lib.version}</version>
 			<scope>test</scope>
-			<!--<exclusions><exclusion>-->
-				<!--<groupId>com.sun.jersey</groupId>-->
-				<!--<artifactId>jersey-server</artifactId>-->
-			<!--</exclusion></exclusions>-->
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-server</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- this should be one day extracted to a separate lib -->
 		<dependency>
@@ -188,4 +199,15 @@
 		</dependency>
 
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>jira-5.0</id>
+			<activation><activeByDefault>false</activeByDefault></activation>
+			<properties>
+				<jira.version>5.0-rc2</jira.version>
+				<jira.data.version>5.0-rc2</jira.data.version>
+				<jira.test-lib.version>5.0-rc2</jira.test-lib.version>
+			</properties>
+		</profile>
+	</profiles>
 </project>
