@@ -4,7 +4,7 @@ import com.google.common.base.Objects;
 
 /**
  *
- * @since v5.1
+ * @since v0.5
  */
 public class IssuelinksType {
 	private final String name;
