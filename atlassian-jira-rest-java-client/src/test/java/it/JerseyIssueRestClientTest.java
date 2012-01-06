@@ -231,8 +231,12 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
 		final double newValue = 123.45;
-		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
-				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
+		final FieldInput fieldInput;
+		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
+			fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, Double.valueOf(newValue));
+		} else {
+			fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
+		}
 		assertTransitionWithNumericCustomField(fieldInput, newValue);
 	}
 
