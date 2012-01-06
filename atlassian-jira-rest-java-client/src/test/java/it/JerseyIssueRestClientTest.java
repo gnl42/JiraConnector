@@ -45,7 +45,6 @@ import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -83,7 +82,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertThat(watchers.getUsers(), IterableMatcher.hasOnlyElements(USER1));
 	}
 
-	@Ignore("Waiting for a fix https://jdog.atlassian.com/browse/JRADEV-9052")
 	public void testGetWatcherForAnonymouslyAccessibleIssue() {
 		setAnonymousMode();
 		final Issue issue = client.getIssueClient().getIssue("ANNON-1", new NullProgressMonitor());
@@ -204,35 +202,32 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	}
 
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testGetTransitions() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		assertEquals(4, Iterables.size(transitions));
 		assertTrue(Iterables.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList())));
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransition() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		assertEquals(4, Iterables.size(transitions));
 		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitions, startProgressTransition));
 
-		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
+		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
 				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment")), new NullProgressMonitor()) ;
 		final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertEquals("In Progress", transitionedIssue.getStatus().getName());
-		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue, pm);
 		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
 		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
 		final double newValue = 123.45;
@@ -241,7 +236,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertTransitionWithNumericCustomField(fieldInput, newValue);
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithNumericCustomFieldEnglishLocale() throws Exception {
 		setUser1();
@@ -265,24 +259,23 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	private void assertTransitionWithNumericCustomField(FieldInput fieldInput, Double expectedValue) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", new NullProgressMonitor());
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 
 		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
-		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(expectedValue));
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
@@ -290,18 +283,17 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
 		final double newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
-		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), pm);
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithInvalidNumericField() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
@@ -312,41 +304,36 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertErrorCode(Response.Status.BAD_REQUEST, "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
 			@Override
 			public void run() {
-				client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+				client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 						Comment.valueOf("My test comment")), pm);
 			}
 		});
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithNoRoleOrGroup() {
 		Comment comment = Comment.valueOf("My text which I am just adding " + new DateTime());
 		testTransitionImpl(comment);
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithRoleLevel() {
 		Comment comment = Comment.createWithRoleLevel("My text which I am just adding " + new DateTime(), "Users");
 		testTransitionImpl(comment);
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithGroupLevel() {
 		Comment comment = Comment.createWithGroupLevel("My text which I am just adding " + new DateTime(), "jira-users");
 		testTransitionImpl(comment);
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithInvalidRole() {
 		final Comment comment = Comment.createWithRoleLevel("My text which I am just adding " + new DateTime(), "some-fake-role");
 		assertInvalidCommentInput(comment, "Invalid role [some-fake-role]");
 	}
 
-	@Ignore("Transitions are temporarily unavailable")
 	@Test
 	public void testTransitionWithInvalidGroup() {
 		final Comment comment = Comment.createWithGroupLevel("My text which I am just adding " + new DateTime(), "some-fake-group");
@@ -355,24 +342,24 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		final String errorMsg = doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue()
 				? expectedErrorMsg : null;
 		assertErrorCode(Response.Status.BAD_REQUEST, errorMsg, new Runnable() {
 			@Override
 			public void run() {
-				client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), comment), pm);
+				client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment), pm);
 			}
 		});
 	}
 
 	private void testTransitionImpl(Comment comment) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		Transition transitionFound = getTransitionByName(transitions, "Estimate");
 		DateTime now = new DateTime();
-		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), comment), pm);
+		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment), pm);
 
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		final Comment lastComment = Iterables.getLast(changedIssue.getComments());

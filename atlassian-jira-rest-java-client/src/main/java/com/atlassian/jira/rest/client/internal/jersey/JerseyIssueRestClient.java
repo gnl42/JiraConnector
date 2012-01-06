@@ -35,6 +35,7 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
+import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
@@ -47,6 +48,7 @@ import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.MultiPartMediaTypes;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -75,6 +77,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	private final IssueJsonParser issueParser = new IssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
+	private final JsonParser<Transition> transitionJsonParserV5 = new TransitionJsonParserV5();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
 	private ServerInfo serverInfo;
 
@@ -105,7 +108,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	@Override
 	public Issue getIssue(final String issueKey, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-		uriBuilder.path("issue").path(issueKey).queryParam("expand", IssueJsonParser.NAMES_SECTION, IssueJsonParser.SCHEMA_SECTION);
+		uriBuilder.path("issue").path(issueKey).queryParam("expand", IssueJsonParser.NAMES_SECTION +"," + IssueJsonParser.SCHEMA_SECTION + "," + IssueJsonParser.TRANSITIONS_SECTION);
 		return getAndParse(uriBuilder.build(), issueParser, progressMonitor);
 	}
 
@@ -116,34 +119,62 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 			public Iterable<Transition> call() throws Exception {
 				final WebResource transitionsResource = client.resource(transitionsUri);
 				final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
-				final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
-				@SuppressWarnings("unchecked")
-				final Iterator<String> iterator = jsonObject.keys();
-				while (iterator.hasNext()) {
-					final String key = iterator.next();
-					try {
-						final int id = Integer.parseInt(key);
-						final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
-						transitions.add(transition);
-					} catch (JSONException e) {
-						throw new RestClientException(e);
-					} catch (NumberFormatException e) {
-						throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+				if (jsonObject.has("transitions")) {
+					final JSONArray transitionsArray = jsonObject.getJSONArray("transitions");
+					final Collection<Transition> transitions = new ArrayList<Transition>(transitionsArray.length());
+					for(int i = 0, s = transitionsArray.length(); i < s; ++i) {
+						try {
+							final Transition transition = transitionJsonParserV5.parse(transitionsArray.getJSONObject(i));
+							transitions.add(transition);
+						} catch (JSONException e) {
+							throw new RestClientException(e);
+						}
 					}
+					return transitions;
+				} else {
+					final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
+					@SuppressWarnings("unchecked")
+					final Iterator<String> iterator = jsonObject.keys();
+					while (iterator.hasNext()) {
+						final String key = iterator.next();
+						try {
+							final int id = Integer.parseInt(key);
+							final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
+							transitions.add(transition);
+						} catch (JSONException e) {
+							throw new RestClientException(e);
+						} catch (NumberFormatException e) {
+							throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+						}
+					}
+					return transitions;
 				}
-				return transitions;
 			}
 		});
+	}
 
+	@Override
+	public Iterable<Transition> getTransitions(final Issue issue, ProgressMonitor progressMonitor) {
+		if (issue.getTransitionsUri() != null) {
+			return getTransitions(issue.getTransitionsUri(), progressMonitor);
+		} else {
+			final UriBuilder transitionsUri = UriBuilder.fromUri(issue.getSelf());
+			return getTransitions(transitionsUri.path("transitions").queryParam("expand", "transitions.fields").build(), progressMonitor);
+		}
 	}
 
 	@Override
 	public void transition(final URI transitionsUri, final TransitionInput transitionInput, final ProgressMonitor progressMonitor) {
+		final int buildNumber = getVersionInfo(progressMonitor).getBuildNumber();
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
 				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("transition", transitionInput.getId());
+				if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+					jsonObject.put("transition", new JSONObject().put("id", transitionInput.getId()));
+				} else {
+					jsonObject.put("transition", transitionInput.getId());
+				}
 				if (transitionInput.getComment() != null) {
 					jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor), "group").generate(transitionInput.getComment()));
 				}
@@ -162,6 +193,17 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				return null;
 			}
 		});
+	}
+
+	@Override
+	public void transition(final Issue issue, final TransitionInput transitionInput, final ProgressMonitor progressMonitor) {
+		if (issue.getTransitionsUri() != null) {
+			transition(issue.getTransitionsUri(), transitionInput, progressMonitor);
+		} else {
+			final UriBuilder uriBuilder = UriBuilder.fromUri(issue.getSelf());
+			uriBuilder.path("transitions");
+			transition(uriBuilder.build(), transitionInput, progressMonitor);
+		}
 	}
 
 

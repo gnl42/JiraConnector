@@ -32,10 +32,12 @@ public class IntegrationTestUtil {
     public static final BasicUser USER2;
 	public static final BasicUser USER_SLASH;
 
+	public static final boolean TESTING_JIRA_5_OR_NEWER;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
+	public static final String NUMERIC_CUSTOMFIELD_TYPE_V5 = "number";
 	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
 	private static final String URI_INTERFIX_FOR_USER;
 
@@ -43,8 +45,9 @@ public class IntegrationTestUtil {
 	static {
         try {
 			JerseyJiraRestClient client = new JerseyJiraRestClient(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
+			TESTING_JIRA_5_OR_NEWER = client.getMetadataClient().getServerInfo(new NullProgressMonitor()).getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
-			URI_INTERFIX_FOR_USER = client.getMetadataClient().getServerInfo(new NullProgressMonitor()).getBuildNumber() > ServerVersionConstants.BN_JIRA_5 ? "2" : "latest";
+			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";
 
             USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
             USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");

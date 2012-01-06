@@ -84,6 +84,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR, TIMETRACKING_ATTR));
 	public static final String SCHEMA_SECTION = "schema";
 	public static final String NAMES_SECTION = "names";
+	public static final String TRANSITIONS_SECTION = "transitions";
 
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
@@ -102,6 +103,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
 	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
 	private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
+	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 
 	private static final String FIELDS = "fields";
 	private static final String VALUE_ATTR = "value";
@@ -225,7 +227,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicUser assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_ATTR, userJsonParser);
 		final BasicUser reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_ATTR, userJsonParser);
 
-		final String transitions = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_ATTR);
+		final String transitionsUri = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_ATTR);
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_ATTR));
 		final Collection<IssueLink> issueLinks;
 		if (isJira5x0OrNewer) {
@@ -246,11 +248,12 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final Collection<Worklog> worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 
 		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
-		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR, new TimeTrackingJsonParser());
+		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
+				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
-				components, timeTracking, fields, comments, transitions != null ? JsonParseUtil.parseURI(transitions) : null, issueLinks, votes, worklogs, watchers, expandos
+				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks, votes, worklogs, watchers, expandos
 		);
 	}
 

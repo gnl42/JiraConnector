@@ -5,9 +5,13 @@
 	"key":"TST-1",
 	"fields":{
 		"summary":"My sample test",
-		"timetracking":{
-			"timeestimate":0,
-			"timespent":190
+		"timetracking": {
+			"originalEstimate": "1w 5h",
+			"remainingEstimate": "4d 5h",
+			"timeSpent": "3h",
+			"originalEstimateSeconds": 162000,
+			"remainingEstimateSeconds": 133200,
+			"timeSpentSeconds": 10800
 		},
 		"issuetype":{
 			"self":"http://localhost:2990/jira/rest/api/2/issuetype/1",

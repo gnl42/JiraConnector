@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -32,9 +33,17 @@ public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> 
 	@Override
 	public JSONObject generate(LinkIssuesInput linkIssuesInput) throws JSONException {
 		JSONObject res = new JSONObject();
-		res.put("linkType", linkIssuesInput.getLinkType());
-		res.put("fromIssueKey", linkIssuesInput.getFromIssueKey());
-		res.put("toIssueKey", linkIssuesInput.getToIssueKey());
+
+		final int buildNumber = serverInfo.getBuildNumber();
+		if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+			res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
+			res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
+			res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
+		} else {
+			res.put("linkType", linkIssuesInput.getLinkType());
+			res.put("fromIssueKey", linkIssuesInput.getFromIssueKey());
+			res.put("toIssueKey", linkIssuesInput.getToIssueKey());
+		}
 		if (linkIssuesInput.getComment() != null) {
 			res.put("comment", new CommentJsonGenerator(serverInfo).generate(linkIssuesInput.getComment()));
 		}

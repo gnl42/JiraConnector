@@ -79,6 +79,17 @@ public interface IssueRestClient {
 	Iterable<Transition> getTransitions(URI transitionsUri, ProgressMonitor progressMonitor);
 
 	/**
+	 * Retrieves complete information (if the caller has permission) about transitions available for the selected issue in its current state.
+	 *
+	 * @since v0.5
+	 * @param issue issue
+	 * @param progressMonitor progress monitor
+	 * @return transitions about transitions available for the selected issue in its current state.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 */
+	Iterable<Transition> getTransitions(Issue issue, ProgressMonitor progressMonitor);
+
+	/**
 	 * Performs selected transition on selected issue.
 	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
 	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
@@ -87,6 +98,17 @@ public interface IssueRestClient {
 
 	 */
 	void transition(URI transitionsUri, TransitionInput transitionInput, ProgressMonitor progressMonitor);
+
+	/**
+	 * Performs selected transition on selected issue.
+	 * @since v0.5
+	 * @param issue selected issue
+	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
+	 * @param progressMonitor progress monitor
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+
+	 */
+	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
 	/**
 	 * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.

@@ -44,7 +44,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jira.version>5.0-rc2</jira.version>
+		<jira.version>5.0-SNAPSHOT</jira.version>
 		<jira.data.version>4.4</jira.data.version>
 		<jira.test-lib.version>4.4</jira.test-lib.version>
 		<jdkLevel>1.6</jdkLevel>

@@ -211,6 +211,7 @@ public class IssueJsonParserTest {
 		assertEquals(2, Iterables.size(issue.getWorklogs()));
 		assertEquals(1, issue.getWatchers().getNumWatchers());
 		assertFalse(issue.getWatchers().isWatching());
+		assertEquals(new TimeTracking(2700, 2220, 180), issue.getTimeTracking());
 
 		assertEquals(Visibility.role("Developers"), issue.getWorklogs().iterator().next().getVisibility());
 		assertEquals(Visibility.group("jira-users"), Iterables.get(issue.getWorklogs(), 1).getVisibility());
