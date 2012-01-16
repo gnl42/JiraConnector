@@ -49,6 +49,7 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,7 +120,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();
 		assertNotNull(items);
-		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(jiraRestRootUri, "/attachment/10040"),
+		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
+				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? UriBuilder.fromUri(jiraUri).path("/rest/api/2/").build() : jiraRestRootUri, "/attachment/10040"),
 				"dla Paw\u0142a.txt", IntegrationTestUtil.USER_ADMIN, dateTime, 643, "text/plain",
 				IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 
@@ -247,7 +249,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID,
 				NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 
-		assertErrorCode(Response.Status.BAD_REQUEST, "'" + fieldInput.getValue() + "' is an invalid number", new Runnable() {
+		assertErrorCode(Response.Status.BAD_REQUEST, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER
+				? "Operation value must be a number" : ("'" + fieldInput.getValue() + "' is an invalid number"), new Runnable() {
 			@Override
 			public void run() {
 				assertTransitionWithNumericCustomField(fieldInput, newValue);
@@ -302,10 +305,12 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, NUMERIC_CUSTOMFIELD_TYPE)));
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
 		// warning: Polish language here - I am asserting if the messages are indeed localized
-		assertErrorCode(Response.Status.BAD_REQUEST, "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
+		// since 5.0 messages are changed and not localized
+		assertErrorCode(Response.Status.BAD_REQUEST, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER
+				? "Operation value must be a number" : "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
@@ -335,7 +340,11 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	@Test
 	public void testTransitionWithInvalidRole() {
 		final Comment comment = Comment.createWithRoleLevel("My text which I am just adding " + new DateTime(), "some-fake-role");
-		assertInvalidCommentInput(comment, "Invalid role [some-fake-role]");
+		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
+			assertInvalidCommentInput(comment, "Invalid role level specified.");
+		} else {
+			assertInvalidCommentInput(comment, "Invalid role [some-fake-role]");
+		}
 	}
 
 	@Test

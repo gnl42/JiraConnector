@@ -176,7 +176,14 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 					jsonObject.put("transition", transitionInput.getId());
 				}
 				if (transitionInput.getComment() != null) {
-					jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor), "group").generate(transitionInput.getComment()));
+					if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+						jsonObject.put("update", new JSONObject().put("comment",
+								new JSONArray().put(new JSONObject().put("add",
+										new CommentJsonGenerator(getVersionInfo(progressMonitor), "group")
+												.generate(transitionInput.getComment())))));
+					} else {
+						jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor), "group").generate(transitionInput.getComment()));
+					}
 				}
 				JSONObject fieldsJs = new JSONObject();
 				final Iterable<FieldInput> fields = transitionInput.getFields();
