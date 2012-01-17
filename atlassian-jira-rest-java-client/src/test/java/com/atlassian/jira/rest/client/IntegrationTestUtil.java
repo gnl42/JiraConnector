@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 
 public class IntegrationTestUtil {
 	public static final BasicUser USER_ADMIN;
+	public static final BasicUser USER_ADMIN_LATEST;
     public static final BasicUser USER1;
     public static final BasicUser USER2;
 	public static final BasicUser USER_SLASH;
@@ -53,6 +54,7 @@ public class IntegrationTestUtil {
             USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
             USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
+			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -62,6 +64,10 @@ public class IntegrationTestUtil {
 	private static URI getUserUri(String username) throws URISyntaxException {
 		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
 				URI_INTERFIX_FOR_USER + "/user").queryParam("username", username).build();
+	}
+
+	private static URI getLatestUserUri(String username) throws URISyntaxException {
+		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user").queryParam("username", username).build();
 	}
 
     public static URI concat(URI uri, String path) {

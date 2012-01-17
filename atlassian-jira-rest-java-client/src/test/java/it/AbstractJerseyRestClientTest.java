@@ -17,6 +17,7 @@
 package it;
 
 import com.atlassian.jira.functest.framework.FuncTestCase;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
@@ -55,7 +56,8 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        jiraRestRootUri = UriBuilder.fromUri(jiraUri).path("/rest/api/latest/").build();
+        jiraRestRootUri = UriBuilder.fromUri(jiraUri).path(
+				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "/rest/api/2/" : "/rest/api/latest/").build();
         jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
 		setAdmin();
 	}

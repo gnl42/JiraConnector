@@ -46,7 +46,7 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 	public void testGetProject() {
 		final Project project = client.getProjectClient().getProject("TST", pm);
 		assertEquals("TST", project.getKey());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, project.getLead());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, project.getLead());
 		assertEquals(2, Iterables.size(project.getVersions()));
 		assertEquals(2, Iterables.size(project.getComponents()));
 	}
@@ -59,7 +59,7 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		setClient(TestConstants.USER1_USERNAME, TestConstants.USER1_PASSWORD);
 		client.getProjectClient().getProject("TST", pm);
 		// @todo when JRADEV-3519 - instead of NOT_FOUND, FORBIDDEN code should be returned by JIRA
-		final String message = getCannotViewProjectErrorMessage();
+		final String message = getCannotViewProjectErrorMessage("RST");
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, message, new Runnable() {
 			@Override
 			public void run() {
@@ -68,9 +68,9 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		});
 	}
 
-	private String getCannotViewProjectErrorMessage() {
+	private String getCannotViewProjectErrorMessage(String key) {
 		return isJira4x4OrNewer()
-				? "You cannot view this project."
+				? (isJira5xOrNewer() ? ("No project could be found with key '" + key + "'.") : "You cannot view this project.")
 				: "You must have the browse project permission to view this project.";
 	}
 
@@ -78,14 +78,14 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 	public void testGetAnonymouslyProject() {
 		// @todo when JRADEV-3519 - instead of NOT_FOUND, UNAUTHORIZED code should be returned by JIRA
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage(), new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage("RST"), new Runnable() {
 			@Override
 			public void run() {
 				client.getProjectClient().getProject("RST", pm);
 			}
 		});
 
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage(), new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage("TST"), new Runnable() {
 			@Override
 			public void run() {
 				client.getProjectClient().getProject("TST", pm);
