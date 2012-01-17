@@ -112,7 +112,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Iterable<String> expectedExpandos = isJira5xOrNewer()
-				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "editmeta", "changelog") : ImmutableList.of("html");
+				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog") : ImmutableList.of("html");
 		assertThat(ImmutableList.copyOf(issue.getExpandos()), IterableMatcher.hasOnlyElements(expectedExpandos));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
@@ -559,7 +559,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		if (!doesJiraSupportRestIssueLinking()) {
 			return;
 		}
-		assertErrorCode(Response.Status.NOT_FOUND, "The issue no longer exists.", new Runnable() {
+		assertErrorCode(Response.Status.NOT_FOUND,
+				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "Issue Does Not Exist" : "The issue no longer exists.", new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "FAKEKEY-1", "Duplicate", null), pm);
