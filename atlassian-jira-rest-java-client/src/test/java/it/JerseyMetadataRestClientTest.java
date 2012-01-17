@@ -99,10 +99,10 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 	public void testGetResolution() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
 		assertNull(issue.getResolution());
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		final Transition resolveTransition = getTransitionByName(transitions, "Resolve Issue");
 
-		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(resolveTransition.getId()), pm);
+		client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId()), pm);
 
 		final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2", pm);
 		final BasicResolution basicResolution = resolvedIssue.getResolution();
