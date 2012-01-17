@@ -32,6 +32,7 @@ public class IntegrationTestUtil {
     public static final BasicUser USER1;
     public static final BasicUser USER2;
 	public static final BasicUser USER_SLASH;
+	public static final BasicUser USER_SLASH_LATEST;
 
 	public static final boolean TESTING_JIRA_5_OR_NEWER;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
@@ -53,6 +54,7 @@ public class IntegrationTestUtil {
             USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
             USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
+			USER_SLASH_LATEST = new BasicUser(getLatestUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
             USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
 			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
