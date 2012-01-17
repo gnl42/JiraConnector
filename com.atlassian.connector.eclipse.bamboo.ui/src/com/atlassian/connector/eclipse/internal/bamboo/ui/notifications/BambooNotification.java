@@ -15,8 +15,8 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.mylyn.internal.provisional.commons.ui.AbstractNotification;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.commons.notifications.ui.AbstractUiNotification;
+import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
@@ -30,13 +30,16 @@ import java.util.Date;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class BambooNotification extends AbstractNotification {
+//public class BambooNotification extends AbstractNotification {
+public class BambooNotification extends AbstractUiNotification {
 
 	private final BambooBuild build;
 
 	private final CHANGE change;
 
 	private final TaskRepository repository;
+
+	private static final String EVENT_ID = "id";
 
 	public enum CHANGE {
 		ADDED("Build added"), REMOVED("Build removed"), CHANGED("Build changed");
@@ -52,7 +55,7 @@ public class BambooNotification extends AbstractNotification {
 	}
 
 	public BambooNotification(BambooBuild build, TaskRepository repository, CHANGE change) {
-		super();
+		super(EVENT_ID);
 		this.build = build;
 		this.change = change;
 		this.repository = repository;
@@ -100,12 +103,7 @@ public class BambooNotification extends AbstractNotification {
 		});
 	}
 
-	@Override
-	public void setDate(Date date) {
-		// ignore
-	}
-
-	public int compareTo(AbstractNotification anotherNotification) {
+	public int compareTo(AbstractUiNotification anotherNotification) {
 		if (anotherNotification == null) {
 			throw new ClassCastException("A BambooNotification object expected."); //$NON-NLS-1$
 		}

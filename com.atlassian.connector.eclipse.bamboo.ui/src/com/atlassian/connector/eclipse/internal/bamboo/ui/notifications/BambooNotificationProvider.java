@@ -17,7 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.mylyn.internal.provisional.commons.ui.AbstractNotification;
+import org.eclipse.mylyn.commons.notifications.ui.AbstractUiNotification;
 import org.eclipse.mylyn.internal.tasks.ui.ITaskListNotificationProvider;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -44,8 +44,9 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 		BambooCorePlugin.getBuildPlanManager().removeBuildsChangedListener(this);
 	}
 
-	public Set<AbstractNotification> getNotifications() {
-		Set<AbstractNotification> toReturn = new HashSet<AbstractNotification>(notifications);
+//	public Set<AbstractNotification> getNotifications() {
+	public Set<AbstractUiNotification> getNotifications() {
+		Set<AbstractUiNotification> toReturn = new HashSet<AbstractUiNotification>(notifications);
 		notifications.clear();
 		return toReturn;
 	}
