@@ -46,6 +46,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,6 +64,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String ISSUE_TYPE_ATTR = "issuetype";
 	private static final String VOTES_ATTR = "votes";
 	private static final String WORKLOG_ATTR = "worklog";
+	private static final String WORKLOGS_ATTR = "worklogs";
 	private static final String WATCHER_ATTR = "watcher";
 	private static final String WATCHER_ATTR_5_0 = "watches";
 	private static final String PROJECT_ATTR = "project";
@@ -245,7 +247,16 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final Collection<Version> affectedVersions = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_ATTR);
 		final Collection<BasicComponent> components = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_ATTR);
 
-		final Collection<Worklog> worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
+		final Collection<Worklog> worklogs;
+		if (isJira5x0OrNewer) {
+			if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_ATTR) != null) {
+				worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(JsonParseUtil.getSelfUri(s))), FIELDS, WORKLOG_ATTR, WORKLOGS_ATTR);
+			} else {
+				worklogs = Collections.emptyList();
+			}
+		} else {
+			worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
+		}
 
 		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,

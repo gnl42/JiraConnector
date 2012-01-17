@@ -219,6 +219,11 @@ public class IssueJsonParserTest {
 	}
 
 	@Test
+	public void testParseIssueJira50Representation() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
+	}
+
+	@Test
 	public void testParseIssueJira5x0RepresentationNullCustomField() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-null-custom-field.json");
 		assertEquals(null, issue.getField("customfield_10000").getValue());

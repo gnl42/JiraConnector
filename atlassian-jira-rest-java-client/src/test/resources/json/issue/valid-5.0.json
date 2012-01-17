@@ -98,74 +98,86 @@
 			"watchCount":1,
 			"isWatching":false
 		},
-		"worklog":[
-			{
-				"self":"http://localhost:2990/jira/rest/api/latest/worklog/10000",
-				"issue":"http://localhost:2990/jira/rest/api/latest/issue/TST-1",
-				"author":{
-					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
-					"name":"admin",
-					"avatarUrls":{
-						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
-						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		"worklog": {
+			"startAt": 0,
+			"maxResults": 2,
+			"total": 2,
+			"worklogs": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10001/worklog/10000",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
 					},
-					"displayName":"Administrator",
-					"active":true
-				},
-				"updateAuthor":{
-					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
-					"name":"admin",
-					"avatarUrls":{
-						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
-						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
 					},
-					"displayName":"Administrator",
-					"active":true
+					"comment": "",
+					"created": "2012-01-17T13:16:39.882+0100",
+					"updated": "2012-01-17T13:16:39.882+0100",
+					"started": "2011-04-21T00:00:00.000+0200",
+					"timeSpent": "8h",
+					"timeSpentSeconds": 28800,
+					"id": "10000",
+					"visibility": {
+						"type": "role",
+						"value": "Developers"
+					}
 				},
-				"comment":"abc",
-				"created":"2010-08-10T15:45:44.683+0200",
-				"updated":"2010-08-10T15:45:44.683+0200",
-				"visibility":{
-					"type":"role",
-					"value":"Developers"
-				},
-				"started":"2010-08-10T15:45:00.000+0200",
-				"minutesSpent":60
-			},
-			{
-				"self":"http://localhost:2990/jira/rest/api/latest/worklog/10001",
-				"issue":"http://localhost:2990/jira/rest/api/latest/issue/TST-1",
-				"author":{
-					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
-					"name":"admin",
-					"avatarUrls":{
-						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
-						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10001/worklog/10001",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
 					},
-					"displayName":"Administrator",
-					"active":true
-				},
-				"updateAuthor":{
-					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
-					"name":"admin",
-					"avatarUrls":{
-						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
-						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
 					},
-					"displayName":"Administrator",
-					"active":true
-				},
-				"comment":"some other work",
-				"created":"2010-08-10T15:46:24.080+0200",
-				"updated":"2010-08-10T15:46:24.080+0200",
-				"visibility":{
-					"type":"group",
-					"value":"jira-users"
-				},
-				"started":"2010-08-08T15:46:00.000+0200",
-				"minutesSpent":130
-			}
-		],
+					"comment": "six hours",
+					"created": "2012-01-17T13:16:39.890+0100",
+					"updated": "2012-01-17T13:16:39.890+0100",
+					"started": "2011-04-22T00:00:00.000+0200",
+					"timeSpent": "6h",
+					"timeSpentSeconds": 21600,
+					"id": "10001",
+					"visibility": {
+						"type": "group",
+						"value": "jira-users"
+					}
+				}
+			]
+
+		},
 		"customfield_10000":1.457,
 		"status":{
 			"self":"http://localhost:2990/jira/rest/api/latest/status/1",
