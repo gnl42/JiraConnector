@@ -45,6 +45,6 @@ public class WorklogJsonParserV5 implements JsonParser<Worklog> {
 		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
 		final int secondsSpent = json.getInt("timeSpentSeconds");
 		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
-        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, secondsSpent * 60, visibility);
+        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, secondsSpent / 60, visibility);
 	}
 }
