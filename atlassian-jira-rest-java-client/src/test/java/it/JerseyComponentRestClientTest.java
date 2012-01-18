@@ -71,7 +71,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 		// now as unauthorized user
 		setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user user does not have permission to complete this operation.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
+				      	"The component with id 10010 does not exist." : "The user user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
@@ -79,7 +80,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		});
 
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
+				      	"The component with id 10010 does not exist." : "This user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponent(basicComponent.getSelf(), pm).getName();
@@ -141,19 +143,31 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		});
 
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
+				      	"The component with id 10000 does not exist." : "This user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().removeComponent(basicComponent.getSelf(), null, pm);
 			}
 		});
-		// IMO for anonymous access still Response.Status.UNAUTHORIZED should be returned - JRADEV-7671
-		TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
-			@Override
-			public void run() {
-				client.getComponentClient().createComponent("TST", componentInput, pm);
-			}
-		});
+
+		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
+			TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'TST'.", new Runnable() {
+				@Override
+				public void run() {
+					client.getComponentClient().createComponent("TST", componentInput, pm);
+				}
+			});
+		} else {
+			// IMO for anonymous access still Response.Status.UNAUTHORIZED should be returned - JRADEV-7671
+			TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
+				@Override
+				public void run() {
+					client.getComponentClient().createComponent("TST", componentInput, pm);
+				}
+			});
+		}
+
 
 		setAdmin();
 		// now let's try to add a component with colliding name
@@ -260,7 +274,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 		// smelly error code/message returned here - JRA-25062
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "This user does not have permission to complete this operation.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
+				      	"The component with id 10000 does not exist." : "This user does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf(), pm);
@@ -270,7 +285,8 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		setAdmin();
 		final BasicComponent restrictedComponent = Iterables.getOnlyElement(client.getProjectClient().getProject("RST", pm).getComponents());
 		setUser1();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user wseliga does not have permission to complete this operation.", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
+				      	"The component with id 10010 does not exist." : "The user wseliga does not have permission to complete this operation.", new Runnable() {
 			@Override
 			public void run() {
 				client.getComponentClient().getComponentRelatedIssuesCount(restrictedComponent.getSelf(), pm);
