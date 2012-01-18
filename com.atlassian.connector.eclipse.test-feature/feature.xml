@@ -83,7 +83,7 @@
       <import plugin="org.eclipse.mylyn.context.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.notifications" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.notifications.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.team" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.tests" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
