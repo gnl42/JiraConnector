@@ -95,6 +95,7 @@ plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../../mylyn/mas
 
 plugin@org.eclipse.mylyn.commons.sdk.util=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.sdk.util
 plugin@org.eclipse.mylyn.context.sdk.java=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.context.sdk.java
+plugin@org.eclipse.mylyn.context.sdk.util=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.context.sdk.util
 plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tests.util
 plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
 plugin@org.eclipse.mylyn.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn, org.eclipse.mylyn.tests
