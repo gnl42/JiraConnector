@@ -48,7 +48,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, component.getLead());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getLead());
 	}
 
 	@Test
@@ -185,10 +185,10 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
 		final Component component = client.getComponentClient().createComponent("TST", componentInput, pm);
 		assertNotNull(component.getAssigneeInfo());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, component.getAssigneeInfo().getAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getAssigneeInfo().getAssignee());
 		assertEquals(AssigneeType.COMPONENT_LEAD, component.getAssigneeInfo().getAssigneeType());
 		assertTrue(component.getAssigneeInfo().isAssigneeTypeValid());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, component.getAssigneeInfo().getRealAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getAssigneeInfo().getRealAssignee());
 		assertEquals(AssigneeType.COMPONENT_LEAD, component.getAssigneeInfo().getRealAssigneeType());
 
 		final ComponentInput componentInput2 = new ComponentInput("my component name2", "a description", IntegrationTestUtil.USER1.getName(), AssigneeType.UNASSIGNED);
@@ -197,7 +197,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		assertNull(component2.getAssigneeInfo().getAssignee());
 		assertEquals(AssigneeType.UNASSIGNED, component2.getAssigneeInfo().getAssigneeType());
 		assertFalse(component2.getAssigneeInfo().isAssigneeTypeValid());
-		assertEquals(IntegrationTestUtil.USER_ADMIN, component2.getAssigneeInfo().getRealAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component2.getAssigneeInfo().getRealAssignee());
 		assertEquals(AssigneeType.PROJECT_DEFAULT, component2.getAssigneeInfo().getRealAssigneeType());
 	}
 
