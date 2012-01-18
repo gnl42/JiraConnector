@@ -231,21 +231,21 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		assertEquals(adjustedComponent, client.getComponentClient().getComponent(basicComponent.getSelf(), pm));
 
 		final String newDescription = "updated description";
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1, component.getAssigneeInfo());
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1_LATEST, component.getAssigneeInfo());
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), null), pm);
 		assertEquals(adjustedComponent, updatedComponent);
 
 		final Component.AssigneeInfo ai = component.getAssigneeInfo();
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1,
-				new Component.AssigneeInfo(IntegrationTestUtil.USER1, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1, AssigneeType.COMPONENT_LEAD, true));
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1_LATEST,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, true));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), AssigneeType.COMPONENT_LEAD), pm);
 		assertEquals(adjustedComponent, updatedComponent);
 
 
 		// now with non-assignable assignee (thus we are inheriting assignee from project settings and component-level settings are ignored)
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER2,
-				new Component.AssigneeInfo(IntegrationTestUtil.USER2, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN, AssigneeType.PROJECT_DEFAULT, false));
+		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER2_LATEST,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER2_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN_LATEST, AssigneeType.PROJECT_DEFAULT, false));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER2.getName(), AssigneeType.COMPONENT_LEAD), pm);
 		assertEquals(adjustedComponent, updatedComponent);
