@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -64,7 +65,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 
 		final VersionInput versionInput2 = VersionInput.create("TST", "My newly created version2", "A description\nwith\new line", null, false, false);
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
+		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND : Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
 				client.getVersionRestClient().createVersion(versionInput2, pm);
@@ -96,7 +97,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 		});
 
 		setAnonymousMode();
-		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
+		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND : Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
 				client.getVersionRestClient().updateVersion(modifiedVersion.getSelf(), newVersionInput, pm);
