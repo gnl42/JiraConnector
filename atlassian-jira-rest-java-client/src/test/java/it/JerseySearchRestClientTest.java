@@ -57,6 +57,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		assertEquals(3, searchResultForNull.getMaxResults());
 
 		// seems pagination works differently between 4.4 and 5.0
+		// check the rationale https://jdog.atlassian.com/browse/JRADEV-8889
 		final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, pm);
 		assertEquals(9, search2.getTotal());
 		assertEquals(2, Iterables.size(search2.getIssues()));
