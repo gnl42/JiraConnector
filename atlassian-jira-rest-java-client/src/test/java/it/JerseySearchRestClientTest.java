@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
@@ -55,17 +56,20 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		assertEquals(3, searchResultForNull.getStartIndex());
 		assertEquals(3, searchResultForNull.getMaxResults());
 
+		// seems pagination works differently between 4.4 and 5.0
 		final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, pm);
 		assertEquals(9, search2.getTotal());
 		assertEquals(2, Iterables.size(search2.getIssues()));
-		assertEquals(0, search2.getStartIndex());
+		assertEquals("TST-6", Iterables.get(search2.getIssues(), 0).getKey());
+		assertEquals("TST-5", Iterables.get(search2.getIssues(), 1).getKey());
+		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 1 : 0, search2.getStartIndex());
 		assertEquals(2, search2.getMaxResults());
 
 		setUser1();
 		final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, pm);
 		assertEquals(8, search3.getTotal());
-		assertEquals(8, Iterables.size(search3.getIssues()));
-		assertEquals(0, search3.getStartIndex());
+		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 3 : 8, Iterables.size(search3.getIssues()));
+		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 0, search3.getStartIndex());
 		assertEquals(10, search3.getMaxResults());
 	}
 
