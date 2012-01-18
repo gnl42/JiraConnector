@@ -58,6 +58,7 @@
       <import plugin="org.eclipse.mylyn.discovery.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.discovery.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.notifications.core" version="0.9.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.3.0" match="compatible"/>
@@ -251,6 +252,13 @@
 
    <plugin
          id="org.eclipse.mylyn.monitor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.mylyn.commons.notifications.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
