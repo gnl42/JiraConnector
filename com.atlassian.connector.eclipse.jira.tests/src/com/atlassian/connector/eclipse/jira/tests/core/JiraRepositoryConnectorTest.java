@@ -125,7 +125,13 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraTestUtil.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
+		System.out.println("0");
+
 		boolean result = AttachmentUtil.postContext(connector, repository, task, "", null, null);
+
+		System.out.println("6");
+		System.out.println("result " + (result == true ? " is true" : " false"));
+
 		assertTrue(result);
 
 		task = JiraTestUtil.createTask(repository, issue.getId());
