@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylyn.internal.context.core.ContextCorePlugin;
 import org.eclipse.mylyn.internal.tasks.core.TaskTask;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizationSession;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
@@ -121,7 +120,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachContext");
 		ITask task = JiraTestUtil.createTask(repository, issue.getId());
 		assertEquals("testAttachContext", task.getSummary());
-		File sourceContextFile = ContextCorePlugin.getContextStore().getFileForContext(task.getHandleIdentifier());
+//		File sourceContextFile = ContextCorePlugin.getContextStore().getFileForContext(task.getHandleIdentifier());
+		File sourceContextFile = TasksUiPlugin.getContextStore().getFileForContext(task);
 		JiraTestUtil.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
