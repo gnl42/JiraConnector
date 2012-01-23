@@ -120,20 +120,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachContext");
 		ITask task = JiraTestUtil.createTask(repository, issue.getId());
 		assertEquals("testAttachContext", task.getSummary());
-//		File sourceContextFile = ContextCorePlugin.getContextStore().getFileForContext(task.getHandleIdentifier());
 		File sourceContextFile = TasksUiPlugin.getContextStore().getFileForContext(task);
 		JiraTestUtil.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
-		System.out.println(sourceContextFile.getAbsolutePath());
-
-		System.out.println("0");
-
 		boolean result = AttachmentUtil.postContext(connector, repository, task, "", null, null);
-
-		System.out.println("6");
-		System.out.println("result " + (result == true ? " is true" : " false"));
-
 		assertTrue(result);
 
 		task = JiraTestUtil.createTask(repository, issue.getId());
