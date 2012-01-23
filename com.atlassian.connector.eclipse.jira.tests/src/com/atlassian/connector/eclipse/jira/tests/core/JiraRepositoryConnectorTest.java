@@ -125,6 +125,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraTestUtil.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
+		System.out.println(sourceContextFile.getAbsolutePath());
+
 		System.out.println("0");
 
 		boolean result = AttachmentUtil.postContext(connector, repository, task, "", null, null);
