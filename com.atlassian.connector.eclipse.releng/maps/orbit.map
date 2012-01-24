@@ -146,68 +146,68 @@ plugin@java_cup.runtime.source,0.10.0=GET,http://download.eclipse.org/tools/orbi
 !plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.activation_1.1.0.v201005080500.jar
 plugin@javax.activation,1.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.activation_1.1.0.v201005080500.jar
 
-plugin@javax.annotation,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.annotation_1.0.0.v20100513-0750.jar
+plugin@javax.annotation,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.annotation_1.0.0.v20100513-0750.jar
 
-plugin@javax.annotation.source,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.annotation.source_1.0.0.v20100513-0750.jar
+plugin@javax.annotation.source,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.annotation.source_1.0.0.v20100513-0750.jar
 
-plugin@javax.el,2.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.el_2.1.0.v201004190952.jar
+plugin@javax.el,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.el_2.1.0.v201004190952.jar
 
-plugin@javax.el.source,2.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.el.source_2.1.0.v201004190952.jar
+plugin@javax.el.source,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.el.source_2.1.0.v201004190952.jar
 
-plugin@javax.inject,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.inject_1.0.0.v20091030.jar
+plugin@javax.inject,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.inject_1.0.0.v20091030.jar
 
-plugin@javax.inject.source,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.inject.source_1.0.0.v20091030.jar
+plugin@javax.inject.source,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.inject.source_1.0.0.v20091030.jar
 
-plugin@javax.jws,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.jws_2.0.0.v201005080400.jar
+plugin@javax.jws,2.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.jws_2.0.0.v201005080400.jar
 
-plugin@javax.jws.source,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.jws.source_2.0.0.v201005080400.jar
+plugin@javax.jws.source,2.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.jws.source_2.0.0.v201005080400.jar
 
 !plugin@javax.mail,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail_1.4.0.v201005080615.jar
 plugin@javax.mail,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail_1.4.0.v201005080615.jar
 
-plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail.glassfish_1.4.1.v201005082020.jar
+plugin@javax.mail.glassfish,1.4.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail.glassfish_1.4.1.v201005082020.jar
 
-plugin@javax.mail.glassfish.source,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail.glassfish.source_1.4.1.v201005082020.jar
+plugin@javax.mail.glassfish.source,1.4.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail.glassfish.source_1.4.1.v201005082020.jar
 
-plugin@javax.management,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.management_1.2.0.v20100427-1100.jar
+plugin@javax.management,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.management_1.2.0.v20100427-1100.jar
 
-plugin@javax.management.remote,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.management.remote_1.0.0.v20100427-1100.jar
+plugin@javax.management.remote,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.management.remote_1.0.0.v20100427-1100.jar
 
-plugin@javax.persistence,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.persistence_1.0.0.v200905011740.jar
+plugin@javax.persistence,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.persistence_1.0.0.v200905011740.jar
 
-plugin@javax.persistence.source,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.persistence.source_1.0.0.v200905011740.jar
+plugin@javax.persistence.source,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.persistence.source_1.0.0.v200905011740.jar
 
-plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.5.0.v200910301333.jar
+plugin@javax.servlet,2.5.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.5.0.v200910301333.jar
 
-plugin@javax.servlet,2.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.3.0.v200806031603.jar
+plugin@javax.servlet,2.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.3.0.v200806031603.jar
 
-plugin@javax.servlet,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.4.0.v200806031604.jar
+plugin@javax.servlet,2.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.4.0.v200806031604.jar
 
-plugin@javax.servlet.jsp,2.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_2.1.0.v201004190952.jar
+plugin@javax.servlet.jsp,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_2.1.0.v201004190952.jar
 
-plugin@javax.servlet.jsp,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_1.2.0.v200806031606.jar
+plugin@javax.servlet.jsp,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_1.2.0.v200806031606.jar
 
-plugin@javax.servlet.jsp,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_2.0.0.v200806031607.jar
+plugin@javax.servlet.jsp,2.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp_2.0.0.v200806031607.jar
 
-plugin@javax.servlet.jsp.jstl,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.jstl_1.2.0.v201004190952.jar
+plugin@javax.servlet.jsp.jstl,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.jstl_1.2.0.v201004190952.jar
 
-plugin@javax.servlet.jsp.jstl.source,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.jstl.source_1.2.0.v201004190952.jar
+plugin@javax.servlet.jsp.jstl.source,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.jstl.source_1.2.0.v201004190952.jar
 
-plugin@javax.servlet.jsp.source,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_2.0.0.v200806031607.jar
+plugin@javax.servlet.jsp.source,2.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_2.0.0.v200806031607.jar
 
-plugin@javax.servlet.jsp.source,2.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_2.1.0.v201004190952.jar
+plugin@javax.servlet.jsp.source,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_2.1.0.v201004190952.jar
 
-plugin@javax.servlet.jsp.source,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_1.2.0.v200806031606.jar
+plugin@javax.servlet.jsp.source,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.jsp.source_1.2.0.v200806031606.jar
 
-plugin@javax.servlet.source,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.5.0.v200910301333.jar
+plugin@javax.servlet.source,2.5.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.5.0.v200910301333.jar
 
-plugin@javax.servlet.source,2.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.3.0.v200806031603.jar
+plugin@javax.servlet.source,2.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.3.0.v200806031603.jar
 
-plugin@javax.servlet.source,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.4.0.v200806031604.jar
+plugin@javax.servlet.source,2.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet.source_2.4.0.v200806031604.jar
 
-plugin@javax.transaction,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.transaction_1.1.1.v201004190952.jar
+plugin@javax.transaction,1.1.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.transaction_1.1.1.v201004190952.jar
 
-plugin@javax.transaction.source,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.transaction.source_1.1.1.v201004190952.jar
+plugin@javax.transaction.source,1.1.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.transaction.source_1.1.1.v201004190952.jar
 
 !plugin@javax.wsdl,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.4.0.v200806030407.jar
 plugin@javax.wsdl,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.4.0.v200806030407.jar
