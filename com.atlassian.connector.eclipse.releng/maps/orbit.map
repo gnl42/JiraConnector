@@ -143,7 +143,8 @@ plugin@java_cup.runtime,0.10.0=GET,http://download.eclipse.org/tools/orbit/downl
 
 plugin@java_cup.runtime.source,0.10.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/java_cup.runtime.source_0.10.0.v201005080400.jar
 
-plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.activation_1.1.0.v201005080500.jar
+!plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.activation_1.1.0.v201005080500.jar
+plugin@javax.activation,1.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.activation_1.1.0.v201005080500.jar
 
 plugin@javax.annotation,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.annotation_1.0.0.v20100513-0750.jar
 
