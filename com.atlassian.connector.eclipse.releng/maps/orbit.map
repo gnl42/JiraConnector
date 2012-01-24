@@ -111,9 +111,11 @@ plugin@com.sun.el,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/dr
 
 plugin@com.sun.el.source,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.el.source_1.0.0.v201004190952.jar
 
-plugin@com.sun.syndication,0.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication_0.9.0.v200803061811.jar
+!plugin@com.sun.syndication,0.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication_0.9.0.v200803061811.jar
+plugin@com.sun.syndication,0.9.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication_0.9.0.v200803061811.jar
 
-plugin@com.sun.syndication.source,0.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication.source_0.9.0.v200803061811.jar
+!plugin@com.sun.syndication.source,0.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication.source_0.9.0.v200803061811.jar
+plugin@com.sun.syndication.source,0.9.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.syndication.source_0.9.0.v200803061811.jar
 
 plugin@com.sun.xml.bind,2.1.12=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.sun.xml.bind_2.1.12.v201003251730.jar
 
