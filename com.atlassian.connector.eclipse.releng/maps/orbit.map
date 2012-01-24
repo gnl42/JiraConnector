@@ -235,7 +235,8 @@ plugin@javax.xml.bind.source,2.0.0=GET,http://download.eclipse.org/tools/orbit/d
 
 plugin@javax.xml.bind.source,2.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.bind.source_2.2.0.v201005080402.jar
 
-plugin@javax.xml.rpc,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.rpc_1.1.0.v201005080400.zip,unpack=true
+!plugin@javax.xml.rpc,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.rpc_1.1.0.v201005080400.zip,unpack=true
+plugin@javax.xml.rpc,1.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.rpc_1.1.0.v201005080400.zip,unpack=true
 
 plugin@javax.xml.soap,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.2.0.v201005080501.zip,unpack=true
 
