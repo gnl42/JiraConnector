@@ -161,7 +161,8 @@ plugin@javax.jws,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/dro
 
 plugin@javax.jws.source,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.jws.source_2.0.0.v201005080400.jar
 
-plugin@javax.mail,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail_1.4.0.v201005080615.jar
+!plugin@javax.mail,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail_1.4.0.v201005080615.jar
+plugin@javax.mail,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail_1.4.0.v201005080615.jar
 
 plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.mail.glassfish_1.4.1.v201005082020.jar
 
