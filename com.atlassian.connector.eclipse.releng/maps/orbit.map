@@ -291,7 +291,8 @@ plugin@org.apache.ant.source,1.7.0=GET,http://download.eclipse.org/tools/orbit/d
 
 plugin@org.apache.ant.source,1.6.5=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.ant.source_1.6.5.v20100518-1135.jar
 
-plugin@org.apache.axis,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.axis_1.4.0.v201005080400.zip,unpack=true
+!plugin@org.apache.axis,1.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.axis_1.4.0.v201005080400.zip,unpack=true
+plugin@org.apache.axis,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.axis_1.4.0.v201005080400.zip,unpack=true
 
 plugin@org.apache.batik.bridge,1.6.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.batik.bridge_1.6.0.v200912221622.jar
 
