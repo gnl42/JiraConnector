@@ -700,37 +700,37 @@ plugin@org.kohsuke.args4j,2.0.12=GET,http://download.eclipse.org/tools/orbit/dow
 
 plugin@org.kohsuke.args4j.source,2.0.12=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.kohsuke.args4j.source_2.0.12.v200910131500.jar
 
-plugin@org.mortbay.jetty,5.1.14=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty_5.1.14.v200806031611.jar
+plugin@org.mortbay.jetty,5.1.14=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty_5.1.14.v200806031611.jar
 
-plugin@org.mortbay.jetty,5.1.11=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty_5.1.11.v200806031610.jar
+plugin@org.mortbay.jetty,5.1.11=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty_5.1.11.v200806031610.jar
 
-plugin@org.mortbay.jetty.server,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.23.v201004211559.jar
+plugin@org.mortbay.jetty.server,6.1.23=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.23.v201004211559.jar
 
-plugin@org.mortbay.jetty.server,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
+plugin@org.mortbay.jetty.server,6.1.15=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
 
-plugin@org.mortbay.jetty.server,6.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.7.v200806031612.jar
+plugin@org.mortbay.jetty.server,6.1.7=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.7.v200806031612.jar
 
-plugin@org.mortbay.jetty.server.source,6.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.7.v200806031612.jar
+plugin@org.mortbay.jetty.server.source,6.1.7=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.7.v200806031612.jar
 
-plugin@org.mortbay.jetty.server.source,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.23.v201004211559.jar
+plugin@org.mortbay.jetty.server.source,6.1.23=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.23.v201004211559.jar
 
-plugin@org.mortbay.jetty.server.source,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.15.v200905151201.jar
+plugin@org.mortbay.jetty.server.source,6.1.15=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server.source_6.1.15.v200905151201.jar
 
-plugin@org.mortbay.jetty.source,5.1.14=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.source_5.1.14.v200806031611.jar
+plugin@org.mortbay.jetty.source,5.1.14=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.source_5.1.14.v200806031611.jar
 
-plugin@org.mortbay.jetty.source,5.1.11=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.source_5.1.11.v200806031610.jar
+plugin@org.mortbay.jetty.source,5.1.11=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.source_5.1.11.v200806031610.jar
 
-plugin@org.mortbay.jetty.util,6.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.7.v200806031612.jar
+plugin@org.mortbay.jetty.util,6.1.7=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.7.v200806031612.jar
 
-plugin@org.mortbay.jetty.util,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.23.v201004211559.jar
+plugin@org.mortbay.jetty.util,6.1.23=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.23.v201004211559.jar
 
-plugin@org.mortbay.jetty.util,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.15.v200905182336.jar
+plugin@org.mortbay.jetty.util,6.1.15=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.15.v200905182336.jar
 
-plugin@org.mortbay.jetty.util.source,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.23.v201004211559.jar
+plugin@org.mortbay.jetty.util.source,6.1.23=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.23.v201004211559.jar
 
-plugin@org.mortbay.jetty.util.source,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.15.v200905182336.jar
+plugin@org.mortbay.jetty.util.source,6.1.15=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.15.v200905182336.jar
 
-plugin@org.mortbay.jetty.util.source,6.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.7.v200806031612.jar
+plugin@org.mortbay.jetty.util.source,6.1.7=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util.source_6.1.7.v200806031612.jar
 
 plugin@org.mozilla.javascript,1.6.6=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mozilla.javascript_1.6.6.v200903061552.jar
 
