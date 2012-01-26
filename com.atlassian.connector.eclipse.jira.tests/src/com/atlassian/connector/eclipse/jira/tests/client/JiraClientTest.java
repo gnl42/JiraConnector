@@ -187,7 +187,8 @@ public class JiraClientTest extends TestCase {
 			assertThat(
 					e.getMessage(),
 					either(containsString("User 'nonexistantuser' cannot be assigned issues.")).or(
-							equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")));
+							equalTo("User &#39;nonexistantuser&#39; cannot be assigned issues.")).or(
+							containsString("User 'nonexistantuser' does not exist.")));
 		}
 
 		try {
