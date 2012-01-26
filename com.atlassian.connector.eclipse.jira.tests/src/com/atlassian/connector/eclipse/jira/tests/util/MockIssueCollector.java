@@ -37,7 +37,7 @@ public class MockIssueCollector implements IssueCollector {
 	}
 
 	public int getMaxHits() {
-		return 5000;
+		return 1000;
 	}
 
 	public boolean isCancelled() {

@@ -26,7 +26,6 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -76,7 +75,8 @@ public class JiraUtil {
 
 	private static final String MAX_SEARCH_RESULTS = "jira.maxSearchResults"; //$NON-NLS-1$
 
-	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
+//	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
+	public static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("com.atlassian.connector.eclipse.jira.core/debug/repository")); //$NON-NLS-1$
 
