@@ -314,8 +314,8 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 		}
 
 		public Control createControl(Composite composite, final FormToolkit toolkit) {
-			boolean hasIncomingChanges = getModel().hasIncomingChanges(commentAttribute);
-			getTaskData().getAttributeMapper().updateTaskComment(taskComment, commentAttribute);
+			boolean hasIncomingChanges = getModel().hasIncomingChanges(getCommentAttribute());
+			getTaskData().getAttributeMapper().updateTaskComment(taskComment, getCommentAttribute());
 			int style = ExpandableComposite.TREE_NODE | ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT
 					| ExpandableComposite.COMPACT;
 			if (hasIncomingChanges || expandAllInProgress) {
@@ -347,7 +347,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 			}
 
 			// for outline
-			EditorUtil.setMarker(commentComposite, commentAttribute.getId());
+			EditorUtil.setMarker(commentComposite, getCommentAttribute().getId());
 			return commentComposite;
 		}
 
@@ -495,6 +495,14 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 		 */
 		public AbstractAttributeEditor getEditor() {
 			return editor;
+		}
+
+		public TaskAttribute getCommentAttribute() {
+			return commentAttribute;
+		}
+
+		public Control getControl() {
+			return commentComposite;
 		}
 
 	}
@@ -806,8 +814,89 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
 	@Override
 	public boolean setFormInput(Object input) {
-		// ignore
+		if (input instanceof String) {
+			String text = (String) input;
+			if (text.startsWith(TaskAttribute.PREFIX_COMMENT)) {
+				if (commentAttributes != null) {
+					for (TaskAttribute commentAttribute : commentAttributes) {
+						if (text.equals(commentAttribute.getId())) {
+							selectReveal(commentAttribute);
+						}
+					}
+				}
+			}
+		}
 		return super.setFormInput(input);
+	}
+
+	public CommentViewer selectReveal(TaskAttribute commentAttribute) {
+		if (commentAttribute == null) {
+			return null;
+		}
+		expandAllComments(false);
+		expandGroupViewer(commentAttribute);
+		List<CommentGroupViewer> groupViewers = getCommentGroupViewers();
+		for (CommentGroupViewer groupViewer : groupViewers) {
+			for (CommentViewer viewer : groupViewer.getCommentViewers()) {
+				if (viewer.getCommentAttribute().equals(commentAttribute)) {
+//					CommonFormUtil.ensureVisible(viewer.getControl());
+					// EditorUtil is consistent with behavior of outline 
+					EditorUtil.reveal(getTaskEditorPage().getManagedForm().getForm(), commentAttribute.getId());
+					return viewer;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void expandGroupViewer(TaskAttribute commentAttribute) {
+		try {
+			expandAllInProgress = true;
+
+			List<CommentGroupViewer> groupViewers = getCommentGroupViewers();
+			for (CommentGroupViewer groupViewer : groupViewers) {
+				for (CommentViewer viewer : groupViewer.getCommentViewers()) {
+					if (viewer.getCommentAttribute().equals(commentAttribute)) {
+						groupViewer.setExpanded(true);
+					}
+				}
+			}
+		} finally {
+			expandAllInProgress = false;
+			getTaskEditorPage().setReflow(true);
+		}
+
+		getTaskEditorPage().reflow();
+	}
+
+	private void expandAllComments(boolean expandViewers) {
+		try {
+			expandAllInProgress = true;
+//			suppressExpandViewers = !expandViewers;
+			getTaskEditorPage().setReflow(false);
+
+			if (section != null) {
+				// the expandAllInProgress flag will ensure that comments in top-level groups have been 
+				// expanded, no need to expand groups explicitly
+				//boolean expandGroups = section.getClient() != null;
+
+				CommonFormUtil.setExpanded(section, true);
+
+				if (expandViewers) {
+					List<CommentGroupViewer> viewers = getCommentGroupViewers();
+					for (int i = viewers.size() - 1; i >= 0; i--) {
+						if (!viewers.get(i).isFullyExpanded()) {
+							viewers.get(i).setExpanded(true);
+						}
+					}
+				}
+			}
+		} finally {
+			expandAllInProgress = false;
+//			suppressExpandViewers = false;
+			getTaskEditorPage().setReflow(true);
+		}
+		getTaskEditorPage().reflow();
 	}
 
 }
