@@ -12,7 +12,9 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -29,6 +31,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.core.TaskAttachment;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttachmentTableLabelProvider;
@@ -57,9 +60,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
 
 /**
  * I hope to contribute it back one day to Mylyn framework
@@ -85,6 +86,8 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 	private Composite attachmentsComposite;
 
 	private boolean useDescriptionColumn;
+
+	private Section section;
 
 	public JiraTaskEditorAttachmentsPart() {
 		setPartName(Messages.TaskEditorAttachmentPart_Attachments);
@@ -227,7 +230,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 	public void createControl(Composite parent, final FormToolkit toolkit) {
 		initialize();
 
-		final Section section = createSection(parent, toolkit, hasIncoming);
+		section = createSection(parent, toolkit, hasIncoming);
 		section.setText(getPartName() + " (" + attachments.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (hasIncoming) {
 			expandSection(toolkit, section);
@@ -306,6 +309,52 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 		attachScreenshotAction.setImageDescriptor(CommonImages.IMAGE_CAPTURE);
 		attachScreenshotAction.setToolTipText(Messages.TaskEditorAttachmentPart_Attach__Screenshot);
 		toolBarManager.add(attachScreenshotAction);
+	}
+
+	@Override
+	public boolean setFormInput(Object input) {
+		if (input instanceof String) {
+			String text = (String) input;
+			if (text.startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
+				if (attachments != null) {
+					for (TaskAttribute attachmentAttribute : attachments) {
+						if (text.equals(attachmentAttribute.getId())) {
+							selectReveal(attachmentAttribute);
+						}
+					}
+				}
+			}
+		}
+		return super.setFormInput(input);
+	}
+
+	public TaskAttribute selectReveal(TaskAttribute attachmentAttribute) {
+		if (attachmentAttribute == null) {
+			return null;
+		}
+		expand();
+		for (TaskAttribute attachment : attachments) {
+			if (attachment.equals(attachmentAttribute)) {
+				CommonFormUtil.ensureVisible(attachmentsComposite);
+				EditorUtil.focusOn(getTaskEditorPage().getManagedForm().getForm(), section);
+
+				return attachmentAttribute;
+			}
+		}
+		return null;
+	}
+
+	private void expand() {
+		try {
+			getTaskEditorPage().setReflow(false);
+
+			if (section != null) {
+				CommonFormUtil.setExpanded(section, true);
+			}
+		} finally {
+			getTaskEditorPage().setReflow(true);
+		}
+		getTaskEditorPage().reflow();
 	}
 
 }
