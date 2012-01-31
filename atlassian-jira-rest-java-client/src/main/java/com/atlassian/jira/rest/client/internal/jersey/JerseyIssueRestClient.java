@@ -33,6 +33,7 @@ import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
@@ -120,17 +121,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				final WebResource transitionsResource = client.resource(transitionsUri);
 				final JSONObject jsonObject = transitionsResource.get(JSONObject.class);
 				if (jsonObject.has("transitions")) {
-					final JSONArray transitionsArray = jsonObject.getJSONArray("transitions");
-					final Collection<Transition> transitions = new ArrayList<Transition>(transitionsArray.length());
-					for(int i = 0, s = transitionsArray.length(); i < s; ++i) {
-						try {
-							final Transition transition = transitionJsonParserV5.parse(transitionsArray.getJSONObject(i));
-							transitions.add(transition);
-						} catch (JSONException e) {
-							throw new RestClientException(e);
-						}
-					}
-					return transitions;
+					return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
 				} else {
 					final Collection<Transition> transitions = new ArrayList<Transition>(jsonObject.length());
 					@SuppressWarnings("unchecked")
