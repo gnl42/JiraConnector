@@ -13,6 +13,8 @@
 package com.atlassian.connector.eclipse.internal.jira.core.service.web;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -243,6 +245,7 @@ public class JiraWebSession {
 		final String restLogin = "/rest/gadget/1.0/login"; //$NON-NLS-1$ // JIRA 4.x has additional endpoint for login that tells if CAPTCHA limit was hit
 		final String loginAction = "/secure/Dashboard.jspa"; //$NON-NLS-1$;
 		boolean jira4x = true;
+		boolean externalRedirect = false;
 
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
@@ -294,6 +297,18 @@ public class JiraWebSession {
 					tracker.log("Redirect to insecure location during login to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 					insecureRedirect = true;
 				}
+				
+				try {
+					URL base = new URL(baseUrl);
+					URL dest = new URL(url);
+
+					if (base.getHost() != null && !base.getHost().equals(dest.getHost())) {
+						externalRedirect = true;
+					}
+				} catch (MalformedURLException e) {
+					// do nothing - we just cannot improve error message in this case
+				}
+
 				if (url.endsWith("/success")) { //$NON-NLS-1$
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success")); //$NON-NLS-1$
 					if (baseUrl.equals(newBaseUrl) || !client.getLocalConfiguration().getFollowRedirects()) {
@@ -314,7 +329,11 @@ public class JiraWebSession {
 
 		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 
-		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login"); //$NON-NLS-1$
+		String message = "Exceeded maximum number of allowed redirects during login"; //$NON-NLS-1$
+		if (externalRedirect) {
+			message += "\n Redirect to external address is not allowed"; //$NON-NLS-1$
+		}
+		throw new JiraServiceUnavailableException(message);
 	}
 
 	private void addAuthenticationCookie(HttpClient httpClient, PostMethod method) {
