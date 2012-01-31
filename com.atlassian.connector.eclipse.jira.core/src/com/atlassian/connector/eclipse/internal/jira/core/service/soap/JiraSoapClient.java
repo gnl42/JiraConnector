@@ -461,7 +461,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 				case HttpURLConnection.HTTP_UNAVAILABLE:
 					return ERROR_RPC_NOT_ENABLED;
 				case HttpURLConnection.HTTP_NOT_FOUND:
-					return Messages.JiraSoapClient_No_JIRA_repository_found_at_location;
+					return Messages.JiraSoapClient_No_JIRA_repository_found_at_location_or_proxy;
 				case HttpURLConnection.HTTP_MOVED_PERM:
 					return Messages.JiraSoapClient_The_location_of_the_Jira_server_has_moved;
 				}

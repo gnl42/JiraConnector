@@ -33,7 +33,7 @@ public class Messages extends NLS {
 
 	public static String JiraSoapClient_The_location_of_the_Jira_server_has_moved;
 
-	public static String JiraSoapClient_No_JIRA_repository_found_at_location;
+	public static String JiraSoapClient_No_JIRA_repository_found_at_location_or_proxy;
 
 	public static String JiraSoapClient_Server_error_;
 
