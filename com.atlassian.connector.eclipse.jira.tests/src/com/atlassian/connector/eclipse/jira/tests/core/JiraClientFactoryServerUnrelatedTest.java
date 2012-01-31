@@ -50,7 +50,7 @@ public class JiraClientFactoryServerUnrelatedTest extends TestCase {
 					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
-			assertEquals("No JIRA repository found at location.", e.getMessage());
+			assertEquals("No JIRA repository found at location. Invalid URL or proxy problem.", e.getMessage());
 		}
 
 		// RPC not enabled
