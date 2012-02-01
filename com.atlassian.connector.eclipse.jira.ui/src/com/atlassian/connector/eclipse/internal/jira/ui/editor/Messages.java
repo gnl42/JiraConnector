@@ -64,6 +64,8 @@ public class Messages extends NLS {
 
 	public static String LogJiraTimeDialog_Stop_Only;
 
+	public static String JiraTaskEditorPage_Submit_Failed_Please_Refresh;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
