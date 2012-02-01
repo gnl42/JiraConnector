@@ -16,13 +16,18 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.sync.SubmitJob;
 import org.eclipse.mylyn.tasks.core.sync.SubmitJobEvent;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -32,6 +37,8 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
@@ -48,6 +55,8 @@ import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorT
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	private StartWorkEditorToolbarAction startWorkAction;
+
+	private boolean disposed = false;
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
@@ -183,6 +192,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	@Override
 	public void dispose() {
+		this.disposed = true;
 		TasksUiPlugin.getTaskDataManager().removeListener(updateStartWorkActionListener);
 		super.dispose();
 	}
@@ -252,8 +262,42 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}
 		}
 
-		// ignore
-		super.handleTaskSubmitted(event);
+		IStatus status = event.getJob().getStatus();
+		if (status != null
+				&& status.getSeverity() != IStatus.CANCEL
+				&& status.getCode() == RepositoryStatus.ERROR_IO
+				&& status.getMessage()
+						.contains(
+								"com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
+			handleSubmitErrorCopy(event.getJob());
+		} else {
+			super.handleTaskSubmitted(event);
+		}
 	}
 
+	private void handleSubmitErrorCopy(SubmitJob job) {
+		if (!this.disposed) {
+			final IStatus status = job.getStatus();
+			String message = Messages.JiraTaskEditorPage_Submit_Failed_Please_Refresh;
+			String detailedMessage = message + "\n\n" + status.getMessage(); //$NON-NLS-1$
+
+			final IStatus newStatus;
+
+			if (status instanceof RepositoryStatus) {
+				newStatus = RepositoryStatus.createStatus(((RepositoryStatus) status).getRepositoryUrl(),
+						status.getSeverity(), status.getPlugin(), detailedMessage);
+			} else {
+				newStatus = new Status(status.getSeverity(), status.getPlugin(), detailedMessage);
+			}
+
+			getTaskEditor().setMessage(message, IMessageProvider.ERROR, new HyperlinkAdapter() {
+				@Override
+				public void linkActivated(HyperlinkEvent e) {
+					TasksUiInternal.displayStatus(
+							org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed,
+							newStatus);
+				}
+			});
+		}
+	}
 }
