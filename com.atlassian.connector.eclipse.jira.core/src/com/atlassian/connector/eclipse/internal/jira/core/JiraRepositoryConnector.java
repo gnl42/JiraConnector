@@ -34,9 +34,9 @@ import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -62,6 +62,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
  * @author Mik Kersten
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Jacek Jaroczynski
  * @since 3.0
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
@@ -443,7 +444,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getTaskIdPrefix() {
-		return "issue";
+		return "issue"; //$NON-NLS-1$
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
@@ -496,6 +497,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
+		final Date originalModificationDate = task.getModificationDate();
+
 		TaskMapper scheme = getTaskMapping(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
@@ -514,6 +517,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		attribute = taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id());
 		if (attribute != null) {
 			task.setAttribute(JiraAttribute.PROJECT.id(), attribute.getValue());
+		}
+
+		// Don't set modification date on the task if the task data is partial: otherwise hasTaskChanged will fail
+		// to detect changes and the synchronization will fail to store the task data when synchronized -- unless it's
+		// run by the user.  This could have an adverse performance impact due to multiple task synchronizations.
+		if (taskData.isPartial()) {
+			task.setModificationDate(originalModificationDate);
 		}
 	}
 
