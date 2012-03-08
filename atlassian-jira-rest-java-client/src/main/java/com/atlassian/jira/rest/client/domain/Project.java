@@ -35,9 +35,9 @@ public class Project extends BasicProject {
 	private final Collection<Version> versions;
 	private final Collection<BasicComponent> components;
 
-	public Project(URI self, String key, String description, BasicUser lead, URI uri, Collection<Version> versions,
+	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri, Collection<Version> versions,
 				   Collection<BasicComponent> components) {
-		super(self, key);
+		super(self, key, name);
 		this.description = description;
 		this.lead = lead;
 		this.uri = uri;

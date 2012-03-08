@@ -39,6 +39,7 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey());
 		assertThat(project.getVersions(), hasOnlyElements(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		assertThat(project.getComponents(), hasOnlyElements(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
+        assertNull(project.getName());
 	}
 
 	@Test
@@ -54,5 +55,6 @@ public class ProjectJsonParserTest {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
 		assertEquals("TST", project.getKey()); //2010-08-25
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
+        assertEquals("Test Project", project.getName());
 	}
 }

@@ -35,6 +35,7 @@ public class ProjectJsonParser implements JsonParser<Project> {
 		URI self = JsonParseUtil.getSelfUri(json);
 		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		final String key = json.getString("key");
+        final String name = JsonParseUtil.getOptionalString(json, "name");
 		final String urlStr = JsonParseUtil.getOptionalString(json, "url");
 		URI uri;
 		try {
@@ -48,7 +49,7 @@ public class ProjectJsonParser implements JsonParser<Project> {
 		}
 		final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
 		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
-		return new Project(self, key, description, lead, uri, versions, components);
+		return new Project(self, key, name, description, lead, uri, versions, components);
 
 	}
 }

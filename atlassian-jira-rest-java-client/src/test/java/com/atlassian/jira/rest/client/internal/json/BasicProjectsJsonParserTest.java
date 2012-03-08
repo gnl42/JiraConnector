@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BasicProjectsJsonParserTest {
 
-	private static final BasicProject TST_PROJECT = new BasicProject(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST");
+	private static final BasicProject TST_PROJECT = new BasicProject(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", "Test Project");
 	@Test
 	public void testParse() throws Exception {
 		BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
