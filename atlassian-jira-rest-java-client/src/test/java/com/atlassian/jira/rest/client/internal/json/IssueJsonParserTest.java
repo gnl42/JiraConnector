@@ -223,6 +223,18 @@ public class IssueJsonParserTest {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
 	}
 
+    @Test
+    public void testParseIssueJiraRepresentationJrjc49() throws JSONException {
+        final Issue issue = parseIssue("/json/issue/jrjc49.json");
+        final Iterable<Worklog> worklogs = issue.getWorklogs();
+        assertEquals(1, Iterables.size(worklogs));
+        final Worklog worklog = Iterables.get(worklogs, 0);
+        assertNull(worklog.getComment());
+        assertEquals(180, worklog.getMinutesSpent());
+        assertEquals("Sample, User", worklog.getAuthor().getDisplayName());
+
+    }
+
 	@Test
 	public void testParseIssueJira5x0RepresentationNullCustomField() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-null-custom-field.json");
