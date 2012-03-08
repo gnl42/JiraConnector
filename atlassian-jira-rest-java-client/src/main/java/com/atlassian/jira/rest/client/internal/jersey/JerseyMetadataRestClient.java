@@ -19,10 +19,12 @@ package com.atlassian.jira.rest.client.internal.jersey;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.IssuelinksType;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Resolution;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Status;
+import com.atlassian.jira.rest.client.internal.json.IssueLinkTypesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueTypeJsonParser;
 import com.atlassian.jira.rest.client.internal.json.PriorityJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ResolutionJsonParser;
@@ -48,6 +50,7 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 	private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
+	private final IssueLinkTypesJsonParser issueLinkTypesJsonParser = new IssueLinkTypesJsonParser();
 
 	public JerseyMetadataRestClient(URI baseUri, ApacheHttpClient client) {
 		super(baseUri, client);
@@ -56,6 +59,12 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	@Override
 	public IssueType getIssueType(final URI uri, ProgressMonitor progressMonitor) {
 		return getAndParse(uri, issueTypeJsonParser, progressMonitor);
+	}
+
+	@Override
+	public Iterable<IssuelinksType> getIssueLinkTypes(ProgressMonitor progressMonitor) {
+		final URI uri = UriBuilder.fromUri(baseUri).path("issueLinkType").build();
+		return getAndParse(uri, issueLinkTypesJsonParser, progressMonitor);
 	}
 
 	@Override

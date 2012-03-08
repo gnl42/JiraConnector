@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.IssuelinksType;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Resolution;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
@@ -40,6 +41,15 @@ public interface MetadataRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	IssueType getIssueType(URI uri, ProgressMonitor progressMonitor);
+
+    /**
+     * Retrieves from the server complete list of available issue types
+     * @param progressMonitor progress monitor
+     * @return list of available issue types for this JIRA instance
+	 * @throws RestClientException in case of problems (if linking is disabled on the server, connectivity, malformed messages, etc.)
+     * @since server 4.3, client 0.5
+     */
+    Iterable<IssuelinksType> getIssueLinkTypes(ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves complete information about selected status

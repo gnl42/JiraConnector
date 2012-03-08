@@ -653,10 +653,6 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals("Duplicate", targetLink.getIssueLinkType().getName());
 	}
 
-	private boolean doesJiraSupportRestIssueLinking() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
-	}
-
 	private boolean doesJiraSupportAddingAttachment() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}

@@ -23,12 +23,14 @@ import com.atlassian.jira.rest.client.domain.BasicResolution;
 import com.atlassian.jira.rest.client.domain.BasicStatus;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.IssuelinksType;
 import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Resolution;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 
 import javax.ws.rs.core.Response;
@@ -61,6 +63,18 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
 
+	}
+
+	public void testGetIssueTypes() {
+		if (!doesJiraSupportRestIssueLinking()) {
+			return;
+		}
+		final Iterable<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes(pm);
+		assertEquals(1, Iterables.size(issueTypes));
+		final IssuelinksType issueType = Iterables.getOnlyElement(issueTypes);
+		assertEquals("Duplicate", issueType.getName());
+		assertEquals("is duplicated by", issueType.getInward());
+		assertEquals("duplicates", issueType.getOutward());
 	}
 
 	public void testGetStatus() {

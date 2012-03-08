@@ -16,6 +16,8 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+
 /**
  * Base class for tests reloading each time (before each test method) the state of JIRA from an external
  * dump (export) XML file.
@@ -32,5 +34,9 @@ public abstract class AbstractRestoringJiraStateJerseyRestClientTest extends Abs
 
 	protected String getJiraDumpFile() {
 		return DEFAULT_JIRA_DUMP_FILE;
+	}
+
+	protected boolean doesJiraSupportRestIssueLinking() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 }

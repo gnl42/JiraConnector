@@ -2,25 +2,22 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
 
+import java.net.URI;
+
 /**
  *
  * @since v0.5
  */
-public class IssuelinksType {
-	private final String name;
+public class IssuelinksType extends AddressableNamedEntity {
 	private final String id;
 	private final String inward;
 	private final String outward;
 
-	public IssuelinksType(String id, String name, String inward, String outward) {
+	public IssuelinksType(URI self, String id, String name, String inward, String outward) {
+		super(self, name);
 		this.id = id;
-		this.name = name;
 		this.inward = inward;
 		this.outward = outward;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getId() {
@@ -37,9 +34,8 @@ public class IssuelinksType {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).
+		return getToStringHelper().
 				add("id", id).
-				add("name", name).
 				add("inward", inward).
 				add("outward", outward).
 				toString();
@@ -47,10 +43,9 @@ public class IssuelinksType {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IssueLinkType) {
+		if (obj instanceof IssuelinksType) {
 			IssuelinksType that = (IssuelinksType) obj;
-			return Objects.equal(this.id, that.id)
-					&& Objects.equal(this.name, that.name)
+			return super.equals(obj) && Objects.equal(this.id, that.id)
 					&& Objects.equal(this.inward, that.inward)
 					&& Objects.equal(this.outward, that.outward);
 		}
