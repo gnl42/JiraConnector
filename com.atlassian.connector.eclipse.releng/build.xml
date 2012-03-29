@@ -27,10 +27,10 @@
 	<target name="pre-build-release" if="build.release">
 		<!-- build against release version of Mylyn -->
 		<delete>
-			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map">
+			<!--<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map">
 				<exclude name="*${build.target}.map" />
-			</fileset>
-			<!--<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map" />-->
+			</fileset>-->
+			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map" />
 		</delete>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.mylyn.commons" />
