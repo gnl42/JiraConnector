@@ -54,7 +54,7 @@
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.cdt.platform" />
-			<param name="update.site" value="${mylyn.site}" />
+			<param name="update.site" value="${cdt.site}/" />
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.cdt.mylyn" />
