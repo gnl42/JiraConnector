@@ -52,10 +52,14 @@
 			<param name="update.feature" value="org.eclipse.mylyn.commons.sdk" />
 			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
-		<!--<antcall target="install-bundle">
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.cdt.mylyn" />
+			<param name="update.site" value="${mylyn.site}" />
+		</antcall>
+		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.mylyn.context.sdk" />
 			<param name="update.site" value="${mylyn.site}" />
-		</antcall>-->
+		</antcall>
 	</target>
 
 	<target name="pack" depends="init">
