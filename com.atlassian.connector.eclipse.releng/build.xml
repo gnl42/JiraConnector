@@ -49,11 +49,11 @@
 			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.commons.sdk_feature" />
+			<param name="update.feature" value="org.eclipse.mylyn.commons.sdk" />
 			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 		<antcall target="install-bundle">
-			<param name="update.feature" value="org.eclipse.mylyn.context.sdk_feature" />
+			<param name="update.feature" value="org.eclipse.mylyn.context.sdk" />
 			<param name="update.site" value="${mylyn.site}" />
 		</antcall>
 	</target>
