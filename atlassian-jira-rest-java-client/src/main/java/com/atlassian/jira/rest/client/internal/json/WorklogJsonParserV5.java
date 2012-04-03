@@ -39,7 +39,7 @@ public class WorklogJsonParserV5 implements JsonParser<Worklog> {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
 		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
-		final String comment = json.getString("comment");
+		final String comment = json.optString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
 		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
