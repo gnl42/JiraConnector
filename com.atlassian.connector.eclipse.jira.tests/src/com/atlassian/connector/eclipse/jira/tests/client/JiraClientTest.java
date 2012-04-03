@@ -27,9 +27,9 @@ import junit.framework.TestCase;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.WebLocation;
-import org.eclipse.mylyn.tests.util.TestUtil;
-import org.eclipse.mylyn.tests.util.TestUtil.Credentials;
-import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.commons.repositories.core.auth.UserCredentials;
+import org.eclipse.mylyn.commons.sdk.util.CommonTestUtil;
+import org.eclipse.mylyn.commons.sdk.util.CommonTestUtil.PrivilegeLevel;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
@@ -204,7 +204,7 @@ public class JiraClientTest extends TestCase {
 			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
 		}
 
-		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
+		String guestUsername = CommonTestUtil.getCredentials(PrivilegeLevel.GUEST).getUserName();
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
@@ -477,14 +477,14 @@ public class JiraClientTest extends TestCase {
 	}
 
 	private void basicAuth(String url) throws Exception {
-		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.GUEST);
-		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
-		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
+		UserCredentials credentials = CommonTestUtil.getCredentials(PrivilegeLevel.GUEST);
+		UserCredentials httpCredentials = CommonTestUtil.getCredentials(PrivilegeLevel.USER);
+		WebLocation location = new WebLocation(url, credentials.getUserName(), credentials.getPassword());
+		location.setCredentials(AuthenticationType.HTTP, httpCredentials.getUserName(), httpCredentials.getPassword());
 		client = new JiraClient(location);
 		assertNotNull(client.getCache().getServerInfo(null));
 
-		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
+		client = new JiraClient(new WebLocation(url, credentials.getUserName(), credentials.getPassword()));
 		try {
 			assertNotNull(client.getCache().getServerInfo(null));
 			fail("Expected JiraServiceUnavailableException");
