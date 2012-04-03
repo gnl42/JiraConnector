@@ -39,7 +39,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
-			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos) {
+			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
+			@Nullable Collection<Subtask> subtasks) {
 		super(self, key);
         this.summary = summary;
 		this.project = project;
@@ -65,6 +66,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.components = components;
 		this.priority = priority;
 		this.timeTracking = timeTracking;
+		this.subtasks = subtasks;
 	}
 
 	private final BasicStatus status;
@@ -103,6 +105,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 	@Nullable
 	private final TimeTracking timeTracking;
+	@Nullable
+	private final Collection<Subtask> subtasks;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -145,6 +149,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	@Nullable
 	public Iterable<IssueLink> getIssueLinks() {
 		return issueLinks;
+	}
+
+	@Nullable
+	public Iterable<Subtask> getSubtasks() {
+		return subtasks;
 	}
 
 	/**

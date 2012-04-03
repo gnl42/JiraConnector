@@ -29,6 +29,7 @@ import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.domain.Subtask;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
@@ -246,6 +247,18 @@ public class IssueJsonParserTest {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-null-custom-field.json");
 		assertEquals(null, issue.getField("customfield_10000").getValue());
 		assertNull(issue.getIssueLinks());
+	}
+
+	@Test
+	public void issueWithSubtasks() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/subtasks-5.json");
+		Iterable<Subtask> subtasks = issue.getSubtasks();
+		assertEquals(1, Iterables.size(subtasks));
+		Subtask subtask = Iterables.get(subtasks, 0, null);
+		assertNotNull(subtask);
+		assertEquals("SAM-2", subtask.getIssueKey());
+		assertEquals("Open", subtask.getStatus().getName());
+		assertEquals("Subtask", subtask.getIssueType().getName());
 	}
 
 }

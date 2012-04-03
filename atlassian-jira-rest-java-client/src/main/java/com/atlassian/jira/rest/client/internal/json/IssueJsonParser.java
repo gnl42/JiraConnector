@@ -30,6 +30,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.Subtask;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.Worklog;
@@ -79,6 +80,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String DESCRIPTION_ATTR = "description";
 	private static final String TIMETRACKING_ATTR = "timetracking";
 	private static final String TRANSITIONS_ATTR = "transitions";
+	private static final String SUBTASKS_ATTR = "subtasks";
 
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, LINKS_ATTR_5_0, ISSUE_TYPE_ATTR, VOTES_ATTR,
@@ -106,6 +108,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
 	private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
+	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
 
 	private static final String FIELDS = "fields";
 	private static final String VALUE_ATTR = "value";
@@ -240,6 +243,11 @@ public class IssueJsonParser implements JsonParser<Issue> {
 				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
 		}
 
+		Collection<Subtask> subtasks = null;
+		if (isJira5x0OrNewer) {
+			subtasks = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_ATTR);
+		}
+
 		final BasicVotes votes = getOptionalField(shouldUseNestedValueAttribute, s, VOTES_ATTR, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_ATTR));
 
@@ -264,7 +272,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
-				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks, votes, worklogs, watchers, expandos
+				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
+				votes, worklogs, watchers, expandos, subtasks
 		);
 	}
 
