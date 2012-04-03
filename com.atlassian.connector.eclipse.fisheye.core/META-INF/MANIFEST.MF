@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse FishEye Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.core;singleton:=true
-Bundle-Version: 3.0.3.qualifier
+Bundle-Version: 3.0.4.qualifier
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core;bundle-version="[3.2.0,4.0.0)",
