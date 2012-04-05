@@ -203,6 +203,45 @@ public class StartWorkAction extends AbstractStartWorkAction {
 		return true;
 	}
 
+	private static String showSelectActionDialog(TaskData taskData, ITask iTask, boolean start) {
+		SelectWorkflowActionDialog dialog = new SelectWorkflowActionDialog(PlatformUI.getWorkbench()
+				.getDisplay()
+				.getActiveShell(), taskData, iTask, start);
+
+		int result = dialog.open();
+
+		if (result == Window.OK) {
+			return dialog.getSelectedAction();
+		} else {
+			return null;
+		}
+	}
+
+	private static boolean smartAdvanceAction(final boolean start, final JiraClient client, final JiraIssue issue,
+			final TaskData taskData, final ITask task, final IProgressMonitor monitor) throws JiraException {
+
+		final boolean[] doAdvanceAction = new boolean[1];
+		doAdvanceAction[0] = false;
+		final String[] selectedAction = new String[1];
+		selectedAction[0] = start ? JiraTaskDataHandler.START_PROGRESS_OPERATION
+				: JiraTaskDataHandler.STOP_PROGRESS_OPERATION;
+		if ((start && !haveStartProgressOperation(taskData)) || (!start && !haveStopProgressOperation(taskData))) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				public void run() {
+					selectedAction[0] = showSelectActionDialog(taskData, task, start);
+					doAdvanceAction[0] = selectedAction[0] != null;
+				}
+			});
+		} else {
+			doAdvanceAction[0] = true;
+		}
+		if (doAdvanceAction[0]) {
+			client.advanceIssueWorkflow(issue, selectedAction[0], null, monitor);
+			return true;
+		}
+		return false;
+	}
+
 	private static Job getStartWorkJob(final TaskData taskData, final ITask task) {
 
 		Job startProgressJob = new Job(Messages.StartWorkAction_Start_Work) {
@@ -224,7 +263,8 @@ public class StartWorkAction extends AbstractStartWorkAction {
 						client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getCurrentUser(task), null, monitor);
 						shouldSynchronize = true;
 					}
-					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.START_PROGRESS_OPERATION, null, monitor);
+
+					smartAdvanceAction(true, client, issue, taskData, task, monitor);
 
 					shouldSynchronize = true;
 					shouldActivate = true;
@@ -274,7 +314,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 						JiraUiUtil.setLoggedActivityTime(task);
 					}
 
-					client.advanceIssueWorkflow(issue, JiraTaskDataHandler.STOP_PROGRESS_OPERATION, null, monitor);
+					smartAdvanceAction(false, client, issue, taskData, task, monitor);
 
 					synchronizeTask(task, monitor);
 

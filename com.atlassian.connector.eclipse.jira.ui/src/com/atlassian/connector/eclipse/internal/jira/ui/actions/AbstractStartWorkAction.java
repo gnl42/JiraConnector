@@ -65,24 +65,28 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 	}
 
 	protected static boolean isTaskInProgress(TaskData taskData, ITask task) {
-		return isAssignedToMe(taskData, task) && isInProgressState(taskData) && haveStopProgressOperation(taskData);
+		return isAssignedToMe(taskData, task) && isInProgressState(taskData);// && haveStopProgressOperation(taskData);
 	}
 
 	protected static boolean isTaskInStop(TaskData taskData, ITask task) {
-		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
-			return true;
-		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
+//		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
+//			return true;
+//		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
+//			return true;
+//		}
+
+		if (isInOpenState(taskData)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	private static boolean haveStopProgressOperation(TaskData taskData) {
+	protected static boolean haveStopProgressOperation(TaskData taskData) {
 		return haveOperation(taskData, JiraTaskDataHandler.STOP_PROGRESS_OPERATION);
 	}
 
-	private static boolean haveStartProgressOperation(TaskData taskData) {
+	protected static boolean haveStartProgressOperation(TaskData taskData) {
 		return haveOperation(taskData, JiraTaskDataHandler.START_PROGRESS_OPERATION);
 	}
 
@@ -105,7 +109,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 		return false;
 	}
 
-	private static boolean isInOpenState(TaskData taskData) {
+	protected static boolean isInOpenState(TaskData taskData) {
 
 		if (taskData == null) {
 			return false;

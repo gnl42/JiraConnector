@@ -67,6 +67,13 @@ public class Messages extends NLS {
 	public static String StartWorkAction_Stoping_Work;
 
 	public static String StartWorkAction_stop;
+
+	public static String SelectWorkflowAction_Start_Title;
+
+	public static String SelectWorkflowAction_Stop_Title;
+
+	public static String SelectWorkflowAction_Label;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
