@@ -26,6 +26,7 @@ import com.atlassian.jira.rest.client.domain.BasicStatus;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.BasicVotes;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -109,6 +110,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
+	private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
 
 	private static final String FIELDS = "fields";
 	private static final String VALUE_ATTR = "value";
@@ -270,11 +272,12 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
 				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
 
+		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
 				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
-				votes, worklogs, watchers, expandos, subtasks
-		);
+				votes, worklogs, watchers, expandos, subtasks,
+				changelog);
 	}
 
 	@Nullable

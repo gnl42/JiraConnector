@@ -46,6 +46,18 @@ public interface IssueRestClient {
 	Issue getIssue(String issueKey, ProgressMonitor progressMonitor);
 
 	/**
+	 * Retrieves issue with selected issue key, with specified additional expandos.
+	 *
+	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @param expand additional expands. Currently CHANGELOG is the only supported expand that is not expanded by default.
+	 * @param progressMonitor progress monitor
+	 * @return issue with given <code>issueKey</code>
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since 0.6
+	 */
+	Issue getIssue(String issueKey, Iterable<Expandos> expand, ProgressMonitor progressMonitor);
+
+	/**
 	 * Retrieves complete information (if the caller has permission) about watchers for selected issue.
 	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
@@ -215,4 +227,10 @@ public interface IssueRestClient {
 	@Beta
 	public InputStream getAttachment(ProgressMonitor pm, URI attachmentUri);
 
+	/**
+	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable, ProgressMonitor)}
+	 */
+	public enum Expandos {
+		CHANGELOG, SCHEMA, NAMES, TRANSITIONS
+	}
 }

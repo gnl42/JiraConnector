@@ -40,7 +40,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog) {
 		super(self, key);
         this.summary = summary;
 		this.project = project;
@@ -67,6 +67,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.priority = priority;
 		this.timeTracking = timeTracking;
 		this.subtasks = subtasks;
+		this.changelog = changelog;
 	}
 
 	private final BasicStatus status;
@@ -107,6 +108,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final TimeTracking timeTracking;
 	@Nullable
 	private final Collection<Subtask> subtasks;
+	@Nullable
+	private final Collection<ChangelogGroup> changelog;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -272,6 +275,18 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return components;
 	}
 
+	/**
+	 * Returns changelog available for issues retrieved with CHANGELOG expanded.
+	 *
+	 * @return issue changelog on <code>null</code> if CHANGELOG has not been expanded
+	 * @see com.atlassian.jira.rest.client.IssueRestClient#getIssue(String, Iterable, com.atlassian.jira.rest.client.ProgressMonitor)
+	 * @since 0.6
+	 */
+	@Nullable
+	public Iterable<ChangelogGroup> getChangelog() {
+		return changelog;
+	}
+
 	public URI getVotesUri() {
 		return UriBuilder.fromUri(getSelf()).path("votes").build();
 	}
@@ -326,6 +341,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("worklogs", worklogs).addValue("\n").
 				add("watchers", watchers).
 				add("timeTracking", timeTracking).
+				add("changelog", changelog).
 				toString();
 	}
 }

@@ -24,6 +24,8 @@ import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.domain.ChangelogGroup;
+import com.atlassian.jira.rest.client.domain.ChangelogItem;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -33,9 +35,11 @@ import com.atlassian.jira.rest.client.domain.Subtask;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -260,5 +264,61 @@ public class IssueJsonParserTest {
 		assertEquals("Open", subtask.getStatus().getName());
 		assertEquals("Subtask", subtask.getIssueType().getName());
 	}
+
+	@Test
+	public void issueWithChangelog() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-with-changelog.json");
+		assertEquals("HST-1", issue.getKey());
+
+		final Iterable<ChangelogGroup> changelog = issue.getChangelog();
+		verifyHST1Changelog(changelog);
+
+	}
+
+	public static void verifyHST1Changelog(Iterable<ChangelogGroup> changelog) {
+		assertNotNull(changelog);
+
+		assertEquals(3, Iterables.size(changelog));
+		final Iterator<ChangelogGroup> iterator = changelog.iterator();
+
+		final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One");
+		final BasicUser user2 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user2"), "user2", "User Two");
+
+		verifyChangelog(iterator.next(),
+				"2012-04-12T14:28:28.255+0200",
+				user1,
+				ImmutableList.of(
+						new ChangelogItem("jira", "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
+						new ChangelogItem("custom", "Radio Field", null, null, "10000", "One")
+				));
+
+		verifyChangelog(iterator.next(),
+				"2012-04-12T14:28:44.079+0200",
+				user1,
+				ImmutableList.of(
+						new ChangelogItem("jira", "assignee", "user1", "User One", "user2", "User Two")
+				));
+
+		verifyChangelog(iterator.next(),
+				"2012-04-12T14:30:09.690+0200",
+				user2,
+				ImmutableList.of(
+						new ChangelogItem("jira", "summary", null, "Simple history test", null, "Simple history test - modified"),
+						new ChangelogItem("jira", "issuetype", "1", "Bug", "2", "New Feature"),
+						new ChangelogItem("jira", "priority", "3", "Major", "4", "Minor"),
+						new ChangelogItem("jira", "description", null, "Initial Description", null, "Modified Description"),
+						new ChangelogItem("custom", "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
+						new ChangelogItem("jira", "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
+						new ChangelogItem("custom", "Radio Field", "10000", "One", "10001", "Two"),
+						new ChangelogItem("custom", "Text Field", null, "Initial text field value", null, "Modified text field value")
+				));
+	}
+
+	private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, Iterable<ChangelogItem> expectedItems) {
+		assertEquals(ISODateTimeFormat.dateTime().parseDateTime(createdDate), changelogGroup.getCreated());
+		assertEquals(author, changelogGroup.getAuthor());
+		assertEquals(expectedItems, changelogGroup.getItems());
+	}
+
 
 }

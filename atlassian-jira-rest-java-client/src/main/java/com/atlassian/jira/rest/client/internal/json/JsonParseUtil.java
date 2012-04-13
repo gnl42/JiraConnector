@@ -101,11 +101,11 @@ public class JsonParseUtil {
 	}
 
     public static JSONArray getNestedOptionalArray(JSONObject json, String... path) throws JSONException {
-        for (int i = 0; i < path.length - 1; i++) {
+        for (int i = 0; json != null && i < path.length - 1; i++) {
             String s = path[i];
-            json = json.getJSONObject(s);
+            json = json.optJSONObject(s);
         }
-        return json.optJSONArray(path[path.length - 1]);
+        return json == null ? null : json.optJSONArray(path[path.length - 1]);
     }
 
 

@@ -41,6 +41,9 @@ import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -61,6 +64,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
@@ -72,6 +77,13 @@ import java.util.concurrent.Callable;
 public class JerseyIssueRestClient extends AbstractJerseyRestClient implements IssueRestClient {
 
 	private static final String FILE_ATTACHMENT_CONTROL_NAME = "file";
+	private static final EnumSet<Expandos> DEFAULT_EXPANDS = EnumSet.of(Expandos.NAMES, Expandos.SCHEMA, Expandos.TRANSITIONS);
+	private static final Function<Expandos, String> EXPANDO_TO_PARAM = new Function<Expandos, String>() {
+		@Override
+		public String apply(Expandos from) {
+			return from.name().toLowerCase();
+		}
+	};
 	private final SessionRestClient sessionRestClient;
 	private final MetadataRestClient metadataRestClient;
 
@@ -108,8 +120,14 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public Issue getIssue(final String issueKey, ProgressMonitor progressMonitor) {
+		return getIssue(issueKey, Collections.<Expandos>emptyList(), progressMonitor);
+	}
+
+	@Override
+	public Issue getIssue(final String issueKey, Iterable<Expandos> expand, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-		uriBuilder.path("issue").path(issueKey).queryParam("expand", IssueJsonParser.NAMES_SECTION +"," + IssueJsonParser.SCHEMA_SECTION + "," + IssueJsonParser.TRANSITIONS_SECTION);
+		final Iterable<Expandos> expands = Iterables.concat(DEFAULT_EXPANDS, expand);
+		uriBuilder.path("issue").path(issueKey).queryParam("expand", Joiner.on(',').join(Iterables.transform(expands, EXPANDO_TO_PARAM)));
 		return getAndParse(uriBuilder.build(), issueParser, progressMonitor);
 	}
 

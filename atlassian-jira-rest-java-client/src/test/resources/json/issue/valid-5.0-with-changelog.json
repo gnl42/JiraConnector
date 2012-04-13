@@ -1,0 +1,559 @@
+{
+	"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+	"id": "10000",
+	"self": "http://localhost:2990/jira/rest/api/latest/issue/10000",
+	"key": "HST-1",
+	"fields": {
+		"summary": "Simple history test - modified",
+		"progress": {
+			"progress": 0,
+			"total": 0
+		},
+		"timetracking": { },
+		"issuetype": {
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/2",
+			"id": "2",
+			"description": "A new feature of the product, which has yet to be developed.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+			"name": "New Feature",
+			"subtask": false
+		},
+		"votes": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/HST-1/votes",
+			"votes": 0,
+			"hasVoted": false
+		},
+		"resolution": null,
+		"fixVersions": [ ],
+		"resolutiondate": null,
+		"timespent": null,
+		"reporter": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=user1",
+			"name": "user1",
+			"emailAddress": "userone@local.domain",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+			},
+			"displayName": "User One",
+			"active": true
+		},
+		"aggregatetimeoriginalestimate": null,
+		"created": "2012-04-12T14:27:37.672+0200",
+		"updated": "2012-04-12T14:30:09.688+0200",
+		"description": "Modified Description",
+		"priority": {
+			"self": "http://localhost:2990/jira/rest/api/2/priority/4",
+			"iconUrl": "http://localhost:2990/jira/images/icons/priority_minor.gif",
+			"name": "Minor",
+			"id": "4"
+		},
+		"duedate": "2012-04-13",
+		"customfield_10001": "2012-04-12T14:26:00.000+0200",
+		"customfield_10002": {
+			"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10001",
+			"value": "Two",
+			"id": "10001"
+		},
+		"issuelinks": [ ],
+		"watches": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/HST-1/watchers",
+			"watchCount": 0,
+			"isWatching": false
+		},
+		"worklog": {
+			"startAt": 0,
+			"maxResults": 0,
+			"total": 0,
+			"worklogs": [ ]
+		},
+		"customfield_10000": "Modified text field value",
+		"subtasks": [ ],
+		"status": {
+			"self": "http://localhost:2990/jira/rest/api/2/status/1",
+			"description": "The issue is open and ready for the assignee to start work on it.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+			"name": "Open",
+			"id": "1"
+		},
+		"labels": [ ],
+		"workratio": -1,
+		"assignee": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=user2",
+			"name": "user2",
+			"emailAddress": "usertwo@local.domain",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+			},
+			"displayName": "User Two",
+			"active": true
+		},
+		"attachment": [ ],
+		"aggregatetimeestimate": null,
+		"project": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/HST",
+			"id": "10000",
+			"key": "HST",
+			"name": "History Test",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10011"
+			}
+		},
+		"versions": [ ],
+		"environment": null,
+		"timeestimate": null,
+		"aggregateprogress": {
+			"progress": 0,
+			"total": 0
+		},
+		"components": [ ],
+		"comment": {
+			"startAt": 0,
+			"maxResults": 2,
+			"total": 2,
+			"comments": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10000/comment/10000",
+					"id": "10000",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=user1",
+						"name": "user1",
+						"emailAddress": "userone@local.domain",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+						},
+						"displayName": "User One",
+						"active": true
+					},
+					"body": "First change",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=user1",
+						"name": "user1",
+						"emailAddress": "userone@local.domain",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+						},
+						"displayName": "User One",
+						"active": true
+					},
+					"created": "2012-04-12T14:28:28.245+0200",
+					"updated": "2012-04-12T14:28:28.245+0200"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10000/comment/10001",
+					"id": "10001",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=user2",
+						"name": "user2",
+						"emailAddress": "usertwo@local.domain",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+						},
+						"displayName": "User Two",
+						"active": true
+					},
+					"body": "Modified by User Two",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=user2",
+						"name": "user2",
+						"emailAddress": "usertwo@local.domain",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+						},
+						"displayName": "User Two",
+						"active": true
+					},
+					"created": "2012-04-12T14:30:09.682+0200",
+					"updated": "2012-04-12T14:30:09.682+0200"
+				}
+			]
+		},
+		"timeoriginalestimate": null,
+		"aggregatetimespent": null
+	},
+	"names": {
+		"summary": "Summary",
+		"progress": "Progress",
+		"timetracking": "Time Tracking",
+		"issuetype": "Issue Type",
+		"votes": "Votes",
+		"resolution": "Resolution",
+		"fixVersions": "Fix Version/s",
+		"resolutiondate": "Resolved",
+		"timespent": "Time Spent",
+		"reporter": "Reporter",
+		"aggregatetimeoriginalestimate": "Σ Original Estimate",
+		"created": "Created",
+		"updated": "Updated",
+		"description": "Description",
+		"priority": "Priority",
+		"duedate": "Due Date",
+		"customfield_10001": "Date Field",
+		"customfield_10002": "Radio Field",
+		"issuelinks": "Linked Issues",
+		"watches": "Watchers",
+		"worklog": "Log Work",
+		"customfield_10000": "Text Field",
+		"subtasks": "Sub-Tasks",
+		"status": "Status",
+		"labels": "Labels",
+		"workratio": "Work Ratio",
+		"assignee": "Assignee",
+		"attachment": "Attachment",
+		"aggregatetimeestimate": "Σ Remaining Estimate",
+		"project": "Project",
+		"versions": "Affects Version/s",
+		"environment": "Environment",
+		"timeestimate": "Remaining Estimate",
+		"aggregateprogress": "Σ Progress",
+		"components": "Component/s",
+		"comment": "Comment",
+		"timeoriginalestimate": "Original Estimate",
+		"aggregatetimespent": "Σ Time Spent"
+	},
+	"schema": {
+		"summary": {
+			"type": "string",
+			"system": "summary"
+		},
+		"progress": {
+			"type": "progress",
+			"system": "progress"
+		},
+		"timetracking": {
+			"type": "timetracking",
+			"system": "timetracking"
+		},
+		"issuetype": {
+			"type": "issuetype",
+			"system": "issuetype"
+		},
+		"votes": {
+			"type": "array",
+			"items": "votes",
+			"system": "votes"
+		},
+		"resolution": {
+			"type": "resolution",
+			"system": "resolution"
+		},
+		"fixVersions": {
+			"type": "array",
+			"items": "version",
+			"system": "fixVersions"
+		},
+		"resolutiondate": {
+			"type": "datetime",
+			"system": "resolutiondate"
+		},
+		"timespent": {
+			"type": "number",
+			"system": "timespent"
+		},
+		"reporter": {
+			"type": "user",
+			"system": "reporter"
+		},
+		"aggregatetimeoriginalestimate": {
+			"type": "number",
+			"system": "aggregatetimeoriginalestimate"
+		},
+		"created": {
+			"type": "datetime",
+			"system": "created"
+		},
+		"updated": {
+			"type": "datetime",
+			"system": "updated"
+		},
+		"description": {
+			"type": "string",
+			"system": "description"
+		},
+		"priority": {
+			"type": "priority",
+			"system": "priority"
+		},
+		"duedate": {
+			"type": "date",
+			"system": "duedate"
+		},
+		"customfield_10001": {
+			"type": "datetime",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+			"customId": 10001
+		},
+		"customfield_10002": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+			"customId": 10002
+		},
+		"issuelinks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "issuelinks"
+		},
+		"watches": {
+			"type": "array",
+			"items": "watches",
+			"system": "watches"
+		},
+		"worklog": {
+			"type": "array",
+			"items": "worklog",
+			"system": "worklog"
+		},
+		"customfield_10000": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+			"customId": 10000
+		},
+		"subtasks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "subtasks"
+		},
+		"status": {
+			"type": "status",
+			"system": "status"
+		},
+		"labels": {
+			"type": "array",
+			"items": "string",
+			"system": "labels"
+		},
+		"workratio": {
+			"type": "number",
+			"system": "workratio"
+		},
+		"assignee": {
+			"type": "user",
+			"system": "assignee"
+		},
+		"attachment": {
+			"type": "array",
+			"items": "attachment",
+			"system": "attachment"
+		},
+		"aggregatetimeestimate": {
+			"type": "number",
+			"system": "aggregatetimeestimate"
+		},
+		"project": {
+			"type": "project",
+			"system": "project"
+		},
+		"versions": {
+			"type": "array",
+			"items": "version",
+			"system": "versions"
+		},
+		"environment": {
+			"type": "string",
+			"system": "environment"
+		},
+		"timeestimate": {
+			"type": "number",
+			"system": "timeestimate"
+		},
+		"aggregateprogress": {
+			"type": "progress",
+			"system": "aggregateprogress"
+		},
+		"components": {
+			"type": "array",
+			"items": "component",
+			"system": "components"
+		},
+		"comment": {
+			"type": "array",
+			"items": "comment",
+			"system": "comment"
+		},
+		"timeoriginalestimate": {
+			"type": "number",
+			"system": "timeoriginalestimate"
+		},
+		"aggregatetimespent": {
+			"type": "number",
+			"system": "aggregatetimespent"
+		}
+	},
+	"transitions": [
+		{
+			"id": "5",
+			"name": "Resolve Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/5",
+				"description": "A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_resolved.gif",
+				"name": "Resolved",
+				"id": "5"
+			}
+		},
+		{
+			"id": "2",
+			"name": "Close Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/6",
+				"description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_closed.gif",
+				"name": "Closed",
+				"id": "6"
+			}
+		}
+	],
+	"changelog": {
+		"startAt": 0,
+		"maxResults": 3,
+		"total": 3,
+		"histories": [
+			{
+				"id": "10000",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=user1",
+					"name": "user1",
+					"emailAddress": "userone@local.domain",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+					},
+					"displayName": "User One",
+					"active": true
+				},
+				"created": "2012-04-12T14:28:28.255+0200",
+				"items": [
+					{
+						"field": "duedate",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "2012-04-12",
+						"toString": "2012-04-12 00:00:00.0"
+					},
+					{
+						"field": "Radio Field",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": null,
+						"to": "10000",
+						"toString": "One"
+					}
+				]
+			},
+			{
+				"id": "10001",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=user1",
+					"name": "user1",
+					"emailAddress": "userone@local.domain",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+					},
+					"displayName": "User One",
+					"active": true
+				},
+				"created": "2012-04-12T14:28:44.079+0200",
+				"items": [
+					{
+						"field": "assignee",
+						"fieldtype": "jira",
+						"from": "user1",
+						"fromString": "User One",
+						"to": "user2",
+						"toString": "User Two"
+					}
+				]
+			},
+			{
+				"id": "10002",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=user2",
+					"name": "user2",
+					"emailAddress": "usertwo@local.domain",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10122",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10122"
+					},
+					"displayName": "User Two",
+					"active": true
+				},
+				"created": "2012-04-12T14:30:09.690+0200",
+				"items": [
+					{
+						"field": "summary",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": "Simple history test",
+						"to": null,
+						"toString": "Simple history test - modified"
+					},
+					{
+						"field": "issuetype",
+						"fieldtype": "jira",
+						"from": "1",
+						"fromString": "Bug",
+						"to": "2",
+						"toString": "New Feature"
+					},
+					{
+						"field": "priority",
+						"fieldtype": "jira",
+						"from": "3",
+						"fromString": "Major",
+						"to": "4",
+						"toString": "Minor"
+					},
+					{
+						"field": "description",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": "Initial Description",
+						"to": null,
+						"toString": "Modified Description"
+					},
+					{
+						"field": "Date Field",
+						"fieldtype": "custom",
+						"from": "2012-04-11T14:26+0200",
+						"fromString": "11/Apr/12 2:26 PM",
+						"to": "2012-04-12T14:26+0200",
+						"toString": "12/Apr/12 2:26 PM"
+					},
+					{
+						"field": "duedate",
+						"fieldtype": "jira",
+						"from": "2012-04-12",
+						"fromString": "2012-04-12 00:00:00.0",
+						"to": "2012-04-13",
+						"toString": "2012-04-13 00:00:00.0"
+					},
+					{
+						"field": "Radio Field",
+						"fieldtype": "custom",
+						"from": "10000",
+						"fromString": "One",
+						"to": "10001",
+						"toString": "Two"
+					},
+					{
+						"field": "Text Field",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": "Initial text field value",
+						"to": null,
+						"toString": "Modified text field value"
+					}
+				]
+			}
+		]
+	}
+
+}
