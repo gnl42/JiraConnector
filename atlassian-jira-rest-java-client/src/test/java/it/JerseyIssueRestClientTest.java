@@ -22,6 +22,8 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.ChangelogGroup;
+import com.atlassian.jira.rest.client.domain.ChangelogItem;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
@@ -58,6 +60,8 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -127,6 +131,34 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 		assertEquals(attachment1, items.iterator().next());
 
+		// test for changelog
+		assertNull(issue.getChangelog());
+
+		final Issue issueWithChangelog = client.getIssueClient().getIssue("TST-2", EnumSet.of(IssueRestClient.Expandos.CHANGELOG), pm);
+		final Iterable<ChangelogGroup> changelog = issueWithChangelog.getChangelog();
+		if (isJira5xOrNewer()) {
+			assertNotNull(changelog);
+			final ChangelogGroup chg1 = Iterables.get(changelog, 18);
+			assertEquals("admin", chg1.getAuthor().getName());
+			assertEquals("Administrator", chg1.getAuthor().getDisplayName());
+			assertEquals(ISODateTimeFormat.dateTime().parseDateTime("2010-08-17T16:40:34.924+0200"), chg1.getCreated());
+
+			assertEquals(Collections.singletonList(new ChangelogItem("jira", "status", "1", "Open", "3", "In Progress")), chg1
+					.getItems());
+
+			final ChangelogGroup chg2 = Iterables.get(changelog, 20);
+			assertEquals("admin", chg2.getAuthor().getName());
+			assertEquals("Administrator", chg2.getAuthor().getDisplayName());
+			assertEquals(ISODateTimeFormat.dateTime().parseDateTime("2010-08-24T16:10:23.468+0200"), chg2.getCreated());
+
+			final List<ChangelogItem> expected = ImmutableList.of(
+					new ChangelogItem("jira", "timeoriginalestimate", null, null, "0", "0"),
+					new ChangelogItem("custom", "My Radio buttons", null, null, null, "Another"),
+					new ChangelogItem("custom", "project3", null, null, "10000", "Test Project"),
+					new ChangelogItem("custom", "My Number Field New", null, null, null, "1.45")
+					);
+			assertEquals(expected, chg2.getItems());
+		}
 	}
 
 
