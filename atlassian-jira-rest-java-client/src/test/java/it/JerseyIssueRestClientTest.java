@@ -141,22 +141,22 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 			final ChangelogGroup chg1 = Iterables.get(changelog, 18);
 			assertEquals("admin", chg1.getAuthor().getName());
 			assertEquals("Administrator", chg1.getAuthor().getDisplayName());
-			assertEquals(ISODateTimeFormat.dateTime().parseDateTime("2010-08-17T16:40:34.924+0200"), chg1.getCreated());
+			assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
 
-			assertEquals(Collections.singletonList(new ChangelogItem("jira", "status", "1", "Open", "3", "In Progress")), chg1
+			assertEquals(Collections.singletonList(new ChangelogItem(ChangelogItem.FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
 					.getItems());
 
 			final ChangelogGroup chg2 = Iterables.get(changelog, 20);
 			assertEquals("admin", chg2.getAuthor().getName());
 			assertEquals("Administrator", chg2.getAuthor().getDisplayName());
-			assertEquals(ISODateTimeFormat.dateTime().parseDateTime("2010-08-24T16:10:23.468+0200"), chg2.getCreated());
+			assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
 			final List<ChangelogItem> expected = ImmutableList.of(
-					new ChangelogItem("jira", "timeoriginalestimate", null, null, "0", "0"),
-					new ChangelogItem("custom", "My Radio buttons", null, null, null, "Another"),
-					new ChangelogItem("custom", "project3", null, null, "10000", "Test Project"),
-					new ChangelogItem("custom", "My Number Field New", null, null, null, "1.45")
-					);
+					new ChangelogItem(ChangelogItem.FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
+					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
+					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
+					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
+			);
 			assertEquals(expected, chg2.getItems());
 		}
 	}

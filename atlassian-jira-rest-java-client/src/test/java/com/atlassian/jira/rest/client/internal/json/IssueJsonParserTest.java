@@ -283,29 +283,29 @@ public class IssueJsonParserTest {
 				"2012-04-12T14:28:28.255+0200",
 				user1,
 				ImmutableList.of(
-						new ChangelogItem("jira", "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
-						new ChangelogItem("custom", "Radio Field", null, null, "10000", "One")
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
+						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Radio Field", null, null, "10000", "One")
 				));
 
 		verifyChangelog(iterator.next(),
 				"2012-04-12T14:28:44.079+0200",
 				user1,
 				ImmutableList.of(
-						new ChangelogItem("jira", "assignee", "user1", "User One", "user2", "User Two")
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
 				));
 
 		verifyChangelog(iterator.next(),
 				"2012-04-12T14:30:09.690+0200",
 				user2,
 				ImmutableList.of(
-						new ChangelogItem("jira", "summary", null, "Simple history test", null, "Simple history test - modified"),
-						new ChangelogItem("jira", "issuetype", "1", "Bug", "2", "New Feature"),
-						new ChangelogItem("jira", "priority", "3", "Major", "4", "Minor"),
-						new ChangelogItem("jira", "description", null, "Initial Description", null, "Modified Description"),
-						new ChangelogItem("custom", "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
-						new ChangelogItem("jira", "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
-						new ChangelogItem("custom", "Radio Field", "10000", "One", "10001", "Two"),
-						new ChangelogItem("custom", "Text Field", null, "Initial text field value", null, "Modified text field value")
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "summary", null, "Simple history test", null, "Simple history test - modified"),
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "issuetype", "1", "Bug", "2", "New Feature"),
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "priority", "3", "Major", "4", "Minor"),
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "description", null, "Initial Description", null, "Modified Description"),
+						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
+						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Radio Field", "10000", "One", "10001", "Two"),
+						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")
 				));
 	}
 

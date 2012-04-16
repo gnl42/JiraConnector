@@ -23,12 +23,20 @@ import org.codehaus.jettison.json.JSONObject;
 public class ChangelogItemJsonParser implements JsonParser<ChangelogItem> {
 	@Override
 	public ChangelogItem parse(JSONObject json) throws JSONException {
-		final String fieldtype = JsonParseUtil.getNestedString(json, "fieldtype");
+		final String fieldTypeStr = JsonParseUtil.getNestedString(json, "fieldtype");
+		final ChangelogItem.FieldType fieldType;
+		if ("jira".equalsIgnoreCase(fieldTypeStr)) {
+			fieldType = ChangelogItem.FieldType.JIRA;
+		} else if ("custom".equalsIgnoreCase(fieldTypeStr)) {
+			fieldType = ChangelogItem.FieldType.CUSTOM;
+		} else {
+			throw new JSONException("[" + fieldTypeStr + "] does not represent a valid field type. Expected [jira] or [custom].");
+		}
 		final String field = JsonParseUtil.getNestedString(json, "field");
 		final String from = JsonParseUtil.getNullableString(json, "from");
 		final String fromString = JsonParseUtil.getNullableString(json, "fromString");
 		final String to = JsonParseUtil.getNullableString(json, "to");
 		final String toString = JsonParseUtil.getNullableString(json, "toString");
-		return new ChangelogItem(fieldtype, field, from, fromString, to, toString);
+		return new ChangelogItem(fieldType, field, from, fromString, to, toString);
 	}
 }

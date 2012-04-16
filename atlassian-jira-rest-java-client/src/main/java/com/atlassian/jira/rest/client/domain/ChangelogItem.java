@@ -25,14 +25,14 @@ import javax.annotation.Nullable;
  * @since 0.6
  */
 public class ChangelogItem {
-	private final String fieldType;
+	private final FieldType fieldType;
 	private final String field;
 	private final String from;
 	private final String fromString;
 	private final String to;
 	private final String toString;
 
-	public ChangelogItem(String fieldType, String field, String from, String fromString, String to, String toString) {
+	public ChangelogItem(FieldType fieldType, String field, String from, String fromString, String to, String toString) {
 		this.fieldType = fieldType;
 		this.field = field;
 		this.from = from;
@@ -41,7 +41,7 @@ public class ChangelogItem {
 		this.toString = toString;
 	}
 
-	public String getFieldType() {
+	public FieldType getFieldType() {
 		return fieldType;
 	}
 
@@ -99,5 +99,9 @@ public class ChangelogItem {
 				add("to", to).
 				add("toString", toString).
 				toString();
+	}
+
+	public enum FieldType {
+		JIRA, CUSTOM
 	}
 }
