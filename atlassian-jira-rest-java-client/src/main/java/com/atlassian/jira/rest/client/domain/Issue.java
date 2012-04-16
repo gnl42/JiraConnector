@@ -278,9 +278,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	/**
 	 * Returns changelog available for issues retrieved with CHANGELOG expanded.
 	 *
-	 * @return issue changelog on <code>null</code> if CHANGELOG has not been expanded
+	 * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on the server side does not serve
+	 * this information (pre-5.0)
 	 * @see com.atlassian.jira.rest.client.IssueRestClient#getIssue(String, Iterable, com.atlassian.jira.rest.client.ProgressMonitor)
-	 * @since 0.6
+	 * @since client 0.6, server 5.0
 	 */
 	@Nullable
 	public Iterable<ChangelogGroup> getChangelog() {

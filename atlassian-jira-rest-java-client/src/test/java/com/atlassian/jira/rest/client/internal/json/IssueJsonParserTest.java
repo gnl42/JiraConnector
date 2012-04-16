@@ -271,11 +271,6 @@ public class IssueJsonParserTest {
 		assertEquals("HST-1", issue.getKey());
 
 		final Iterable<ChangelogGroup> changelog = issue.getChangelog();
-		verifyHST1Changelog(changelog);
-
-	}
-
-	public static void verifyHST1Changelog(Iterable<ChangelogGroup> changelog) {
 		assertNotNull(changelog);
 
 		assertEquals(3, Iterables.size(changelog));

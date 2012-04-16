@@ -16,6 +16,10 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.google.common.base.Objects;
+
+import javax.annotation.Nullable;
+
 /**
  * Represents single item in Issue change history.
  * @since 0.6
@@ -45,59 +49,55 @@ public class ChangelogItem {
 		return field;
 	}
 
+	@Nullable
 	public String getFrom() {
 		return from;
 	}
 
+	@Nullable
 	public String getFromString() {
 		return fromString;
 	}
 
+	@Nullable
 	public String getTo() {
 		return to;
 	}
 
+	@Nullable
 	public String getToString() {
 		return toString;
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof ChangelogItem)) return false;
+	public boolean equals(Object obj) {
+		if (obj instanceof ChangelogItem) {
+			ChangelogItem that = (ChangelogItem) obj;
+			return Objects.equal(this.fieldType, that.fieldType)
+					&& Objects.equal(this.field, that.field)
+					&& Objects.equal(this.from, that.from)
+					&& Objects.equal(this.fromString, that.fromString)
+					&& Objects.equal(this.to, that.to)
+					&& Objects.equal(this.toString, that.toString);
+		}
+		return false;
 
-		final ChangelogItem that = (ChangelogItem) o;
-
-		if (!field.equals(that.field)) return false;
-		if (!fieldType.equals(that.fieldType)) return false;
-		if (from != null ? !from.equals(that.from) : that.from != null) return false;
-		if (fromString != null ? !fromString.equals(that.fromString) : that.fromString != null) return false;
-		if (to != null ? !to.equals(that.to) : that.to != null) return false;
-		if (toString != null ? !toString.equals(that.toString) : that.toString != null) return false;
-
-		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = fieldType.hashCode();
-		result = 31 * result + field.hashCode();
-		result = 31 * result + (from != null ? from.hashCode() : 0);
-		result = 31 * result + (fromString != null ? fromString.hashCode() : 0);
-		result = 31 * result + (to != null ? to.hashCode() : 0);
-		result = 31 * result + (toString != null ? toString.hashCode() : 0);
-		return result;
+		return Objects.hashCode(fieldType, field, from, fromString, to, toString);
 	}
 
 	@Override
 	public String toString() {
-		return "ChangelogItem{" +
-				"fieldType='" + fieldType + '\'' +
-				", field='" + field + '\'' +
-				", from='" + from + '\'' +
-				", fromString='" + fromString + '\'' +
-				", to='" + to + '\'' +
-				", toString='" + toString + '\'' +
-				'}';
+		return Objects.toStringHelper(this).
+				add("fieldType", fieldType).
+				add("field", field).
+				add("from", from).
+				add("fromString", fromString).
+				add("to", to).
+				add("toString", toString).
+				toString();
 	}
 }
