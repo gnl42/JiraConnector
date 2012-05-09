@@ -27,13 +27,14 @@ public class VersionJsonParser implements JsonParser<Version> {
 	@Override
 	public Version parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final String name = json.getString("name");
 		final String description = JsonParseUtil.getOptionalString(json, "description");
 		final boolean isArchived = json.getBoolean("archived");
 		final boolean isReleased = json.getBoolean("released");
 		final String releaseDateStr = JsonParseUtil.getOptionalString(json, "releaseDate");
 		final DateTime releaseDate = parseReleaseDate(releaseDateStr);
-		return new Version(self, name, description, isArchived, isReleased, releaseDate);
+		return new Version(self, id, name, description, isArchived, isReleased, releaseDate);
 	}
 
 	private DateTime parseReleaseDate(String releaseDateStr) {

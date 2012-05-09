@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class VersionJsonParserTest {
 
@@ -35,8 +36,9 @@ public class VersionJsonParserTest {
 	public void testParse() throws JSONException, URISyntaxException {
 		VersionJsonParser parser = new VersionJsonParser();
 		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid.json"));
-		
+
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+		assertEquals(Long.valueOf(10000), version.getId());
 		assertEquals("1.1", version.getName());
 		assertEquals("Some version", version.getDescription());
 		Assert.assertFalse(version.isReleased());
@@ -46,11 +48,12 @@ public class VersionJsonParserTest {
 	}
 
 	@Test
-	public void testParse2() throws JSONException, URISyntaxException {
+	public void testParseNoReleaseDate() throws JSONException, URISyntaxException {
 		VersionJsonParser parser = new VersionJsonParser();
 		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid2-no-releaseDate.json"));
 
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+		assertEquals(Long.valueOf(10000), version.getId());
 		assertEquals("1.1abc", version.getName());
 		Assert.assertNull(version.getDescription());
 		Assert.assertTrue(version.isReleased());
@@ -59,11 +62,27 @@ public class VersionJsonParserTest {
 	}
 
 	@Test
+	public void testParseNoId() throws JSONException, URISyntaxException {
+		VersionJsonParser parser = new VersionJsonParser();
+		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-id.json"));
+
+		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+		assertNull(version.getId());
+		assertEquals("1.1", version.getName());
+		assertEquals("Some version", version.getDescription());
+		Assert.assertFalse(version.isReleased());
+		Assert.assertTrue(version.isArchived());
+		Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+				new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+	}
+
+	@Test
 	public void testParseNoDescription() throws JSONException, URISyntaxException {
 		VersionJsonParser parser = new VersionJsonParser();
 		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-description.json"));
 
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+		assertEquals(Long.valueOf(10000), version.getId());
 		assertEquals("1.1", version.getName());
 		Assert.assertNull(version.getDescription());
 		Assert.assertFalse(version.isReleased());

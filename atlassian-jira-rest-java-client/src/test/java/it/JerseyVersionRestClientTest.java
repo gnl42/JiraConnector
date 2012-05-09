@@ -52,6 +52,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
 		final Version version = client.getVersionRestClient().createVersion(versionInput, pm);
 		assertEquals(versionInput, version);
+		assertNotNull(version.getId());
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
 				IterableMatcher.hasOnlyElements("1.1", "1", versionInput.getName()));
 

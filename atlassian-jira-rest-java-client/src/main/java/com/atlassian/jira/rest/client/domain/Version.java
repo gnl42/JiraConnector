@@ -30,6 +30,7 @@ import java.net.URI;
  */
 public class Version implements AddressableEntity {
 	private final URI self;
+	private final Long id;
 	private final String description;
 	private final String name;
 	private final boolean isArchived;
@@ -37,8 +38,9 @@ public class Version implements AddressableEntity {
 	@Nullable
 	private final DateTime releaseDate;
 
-	public Version(URI self, String name, String description, boolean archived, boolean released, DateTime releaseDate) {
+	public Version(URI self, Long id, String name, String description, boolean archived, boolean released, DateTime releaseDate) {
 		this.self = self;
+		this.id = id;
 		this.description = description;
 		this.name = name;
 		isArchived = archived;
@@ -49,6 +51,10 @@ public class Version implements AddressableEntity {
 	@Override
 	public URI getSelf() {
 		return self;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public String getDescription() {
@@ -76,6 +82,7 @@ public class Version implements AddressableEntity {
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).
+				add("id", id).
 				add("name", name).
 				add("description", description).
 				add("isArchived", isArchived).
@@ -89,6 +96,7 @@ public class Version implements AddressableEntity {
 		if (obj instanceof Version) {
 			Version that = (Version) obj;
 			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.description, that.description)
 					&& Objects.equal(this.isArchived, that.isArchived)
@@ -100,7 +108,7 @@ public class Version implements AddressableEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, description, isArchived, isReleased, releaseDate);
+		return Objects.hashCode(self, id, name, description, isArchived, isReleased, releaseDate);
 	}
 
 }

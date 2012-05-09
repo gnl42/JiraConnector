@@ -1,6 +1,5 @@
 {
 	"self":"http://localhost:8090/jira/rest/api/latest/version/10000",
-	"id":10000,
 	"description":"Some version",
 	"name":"1.1",
 	"archived":true,
