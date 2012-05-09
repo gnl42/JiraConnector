@@ -52,8 +52,8 @@ public class TestConstants {
 			"1.1", "Some version", true, false, TestUtil.toDateTime("2010-08-25T00:00:00.000+0200"));
 
 	public static final BasicComponent BCOMPONENT_A = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10000"),
-			"Component A", "this is some description of component A");
+			10000L, "Component A", "this is some description of component A");
 
 	public static final BasicComponent BCOMPONENT_B = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10001"),
-			"Component B", "another description");
+			10001L, "Component B", "another description");
 }

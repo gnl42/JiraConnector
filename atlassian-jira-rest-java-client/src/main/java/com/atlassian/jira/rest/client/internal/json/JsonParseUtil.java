@@ -225,4 +225,9 @@ public class JsonParseUtil {
 	public static Integer parseOptionInteger(JSONObject json, final String attributeName) throws JSONException {
 		return json.has(attributeName) ? json.getInt(attributeName) : null;
 	}
+
+	@Nullable
+	public static Long getOptionalLong(JSONObject jsonObject, String attributeName) throws JSONException {
+		return jsonObject.has(attributeName) ? jsonObject.getLong(attributeName) : null;
+	}
 }

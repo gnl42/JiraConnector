@@ -33,14 +33,13 @@ public class Component extends BasicComponent {
 	private AssigneeInfo assigneeInfo;
 
 
-
-	public Component(URI self, String name, String description, BasicUser lead) {
-		super(self, name, description);
+	public Component(URI self, Long id, String name, String description, BasicUser lead) {
+		super(self, id, name, description);
 		this.lead = lead;
 	}
 
-	public Component(URI self, String name, String description, BasicUser lead, @Nullable AssigneeInfo assigneeInfo) {
-		this(self, name, description, lead);
+	public Component(URI self, Long id, String name, String description, BasicUser lead, @Nullable AssigneeInfo assigneeInfo) {
+		this(self, id, name, description, lead);
 		this.assigneeInfo = assigneeInfo;
 	}
 

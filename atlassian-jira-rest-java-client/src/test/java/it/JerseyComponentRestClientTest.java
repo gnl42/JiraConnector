@@ -52,6 +52,25 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 	}
 
 	@Test
+	public void testGetComponent_Onira4xOrNewer_ShouldContainNotNullId() throws Exception {
+		if (!isJira4x4OrNewer()) {
+			return;
+		}
+		final BasicComponent basicComponent = Iterables.find(client.getProjectClient().getProject("TST", pm).getComponents(),
+				new Predicate<BasicComponent>() {
+					@Override
+					public boolean apply(BasicComponent input) {
+						return "Component A".equals(input.getName());
+					}
+				});
+		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
+		assertEquals("Component A", component.getName());
+		assertEquals("this is some description of component A", component.getDescription());
+		assertEquals(Long.valueOf(10000), component.getId());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getLead());
+	}
+
+	@Test
 	public void testGetInvalidComponent() throws Exception {
 		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
 		final String uriForUnexistingComponent = basicComponent.getSelf().toString() + "1234";
@@ -224,19 +243,19 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		final String newName = basicComponent.getName() + "updated";
-		Component adjustedComponent = new Component(component.getSelf(), newName, component.getDescription(), component.getLead(), component.getAssigneeInfo());
+		Component adjustedComponent = new Component(component.getSelf(), component.getId(), newName, component.getDescription(), component.getLead(), component.getAssigneeInfo());
 
 		Component updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(newName, null, null, null), pm);
 		assertEquals(adjustedComponent, updatedComponent);
 		assertEquals(adjustedComponent, client.getComponentClient().getComponent(basicComponent.getSelf(), pm));
 
 		final String newDescription = "updated description";
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1_LATEST, component.getAssigneeInfo());
+		adjustedComponent = new Component(component.getSelf(), component.getId(), newName, newDescription, IntegrationTestUtil.USER1_LATEST, component.getAssigneeInfo());
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), null), pm);
 		assertEquals(adjustedComponent, updatedComponent);
 
 		final Component.AssigneeInfo ai = component.getAssigneeInfo();
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER1_LATEST,
+		adjustedComponent = new Component(component.getSelf(), component.getId(), newName, newDescription, IntegrationTestUtil.USER1_LATEST,
 				new Component.AssigneeInfo(IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, true));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), AssigneeType.COMPONENT_LEAD), pm);
@@ -244,7 +263,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 
 		// now with non-assignable assignee (thus we are inheriting assignee from project settings and component-level settings are ignored)
-		adjustedComponent = new Component(component.getSelf(), newName, newDescription, IntegrationTestUtil.USER2_LATEST,
+		adjustedComponent = new Component(component.getSelf(), component.getId(), newName, newDescription, IntegrationTestUtil.USER2_LATEST,
 				new Component.AssigneeInfo(IntegrationTestUtil.USER2_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN_LATEST, AssigneeType.PROJECT_DEFAULT, false));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER2.getName(), AssigneeType.COMPONENT_LEAD), pm);

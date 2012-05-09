@@ -28,13 +28,15 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicComponent implements AddressableEntity {
+	private final Long id;
 	private final URI self;
 	private final String name;
 	@Nullable
 	private final String description;
 
-	public BasicComponent(URI self, String name, String description) {
+	public BasicComponent(URI self, Long id, String name, String description) {
 		this.self = self;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 	}
@@ -48,6 +50,10 @@ public class BasicComponent implements AddressableEntity {
 		return name;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	/**
 	 * @return optional description for this project (as defined by the project admin)
 	 */
@@ -59,6 +65,7 @@ public class BasicComponent implements AddressableEntity {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
+				add("id", id).
 				add("self", self).
 				add("name", name).
 				add("description", description).
@@ -70,6 +77,7 @@ public class BasicComponent implements AddressableEntity {
 		if (obj instanceof BasicComponent) {
 			BasicComponent that = (BasicComponent) obj;
 			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.description, that.description);
 		}

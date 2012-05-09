@@ -10,11 +10,13 @@
    "components":[
       {
          "self":"http://localhost:8090/jira/rest/api/latest/component/10000",
+		  "id":10000,
          "name":"Component A",
          "description":"this is some description of component A"
       },
       {
          "self":"http://localhost:8090/jira/rest/api/latest/component/10001",
+		  "id":10001,
          "name":"Component B",
          "description":"another description"
       }
