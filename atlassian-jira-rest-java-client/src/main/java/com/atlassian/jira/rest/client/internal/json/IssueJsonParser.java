@@ -137,6 +137,10 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		return res;
 	}
 
+	private <T> Collection<T> parseOptionalArrayNotNullable(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path) throws JSONException {
+		Collection<T> res = parseOptionalArray(shouldUseNestedValueJson, json, jsonParser, path);
+		return res == null ? Collections.<T>emptyList() : res;
+	}
 
 	@Nullable
 	private <T> Collection<T> parseOptionalArray(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path) throws JSONException {
@@ -274,7 +278,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
 				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
 		
-		final Collection<String> labels = parseOptionalArray(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR);
+		final Collection<String> labels = parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR);
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
