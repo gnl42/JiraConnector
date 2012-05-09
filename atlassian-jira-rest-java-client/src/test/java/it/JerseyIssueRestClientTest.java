@@ -114,6 +114,8 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
+		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Iterable<String> expectedExpandos = isJira5xOrNewer()
 				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog") : ImmutableList.of("html");

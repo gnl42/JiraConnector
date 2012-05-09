@@ -40,7 +40,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Collection<String> labels) {
 		super(self, key);
         this.summary = summary;
 		this.project = project;
@@ -68,6 +68,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.timeTracking = timeTracking;
 		this.subtasks = subtasks;
 		this.changelog = changelog;
+		this.labels = labels;
 	}
 
 	private final BasicStatus status;
@@ -110,6 +111,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Collection<Subtask> subtasks;
 	@Nullable
 	private final Collection<ChangelogGroup> changelog;
+	private final Collection<String> labels;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -275,6 +277,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return components;
 	}
 
+	public Collection<String> getLabels() {
+		return labels;
+	}
+
 	/**
 	 * Returns changelog available for issues retrieved with CHANGELOG expanded.
 	 *
@@ -343,6 +349,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("watchers", watchers).
 				add("timeTracking", timeTracking).
 				add("changelog", changelog).
+				add("labels", labels).
 				toString();
 	}
 }

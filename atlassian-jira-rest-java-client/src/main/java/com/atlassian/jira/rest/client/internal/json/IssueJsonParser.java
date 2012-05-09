@@ -82,11 +82,12 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String TIMETRACKING_ATTR = "timetracking";
 	private static final String TRANSITIONS_ATTR = "transitions";
 	private static final String SUBTASKS_ATTR = "subtasks";
+	private static final String LABELS_ATTR = "labels";
 
 	private static Set<String> SPECIAL_FIELDS = new HashSet<String>(Arrays.asList(SUMMARY_ATTR, UPDATED_ATTR, CREATED_ATTR,
 			AFFECTS_VERSIONS_ATTR, FIX_VERSIONS_ATTR, COMPONENTS_ATTR, LINKS_ATTR, LINKS_ATTR_5_0, ISSUE_TYPE_ATTR, VOTES_ATTR,
 			WORKLOG_ATTR, WATCHER_ATTR, PROJECT_ATTR, STATUS_ATTR, COMMENT_ATTR, ATTACHMENT_ATTR, SUMMARY_ATTR, DESCRIPTION_ATTR,
-			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR, TIMETRACKING_ATTR));
+			PRIORITY_ATTR, RESOLUTION_ATTR, ASSIGNEE_ATTR, REPORTER_ATTR, TIMETRACKING_ATTR, LABELS_ATTR));
 	public static final String SCHEMA_SECTION = "schema";
 	public static final String NAMES_SECTION = "names";
 	public static final String TRANSITIONS_SECTION = "transitions";
@@ -111,6 +112,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
 	private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
+	private final JsonWeakParserForString jsonWeakParserForString = new JsonWeakParserForString();
 
 	private static final String FIELDS = "fields";
 	private static final String VALUE_ATTR = "value";
@@ -271,13 +273,14 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
 				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
+		
+		final Collection<String> labels = parseOptionalArray(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR);
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
 				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
 				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
-				votes, worklogs, watchers, expandos, subtasks,
-				changelog);
+				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
 	}
 
 	@Nullable

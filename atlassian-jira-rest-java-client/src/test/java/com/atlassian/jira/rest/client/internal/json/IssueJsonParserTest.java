@@ -315,5 +315,28 @@ public class IssueJsonParserTest {
 		assertEquals(expectedItems, changelogGroup.getItems());
 	}
 
+	@Test
+	public void testParseIssueWithLabels_ForJira5x0() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-with-labels.json");
+		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+	}
+
+	@Test
+	public void testParseIssueWithLabels() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-with-labels.json");
+		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+	}
+
+	@Test
+	public void testParseIssueWithoutLabels_ForJira5x0() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
+		assertThat(issue.getLabels(), IterableMatcher.<String>isEmpty());
+	}
+
+	@Test
+	public void testParseIssueWithoutLabels() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-without-labels.json");
+		assertThat(issue.getLabels(), IterableMatcher.<String>isEmpty());
+	}
 
 }
