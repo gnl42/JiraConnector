@@ -1,0 +1,11 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/latest/attachment/10070",
+	"filename": "test.txt",
+	"author": {
+		"name": "Anonymous"
+	},
+	"created": "2012-05-10T14:37:54.526+0200",
+	"size": 10,
+	"mimeType": "text/plain",
+	"content": "http://localhost:2990/jira/secure/attachment/10070/test.txt"
+}

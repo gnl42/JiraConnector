@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class WorklogJsonParserTest {
     @Test
@@ -64,5 +65,21 @@ public class WorklogJsonParserTest {
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-groupLevel.json"));
         assertEquals(Visibility.group("jira-users"), worklog.getVisibility());
     }
+
+	@Test
+	public void testParseWhenAuthorIsAnonymous() throws Exception {
+		final WorklogJsonParser parser = new WorklogJsonParser();
+		final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-anonymousAuthor.json"));
+		assertNull(worklog.getAuthor());
+		assertNull(worklog.getUpdateAuthor());
+	}
+
+	@Test
+	public void testParseWhenAuthorIsAnonymousInOldRepresentation() throws Exception {
+		final WorklogJsonParser parser = new WorklogJsonParser();
+		final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-anonymousAuthor-oldRepresentation.json"));
+		assertNull(worklog.getAuthor());
+		assertNull(worklog.getUpdateAuthor());
+	}
 
 }

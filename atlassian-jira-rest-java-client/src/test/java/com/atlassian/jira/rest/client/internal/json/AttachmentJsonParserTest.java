@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AttachmentJsonParserTest {
 	@Test
@@ -31,11 +32,26 @@ public class AttachmentJsonParserTest {
 		final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid.json"));
 		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"), attachment.getSelf());
 		assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"), attachment.getContentUri());
+		assertEquals("admin", attachment.getAuthor().getName());
 
 		assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
 				"snipe.png", TestConstants.USER_ADMIN, new DateTime(2010, 7, 26, 13, 31, 35, 577, DateTimeZone.forOffsetHours(2)),
 				31020, "image/png", toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"),
 				toUri("http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png")), attachment);
+	}
+
+	@Test
+	public void testParseWhenAuthorIsAnonymous() throws Exception {
+		final AttachmentJsonParser parser = new AttachmentJsonParser();
+		final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid-anonymousAuthor.json"));
+		assertNull(attachment.getAuthor());
+	}
+
+	@Test
+	public void testParseWhenAuthorIsAnonymousInOldRepresentation() throws Exception {
+		final AttachmentJsonParser parser = new AttachmentJsonParser();
+		final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid-anonymousAuthor-oldRepresentation.json"));
+		assertNull(attachment.getAuthor());
 	}
 
 }
