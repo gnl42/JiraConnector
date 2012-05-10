@@ -45,7 +45,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 	}
 
 	@Test
-	public void testGetComponent_Onira4xOrNewer_ShouldContainNotNullId() throws Exception {
+	public void testGetComponentOnJira4xOrNewerShouldContainNotNullId() throws Exception {
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
