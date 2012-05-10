@@ -74,7 +74,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		setUser1();
 		final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, pm);
 		assertEquals(10, search3.getTotal());
-		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 3 : 10, Iterables.size(search3.getIssues()));
+		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 10, Iterables.size(search3.getIssues()));
 		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 0, search3.getStartIndex());
 		assertEquals(10, search3.getMaxResults());
 	}
