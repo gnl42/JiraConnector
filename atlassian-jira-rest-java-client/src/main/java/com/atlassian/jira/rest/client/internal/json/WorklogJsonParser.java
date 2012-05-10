@@ -31,8 +31,8 @@ public class WorklogJsonParser implements JsonParser<Worklog> {
 	public Worklog parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
+		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
+		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
         // it turns out that somehow it can be sometimes omitted in the resource representation - JRJC-49
 		final String comment = JsonParseUtil.getOptionalString(json, "comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");

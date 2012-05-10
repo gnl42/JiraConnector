@@ -17,19 +17,23 @@
 package it;
 
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 
 public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+
 	@Test
 	public void testGetNonExistingProject() throws Exception {
 		final String nonExistingProjectKey = "NONEXISTINGPROJECTKEY";
@@ -104,7 +108,7 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 		}
 
 		final Iterable<BasicProject> projects = client.getProjectClient().getAllProjects(pm);
-		assertEquals(3, Iterables.size(projects));
+		assertEquals(4, Iterables.size(projects));
 		final BasicProject tst = Iterables.find(projects, new Predicate<BasicProject>() {
 			@Override
 			public boolean apply(@Nullable BasicProject input) {
@@ -115,11 +119,18 @@ public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerse
 
 		setAnonymousMode();
 		final Iterable<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects(pm);
-		assertEquals(1, Iterables.size(anonymouslyAccessibleProjects));
-		assertEquals("ANNON", Iterables.get(anonymouslyAccessibleProjects, 0).getKey());
+		assertEquals(2, Iterables.size(anonymouslyAccessibleProjects));
+
+		final Iterable<String> projectsKeys = Iterables.transform(anonymouslyAccessibleProjects, new Function<BasicProject, String>() {
+			@Override
+			public String apply(BasicProject project) {
+				return project.getKey();
+			}
+		});
+		Assert.assertThat(projectsKeys, IterableMatcher.hasOnlyElements("ANNON", "ANONEDIT"));
 
 		setUser1();
-		assertEquals(2, Iterables.size(client.getProjectClient().getAllProjects(pm)));
+		assertEquals(3, Iterables.size(client.getProjectClient().getAllProjects(pm)));
 	}
 
 	private boolean isGetAllProjectsSupported() {

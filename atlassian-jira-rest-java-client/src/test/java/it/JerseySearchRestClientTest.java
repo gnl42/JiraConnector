@@ -32,14 +32,14 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 			return;
 		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, pm);
-		assertEquals(9, searchResultForNull.getTotal());
+		assertEquals(11, searchResultForNull.getTotal());
 
 		final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga", pm);
 		assertEquals(1, searchResultForReporterWseliga.getTotal());
 
 		setAnonymousMode();
 		final SearchResult searchResultAsAnonymous = client.getSearchClient().searchJql(null, pm);
-		assertEquals(1, searchResultAsAnonymous.getTotal());
+		assertEquals(3, searchResultAsAnonymous.getTotal());
 
 		final SearchResult searchResultForReporterWseligaAsAnonymous = client.getSearchClient().searchJql("reporter=wseliga", pm);
 		assertEquals(0, searchResultForReporterWseligaAsAnonymous.getTotal());
@@ -51,7 +51,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 			return;
 		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, pm);
-		assertEquals(9, searchResultForNull.getTotal());
+		assertEquals(11, searchResultForNull.getTotal());
 		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
 		assertEquals(3, searchResultForNull.getStartIndex());
 		assertEquals(3, searchResultForNull.getMaxResults());
@@ -59,7 +59,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		// seems pagination works differently between 4.4 and 5.0
 		// check the rationale https://jdog.atlassian.com/browse/JRADEV-8889
 		final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, pm);
-		assertEquals(9, search2.getTotal());
+		assertEquals(11, search2.getTotal());
 		assertEquals(2, Iterables.size(search2.getIssues()));
 		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
 			assertEquals("TST-6", Iterables.get(search2.getIssues(), 0).getKey());
@@ -73,8 +73,8 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 
 		setUser1();
 		final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, pm);
-		assertEquals(8, search3.getTotal());
-		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 3 : 8, Iterables.size(search3.getIssues()));
+		assertEquals(10, search3.getTotal());
+		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 3 : 10, Iterables.size(search3.getIssues()));
 		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 0, search3.getStartIndex());
 		assertEquals(10, search3.getMaxResults());
 	}
@@ -91,7 +91,7 @@ public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJersey
 		}
 		sb.append(" or summary is not empty"); // so that effectively all issues are returned;
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(sb.toString(), 3, 6, pm);
-		assertEquals(9, searchResultForNull.getTotal());
+		assertEquals(11, searchResultForNull.getTotal());
 		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
 		assertEquals(6, searchResultForNull.getStartIndex());
 		assertEquals(3, searchResultForNull.getMaxResults());
