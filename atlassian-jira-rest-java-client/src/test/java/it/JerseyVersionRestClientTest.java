@@ -26,7 +26,6 @@ import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.VersionPosition;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.junit.Test;
@@ -198,12 +197,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1"));
 		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1", "1.1"));
 
-		final Version version1 = Iterables.find(client.getProjectClient().getProject("TST", pm).getVersions(), new Predicate<Version>() {
-			@Override
-			public boolean apply(Version input) {
-				return "1".equals(input.getName());
-			}
-		});
+		final Version version1 = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getVersions(), "1");
 
 		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
 		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");

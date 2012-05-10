@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 /**
@@ -23,7 +24,7 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class IssueLinkType {
+public class IssueLinkType implements NamedEntity {
 	public enum Direction {
 		OUTBOUND,
 		INBOUND

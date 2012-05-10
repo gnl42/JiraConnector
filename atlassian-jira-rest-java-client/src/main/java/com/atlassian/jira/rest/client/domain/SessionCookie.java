@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 /**
@@ -23,7 +24,7 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class SessionCookie {
+public class SessionCookie implements NamedEntity {
 	private final String name;
 	private final String value;
 

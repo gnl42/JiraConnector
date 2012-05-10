@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 /**
@@ -23,7 +24,7 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class Field {
+public class Field implements NamedEntity {
 	private final String id;
 
 	private final String name;

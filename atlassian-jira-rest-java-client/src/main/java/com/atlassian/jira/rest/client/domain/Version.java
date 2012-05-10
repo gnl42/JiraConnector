@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.AddressableEntity;
+import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -28,7 +29,7 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class Version implements AddressableEntity {
+public class Version implements AddressableEntity, NamedEntity {
 	private final URI self;
 	private final Long id;
 	private final String description;

@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ import java.util.Collection;
  *
  * @since v0.1
  */
-public class Transition {
+public class Transition implements NamedEntity{
     private final String name;
     private final int id;
     private final Collection<Field> fields;

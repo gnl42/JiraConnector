@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
@@ -134,6 +136,15 @@ public class TestUtil {
 		} else if (a.equals(b) || b.equals(a)) {
 			Assert.fail("[" + a + "] not equals [" + b + "]");
 		}
+	}
+
+	public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
+		return Iterables.find(entities, new Predicate<T>() {
+			@Override
+			public boolean apply(T input) {
+				return name.equals(input.getName());
+			}
+		});
 	}
 
 }

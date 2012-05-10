@@ -26,7 +26,6 @@ import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
@@ -38,13 +37,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 
 	@Test
 	public void testGetComponent() throws Exception {
-		final BasicComponent basicComponent = Iterables.find(client.getProjectClient().getProject("TST", pm).getComponents(),
-				new Predicate<BasicComponent>() {
-					@Override
-					public boolean apply(BasicComponent input) {
-						return "Component A".equals(input.getName());
-					}
-				});
+		final BasicComponent basicComponent = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
@@ -56,13 +49,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final BasicComponent basicComponent = Iterables.find(client.getProjectClient().getProject("TST", pm).getComponents(),
-				new Predicate<BasicComponent>() {
-					@Override
-					public boolean apply(BasicComponent input) {
-						return "Component A".equals(input.getName());
-					}
-				});
+		final BasicComponent basicComponent = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
@@ -277,12 +264,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final BasicComponent bc = Iterables.find(client.getProjectClient().getProject("TST", pm).getComponents(), new Predicate<BasicComponent>() {
-			@Override
-			public boolean apply(BasicComponent input) {
-				return "Component A".equals(input.getName());
-			}
-		});
+		final BasicComponent bc = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf(), pm));
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
 		final Component component = client.getComponentClient().createComponent("TST", componentInput, pm);
