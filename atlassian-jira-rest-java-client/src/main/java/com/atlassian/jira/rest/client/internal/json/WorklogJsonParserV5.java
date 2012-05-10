@@ -37,13 +37,14 @@ public class WorklogJsonParserV5 implements JsonParser<Worklog> {
 	@Override
 	public Worklog parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.getJSONObject("updateAuthor"));
+		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
+		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
 		final String comment = json.optString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
 		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
-		final int secondsSpent = json.getInt("timeSpentSeconds");
+		// timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
+		final int secondsSpent = json.optInt("timeSpentSeconds", 0);
 		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
         return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, secondsSpent / 60, visibility);
 	}

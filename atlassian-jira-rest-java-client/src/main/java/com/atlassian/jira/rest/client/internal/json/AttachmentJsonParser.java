@@ -32,7 +32,7 @@ public class AttachmentJsonParser implements JsonParser<Attachment> {
 	public Attachment parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String filename = json.getString("filename");
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
+		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json.getString("created"));
 		final int size = json.getInt("size");
 		final String mimeType = json.getString("mimeType");

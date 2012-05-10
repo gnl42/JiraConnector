@@ -33,6 +33,7 @@ import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
@@ -61,6 +62,7 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -98,6 +100,21 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
 	}
 
+	public void testGetIssueWithAnonymouslyCreatedAttachment() {
+		setAnonymousMode();
+		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1", new NullProgressMonitor());
+		final Iterator<Attachment> attachmentIterator = issue.getAttachments().iterator();
+		assertTrue(attachmentIterator.hasNext());
+		assertNull(attachmentIterator.next().getAuthor());
+	}
+
+	public void testGetIssueWithAnonymouslyCreatedWorklogEntry() {
+		setAnonymousMode();
+		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2", new NullProgressMonitor());
+		final Iterator<Worklog> worklogIterator = issue.getWorklogs().iterator();
+		assertTrue(worklogIterator.hasNext());
+		assertNull(worklogIterator.next().getAuthor());
+	}
 
 	// URIs are broken in 5.0 - https://jdog.atlassian.com/browse/JRADEV-7691
 	private void assertEqualsNoUri(BasicUser expected, BasicUser actual) {
