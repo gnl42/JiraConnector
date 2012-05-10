@@ -76,7 +76,7 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 	}
 
 	@Test
-	public void testGetUser_WhenEmailVisibilityIsHidden() throws JSONException {
+	public void testGetUserWhenEmailVisibilityIsHidden() throws JSONException {
 		// Email Visibility is respected in REST since 4.3
 		if (!isJira4x3OrNewer()) {
 			return;
@@ -97,7 +97,7 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 	}
 
 	@Test
-	public void testGetUser_WhenEmailVisibilityIsMasked() throws JSONException {
+	public void testGetUserWhenEmailVisibilityIsMasked() throws JSONException {
 		// Email Visibility is respected in REST since 4.3
 		if (!isJira4x3OrNewer()) {
 			return;
