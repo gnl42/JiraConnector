@@ -74,4 +74,41 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 
 	}
 
+	@Test
+	public void testGetUser_WhenEmailVisibilityIsHidden() throws JSONException {
+		// Email Visibility is respected in REST since 4.3
+		if (!isJira4x3OrNewer()) {
+			return;
+		}
+
+		final User user = client.getUserClient().getUser(ADMIN_USERNAME, pm);
+		assertNull(user.getEmailAddress());
+		assertEquals("admin", user.getName());
+		assertEquals("Administrator", user.getDisplayName());
+		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST.getSelf(), user.getSelf());
+		assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
+
+		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
+		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
+	}
+
+	@Test
+	public void testGetUser_WhenEmailVisibilityIsMasked() throws JSONException {
+		// Email Visibility is respected in REST since 4.3
+		if (!isJira4x3OrNewer()) {
+			return;
+		}
+
+		final User user = client.getUserClient().getUser(ADMIN_USERNAME, pm);
+		assertEquals("wojciech dot seliga at spartez dot com", user.getEmailAddress());
+		assertEquals("admin", user.getName());
+		assertEquals("Administrator", user.getDisplayName());
+		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST.getSelf(), user.getSelf());
+		assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
+
+		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
+		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
+	}
 }

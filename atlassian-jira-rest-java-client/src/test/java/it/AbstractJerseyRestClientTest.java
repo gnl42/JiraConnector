@@ -104,4 +104,7 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
 	}
 
+	protected boolean isJira4x3OrNewer() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+	}
 }

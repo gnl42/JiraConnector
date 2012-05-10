@@ -54,4 +54,20 @@ public class UserJsonParserTest {
 		assertEquals("Europe/Warsaw", user.getTimezone());
 	}
 
+	@Test
+	public void testParse_EmailHidden() throws Exception {
+		final UserJsonParser parser = new UserJsonParser();
+		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-with-hidden-email.json"));
+
+		assertNull(user.getEmailAddress());
+	}
+
+	@Test
+	public void testParse_EmailMasked() throws Exception {
+		final UserJsonParser parser = new UserJsonParser();
+		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-with-masked-email.json"));
+
+		assertEquals("wojciech dot seliga at spartez dot com", user.getEmailAddress());
+	}
+
 }

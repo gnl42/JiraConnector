@@ -1,0 +1,16 @@
+{
+	"self": "http://localhost:8090/jira/rest/api/latest/user?username=admin",
+	"name": "admin",
+	"avatarUrls": {
+		"16x16": "http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+		"48x48": "http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+	},
+	"displayName": "Administrator",
+	"active": true,
+	"timeZone": "Europe/Warsaw",
+	"groups": {
+		"size": 3,
+		"items": []
+	},
+	"expand": "groups"
+}
