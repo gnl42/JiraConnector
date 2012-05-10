@@ -55,7 +55,7 @@ public class UserJsonParserTest {
 	}
 
 	@Test
-	public void testParse_EmailHidden() throws Exception {
+	public void testParseWhenEmailHidden() throws Exception {
 		final UserJsonParser parser = new UserJsonParser();
 		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-with-hidden-email.json"));
 
@@ -63,7 +63,7 @@ public class UserJsonParserTest {
 	}
 
 	@Test
-	public void testParse_EmailMasked() throws Exception {
+	public void testParseWhenEmailMasked() throws Exception {
 		final UserJsonParser parser = new UserJsonParser();
 		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-with-masked-email.json"));
 

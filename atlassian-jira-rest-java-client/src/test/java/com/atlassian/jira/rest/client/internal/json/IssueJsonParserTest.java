@@ -316,7 +316,7 @@ public class IssueJsonParserTest {
 	}
 
 	@Test
-	public void testParseIssueWithLabels_ForJira5x0() throws JSONException {
+	public void testParseIssueWithLabelsForJira5x0() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-with-labels.json");
 		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
 	}
