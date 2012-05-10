@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.functest.framework.admin.GeneralConfiguration;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -81,6 +82,8 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 			return;
 		}
 
+		administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.HIDDEN);
+
 		final User user = client.getUserClient().getUser(ADMIN_USERNAME, pm);
 		assertNull(user.getEmailAddress());
 		assertEquals("admin", user.getName());
@@ -99,6 +102,8 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 		if (!isJira4x3OrNewer()) {
 			return;
 		}
+
+		administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.MASKED);
 
 		final User user = client.getUserClient().getUser(ADMIN_USERNAME, pm);
 		assertEquals("wojciech dot seliga at spartez dot com", user.getEmailAddress());
