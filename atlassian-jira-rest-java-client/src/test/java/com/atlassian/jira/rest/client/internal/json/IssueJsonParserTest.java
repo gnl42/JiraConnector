@@ -328,7 +328,7 @@ public class IssueJsonParserTest {
 	}
 
 	@Test
-	public void testParseIssueWithoutLabels_ForJira5x0() throws JSONException {
+	public void testParseIssueWithoutLabelsForJira5x0() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
 		assertThat(issue.getLabels(), IterableMatcher.<String>isEmpty());
 	}
