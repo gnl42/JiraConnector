@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.Session;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
@@ -28,7 +29,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
 
-public class JerseySessionRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testValidSession() {

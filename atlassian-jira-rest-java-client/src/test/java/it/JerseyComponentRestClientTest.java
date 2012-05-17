@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Component;
@@ -33,7 +34,8 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 
-public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetComponent() throws Exception {

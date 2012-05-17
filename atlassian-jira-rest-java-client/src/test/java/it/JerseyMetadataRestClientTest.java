@@ -17,6 +17,7 @@
 package it;
 
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicResolution;
@@ -30,6 +31,7 @@ import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -38,7 +40,8 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 
-public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyMetadataRestClientTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testGetServerInfo() throws Exception {
 		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo(pm);

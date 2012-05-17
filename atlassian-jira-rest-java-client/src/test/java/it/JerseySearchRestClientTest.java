@@ -18,8 +18,10 @@ package it;
 
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
 
@@ -27,7 +29,8 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 
-public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseySearchRestClientTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testJqlSearch() {
 		if (!isJqlSupportedByRest()) {

@@ -19,6 +19,7 @@ package it;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
@@ -34,7 +35,8 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 
-public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyProjectRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetNonExistingProject() throws Exception {

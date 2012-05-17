@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.functest.framework.FuncTestCase4;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
@@ -40,7 +41,6 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase4 {
 	@Override
 	public void beforeMethod() {
 		super.beforeMethod();
-
 
 		initUriFields();
 		setAdmin();

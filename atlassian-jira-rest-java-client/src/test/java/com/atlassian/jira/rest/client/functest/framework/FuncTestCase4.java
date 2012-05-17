@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package it;
+package com.atlassian.jira.rest.client.functest.framework;
 
 import com.atlassian.jira.functest.framework.Administration;
 import com.atlassian.jira.functest.framework.Form;

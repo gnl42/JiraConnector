@@ -20,6 +20,7 @@ import com.atlassian.jira.functest.framework.admin.GeneralConfiguration;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableList;
@@ -33,7 +34,8 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH_LATE
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.junit.Assert.*;
 
-public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
     public void testGetUser() throws JSONException {

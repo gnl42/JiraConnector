@@ -19,12 +19,14 @@ package it;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.VersionPosition;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -37,7 +39,8 @@ import java.net.URI;
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
 import static org.junit.Assert.*;
 
-public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testCreateAndUpdateVersion() throws Exception {
