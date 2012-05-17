@@ -141,12 +141,7 @@ public class TestUtil {
 	}
 
 	public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
-		return Iterables.find(entities, new Predicate<T>() {
-			@Override
-			public boolean apply(T input) {
-				return name.equals(input.getName());
-			}
-		});
+		return Iterables.find(entities, HasNamePredicate.forName(name));
 	}
 
 	@Nullable
@@ -159,5 +154,23 @@ public class TestUtil {
 			}
 		}
 		return transitionFound;
+	}
+
+	public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T>{
+	
+		private final String name;
+
+		public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
+			return new HasNamePredicate<K>(name);
+		}
+
+		private HasNamePredicate(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public boolean apply(T input) {
+			return name.equals(input.getName());
+		}
 	}
 }

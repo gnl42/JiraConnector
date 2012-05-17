@@ -31,6 +31,7 @@ import java.net.URI;
  */
 public class Version implements AddressableEntity, NamedEntity {
 	private final URI self;
+	@Nullable
 	private final Long id;
 	private final String description;
 	private final String name;
@@ -39,7 +40,7 @@ public class Version implements AddressableEntity, NamedEntity {
 	@Nullable
 	private final DateTime releaseDate;
 
-	public Version(URI self, Long id, String name, String description, boolean archived, boolean released, DateTime releaseDate) {
+	public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable DateTime releaseDate) {
 		this.self = self;
 		this.id = id;
 		this.description = description;
@@ -54,6 +55,7 @@ public class Version implements AddressableEntity, NamedEntity {
 		return self;
 	}
 
+	@Nullable
 	public Long getId() {
 		return id;
 	}

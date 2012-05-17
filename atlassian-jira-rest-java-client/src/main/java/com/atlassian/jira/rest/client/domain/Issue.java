@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Single JIRA issue
@@ -40,7 +41,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Collection<String> labels) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
 		super(self, key);
         this.summary = summary;
 		this.project = project;
@@ -111,7 +112,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Collection<Subtask> subtasks;
 	@Nullable
 	private final Collection<ChangelogGroup> changelog;
-	private final Collection<String> labels;
+	private final Set<String> labels;
 
 	public BasicStatus getStatus() {
 		return status;
@@ -277,7 +278,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return components;
 	}
 
-	public Collection<String> getLabels() {
+	public Set<String> getLabels() {
 		return labels;
 	}
 

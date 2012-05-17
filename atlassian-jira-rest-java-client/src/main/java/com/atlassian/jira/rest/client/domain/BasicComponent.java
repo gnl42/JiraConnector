@@ -29,13 +29,14 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicComponent implements AddressableEntity, NamedEntity {
+	@Nullable
 	private final Long id;
 	private final URI self;
 	private final String name;
 	@Nullable
 	private final String description;
 
-	public BasicComponent(URI self, Long id, String name, String description) {
+	public BasicComponent(URI self, @Nullable Long id, String name, @Nullable String description) {
 		this.self = self;
 		this.id = id;
 		this.name = name;
@@ -51,6 +52,7 @@ public class BasicComponent implements AddressableEntity, NamedEntity {
 		return name;
 	}
 
+	@Nullable
 	public Long getId() {
 		return id;
 	}

@@ -20,7 +20,7 @@ import com.atlassian.jira.functest.framework.admin.GeneralConfiguration;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.annotation.Restore;
+import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableList;
@@ -34,7 +34,7 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH_LATE
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.junit.Assert.*;
 
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 
     @Test
@@ -101,6 +101,9 @@ public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
 		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
+
+		// Restore e-mail visibility configuration
+		administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.PUBLIC);
 	}
 
 	@Test
@@ -122,5 +125,8 @@ public class JerseyUserRestClientTest extends AbstractJerseyRestClientTest {
 
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME, pm);
 		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
+
+		// Restore e-mail visibility configuration
+		administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.PUBLIC);
 	}
 }

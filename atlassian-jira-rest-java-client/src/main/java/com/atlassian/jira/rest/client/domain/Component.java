@@ -33,12 +33,12 @@ public class Component extends BasicComponent {
 	private AssigneeInfo assigneeInfo;
 
 
-	public Component(URI self, Long id, String name, String description, BasicUser lead) {
+	public Component(URI self, @Nullable Long id, String name, String description, BasicUser lead) {
 		super(self, id, name, description);
 		this.lead = lead;
 	}
 
-	public Component(URI self, Long id, String name, String description, BasicUser lead, @Nullable AssigneeInfo assigneeInfo) {
+	public Component(URI self, @Nullable Long id, String name, String description, BasicUser lead, @Nullable AssigneeInfo assigneeInfo) {
 		this(self, id, name, description, lead);
 		this.assigneeInfo = assigneeInfo;
 	}
@@ -90,7 +90,7 @@ public class Component extends BasicComponent {
 		private final AssigneeType realAssigneeType;
 		private final boolean isAssigneeTypeValid;
 
-		public AssigneeInfo(BasicUser assignee, AssigneeType assigneeType, BasicUser realAssignee, AssigneeType realAssigneeType, boolean assigneeTypeValid) {
+		public AssigneeInfo(BasicUser assignee, AssigneeType assigneeType, @Nullable BasicUser realAssignee, AssigneeType realAssigneeType, boolean assigneeTypeValid) {
 			this.assignee = assignee;
 			this.assigneeType = assigneeType;
 			this.realAssignee = realAssignee;

@@ -39,6 +39,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -278,7 +279,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
 				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
 		
-		final Collection<String> labels = parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR);
+		final Set<String> labels = Sets.newHashSet(parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR));
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
