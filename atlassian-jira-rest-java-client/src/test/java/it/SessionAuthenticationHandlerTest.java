@@ -18,15 +18,22 @@ package it;
 
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Session;
+import org.junit.Test;
+
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
+import static org.junit.Assert.*;
 
 public class SessionAuthenticationHandlerTest extends AbstractJerseyRestClientTest {
+/*
 	@Override
 	protected void setUpTest() {
 		super.setUpTest();
 		// @todo fix this test as cookie based authentication does not work yet
 //        client = new JerseyJiraRestClient(jiraUri, new SessionAuthenticationHandler("admin", "admin"));
 	}
+*/
 
+	@Test
 	public void testGetCurrentSession() {
 		final Session session = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
 		assertEquals(ADMIN_USERNAME, session.getUsername());

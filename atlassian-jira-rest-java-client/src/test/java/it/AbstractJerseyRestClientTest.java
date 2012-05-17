@@ -16,50 +16,45 @@
 
 package it;
 
-import com.atlassian.jira.functest.framework.FuncTestCase;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
-import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClient;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
 
-public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
-    protected URI jiraUri;
-    protected JerseyJiraRestClient client;
-    protected URI jiraRestRootUri;
-    protected URI jiraAuthRootUri;
-	protected static final String ADMIN_USERNAME = "admin";
-	protected static final String ADMIN_PASSWORD = "admin";
+public abstract class AbstractJerseyRestClientTest extends FuncTestCase4 {
+
+	protected URI jiraUri;
+	protected JerseyJiraRestClient client;
+	protected URI jiraRestRootUri;
+	protected URI jiraAuthRootUri;
 	protected final NullProgressMonitor pm = new NullProgressMonitor();
-	protected static final String DEFAULT_JIRA_DUMP_FILE = "jira1-export.xml";
 
-	public AbstractJerseyRestClientTest() {
-    }
+	@Override
+	public void beforeMethod() {
+		super.beforeMethod();
 
-    public void configureJira() {
-        administration.restoreData(DEFAULT_JIRA_DUMP_FILE);
-    }
 
-    @Override
-    protected void setUpTest() {
-        try {
-            jiraUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI())/*.path(environmentData.getContext())*/.build();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        jiraRestRootUri = UriBuilder.fromUri(jiraUri).path(
-				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "/rest/api/2/" : "/rest/api/latest/").build();
-        jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
+		initUriFields();
 		setAdmin();
+	}
+
+	private void initUriFields() {
+		try {
+			jiraUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+		jiraRestRootUri = UriBuilder.fromUri(jiraUri).path(
+				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "/rest/api/2/" : "/rest/api/latest/").build();
+		jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
 	}
 
 	protected void setAdmin() {
@@ -82,20 +77,6 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 		setClient(USER1_USERNAME, USER1_PASSWORD);
 	}
 
-
-	@Nullable
-	protected Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
-		Transition transitionFound = null;
-		for (Transition transition : transitions) {
-			if (transition.getName().equals(transitionName)) {
-				transitionFound = transition;
-				break;
-			}
-		}
-		return transitionFound;
-	}
-
-
 	protected boolean isJira4x4OrNewer() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= 646;
 	}
@@ -107,4 +88,9 @@ public abstract class AbstractJerseyRestClientTest extends FuncTestCase {
 	protected boolean isJira4x3OrNewer() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
+
+	protected boolean doesJiraSupportRestIssueLinking() {
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+	}
+
 }

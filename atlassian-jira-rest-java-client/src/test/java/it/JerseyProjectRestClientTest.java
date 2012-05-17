@@ -32,6 +32,8 @@ import org.junit.Test;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 
+import static org.junit.Assert.*;
+
 public class JerseyProjectRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
 	@Test

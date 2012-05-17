@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
@@ -50,7 +50,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
 		final Version version = client.getVersionRestClient().createVersion(versionInput, pm);
-		assertEquals(versionInput, version);
+		assertVersionInputAndVersionEquals(versionInput, version);
 		assertNotNull(version.getId());
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
 				IterableMatcher.hasOnlyElements("1.1", "1", versionInput.getName()));
@@ -86,7 +86,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 				.setDescription("my updated description").setReleased(true).setName("my updated name").build();
 		client.getVersionRestClient().updateVersion(version.getSelf(), newVersionInput, pm);
 		final Version modifiedVersion = client.getVersionRestClient().updateVersion(version.getSelf(), newVersionInput, pm);
-		assertEquals(newVersionInput, modifiedVersion);
+		assertVersionInputAndVersionEquals(newVersionInput, modifiedVersion);
 
 		final VersionInput duplicateVersionInput = new VersionInputBuilder("TST", modifiedVersion).setName("1.1").build();
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A version with this name already exists in this project.", new Runnable() {
@@ -117,7 +117,7 @@ public class JerseyVersionRestClientTest extends AbstractRestoringJiraStateJerse
 
 	}
 
-	private void assertEquals(VersionInput versionInput, Version version) {
+	private void assertVersionInputAndVersionEquals(VersionInput versionInput, Version version) {
 		assertEquals(version.getName(), versionInput.getName());
 		assertEquals(version.getDescription(), versionInput.getDescription());
 		assertEquals(version.getReleaseDate(), versionInput.getReleaseDate());

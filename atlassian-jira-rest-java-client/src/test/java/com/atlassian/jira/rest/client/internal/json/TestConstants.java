@@ -26,7 +26,7 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 /**
  * Constants used in various unit tests.
  * All constants including full URIs are usually useless in integration tests though, as during integration
- * tests we may be testing against a JIRA running on a different port and with a different web context 
+ * tests we may be testing against a JIRA running on a different port and with a different web context
  *
  * @since v0.1
  */
@@ -56,4 +56,10 @@ public class TestConstants {
 
 	public static final BasicComponent BCOMPONENT_B = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10001"),
 			10001L, "Component B", "another description");
+
+	public static final String ADMIN_USERNAME = "admin";
+
+	public static final String ADMIN_PASSWORD = "admin";
+
+	public static final String DEFAULT_JIRA_DUMP_FILE = "jira1-export.xml";
 }

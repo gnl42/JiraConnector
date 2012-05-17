@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.Transition;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -24,6 +25,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -147,4 +149,15 @@ public class TestUtil {
 		});
 	}
 
+	@Nullable
+	public static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+		Transition transitionFound = null;
+		for (Transition transition : transitions) {
+			if (transition.getName().equals(transitionName)) {
+				transitionFound = transition;
+				break;
+			}
+		}
+		return transitionFound;
+	}
 }

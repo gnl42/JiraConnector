@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.atlassian.jira.rest.client.annotation;
 
-package it;
+import java.lang.annotation.Annotation;
 
-import com.atlassian.jira.rest.client.annotation.Restore;
-import com.atlassian.jira.rest.client.internal.json.TestConstants;
-
-/**
- * Base class for tests reloading each time (before each test method) the state of JIRA from an external
- * dump (export) XML file.
- *
- * @since v0.1
- */
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
-public abstract class AbstractRestoringJiraStateJerseyRestClientTest extends AbstractJerseyRestClientTest {
-
+public class Annotations {
+	public static <T extends Annotation> T getAnnotationIncludingParents(final Class<?> aClass, final Class<T> annotationClass) {
+		Class<?> classToScan = aClass;
+		while (classToScan != null) {
+			if (classToScan.isAnnotationPresent(annotationClass)) {
+				return classToScan.getAnnotation(annotationClass);
+			}
+			classToScan = classToScan.getSuperclass();
+		}
+		return null;
+	}
 }

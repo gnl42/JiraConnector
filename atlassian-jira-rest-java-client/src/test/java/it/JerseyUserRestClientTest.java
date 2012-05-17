@@ -30,6 +30,8 @@ import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH_LATEST;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
+import static org.junit.Assert.*;
 
 public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
@@ -47,12 +49,14 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
     }
 
+	@Test
 	public void testGetUserWithSlash() {
 		final User user = client.getUserClient().getUser(USER_SLASH.getName(), pm);
 		assertEquals(USER_SLASH_LATEST.getSelf(), user.getSelf());
 		assertEquals(USER_SLASH_LATEST.getDisplayName(), user.getDisplayName());
 	}
 
+	@Test
 	public void testGetNonExistingUser() {
 		final String username = "same-fake-user-which-does-not-exist";
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user named '" + username + "' does not exist",
@@ -64,6 +68,7 @@ public class JerseyUserRestClientTest extends AbstractRestoringJiraStateJerseyRe
 		});
 	}
 
+	@Test
 	public void testGetUserAnonymously() {
 		TestUtil.assertErrorCode(Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override

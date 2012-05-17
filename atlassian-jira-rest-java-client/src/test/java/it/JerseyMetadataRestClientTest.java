@@ -32,10 +32,14 @@ import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
+import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static org.junit.Assert.*;
+
 public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
+	@Test
 	public void testGetServerInfo() throws Exception {
 		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo(pm);
 		assertEquals("Your Company JIRA", serverInfo.getServerTitle());
@@ -44,6 +48,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		assertTrue(serverInfo.getServerTime().isBefore(new DateTime().plusMinutes(5)));
 	}
 
+	@Test
 	public void testGetIssueTypeNonExisting() throws Exception {
 		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1", pm).getIssueType();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The issue type with id '" +
@@ -56,6 +61,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		});
 	}
 
+	@Test
 	public void testGetIssueType() {
 		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1", pm).getIssueType();
 		final IssueType issueType = client.getMetadataClient().getIssueType(basicIssueType.getSelf(), pm);
@@ -65,6 +71,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 
 	}
 
+	@Test
 	public void testGetIssueTypes() {
 		if (!doesJiraSupportRestIssueLinking()) {
 			return;
@@ -77,6 +84,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		assertEquals("duplicates", issueType.getOutward());
 	}
 
+	@Test
 	public void testGetStatus() {
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf(), pm);
@@ -85,6 +93,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		assertEquals("Open", status.getName());
 	}
 
+	@Test
 	public void testGetStatusNonExisting() throws Exception {
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The status with id '" +
@@ -97,6 +106,7 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 		});
 	}
 
+	@Test
 	public void testGetPriority() {
 		final BasicPriority basicPriority = client.getIssueClient().getIssue("TST-2", pm).getPriority();
 		final Priority priority = client.getMetadataClient().getPriority(basicPriority.getSelf(), pm);
@@ -109,12 +119,12 @@ public class JerseyMetadataRestClientTest extends AbstractRestoringJiraStateJers
 
 	}
 
-
+	@Test
 	public void testGetResolution() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
 		assertNull(issue.getResolution());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
-		final Transition resolveTransition = getTransitionByName(transitions, "Resolve Issue");
+		final Transition resolveTransition = TestUtil.getTransitionByName(transitions, "Resolve Issue");
 
 		client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId()), pm);
 

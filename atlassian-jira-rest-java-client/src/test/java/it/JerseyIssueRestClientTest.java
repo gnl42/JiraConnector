@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.ChangelogGroup;
@@ -72,7 +73,9 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_USERNAME;
-import static org.junit.Assert.assertThat;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
+import static org.junit.Assert.*;
 
 
 public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
@@ -89,6 +92,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertThat(watchers.getUsers(), IterableMatcher.hasOnlyElements(USER1));
 	}
 
+	@Test
 	public void testGetWatcherForAnonymouslyAccessibleIssue() {
 		setAnonymousMode();
 		final Issue issue = client.getIssueClient().getIssue("ANNON-1", new NullProgressMonitor());
@@ -100,6 +104,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
 	}
 
+	@Test
 	public void testGetIssueWithAnonymouslyCreatedAttachment() {
 		setAnonymousMode();
 		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1", new NullProgressMonitor());
@@ -108,6 +113,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertNull(attachmentIterator.next().getAuthor());
 	}
 
+	@Test
 	public void testGetIssueWithAnonymouslyCreatedWorklogEntry() {
 		setAnonymousMode();
 		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2", new NullProgressMonitor());
@@ -180,7 +186,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		}
 	}
 
-
+	@Test
 	public void testGetIssueWithNonTrivialComments() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
 		final Iterable<Comment> comments = issue.getComments();
@@ -193,6 +199,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 
 	}
 
+	@Test
 	public void testGetIssueWithNoViewWatchersPermission() {
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
@@ -319,7 +326,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 
-		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
@@ -334,7 +341,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
-		Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
@@ -352,15 +359,15 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
-		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
 		// warning: Polish language here - I am asserting if the messages are indeed localized
 		// since 5.0 messages are changed and not localized
-		assertErrorCode(Response.Status.BAD_REQUEST, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER
+		assertErrorCode(Response.Status.BAD_REQUEST, TESTING_JIRA_5_OR_NEWER
 				? "Operation value must be a number" : "']432jl' nie jest prawid\u0142ow\u0105 liczb\u0105", new Runnable() {
 			@Override
 			public void run() {
@@ -407,7 +414,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
-		final Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 		final String errorMsg = doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue()
 				? expectedErrorMsg : null;
 		assertErrorCode(Response.Status.BAD_REQUEST, errorMsg, new Runnable() {
@@ -421,7 +428,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	private void testTransitionImpl(Comment comment) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
-		Transition transitionFound = getTransitionByName(transitions, "Estimate");
+		Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 		DateTime now = new DateTime();
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment), pm);
 
@@ -691,7 +698,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 		if (commentInput != null) {
 			final Comment comment = linkedIssue.getComments().iterator().next();
 			assertEquals(commentInput.getBody(), comment.getBody());
-			assertEquals(IntegrationTestUtil.USER_ADMIN, comment.getAuthor());
+			assertEquals(USER_ADMIN, comment.getAuthor());
 			assertEquals(commentInput.getVisibility(), comment.getVisibility());
 		} else {
 			assertFalse(linkedIssue.getComments().iterator().hasNext());
@@ -808,7 +815,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	@Test
 	public void testFetchingUnassignedIssue() {
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
-		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
+		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 
 		navigation.userProfile().changeUserLanguage("angielski (UK)");
 		navigation.issue().unassignIssue("TST-5", "unassigning issue");
@@ -823,7 +830,7 @@ public class JerseyIssueRestClientTest extends AbstractRestoringJiraStateJerseyR
 	public void testFetchingIssueWithAnonymousComment() {
 		navigation.userProfile().changeUserLanguage("angielski (UK)");
 		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
-		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
+		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 		navigation.logout();
 		navigation.issue().addComment("ANNON-1", "my nice comment");
 		final Issue issue = client.getIssueClient().getIssue("ANNON-1", pm);

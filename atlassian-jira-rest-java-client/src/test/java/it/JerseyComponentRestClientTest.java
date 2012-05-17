@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
@@ -306,7 +306,7 @@ public class JerseyComponentRestClientTest extends AbstractRestoringJiraStateJer
 	}
 
 
-	boolean doesJiraReturnCorrectErrorCodeForForbiddenOperation() {
+	private boolean doesJiraReturnCorrectErrorCodeForForbiddenOperation() {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
 	}
 

@@ -25,20 +25,19 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-public class JerseySessionRestClientTest extends AbstractJerseyRestClientTest {
+import static org.junit.Assert.*;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
 
-	@Override
-	protected void setUpTest() {
-		super.setUpTest();
-		configureJira();
-	}
+public class JerseySessionRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 
+	@Test
 	public void testValidSession() {
 		final Session session = client.getSessionClient().getCurrentSession(new NullProgressMonitor());
 		assertEquals(ADMIN_USERNAME, session.getUsername());
 
 	}
 
+	@Test
 	public void testInvalidCredentials() {
 		client = new JerseyJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(ADMIN_USERNAME, ADMIN_PASSWORD + "invalid"));
 		TestUtil.assertErrorCode(401, new Runnable() {

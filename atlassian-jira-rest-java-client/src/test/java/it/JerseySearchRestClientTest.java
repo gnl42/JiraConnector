@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static org.junit.Assert.*;
+
 public class JerseySearchRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
 	@Test
 	public void testJqlSearch() {

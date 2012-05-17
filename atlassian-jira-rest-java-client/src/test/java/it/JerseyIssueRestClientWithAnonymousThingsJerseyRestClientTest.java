@@ -15,14 +15,14 @@
  */
 package it;
 
+import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.Issue;
 import org.junit.Test;
 
-public class JerseyIssueRestClientWithAnonymousThingsJerseyRestClientTest extends AbstractRestoringJiraStateJerseyRestClientTest {
-	@Override
-	protected String getJiraDumpFile() {
-		return "jira2-export-unassigned.xml";
-	}
+import static org.junit.Assert.*;
+
+@Restore("jira2-export-unassigned.xml")
+public class JerseyIssueRestClientWithAnonymousThingsJerseyRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetUnassignedIssue() throws Exception {
