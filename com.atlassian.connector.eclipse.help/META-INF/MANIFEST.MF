@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Eclipse Connector Documentation
 Bundle-SymbolicName: com.atlassian.connector.eclipse.help;singleton:=true
-Bundle-Version: 3.0.5.qualifier
+Bundle-Version: 3.0.6.qualifier
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
