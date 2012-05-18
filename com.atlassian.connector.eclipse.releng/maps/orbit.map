@@ -819,3 +819,7 @@ plugin@org.w3c.dom.smil.source,1.0.0=GET,http://download.eclipse.org/tools/orbit
 plugin@org.w3c.dom.svg,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.w3c.dom.svg_1.1.0.v200806040011.jar
 
 plugin@org.w3c.dom.svg.source,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.w3c.dom.svg.source_1.1.0.v200806040011.jar
+
+!plugin@org.jsoup,1.6.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20120123151124/repository/plugins/org.jsoup_1.6.1.v201201201356.jar
+
+!plugin@org.jsoup.source,1.6.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20120123151124/repository/plugins/org.jsoup.source_1.6.1.v201201201356.jar
