@@ -23,6 +23,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -33,7 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class JsonParseUtil {
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
+	public static final String JIRA_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(JIRA_DATE_TIME_PATTERN);
 	private static final DateTimeFormatter DATE_FORMATTER = ISODateTimeFormat.date();
     public static final String VALUE_KEY = "value";
 	public static final String SELF_ATTR = "self";
@@ -180,8 +182,12 @@ public class JsonParseUtil {
 		}
 	}
 
-	public static String format(DateTime dateTime) {
+	public static String formatDate(DateTime dateTime) {
 		return DATE_FORMATTER.print(dateTime);
+	}
+
+	public static String formatDateTime(DateTime dateTime) {
+		return DATE_TIME_FORMATTER.print(dateTime);
 	}
 
 

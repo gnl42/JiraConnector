@@ -23,6 +23,7 @@ import com.atlassian.jira.rest.client.domain.Watchers;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.google.common.annotations.Beta;
 
 import java.io.File;
@@ -226,6 +227,15 @@ public interface IssueRestClient {
 	 */
 	@Beta
 	public InputStream getAttachment(ProgressMonitor pm, URI attachmentUri);
+
+	/**
+	 * Adds new worklog entry to issue.
+	 *
+	 * @param progressMonitor progress monitor
+	 * @param worklogUri URI for worklog in issue
+	 * @param worklogInput worklog input object to create
+	 */
+	void addWorklog(URI worklogUri, WorklogInput worklogInput, ProgressMonitor progressMonitor);
 
 	/**
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable, ProgressMonitor)}

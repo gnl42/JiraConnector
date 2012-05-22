@@ -225,6 +225,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return UriBuilder.fromUri(getSelf()).path("attachments").build();
 	}
 
+	public URI getWorklogUri() {
+		return UriBuilder.fromUri(getSelf()).path("worklog").build();
+	}
+
 	/**
 	 * @return comments for this issue
 	 */

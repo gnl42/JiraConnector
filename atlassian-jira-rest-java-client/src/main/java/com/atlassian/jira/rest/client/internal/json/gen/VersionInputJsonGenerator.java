@@ -31,7 +31,7 @@ public class VersionInputJsonGenerator implements JsonGenerator<VersionInput> {
 			jsonObject.put("description", version.getDescription());
 		}
 		if (version.getReleaseDate() != null) {
-			jsonObject.put("releaseDate", JsonParseUtil.format(version.getReleaseDate()));
+			jsonObject.put("releaseDate", JsonParseUtil.formatDate(version.getReleaseDate()));
 		}
 		jsonObject.put("released", version.isReleased());
 		jsonObject.put("archived", version.isArchived());

@@ -26,6 +26,7 @@ import com.atlassian.jira.functest.framework.assertions.Assertions;
 import com.atlassian.jira.functest.framework.assertions.TextAssertions;
 import com.atlassian.jira.functest.framework.log.FuncTestLogger;
 import com.atlassian.jira.rest.client.annotation.Annotations;
+import com.atlassian.jira.rest.client.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.webtests.util.JIRAEnvironmentData;
@@ -33,6 +34,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import net.sourceforge.jwebunit.WebTester;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -68,11 +70,28 @@ public class FuncTestCase4 {
 		wasRestorePerformed = false;
 	}
 
+	protected boolean isTestEnabled(final TestName testName) {
+		final Class<? extends FuncTestCase4> aClass = this.getClass();
+		try {
+			final Method m = aClass.getMethod(testName.getMethodName());
+			// Check if this test depends on jira build number
+			final JiraBuildNumberDependent jiraBuildNumberDependent = m.getAnnotation(JiraBuildNumberDependent.class);
+			if (jiraBuildNumberDependent != null) {
+				long actualBuildNumber = administration.getBuildNumber();
+				return jiraBuildNumberDependent.condition().fulfillsCondition(jiraBuildNumberDependent.value(), actualBuildNumber);
+			}
+		} catch (NoSuchMethodException e) {
+			// method with params? not supported for now, ignore
+		}
+		return true;
+	}
+
 	@Before
 	public void beforeMethod() {
 		fakeFuncTestCase = new FakeFuncTestCase();
 		fakeFuncTestCase.setMeUp();
 
+		Assume.assumeTrue(isTestEnabled(runningTestMethod));
 		doRestore();
 	}
 

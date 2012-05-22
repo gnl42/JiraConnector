@@ -42,7 +42,7 @@ public class Worklog {
 	private final Visibility visibility;
 
 	public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-                   DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, Visibility visibility) {
+                   DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
 		this.self = self;
 		this.issueUri = issueUri;
 		this.author = author;
@@ -92,6 +92,7 @@ public class Worklog {
 		return minutesSpent;
 	}
 
+	@Nullable
 	public Visibility getVisibility() {
 		return visibility;
 	}
@@ -134,6 +135,5 @@ public class Worklog {
 	public int hashCode() {
 		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
 	}
-
 
 }

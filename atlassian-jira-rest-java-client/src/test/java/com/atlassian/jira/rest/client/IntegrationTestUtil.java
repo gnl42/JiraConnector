@@ -45,6 +45,7 @@ public class IntegrationTestUtil {
 	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
 	private static final String URI_INTERFIX_FOR_USER;
 
+	public static final String GROUP_JIRA_ADMINISTRATORS = "jira-administrators";
 
 	static {
         try {

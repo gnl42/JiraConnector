@@ -31,6 +31,7 @@ import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
@@ -41,6 +42,7 @@ import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -370,4 +372,13 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		removeWatcher(watchersUri, getLoggedUsername(progressMonitor), progressMonitor);
 	}
 
+	@Override
+	public void addWorklog(final URI worklogUri, final WorklogInput worklogInput, final ProgressMonitor progressMonitor) {
+		post(worklogUri, new Callable<JSONObject>() {
+			@Override
+			public JSONObject call() throws Exception {
+				return new WorklogInputJsonGenerator().generate(worklogInput);
+			}
+		}, progressMonitor);
+	}
 }
