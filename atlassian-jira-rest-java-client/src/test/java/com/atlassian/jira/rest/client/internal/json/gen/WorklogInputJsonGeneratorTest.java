@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import java.net.URI;
@@ -32,7 +33,9 @@ import static org.junit.Assert.*;
 public class WorklogInputJsonGeneratorTest {
 
 	private final BasicUser USER;
-	private final WorklogInputJsonGenerator generator = new WorklogInputJsonGenerator();
+	private final WorklogInputJsonGenerator generator = new WorklogInputJsonGenerator(
+			JsonParseUtil.JIRA_DATE_TIME_FORMATTER.withZone(DateTimeZone.forID("+02:00"))
+	);
 	
 	public WorklogInputJsonGeneratorTest() throws URISyntaxException {
 		USER = new BasicUser(new URI("http://localhost:2990/jira/rest/api/2/user?username=wseliga"), "wseliga", "Wojciech Seliga");

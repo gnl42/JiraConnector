@@ -22,18 +22,28 @@ import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.format.DateTimeFormatter;
 
 public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
 
 	private final JsonGenerator<Visibility> visibilityGenerator = new VisibilityJsonGenerator();
 	private final JsonGenerator<BasicUser> basicUserJsonGenerator = new BasicUserJsonGenerator();
+	private final DateTimeFormatter dateTimeFormatter;
+
+	public WorklogInputJsonGenerator() {
+		this(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
+	}
+
+	public WorklogInputJsonGenerator(DateTimeFormatter dateTimeFormatter) {
+		this.dateTimeFormatter = dateTimeFormatter;
+	}
 
 	@Override
 	public JSONObject generate(final WorklogInput worklogInput) throws JSONException {
 		final JSONObject res = new JSONObject()
 				.put("self", worklogInput.getSelf())
 				.put("comment", worklogInput.getComment())
-				.put("started", JsonParseUtil.formatDateTime(worklogInput.getStartDate()))
+				.put("started", dateTimeFormatter.print(worklogInput.getStartDate()))
 				.put("timeSpent", worklogInput.getMinutesSpent());
 
 		putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);

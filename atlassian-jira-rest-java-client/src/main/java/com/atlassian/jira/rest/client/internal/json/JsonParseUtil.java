@@ -35,8 +35,8 @@ import java.util.Collection;
 
 public class JsonParseUtil {
 	public static final String JIRA_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(JIRA_DATE_TIME_PATTERN);
-	private static final DateTimeFormatter DATE_FORMATTER = ISODateTimeFormat.date();
+	public static final DateTimeFormatter JIRA_DATE_TIME_FORMATTER = DateTimeFormat.forPattern(JIRA_DATE_TIME_PATTERN);
+	public static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
     public static final String VALUE_KEY = "value";
 	public static final String SELF_ATTR = "self";
 
@@ -168,7 +168,7 @@ public class JsonParseUtil {
 
 	public static DateTime parseDateTime(String str) {
 		try {
-			return DATE_TIME_FORMATTER.parseDateTime(str);
+			return JIRA_DATE_TIME_FORMATTER.parseDateTime(str);
 		} catch (Exception e) {
 			throw new RestClientException(e);
 		}
@@ -176,18 +176,18 @@ public class JsonParseUtil {
 
 	public static DateTime parseDate(String str) {
 		try {
-			return DATE_FORMATTER.parseDateTime(str);
+			return JIRA_DATE_FORMATTER.parseDateTime(str);
 		} catch (Exception e) {
 			throw new RestClientException(e);
 		}
 	}
 
 	public static String formatDate(DateTime dateTime) {
-		return DATE_FORMATTER.print(dateTime);
+		return JIRA_DATE_FORMATTER.print(dateTime);
 	}
 
 	public static String formatDateTime(DateTime dateTime) {
-		return DATE_TIME_FORMATTER.print(dateTime);
+		return JIRA_DATE_TIME_FORMATTER.print(dateTime);
 	}
 
 
