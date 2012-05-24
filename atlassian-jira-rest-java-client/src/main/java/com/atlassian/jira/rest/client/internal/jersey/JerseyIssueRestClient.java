@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.jersey;
 
+import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
@@ -373,8 +374,13 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void addWorklog(final URI worklogUri, final WorklogInput worklogInput, final ProgressMonitor progressMonitor) {
-		post(worklogUri, new Callable<JSONObject>() {
+	public void addWorklog(final URI worklogUri, final WorklogInput worklogInput, final ProgressMonitor progressMonitor, AdjustEstimateOption adjustEstimateOption) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(worklogUri)
+				.queryParam("adjustEstimate", adjustEstimateOption.adjustEstimate.restValue)
+				.queryParam("newEstimate", adjustEstimateOption.newEstimate == null ? "" : adjustEstimateOption.newEstimate)
+				.queryParam("reduceBy", adjustEstimateOption.reduceBy == null ? "" : adjustEstimateOption.reduceBy);
+		
+		post(uriBuilder.build(), new Callable<JSONObject>() {
 			@Override
 			public JSONObject call() throws Exception {
 				return new WorklogInputJsonGenerator().generate(worklogInput);

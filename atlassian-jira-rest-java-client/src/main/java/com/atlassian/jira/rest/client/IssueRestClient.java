@@ -40,7 +40,7 @@ public interface IssueRestClient {
 	 * Retrieves issue with selected issue key.
 	 *
 	 * @param issueKey issue key (like TST-1, or JRA-9)
-	 * @param progressMonitor progress monitor  
+	 * @param progressMonitor progress monitor
 	 * @return issue with given <code>issueKey</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -62,7 +62,7 @@ public interface IssueRestClient {
 	 * Retrieves complete information (if the caller has permission) about watchers for selected issue.
 	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
-	 * @param progressMonitor progress monitor  
+	 * @param progressMonitor progress monitor
 	 * @return detailed information about watchers watching selected issue.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @see com.atlassian.jira.rest.client.domain.Issue#getWatchers()
@@ -73,7 +73,7 @@ public interface IssueRestClient {
 	 * Retrieves complete information (if the caller has permission) about voters for selected issue.
 	 *
 	 * @param votesUri URI of voters resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
-	 * @param progressMonitor progress monitor  
+	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 
 	 * @return detailed information about voters of selected issue
@@ -85,7 +85,7 @@ public interface IssueRestClient {
 	 * Retrieves complete information (if the caller has permission) about transitions available for the selected issue in its current state.
 	 *
 	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
-	 * @param progressMonitor progress monitor  
+	 * @param progressMonitor progress monitor
 	 * @return transitions about transitions available for the selected issue in its current state.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -106,7 +106,7 @@ public interface IssueRestClient {
 	 * Performs selected transition on selected issue.
 	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
 	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
-	 * @param progressMonitor progress monitor  
+	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 
 	 */
@@ -232,10 +232,11 @@ public interface IssueRestClient {
 	 * Adds new worklog entry to issue.
 	 *
 	 * @param progressMonitor progress monitor
-	 * @param worklogUri URI for worklog in issue
-	 * @param worklogInput worklog input object to create
+	 * @param worklogUri	  URI for worklog in issue
+	 * @param worklogInput	worklog input object to create
+	 * @param adjustEstimateOption estimate adjustment configuration. Use static factory methods from AdjustEstimateOption to create one.
 	 */
-	void addWorklog(URI worklogUri, WorklogInput worklogInput, ProgressMonitor progressMonitor);
+	void addWorklog(URI worklogUri, WorklogInput worklogInput, ProgressMonitor progressMonitor, AdjustEstimateOption adjustEstimateOption);
 
 	/**
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable, ProgressMonitor)}

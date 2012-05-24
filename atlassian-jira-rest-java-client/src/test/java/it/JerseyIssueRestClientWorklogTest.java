@@ -16,12 +16,14 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
@@ -32,6 +34,7 @@ import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS;
@@ -82,6 +85,115 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		testAddWorklogImpl(ISSUE_KEY, createDefaulWorklogInputBuilder().setVisibility(visibility));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testAddWorklogsWithEstimateAdjustment() {		
+		final String issueKey = ISSUE_KEY;
+		
+		// set estimate in issue
+		navigation.issue().setEstimates(ISSUE_KEY, "20", "20");
+		
+		final WorklogInputBuilder worklogInputBuilder = createDefaulWorklogInputBuilder();
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// get issue
+		final Issue initialIssue = issueClient.getIssue(issueKey, pm);
+
+		// # First change - test auto
+		final WorklogInput worklogInput = worklogInputBuilder
+				.setIssueUri(initialIssue.getSelf())
+				.setMinutesSpent(2)
+				.build();
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm, AdjustEstimateOption.auto());
+
+		// check if estimate nad logged has changed
+		final Issue issueAfterFirstChange = issueClient.getIssue(issueKey, pm);
+		final Integer actualTimeSpentAfterChange = getTimeSpentMinutesNotNull(issueAfterFirstChange.getTimeTracking());
+		final Integer expectedTimeSpentAfterChange = getTimeSpentMinutesNotNull(initialIssue.getTimeTracking()) + worklogInput.getMinutesSpent();
+		assertEquals(expectedTimeSpentAfterChange, actualTimeSpentAfterChange);
+
+		final int actualRemainingEstimate = getRemainingEstimateMinutesNotNull(issueAfterFirstChange.getTimeTracking());
+		final int expectedRemaningEstimate = getRemainingEstimateMinutesNotNull(initialIssue.getTimeTracking()) - worklogInput.getMinutesSpent();
+		assertEquals(expectedRemaningEstimate, actualRemainingEstimate);
+
+		// # Second change - test new; also we want to be sure that logged time are added, and not set to given value
+		final WorklogInput worklogInput2 = worklogInputBuilder
+				.setIssueUri(initialIssue.getSelf())
+				.setMinutesSpent(2)
+				.build();
+		final Integer newEstimateValue = 15;
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2, pm,
+				AdjustEstimateOption.setNew(newEstimateValue.toString()));
+
+		// check if logged time has changed
+		final Issue issueAfterSecondChange = issueClient.getIssue(issueKey, pm);
+		final Integer actualTimeSpentAfterChange2 = getTimeSpentMinutesNotNull(issueAfterSecondChange.getTimeTracking());
+		final Integer expectedTimeSpentAfterChange2 = getTimeSpentMinutesNotNull(issueAfterFirstChange.getTimeTracking()) + worklogInput2.getMinutesSpent();
+		assertEquals(expectedTimeSpentAfterChange2, actualTimeSpentAfterChange2);
+
+		// check if estimate has changed
+		final Integer actualRemainingEstimate2 = getRemainingEstimateMinutesNotNull(issueAfterSecondChange.getTimeTracking());
+		assertEquals(newEstimateValue, actualRemainingEstimate2);
+
+		// # Third change - test leave
+		final WorklogInput worklogInput3 = worklogInputBuilder
+				.setIssueUri(initialIssue.getSelf())
+				.setMinutesSpent(2)
+				.build();
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput3, pm, AdjustEstimateOption.leave());
+
+		// check if logged time has changed
+		final Issue issueAfterThirdChange = issueClient.getIssue(issueKey, pm);
+		final Integer actualTimeSpentAfterChange3 = getTimeSpentMinutesNotNull(issueAfterThirdChange.getTimeTracking());
+		final Integer expectedTimeSpentAfterChange3 = getTimeSpentMinutesNotNull(issueAfterSecondChange.getTimeTracking()) + worklogInput3.getMinutesSpent();
+		assertEquals(expectedTimeSpentAfterChange3, actualTimeSpentAfterChange3);
+
+		// check if estimate has NOT changed
+		final Integer actualRemainingEstimate3 = getRemainingEstimateMinutesNotNull(issueAfterThirdChange.getTimeTracking());
+		final Integer expectedRemainingEstimate3 = getRemainingEstimateMinutesNotNull(issueAfterSecondChange.getTimeTracking());
+		assertEquals(expectedRemainingEstimate3, actualRemainingEstimate3);
+
+		// # Fourth change - test manual
+		final WorklogInput worklogInput4 = worklogInputBuilder
+				.setIssueUri(initialIssue.getSelf())
+				.setMinutesSpent(2)
+				.build();
+		
+		final Integer reduceByValueManual = 7;
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4, pm, AdjustEstimateOption.manual(reduceByValueManual
+				.toString()));
+
+		// check if logged time has changed
+		final Issue issueAfterFourthChange = issueClient.getIssue(issueKey, pm);
+		final Integer actualTimeSpentAfterChange4 = getTimeSpentMinutesNotNull(issueAfterFourthChange.getTimeTracking());
+		final Integer expectedTimeSpentAfterChange4 = getTimeSpentMinutesNotNull(issueAfterThirdChange.getTimeTracking()) + worklogInput4.getMinutesSpent();
+		assertEquals(expectedTimeSpentAfterChange4, actualTimeSpentAfterChange4);
+
+		// check if estimate has NOT changed
+		final Integer actualRemainingEstimate4 = getRemainingEstimateMinutesNotNull(issueAfterFourthChange.getTimeTracking());
+		final Integer expectedRemainingEstimate4 = getRemainingEstimateMinutesNotNull(issueAfterThirdChange.getTimeTracking()) - reduceByValueManual;
+		assertEquals(expectedRemainingEstimate4, actualRemainingEstimate4);
+	}
+
+	private int getTimeSpentMinutesNotNull(@Nullable TimeTracking timeTracking) {
+		if (timeTracking == null) {
+			return 0;
+		}
+
+		Integer timeSpentMinutes = timeTracking.getTimeSpentMinutes();
+		return timeSpentMinutes == null ? 0 : timeSpentMinutes; 
+	}
+	
+	private int getRemainingEstimateMinutesNotNull(@Nullable TimeTracking timeTracking) {
+		if (timeTracking == null) {
+			return 0;
+		}
+
+		Integer remainingEstimateMinutes = timeTracking.getRemainingEstimateMinutes();
+		return remainingEstimateMinutes == null ? 0 : remainingEstimateMinutes; 
+	}
+
+
 	private Worklog getAddedWorklog(final Set<Worklog> initialWorklogs, Issue issue) {
 		final Set<Worklog> worklogs = Sets.newHashSet(issue.getWorklogs());
 		worklogs.removeAll(initialWorklogs);
@@ -89,7 +201,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		return worklogs.iterator().next();
 	}
 
-	private void testAddWorklogImpl(String issueKey, WorklogInputBuilder worklogBuilder) {
+	private void testAddWorklogImpl(String issueKey, WorklogInputBuilder worklogInputBuilder) {
 		final IssueRestClient issueClient = client.getIssueClient();
 
 		// get initial worklogs
@@ -97,8 +209,8 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		final Set<Worklog> initialWorklogs = ImmutableSet.copyOf(issue.getWorklogs());
 
 		// create and add new
-		final WorklogInput worklogInput = worklogBuilder.setIssueUri(issue.getSelf()).build();
-		issueClient.addWorklog(issue.getWorklogUri(), worklogInput, pm);
+		final WorklogInput worklogInput = worklogInputBuilder.setIssueUri(issue.getSelf()).build();
+		issueClient.addWorklog(issue.getWorklogUri(), worklogInput, pm, AdjustEstimateOption.auto());
 
 		// check if added correctly
 		final Issue issueWithWorklog = issueClient.getIssue(issueKey, pm);
