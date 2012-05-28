@@ -7,7 +7,7 @@
 				url="http://www.atlassian.com/software/ideconnector/eclipse.jsp?eclipse-welcome"
 				id="atlassian-eclipse-connector-overview" style-id="content-link">
 				<text>
-					Visit Atlassian Connector for Eclipse homepage to learn more about it. Note: Install the connector's Subclipse or Subversive option (but not both) to fully integrate your FishEye repository insight and Crucible code reviews into your IDE.
+					Visit Atlassian Connector for Eclipse homepage to learn more about it. 
 				</text>
 			</link>
 		</group>
