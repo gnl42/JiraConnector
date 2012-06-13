@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.google.common.base.Objects;
+
 import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Collection;
@@ -34,15 +36,17 @@ public class Project extends BasicProject {
 	private final URI uri;
 	private final Collection<Version> versions;
 	private final Collection<BasicComponent> components;
+	private final Collection<IssueType> issueTypes;
 
 	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri, Collection<Version> versions,
-				   Collection<BasicComponent> components) {
+				   Collection<BasicComponent> components, Collection<IssueType> issueTypes) {
 		super(self, key, name);
 		this.description = description;
 		this.lead = lead;
 		this.uri = uri;
 		this.versions = versions;
 		this.components = components;
+		this.issueTypes = issueTypes;
 	}
 
 	/**
@@ -82,5 +86,48 @@ public class Project extends BasicProject {
 	 */
 	public Iterable<BasicComponent> getComponents() {
 		return components;
+	}
+
+	/**
+	 * Getter for issueTypes
+	 *
+	 * @return the issueTypes defined for this project
+	 */
+	public Iterable<IssueType> getIssueTypes() {
+		return issueTypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().
+				add("description", description).
+				add("lead", lead).
+				add("uri", uri).
+				add("components", components).
+				add("issueTypes", issueTypes).
+				add("versions", versions);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Project) {
+			Project that = (Project) o;
+			return super.equals(that)
+					&& Objects.equal(this.lead, that.lead)
+					&& Objects.equal(this.uri, that.uri)
+					&& Objects.equal(this.description, that.description)
+					&& Objects.equal(this.components, that.components)
+					&& Objects.equal(this.issueTypes, that.issueTypes)
+					&& Objects.equal(this.versions, that.versions);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), description, lead, uri);
 	}
 }

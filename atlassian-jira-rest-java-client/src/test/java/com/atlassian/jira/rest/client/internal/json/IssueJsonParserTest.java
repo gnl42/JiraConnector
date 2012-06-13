@@ -48,25 +48,28 @@ import java.util.Iterator;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
 		final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 		assertExpectedIssue(issue);
+		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", false),
+				issue.getIssueType());
 	}
 
 	@Test
 	public void testParseIssueJira4x2() throws Exception {
 		final Issue issue = parseIssue("/json/issue/valid-all-expanded-jira-4-2.json");
 		assertExpectedIssue(issue);
+		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), null, "Bug", false),
+				issue.getIssueType());
 	}
 
 	private void assertExpectedIssue(Issue issue) {
 		assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
-		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), "Bug", false),
-				issue.getIssueType());
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", null), issue.getProject());
 		assertEquals("Major", issue.getPriority().getName());
 		assertNull(issue.getResolution());

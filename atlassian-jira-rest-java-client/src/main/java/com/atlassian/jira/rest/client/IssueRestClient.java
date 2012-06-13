@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Votes;
@@ -216,6 +217,15 @@ public interface IssueRestClient {
 	 * @since client 0.2, server 4.3
 	 */
 	void addAttachments(ProgressMonitor progressMonitor, URI attachmentsUri, File... files);
+
+	/**
+	 * Adds a comment to JIRA (adding it to selected issue)
+	 * @param progressMonitor the {@link ProgressMonitor}
+	 * @param commentsUri where to add comment
+	 * @param comment the {@link Comment} to add
+	 * @since client 1.0, server 5.0
+	 */
+	void addComment(ProgressMonitor progressMonitor, URI commentsUri, Comment comment);
 
 	/**
 	 * Retrieves the content of given attachment.

@@ -24,13 +24,13 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.assertEquals;
 
 public class PriorityTest {
-	private static final Priority P1 = new Priority(toUri("http://localhost/1"), "a", "#223344", "a description", toUri("http://localhost/2"));
-	private static final Priority P2 = new Priority(toUri("http://localhost/1"), "a", "#223344", "a description", toUri("http://localhost/2"));
-	private static final Priority P3 = new Priority(toUri("http://localhost/1"), "b", "#223344", "a description", toUri("http://localhost/2"));
-	private static final Priority P4 = new Priority(toUri("http://localhost/2"), "a", "#223344", "a description", toUri("http://localhost/2"));
-	private static final Priority P5 = new Priority(toUri("http://localhost/1"), "a", "#123344", "a description", toUri("http://localhost/2"));
-	private static final Priority P6 = new Priority(toUri("http://localhost/1"), "a", "#223344", "a description2", toUri("http://localhost/2"));
-	private static final Priority P7 = new Priority(toUri("http://localhost/1"), "a", "#223344", "a description", toUri("http://localhost/3"));
+	private static final Priority P1 = new Priority(toUri("http://localhost/1"), 1L, "a", "#223344", "a description", toUri("http://localhost/2"));
+	private static final Priority P2 = new Priority(toUri("http://localhost/1"), 2L, "a", "#223344", "a description", toUri("http://localhost/2"));
+	private static final Priority P3 = new Priority(toUri("http://localhost/1"), 3L, "b", "#223344", "a description", toUri("http://localhost/2"));
+	private static final Priority P4 = new Priority(toUri("http://localhost/2"), 4L, "a", "#223344", "a description", toUri("http://localhost/2"));
+	private static final Priority P5 = new Priority(toUri("http://localhost/1"), 5L, "a", "#123344", "a description", toUri("http://localhost/2"));
+	private static final Priority P6 = new Priority(toUri("http://localhost/1"), 6L, "a", "#223344", "a description2", toUri("http://localhost/2"));
+	private static final Priority P7 = new Priority(toUri("http://localhost/1"), 7L, "a", "#223344", "a description", toUri("http://localhost/3"));
 
 	
 	@Test

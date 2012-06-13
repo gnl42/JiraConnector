@@ -1,0 +1,106 @@
+{
+	"self":"http://localhost:2990/jira/rest/api/latest/project/TST",
+	"id":"10000",
+	"key":"TST",
+	"description":"",
+	"lead":{
+		"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+		"name":"admin",
+		"avatarUrls":{
+			"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName":"Administrator",
+		"active":true
+	},
+	"components":[
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/component/10000",
+			"id":"10000",
+			"name":"Component A",
+			"description":"this is some description of component A",
+			"isAssigneeTypeValid":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/component/10001",
+			"id":"10001",
+			"name":"Component B",
+			"description":"another description",
+			"isAssigneeTypeValid":false
+		}
+	],
+	"issueTypes":[
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/issuetype/1",
+			"id":"1",
+			"description":"A problem which impairs or prevents the functions of the product.",
+			"iconUrl":"http://localhost:2990/jira/images/icons/bug.gif",
+			"name":"Bug",
+			"subtask":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/issuetype/2",
+			"id":"2",
+			"description":"A new feature of the product, which has yet to be developed.",
+			"iconUrl":"http://localhost:2990/jira/images/icons/newfeature.gif",
+			"name":"New Feature",
+			"subtask":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/issuetype/3",
+			"id":"3",
+			"description":"A task that needs to be done.",
+			"iconUrl":"http://localhost:2990/jira/images/icons/task.gif",
+			"name":"Task",
+			"subtask":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/issuetype/4",
+			"id":"4",
+			"description":"An improvement or enhancement to an existing feature or task.",
+			"iconUrl":"http://localhost:2990/jira/images/icons/improvement.gif",
+			"name":"Improvement",
+			"subtask":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/issuetype/5",
+			"id":"5",
+			"description":"The sub-task of the issue",
+			"iconUrl":"http://localhost:2990/jira/images/icons/issue_subtask.gif",
+			"name":"Sub-task",
+			"subtask":true
+		}
+	],
+	"assigneeType":"PROJECT_LEAD",
+	"versions":[
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/version/10001",
+			"id":"10001",
+			"description":"initial version",
+			"name":"1",
+			"archived":false,
+			"released":false
+		},
+		{
+			"self":"http://localhost:2990/jira/rest/api/latest/version/10000",
+			"id":"10000",
+			"description":"Some version",
+			"name":"1.1",
+			"overdue":true,
+			"userReleaseDate":"25/sie/10",
+			"archived":false,
+			"releaseDate":"2010-08-25",
+			"released":false
+		}
+	],
+	"name":"Test Project",
+	"roles":{
+		"Users":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10000",
+		"Administrators":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10002",
+		"Developers":"http://localhost:2990/jira/rest/api/latest/project/TST/role/10001"
+	},
+	"avatarUrls":{
+		"16x16":"http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+		"48x48":"http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+	}
+}

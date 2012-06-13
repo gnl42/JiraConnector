@@ -17,7 +17,7 @@
 package it;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.annotation.Restore;
+import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicResolution;
@@ -40,8 +40,11 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
-public class JerseyMetadataRestClientTest extends AbstractJerseyRestClientTest {
+/**
+ * Those tests mustn't change anything on server side, as jira is restored only once
+ */
+@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClientTest {
 	@Test
 	public void testGetServerInfo() throws Exception {
 		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo(pm);
@@ -70,8 +73,9 @@ public class JerseyMetadataRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueType issueType = client.getMetadataClient().getIssueType(basicIssueType.getSelf(), pm);
 		assertEquals("Bug", issueType.getName());
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
+		Long expectedId = isJira5xOrNewer() ? 1L : null;
+		assertEquals(expectedId, issueType.getId());
 		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
-
 	}
 
 	@Test
@@ -117,6 +121,8 @@ public class JerseyMetadataRestClientTest extends AbstractJerseyRestClientTest {
 		assertEquals("Major", priority.getName());
 		assertEquals("#009900", priority.getStatusColor());
 		assertEquals("Major loss of function.", priority.getDescription());
+		final Long expectedId = isJira5xOrNewer() ? 3L : null;
+		assertEquals(expectedId, priority.getId());
 		assertTrue(priority.getIconUri().toString().startsWith(jiraUri.toString()));
 		assertTrue(priority.getIconUri().toString().endsWith("/images/icons/priority_major.gif"));
 

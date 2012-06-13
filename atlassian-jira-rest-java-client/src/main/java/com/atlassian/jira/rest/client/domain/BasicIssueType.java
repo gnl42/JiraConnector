@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -30,14 +31,23 @@ import java.net.URI;
 public class BasicIssueType implements AddressableEntity, NamedEntity {
 	private final URI self;
 
+	@Nullable
+	private final Long id;
+
 	private final String name;
 
 	private final boolean isSubtask;
 
-	public BasicIssueType(URI self, String name, boolean isSubtask) {
+	public BasicIssueType(URI self, @Nullable Long id, String name, boolean isSubtask) {
 		this.self = self;
+		this.id = id;
 		this.name = name;
 		this.isSubtask = isSubtask;
+	}
+
+	@Nullable
+	public Long getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -53,13 +63,21 @@ public class BasicIssueType implements AddressableEntity, NamedEntity {
 		return self;
 	}
 
-	@Override
-	public String toString() {
+	/**
+	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+	 * @return ToStringHelper
+	 */
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this).
 				add("self", self).
+				add("id", id).
 				add("name", name).
-				add("isSubtask", isSubtask).
-				toString();
+				add("isSubtask", isSubtask);
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().toString();
 	}
 
 
@@ -68,6 +86,7 @@ public class BasicIssueType implements AddressableEntity, NamedEntity {
 		if (obj instanceof BasicIssueType) {
 			BasicIssueType that = (BasicIssueType) obj;
 			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.isSubtask, that.isSubtask);
 		}
@@ -76,6 +95,6 @@ public class BasicIssueType implements AddressableEntity, NamedEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, isSubtask);
+		return Objects.hashCode(self, id, name, isSubtask);
 	}
 }

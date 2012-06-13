@@ -4,7 +4,6 @@
 	"value":[
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10020",
-			"id":"10020",
 			"author":{
 				"self":"http://localhost:8090/jira/rest/api/latest/user?username=admin",
 				"name":"admin",
@@ -22,7 +21,6 @@
 		},
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10021",
-			"id":"10021",
 			"author":{
 				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",
@@ -39,7 +37,6 @@
 		},
 		{
 			"self":"http://localhost:8090/jira/rest/api/latest/comment/10022",
-			"id":"10022",
 			"author":{
 				"self":"http://localhost:8090/jira/rest/api/latest/user?username=wseliga",
 				"name":"wseliga",

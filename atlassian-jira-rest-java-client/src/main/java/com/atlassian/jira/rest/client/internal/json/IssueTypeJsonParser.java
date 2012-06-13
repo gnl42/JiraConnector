@@ -28,8 +28,9 @@ public class IssueTypeJsonParser implements JsonParser<IssueType> {
 	@Override
 	public IssueType parse(JSONObject json) throws JSONException {
 		final BasicIssueType basicIssueType = basicIssueTypeJsonParser.parse(json);
-		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		final String description = json.optString("description");
-		return new IssueType(basicIssueType.getSelf(), basicIssueType.getName(), basicIssueType.isSubtask(), description, iconUri);
+		final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
+		final URI iconUri = iconUrl == null ? null : JsonParseUtil.parseURI(iconUrl);
+		final String description = JsonParseUtil.getOptionalString(json, "description");
+		return new IssueType(basicIssueType.getSelf(), basicIssueType.getId(), basicIssueType.getName(), basicIssueType.isSubtask(), description, iconUri);
 	}
 }

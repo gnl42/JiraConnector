@@ -27,7 +27,7 @@ public class PriorityJsonParserTest {
 	public void testParse() throws Exception {
 		final PriorityJsonParser parser = new PriorityJsonParser();
 		final Priority priority = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/priority/complete.json"));
-		Assert.assertEquals(new Priority(toUri("http://localhost:8090/jira/rest/api/latest/priority/4"), "Minor",
+		Assert.assertEquals(new Priority(toUri("http://localhost:8090/jira/rest/api/latest/priority/4"), 4L, "Minor",
 				"#006600", "Minor loss of function, or other problem where easy workaround is present.",
 				toUri("http://localhost:8090/jira/images/icons/priority_minor.gif")), priority);
 	}

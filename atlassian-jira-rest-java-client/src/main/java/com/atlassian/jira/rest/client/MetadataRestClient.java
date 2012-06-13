@@ -42,6 +42,15 @@ public interface MetadataRestClient {
 	 */
 	IssueType getIssueType(URI uri, ProgressMonitor progressMonitor);
 
+	/**
+	 * Retrieves from the server complete list of available issue type
+	 * @param progressMonitor progress monitor
+	 * @return complete information about issue type resource
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	Iterable<IssueType> getIssueTypes(ProgressMonitor progressMonitor);
+
     /**
      * Retrieves from the server complete list of available issue types
      * @param progressMonitor progress monitor
@@ -71,6 +80,15 @@ public interface MetadataRestClient {
 	Priority getPriority(URI uri, ProgressMonitor progressMonitor);
 
 	/**
+	 * Retrieves from the server complete list of available priorities
+	 * @param progressMonitor progress monitor
+	 * @return complete information about the selected priority
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	Iterable<Priority> getPriorities(ProgressMonitor progressMonitor);
+
+	/**
 	 * Retrieves from the server complete information about selected resolution
 	 * @param uri URI for the resolution resource
 	 * @param progressMonitor progress monitor
@@ -78,6 +96,15 @@ public interface MetadataRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Resolution getResolution(URI uri, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves from the server complete information about selected resolution
+	 * @param progressMonitor progress monitor
+	 * @return complete information about the selected resolution
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	Iterable<Resolution> getResolutions(ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves information about this JIRA instance

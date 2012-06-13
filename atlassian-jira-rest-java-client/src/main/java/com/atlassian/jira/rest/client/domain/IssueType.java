@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -29,8 +30,8 @@ public class IssueType extends BasicIssueType {
 	private final String description;
 	private final URI iconUri;
 
-	public IssueType(URI self, String name, boolean isSubtask, String description, URI iconUri) {
-		super(self, name, isSubtask);
+	public IssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri) {
+		super(self, id, name, isSubtask);
 		this.description = description;
 		this.iconUri = iconUri;
 	}
@@ -43,20 +44,22 @@ public class IssueType extends BasicIssueType {
 		return iconUri;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().
 				add("description", description).
-				add("iconUri", iconUri).
-				toString();
+				add("iconUri", iconUri);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof IssueType) {
 			IssueType that = (IssueType) obj;
-			return super.equals(obj) && Objects.equal(this.description, that.description)
+			return super.equals(obj)
+					&& Objects.equal(this.description, that.description)
 					&& Objects.equal(this.iconUri, that.iconUri);
 		}
 		return false;

@@ -54,13 +54,16 @@ public class BasicProject implements AddressableEntity, NamedEntity {
         return name;
     }
 
-    @Override
+	@Override
 	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("key", key).
-				add("name", name).
-				toString();
+				add("name", name);
 	}
 
 	@Override
@@ -76,7 +79,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, key);
+		return Objects.hashCode(self, name, key);
 	}
 
 }

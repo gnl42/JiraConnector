@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+<!-- 
 
 
 ___ Exported on _____________________________
 
-     on                                            : czwartek, 10 maj 2012 14:38:24 CEST
+     on                                            : Monday, May 21, 2012 6:15:46 PM CEST
      by                                            : admin ( Administrator )
 
 ___ Environment ____________________________
@@ -14,16 +14,16 @@ ___ Environment ____________________________
      JIRA Installation Type                        : unknown
      Java Version                                  : 1.6.0_26 - Sun Microsystems Inc.
      Current Working Directory                     : /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client
-     Maximum Allowable Memory                      : 3640MB
-     Total Memory                                  : 288MB
-     Free Memory                                   : 82MB
-     Used Memory                                   : 206MB
-     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 15586368(15221K) committed = 15794176(15424K) max = 50331648(49152K)
-     Memory Pool: PS Eden Space                    : PS Eden Space: init = 65667072(64128K) used = 42296584(41305K) committed = 58982400(57600K) max = 1421934592(1388608K)
-     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 10878976(10624K) used = 4316864(4215K) committed = 4521984(4416K) max = 4521984(4416K)
-     Memory Pool: PS Old Gen                       : PS Old Gen: init = 174850048(170752K) used = 169023280(165061K) committed = 238747648(233152K) max = 2863333376(2796224K)
-     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 21757952(21248K) used = 112101672(109474K) committed = 222232576(217024K) max = 2147483648(2097152K)
-     JVM Input Arguments                           : -XX:MaxPermSize=2048m -Xmx4096m -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,suspend=n,server=y -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home -Djava.awt.headless=true -Dplugin.root.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home -Dplugin.root.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client -Djava.awt.headless=true -Dbaseurl=http://localhost:2990/jira -Dcatalina.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/apache-tomcat-6.0.20 -Dcatalina.base=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home -Djava.io.tmpdir=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home/temp
+     Maximum Allowable Memory                      : 455MB
+     Total Memory                                  : 217MB
+     Free Memory                                   : 57MB
+     Used Memory                                   : 160MB
+     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 12667328(12370K) committed = 12845056(12544K) max = 50331648(49152K)
+     Memory Pool: PS Eden Space                    : PS Eden Space: init = 65667072(64128K) used = 15962456(15588K) committed = 47775744(46656K) max = 167247872(163328K)
+     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 10878976(10624K) used = 2330504(2275K) committed = 5177344(5056K) max = 5177344(5056K)
+     Memory Pool: PS Old Gen                       : PS Old Gen: init = 174850048(170752K) used = 149163008(145667K) committed = 174850048(170752K) max = 357957632(349568K)
+     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 21757952(21248K) used = 100705984(98345K) committed = 100794368(98432K) max = 167772160(163840K)
+     JVM Input Arguments                           : -Xmx512m -XX:MaxPermSize=160m -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,suspend=n,server=y -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home -Djava.awt.headless=true -Dplugin.root.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home -Dplugin.root.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client -Djava.awt.headless=true -Dbaseurl=http://localhost:2990/jira -Dcatalina.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/apache-tomcat-6.0.20 -Dcatalina.base=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home -Djava.io.tmpdir=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home/temp
 
 ___ Database Configuration _________________
 
@@ -44,7 +44,7 @@ ___ Core Application Properties ____________
      Installation Type                             : unknown
      Server ID                                     : BWU2-SJPU-J495-LC4Y
      Base URL                                      : http://localhost:2990/jira
-     Default Language                              : polski (Polska)
+     Default Language                              : English (United States)
      External User Management                      : OFF
      CROWD Integration                             : OFF
 
@@ -90,7 +90,7 @@ ___ Application Properties _________________
      jira.edition                                  : enterprise
      jira.email.fromheader.format                  : ${fullname} (JIRA)
      jira.exportimport.cleanxml                    : true
-     jira.home                                     :
+     jira.home                                     : 
      jira.i18n.language.index                      : english
      jira.importid.prefix                          : unconfigured
      jira.index.batch.maxbuffereddocs              : 300
@@ -221,7 +221,7 @@ ___ Application Properties _________________
      jira.view.issue.links.sort.order              : type, status, priority
      jira.view.issue.show.quicksubtask.when.no.subtasks : false
      jira.viewcvs.root.type                        : cvsroot
-     jira.webresource.flushcounter                 : 5003
+     jira.webresource.flushcounter                 : 5004
      jira.webresource.superbatch.flushcounter      : 1
      user.default.share.private                    : true
      user.issues.per.page                          : 50
@@ -240,7 +240,7 @@ ___ License Details ________________________
      Description                                   : JIRA Enterprise: Commercial Server
      SEN                                           : TestSEN
      Organisation                                  : Atlassian
-     Partner                                       :
+     Partner                                       : 
      Maximum Number Of Users                       : Unlimited
 
 
@@ -294,7 +294,7 @@ ___ Plugins ________________________________
           Version                                       : 1.2.1
           Status                                        : enabled
           Vendor                                        : The Apache Software Foundation
-          Description                                   :
+          Description                                   : 
 
      Apache Felix Web Management Console           : org.apache.felix.webconsole-1.2.8
           Version                                       : 1.2.8
@@ -354,7 +354,7 @@ ___ Plugins ________________________________
           Version                                       : 0.4
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
-          Description                                   :
+          Description                                   : 
 
      Atlassian REST - Module Types                 : com.atlassian.plugins.rest.atlassian-rest-module
           Version                                       : 2.1.0
@@ -432,7 +432,7 @@ ___ Plugins ________________________________
           Version                                       : 1.0.0
           Status                                        : enabled
           Vendor                                        : SpringSource
-          Description                                   :
+          Description                                   : 
 
      JIRA Activity Stream Plugin                   : com.atlassian.streams.streams-jira-plugin
           Version                                       : 3.0.21
@@ -497,8 +497,8 @@ ___ Plugins ________________________________
      Joda-Time                                     : joda-time-1.6
           Version                                       : 1.6
           Status                                        : enabled
-          Vendor                                        :
-          Description                                   :
+          Vendor                                        : 
+          Description                                   : 
 
      Keyboard Shortcuts Plugin                     : jira.keyboard.shortcuts
           Version                                       : 1.0
@@ -528,7 +528,7 @@ ___ Plugins ________________________________
           Version                                       : 0.9.0
           Status                                        : enabled
           Vendor                                        : SpringSource
-          Description                                   :
+          Description                                   : 
 
      Shared Application Access Layer API           : com.atlassian.sal.sal-api-2.1.0
           Version                                       : 2.1.0
@@ -563,9 +563,9 @@ ___ Plugins ________________________________
      jira-rest-java-client-0.6-m4-SNAPSHOT.jar     : jira-rest-java-client-0.6-m4-SNAPSHOT.jar
           Version                                       : 0.0
           Status                                        : disabled
-          Reason                                        : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/plugins/installed-plugins/jira-rest-java-client-0.6-m4-SNAPSHOT.jar (1336651965000)
+          Reason                                        : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/plugins/installed-plugins/jira-rest-java-client-0.6-m4-SNAPSHOT.jar (1337616773000)
           Vendor                                        : (unknown)
-          Description                                   :
+          Description                                   : 
 
 
 ___ Listeners ______________________________
@@ -582,18 +582,18 @@ ___ Services _______________________________
 
      Backup Service                                : com.atlassian.jira.service.services.export.ExportService
           Service Delay                                 : 43200000ms
-     Last Run                                      : 10.05.12 14:15
+     Last Run                                      : 5/21/12 6:13 PM
           USEZIP                                        : admin.service.export.backup.as.zip
           USE_DEFAULT_DIRECTORY                         : true
      Mail Queue Service                            : com.atlassian.jira.service.services.mail.MailQueueService
           Service Delay                                 : 60000ms
-     Last Run                                      : 10.05.12 14:37
+     Last Run                                      : 5/21/12 6:14 PM
      Sample                                        : com.atlassian.jira.service.services.pop.PopService
           Service Delay                                 : 60000ms
-     Last Run                                      : 10.05.12 14:37
+     Last Run                                      : 5/21/12 6:14 PM
      Service Provider Token Remover                : com.atlassian.sal.jira.scheduling.JiraPluginSchedulerService
           Service Delay                                 : 28800000ms
-     Last Run                                      : 10.05.12 14:15
+     Last Run                                      : 5/21/12 6:13 PM
           pluginJobName                                 : Service Provider Token Remover
 
 ___ Trusted Applications ___________________
@@ -968,7 +968,7 @@ ___ Trusted Applications ___________________
 	<Label id="10020" issue="10050" label="a"/>
 	<ListenerConfig id="10000" clazz="com.atlassian.jira.event.listeners.cache.IssueCacheListener" name="Issue Cache Listener"/>
 	<ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
-	<ListenerConfig id="10090" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
+	<ListenerConfig id="10100" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
 	<NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="0" sinkNodeEntity="PermissionScheme" associationType="ProjectScheme"/>
 	<NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="1" sinkNodeEntity="IssueTypeScreenScheme" associationType="ProjectScheme"/>
 	<NodeAssociation sourceNodeId="10000" sourceNodeEntity="Project" sinkNodeId="10000" sinkNodeEntity="WorkflowScheme" associationType="ProjectScheme"/>
@@ -1163,7 +1163,7 @@ ___ Trusted Applications ___________________
 	<OSPropertyEntry id="10461" entityName="OSUser" entityId="10020" propertyKey="fullName" type="5"/>
 	<OSPropertyEntry id="10470" entityName="OSUser" entityId="10030" propertyKey="email" type="5"/>
 	<OSPropertyEntry id="10471" entityName="OSUser" entityId="10030" propertyKey="fullName" type="5"/>
-	<OSPropertyEntry id="10480" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
+	<OSPropertyEntry id="10490" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
 	<OSPropertyNumber id="10002" value="22"/>
 	<OSPropertyNumber id="10014" value="1"/>
 	<OSPropertyNumber id="10015" value="1"/>
@@ -1234,15 +1234,15 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<OSPropertyString id="10054" value="3"/>
 	<OSPropertyString id="10055" value="10028"/>
 	<OSPropertyString id="10057" value="0"/>
-	<OSPropertyString id="10058" value="1336653168732"/>
-	<OSPropertyString id="10059" value="438"/>
+	<OSPropertyString id="10058" value="1337616842872"/>
+	<OSPropertyString id="10059" value="441"/>
 	<OSPropertyString id="10060" value="${fullname} (JIRA)"/>
 	<OSPropertyString id="10064" value="never"/>
 	<OSPropertyString id="10071" value="workaround"/>
 	<OSPropertyString id="10081" value="2"/>
 	<OSPropertyString id="10083" value="1"/>
 	<OSPropertyString id="10084" value="0"/>
-	<OSPropertyString id="10085" value="1336652159203"/>
+	<OSPropertyString id="10085" value="1337616836998"/>
 	<OSPropertyString id="10231" value="1280843860402"/>
 	<OSPropertyString id="10232" value="4"/>
 	<OSPropertyString id="10241" value="wojciech.seliga@spartez.com"/>
@@ -1256,12 +1256,12 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<OSPropertyString id="10362" value="text"/>
 	<OSPropertyString id="10366" value="pl_PL"/>
 	<OSPropertyString id="10443" value="Service Provider Token Remover"/>
-	<OSPropertyString id="10450" value="5003"/>
+	<OSPropertyString id="10450" value="5004"/>
 	<OSPropertyString id="10460" value="testmail@example.com"/>
 	<OSPropertyString id="10461" value="My Test User"/>
 	<OSPropertyString id="10470" value="user@example.com"/>
 	<OSPropertyString id="10471" value="A User with / in its username"/>
-	<OSPropertyString id="10480" value="false"/>
+	<OSPropertyString id="10490" value="false"/>
 	<OSPropertyText id="10022" value="AAABBA0ODAoPeNptj1FPgzAUhd/7K5r4jGmZmkDSBwaNogMWYM4svtTuOmtGR27L4v69bOiL8ek+nJzvO/dqDVuaDDvKbim/i2cs5iGVTUtDxiKSgdNoem8OVjzmdUKl9YA9GgevMU0PXQeojdrTBvAISMqhewOs3lcO0ImAkxRBnduZ8iBCNosCHgaMk0+D6nphNFgHcmsuAlm2sl7WeSOnWGlvjiA8DkAKZUazVVaD/OoNniZgFEUj7QyscKescReZSPxeOWeUJdOuPBPz+6gNXlbPN8HTZvMQzBlfk0aWogXnx0t+t/wL/wnbUw+l6kCkVVHIOs2TBVkOqD+Ug78PfgPSNG6BMC0CFBZN4P8f7FRdIKPx3oWYkJwGfM9tAhUAllLN8BrljKaWmkSeRtRCiwHCZ7g=X02dd"/>
 	<OSUser id="10000" name="admin" passwordHash="x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A=="/>
 	<OSUser id="10010" name="wseliga" passwordHash="h+FWjzwI6AxNOy84IsvY1ijksjsbOtkPgxkVk3cFUCgj2keeYpQw5tnEnZRgHMX54ykRzp46Bgp3EpG055k7Sg=="/>
@@ -1397,6 +1397,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<RememberMeToken id="10010" created="2010-08-03 15:37:19.524" token="9fOs0Kl+CK337qchIjReujs5a9bnm2+APKUgsZBO0SLDf7d1GFdedB3urkP0f0h9/qcbMf4zGLqFmUMnVpD2Mg==" username="admin"/>
 	<RememberMeToken id="10020" created="2010-08-19 13:16:29.986" token="75b8802372f13b37c8172ee614018f5af7f17637" username="admin"/>
 	<RememberMeToken id="10030" created="2012-05-10 14:32:48.73" token="86fd975ce0f7205043f7b968325299956e4698a9" username="admin"/>
+	<RememberMeToken id="10040" created="2012-05-21 18:14:02.87" token="0a61b0fe1296f9cac569ac9f818819bca377c1cc" username="admin"/>
 	<Resolution id="1" sequence="1" name="Fixed" description="A fix for this issue is checked into the tree and tested."/>
 	<Resolution id="2" sequence="2" name="Won&apos;t Fix" description="The problem described is an issue which will never be fixed."/>
 	<Resolution id="3" sequence="3" name="Duplicate" description="The problem is a duplicate of an existing issue."/>
@@ -1502,6 +1503,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<SchemePermissions id="10111" scheme="10010" permission="20" type="group"/>
 	<SchemePermissions id="10112" scheme="10010" permission="11" type="group"/>
 	<SchemePermissions id="10113" scheme="10010" permission="12" type="group"/>
+	<SchemePermissions id="10120" scheme="10010" permission="15" type="group"/>
 	<SequenceValueItem seqName="Action" seqId="10040"/>
 	<SequenceValueItem seqName="Avatar" seqId="10060"/>
 	<SequenceValueItem seqName="ChangeGroup" seqId="10170"/>
@@ -1532,13 +1534,13 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<SequenceValueItem seqName="IssueLinkType" seqId="10020"/>
 	<SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
 	<SequenceValueItem seqName="Label" seqId="10030"/>
-	<SequenceValueItem seqName="ListenerConfig" seqId="10100"/>
+	<SequenceValueItem seqName="ListenerConfig" seqId="10110"/>
 	<SequenceValueItem seqName="Notification" seqId="10050"/>
 	<SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
 	<SequenceValueItem seqName="OSCurrentStep" seqId="10100"/>
 	<SequenceValueItem seqName="OSGroup" seqId="10010"/>
 	<SequenceValueItem seqName="OSMembership" seqId="10040"/>
-	<SequenceValueItem seqName="OSPropertyEntry" seqId="10490"/>
+	<SequenceValueItem seqName="OSPropertyEntry" seqId="10500"/>
 	<SequenceValueItem seqName="OSUser" seqId="10040"/>
 	<SequenceValueItem seqName="OSWorkflowEntry" seqId="10090"/>
 	<SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
@@ -1550,8 +1552,8 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	<SequenceValueItem seqName="ProjectCategory" seqId="10010"/>
 	<SequenceValueItem seqName="ProjectRole" seqId="10010"/>
 	<SequenceValueItem seqName="ProjectRoleActor" seqId="10080"/>
-	<SequenceValueItem seqName="RememberMeToken" seqId="10040"/>
-	<SequenceValueItem seqName="SchemePermissions" seqId="10120"/>
+	<SequenceValueItem seqName="RememberMeToken" seqId="10050"/>
+	<SequenceValueItem seqName="SchemePermissions" seqId="10130"/>
 	<SequenceValueItem seqName="ServiceConfig" seqId="10380"/>
 	<SequenceValueItem seqName="SharePermissions" seqId="10010"/>
 	<SequenceValueItem seqName="UpgradeHistory" seqId="10060"/>
@@ -1989,7 +1991,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 
 	___ Entities ________________________________
 
-		 Total                                         : 1041
+		 Total                                         : 1043
 
 		 Action                                        : 7
 		 Avatar                                        : 38
@@ -2051,9 +2053,9 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 		 ProjectCategory                               : 1
 		 ProjectRole                                   : 3
 		 ProjectRoleActor                              : 18
-		 RememberMeToken                               : 3
+		 RememberMeToken                               : 4
 		 Resolution                                    : 5
-		 SchemePermissions                             : 100
+		 SchemePermissions                             : 101
 		 SequenceValueItem                             : 60
 		 ServiceConfig                                 : 4
 		 SharePermissions                              : 1

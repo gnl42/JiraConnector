@@ -31,6 +31,6 @@ public class PriorityJsonParser implements JsonParser<Priority> {
 		final String statusColor = json.getString("statusColor");
 		final String description = json.getString("description");
 		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Priority(basicPriority.getSelf(), basicPriority.getName(), statusColor, description, iconUri);
+		return new Priority(basicPriority.getSelf(), basicPriority.getId(), basicPriority.getName(), statusColor, description, iconUri);
 	}
 }

@@ -36,6 +36,8 @@ public class IntegrationTestUtil {
 	public static final BasicUser USER_SLASH;
 	public static final BasicUser USER_SLASH_LATEST;
 
+	public static final String ROLE_ADMINISTRATORS = "Administrators";
+
 	public static final boolean TESTING_JIRA_5_OR_NEWER;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;

@@ -16,12 +16,17 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateMidnight;
 import org.junit.Test;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static com.atlassian.jira.rest.client.IterableMatcher.hasOnlyElements;
 import static org.junit.Assert.*;
@@ -40,6 +45,7 @@ public class ProjectJsonParserTest {
 		assertThat(project.getVersions(), hasOnlyElements(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		assertThat(project.getComponents(), hasOnlyElements(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         assertNull(project.getName());
+		assertThat(project.getIssueTypes(), IterableMatcher.<IssueType>isEmpty());
 	}
 
 	@Test
@@ -51,10 +57,32 @@ public class ProjectJsonParserTest {
 	}
 
 	@Test
-	public void testParseProjectInJira4x4() throws JSONException {
+	public void testParseProjectInJira4x4() throws JSONException, URISyntaxException {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
 		assertEquals("TST", project.getKey()); //2010-08-25
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
         assertEquals("Test Project", project.getName());
+		assertThat(project.getIssueTypes(), hasOnlyElements(
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/4"), null, "Improvement", false, null, null),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/5"), null, "Sub-task", true, null, null)
+		));
+	}
+
+	@Test
+	public void testParseProjectInJira5x0() throws JSONException, URISyntaxException {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
+		assertEquals("TST", project.getKey());
+		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
+		assertEquals("Test Project", project.getName());
+		assertThat(project.getIssueTypes(), hasOnlyElements(
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", new URI("http://localhost:2990/jira/images/icons/bug.gif")),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", new URI("http://localhost:2990/jira/images/icons/newfeature.gif")),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", new URI("http://localhost:2990/jira/images/icons/task.gif")),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", new URI("http://localhost:2990/jira/images/icons/improvement.gif")),
+				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", new URI("http://localhost:2990/jira/images/icons/issue_subtask.gif"))
+		));
 	}
 }

@@ -236,6 +236,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
         return comments;
     }
 
+	public URI getCommentsUri() {
+		return UriBuilder.fromUri(getSelf()).path("comment").build();
+	}
+
 	/**
 	 * @return project this issue belongs to
 	 */

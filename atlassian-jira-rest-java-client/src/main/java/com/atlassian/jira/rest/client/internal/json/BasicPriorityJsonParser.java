@@ -26,7 +26,8 @@ public class BasicPriorityJsonParser implements JsonParser<BasicPriority> {
 	@Override
 	public BasicPriority parse(JSONObject json) throws JSONException {
 		final String name = json.getString("name");
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		return new BasicPriority(selfUri, name);
+		return new BasicPriority(selfUri, id, name);
 	}
 }

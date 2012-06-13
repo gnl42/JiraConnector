@@ -28,17 +28,8 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
 	private final ServerInfo serverInfo;
 
-	// this has to be "configurable" as JIRA 4.2 and JIRA 4.3 EAP differently name
-	// this attribute for transitions and for issue linking
-	private final String groupLevelAttribute;
-
 	public CommentJsonGenerator(ServerInfo serverInfo) {
-		this(serverInfo, "groupLevel");
-	}
-
-	public CommentJsonGenerator(ServerInfo serverInfo, String groupLevelAttribute) {
 		this.serverInfo = serverInfo;
-		this.groupLevelAttribute = groupLevelAttribute;
 	}
 
 	@Override
@@ -76,6 +67,7 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 	}
 
 	protected String getGroupLevelAttribute() {
-		return groupLevelAttribute;
+		final int buildNumber = serverInfo.getBuildNumber();
+		return (buildNumber < ServerVersionConstants.BN_JIRA_4_3) ? "groupLevel" : "group";
 	}
 }

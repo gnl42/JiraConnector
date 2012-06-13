@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
+import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Session;
@@ -191,10 +192,11 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 					if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
 						jsonObject.put("update", new JSONObject().put("comment",
 								new JSONArray().put(new JSONObject().put("add",
-										new CommentJsonGenerator(getVersionInfo(progressMonitor), "group")
+										new CommentJsonGenerator(getVersionInfo(progressMonitor))
 												.generate(transitionInput.getComment())))));
 					} else {
-						jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor), "group").generate(transitionInput.getComment()));
+						jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo(progressMonitor))
+								.generate(transitionInput.getComment()));
 					}
 				}
 				JSONObject fieldsJs = new JSONObject();
@@ -353,6 +355,19 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 		});
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addComment(final ProgressMonitor progressMonitor, final URI commentsUri, final Comment comment) {
+		post(commentsUri, new Callable<JSONObject>() {
+			@Override
+			public JSONObject call() throws Exception {
+				return new CommentJsonGenerator(getVersionInfo(progressMonitor)).generate(comment);
+			}
+		}, progressMonitor);
 	}
 
 	private void postFileMultiPart(MultiPart multiPartInput, URI attachmentsUri) {

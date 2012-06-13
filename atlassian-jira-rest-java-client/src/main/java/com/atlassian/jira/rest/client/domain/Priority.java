@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -30,8 +31,8 @@ public class Priority extends BasicPriority {
 	private final String description;
 	private final URI iconUrl;
 
-	public Priority(URI self, String name, String statusColor, String description, URI iconUri) {
-		super(self, name);
+	public Priority(URI self, @Nullable Long id, String name, String statusColor, String description, URI iconUri) {
+		super(self, id, name);
 		this.statusColor = statusColor;
 		this.description = description;
 		this.iconUrl = iconUri;
@@ -50,12 +51,11 @@ public class Priority extends BasicPriority {
 	}
 
 	@Override
-	public String toString() {
-		return getToStringHelper().
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().
 				add("description", description).
 				add("statusColor", statusColor).
-				add("iconUrl", iconUrl).
-				toString();
+				add("iconUrl", iconUrl);
 	}
 
 	@Override

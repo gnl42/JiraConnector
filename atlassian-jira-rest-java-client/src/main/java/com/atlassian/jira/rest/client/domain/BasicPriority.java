@@ -16,6 +16,9 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.google.common.base.Objects;
+
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -24,7 +27,26 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicPriority extends AddressableNamedEntity {
-	public BasicPriority(URI self, String name) {
+	@Nullable
+	private final Long id;
+
+	public BasicPriority(URI self, @Nullable Long id, String name) {
 		super(self, name);
+		this.id = id;
+	}
+
+	/**
+	 * Getter for id
+	 *
+	 * @return the id
+	 */
+	@Nullable
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().add("id", id);
 	}
 }

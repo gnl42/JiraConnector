@@ -16,12 +16,17 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.annotation.Restore;
+import com.atlassian.jira.rest.client.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
 import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.domain.Resolution;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
@@ -32,11 +37,17 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
+import java.net.URISyntaxException;
+import java.util.Iterator;
 
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static org.junit.Assert.*;
 
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
-public class JerseyProjectRestClientTest extends AbstractJerseyRestClientTest {
+/**
+ * Those tests mustn't change anything on server side, as jira is restored only once
+ */
+@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testGetNonExistingProject() throws Exception {
@@ -51,12 +62,27 @@ public class JerseyProjectRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 	@Test
-	public void testGetProject() {
+	public void testGetProject() throws URISyntaxException {
 		final Project project = client.getProjectClient().getProject("TST", pm);
 		assertEquals("TST", project.getKey());
 		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, project.getLead());
 		assertEquals(2, Iterables.size(project.getVersions()));
 		assertEquals(2, Iterables.size(project.getComponents()));
+		final Iterator<IssueType> issueTypesIterator = project.getIssueTypes().iterator();
+		if (isJira4x4OrNewer()) {
+			assertTrue(issueTypesIterator.hasNext());
+			final IssueType it = issueTypesIterator.next();
+			if (isJira5xOrNewer()) {
+				assertEquals(Long.valueOf(1), it.getId());
+			}
+			else {
+				assertNull(it.getId());
+			}
+			assertEquals(it.getName(), "Bug");
+		}
+		else {
+			assertFalse(issueTypesIterator.hasNext());
+		}
 	}
 
 	@Test
@@ -141,5 +167,51 @@ public class JerseyProjectRestClientTest extends AbstractJerseyRestClientTest {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
+	@Test
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	public void testGetPriorities() {
+		final Iterable<Priority> priorities = client.getMetadataClient().getPriorities(pm);
+		assertEquals(5, Iterables.size(priorities));
+
+		Priority priority = findEntityBySelfAddressSuffix(priorities, "/1");
+		assertEquals(Long.valueOf(1), priority.getId());
+		assertEquals("Blocker", priority.getName());
+		assertEquals("Blocks development and/or testing work, production could not run.", priority.getDescription());
+		assertNotNull(priority.getSelf());
+	}
+
+	@Test
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	public void testGetIssueTypes() {
+		final Iterable<IssueType> issueTypes = client.getMetadataClient().getIssueTypes(pm);
+		assertEquals(5, Iterables.size(issueTypes));
+		
+		IssueType issueType = findEntityBySelfAddressSuffix(issueTypes, "/5");
+		assertEquals("Sub-task", issueType.getName());
+		assertEquals("The sub-task of the issue", issueType.getDescription());
+		assertEquals(Long.valueOf(5), issueType.getId());
+		assertTrue(issueType.isSubtask());
+		assertNotNull(issueType.getSelf());
+	}
+
+	@Test
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	public void testGetResolutions() {
+		Iterable<Resolution> resolutions = client.getMetadataClient().getResolutions(pm);
+		assertEquals(5, Iterables.size(resolutions));
+		Resolution resolution = findEntityBySelfAddressSuffix(resolutions, "/1");
+		assertEquals("Fixed", resolution.getName());
+		assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
+		assertNotNull(resolution.getSelf());
+	}
+	
+	private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(Iterable<T> entities, String suffix) {
+		return Iterables.find(entities, new Predicate<T>() {
+			@Override
+			public boolean apply(T input) {
+				return input.getSelf().toString().endsWith("/5");
+			}
+		});
+	}
 
 }

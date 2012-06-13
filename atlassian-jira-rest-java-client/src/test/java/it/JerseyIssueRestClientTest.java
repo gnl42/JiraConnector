@@ -617,6 +617,12 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertEquals(1, Iterables.size(issue.getComments()));
 		final Comment comment = issue.getComments().iterator().next();
 		assertEquals("my nice comment", comment.getBody());
+		if (isJira5xOrNewer()) {
+			assertNotNull(comment.getId());
+		}
+		else {
+			assertNull(comment.getId());
+		}
 		assertNull(comment.getAuthor());
 		assertNull(comment.getUpdateAuthor());
 

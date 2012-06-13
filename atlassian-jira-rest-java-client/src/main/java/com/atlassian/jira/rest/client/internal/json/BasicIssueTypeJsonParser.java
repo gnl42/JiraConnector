@@ -29,8 +29,9 @@ public class BasicIssueTypeJsonParser implements JsonParser<BasicIssueType> {
     @Override
     public BasicIssueType parse(JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String name = json.getString("name");
         final boolean isSubtask = json.getBoolean("subtask");
-        return new BasicIssueType(selfUri, name, isSubtask);
+        return new BasicIssueType(selfUri, id, name, isSubtask);
     }
 }

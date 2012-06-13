@@ -31,6 +31,8 @@ import java.net.URI;
 public class Comment implements AddressableEntity {
 	private final URI self;
 	@Nullable
+	private final Long id;
+	@Nullable
 	private final BasicUser author;
 	@Nullable
 	private final BasicUser updateAuthor;
@@ -40,7 +42,7 @@ public class Comment implements AddressableEntity {
 	@Nullable
 	private final Visibility visibility;
 
-	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility) {
+	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility, @Nullable Long id) {
 		this.author = author;
 		this.updateAuthor = updateAuthor;
 		this.creationDate = creationDate;
@@ -48,18 +50,19 @@ public class Comment implements AddressableEntity {
 		this.body = body;
 		this.self = self;
 		this.visibility = visibility;
+		this.id = id;
 	}
 
 	public static Comment valueOf(String body) {
-		return new Comment(null, body, null, null, null, null, null);
+		return new Comment(null, body, null, null, null, null, null, null);
 	}
 
 	public static Comment createWithRoleLevel(String body, String roleLevel) {
-		return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel));
+		return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel), null);
 	}
 
 	public static Comment createWithGroupLevel(String body, String groupLevel) {
-		return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel));
+		return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel), null);
 	}
 
 	public boolean wasUpdated() {
@@ -68,6 +71,11 @@ public class Comment implements AddressableEntity {
 
 	public String getBody() {
 		return body;
+	}
+
+	@Nullable
+	public Long getId() {
+		return id;
 	}
 
 	@Override
@@ -102,6 +110,7 @@ public class Comment implements AddressableEntity {
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("self", self)
+				.add("id", id)
 				.add("body", body)
 				.add("author", author)
 				.add("updateAuthor", updateAuthor)
@@ -115,6 +124,7 @@ public class Comment implements AddressableEntity {
 		if (obj instanceof Comment) {
 			Comment that = (Comment) obj;
 			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.id, that.id)
 					&& Objects.equal(this.body, that.body)
 					&& Objects.equal(this.author, that.author)
 					&& Objects.equal(this.updateAuthor, that.updateAuthor)
@@ -128,7 +138,7 @@ public class Comment implements AddressableEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, body, author, updateAuthor, creationDate, updateDate, visibility);
+		return Objects.hashCode(self, id, body, author, updateAuthor, creationDate, updateDate, visibility);
 	}
 
 }

@@ -41,15 +41,46 @@ public class CommentJsonParserTest {
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
 		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
+		assertEquals(Long.valueOf(10020), comment1.getId());
 		assertEquals(Visibility.role("Administrators"), comment1.getVisibility());
 
 		final JSONObject comment3Json = commentsJson.getJSONArray("value").getJSONObject(2);
 		final Comment comment3 = parser.parse(comment3Json);
+		assertEquals(Long.valueOf(10022), comment3.getId());
 		assertEquals(Visibility.group("jira-users"), comment3.getVisibility());
 
 		final JSONObject comment2Json = commentsJson.getJSONArray("value").getJSONObject(1);
 		final Comment comment2 = parser.parse(comment2Json);
+		assertEquals(Long.valueOf(10021), comment2.getId());
 		assertNull(comment2.getVisibility());
+	}
+
+	@Test
+	public void testParseWithoutId() throws Exception {
+		final JSONObject commentsJson = ResourceUtil.getJsonObjectFromResource("/json/comment/valid-without-id.json");
+		final CommentJsonParser parser = new CommentJsonParser();
+
+		final JSONObject comment1Json = commentsJson.getJSONArray("value").getJSONObject(0);
+		final Comment comment1 = parser.parse(comment1Json);
+		assertEquals("some comment", comment1.getBody());
+		assertEquals(TestConstants.USER_ADMIN, comment1.getAuthor());
+		assertEquals(TestConstants.USER_ADMIN, comment1.getUpdateAuthor());
+		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
+		assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
+		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
+		assertEquals(null, comment1.getId());
+		assertEquals(Visibility.role("Administrators"), comment1.getVisibility());
+
+		final JSONObject comment3Json = commentsJson.getJSONArray("value").getJSONObject(2);
+		final Comment comment3 = parser.parse(comment3Json);
+		assertEquals(null, comment3.getId());
+		assertEquals(Visibility.group("jira-users"), comment3.getVisibility());
+
+		final JSONObject comment2Json = commentsJson.getJSONArray("value").getJSONObject(1);
+		final Comment comment2 = parser.parse(comment2Json);
+		assertEquals(null, comment2.getId());
+		assertNull(comment2.getVisibility());
+
 	}
 
 	@Test
