@@ -173,7 +173,7 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 		final Iterable<Priority> priorities = client.getMetadataClient().getPriorities(pm);
 		assertEquals(5, Iterables.size(priorities));
 
-		Priority priority = findEntityBySelfAddressSuffix(priorities, "/1");
+		final Priority priority = findEntityBySelfAddressSuffix(priorities, "/1");
 		assertEquals(Long.valueOf(1), priority.getId());
 		assertEquals("Blocker", priority.getName());
 		assertEquals("Blocks development and/or testing work, production could not run.", priority.getDescription());
@@ -185,8 +185,8 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 	public void testGetIssueTypes() {
 		final Iterable<IssueType> issueTypes = client.getMetadataClient().getIssueTypes(pm);
 		assertEquals(5, Iterables.size(issueTypes));
-		
-		IssueType issueType = findEntityBySelfAddressSuffix(issueTypes, "/5");
+
+		final IssueType issueType = findEntityBySelfAddressSuffix(issueTypes, "/5");
 		assertEquals("Sub-task", issueType.getName());
 		assertEquals("The sub-task of the issue", issueType.getDescription());
 		assertEquals(Long.valueOf(5), issueType.getId());
@@ -197,19 +197,19 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	public void testGetResolutions() {
-		Iterable<Resolution> resolutions = client.getMetadataClient().getResolutions(pm);
+		final Iterable<Resolution> resolutions = client.getMetadataClient().getResolutions(pm);
 		assertEquals(5, Iterables.size(resolutions));
-		Resolution resolution = findEntityBySelfAddressSuffix(resolutions, "/1");
+		final Resolution resolution = findEntityBySelfAddressSuffix(resolutions, "/1");
 		assertEquals("Fixed", resolution.getName());
 		assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
 		assertNotNull(resolution.getSelf());
 	}
 	
-	private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(Iterable<T> entities, String suffix) {
+	private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(final Iterable<T> entities, final String suffix) {
 		return Iterables.find(entities, new Predicate<T>() {
 			@Override
 			public boolean apply(T input) {
-				return input.getSelf().toString().endsWith("/5");
+				return input.getSelf().toString().endsWith(suffix);
 			}
 		});
 	}

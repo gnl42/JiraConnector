@@ -58,16 +58,11 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 				if (commentVisibility.getType() == Visibility.Type.ROLE) {
 					res.put("role", commentVisibility.getValue());
 				} else {
-					res.put(getGroupLevelAttribute(), commentVisibility.getValue());
+					res.put("group", commentVisibility.getValue());
 				}
 			}
 		}
 
 		return res;
-	}
-
-	protected String getGroupLevelAttribute() {
-		final int buildNumber = serverInfo.getBuildNumber();
-		return (buildNumber < ServerVersionConstants.BN_JIRA_4_3) ? "groupLevel" : "group";
 	}
 }
