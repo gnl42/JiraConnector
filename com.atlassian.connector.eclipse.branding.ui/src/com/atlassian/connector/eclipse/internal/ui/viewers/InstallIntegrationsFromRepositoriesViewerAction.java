@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.ui.viewers;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.browser.BrowserUtil;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 
@@ -27,7 +27,7 @@ public class InstallIntegrationsFromRepositoriesViewerAction implements IViewAct
 	}
 
 	public void run(IAction action) {
-		WorkbenchUtil.openUrl(IBrandingConstants.INTEGRATIONS_GUIDE_URL);
+		BrowserUtil.openUrl(IBrandingConstants.INTEGRATIONS_GUIDE_URL);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

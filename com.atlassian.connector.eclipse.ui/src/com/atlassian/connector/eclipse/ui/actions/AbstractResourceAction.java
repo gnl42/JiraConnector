@@ -22,7 +22,7 @@ import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IEditorInput;
@@ -151,6 +151,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 		return null;
 	}
 
-	protected abstract void processResources(@NotNull List<ResourceEditorBean> selection, final Shell shell);
+	protected abstract void processResources(@NotNull
+	List<ResourceEditorBean> selection, final Shell shell);
 
 }

@@ -15,7 +15,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.browser.BrowserUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -51,9 +52,11 @@ public class PermissionToMonitorDialog extends Dialog {
 
 		Label messageLabel = new Label(composite, SWT.WRAP);
 		messageLabel.setText(Messages.EnabledMonitoringNoticeDialog_please_consider_uploading);
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).hint(
-				convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH), SWT.DEFAULT).applyTo(
-				messageLabel);
+		GridDataFactory.fillDefaults()
+				.align(SWT.FILL, SWT.BEGINNING)
+				.grab(true, false)
+				.hint(convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH), SWT.DEFAULT)
+				.applyTo(messageLabel);
 
 		Link details = new Link(composite, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(details);
@@ -63,7 +66,7 @@ public class PermissionToMonitorDialog extends Dialog {
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+				BrowserUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
 			}
 		});
 

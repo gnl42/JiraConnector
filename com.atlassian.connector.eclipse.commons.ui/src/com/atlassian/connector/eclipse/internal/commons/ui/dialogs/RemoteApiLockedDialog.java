@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.commons.ui.dialogs;
 import com.atlassian.connector.eclipse.internal.commons.ui.Messages;
 import com.atlassian.connector.eclipse.internal.core.CoreMessages;
 
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.browser.BrowserUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
@@ -24,7 +24,7 @@ public class RemoteApiLockedDialog extends ErrorDialogWithHyperlink {
 		super(parentShell, Messages.RemoteApiLockedDialog_permission_denied,
 				CoreMessages.Captcha_authentication_required, Messages.RemoteApiLockedDialog_5, new Runnable() {
 					public void run() {
-						WorkbenchUtil.openUrl(repositoryUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
+						BrowserUtil.openUrl(repositoryUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
 					}
 				});
 	}

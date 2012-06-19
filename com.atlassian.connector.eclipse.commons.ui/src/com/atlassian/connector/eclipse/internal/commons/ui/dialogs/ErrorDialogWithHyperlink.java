@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.commons.ui.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.browser.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,8 +38,11 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
 	private final String title;
 
-	public ErrorDialogWithHyperlink(Shell parentShell, @NotNull String title, @NotNull String message,
-			@Nullable String linkText, @Nullable Runnable linkHandler) {
+	public ErrorDialogWithHyperlink(Shell parentShell, @NotNull
+	String title, @NotNull
+	String message, @Nullable
+	String linkText, @Nullable
+	Runnable linkHandler) {
 		super(parentShell);
 		this.title = title;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -80,7 +83,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 	protected void buttonPressed(int buttonId) {
 		super.buttonPressed(buttonId);
 		if (buttonId == IDialogConstants.HELP_ID) {
-			WorkbenchUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse",
+			BrowserUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse",
 					IWorkbenchBrowserSupport.AS_EXTERNAL);
 		}
 	}

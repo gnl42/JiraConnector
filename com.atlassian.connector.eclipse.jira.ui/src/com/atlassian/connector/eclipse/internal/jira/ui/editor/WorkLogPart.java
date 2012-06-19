@@ -33,9 +33,9 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.mylyn.commons.ui.CommonImages;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -343,8 +343,11 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		});
 
 		timeSpentText.setToolTipText(timeSpendTooltip);
-		GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(
-				timeSpentText);
+		GridDataFactory.fillDefaults()
+				.span(2, 1)
+				.hint(135, SWT.DEFAULT)
+				.align(SWT.BEGINNING, SWT.FILL)
+				.applyTo(timeSpentText);
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
 		dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);

@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.swt.graphics.Image;
 
 public class BambooImageUtil {

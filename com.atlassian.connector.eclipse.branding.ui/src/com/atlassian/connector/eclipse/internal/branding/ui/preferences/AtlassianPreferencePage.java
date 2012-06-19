@@ -4,7 +4,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.FontRegistry;
-import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.commons.workbench.browser.BrowserUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -56,8 +56,10 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		label.setImage(image);
 
 		final int logoWidth = image.getBounds().width + 100;
-		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.FILL).hint(logoWidth, image.getBounds().height).applyTo(
-				label);
+		GridDataFactory.fillDefaults()
+				.align(SWT.CENTER, SWT.FILL)
+				.hint(logoWidth, image.getBounds().height)
+				.applyTo(label);
 
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 		center.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
@@ -80,7 +82,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WorkbenchUtil.openUrl(e.text);
+				BrowserUtil.openUrl(e.text);
 			}
 		});
 		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).hint(logoWidth, SWT.DEFAULT).applyTo(link);
@@ -135,7 +137,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WorkbenchUtil.openUrl(e.text);
+				BrowserUtil.openUrl(e.text);
 			}
 
 		});
@@ -149,7 +151,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 		helpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WorkbenchUtil.openUrl(url);
+				BrowserUtil.openUrl(url);
 			}
 		});
 	}

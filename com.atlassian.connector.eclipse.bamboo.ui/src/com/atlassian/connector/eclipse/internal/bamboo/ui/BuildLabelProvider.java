@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 

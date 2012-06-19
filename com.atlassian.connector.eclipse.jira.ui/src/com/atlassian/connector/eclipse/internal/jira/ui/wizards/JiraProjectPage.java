@@ -36,9 +36,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.commons.core.ICoreRunnable;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
-import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
+import org.eclipse.mylyn.commons.ui.CommonUiUtil;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -281,7 +282,7 @@ public class JiraProjectPage extends WizardPage {
 				if (getContainer().getShell().isVisible()) {
 					CommonUiUtil.run(getContainer(), runner);
 				} else {
-					CommonUiUtil.busyCursorWhile(runner);
+					WorkbenchUtil.busyCursorWhile(runner);
 				}
 			} catch (OperationCanceledException e) {
 				// canceled

@@ -16,7 +16,7 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.PlanState;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
+import org.eclipse.mylyn.commons.ui.compatibility.CommonFonts;
 import org.eclipse.swt.graphics.Font;
 
 import java.util.Iterator;
