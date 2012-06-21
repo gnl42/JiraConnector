@@ -16,12 +16,12 @@
 
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.rest.client.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Visibility;

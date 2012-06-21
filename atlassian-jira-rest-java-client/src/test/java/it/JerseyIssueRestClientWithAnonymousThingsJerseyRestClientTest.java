@@ -15,7 +15,7 @@
  */
 package it;
 
-import com.atlassian.jira.rest.client.annotation.Restore;
+import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.Issue;
 import org.junit.Test;
 

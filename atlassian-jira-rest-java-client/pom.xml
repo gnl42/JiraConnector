@@ -205,6 +205,12 @@
 			<artifactId>oauth-signature</artifactId>
 			<version>${jersey.client.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.atlassian.jira</groupId>
+			<artifactId>jira-nimble-func-tests</artifactId>
+			<version>0.1.1</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<profiles>

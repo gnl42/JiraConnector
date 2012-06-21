@@ -16,11 +16,12 @@
 
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.annotation.Restore;
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.Component;
@@ -32,6 +33,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_4;
 import static org.junit.Assert.*;
 
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -47,10 +49,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 	}
 
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testGetComponentOnJira4xOrNewerShouldContainNotNullId() throws Exception {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final BasicComponent basicComponent = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
@@ -98,10 +98,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 	}
 
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testCreateAndRemoveComponent() {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST", pm).getComponents();
 		assertEquals(2, Iterables.size(components));
 		final BasicComponent basicComponent = Iterables.get(components, 0);
@@ -124,10 +122,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 	}
 
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testCreateAndRemoveComponentAsUnauthorizedUsers() {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST", pm).getComponents();
 		assertEquals(2, Iterables.size(components));
 		final BasicComponent basicComponent = Iterables.get(components, 0);
@@ -200,10 +196,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 
 	@SuppressWarnings({"ConstantConditions"})
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testCreateComponentWithLead() {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
 		final Component component = client.getComponentClient().createComponent("TST", componentInput, pm);
 		assertNotNull(component.getAssigneeInfo());
@@ -225,10 +219,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 
 
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testUpdateComponent() {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST", pm).getComponents(), 0);
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		final String newName = basicComponent.getName() + "updated";
@@ -262,10 +254,8 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 
 
 	@Test
+	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testGetComponentRelatedIssuesCount() {
-		if (!isJira4x4OrNewer()) {
-			return;
-		}
 		final BasicComponent bc = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf(), pm));
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
