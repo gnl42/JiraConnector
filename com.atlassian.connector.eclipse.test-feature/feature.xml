@@ -109,13 +109,14 @@
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.eclipse.ui.navigator.resources"/>
    </requires>
-   
+
+<!--   
    <plugin
          id="org.eclipse.mylyn.commons.sdk.util"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
+-->
    <plugin
          id="com.atlassian.connector.eclipse.tests"
          download-size="0"

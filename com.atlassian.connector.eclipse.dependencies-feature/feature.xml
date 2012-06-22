@@ -58,19 +58,19 @@
       <import plugin="org.eclipse.mylyn.commons.repositories.core" version="0.9.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.repositories.ui" version="0.9.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.sdk.util" version="3.8.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.sdk.java" version="3.7.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.sdk.util" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.sdk.java" version="3.8.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.sdk.util" version="3.8.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.discovery.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.discovery.ui" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.ide.ui" version="3.7.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.ide.ant" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.java.ui" version="3.7.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.java.tasks" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.ide.ui" version="3.8.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.ide.ant" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.java.ui" version="3.8.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.java.tasks" version="3.8.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.context.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.resources.ui" version="3.7.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.resources.ui" version="3.8.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.wikitext.core" version="1.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.wikitext.tasks.ui" version="1.2.0" match="compatible"/>
