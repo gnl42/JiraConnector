@@ -264,6 +264,10 @@
 	<!-- ===================================================================== -->
 
 	<target name="get-build-dependencies-helper">
+		<echo message="basedir = ${basedir}" />
+		<echo message="eclipse.base = ${eclipse.base}" />
+		<echo message="build.home = ${build.home}" />
+		
 		<property name="downloadsDir" value="${eclipse.base}" />
 
 		<!-- extract sdk for building -->
@@ -279,7 +283,7 @@
 			<param name="unpackDest" value="${eclipse.base}/sdk-${eclipse.sdk.version}" />
 			<param name="isUnpackedFile" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		</antcall>
-
+		
 		<antcall target="get-build-dependencies-helper-svn" />
 	</target>
 
