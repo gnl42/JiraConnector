@@ -10,6 +10,7 @@
     	-->
 		<!-- get the zip or tar.gz from the remote server if it's not already been downloaded -->
 		<available file="${downloadsDir}/${file}" property="theZipExists"/>
+		<echo message="theZipExists = ${theZipExists}"/>
 		<antcall target="downloadFile">
 			<param name="theFile" value="${file}"/>
 			<param name="theURL" value="${url}"/>
@@ -25,6 +26,7 @@
 		<sequential>
 			<!-- check if we've done this already -->
 			<available property="isUnpacked" file="${isUnpackedFile}"/>
+			<echo message="isUnpacked = ${isUnpacked}" />
 
     		<!-- check the bundle type and unpack it accordingly -->
 			<condition property="isAZip"><contains string="${file}" substring=".zip" /></condition>
@@ -75,7 +77,11 @@
 	</target>
 
 	<!-- helper methods -->
-	<target name="downloadFile" unless="theZipExists"><get src="${theURL}" dest="${downloadsDir}/${theFile}" usetimestamp="true"/><touch file="${downloadsDir}/${theFile}"/></target>
+	<target name="downloadFile" unless="theZipExists">
+		<echo message="Downloading file from ${theURL} to ${downloadsDir}/${theFile}"/>
+		<get src="${theURL}" dest="${downloadsDir}/${theFile}" usetimestamp="true"/>
+		<touch file="${downloadsDir}/${theFile}"/>
+	</target>
 	<target name="unzipFile" unless="isUnpacked" if="isAZip"><unzip src="${theFile}" dest="${theDir}" overwrite="true" /></target>
 	<target name="untarFile" unless="isUnpacked" if="isATar"><untar src="${theFile}" dest="${theDir}" overwrite="true" compression="gzip"/></target>
 	<target name="unpackJar" unless="isUnpacked" if="jarExists"><unjar src="${theJar}" dest="${theDir}" overwrite="true"/></target>
