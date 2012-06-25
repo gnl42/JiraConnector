@@ -284,6 +284,8 @@
 			<param name="isUnpackedFile" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		</antcall>
 		
+		<copyfile dest="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse/plugins" src="${basedir}/../../tools/org.jsoup_1.6.1.v201201201356.jar"/>
+		
 		<antcall target="get-build-dependencies-helper-svn" />
 	</target>
 
