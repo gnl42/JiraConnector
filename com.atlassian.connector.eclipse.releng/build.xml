@@ -87,10 +87,12 @@
 
 		<property name="eclipse.org" value="http://eclipse.unixheads.org" />
 
+		<!--
 		<antcall target="mirror-helper">
 			<param name="from" value="${mylyn.site}" />
 			<param name="to" value="${build.site}" />
 		</antcall>
+		-->
 
 		<fail message="Required property build.public.host is not set" unless="build.public.host" />
 		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml">
