@@ -24,7 +24,10 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
  */
 public class JiraFixture extends TestFixture {
 
-	public static final String SERVER = System.getProperty("mylyn.jira.server", "ecit.atlassian.com");
+	// ecit.atlassian.com = atlassian-dacj-staging-vm.managed.contegix.com
+//	public static final String SERVER = System.getProperty("mylyn.jira.server", "ecit.atlassian.com");
+	public static final String SERVER = System.getProperty("mylyn.jira.server",
+			"atlassian-dacj-staging-vm.managed.contegix.com");
 
 	private static final String getServerUrl(String version) {
 		return "http://" + SERVER + "/" + version;
