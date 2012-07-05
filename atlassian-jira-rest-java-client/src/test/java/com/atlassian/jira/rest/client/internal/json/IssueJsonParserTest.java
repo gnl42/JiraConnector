@@ -276,7 +276,7 @@ public class IssueJsonParserTest {
 		final Iterable<ChangelogGroup> changelog = issue.getChangelog();
 		assertNotNull(changelog);
 
-		assertEquals(3, Iterables.size(changelog));
+		assertEquals(4, Iterables.size(changelog));
 		final Iterator<ChangelogGroup> iterator = changelog.iterator();
 
 		final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One");
@@ -309,6 +309,13 @@ public class IssueJsonParserTest {
 						new ChangelogItem(ChangelogItem.FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
 						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Radio Field", "10000", "One", "10001", "Two"),
 						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")
+				));
+
+		verifyChangelog(iterator.next(),
+				"2012-04-12T14:28:44.079+0200",
+				null,
+				ImmutableList.of(
+						new ChangelogItem(ChangelogItem.FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
 				));
 	}
 

@@ -411,8 +411,8 @@
 	],
 	"changelog": {
 		"startAt": 0,
-		"maxResults": 3,
-		"total": 3,
+		"maxResults": 4,
+		"total": 4,
 		"histories": [
 			{
 				"id": "10000",
@@ -550,6 +550,20 @@
 						"fromString": "Initial text field value",
 						"to": null,
 						"toString": "Modified text field value"
+					}
+				]
+			},
+			{
+				"id": "10003",
+				"created": "2012-04-12T14:28:44.079+0200",
+				"items": [
+					{
+						"field": "assignee",
+						"fieldtype": "jira",
+						"from": "user1",
+						"fromString": "User One",
+						"to": "user2",
+						"toString": "User Two"
 					}
 				]
 			}

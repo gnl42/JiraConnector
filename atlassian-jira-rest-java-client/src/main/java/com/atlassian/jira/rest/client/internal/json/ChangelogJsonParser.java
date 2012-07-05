@@ -31,7 +31,7 @@ public class ChangelogJsonParser implements JsonParser<ChangelogGroup> {
 	@Override
 	public ChangelogGroup parse(JSONObject json) throws JSONException {
 		final DateTime created = JsonParseUtil.parseDateTime(json, "created");
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.getJSONObject("author"));
+		final BasicUser author = json.has("author") ? JsonParseUtil.parseBasicUser(json.getJSONObject("author")) : null;
 		final Collection<ChangelogItem> items = JsonParseUtil.parseJsonArray(json.getJSONArray("items"), changelogItemJsonParser);
 		return new ChangelogGroup(author, created, items);
 	}
