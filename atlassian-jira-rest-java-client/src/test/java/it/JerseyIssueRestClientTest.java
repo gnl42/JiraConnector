@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.functest.framework.UserProfile;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
@@ -67,6 +68,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -621,6 +624,26 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
 				issueClient.getAttachment(pm, attachments.iterator().next().getContentUri())));
 	}
+	
+	private void changeUserLanguageByValueOrName(String value, String name) {
+		final UserProfile userProfile = navigation.userProfile();
+		boolean fallbackToChangeByValue = false;
+		try {
+			Method changeUserLanguageByValue = userProfile.getClass().getMethod("changeUserLanguageByValue", String.class);
+			changeUserLanguageByValue.invoke(userProfile, value);
+		} catch (NoSuchMethodException e) {
+			// fallbackToChangeByValue to value - for JIRA < 5.1
+			fallbackToChangeByValue = true;
+		} catch (InvocationTargetException e) {
+			fallbackToChangeByValue = true;
+		} catch (IllegalAccessException e) {
+			fallbackToChangeByValue = true;
+		}
+
+		if (fallbackToChangeByValue) {
+			userProfile.changeUserLanguage(name);
+		}
+	}
 
 
 	@Test
@@ -628,7 +651,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 
-		navigation.userProfile().changeUserLanguageByValue("en_UK");
+		changeUserLanguageByValueOrName("en_UK", "angielski (UK)");
 		navigation.issue().unassignIssue("TST-5", "unassigning issue");
 		// this single line does instead of 2 above - func test suck with non-English locale
 		// but it does not work yet with JIRA 5.0-resthack...
@@ -639,7 +662,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testFetchingIssueWithAnonymousComment() {
-		navigation.userProfile().changeUserLanguageByValue("en_UK");
+		changeUserLanguageByValueOrName("en_UK", "angielski (UK)");
 		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 		navigation.logout();
