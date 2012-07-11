@@ -59,7 +59,7 @@ import java.util.Set;
 public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String UPDATED_ATTR = "updated";
 	private static final String CREATED_ATTR = "created";
-    private static final String DUE_ATTR = "duedate";
+	private static final String DUE_ATTR = "duedate";
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
 	private static final String FIX_VERSIONS_ATTR = "fixVersions";
 	private static final String COMPONENTS_ATTR = "components";
@@ -125,7 +125,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	}
 
 
-	private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser, String arrayAttribute) throws JSONException {
+	private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser, String arrayAttribute)
+			throws JSONException {
 //        String type = jsonObject.getString("type");
 //        final String name = jsonObject.getString("name");
 		final JSONArray valueObject = jsonObject.optJSONArray(arrayAttribute);
@@ -139,13 +140,15 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		return res;
 	}
 
-	private <T> Collection<T> parseOptionalArrayNotNullable(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path) throws JSONException {
+	private <T> Collection<T> parseOptionalArrayNotNullable(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+			throws JSONException {
 		Collection<T> res = parseOptionalArray(shouldUseNestedValueJson, json, jsonParser, path);
 		return res == null ? Collections.<T>emptyList() : res;
 	}
 
 	@Nullable
-	private <T> Collection<T> parseOptionalArray(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path) throws JSONException {
+	private <T> Collection<T> parseOptionalArray(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+			throws JSONException {
 		if (shouldUseNestedValueJson) {
 			final JSONObject js = JsonParseUtil.getNestedOptionalObject(json, path);
 			if (js == null) {
@@ -189,7 +192,8 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	}
 
 	@Nullable
-	private String getOptionalFieldStringUnisex(boolean shouldUseNestedValueJson, JSONObject json, String attributeName) throws JSONException {
+	private String getOptionalFieldStringUnisex(boolean shouldUseNestedValueJson, JSONObject json, String attributeName)
+			throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 		if (shouldUseNestedValueJson) {
 			final JSONObject fieldJson = fieldsJson.optJSONObject(attributeName);
@@ -206,7 +210,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 		final Object fieldJson = fieldsJson.get(attributeName);
 		if (fieldJson instanceof JSONObject) {
-			return ((JSONObject)fieldJson).getString(VALUE_ATTR); // pre 5.0 way
+			return ((JSONObject) fieldJson).getString(VALUE_ATTR); // pre 5.0 way
 		}
 		return fieldJson.toString(); // JIRA 5.0 way
 	}
@@ -250,10 +254,10 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final Collection<IssueLink> issueLinks;
 		if (isJira5x0OrNewer) {
 			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
-				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_ATTR_5_0);
+					new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_ATTR_5_0);
 		} else {
 			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
-				new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
+					new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_ATTR);
 		}
 
 		Collection<Subtask> subtasks = null;
@@ -271,7 +275,9 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final Collection<Worklog> worklogs;
 		if (isJira5x0OrNewer) {
 			if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_ATTR) != null) {
-				worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(JsonParseUtil.getSelfUri(s))), FIELDS, WORKLOG_ATTR, WORKLOGS_ATTR);
+				worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s,
+						new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(JsonParseUtil.getSelfUri(s))),
+						FIELDS, WORKLOG_ATTR, WORKLOGS_ATTR);
 			} else {
 				worklogs = Collections.emptyList();
 			}
@@ -279,21 +285,25 @@ public class IssueJsonParser implements JsonParser<Issue> {
 			worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_ATTR);
 		}
 
-		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s, isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
+		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s,
+				isJira5x0OrNewer ? WATCHER_ATTR_5_0 : WATCHER_ATTR, watchersJsonParser);
 		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_ATTR,
 				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
-		
-		final Set<String> labels = Sets.newHashSet(parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s, jsonWeakParserForString, FIELDS, LABELS_ATTR));
+
+		final Set<String> labels = Sets.newHashSet(parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s,
+				jsonWeakParserForString, FIELDS, LABELS_ATTR));
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
-		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
-                resolution, attachments, reporter, assignee, creationDate, updateDate, dueDate, affectedVersions, fixVersions,
-				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
+		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status,
+				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
+				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
+				transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
 				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
 	}
 
 	@Nullable
-	private <T> T getOptionalField(boolean shouldUseNestedValue, JSONObject s, final String fieldId, JsonParser<T> jsonParser) throws JSONException {
+	private <T> T getOptionalField(boolean shouldUseNestedValue, JSONObject s, final String fieldId, JsonParser<T> jsonParser)
+			throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
 		// for fields like assignee (when unassigned) value attribute may be missing completely
 		if (fieldJson != null) {

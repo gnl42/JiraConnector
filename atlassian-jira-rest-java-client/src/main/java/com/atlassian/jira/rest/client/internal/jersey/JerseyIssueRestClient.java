@@ -100,7 +100,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	private final MetadataRestClient metadataRestClient;
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
-    private final BasicIssueJsonParser basicIssueParser = new BasicIssueJsonParser();
+	private final BasicIssueJsonParser basicIssueParser = new BasicIssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final JsonParser<Transition> transitionJsonParserV5 = new TransitionJsonParserV5();
@@ -141,7 +141,8 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	public Issue getIssue(final String issueKey, Iterable<Expandos> expand, ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
 		final Iterable<Expandos> expands = Iterables.concat(DEFAULT_EXPANDS, expand);
-		uriBuilder.path("issue").path(issueKey).queryParam("expand", Joiner.on(',').join(Iterables.transform(expands, EXPANDO_TO_PARAM)));
+		uriBuilder.path("issue").path(issueKey).queryParam("expand",
+				Joiner.on(',').join(Iterables.transform(expands, EXPANDO_TO_PARAM)));
 		return getAndParse(uriBuilder.build(), issueParser, progressMonitor);
 	}
 
@@ -182,7 +183,8 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 			return getTransitions(issue.getTransitionsUri(), progressMonitor);
 		} else {
 			final UriBuilder transitionsUri = UriBuilder.fromUri(issue.getSelf());
-			return getTransitions(transitionsUri.path("transitions").queryParam("expand", "transitions.fields").build(), progressMonitor);
+			return getTransitions(transitionsUri.path("transitions")
+					.queryParam("expand", "transitions.fields").build(), progressMonitor);
 		}
 	}
 
@@ -315,7 +317,8 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public void addAttachments(ProgressMonitor progressMonitor, final URI attachmentsUri, AttachmentInput... attachments) {
-		final ArrayList<AttachmentInput> myAttachments = Lists.newArrayList(attachments); // just to avoid concurrency issues if this arg is mutable
+		// just to avoid concurrency issues if this arg is mutable
+		final ArrayList<AttachmentInput> myAttachments = Lists.newArrayList(attachments);
 		invoke(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
@@ -398,19 +401,20 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		removeWatcher(watchersUri, getLoggedUsername(progressMonitor), progressMonitor);
 	}
 
-    @Override
-    public BasicIssue createIssue(IssueInput issue, ProgressMonitor progressMonitor) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-        uriBuilder.path("issue");
+	@Override
+	public BasicIssue createIssue(IssueInput issue, ProgressMonitor progressMonitor) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+		uriBuilder.path("issue");
 
-        return postAndParse(uriBuilder.build(),
-                InputGeneratorCallable.create(new IssueInputJsonGenerator(), issue),
-                basicIssueParser, progressMonitor);
+		return postAndParse(uriBuilder.build(),
+				InputGeneratorCallable.create(new IssueInputJsonGenerator(), issue),
+				basicIssueParser, progressMonitor);
 	}
 
 	@Override
 	public CreateIssueMetadata getCreateIssueMetadata(ProgressMonitor progressMonitor) {
-	    return this.getCreateIssueMetadata(null, null, null, null, Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), progressMonitor);
+		return this.getCreateIssueMetadata(null, null, null, null,
+				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), progressMonitor);
 	}
 
 	@Override
@@ -431,7 +435,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		if (issueTypeIds != null) {
 			uriBuilder.queryParam("issuetypeIds", Joiner.on(",").join(issueTypeIds));
 		}
-		
+
 		if (issueTypeNames != null) {
 			for (final String name : issueTypeNames) {
 				uriBuilder.queryParam("issuetypeNames", name);
@@ -439,12 +443,13 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		}
 
 		if (expand != null && expand.iterator().hasNext()) {
-			final Iterable<String> expandValues = Iterables.transform(expand, new Function<CreateIssueMetadataExpandos, String>() {
-				@Override
-				public String apply(CreateIssueMetadataExpandos from) {
-					return from.value;
-				}
-			});
+			final Iterable<String> expandValues = Iterables.transform(expand,
+					new Function<CreateIssueMetadataExpandos, String>() {
+						@Override
+						public String apply(CreateIssueMetadataExpandos from) {
+							return from.value;
+						}
+					});
 			uriBuilder.queryParam("expand", Joiner.on(",").join(expandValues));
 		}
 
@@ -457,7 +462,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				.queryParam("adjustEstimate", adjustEstimateOption.adjustEstimate.restValue)
 				.queryParam("newEstimate", adjustEstimateOption.newEstimate == null ? "" : adjustEstimateOption.newEstimate)
 				.queryParam("reduceBy", adjustEstimateOption.reduceBy == null ? "" : adjustEstimateOption.reduceBy);
-		
+
 		post(uriBuilder.build(), new Callable<JSONObject>() {
 			@Override
 			public JSONObject call() throws Exception {

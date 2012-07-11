@@ -33,9 +33,9 @@ import java.util.Set;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-    public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
+	public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
-            @Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
+			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
@@ -43,21 +43,21 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
 			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
 		super(self, key);
-        this.summary = summary;
+		this.summary = summary;
 		this.project = project;
 		this.status = status;
 		this.description = description;
 		this.resolution = resolution;
 		this.expandos = expandos;
-        this.comments = comments;
-        this.attachments = attachments;
+		this.comments = comments;
+		this.attachments = attachments;
 		this.fields = fields;
 		this.issueType = issueType;
 		this.reporter = reporter;
 		this.assignee = assignee;
 		this.creationDate = creationDate;
 		this.updateDate = updateDate;
-        this.dueDate = dueDate;
+		this.dueDate = dueDate;
 		this.transitionsUri = transitionsUri;
 		this.issueLinks = issueLinks;
 		this.votes = votes;
@@ -79,7 +79,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
-    private final String summary;
+	private final String summary;
 	@Nullable
 	private final String description;
 	@Nullable
@@ -90,7 +90,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private Collection<Field> fields;
 	private DateTime creationDate;
 	private DateTime updateDate;
-    private DateTime dueDate;
+	private DateTime dueDate;
 	private final BasicPriority priority;
 	private final BasicVotes votes;
 	@Nullable
@@ -137,7 +137,6 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 
-
 	public String getSummary() {
 		return summary;
 	}
@@ -151,7 +150,6 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 *
 	 * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
 	 */
 	@Nullable
@@ -172,7 +170,6 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 *
 	 * @param id identifier of the field (inaccessible by concrete getter method)
 	 * @return field with given id, or <code>null</code> when no field with given id exists for this issue
 	 */
@@ -220,8 +217,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 * @return attachments of this issue
 	 */
 	public Iterable<Attachment> getAttachments() {
-        return attachments;
-    }
+		return attachments;
+	}
 
 	public URI getAttachmentsUri() {
 		return UriBuilder.fromUri(getSelf()).path("attachments").build();
@@ -234,9 +231,9 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	/**
 	 * @return comments for this issue
 	 */
-    public Iterable<Comment> getComments() {
-        return comments;
-    }
+	public Iterable<Comment> getComments() {
+		return comments;
+	}
 
 	public URI getCommentsUri() {
 		return UriBuilder.fromUri(getSelf()).path("comment").build();
@@ -275,12 +272,12 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	@Nullable
-    public URI getTransitionsUri() {
-        return transitionsUri;
-    }
+	public URI getTransitionsUri() {
+		return transitionsUri;
+	}
 
 	@Nullable
-    public Iterable<Version> getAffectedVersions() {
+	public Iterable<Version> getAffectedVersions() {
 		return affectedVersions;
 	}
 
@@ -296,7 +293,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 * Returns changelog available for issues retrieved with CHANGELOG expanded.
 	 *
 	 * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on the server side does not serve
-	 * this information (pre-5.0)
+	 *         this information (pre-5.0)
 	 * @see com.atlassian.jira.rest.client.IssueRestClient#getIssue(String, Iterable, com.atlassian.jira.rest.client.ProgressMonitor)
 	 * @since client 0.6, server 5.0
 	 */
@@ -308,7 +305,6 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	public URI getVotesUri() {
 		return UriBuilder.fromUri(getSelf()).path("votes").build();
 	}
-
 
 
 	@Nullable
@@ -324,9 +320,9 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return updateDate;
 	}
 
-    public DateTime getDueDate() {
-        return dueDate;
-    }
+	public DateTime getDueDate() {
+		return dueDate;
+	}
 
 	@Nullable
 	public TimeTracking getTimeTracking() {
@@ -355,7 +351,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("issueType", issueType).
 				add("creationDate", creationDate).
 				add("updateDate", updateDate).addValue("\n").
-                add("dueDate", dueDate).addValue("\n").
+				add("dueDate", dueDate).addValue("\n").
 				add("attachments", attachments).addValue("\n").
 				add("comments", comments).addValue("\n").
 				add("transitionsUri", transitionsUri).
