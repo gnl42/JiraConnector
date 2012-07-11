@@ -48,7 +48,6 @@ import java.util.Iterator;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class IssueJsonParserTest {
 	@Test
@@ -213,7 +212,8 @@ public class IssueJsonParserTest {
 		assertEquals("Major", priority.getName());
 		assertEquals("my description", issue.getDescription());
 		assertEquals("TST", issue.getProject().getKey());
-		assertEquals(toDateTime("2010-07-05T00:00:00.000+02:00"), issue.getDueDate());
+		assertNotNull(issue.getDueDate());
+		assertEquals(toDateTime("2010-07-05T00:00:00.000+02:00", issue.getDueDate().getZone()), issue.getDueDate());
 		assertEquals(4, Iterables.size(issue.getAttachments()));
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());

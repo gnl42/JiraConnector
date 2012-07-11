@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.domain.Transition;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -41,6 +42,10 @@ public class TestUtil {
 
 	public static DateTime toDateTime(String isoDateTimeSt) {
 		return formatter.parseDateTime(isoDateTimeSt);
+	}
+
+	public static DateTime toDateTime(String isoDateTimeSt, DateTimeZone zone) {
+		return formatter.withZone(zone).parseDateTime(isoDateTimeSt);
 	}
 
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
