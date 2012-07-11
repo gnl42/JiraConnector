@@ -628,7 +628,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 
-		navigation.userProfile().changeUserLanguage("angielski (UK)");
+		navigation.userProfile().changeUserLanguageByValue("en_UK");
 		navigation.issue().unassignIssue("TST-5", "unassigning issue");
 		// this single line does instead of 2 above - func test suck with non-English locale
 		// but it does not work yet with JIRA 5.0-resthack...
@@ -639,7 +639,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testFetchingIssueWithAnonymousComment() {
-		navigation.userProfile().changeUserLanguage("angielski (UK)");
+		navigation.userProfile().changeUserLanguageByValue("en_UK");
 		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 		navigation.logout();
