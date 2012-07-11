@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 
 public class TestUtil {
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
+	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.date();
 
 	public static URI toUri(String str) {
 		try {
@@ -46,6 +47,10 @@ public class TestUtil {
 
 	public static DateTime toDateTime(String isoDateTimeSt, DateTimeZone zone) {
 		return formatter.withZone(zone).parseDateTime(isoDateTimeSt);
+	}
+
+	public static DateTime toDateTimeFromIsoDate(String isoDate) {
+		return dateFormatter.parseDateTime(isoDate);
 	}
 
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
