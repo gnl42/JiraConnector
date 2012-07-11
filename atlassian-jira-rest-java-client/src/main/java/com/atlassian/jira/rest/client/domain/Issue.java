@@ -35,7 +35,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
     public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
-			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate,
+            @Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
@@ -57,6 +57,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.assignee = assignee;
 		this.creationDate = creationDate;
 		this.updateDate = updateDate;
+        this.dueDate = dueDate;
 		this.transitionsUri = transitionsUri;
 		this.issueLinks = issueLinks;
 		this.votes = votes;
@@ -89,6 +90,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private Collection<Field> fields;
 	private DateTime creationDate;
 	private DateTime updateDate;
+    private DateTime dueDate;
 	private final BasicPriority priority;
 	private final BasicVotes votes;
 	@Nullable
@@ -260,7 +262,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 * @return <code>null</code when watching is disabled in JIRA 
+	 * @return <code>null</code> when watching is disabled in JIRA
 	 */
 	@Nullable
 	public BasicWatchers getWatchers() {
@@ -322,6 +324,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return updateDate;
 	}
 
+    public DateTime getDueDate() {
+        return dueDate;
+    }
+
 	@Nullable
 	public TimeTracking getTimeTracking() {
 		return timeTracking;
@@ -349,6 +355,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("issueType", issueType).
 				add("creationDate", creationDate).
 				add("updateDate", updateDate).addValue("\n").
+                add("dueDate", dueDate).addValue("\n").
 				add("attachments", attachments).addValue("\n").
 				add("comments", comments).addValue("\n").
 				add("transitionsUri", transitionsUri).

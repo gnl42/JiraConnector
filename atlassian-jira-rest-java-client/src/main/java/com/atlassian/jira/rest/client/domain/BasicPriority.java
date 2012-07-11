@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.IdentifiedEntity;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -26,7 +27,7 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicPriority extends AddressableNamedEntity {
+public class BasicPriority extends AddressableNamedEntity implements IdentifiedEntity<Long> {
 	@Nullable
 	private final Long id;
 
@@ -45,6 +46,9 @@ public class BasicPriority extends AddressableNamedEntity {
 		return id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Objects.ToStringHelper getToStringHelper() {
 		return super.getToStringHelper().add("id", id);

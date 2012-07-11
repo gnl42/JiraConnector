@@ -22,7 +22,9 @@ import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
+import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Session;
@@ -31,10 +33,13 @@ import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.atlassian.jira.rest.client.internal.json.BasicIssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.CreateIssueMetadataJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
@@ -43,6 +48,7 @@ import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.IssueInputJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
 import com.google.common.base.Function;
@@ -73,6 +79,8 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
+import static com.atlassian.jira.rest.client.IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS;
+
 /**
  * Jersey-based implementation of IssueRestClient
  *
@@ -92,10 +100,12 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	private final MetadataRestClient metadataRestClient;
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
+    private final BasicIssueJsonParser basicIssueParser = new BasicIssueJsonParser();
 	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
 	private final JsonParser<Transition> transitionJsonParserV5 = new TransitionJsonParserV5();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
+	private final CreateIssueMetadataJsonParser createIssueMetadataJsonParser = new CreateIssueMetadataJsonParser();
 	private ServerInfo serverInfo;
 
 	public JerseyIssueRestClient(URI baseUri, ApacheHttpClient client, SessionRestClient sessionRestClient, MetadataRestClient metadataRestClient) {
@@ -386,6 +396,59 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	@Override
 	public void unwatch(final URI watchersUri, ProgressMonitor progressMonitor) {
 		removeWatcher(watchersUri, getLoggedUsername(progressMonitor), progressMonitor);
+	}
+
+    @Override
+    public BasicIssue createIssue(IssueInput issue, ProgressMonitor progressMonitor) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+        uriBuilder.path("issue");
+
+        return postAndParse(uriBuilder.build(),
+                InputGeneratorCallable.create(new IssueInputJsonGenerator(), issue),
+                basicIssueParser, progressMonitor);
+	}
+
+	@Override
+	public CreateIssueMetadata getCreateIssueMetadata(ProgressMonitor progressMonitor) {
+	    return this.getCreateIssueMetadata(null, null, null, null, Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), progressMonitor);
+	}
+
+	@Override
+	public CreateIssueMetadata getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
+			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
+			ProgressMonitor progressMonitor) {
+
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta");
+
+		if (projectIds != null) {
+			uriBuilder.queryParam("projectIds", Joiner.on(",").join(projectIds));
+		}
+
+		if (projectKeys != null) {
+			uriBuilder.queryParam("projectKeys", Joiner.on(",").join(projectKeys));
+		}
+
+		if (issueTypeIds != null) {
+			uriBuilder.queryParam("issuetypeIds", Joiner.on(",").join(issueTypeIds));
+		}
+		
+		if (issueTypeNames != null) {
+			for (final String name : issueTypeNames) {
+				uriBuilder.queryParam("issuetypeNames", name);
+			}
+		}
+
+		if (expand != null && expand.iterator().hasNext()) {
+			final Iterable<String> expandValues = Iterables.transform(expand, new Function<CreateIssueMetadataExpandos, String>() {
+				@Override
+				public String apply(CreateIssueMetadataExpandos from) {
+					return from.value;
+				}
+			});
+			uriBuilder.queryParam("expand", Joiner.on(",").join(expandValues));
+		}
+
+		return getAndParse(uriBuilder.build(), createIssueMetadataJsonParser, progressMonitor);
 	}
 
 	@Override

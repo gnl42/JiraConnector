@@ -75,6 +75,7 @@ public class IssueJsonParserTest {
 		assertNull(issue.getResolution());
 		assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
 		assertEquals(toDateTime("2010-08-27T15:00:02.107+0200"), issue.getUpdateDate());
+		assertEquals(null, issue.getDueDate());
 
 		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
 		assertEquals(TestConstants.USER1, issue.getAssignee());
@@ -212,6 +213,7 @@ public class IssueJsonParserTest {
 		assertEquals("Major", priority.getName());
 		assertEquals("my description", issue.getDescription());
 		assertEquals("TST", issue.getProject().getKey());
+		assertEquals(toDateTime("2010-07-05T00:00:00.000+02:00"), issue.getDueDate());
 		assertEquals(4, Iterables.size(issue.getAttachments()));
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());

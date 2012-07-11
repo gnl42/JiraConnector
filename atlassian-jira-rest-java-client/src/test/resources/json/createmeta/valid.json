@@ -1,0 +1,213 @@
+{
+	"expand": "projects",
+	"projects": [
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/project/ANONEDIT",
+			"id": "10030",
+			"key": "ANONEDIT",
+			"name": "Anonymous Editable Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10030&avatarId=10011"
+			},
+			"issuetypes": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/1",
+					"id": "1",
+					"description": "A problem which impairs or prevents the functions of the product.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+					"name": "Bug",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/2",
+					"id": "2",
+					"description": "A new feature of the product, which has yet to be developed.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+					"name": "New Feature",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/3",
+					"id": "3",
+					"description": "A task that needs to be done.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+					"name": "Task",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/4",
+					"id": "4",
+					"description": "An improvement or enhancement to an existing feature or task.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+					"name": "Improvement",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/5",
+					"id": "5",
+					"description": "The sub-task of the issue",
+					"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+					"name": "Sub-task",
+					"subtask": true
+				}
+			]
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/project/ANNON",
+			"id": "10020",
+			"key": "ANNON",
+			"name": "Anonymously Accessible Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10020&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10020&avatarId=10011"
+			},
+			"issuetypes": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/1",
+					"id": "1",
+					"description": "A problem which impairs or prevents the functions of the product.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+					"name": "Bug",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/2",
+					"id": "2",
+					"description": "A new feature of the product, which has yet to be developed.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+					"name": "New Feature",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/3",
+					"id": "3",
+					"description": "A task that needs to be done.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+					"name": "Task",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/4",
+					"id": "4",
+					"description": "An improvement or enhancement to an existing feature or task.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+					"name": "Improvement",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/5",
+					"id": "5",
+					"description": "The sub-task of the issue",
+					"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+					"name": "Sub-task",
+					"subtask": true
+				}
+			]
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/project/RST",
+			"id": "10010",
+			"key": "RST",
+			"name": "Restricted Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10010&avatarId=10011"
+			},
+			"issuetypes": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/1",
+					"id": "1",
+					"description": "A problem which impairs or prevents the functions of the product.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+					"name": "Bug",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/2",
+					"id": "2",
+					"description": "A new feature of the product, which has yet to be developed.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+					"name": "New Feature",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/3",
+					"id": "3",
+					"description": "A task that needs to be done.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+					"name": "Task",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/4",
+					"id": "4",
+					"description": "An improvement or enhancement to an existing feature or task.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+					"name": "Improvement",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/5",
+					"id": "5",
+					"description": "The sub-task of the issue",
+					"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+					"name": "Sub-task",
+					"subtask": true
+				}
+			]
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+			"id": "10000",
+			"key": "TST",
+			"name": "Test Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			},
+			"issuetypes": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/1",
+					"id": "1",
+					"description": "A problem which impairs or prevents the functions of the product.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+					"name": "Bug",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/2",
+					"id": "2",
+					"description": "A new feature of the product, which has yet to be developed.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+					"name": "New Feature",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/3",
+					"id": "3",
+					"description": "A task that needs to be done.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+					"name": "Task",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/4",
+					"id": "4",
+					"description": "An improvement or enhancement to an existing feature or task.",
+					"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+					"name": "Improvement",
+					"subtask": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/latest/issuetype/5",
+					"id": "5",
+					"description": "The sub-task of the issue",
+					"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+					"name": "Sub-task",
+					"subtask": true
+				}
+			]
+		}
+	]
+}

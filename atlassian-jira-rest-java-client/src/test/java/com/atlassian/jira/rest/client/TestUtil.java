@@ -17,8 +17,6 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
@@ -140,10 +138,6 @@ public class TestUtil {
 		}
 	}
 
-	public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
-		return Iterables.find(entities, HasNamePredicate.forName(name));
-	}
-
 	@Nullable
 	public static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
 		Transition transitionFound = null;
@@ -154,23 +148,5 @@ public class TestUtil {
 			}
 		}
 		return transitionFound;
-	}
-
-	public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T>{
-	
-		private final String name;
-
-		public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
-			return new HasNamePredicate<K>(name);
-		}
-
-		private HasNamePredicate(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public boolean apply(T input) {
-			return name.equals(input.getName());
-		}
 	}
 }

@@ -59,6 +59,7 @@ import java.util.Set;
 public class IssueJsonParser implements JsonParser<Issue> {
 	private static final String UPDATED_ATTR = "updated";
 	private static final String CREATED_ATTR = "created";
+    private static final String DUE_ATTR = "duedate";
 	private static final String AFFECTS_VERSIONS_ATTR = "versions";
 	private static final String FIX_VERSIONS_ATTR = "fixVersions";
 	private static final String COMPONENTS_ATTR = "components";
@@ -193,7 +194,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		if (shouldUseNestedValueJson) {
 			final JSONObject fieldJson = fieldsJson.optJSONObject(attributeName);
 			if (fieldJson != null) {
-				return JsonParseUtil.getOptionalString(((JSONObject) fieldJson), VALUE_ATTR); // pre 5.0 way
+				return JsonParseUtil.getOptionalString(fieldJson, VALUE_ATTR); // pre 5.0 way
 			} else {
 				return null;
 			}
@@ -235,6 +236,9 @@ public class IssueJsonParser implements JsonParser<Issue> {
 		final BasicIssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(s, ISSUE_TYPE_ATTR));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, CREATED_ATTR));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, UPDATED_ATTR));
+
+		final String dueDateString = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, DUE_ATTR);
+		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
 		final BasicPriority priority = getOptionalField(shouldUseNestedValueAttribute, s, PRIORITY_ATTR, priorityJsonParser);
 		final BasicResolution resolution = getOptionalField(shouldUseNestedValueAttribute, s, RESOLUTION_ATTR, resolutionJsonParser);
@@ -283,7 +287,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status, description, priority,
-				resolution, attachments, reporter, assignee, creationDate, updateDate, affectedVersions, fixVersions,
+                resolution, attachments, reporter, assignee, creationDate, updateDate, dueDate, affectedVersions, fixVersions,
 				components, timeTracking, fields, comments, transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
 				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
 	}
@@ -353,8 +357,10 @@ public class IssueJsonParser implements JsonParser<Issue> {
 
 	private Map<String, String> parseNames(JSONObject json) throws JSONException {
 		final HashMap<String, String> res = Maps.newHashMap();
-		for (Iterator<String> it = json.keys(); it.hasNext(); ) {
-			final String key = it.next();
+		@SuppressWarnings("unchecked")
+		final Iterator<String> iterator = json.keys();
+		while (iterator.hasNext()) {
+			final String key = iterator.next();
 			res.put(key, json.getString(key));
 		}
 		return res;

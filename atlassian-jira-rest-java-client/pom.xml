@@ -251,6 +251,15 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>jira-5.1</id>
+			<activation><activeByDefault>false</activeByDefault></activation>
+			<properties>
+				<jira.version>5.1-rc3</jira.version>
+				<jira.data.version>5.1-rc3</jira.data.version>
+				<jira.test-lib.version>5.1-rc3</jira.test-lib.version>
+			</properties>
+		</profile>
+		<profile>
 			<id>releaseProfile</id>
 			<properties>
 				<maven.test.skip>true</maven.test.skip>

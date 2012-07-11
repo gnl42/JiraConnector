@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static com.atlassian.jira.rest.client.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_4;
 import static org.junit.Assert.*;
 
@@ -41,7 +42,7 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 
 	@Test
 	public void testGetComponent() throws Exception {
-		final BasicComponent basicComponent = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
+		final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
@@ -51,7 +52,7 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testGetComponentOnJira4xOrNewerShouldContainNotNullId() throws Exception {
-		final BasicComponent basicComponent = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
+		final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf(), pm);
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
@@ -256,7 +257,7 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_4_4)
 	public void testGetComponentRelatedIssuesCount() {
-		final BasicComponent bc = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
+		final BasicComponent bc = findEntityByName(client.getProjectClient().getProject("TST", pm).getComponents(), "Component A");
 		assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf(), pm));
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
 		final Component component = client.getComponentClient().createComponent("TST", componentInput, pm);

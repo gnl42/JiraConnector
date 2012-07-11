@@ -15,6 +15,7 @@
  */
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
@@ -25,6 +26,9 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.domain.ChangelogItem;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Transition;
@@ -35,14 +39,17 @@ import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -51,12 +58,8 @@ import java.util.List;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static org.junit.Assert.*;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
@@ -274,4 +277,78 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testGetCreateIssueMetadata() throws URISyntaxException {
+		final CreateIssueMetadata cim = client
+				.getIssueClient()
+				.getCreateIssueMetadata(pm);
+
+		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
+		assertEquals(4, Iterables.size(projects));
+
+		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+			@Override
+			public boolean apply(CreateIssueMetadataProject input) {
+				return "ANONEDIT".equals(input.getKey());
+			}
+		});
+
+		assertEquals(project.getName(), "Anonymous Editable Project");
+
+		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+			assertFalse(issueType.getFields().isEmpty());
+		}
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
+		final CreateIssueMetadata cim = client
+				.getIssueClient()
+				.getCreateIssueMetadata(null, null, null, null, null, pm);
+
+		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
+		assertEquals(4, Iterables.size(projects));
+
+		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+			@Override
+			public boolean apply(CreateIssueMetadataProject input) {
+				return "ANONEDIT".equals(input.getKey());
+			}
+		});
+
+		assertEquals(project.getName(), "Anonymous Editable Project");
+		assertEquals(5, Iterables.size(project.getIssueTypes()));
+
+		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+			assertTrue(issueType.getFields().isEmpty());
+		}
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
+		final CreateIssueMetadata cim = client
+				.getIssueClient()
+				.getCreateIssueMetadata(null, Lists.newArrayList("ANONEDIT", "TST"), null, null,
+						Lists.newArrayList(IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS), pm);
+
+		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
+		assertEquals(2, Iterables.size(projects));
+
+		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+			@Override
+			public boolean apply(CreateIssueMetadataProject input) {
+				return "TST".equals(input.getKey());
+			}
+		});
+
+		assertEquals(project.getName(), "Test Project");
+		assertEquals(5, Iterables.size(project.getIssueTypes()));
+
+		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+			assertFalse(issueType.getFields().isEmpty());
+		}
+	}
 }

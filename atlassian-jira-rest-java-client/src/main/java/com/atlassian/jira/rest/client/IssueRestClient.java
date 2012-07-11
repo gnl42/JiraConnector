@@ -16,12 +16,15 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
@@ -37,6 +40,44 @@ import java.net.URI;
  * @since v0.1
  */
 public interface IssueRestClient {
+	/**
+	 * Creates new issue.
+	 *
+	 * @param issue		   populated with data to create new issue
+	 * @param progressMonitor progress monitor
+	 * @return basicIssue with generated <code>issueKey</code>
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	BasicIssue createIssue(IssueInput issue, ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves CreateIssueMetadata for all accessible projects with expanded fields.
+	 *
+	 * @param progressMonitor progress monitor
+	 * @return Create issue metadata for all accessible projects with expanded fields
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	CreateIssueMetadata getCreateIssueMetadata(ProgressMonitor progressMonitor);
+
+	/**
+	 * Retrieves CreateIssueMetadata with specified filters.
+	 *
+	 * @param projectIds List of projects Ids used to filter results. Pass <code>null</code> to ignore.
+	 * @param projectKeys List of projects keys used to filter results. Pass <code>null</code> to ignore.
+	 * @param issueTypeIds List of issue types Ids to filter results. Pass <code>null</code> to ignore.
+	 * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
+	 * @param expand List of expandos
+	 * @param progressMonitor progress monitor
+	 * @return Create issue metadata with projects and issue types filtered by given filters.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since client 1.0, server 5.0
+	 */
+	CreateIssueMetadata getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
+			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
+			ProgressMonitor progressMonitor);
+
 	/**
 	 * Retrieves issue with selected issue key.
 	 *
@@ -253,5 +294,15 @@ public interface IssueRestClient {
 	 */
 	public enum Expandos {
 		CHANGELOG, SCHEMA, NAMES, TRANSITIONS
+	}
+
+	public static enum CreateIssueMetadataExpandos {
+		PROJECT_ISSUETYPES_FIELDS("projects.issuetypes.fields");
+		
+		public final String value;
+
+		private CreateIssueMetadataExpandos(String value) {
+			this.value = value;
+		}
 	}
 }

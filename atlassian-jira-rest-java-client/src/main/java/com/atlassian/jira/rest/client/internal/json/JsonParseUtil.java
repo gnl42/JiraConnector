@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -32,6 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 public class JsonParseUtil {
 	public static final String JIRA_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
@@ -174,6 +177,23 @@ public class JsonParseUtil {
 		}
 	}
 
+	/**
+	 * Tries to parse date and time and return that. If fails then tries to parse date only.
+	 * @param str String contains either date and time or date only
+	 * @return date and time or date only
+	 */
+	public static DateTime parseDateTimeOrDate(String str) {
+		try {
+			return JIRA_DATE_TIME_FORMATTER.parseDateTime(str);
+		} catch (Exception ignored) {
+			try {
+				return JIRA_DATE_FORMATTER.parseDateTime(str);
+			} catch (Exception e) {
+				throw new RestClientException(e);
+			}
+		}
+	}
+
 	public static DateTime parseDate(String str) {
 		try {
 			return JIRA_DATE_FORMATTER.parseDateTime(str);
@@ -235,5 +255,20 @@ public class JsonParseUtil {
 	@Nullable
 	public static Long getOptionalLong(JSONObject jsonObject, String attributeName) throws JSONException {
 		return jsonObject.has(attributeName) ? jsonObject.getLong(attributeName) : null;
+	}
+	
+	public static Map<String, URI> getAvatarUris(JSONObject jsonObject) throws JSONException {
+		Map<String, URI> uris = Maps.newHashMap();
+		
+		final Iterator iterator = jsonObject.keys();
+		while (iterator.hasNext()) {
+			final Object o = iterator.next();
+			if (!(o instanceof String)) {
+				throw new JSONException("Cannot parse URIs: key is expected to be valid String. Got " + (o == null ? "null" : o.getClass()) + " instead.");
+			}
+			final String key = (String) o;
+			uris.put(key, JsonParseUtil.parseURI(jsonObject.getString(key)));
+		}
+		return uris;
 	}
 }

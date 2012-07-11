@@ -20,6 +20,7 @@ import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
@@ -200,7 +201,7 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1"));
 		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1", "1.1"));
 
-		final Version version1 = TestUtil.findEntityByName(client.getProjectClient().getProject("TST", pm).getVersions(), "1");
+		final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST", pm).getVersions(), "1");
 
 		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
 		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");

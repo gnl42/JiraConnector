@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,21 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 /**
- * TODO: Document this class / interface here
- *
- * @since v0.1
- */
-public class CommentInput {
-	
+* @since v1.0
+*/
+public class CannotTransformValueException extends Exception {
+	public CannotTransformValueException() {
+	}
+
+	public CannotTransformValueException(String message) {
+		super(message);
+	}
+
+	public CannotTransformValueException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public CannotTransformValueException(Throwable cause) {
+		super(cause);
+	}
 }

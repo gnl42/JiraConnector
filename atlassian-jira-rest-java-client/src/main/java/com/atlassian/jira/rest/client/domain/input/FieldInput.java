@@ -16,12 +16,15 @@
 
 package com.atlassian.jira.rest.client.domain.input;
 
+import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.google.common.base.Objects;
+
 /**
- * New value fo selected field - used while changing issue fields - e.g. while transitioning issue. 
+ * New value for selected field - used while changing issue fields - e.g. while transitioning issue.
  *
  * @since v0.1
  */
-public class FieldInput {
+public class FieldInput implements IdentifiedEntity<String> {
 	private final String id;
 	private final Object value;
 
@@ -46,5 +49,28 @@ public class FieldInput {
 	 */
 	public Object getValue() {
 		return value;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id, value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof FieldInput) {
+			final FieldInput other = (FieldInput) obj;
+			return Objects.equal(this.id, other.id)
+					&& Objects.equal(this.value, other.value);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("id", id)
+				.add("value", value)
+				.toString();
 	}
 }
