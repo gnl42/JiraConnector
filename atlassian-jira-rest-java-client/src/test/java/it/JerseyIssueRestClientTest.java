@@ -698,7 +698,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// grab the first component
-		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMMENT_FIELD).getAllowedValues();
+		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
 		assertNotNull(allowedValuesForComponents);
 		assertTrue(allowedValuesForComponents.iterator().hasNext());
 		final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
