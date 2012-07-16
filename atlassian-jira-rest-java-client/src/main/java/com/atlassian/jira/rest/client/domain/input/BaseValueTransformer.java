@@ -21,18 +21,15 @@ import com.atlassian.jira.rest.client.NamedEntity;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 /**
 * Transforms most of standard fields values into form understandable by input generator.
 *
 * @since v1.0
 */
-public class BaseChainedValueTransformer extends AbstractChainedValueTransformer {
+public class BaseValueTransformer implements ValueTransformer {
 
-	public Object transformValue(Object rawValue) throws CannotTransformValueException {
+	public Object apply(Object rawValue) {
 		if (rawValue == null) {
 			return null;
 		}
@@ -41,13 +38,6 @@ public class BaseChainedValueTransformer extends AbstractChainedValueTransformer
 		}
 		else if (rawValue instanceof String) {
 			return rawValue;
-		}
-		else if (rawValue instanceof Iterable) {
-			List<Object> result = Lists.newArrayList();
-			for (Object valueItem : (Iterable) rawValue) {
-				result.add(transformValue(valueItem));
-			}
-			return result;
 		}
 		else if (rawValue instanceof BasicProject) {
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("key", ((BasicProject) rawValue).getKey()));
@@ -65,7 +55,7 @@ public class BaseChainedValueTransformer extends AbstractChainedValueTransformer
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("name", namedEntity.getName()));
 		}
 
-		return passToNextTransformer(rawValue);
+		return CANNOT_HANDLE;
 	}
 
 }

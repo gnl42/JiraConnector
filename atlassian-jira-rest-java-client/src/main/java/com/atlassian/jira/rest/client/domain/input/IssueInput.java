@@ -16,38 +16,24 @@
 
 package com.atlassian.jira.rest.client.domain.input;
 
+import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
 
 /**
- * Represents JIRA issue
+ * Represents new JIRA issue
  *
  * @since v1.0
  */
 public class IssueInput {
 
-	public static final String SUMMARY_FIELD = "summary";
-	public static final String PROJECT_FIELD = "project";
-	public static final String ISSUE_TYPE_FIELD = "issuetype";
-	public static final String DESCRIPTION_FIELD = "description";
-	public static final String ASSIGNEE_FIELD = "assignee";
-	public static final String VERSIONS_FIELD = "versions";
-	public static final String COMPONENTS_FIELD = "components";
-	public static final String DUE_DATE_FIELD = "duedate";
-	public static final String FIX_VERSIONS_FIELD = "fixVersions";
-	public static final String PRIORITY_FIELD = "priority";
-	public static final String REPORTER_FIELD = "reporter";
-
 	private final Map<String, FieldInput> fields;
 
 	public static IssueInput createWithFields(FieldInput ... fields) {
-		final Map<String, FieldInput> fieldsMap = Maps.newHashMapWithExpectedSize(fields.length);
-		for (FieldInput fi : fields) {
-			fieldsMap.put(fi.getId(), fi);
-		}
-		return new IssueInput(fieldsMap);
+		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION));
 	}
 
 	public IssueInput(Map<String, FieldInput> fields) {
@@ -58,6 +44,7 @@ public class IssueInput {
 		return fields;
 	}
 
+	@SuppressWarnings("unused")
 	public FieldInput getField(String id) {
 		return fields.get(id);
 	}

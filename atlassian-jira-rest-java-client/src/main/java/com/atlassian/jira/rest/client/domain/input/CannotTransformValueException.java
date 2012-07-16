@@ -17,9 +17,13 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 /**
+ * This exception is thrown by ValueTransformerManager when there is not transformer that can transform given value.
+ *
 * @since v1.0
 */
-public class CannotTransformValueException extends Exception {
+public class CannotTransformValueException extends RuntimeException {
+
+	@SuppressWarnings("unused")
 	public CannotTransformValueException() {
 	}
 
@@ -27,10 +31,12 @@ public class CannotTransformValueException extends Exception {
 		super(message);
 	}
 
+	@SuppressWarnings("unused")
 	public CannotTransformValueException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	@SuppressWarnings("unused")
 	public CannotTransformValueException(Throwable cause) {
 		super(cause);
 	}

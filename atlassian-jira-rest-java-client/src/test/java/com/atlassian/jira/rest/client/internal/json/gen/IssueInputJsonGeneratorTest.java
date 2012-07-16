@@ -16,10 +16,14 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
+import com.atlassian.jira.rest.client.JSONObjectMatcher;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -43,8 +47,29 @@ public class IssueInputJsonGeneratorTest {
 						"complex", ComplexIssueInputFieldValue.with("test", "id")
 				)))
 		);
-		final String expected = "{\"fields\":{\"complex\":{\"string\":\"string\",\"integer\":\"1\",\"long\":\"1\",\"complex\":{\"test\":\"id\"}},\"integer\":\"1\",\"string\":\"String value\",\"long\":\"1\"}}";
-		final String actual = generator.generate(issueInput).toString();
-		assertEquals(expected, actual);
+
+		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/valid.json");
+		final JSONObject actual = generator.generate(issueInput);
+		assertThat(expected, JSONObjectMatcher.isEqual(actual));
+	}
+
+	@Test
+	public void testGenerateWithEmptyInput() throws Exception {
+		final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
+		final IssueInput issueInput = new IssueInput(Maps.<String, FieldInput>newHashMap());
+
+		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
+		final JSONObject actual = generator.generate(issueInput);
+		assertThat(expected, JSONObjectMatcher.isEqual(actual));
+	}
+
+	@Test
+	public void testGenerateWithNullInput() throws Exception {
+		final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
+		final IssueInput issueInput = null;
+
+		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
+		final JSONObject actual = generator.generate(issueInput);
+		assertThat(expected, JSONObjectMatcher.isEqual(actual));
 	}
 }

@@ -28,7 +28,7 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class CreateIssueMetadataJsonParser implements JsonParser<CreateIssueMetadata>{
 
-	private GenericJsonArrayParser<CreateIssueMetadataProject> projectsParser = new GenericJsonArrayParser<CreateIssueMetadataProject>(new CreateIssueMetadataProjectJsonParser());
+	private final GenericJsonArrayParser<CreateIssueMetadataProject> projectsParser = new GenericJsonArrayParser<CreateIssueMetadataProject>(new CreateIssueMetadataProjectJsonParser());
 
 	@Override
 	public CreateIssueMetadata parse(final JSONObject json) throws JSONException {

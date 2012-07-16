@@ -40,12 +40,7 @@ public class JsonParseUtil {
 	public static final String JIRA_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	public static final DateTimeFormatter JIRA_DATE_TIME_FORMATTER = DateTimeFormat.forPattern(JIRA_DATE_TIME_PATTERN);
 	public static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
-    public static final String VALUE_KEY = "value";
 	public static final String SELF_ATTR = "self";
-
-//	public interface ExpandablePropertyBuilder<T> {
-//		T parse(JSONObject json) throws JSONException;
-//	}
 
     public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonParser<T> jsonParser) throws JSONException {
         final Collection<T> res = new ArrayList<T>(jsonArray.length());
@@ -80,6 +75,7 @@ public class JsonParseUtil {
 		return parseURI(jsonObject.getString(SELF_ATTR));
 	}
 
+	@SuppressWarnings("unused")
 	public static JSONObject getNestedObject(JSONObject json, String... path) throws JSONException {
 		for (String s : path) {
 			json = json.getJSONObject(s);
@@ -96,7 +92,7 @@ public class JsonParseUtil {
         return json.optJSONObject(path[path.length - 1]);
     }
 
-
+	@SuppressWarnings("unused")
 	public static JSONArray getNestedArray(JSONObject json, String... path) throws JSONException {
 		for (int i = 0; i < path.length - 1; i++) {
 			String s = path[i];
@@ -123,6 +119,7 @@ public class JsonParseUtil {
 		return json.getString(path[path.length - 1]);
 	}
 
+	@SuppressWarnings("unused")
     public static boolean getNestedBoolean(JSONObject json, String... path) throws JSONException {
 
         for (int i = 0; i < path.length - 1; i++) {
@@ -206,6 +203,7 @@ public class JsonParseUtil {
 		return JIRA_DATE_FORMATTER.print(dateTime);
 	}
 
+	@SuppressWarnings("unused")
 	public static String formatDateTime(DateTime dateTime) {
 		return JIRA_DATE_TIME_FORMATTER.print(dateTime);
 	}
@@ -230,6 +228,7 @@ public class JsonParseUtil {
 		return res.toString();
     }
 
+	@SuppressWarnings("unused")
 	@Nullable
 	public static JSONObject getOptionalJsonObject(JSONObject jsonObject, String attributeName) {
 		final JSONObject res = jsonObject.optJSONObject(attributeName);
@@ -270,5 +269,10 @@ public class JsonParseUtil {
 			uris.put(key, JsonParseUtil.parseURI(jsonObject.getString(key)));
 		}
 		return uris;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Iterator<String> getStringKeys(JSONObject json) {
+		return json.keys();
 	}
 }

@@ -23,6 +23,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Json Generator for IssueInput
+ *
  * @since 1.0
  */
 public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
@@ -34,9 +35,11 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
 		final JSONObject jsonObject = new JSONObject();
 		final JSONObject fields = new JSONObject();
 
-		for (final FieldInput field : issue.getFields().values()) {
-			if (field.getValue() != null) {
-				fields.put(field.getId(), complexIssueInputFieldValueJsonGenerator.generateFieldValueForJson(field.getValue()));
+		if (issue != null && issue.getFields() != null) {
+			for (final FieldInput field : issue.getFields().values()) {
+				if (field.getValue() != null) {
+					fields.put(field.getId(), complexIssueInputFieldValueJsonGenerator.generateFieldValueForJson(field.getValue()));
+				}
 			}
 		}
 

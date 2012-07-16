@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.google.common.base.Objects;
 
 /**
@@ -34,6 +35,15 @@ public class FieldInput implements IdentifiedEntity<String> {
 	 */
 	public FieldInput(String id, Object value) {
 		this.id = id;
+		this.value = value;
+	}
+
+	/**
+	 * @param field issue field
+	 * @param value new value for this issue field
+	 */
+	public FieldInput(IssueFieldId field, Object value) {
+		this.id = field.id;
 		this.value = value;
 	}
 

@@ -40,6 +40,10 @@ public class CreateIssueIssueType extends IssueType {
 		return fields;
 	}
 
+	public CreateIssueFieldInfo getField(IssueFieldId fieldId) {
+		return fields.get(fieldId.id);
+	}
+
 	/**
 	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
 	 * @return ToStringHelper

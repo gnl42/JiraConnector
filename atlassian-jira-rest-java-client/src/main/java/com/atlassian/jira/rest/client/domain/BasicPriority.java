@@ -46,9 +46,6 @@ public class BasicPriority extends AddressableNamedEntity implements IdentifiedE
 		return id;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected Objects.ToStringHelper getToStringHelper() {
 		return super.getToStringHelper().add("id", id);

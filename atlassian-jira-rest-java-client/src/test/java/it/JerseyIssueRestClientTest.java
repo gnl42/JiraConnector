@@ -37,6 +37,7 @@ import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.domain.Transition;
@@ -697,13 +698,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// grab the first component
-		final Iterable<Object> allowedValuesForComponents = issueType.getFields().get(IssueInput.COMPONENTS_FIELD).getAllowedValues();
+		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMMENT_FIELD).getAllowedValues();
 		assertNotNull(allowedValuesForComponents);
 		assertTrue(allowedValuesForComponents.iterator().hasNext());
 		final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 		
 		// grab the first priority
-		final Iterable<Object> allowedValuesForPriority = issueType.getFields().get(IssueInput.PRIORITY_FIELD).getAllowedValues();
+		final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
 		assertNotNull(allowedValuesForPriority);
 		assertTrue(allowedValuesForPriority.iterator().hasNext());
 		final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();

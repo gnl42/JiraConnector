@@ -21,8 +21,10 @@ import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import com.atlassian.jira.rest.client.internal.json.gen.ComplexIssueInputFieldValueJsonGenerator;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -34,12 +36,15 @@ import java.util.Map;
 import static com.atlassian.jira.rest.client.domain.EntityHelper.toNamesList;
 
 /**
- * Builder for IssueInput class.
+ * Builder for IssueInput class.  
+ *
  * @since 1.0
  */
 public class IssueInputBuilder {
 
-	private ChainedValueTransformer valueTransformer = new BaseChainedValueTransformer();
+	private final ValueTransformerManager valueTransformerManager = new ValueTransformerManager()
+			.registerTransformer(new BaseValueTransformer());
+
 	private Map<String, FieldInput> fields = Maps.newHashMap();
 
 	public IssueInputBuilder(String projectKey, Long issueTypeId) {
@@ -52,21 +57,33 @@ public class IssueInputBuilder {
 		setIssueType(issueType);
 	}
 
+	@SuppressWarnings("unused")
+	public IssueInputBuilder(String projectKey, Long issueTypeId, String summary) {
+		this(projectKey, issueTypeId);
+		setSummary(summary);
+	}
+
+	@SuppressWarnings("unused")
+	public IssueInputBuilder(BasicProject project, BasicIssueType issueType, String summary) {
+		this(project, issueType);
+		setSummary(summary);
+	}
+
 	public IssueInputBuilder setSummary(String summary) {
-		return setFieldInput(new FieldInput(IssueInput.SUMMARY_FIELD, summary));
+		return setFieldInput(new FieldInput(IssueFieldId.SUMMARY_FIELD, summary));
 	}
 
 	public IssueInputBuilder setProjectKey(String projectKey) {
-		return setFieldInput(new FieldInput(IssueInput.PROJECT_FIELD, ComplexIssueInputFieldValue.with("key", projectKey)));
+		return setFieldInput(new FieldInput(IssueFieldId.PROJECT_FIELD, ComplexIssueInputFieldValue.with("key", projectKey)));
 	}
-	
+
 	public IssueInputBuilder setProject(BasicProject project) {
 		return setProjectKey(project.getKey());
 	}
 
 	public IssueInputBuilder setIssueTypeId(Long issueTypeId) {
 		return setFieldInput(new FieldInput(
-				IssueInput.ISSUE_TYPE_FIELD,
+				IssueFieldId.ISSUE_TYPE_FIELD,
 				ComplexIssueInputFieldValue.with("id", issueTypeId.toString())
 		));
 	}
@@ -76,7 +93,10 @@ public class IssueInputBuilder {
 	}
 
 	/**
-	 * Puts given FieldInput into fields collection. <strong>Use this method only when you are sure what you are doing.</strong>
+	 * Puts given FieldInput into fields collection. <strong><br/>
+	 * <strong>Use this method only when you are sure what you are doing</strong> - value given in {@link FieldInput} must be
+	 * understandable by {@link ComplexIssueInputFieldValueJsonGenerator#generateFieldValueForJson(Object)}.<br/>
+	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *
 	 * @param fieldInput FieldInput to insert.
@@ -88,31 +108,35 @@ public class IssueInputBuilder {
 	}
 
 	/**
-	 * Puts new FieldInput with given id and value into fields collection.
-	 * <strong>Use this method only when you are sure what you are doing.</strong>
+	 * Puts new {@link FieldInput} with given id and value into fields collection.<br/>
+	 * <strong>Use this method only when you are sure what you are doing</strong> - value given in {@link FieldInput} must be
+	 * understandable by {@link ComplexIssueInputFieldValueJsonGenerator#generateFieldValueForJson(Object)}.<br/>
+	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *
-	 * @param id Field's id
+	 * @param id	Field's id
 	 * @param value Complex value for field
 	 * @return this
 	 */
+	@SuppressWarnings("unused")
 	public IssueInputBuilder setFieldValue(String id, ComplexIssueInputFieldValue value) {
 		return setFieldInput(new FieldInput(id, value));
 	}
 
 	/**
 	 * Sets value of field. This method transforms given value to one of understandable by input generator.
-	 * @param id Field's id
+	 *
+	 * @param id	Field's id
 	 * @param value Field's value
 	 * @return this
 	 * @throws CannotTransformValueException When transformer cannot transform given value
 	 */
 	public IssueInputBuilder setFieldValue(String id, Object value) throws CannotTransformValueException {
-		return setFieldInput(new FieldInput(id, valueTransformer.transformValue(value)));
+		return setFieldInput(new FieldInput(id, valueTransformerManager.apply(value)));
 	}
 
 	public IssueInputBuilder setDescription(String summary) {
-		return setFieldInput(new FieldInput(IssueInput.DESCRIPTION_FIELD, summary));
+		return setFieldInput(new FieldInput(IssueFieldId.DESCRIPTION_FIELD, summary));
 	}
 
 	public IssueInputBuilder setAssignee(BasicUser assignee) {
@@ -120,41 +144,43 @@ public class IssueInputBuilder {
 	}
 
 	public IssueInputBuilder setAssigneeName(String assignee) {
-		return setFieldInput(new FieldInput(IssueInput.ASSIGNEE_FIELD, ComplexIssueInputFieldValue.with("name", assignee)));
+		return setFieldInput(new FieldInput(IssueFieldId.ASSIGNEE_FIELD, ComplexIssueInputFieldValue.with("name", assignee)));
 	}
 
 	public IssueInput build() {
 		return new IssueInput(fields);
 	}
-	
+
+	@SuppressWarnings("unused")
 	public IssueInputBuilder setAffectedVersions(Iterable<Version> versions) {
 		return setAffectedVersionsNames(toNamesList(versions));
 	}
 
 	public IssueInputBuilder setAffectedVersionsNames(Iterable<String> names) {
-		return setFieldInput(new FieldInput(IssueInput.VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
+		return setFieldInput(new FieldInput(IssueFieldId.AFFECTS_VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
 	}
 
 	public IssueInputBuilder setComponentsNames(Iterable<String> names) {
-		return setFieldInput(new FieldInput(IssueInput.COMPONENTS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
+		return setFieldInput(new FieldInput(IssueFieldId.COMPONENTS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
 	}
 
 	public IssueInputBuilder setComponents(Iterable<BasicComponent> basicComponents) {
 		return setComponentsNames(toNamesList(basicComponents));
 	}
 
-	public IssueInputBuilder setComponents(BasicComponent ... basicComponents) {
+	public IssueInputBuilder setComponents(BasicComponent... basicComponents) {
 		return setComponents(Lists.newArrayList(basicComponents));
 	}
 
 	public IssueInputBuilder setDueDate(DateTime date) {
-		return setFieldInput(new FieldInput(IssueInput.DUE_DATE_FIELD, JsonParseUtil.formatDate(date)));
+		return setFieldInput(new FieldInput(IssueFieldId.DUE_DATE_FIELD, JsonParseUtil.formatDate(date)));
 	}
 
 	public IssueInputBuilder setFixVersionsNames(Iterable<String> names) {
-		return setFieldInput(new FieldInput(IssueInput.FIX_VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
+		return setFieldInput(new FieldInput(IssueFieldId.FIX_VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
 	}
 
+	@SuppressWarnings("unused")
 	public IssueInputBuilder setFixVersions(Iterable<Version> versions) {
 		return setFixVersionsNames(toNamesList(versions));
 	}
@@ -164,7 +190,7 @@ public class IssueInputBuilder {
 	}
 
 	public IssueInputBuilder setPriorityId(Long id) {
-		return setFieldInput(new FieldInput(IssueInput.PRIORITY_FIELD, ComplexIssueInputFieldValue.with("id", id.toString())));
+		return setFieldInput(new FieldInput(IssueFieldId.PRIORITY_FIELD, ComplexIssueInputFieldValue.with("id", id.toString())));
 	}
 
 	public IssueInputBuilder setReporter(BasicUser reporter) {
@@ -172,28 +198,18 @@ public class IssueInputBuilder {
 	}
 
 	public IssueInputBuilder setReporterName(String reporterName) {
-		return setFieldInput(new FieldInput(IssueInput.REPORTER_FIELD, ComplexIssueInputFieldValue.with("name", reporterName)));
+		return setFieldInput(new FieldInput(IssueFieldId.REPORTER_FIELD, ComplexIssueInputFieldValue.with("name", reporterName)));
 	}
 
 	/**
-	 * Registers new Chained Value Transformer. It will be used if existing transformers fails to transform value.
-	 * @param transformer Transformer to add
-	 * @return this
+	 * This method returns value transformer manager used to transform values by {@link IssueInputBuilder#setFieldValue(String, Object)}.
+	 * You may use this manager if you want register new custom transformer.
+	 *
+	 * @return value transformer manager
 	 */
-	public IssueInputBuilder addValueTransformerToChainEnd(ChainedValueTransformer transformer) {
-		valueTransformer.addTransformerToChainEnd(transformer);
-		return this;
-	}
-
-	/**
-	 * Registers new Chained Value Transformer. It will be used before existing transformers.
-	 * @param transformer Transformer to add
-	 * @return this
-	 */
-	public IssueInputBuilder addValueTransformerToChainStart(ChainedValueTransformer transformer) {
-		transformer.addTransformerToChainEnd(valueTransformer);
-		valueTransformer = transformer;
-		return this;
+	@SuppressWarnings("UnusedDeclaration")
+	public ValueTransformerManager getValueTransformerManager() {
+		return valueTransformerManager;
 	}
 
 	private <T> Iterable<ComplexIssueInputFieldValue> toListOfComplexIssueInputFieldValueWithSingleKey(final Iterable<T> items, final String key) {

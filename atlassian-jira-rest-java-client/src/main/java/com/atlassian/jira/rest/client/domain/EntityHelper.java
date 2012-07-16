@@ -29,6 +29,13 @@ import com.google.common.collect.Iterables;
  */
 public class EntityHelper {
 
+	public static Function<IdentifiedEntity<String>,String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiedEntity<String>, String>() {
+		@Override
+		public String apply(IdentifiedEntity<String> entity) {
+			return entity.getId();
+		}
+	};
+
 	public static Iterable<String> toNamesList(Iterable<? extends NamedEntity> items) {
 		return Iterables.transform(items, new Function<NamedEntity, String>() {
 			@Override
@@ -38,6 +45,7 @@ public class EntityHelper {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	public static <T> Iterable<String> toStringIdList(Iterable<IdentifiedEntity<T>> items) {
 		return Iterables.transform(items, new Function<IdentifiedEntity<T>, String>() {
 			@Override
@@ -51,6 +59,7 @@ public class EntityHelper {
 		return Iterables.find(entities, HasNamePredicate.forName(name));
 	}
 
+	@SuppressWarnings("unused")
 	public static <T extends IdentifiedEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
 		return Iterables.find(entities, HasIdPredicate.forId(id));
 	}
