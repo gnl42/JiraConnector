@@ -100,6 +100,8 @@ import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_U
 import static org.junit.Assert.*;
 
 
+// Ignore "May produce NPE" warnings, as we know what we are doing in tests
+@SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
@@ -108,7 +110,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final double newValue = 123.45;
 		final FieldInput fieldInput;
 		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
-			fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, Double.valueOf(newValue));
+			fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
 		} else {
 			fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, NumberFormat.getNumberInstance(new Locale("pl")).format(newValue));
 		}
@@ -392,19 +394,31 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
-	//@Test restore when JRADEV-3666 is fixed (I don't want to pollute JRJC integration test results)
-	public void xtestAddWatcherWhoDoesNotHaveViewIssuePermissions() {
+	@Test
+	public void testAddWatcherWhoDoesNotHaveViewIssuePermissions() {
 		final IssueRestClient issueClient = client.getIssueClient();
-		final Issue issue1 = issueClient.getIssue("RST-1", pm);
-		assertErrorCode(Response.Status.BAD_REQUEST, "The user \"" + USER2_USERNAME
-				+ "\" does not have permission to view this issue. This user will not be added to the watch list.",
+		final String issueKey = "RST-1";
+		final Issue issue1 = issueClient.getIssue(issueKey, pm);
+		final String expectedErrorMessage;
+
+		if (isJira5xOrNewer()) {
+			expectedErrorMessage = "The user \"" + USER2_USERNAME +"\" does not have permission to view this issue."
+					+ " This user will not be added to the watch list.";
+		}
+		else if (isJira4x3OrNewer()) {
+				expectedErrorMessage = "User '" + ADMIN_USERNAME + "' is not allowed to add watchers to issue '" + issueKey + "'";
+		}
+		else {
+				expectedErrorMessage = "com.sun.jersey.api.client.UniformInterfaceException: Client response status: 401";
+		}
+
+		assertErrorCode(Response.Status.UNAUTHORIZED, expectedErrorMessage,
 				new Runnable() {
 					@Override
 					public void run() {
 						issueClient.addWatcher(issue1.getWatchers().getSelf(), USER2_USERNAME, pm);
 					}
 				});
-
 	}
 
 	@Test
