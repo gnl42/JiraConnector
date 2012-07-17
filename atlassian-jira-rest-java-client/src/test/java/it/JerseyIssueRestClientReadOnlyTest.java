@@ -26,9 +26,9 @@ import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.domain.ChangelogItem;
+import com.atlassian.jira.rest.client.domain.CimIssueType;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.Transition;
@@ -280,22 +280,22 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadata() throws URISyntaxException {
-		final Iterable<CreateIssueMetadataProject> metadataProjects = client
+		final Iterable<CimProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(), pm);
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
+		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
-			public boolean apply(CreateIssueMetadataProject input) {
+			public boolean apply(CimProject input) {
 				return "ANONEDIT".equals(input.getKey());
 			}
 		});
 
 		assertEquals(project.getName(), "Anonymous Editable Project");
 
-		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields().isEmpty());
 		}
 	}
@@ -303,15 +303,15 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
-		final Iterable<CreateIssueMetadataProject> metadataProjects = client
+		final Iterable<CimProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(null, pm);
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
+		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
-			public boolean apply(CreateIssueMetadataProject input) {
+			public boolean apply(CimProject input) {
 				return "ANONEDIT".equals(input.getKey());
 			}
 		});
@@ -319,7 +319,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertEquals(project.getName(), "Anonymous Editable Project");
 		assertEquals(5, Iterables.size(project.getIssueTypes()));
 
-		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertTrue(issueType.getFields().isEmpty());
 		}
 	}
@@ -327,7 +327,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
-		final Iterable<CreateIssueMetadataProject> metadataProjects = client
+		final Iterable<CimProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(
 						new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("ANONEDIT", "TST").withExpandedIssueTypesFields().build(),
@@ -336,9 +336,9 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 
 		assertEquals(2, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
+		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
-			public boolean apply(CreateIssueMetadataProject input) {
+			public boolean apply(CimProject input) {
 				return "TST".equals(input.getKey());
 			}
 		});
@@ -346,7 +346,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertEquals(project.getName(), "Test Project");
 		assertEquals(5, Iterables.size(project.getIssueTypes()));
 
-		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
+		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertFalse(issueType.getFields().isEmpty());
 		}
 	}

@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.BasicIssue;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Votes;
@@ -57,11 +57,11 @@ public interface IssueRestClient {
 	 *
 	 * @param options		  optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.
 	 * @param progressMonitor progress monitor
-	 * @return List of {@link CreateIssueMetadataProject} describing projects, issue types and fields.
+	 * @return List of {@link CimProject} describing projects, issue types and fields.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
 	 */
-	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options, ProgressMonitor progressMonitor);
+	Iterable<CimProject> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options, ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves issue with selected issue key.

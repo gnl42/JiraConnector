@@ -16,6 +16,9 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
+import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -23,24 +26,25 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * Describes issue type with fields info map.
+ * Describes issue type with fields info map.<br/>
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
  *
  * @since v1.0
  */
-public class CreateIssueIssueType extends IssueType {
+public class CimIssueType extends IssueType {
 
-	private final Map<String, CreateIssueFieldInfo> fields;
+	private final Map<String, CimFieldInfo> fields;
 
-	public CreateIssueIssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri, Map<String, CreateIssueFieldInfo> fields) {
+	public CimIssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri, Map<String, CimFieldInfo> fields) {
 		super(self, id, name, isSubtask, description, iconUri);
 		this.fields = fields;
 	}
 
-	public Map<String, CreateIssueFieldInfo> getFields() {
+	public Map<String, CimFieldInfo> getFields() {
 		return fields;
 	}
 
-	public CreateIssueFieldInfo getField(IssueFieldId fieldId) {
+	public CimFieldInfo getField(IssueFieldId fieldId) {
 		return fields.get(fieldId.id);
 	}
 
@@ -55,8 +59,8 @@ public class CreateIssueIssueType extends IssueType {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CreateIssueIssueType) {
-			CreateIssueIssueType that = (CreateIssueIssueType) obj;
+		if (obj instanceof CimIssueType) {
+			CimIssueType that = (CimIssueType) obj;
 			return super.equals(obj)
 					&& Objects.equal(this.fields, that.fields);
 		}

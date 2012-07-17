@@ -16,28 +16,32 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
+import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.google.common.base.Objects;
 
 import java.net.URI;
 import java.util.Map;
 
 /**
- * Represents project returned by /issue/createmeta action.
+ * Represents project allowed to choose to create new issue. Also contains issue types allowed for that project described by {@link CimIssueType} class.<br/>
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
  *
  * @since v1.0
  */
-public class CreateIssueMetadataProject extends BasicProject {
+public class CimProject extends BasicProject {
 
 	private final Map<String, URI> avatarUris;
-	private final Iterable<CreateIssueIssueType> issueTypes;
+	private final Iterable<CimIssueType> issueTypes;
 
-	public CreateIssueMetadataProject(URI self, String key, String name, Map<String, URI> avatarUris, Iterable<CreateIssueIssueType> issueTypes) {
+	public CimProject(URI self, String key, String name, Map<String, URI> avatarUris, Iterable<CimIssueType> issueTypes) {
 		super(self, key, name);
 		this.avatarUris = avatarUris;
 		this.issueTypes = issueTypes;
 	}
 
-	public Iterable<CreateIssueIssueType> getIssueTypes() {
+	public Iterable<CimIssueType> getIssueTypes() {
 		return issueTypes;
 	}
 
@@ -62,8 +66,8 @@ public class CreateIssueMetadataProject extends BasicProject {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CreateIssueMetadataProject) {
-			CreateIssueMetadataProject that = (CreateIssueMetadataProject) obj;
+		if (obj instanceof CimProject) {
+			CimProject that = (CimProject) obj;
 			return super.equals(obj)
 					&& Objects.equal(this.avatarUris, that.avatarUris)
 					&& Objects.equal(this.issueTypes, that.issueTypes);

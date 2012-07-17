@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -25,12 +25,12 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @since v1.0
  */
-public class CreateIssueMetadataJsonParser implements JsonParser<Iterable<CreateIssueMetadataProject>>{
+public class CreateIssueMetadataJsonParser implements JsonParser<Iterable<CimProject>>{
 
-	private final GenericJsonArrayParser<CreateIssueMetadataProject> projectsParser = new GenericJsonArrayParser<CreateIssueMetadataProject>(new CreateIssueMetadataProjectJsonParser());
+	private final GenericJsonArrayParser<CimProject> projectsParser = new GenericJsonArrayParser<CimProject>(new CimProjectJsonParser());
 
 	@Override
-	public Iterable<CreateIssueMetadataProject> parse(final JSONObject json) throws JSONException {
+	public Iterable<CimProject> parse(final JSONObject json) throws JSONException {
 		return projectsParser.parse(json.getJSONArray("projects"));
 	}
 }

@@ -16,8 +16,11 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.NamedEntity;
+import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.internal.json.StandardOperation;
 import com.atlassian.jira.rest.client.internal.json.FieldSchema;
 import com.google.common.base.Objects;
@@ -27,11 +30,12 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * Contains information about field in IssueType.
+ * Contains information about field in IssueType.<br/>
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
  *
  * @since v1.0
  */
-public class CreateIssueFieldInfo implements NamedEntity, IdentifiedEntity<String> {
+public class CimFieldInfo implements NamedEntity, IdentifiedEntity<String> {
 
 	private final String id;
 	private final boolean required;
@@ -45,8 +49,8 @@ public class CreateIssueFieldInfo implements NamedEntity, IdentifiedEntity<Strin
 	private final URI autoCompleteUri;
 
 
-	public CreateIssueFieldInfo(String id, boolean required, @Nullable String name, FieldSchema schema,
-			Set<StandardOperation> operations, 	@Nullable Iterable<Object> allowedValues, @Nullable URI autoCompleteUri) {
+	public CimFieldInfo(String id, boolean required, @Nullable String name, FieldSchema schema,
+			Set<StandardOperation> operations, @Nullable Iterable<Object> allowedValues, @Nullable URI autoCompleteUri) {
 		this.id = id;
 		this.required = required;
 		this.name = name;
@@ -82,6 +86,7 @@ public class CreateIssueFieldInfo implements NamedEntity, IdentifiedEntity<Strin
 		return allowedValues;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	@Nullable
 	public URI getAutoCompleteUri() {
 		return autoCompleteUri;
@@ -111,8 +116,8 @@ public class CreateIssueFieldInfo implements NamedEntity, IdentifiedEntity<Strin
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CreateIssueFieldInfo) {
-			CreateIssueFieldInfo that = (CreateIssueFieldInfo) obj;
+		if (obj instanceof CimFieldInfo) {
+			CimFieldInfo that = (CimFieldInfo) obj;
 			return Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.required, that.required)

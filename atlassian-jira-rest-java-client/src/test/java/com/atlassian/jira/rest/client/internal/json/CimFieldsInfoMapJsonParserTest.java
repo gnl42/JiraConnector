@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
+import com.atlassian.jira.rest.client.domain.CimFieldInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
@@ -28,12 +28,12 @@ import static org.junit.Assert.*;
 /**
  * @since v1.0
  */
-public class CreateIssueFieldsInfoMapJsonParserTest {
+public class CimFieldsInfoMapJsonParserTest {
 
 	@Test
 	public void testParseWithArrayOfArrayAllowedValuesBug() throws JSONException {
-		final CreateIssueFieldsInfoMapJsonParser parser = new CreateIssueFieldsInfoMapJsonParser();
-		final Map<String, CreateIssueFieldInfo> fieldsInfo = parser.parse(
+		final CimFieldsInfoMapJsonParser parser = new CimFieldsInfoMapJsonParser();
+		final Map<String, CimFieldInfo> fieldsInfo = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug.json")
 		);
 
@@ -44,8 +44,8 @@ public class CreateIssueFieldsInfoMapJsonParserTest {
 
 	@Test
 	public void testParseWithArrayOfArrayAllowedValuesBugFixed() throws JSONException {
-		final CreateIssueFieldsInfoMapJsonParser parser = new CreateIssueFieldsInfoMapJsonParser();
-		final Map<String, CreateIssueFieldInfo> fieldsInfo = parser.parse(
+		final CimFieldsInfoMapJsonParser parser = new CimFieldsInfoMapJsonParser();
+		final Map<String, CimFieldInfo> fieldsInfo = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug-fixed.json")
 		);
 

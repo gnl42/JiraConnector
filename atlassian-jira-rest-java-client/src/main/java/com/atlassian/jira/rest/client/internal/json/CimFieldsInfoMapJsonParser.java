@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
+import com.atlassian.jira.rest.client.domain.CimFieldInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -34,10 +34,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * JSON parser that produces Map of String => CreateIssueFieldInfo
+ * JSON parser that produces Map of String => CimFieldInfo
  * @since v1.0
  */
-public class CreateIssueFieldsInfoMapJsonParser implements JsonParser<Map<String, CreateIssueFieldInfo>> {
+public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFieldInfo>> {
 
 	private final FieldSchemaJsonParser fieldSchemaJsonParser = new FieldSchemaJsonParser();
 
@@ -51,8 +51,8 @@ public class CreateIssueFieldsInfoMapJsonParser implements JsonParser<Map<String
 	}};
 
 	@Override
-	public Map<String, CreateIssueFieldInfo> parse(JSONObject json) throws JSONException {
-		final Map<String, CreateIssueFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
+	public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException {
+		final Map<String, CimFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
 		final Iterator keysIterator = json.keys();
 		while (keysIterator.hasNext()) {
 			final String id = (String) keysIterator.next();
@@ -61,7 +61,7 @@ public class CreateIssueFieldsInfoMapJsonParser implements JsonParser<Map<String
 		return res;
 	}
 
-	private CreateIssueFieldInfo parseIssueFieldInfo(JSONObject json, String id) throws JSONException {
+	private CimFieldInfo parseIssueFieldInfo(JSONObject json, String id) throws JSONException {
 		final boolean required = json.getBoolean("required");
 		final String name = JsonParseUtil.getOptionalString(json, "name");
 		final FieldSchema schema = fieldSchemaJsonParser.parse(json.getJSONObject("schema"));
@@ -69,7 +69,7 @@ public class CreateIssueFieldsInfoMapJsonParser implements JsonParser<Map<String
 		final Iterable<Object> allowedValues = parseAllowedValues(json.optJSONArray("allowedValues"), schema);
 		final URI autoCompleteUri = JsonParseUtil.parseOptionalURI(json, "autoCompleteUrl");
 
-		return new CreateIssueFieldInfo(id, required, name, schema, operations, allowedValues, autoCompleteUri);
+		return new CimFieldInfo(id, required, name, schema, operations, allowedValues, autoCompleteUri);
 	}
 
 	private Iterable<Object> parseAllowedValues(@Nullable JSONArray allowedValues, FieldSchema fieldSchema) throws JSONException {

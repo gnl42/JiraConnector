@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
+import com.atlassian.jira.rest.client.domain.CimIssueType;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,25 +28,25 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * JSON parser for CreateIssueMetadataProject
+ * JSON parser for CimProject
  *
  * @since v1.0
  */
-public class CreateIssueMetadataProjectJsonParser implements JsonParser<CreateIssueMetadataProject> {
+public class CimProjectJsonParser implements JsonParser<CimProject> {
 
-	private final JsonArrayParser<Iterable<CreateIssueIssueType>> issueTypesParser = GenericJsonArrayParser.create(new CreateIssueIssueTypeJsonParser());
+	private final JsonArrayParser<Iterable<CimIssueType>> issueTypesParser = GenericJsonArrayParser.create(new CimIssueTypeJsonParser());
 
 	private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
 	@Override
-	public CreateIssueMetadataProject parse(final JSONObject json) throws JSONException {
+	public CimProject parse(final JSONObject json) throws JSONException {
 		final BasicProject basicProject = basicProjectJsonParser.parse(json);
 		final JSONArray issueTypesArray = json.optJSONArray("issuetypes");
-		final Iterable<CreateIssueIssueType> issueTypes = (issueTypesArray != null) ?
-				issueTypesParser.parse(issueTypesArray) : Collections.<CreateIssueIssueType>emptyList();
+		final Iterable<CimIssueType> issueTypes = (issueTypesArray != null) ?
+				issueTypesParser.parse(issueTypesArray) : Collections.<CimIssueType>emptyList();
 
 		final Map<String, URI> avatarUris = JsonParseUtil.getAvatarUris(json.getJSONObject("avatarUrls"));
-		return new CreateIssueMetadataProject(basicProject.getSelf(), basicProject.getKey(),
+		return new CimProject(basicProject.getSelf(), basicProject.getKey(),
 				basicProject.getName(), avatarUris, issueTypes);
 	}
 }

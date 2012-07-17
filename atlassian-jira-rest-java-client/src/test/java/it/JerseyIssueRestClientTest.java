@@ -31,10 +31,10 @@ import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.domain.CimIssueType;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
-import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueFieldId;
@@ -701,15 +701,15 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssue() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
 				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
 				pm
 		);
 
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
-		CreateIssueMetadataProject project = metadataProjects.iterator().next();
-		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+		final CimProject project = metadataProjects.iterator().next();
+		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -782,15 +782,15 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssueWithOnlyRequiredFields() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
 				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
 				pm
 		);
 
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
-		CreateIssueMetadataProject project = metadataProjects.iterator().next();
-		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+		final CimProject project = metadataProjects.iterator().next();
+		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// build issue input
 		final String summary = "My new issue!";
@@ -848,37 +848,37 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueRestClient issueClient = client.getIssueClient();
 
 		// get project list with fields expanded
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
 				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(),
 				pm
 		);
 		System.out.println("Available projects: ");
-		for (CreateIssueMetadataProject p : metadataProjects) {
+		for (CimProject p : metadataProjects) {
 			System.out.println(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
 		}
 		System.out.println("");
 		assertTrue("There is no project to select!", metadataProjects.iterator().hasNext());
 		
 		// select project
-		CreateIssueMetadataProject project = metadataProjects.iterator().next();
+		final CimProject project = metadataProjects.iterator().next();
 		System.out.println(MessageFormat.format("Selected project: [{0}] {1}\n", project.getKey(), project.getName()));
 		
 		// select issue type
 		System.out.println("Available issue types for selected project:");
-		for (CreateIssueIssueType t : project.getIssueTypes()) {
+		for (CimIssueType t : project.getIssueTypes()) {
 			System.out.println(MessageFormat.format("\t* [{0}] {1}", t.getId(), t.getName()));
 		}
 		System.out.println("");
-		
-		CreateIssueIssueType issueType = project.getIssueTypes().iterator().next();
+
+		final CimIssueType issueType = project.getIssueTypes().iterator().next();
 		System.out.println(MessageFormat.format("Selected issue type: [{0}] {1}\n", issueType.getId(), issueType.getName()));
 
 		final IssueInputBuilder builder = new IssueInputBuilder(project.getKey(), issueType.getId());
 
 		// fill fields
 		System.out.println("Filling fields:");
-		for (Map.Entry<String, CreateIssueFieldInfo> entry : issueType.getFields().entrySet()) {
-			final CreateIssueFieldInfo fieldInfo = entry.getValue();
+		for (Map.Entry<String, CimFieldInfo> entry : issueType.getFields().entrySet()) {
+			final CimFieldInfo fieldInfo = entry.getValue();
 
 			if ("project".equals(fieldInfo.getId()) || "issuetype".equals(fieldInfo.getId())) {
 				// this field was already set by IssueInputBuilder constructor - skip it

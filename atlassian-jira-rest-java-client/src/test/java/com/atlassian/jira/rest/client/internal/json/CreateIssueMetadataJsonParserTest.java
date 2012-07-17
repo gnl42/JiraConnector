@@ -20,9 +20,9 @@ import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
-import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
+import com.atlassian.jira.rest.client.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.domain.CimIssueType;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.google.common.collect.ImmutableMap;
@@ -47,14 +47,14 @@ public class CreateIssueMetadataJsonParserTest {
 	@Test
 	public void testParse() throws JSONException, URISyntaxException {
 		final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-		Iterable<CreateIssueMetadataProject> createMetaProjects = parser.parse(
+		final Iterable<CimProject> createMetaProjects = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid.json")
 		);
 
 		assertEquals(4, Iterables.size(createMetaProjects));
 
 		// test first project
-		CreateIssueMetadataProject project = createMetaProjects.iterator().next();
+		final CimProject project = createMetaProjects.iterator().next();
 		assertEquals("http://localhost:2990/jira/rest/api/2/project/ANONEDIT", project.getSelf().toString());
 		assertEquals("ANONEDIT", project.getKey());
 		assertEquals("Anonymous Editable Project", project.getName());
@@ -66,38 +66,38 @@ public class CreateIssueMetadataJsonParserTest {
 
 		// check some issue types
 		assertThat(project.getIssueTypes(), IterableMatcher.hasOnlyElements(
-			new CreateIssueIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", new URI("http://localhost:2990/jira/images/icons/bug.gif"), Collections.<String, CreateIssueFieldInfo>emptyMap()),
-			new CreateIssueIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", new URI("http://localhost:2990/jira/images/icons/newfeature.gif"), Collections.<String, CreateIssueFieldInfo>emptyMap()),
-			new CreateIssueIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", new URI("http://localhost:2990/jira/images/icons/task.gif"), Collections.<String, CreateIssueFieldInfo>emptyMap()),
-			new CreateIssueIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", new URI("http://localhost:2990/jira/images/icons/improvement.gif"), Collections.<String, CreateIssueFieldInfo>emptyMap()),
-			new CreateIssueIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", new URI("http://localhost:2990/jira/images/icons/issue_subtask.gif"), Collections.<String, CreateIssueFieldInfo>emptyMap())
+			new CimIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", new URI("http://localhost:2990/jira/images/icons/bug.gif"), Collections.<String, CimFieldInfo>emptyMap()),
+			new CimIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", new URI("http://localhost:2990/jira/images/icons/newfeature.gif"), Collections.<String, CimFieldInfo>emptyMap()),
+			new CimIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", new URI("http://localhost:2990/jira/images/icons/task.gif"), Collections.<String, CimFieldInfo>emptyMap()),
+			new CimIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", new URI("http://localhost:2990/jira/images/icons/improvement.gif"), Collections.<String, CimFieldInfo>emptyMap()),
+			new CimIssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", new URI("http://localhost:2990/jira/images/icons/issue_subtask.gif"), Collections.<String, CimFieldInfo>emptyMap())
 		));
 	}
 
 	@Test
 	public void testParseWithFieldsExpanded() throws JSONException {
 		final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-		final Iterable<CreateIssueMetadataProject> createMetaProjects = parser.parse(
+		final Iterable<CimProject> createMetaProjects = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid-with-fields-expanded.json")
 		);
 
 		assertEquals(4, Iterables.size(createMetaProjects));
 
 		// get project with issue types expanded
-		final CreateIssueMetadataProject project = EntityHelper.findEntityByName(
+		final CimProject project = EntityHelper.findEntityByName(
 				createMetaProjects, "Anonymous Editable Project"
 		);
 		assertNotNull(project);
 		assertEquals(5, Iterables.size(project.getIssueTypes()));
 
 		// get issue type and check if fields was parsed successfully
-		final CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
-		final Map<String,CreateIssueFieldInfo> issueTypeFields = issueType.getFields();
+		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+		final Map<String,CimFieldInfo> issueTypeFields = issueType.getFields();
 		assertEquals(19, issueTypeFields.size());
 
 		// test system field "components"
-		final CreateIssueFieldInfo componentsFieldInfo = issueTypeFields.get("components");
-		final CreateIssueFieldInfo expectedComponentsFieldInfo = new CreateIssueFieldInfo(
+		final CimFieldInfo componentsFieldInfo = issueTypeFields.get("components");
+		final CimFieldInfo expectedComponentsFieldInfo = new CimFieldInfo(
 				"components", false, "Component/s", new FieldSchema("array", "component", "components", null, null),
 				Sets.newHashSet(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET),
 				Collections.emptyList(), null
@@ -105,7 +105,7 @@ public class CreateIssueMetadataJsonParserTest {
 		assertEquals(expectedComponentsFieldInfo, componentsFieldInfo);
 
 		// check custom field with allowed values
-		final CreateIssueFieldInfo cf1001 = issueTypeFields.get("customfield_10001");
+		final CimFieldInfo cf1001 = issueTypeFields.get("customfield_10001");
 		assertEquals(new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons", 10001L), cf1001.getSchema());
 		assertEquals(3, Iterables.size(cf1001.getAllowedValues()));
 		assertThat(cf1001.getOperations(), IterableMatcher.hasOnlyElements(StandardOperation.SET));
