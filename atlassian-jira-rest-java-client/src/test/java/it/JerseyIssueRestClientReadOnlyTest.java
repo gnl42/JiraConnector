@@ -282,7 +282,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	public void testGetCreateIssueMetadata() throws URISyntaxException {
 		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
-				.getCreateIssueMetadata(null, pm);
+				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(), pm);
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
@@ -296,7 +296,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertEquals(project.getName(), "Anonymous Editable Project");
 
 		for (CreateIssueIssueType issueType : project.getIssueTypes()) {
-			assertFalse(issueType.getFields().isEmpty());
+			assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields().isEmpty());
 		}
 	}
 
