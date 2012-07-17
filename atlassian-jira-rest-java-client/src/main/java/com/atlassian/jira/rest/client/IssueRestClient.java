@@ -168,7 +168,7 @@ public interface IssueRestClient {
 
 	/**
 	 * Starts watching selected issue
-	 * @param watchersUri
+	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -176,7 +176,7 @@ public interface IssueRestClient {
 
 	/**
 	 * Stops watching selected issue
-	 * @param watchersUri
+	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -186,7 +186,7 @@ public interface IssueRestClient {
 	 * Adds selected person as a watcher for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
-	 * @param watchersUri
+	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @param username user to add as a watcher
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
@@ -197,7 +197,7 @@ public interface IssueRestClient {
 	 * Removes selected person from the watchers list for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
-	 * @param watchersUri
+	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @param username user to remove from the watcher list
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
