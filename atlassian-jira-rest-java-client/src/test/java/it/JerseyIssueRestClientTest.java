@@ -60,7 +60,9 @@ import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsCollectionContaining;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
@@ -103,6 +105,9 @@ import static org.junit.Assert.*;
 @SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
@@ -812,34 +817,38 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
-	public void testCreateIssueWithoutIncorrectInput() {
+	public void testCreateIssueWithoutSummary() {
 		final IssueRestClient issueClient = client.getIssueClient();
 
-		// no summary
-		try {
-			final IssueInput issueInput = new IssueInputBuilder("TST", 1L).build();
-			issueClient.createIssue(issueInput, pm);
-		} catch (RestClientException e) {
-			assertEquals("You must specify a summary of the issue.", e.getMessage());
-		}
+		thrown.expect(RestClientException.class);
+		thrown.expectMessage("You must specify a summary of the issue.");
 
-		// invalid project key
-		try {
-			final IssueInput issueInput = new IssueInputBuilder("BAD", 1L, "Should fail").build();
+		final IssueInput issueInput = new IssueInputBuilder("TST", 1L).build();
+		issueClient.createIssue(issueInput, pm);
+	}
 
-			issueClient.createIssue(issueInput, pm);
-		} catch (RestClientException e) {
-			assertEquals("project is required", e.getMessage());
-		}
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testCreateIssueWithNotExistentProject() {
+		final IssueRestClient issueClient = client.getIssueClient();
 
-		// invalid issue type
-		try {
-			final IssueInput issueInput = new IssueInputBuilder("TST", 666L, "Should fail").build();
+		thrown.expect(RestClientException.class);
+		thrown.expectMessage("project is required");
 
-			issueClient.createIssue(issueInput, pm);
-		} catch (RestClientException e) {
-			assertEquals("valid issue type is required", e.getMessage());
-		}
+		final IssueInput issueInput = new IssueInputBuilder("BAD", 1L, "Should fail").build();
+		issueClient.createIssue(issueInput, pm);
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testCreateIssueWithNotExistentIssueType() {
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		thrown.expect(RestClientException.class);
+		thrown.expectMessage("valid issue type is required");
+
+		final IssueInput issueInput = new IssueInputBuilder("TST", 666L, "Should fail").build();
+		issueClient.createIssue(issueInput, pm);
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)
