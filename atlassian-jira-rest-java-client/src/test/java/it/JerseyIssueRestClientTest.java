@@ -861,31 +861,31 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(),
 				pm
 		);
-		System.out.println("Available projects: ");
+		log.log("Available projects: ");
 		for (CimProject p : metadataProjects) {
-			System.out.println(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
+			log.log(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
 		}
-		System.out.println("");
+		log.log("");
 		assertTrue("There is no project to select!", metadataProjects.iterator().hasNext());
 		
 		// select project
 		final CimProject project = metadataProjects.iterator().next();
-		System.out.println(MessageFormat.format("Selected project: [{0}] {1}\n", project.getKey(), project.getName()));
+		log.log(MessageFormat.format("Selected project: [{0}] {1}\n", project.getKey(), project.getName()));
 		
 		// select issue type
-		System.out.println("Available issue types for selected project:");
+		log.log("Available issue types for selected project:");
 		for (CimIssueType t : project.getIssueTypes()) {
-			System.out.println(MessageFormat.format("\t* [{0}] {1}", t.getId(), t.getName()));
+			log.log(MessageFormat.format("\t* [{0}] {1}", t.getId(), t.getName()));
 		}
-		System.out.println("");
+		log.log("");
 
 		final CimIssueType issueType = project.getIssueTypes().iterator().next();
-		System.out.println(MessageFormat.format("Selected issue type: [{0}] {1}\n", issueType.getId(), issueType.getName()));
+		log.log(MessageFormat.format("Selected issue type: [{0}] {1}\n", issueType.getId(), issueType.getName()));
 
 		final IssueInputBuilder builder = new IssueInputBuilder(project.getKey(), issueType.getId());
 
 		// fill fields
-		System.out.println("Filling fields:");
+		log.log("Filling fields:");
 		for (Map.Entry<String, CimFieldInfo> entry : issueType.getFields().entrySet()) {
 			final CimFieldInfo fieldInfo = entry.getValue();
 
@@ -894,23 +894,23 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				continue;
 			}
 
-			System.out.println(MessageFormat.format("\t* [{0}] {1}\n\t\t| schema: {2}\n\t\t| required: {3}", fieldInfo.getId(), fieldInfo.getName(), fieldInfo.getSchema(), fieldInfo.isRequired()));
+			log.log(MessageFormat.format("\t* [{0}] {1}\n\t\t| schema: {2}\n\t\t| required: {3}", fieldInfo.getId(), fieldInfo.getName(), fieldInfo.getSchema(), fieldInfo.isRequired()));
 
 			// choose value for this field
 			Object value = null;
 			final Iterable<Object> allowedValues = fieldInfo.getAllowedValues();
 			if (allowedValues != null) {
-				System.out.println("\t\t| field only accepts those values:");
+				log.log("\t\t| field only accepts those values:");
 				for (Object val : allowedValues) {
-					System.out.println("\t\t\t* " + val);
+					log.log("\t\t\t* " + val);
 				}
 				if (allowedValues.iterator().hasNext()) {
 					final Object singleValue = allowedValues.iterator().next();
 					value = "array".equals(fieldInfo.getSchema().getType()) ? Collections.singletonList(singleValue) : singleValue;
-					System.out.println("\t\t| selecting value: " + value);
+					log.log("\t\t| selecting value: " + value);
 				}
 				else {
-					System.out.println("\t\t| there is no allowed value - leaving field blank");
+					log.log("\t\t| there is no allowed value - leaving field blank");
 				}
 			}
 			else {
@@ -925,19 +925,19 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 						fail("I don't know how to fill that required field, sorry.");
 					}
 					else {
-						System.out.println("\t\t| field value is not required, leaving blank");
+						log.log("\t\t| field value is not required, leaving blank");
 					}
 				}
 			}
 			if (value == null) {
-				System.out.println("\t\t| value is null, skipping filed");
+				log.log("\t\t| value is null, skipping filed");
 			}
 			else {
-				System.out.println(MessageFormat.format("\t\t| setting value => {0}", value));
+				log.log(MessageFormat.format("\t\t| setting value => {0}", value));
 				builder.setFieldValue(fieldInfo.getId(), value);
 			}
 		}
-		System.out.println("");
+		log.log("");
 
 		// all required data is provided, let's create issue
 		final IssueInput issueInput = builder.build();
@@ -948,7 +948,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey(), pm);
 		assertNotNull(createdIssue);
 
-		System.out.println("Created new issue successfully, key: " + basicCreatedIssue.getKey());
+		log.log("Created new issue successfully, key: " + basicCreatedIssue.getKey());
 
 		// assert few fields
 		IssueInputBuilder actualBuilder = new IssueInputBuilder(createdIssue.getProject(), createdIssue.getIssueType(), createdIssue.getSummary())
