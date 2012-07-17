@@ -19,8 +19,8 @@ package com.atlassian.jira.rest.client;
 import javax.annotation.Nullable;
 
 /**
- * Set of optional parameters for #{@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}.
-  * #{@link GetCreateIssueMetadataOptionsBuilder} is very useful for building objects of this class.
+ * Set of optional parameters for {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}.
+  * {@link GetCreateIssueMetadataOptionsBuilder} is very useful for building objects of this class.
  *
  * @since v1.0
  */
