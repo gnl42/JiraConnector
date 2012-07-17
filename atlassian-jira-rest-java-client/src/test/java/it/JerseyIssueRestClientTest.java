@@ -732,8 +732,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
 		// prepare IssueInput
-		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(project, issueType)
-				.setSummary(summary)
+		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(project, issueType, summary)
 				.setDescription(description)
 				.setAssignee(assignee)
 				.setAffectedVersionsNames(affectedVersionsNames)
@@ -796,12 +795,9 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		// build issue input
 		final String summary = "My new issue!";
 
-		// prepare IssueInput
-		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(project, issueType)
-				.setSummary(summary);
-
 		// create
-		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build(), pm);
+		final IssueInput issueInput = new IssueInputBuilder(project, issueType, summary).build();
+		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput, pm);
 		assertNotNull(basicCreatedIssue.getKey());
 
 		// get issue and check if everything was set as we expected
@@ -829,9 +825,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		// invalid project key
 		try {
-			final IssueInput issueInput = new IssueInputBuilder("BAD", 1L)
-					.setSummary("Should fail")
-					.build();
+			final IssueInput issueInput = new IssueInputBuilder("BAD", 1L, "Should fail").build();
 
 			issueClient.createIssue(issueInput, pm);
 		} catch (RestClientException e) {
@@ -840,9 +834,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		// invalid issue type
 		try {
-			final IssueInput issueInput = new IssueInputBuilder("TST", 666L)
-					.setSummary("Should fail")
-					.build();
+			final IssueInput issueInput = new IssueInputBuilder("TST", 666L, "Should fail").build();
 
 			issueClient.createIssue(issueInput, pm);
 		} catch (RestClientException e) {
@@ -950,9 +942,8 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		System.out.println("Created new issue successfully, key: " + basicCreatedIssue.getKey());
 
 		// assert few fields
-		IssueInputBuilder actualBuilder = new IssueInputBuilder(createdIssue.getProject(), createdIssue.getIssueType())
+		IssueInputBuilder actualBuilder = new IssueInputBuilder(createdIssue.getProject(), createdIssue.getIssueType(), createdIssue.getSummary())
 				.setPriority(createdIssue.getPriority())
-				.setSummary(createdIssue.getSummary())
 				.setReporter(createdIssue.getReporter())
 				.setAssignee(createdIssue.getAssignee())
 				.setDescription(createdIssue.getDescription());
