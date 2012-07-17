@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Votes;
@@ -55,11 +55,11 @@ public interface IssueRestClient {
 	 * Retrieves CreateIssueMetadata for all accessible projects with expanded fields.
 	 *
 	 * @param progressMonitor progress monitor
-	 * @return Create issue metadata for all accessible projects with expanded fields
+	 * @return TODO Create issue metadata as list of projects for all accessible projects with expanded fields
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
 	 */
-	CreateIssueMetadata getCreateIssueMetadata(ProgressMonitor progressMonitor);
+	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves CreateIssueMetadata with specified filters.
@@ -70,11 +70,11 @@ public interface IssueRestClient {
 	 * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
 	 * @param expand List of expandos
 	 * @param progressMonitor progress monitor
-	 * @return Create issue metadata with projects and issue types filtered by given filters.
+	 * @return TODO Create issue metadata as list of projects and issue types filtered by given filters.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
 	 */
-	CreateIssueMetadata getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
+	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
 			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
 			ProgressMonitor progressMonitor);
 

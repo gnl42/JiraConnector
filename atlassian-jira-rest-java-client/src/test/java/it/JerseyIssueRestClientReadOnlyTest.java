@@ -27,7 +27,6 @@ import com.atlassian.jira.rest.client.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.domain.ChangelogItem;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
@@ -64,6 +63,7 @@ import static org.junit.Assert.*;
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
+@SuppressWarnings("ConstantConditions") // To ignore "May produce NPE" warnings
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientTest {
 
@@ -280,14 +280,13 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadata() throws URISyntaxException {
-		final CreateIssueMetadata cim = client
+		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(pm);
 
-		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
-		assertEquals(4, Iterables.size(projects));
+		assertEquals(4, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
 			@Override
 			public boolean apply(CreateIssueMetadataProject input) {
 				return "ANONEDIT".equals(input.getKey());
@@ -304,14 +303,13 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
-		final CreateIssueMetadata cim = client
+		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(null, null, null, null, null, pm);
 
-		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
-		assertEquals(4, Iterables.size(projects));
+		assertEquals(4, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
 			@Override
 			public boolean apply(CreateIssueMetadataProject input) {
 				return "ANONEDIT".equals(input.getKey());
@@ -329,15 +327,14 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test
 	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
-		final CreateIssueMetadata cim = client
+		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
 				.getCreateIssueMetadata(null, Lists.newArrayList("ANONEDIT", "TST"), null, null,
 						Lists.newArrayList(IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS), pm);
 
-		final Iterable<CreateIssueMetadataProject> projects = cim.getProjects();
-		assertEquals(2, Iterables.size(projects));
+		assertEquals(2, Iterables.size(metadataProjects));
 
-		final CreateIssueMetadataProject project = Iterables.find(projects, new Predicate<CreateIssueMetadataProject>() {
+		final CreateIssueMetadataProject project = Iterables.find(metadataProjects, new Predicate<CreateIssueMetadataProject>() {
 			@Override
 			public boolean apply(CreateIssueMetadataProject input) {
 				return "TST".equals(input.getKey());

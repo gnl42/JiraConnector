@@ -24,7 +24,7 @@ import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
+import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Session;
@@ -412,13 +412,13 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public CreateIssueMetadata getCreateIssueMetadata(ProgressMonitor progressMonitor) {
+	public Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(ProgressMonitor progressMonitor) {
 		return this.getCreateIssueMetadata(null, null, null, null,
 				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), progressMonitor);
 	}
 
 	@Override
-	public CreateIssueMetadata getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
+	public Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
 			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
 			ProgressMonitor progressMonitor) {
 

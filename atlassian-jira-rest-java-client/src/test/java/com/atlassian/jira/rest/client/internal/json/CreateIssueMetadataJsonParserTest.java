@@ -22,7 +22,6 @@ import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
 import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
@@ -48,14 +47,14 @@ public class CreateIssueMetadataJsonParserTest {
 	@Test
 	public void testParse() throws JSONException, URISyntaxException {
 		final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-		final CreateIssueMetadata createIssueMetadata = parser.parse(
+		Iterable<CreateIssueMetadataProject> createMetaProjects = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid.json")
 		);
 
-		assertEquals(4, Iterables.size(createIssueMetadata.getProjects()));
+		assertEquals(4, Iterables.size(createMetaProjects));
 
 		// test first project
-		CreateIssueMetadataProject project = createIssueMetadata.getProjects().iterator().next();
+		CreateIssueMetadataProject project = createMetaProjects.iterator().next();
 		assertEquals("http://localhost:2990/jira/rest/api/2/project/ANONEDIT", project.getSelf().toString());
 		assertEquals("ANONEDIT", project.getKey());
 		assertEquals("Anonymous Editable Project", project.getName());
@@ -78,15 +77,15 @@ public class CreateIssueMetadataJsonParserTest {
 	@Test
 	public void testParseWithFieldsExpanded() throws JSONException {
 		final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-		final CreateIssueMetadata createIssueMetadata = parser.parse(
+		final Iterable<CreateIssueMetadataProject> createMetaProjects = parser.parse(
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid-with-fields-expanded.json")
 		);
 
-		assertEquals(4, Iterables.size(createIssueMetadata.getProjects()));
+		assertEquals(4, Iterables.size(createMetaProjects));
 
 		// get project with issue types expanded
 		final CreateIssueMetadataProject project = EntityHelper.findEntityByName(
-				createIssueMetadata.getProjects(), "Anonymous Editable Project"
+				createMetaProjects, "Anonymous Editable Project"
 		);
 		assertNotNull(project);
 		assertEquals(5, Iterables.size(project.getIssueTypes()));

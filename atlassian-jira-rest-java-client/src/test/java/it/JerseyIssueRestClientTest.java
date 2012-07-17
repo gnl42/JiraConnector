@@ -33,7 +33,6 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.CreateIssueFieldInfo;
 import com.atlassian.jira.rest.client.domain.CreateIssueIssueType;
-import com.atlassian.jira.rest.client.domain.CreateIssueMetadata;
 import com.atlassian.jira.rest.client.domain.CreateIssueMetadataProject;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -702,13 +701,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssue() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		CreateIssueMetadata cim = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
 				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
 		);
 
 		// select project and issue
-		assertEquals(1, Iterables.size(cim.getProjects()));
-		CreateIssueMetadataProject project = cim.getProjects().iterator().next();
+		assertEquals(1, Iterables.size(metadataProjects));
+		CreateIssueMetadataProject project = metadataProjects.iterator().next();
 		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// grab the first component
@@ -783,13 +782,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssueWithOnlyRequiredFields() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		CreateIssueMetadata cim = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
 				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
 		);
 
 		// select project and issue
-		assertEquals(1, Iterables.size(cim.getProjects()));
-		CreateIssueMetadataProject project = cim.getProjects().iterator().next();
+		assertEquals(1, Iterables.size(metadataProjects));
+		CreateIssueMetadataProject project = metadataProjects.iterator().next();
 		CreateIssueIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
 
 		// build issue input
@@ -855,18 +854,18 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueRestClient issueClient = client.getIssueClient();
 
 		// get project list with fields expanded
-		CreateIssueMetadata createMeta = issueClient.getCreateIssueMetadata(null, null, null, null,
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, null, null, null,
 				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
 		);
 		System.out.println("Available projects: ");
-		for (CreateIssueMetadataProject p : createMeta.getProjects()) {
+		for (CreateIssueMetadataProject p : metadataProjects) {
 			System.out.println(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
 		}
 		System.out.println("");
-		assertTrue("There is no project to select!", createMeta.getProjects().iterator().hasNext());
+		assertTrue("There is no project to select!", metadataProjects.iterator().hasNext());
 		
 		// select project
-		CreateIssueMetadataProject project = createMeta.getProjects().iterator().next();
+		CreateIssueMetadataProject project = metadataProjects.iterator().next();
 		System.out.println(MessageFormat.format("Selected project: [{0}] {1}\n", project.getKey(), project.getName()));
 		
 		// select issue type
