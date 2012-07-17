@@ -17,6 +17,7 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
@@ -41,7 +42,6 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
@@ -282,7 +282,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	public void testGetCreateIssueMetadata() throws URISyntaxException {
 		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
-				.getCreateIssueMetadata(pm);
+				.getCreateIssueMetadata(null, pm);
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
@@ -305,7 +305,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
 		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
-				.getCreateIssueMetadata(null, null, null, null, null, pm);
+				.getCreateIssueMetadata(null, pm);
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
@@ -329,8 +329,10 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
 		final Iterable<CreateIssueMetadataProject> metadataProjects = client
 				.getIssueClient()
-				.getCreateIssueMetadata(null, Lists.newArrayList("ANONEDIT", "TST"), null, null,
-						Lists.newArrayList(IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS), pm);
+				.getCreateIssueMetadata(
+						new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("ANONEDIT", "TST").withExpandedIssueTypesFields().build(),
+						pm
+				);
 
 		assertEquals(2, Iterables.size(metadataProjects));
 

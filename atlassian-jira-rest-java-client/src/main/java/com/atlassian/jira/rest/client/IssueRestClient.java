@@ -30,6 +30,7 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.google.common.annotations.Beta;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -52,31 +53,15 @@ public interface IssueRestClient {
 	BasicIssue createIssue(IssueInput issue, ProgressMonitor progressMonitor);
 
 	/**
-	 * Retrieves CreateIssueMetadata for all accessible projects with expanded fields.
-	 *
-	 * @param progressMonitor progress monitor
-	 * @return TODO Create issue metadata as list of projects for all accessible projects with expanded fields
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-	 * @since client 1.0, server 5.0
-	 */
-	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(ProgressMonitor progressMonitor);
-
-	/**
 	 * Retrieves CreateIssueMetadata with specified filters.
 	 *
-	 * @param projectIds List of projects Ids used to filter results. Pass <code>null</code> to ignore.
-	 * @param projectKeys List of projects keys used to filter results. Pass <code>null</code> to ignore.
-	 * @param issueTypeIds List of issue types Ids to filter results. Pass <code>null</code> to ignore.
-	 * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
-	 * @param expand List of expandos
+	 * @param options		  optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.
 	 * @param progressMonitor progress monitor
-	 * @return TODO Create issue metadata as list of projects and issue types filtered by given filters.
+	 * @return List of {@link CreateIssueMetadataProject} describing projects, issue types and fields.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
 	 */
-	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
-			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
-			ProgressMonitor progressMonitor);
+	Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options, ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves issue with selected issue key.
@@ -294,15 +279,5 @@ public interface IssueRestClient {
 	 */
 	public enum Expandos {
 		CHANGELOG, SCHEMA, NAMES, TRANSITIONS
-	}
-
-	public static enum CreateIssueMetadataExpandos {
-		PROJECT_ISSUETYPES_FIELDS("projects.issuetypes.fields");
-		
-		public final String value;
-
-		private CreateIssueMetadataExpandos(String value) {
-			this.value = value;
-		}
 	}
 }

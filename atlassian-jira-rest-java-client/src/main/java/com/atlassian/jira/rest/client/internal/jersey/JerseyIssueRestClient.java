@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.AdjustEstimateOption;
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
@@ -78,8 +79,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
-
-import static com.atlassian.jira.rest.client.IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS;
 
 /**
  * Jersey-based implementation of IssueRestClient
@@ -412,45 +411,32 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(ProgressMonitor progressMonitor) {
-		return this.getCreateIssueMetadata(null, null, null, null,
-				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), progressMonitor);
-	}
-
-	@Override
-	public Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(Iterable<Long> projectIds, Iterable<String> projectKeys,
-			Iterable<Long> issueTypeIds, Iterable<String> issueTypeNames, Iterable<CreateIssueMetadataExpandos> expand,
-			ProgressMonitor progressMonitor) {
+	public Iterable<CreateIssueMetadataProject> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options, ProgressMonitor progressMonitor) {
 
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta");
 
-		if (projectIds != null) {
-			uriBuilder.queryParam("projectIds", Joiner.on(",").join(projectIds));
-		}
-
-		if (projectKeys != null) {
-			uriBuilder.queryParam("projectKeys", Joiner.on(",").join(projectKeys));
-		}
-
-		if (issueTypeIds != null) {
-			uriBuilder.queryParam("issuetypeIds", Joiner.on(",").join(issueTypeIds));
-		}
-
-		if (issueTypeNames != null) {
-			for (final String name : issueTypeNames) {
-				uriBuilder.queryParam("issuetypeNames", name);
+		if (options != null) {
+			if (options.projectIds != null) {
+				uriBuilder.queryParam("projectIds", Joiner.on(",").join(options.projectIds));
 			}
-		}
 
-		if (expand != null && expand.iterator().hasNext()) {
-			final Iterable<String> expandValues = Iterables.transform(expand,
-					new Function<CreateIssueMetadataExpandos, String>() {
-						@Override
-						public String apply(CreateIssueMetadataExpandos from) {
-							return from.value;
-						}
-					});
-			uriBuilder.queryParam("expand", Joiner.on(",").join(expandValues));
+			if (options.projectKeys != null) {
+				uriBuilder.queryParam("projectKeys", Joiner.on(",").join(options.projectKeys));
+			}
+
+			if (options.issueTypeIds != null) {
+				uriBuilder.queryParam("issuetypeIds", Joiner.on(",").join(options.issueTypeIds));
+			}
+
+			if (options.issueTypeNames != null) {
+				for (final String name : options.issueTypeNames) {
+					uriBuilder.queryParam("issuetypeNames", name);
+				}
+			}
+
+			if (options.expandos != null && options.expandos.iterator().hasNext()) {
+				uriBuilder.queryParam("expand", Joiner.on(",").join(options.expandos));
+			}
 		}
 
 		return getAndParse(uriBuilder.build(), createIssueMetadataJsonParser, progressMonitor);

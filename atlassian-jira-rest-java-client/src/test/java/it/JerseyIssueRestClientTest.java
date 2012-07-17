@@ -19,6 +19,7 @@ package it;
 import com.atlassian.jira.functest.framework.UserProfile;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
@@ -89,7 +90,6 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMF
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
-import static com.atlassian.jira.rest.client.IssueRestClient.CreateIssueMetadataExpandos.PROJECT_ISSUETYPES_FIELDS;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
@@ -701,8 +701,9 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssue() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
-				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
+				pm
 		);
 
 		// select project and issue
@@ -782,8 +783,9 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	public void testCreateIssueWithOnlyRequiredFields() {
 		// collect CreateIssueMetadata for project with key TST
 		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, Lists.newArrayList("TST"), null, null,
-				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
+				pm
 		);
 
 		// select project and issue
@@ -854,8 +856,9 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueRestClient issueClient = client.getIssueClient();
 
 		// get project list with fields expanded
-		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(null, null, null, null,
-				Lists.newArrayList(PROJECT_ISSUETYPES_FIELDS), pm
+		final Iterable<CreateIssueMetadataProject> metadataProjects = issueClient.getCreateIssueMetadata(
+				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(),
+				pm
 		);
 		System.out.println("Available projects: ");
 		for (CreateIssueMetadataProject p : metadataProjects) {
