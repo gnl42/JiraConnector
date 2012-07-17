@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
-import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.atlassian.jira.rest.client.ProgressMonitor;
@@ -35,7 +35,7 @@ import java.util.Set;
  *
  * @since v1.0
  */
-public class CimFieldInfo implements NamedEntity, IdentifiedEntity<String> {
+public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 
 	private final String id;
 	private final boolean required;

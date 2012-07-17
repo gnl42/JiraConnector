@@ -21,7 +21,7 @@ package com.atlassian.jira.rest.client;
  *
  * @since v1.0
  */
-public interface IdentifiedEntity<T> {
+public interface IdentifiableEntity<T> {
 
 	T getId();
 

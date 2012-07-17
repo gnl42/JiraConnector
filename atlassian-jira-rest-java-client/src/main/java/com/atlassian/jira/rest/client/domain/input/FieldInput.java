@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain.input;
 
-import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.google.common.base.Objects;
 
@@ -25,7 +25,7 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class FieldInput implements IdentifiedEntity<String> {
+public class FieldInput implements IdentifiableEntity<String> {
 	private final String id;
 	private final Object value;
 

@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
-import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -29,9 +29,9 @@ import com.google.common.collect.Iterables;
  */
 public class EntityHelper {
 
-	public static Function<IdentifiedEntity<String>,String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiedEntity<String>, String>() {
+	public static Function<IdentifiableEntity<String>,String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
 		@Override
-		public String apply(IdentifiedEntity<String> entity) {
+		public String apply(IdentifiableEntity<String> entity) {
 			return entity.getId();
 		}
 	};
@@ -46,10 +46,10 @@ public class EntityHelper {
 	}
 
 	@SuppressWarnings("unused")
-	public static <T> Iterable<String> toStringIdList(Iterable<IdentifiedEntity<T>> items) {
-		return Iterables.transform(items, new Function<IdentifiedEntity<T>, String>() {
+	public static <T> Iterable<String> toStringIdList(Iterable<IdentifiableEntity<T>> items) {
+		return Iterables.transform(items, new Function<IdentifiableEntity<T>, String>() {
 			@Override
-			public String apply(IdentifiedEntity<T> from) {
+			public String apply(IdentifiableEntity<T> from) {
 				return from.getId() == null ? null : from.getId().toString();
 			}
 		});
@@ -60,7 +60,7 @@ public class EntityHelper {
 	}
 
 	@SuppressWarnings("unused")
-	public static <T extends IdentifiedEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
+	public static <T extends IdentifiableEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
 		return Iterables.find(entities, HasIdPredicate.forId(id));
 	}
 
@@ -83,11 +83,11 @@ public class EntityHelper {
 		}
 	}
 
-	public static class HasIdPredicate<T extends IdentifiedEntity<K>, K> implements Predicate<T> {
+	public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Predicate<T> {
 
 		private final K id;
 
-		public static <X extends IdentifiedEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
+		public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
 			return new HasIdPredicate<X, Y>(id);
 		}
 

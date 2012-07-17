@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain.input;
 
-import com.atlassian.jira.rest.client.IdentifiedEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
@@ -46,9 +46,9 @@ public class BaseValueTransformer implements ValueTransformer {
 			final CustomFieldOption cfo = (CustomFieldOption) rawValue;
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue()));
 		}
-		else if (rawValue instanceof IdentifiedEntity) {
-			final IdentifiedEntity identifiedEntity = (IdentifiedEntity) rawValue;
-			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", identifiedEntity.getId().toString()));
+		else if (rawValue instanceof IdentifiableEntity) {
+			final IdentifiableEntity identifiableEntity = (IdentifiableEntity) rawValue;
+			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", identifiableEntity.getId().toString()));
 		}
 		else if (rawValue instanceof NamedEntity) {
 			final NamedEntity namedEntity = (NamedEntity) rawValue;
