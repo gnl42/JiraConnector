@@ -18,9 +18,10 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.CimFieldInfo;
 import org.codehaus.jettison.json.JSONException;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -37,9 +38,9 @@ public class CimFieldsInfoMapJsonParserTest {
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug.json")
 		);
 
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10010").getAllowedValues(), Iterable.class);
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10020").getAllowedValues(), Iterable.class);
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10021").getAllowedValues(), Iterable.class);
+		assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
+		assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
+		assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
 	}
 
 	@Test
@@ -49,18 +50,12 @@ public class CimFieldsInfoMapJsonParserTest {
 				ResourceUtil.getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug-fixed.json")
 		);
 
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10010").getAllowedValues(), Iterable.class);
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10020").getAllowedValues(), Iterable.class);
-		assertAllowedValuesNotOfType(fieldsInfo.get("customfield_10021").getAllowedValues(), Iterable.class);
+		assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
+		assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
+		assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
 	}
 
-	private void assertAllowedValuesNotOfType(final Iterable<Object> allowedValues, Class type) {
-		final Iterator<Object> iterator = allowedValues.iterator();
-		assertTrue(iterator.hasNext());
-		while (iterator.hasNext()) {
-			final Object obj = iterator.next();
-			assertNotNull(obj);
-			assertFalse(type.isAssignableFrom(obj.getClass()));
-		}
+	private void assertElementsNotIterable(final Iterable<Object> allowedValues) {
+		assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(Iterable.class))));
 	}
 }
