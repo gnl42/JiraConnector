@@ -73,19 +73,38 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 		return name;
 	}
 
+	/**
+	 * Returns schema of this field that describes type of that field and contained items type.
+	 * @return schema of this field.
+	 */
 	public FieldSchema getSchema() {
 		return schema;
 	}
 
+	/**
+	 * Returns set of operations allowed for this field.
+	 * @return set of operations allowed for this field.
+	 */
 	public Set<StandardOperation> getOperations() {
 		return operations;
 	}
 
+	/**
+	 * Returns list of values that are allowed to be used as value to this field.
+	 * @return list of allowed values.
+	 */
 	@Nullable
 	public Iterable<Object> getAllowedValues() {
 		return allowedValues;
 	}
 
+	/**
+	 * Returns URI to Auto Complete feature for this field. To make use of it append searched text to returned address.<br/>
+	 * Example:<br/>
+	 * {@code URI uriToGetResponseFrom = new URI(getAutoCompleteUri() + "typedLetters"); }
+	 *
+	 * @return URI to Auto Complete feature for this field
+	 */
 	@SuppressWarnings("UnusedDeclaration")
 	@Nullable
 	public URI getAutoCompleteUri() {
