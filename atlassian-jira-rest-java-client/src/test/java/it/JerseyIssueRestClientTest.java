@@ -17,52 +17,32 @@
 package it;
 
 import com.atlassian.jira.functest.framework.UserProfile;
-import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
-import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Attachment;
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.CimFieldInfo;
-import com.atlassian.jira.rest.client.domain.CimIssueType;
-import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
-import com.atlassian.jira.rest.client.domain.input.CannotTransformValueException;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsCollectionContaining;
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
@@ -73,16 +53,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +66,6 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.TESTING_JIRA_5_
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
-import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
@@ -105,9 +77,6 @@ import static org.junit.Assert.*;
 @SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
@@ -699,268 +668,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertNull(comment.getAuthor());
 		assertNull(comment.getUpdateAuthor());
 
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testCreateIssue() {
-		// collect CreateIssueMetadata for project with key TST
-		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
-				pm
-		);
-
-		// select project and issue
-		assertEquals(1, Iterables.size(metadataProjects));
-		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
-
-		// grab the first component
-		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
-		assertNotNull(allowedValuesForComponents);
-		assertTrue(allowedValuesForComponents.iterator().hasNext());
-		final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
-		
-		// grab the first priority
-		final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
-		assertNotNull(allowedValuesForPriority);
-		assertTrue(allowedValuesForPriority.iterator().hasNext());
-		final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
-
-		// build issue input
-		final String summary = "My new issue!";
-		final String description = "Some description";
-		final BasicUser assignee = IntegrationTestUtil.USER1;
-		final List<String> affectedVersionsNames = Collections.emptyList();
-		final DateTime dueDate = new DateTime(new Date().getTime());
-		final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
-
-		// prepare IssueInput
-		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(project, issueType, summary)
-				.setDescription(description)
-				.setAssignee(assignee)
-				.setAffectedVersionsNames(affectedVersionsNames)
-				.setFixVersionsNames(fixVersionsNames)
-				.setComponents(component)
-				.setDueDate(dueDate)
-				.setPriority(priority);
-
-		// create
-		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build(), pm);
-		assertNotNull(basicCreatedIssue.getKey());
-
-		// get issue and check if everything was set as we expected
-		final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey(), pm);
-		assertNotNull(createdIssue);
-
-		assertEquals(basicCreatedIssue.getKey(), createdIssue.getKey());
-		assertEquals(project.getKey(), createdIssue.getProject().getKey());
-		assertEquals(issueType.getId(), createdIssue.getIssueType().getId());
-		assertEquals(summary, createdIssue.getSummary());
-		assertEquals(description, createdIssue.getDescription());
-
-		final BasicUser actualAssignee = createdIssue.getAssignee();
-		assertNotNull(actualAssignee);
-		assertEquals(assignee.getSelf(), actualAssignee.getSelf());
-
-		final Iterable<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
-		assertThat(affectedVersionsNames, IterableMatcher.hasOnlyElements(actualAffectedVersionsNames));
-
-		final Iterable<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
-		assertThat(fixVersionsNames, IterableMatcher.hasOnlyElements(actualFixVersionsNames));
-
-		assertTrue(createdIssue.getComponents().iterator().hasNext());
-		assertEquals(component.getId(), createdIssue.getComponents().iterator().next().getId());
-
-		// strip time from dueDate
-		final DateTime expectedDueDate = JsonParseUtil.parseDate(JsonParseUtil.formatDate(dueDate));
-		assertEquals(expectedDueDate, createdIssue.getDueDate());
-
-		final BasicPriority actualPriority = createdIssue.getPriority();
-		assertNotNull(actualPriority);
-		assertEquals(priority.getId(), actualPriority.getId());
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testCreateIssueWithOnlyRequiredFields() {
-		// collect CreateIssueMetadata for project with key TST
-		final IssueRestClient issueClient = client.getIssueClient();
-		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build(),
-				pm
-		);
-
-		// select project and issue
-		assertEquals(1, Iterables.size(metadataProjects));
-		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
-
-		// build issue input
-		final String summary = "My new issue!";
-
-		// create
-		final IssueInput issueInput = new IssueInputBuilder(project, issueType, summary).build();
-		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput, pm);
-		assertNotNull(basicCreatedIssue.getKey());
-
-		// get issue and check if everything was set as we expected
-		final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey(), pm);
-		assertNotNull(createdIssue);
-
-		assertEquals(basicCreatedIssue.getKey(), createdIssue.getKey());
-		assertEquals(project.getKey(), createdIssue.getProject().getKey());
-		assertEquals(issueType.getId(), createdIssue.getIssueType().getId());
-		assertEquals(summary, createdIssue.getSummary());
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testCreateIssueWithoutSummary() {
-		final IssueRestClient issueClient = client.getIssueClient();
-
-		thrown.expect(RestClientException.class);
-		thrown.expectMessage("You must specify a summary of the issue.");
-
-		final IssueInput issueInput = new IssueInputBuilder("TST", 1L).build();
-		issueClient.createIssue(issueInput, pm);
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testCreateIssueWithNotExistentProject() {
-		final IssueRestClient issueClient = client.getIssueClient();
-
-		thrown.expect(RestClientException.class);
-		thrown.expectMessage("project is required");
-
-		final IssueInput issueInput = new IssueInputBuilder("BAD", 1L, "Should fail").build();
-		issueClient.createIssue(issueInput, pm);
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testCreateIssueWithNotExistentIssueType() {
-		final IssueRestClient issueClient = client.getIssueClient();
-
-		thrown.expect(RestClientException.class);
-		thrown.expectMessage("valid issue type is required");
-
-		final IssueInput issueInput = new IssueInputBuilder("TST", 666L, "Should fail").build();
-		issueClient.createIssue(issueInput, pm);
-	}
-
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void interactiveUseCase() throws CannotTransformValueException {
-		final IssueRestClient issueClient = client.getIssueClient();
-
-		// get project list with fields expanded
-		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build(),
-				pm
-		);
-		log.log("Available projects: ");
-		for (CimProject p : metadataProjects) {
-			log.log(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
-		}
-		log.log("");
-		assertTrue("There is no project to select!", metadataProjects.iterator().hasNext());
-		
-		// select project
-		final CimProject project = metadataProjects.iterator().next();
-		log.log(MessageFormat.format("Selected project: [{0}] {1}\n", project.getKey(), project.getName()));
-		
-		// select issue type
-		log.log("Available issue types for selected project:");
-		for (CimIssueType t : project.getIssueTypes()) {
-			log.log(MessageFormat.format("\t* [{0}] {1}", t.getId(), t.getName()));
-		}
-		log.log("");
-
-		final CimIssueType issueType = project.getIssueTypes().iterator().next();
-		log.log(MessageFormat.format("Selected issue type: [{0}] {1}\n", issueType.getId(), issueType.getName()));
-
-		final IssueInputBuilder builder = new IssueInputBuilder(project.getKey(), issueType.getId());
-
-		// fill fields
-		log.log("Filling fields:");
-		for (Map.Entry<String, CimFieldInfo> entry : issueType.getFields().entrySet()) {
-			final CimFieldInfo fieldInfo = entry.getValue();
-
-			if ("project".equals(fieldInfo.getId()) || "issuetype".equals(fieldInfo.getId())) {
-				// this field was already set by IssueInputBuilder constructor - skip it
-				continue;
-			}
-
-			log.log(MessageFormat.format("\t* [{0}] {1}\n\t\t| schema: {2}\n\t\t| required: {3}", fieldInfo.getId(), fieldInfo.getName(), fieldInfo.getSchema(), fieldInfo.isRequired()));
-
-			// choose value for this field
-			Object value = null;
-			final Iterable<Object> allowedValues = fieldInfo.getAllowedValues();
-			if (allowedValues != null) {
-				log.log("\t\t| field only accepts those values:");
-				for (Object val : allowedValues) {
-					log.log("\t\t\t* " + val);
-				}
-				if (allowedValues.iterator().hasNext()) {
-					final Object singleValue = allowedValues.iterator().next();
-					value = "array".equals(fieldInfo.getSchema().getType()) ? Collections.singletonList(singleValue) : singleValue;
-					log.log("\t\t| selecting value: " + value);
-				}
-				else {
-					log.log("\t\t| there is no allowed value - leaving field blank");
-				}
-			}
-			else {
-				if ("string".equals(fieldInfo.getSchema().getType())) {
-					value = "This is simple string value for field " + fieldInfo.getId() + " named " + fieldInfo.getName() + ".";
-				}
-				else if ("user".equals(fieldInfo.getSchema().getType())) {
-					value = IntegrationTestUtil.USER_ADMIN;
-				}
-				else {
-					if (fieldInfo.isRequired()) {
-						fail("I don't know how to fill that required field, sorry.");
-					}
-					else {
-						log.log("\t\t| field value is not required, leaving blank");
-					}
-				}
-			}
-			if (value == null) {
-				log.log("\t\t| value is null, skipping filed");
-			}
-			else {
-				log.log(MessageFormat.format("\t\t| setting value => {0}", value));
-				builder.setFieldValue(fieldInfo.getId(), value);
-			}
-		}
-		log.log("");
-
-		// all required data is provided, let's create issue
-		final IssueInput issueInput = builder.build();
-
-		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput, pm);
-		assertNotNull(basicCreatedIssue);
-
-		final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey(), pm);
-		assertNotNull(createdIssue);
-
-		log.log("Created new issue successfully, key: " + basicCreatedIssue.getKey());
-
-		// assert few fields
-		IssueInputBuilder actualBuilder = new IssueInputBuilder(createdIssue.getProject(), createdIssue.getIssueType(), createdIssue.getSummary())
-				.setPriority(createdIssue.getPriority())
-				.setReporter(createdIssue.getReporter())
-				.setAssignee(createdIssue.getAssignee())
-				.setDescription(createdIssue.getDescription());
-
-		final Collection<FieldInput> actualValues = actualBuilder.build().getFields().values();
-		final Collection<FieldInput> expectedValues = issueInput.getFields().values();
-
-		assertThat(expectedValues, IsCollectionContaining.hasItems(actualValues.toArray(new FieldInput[actualValues.size()])));
 	}
 
 }
