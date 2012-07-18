@@ -210,6 +210,10 @@
 					<groupId>com.sun.jersey</groupId>
 					<artifactId>jersey-server</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- this should be one day extracted to a separate lib -->
