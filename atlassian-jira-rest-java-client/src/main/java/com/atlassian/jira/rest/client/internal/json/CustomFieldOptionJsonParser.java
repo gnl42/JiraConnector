@@ -17,10 +17,12 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
+import java.util.Collections;
 
 /**
  * JSON parser for CustomFieldOption
@@ -28,11 +30,23 @@ import java.net.URI;
  * @since v1.0
  */
 public class CustomFieldOptionJsonParser implements JsonParser<CustomFieldOption> {
+
+	private final JsonArrayParser<Iterable<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
+
 	@Override
 	public CustomFieldOption parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final long id = json.getLong("id");
 		final String value = json.getString("value");
-		return new CustomFieldOption(id, selfUri, value);
+
+		final JSONArray childrenArray = json.optJSONArray("children");
+		final Iterable<CustomFieldOption> children = (childrenArray != null)
+				? childrenParser.parse(childrenArray)
+				: Collections.<CustomFieldOption>emptyList();
+
+		final JSONObject childObject = json.optJSONObject("child");
+		final CustomFieldOption child = (childObject != null) ? parse(childObject) : null;
+
+		return new CustomFieldOption(id, selfUri, value, children, child);
 	}
 }

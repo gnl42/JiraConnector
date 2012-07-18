@@ -20,7 +20,11 @@ import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 /**
 * Transforms most of standard fields values into form understandable by input generator.
@@ -33,18 +37,17 @@ public class BaseValueTransformer implements ValueTransformer {
 		if (rawValue == null) {
 			return null;
 		}
-		else if (rawValue instanceof Number) {
-			return rawValue.toString();
-		}
-		else if (rawValue instanceof String) {
+		else if (rawValue instanceof String || rawValue instanceof Number || rawValue instanceof ComplexIssueInputFieldValue) {
 			return rawValue;
 		}
 		else if (rawValue instanceof BasicProject) {
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("key", ((BasicProject) rawValue).getKey()));
 		}
 		else if (rawValue instanceof CustomFieldOption) {
-			final CustomFieldOption cfo = (CustomFieldOption) rawValue;
-			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue()));
+			return transformCustomFieldOption((CustomFieldOption) rawValue);
+		}
+		else if (rawValue instanceof TimeTracking) {
+			return transformTimeTracking((TimeTracking) rawValue);
 		}
 		else if (rawValue instanceof IdentifiableEntity) {
 			final IdentifiableEntity identifiableEntity = (IdentifiableEntity) rawValue;
@@ -56,6 +59,36 @@ public class BaseValueTransformer implements ValueTransformer {
 		}
 
 		return CANNOT_HANDLE;
+	}
+
+	private ComplexIssueInputFieldValue transformCustomFieldOption(CustomFieldOption cfo) {
+		if (cfo.getChild() != null) {
+			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of(
+					"id", cfo.getId().toString(),
+					"value", cfo.getValue(),
+					"child", this.apply(cfo.getChild())));
+		}
+		else {
+			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue()));
+		}
+	}
+
+	private ComplexIssueInputFieldValue transformTimeTracking(TimeTracking timeTracking) {
+		final Map<String, Object> fields = Maps.newHashMap();
+
+		final Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
+		if (originalEstimateMinutes != null) {
+			fields.put("originalEstimate", originalEstimateMinutes + "m");
+		}
+
+		final Integer remainingEstimateMinutes = timeTracking.getRemainingEstimateMinutes();
+		if (remainingEstimateMinutes != null) {
+			fields.put("remainingEstimate", remainingEstimateMinutes + "m");
+		}
+
+		// Don't use time spent as JIRA says: "Setting the Time Spent directly is not supported."
+
+		return new ComplexIssueInputFieldValue(fields);
 	}
 
 }

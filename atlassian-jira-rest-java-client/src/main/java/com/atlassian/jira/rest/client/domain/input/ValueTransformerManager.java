@@ -80,6 +80,7 @@ public class ValueTransformerManager implements Function<Object, Object> {
 			}
 		}
 
-		throw new CannotTransformValueException("Any of available transformers was able to transform given values");
+		throw new CannotTransformValueException("Any of available transformers was able to transform given value. Value is: "
+				+ (rawInput == null ? "NULL" : rawInput.getClass().getName() + ": " + rawInput.toString()));
 	}
 }

@@ -4,7 +4,7 @@
 
 ___ Exported on _____________________________
 
-     on                                            : Wednesday, July 18, 2012 10:23:18 AM CEST
+     on                                            : Wednesday, July 18, 2012 4:01:35 PM CEST
      by                                            : admin ( Administrator )
 
 ___ Environment ____________________________
@@ -14,15 +14,15 @@ ___ Environment ____________________________
      JIRA Installation Type                        : unknown
      Java Version                                  : 1.6.0_26 - Sun Microsystems Inc.
      Current Working Directory                     : /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client
-     Maximum Allowable Memory                      : 455MB
-     Total Memory                                  : 326MB
-     Free Memory                                   : 73MB
-     Used Memory                                   : 253MB
-     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 21277248(20778K) committed = 21495808(20992K) max = 50331648(49152K)
-     Memory Pool: PS Eden Space                    : PS Eden Space: init = 65667072(64128K) used = 24339744(23769K) committed = 66453504(64896K) max = 167837696(163904K)
-     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 10878976(10624K) used = 3052616(2981K) committed = 3080192(3008K) max = 3080192(3008K)
-     Memory Pool: PS Old Gen                       : PS Old Gen: init = 174850048(170752K) used = 238334392(232748K) committed = 272957440(266560K) max = 357957632(349568K)
-     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 21757952(21248K) used = 152710384(149131K) committed = 230227968(224832K) max = 268435456(262144K)
+     Maximum Allowable Memory                      : 501MB
+     Total Memory                                  : 501MB
+     Free Memory                                   : 76MB
+     Used Memory                                   : 425MB
+     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 30395520(29683K) committed = 30801920(30080K) max = 50331648(49152K)
+     Memory Pool: PS Eden Space                    : PS Eden Space: init = 65667072(64128K) used = 109486392(106920K) committed = 156696576(153024K) max = 157483008(153792K)
+     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 10878976(10624K) used = 684216(668K) committed = 10747904(10496K) max = 10747904(10496K)
+     Memory Pool: PS Old Gen                       : PS Old Gen: init = 174850048(170752K) used = 334560552(326719K) committed = 357957632(349568K) max = 357957632(349568K)
+     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 21757952(21248K) used = 164871488(161007K) committed = 236060672(230528K) max = 268435456(262144K)
      JVM Input Arguments                           : -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,suspend=n,server=y -Xmx512m -XX:MaxPermSize=256m -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home -Dplugin.root.directories=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client -Djava.awt.headless=true -Dcatalina.servlet.uriencoding=UTF-8 -Dbaseurl=http://rabbit:2990/jira -Datlassian.sdk.version=3.11 -Dcatalina.home=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/apache-tomcat-6.0.20 -Dcatalina.base=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home -Djava.io.tmpdir=/home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/container/tomcat6x/cargo-jira-home/temp
 
 ___ Database Configuration _________________
@@ -230,7 +230,7 @@ ___ Application Properties _________________
      jira.view.issue.links.sort.order              : type, status, priority
      jira.view.issue.show.quicksubtask.when.no.subtasks : false
      jira.viewcvs.root.type                        : cvsroot
-     jira.webresource.flushcounter                 : 5008
+     jira.webresource.flushcounter                 : 5010
      jira.webresource.superbatch.flushcounter      : 1
      jira.websudo.is.disabled                      : false
      jira.websudo.timeout                          : 10
@@ -263,7 +263,7 @@ ___ Database Statistics ____________________
 
      Issues                                        : 11
      Projects                                      : 5
-     Custom Fields                                 : 4
+     Custom Fields                                 : 19
      Workflows                                     : 1
      Users                                         : 4
      Groups                                        : 3
@@ -357,7 +357,7 @@ ___ User Plugins ____________________________
      jira-rest-java-client-0.6-m6-SNAPSHOT.jar     : jira-rest-java-client-0.6-m6-SNAPSHOT.jar
           Version                                       : 0.0
           Status                                        : disabled
-          Unloadable Reason                             : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/plugins/installed-plugins/jira-rest-java-client-0.6-m6-SNAPSHOT.jar (1342597987000)
+          Unloadable Reason                             : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/JRJC/atlassian-jira-rest-java-client/target/jira/home/plugins/installed-plugins/jira-rest-java-client-0.6-m6-SNAPSHOT.jar (1342617298000)
           Vendor                                        : (unknown)
           Description                                   : 
 
@@ -868,17 +868,17 @@ ___ Services _______________________________
 
      Backup Service                                : com.atlassian.jira.service.services.export.ExportService
           Service Delay                                 : 43200000ms
-     Last Run                                      : 7/18/12 10:11 AM
+     Last Run                                      : 7/18/12 4:00 PM
           USE_DEFAULT_DIRECTORY                         : true
      Mail Queue Service                            : com.atlassian.jira.service.services.mail.MailQueueService
           Service Delay                                 : 60000ms
-     Last Run                                      : 7/18/12 10:23 AM
+     Last Run                                      : 7/18/12 4:00 PM
      Sample                                        : com.atlassian.jira.service.services.mail.MailFetcherService
           Service Delay                                 : 60000ms
-     Last Run                                      : 7/18/12 10:23 AM
+     Last Run                                      : 7/18/12 4:00 PM
      Service Provider Token Remover                : com.atlassian.sal.jira.scheduling.JiraPluginSchedulerService
           Service Delay                                 : 28800000ms
-     Last Run                                      : 7/18/12 10:11 AM
+     Last Run                                      : 7/18/12 4:00 PM
           pluginJobName                                 : Service Provider Token Remover
           initiallyFired                                : true
 
@@ -1106,18 +1106,68 @@ ___ Trusted Applications ___________________
     <Component id="10000" project="10000" name="Component A" description="this is some description of component A" lead="admin" assigneetype="0"/>
     <Component id="10001" project="10000" name="Component B" description="another description" lead="wseliga" assigneetype="0"/>
     <Component id="10010" project="10010" name="One Great Component" assigneetype="0"/>
+    <Component id="10020" project="10030" name="server" assigneetype="0"/>
+    <Component id="10021" project="10030" name="desktop app" assigneetype="0"/>
+    <Component id="10022" project="10030" name="web app" assigneetype="0"/>
     <ConfigurationContext id="10000" key="issuetype" fieldconfigscheme="10000"/>
     <ConfigurationContext id="10010" key="customfield_10000" fieldconfigscheme="10010"/>
     <ConfigurationContext id="10011" key="customfield_10001" fieldconfigscheme="10011"/>
     <ConfigurationContext id="10020" key="customfield_10010" fieldconfigscheme="10020"/>
     <ConfigurationContext id="10021" key="customfield_10011" fieldconfigscheme="10021"/>
+    <ConfigurationContext id="10030" key="customfield_10020" fieldconfigscheme="10030"/>
+    <ConfigurationContext id="10031" key="customfield_10021" fieldconfigscheme="10031"/>
+    <ConfigurationContext id="10032" key="customfield_10022" fieldconfigscheme="10032"/>
+    <ConfigurationContext id="10033" key="customfield_10023" fieldconfigscheme="10033"/>
+    <ConfigurationContext id="10034" key="customfield_10024" fieldconfigscheme="10034"/>
+    <ConfigurationContext id="10035" key="customfield_10025" fieldconfigscheme="10035"/>
+    <ConfigurationContext id="10036" key="customfield_10026" fieldconfigscheme="10036"/>
+    <ConfigurationContext id="10037" key="customfield_10027" fieldconfigscheme="10037"/>
+    <ConfigurationContext id="10038" key="customfield_10028" fieldconfigscheme="10038"/>
+    <ConfigurationContext id="10039" key="customfield_10029" fieldconfigscheme="10039"/>
+    <ConfigurationContext id="10040" key="customfield_10030" fieldconfigscheme="10040"/>
+    <ConfigurationContext id="10041" key="customfield_10031" fieldconfigscheme="10041"/>
+    <ConfigurationContext id="10042" key="customfield_10032" fieldconfigscheme="10042"/>
+    <ConfigurationContext id="10043" key="customfield_10033" fieldconfigscheme="10043"/>
+    <ConfigurationContext id="10044" key="customfield_10034" fieldconfigscheme="10044"/>
     <CustomField id="10000" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:float" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:numberrange" name="My Number Field New" description=""/>
     <CustomField id="10001" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:radiosearcher" name="My Radio buttons"/>
     <CustomField id="10010" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:project" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:projectsearcher" name="project3" description=""/>
     <CustomField id="10011" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:textarea" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:textsearcher" name="project2" description="some blah blah about project"/>
+    <CustomField id="10020" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:datepicker" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:daterange" name="DatePickerField"/>
+    <CustomField id="10021" customfieldtypekey="com.atlassian.jirafisheyeplugin:hiddenjobswitch" customfieldsearcherkey="com.atlassian.jirafisheyeplugin:jobsearcher" name="HiddenJobSwitch"/>
+    <CustomField id="10022" customfieldtypekey="com.atlassian.jirafisheyeplugin:jobcheckbox" customfieldsearcherkey="com.atlassian.jirafisheyeplugin:jobsearcher" name="JobCheckbox"/>
+    <CustomField id="10023" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:checkboxsearcher" name="MultiCheckboxes"/>
+    <CustomField id="10024" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:select" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:selectsearcher" name="SelectList"/>
+    <CustomField id="10025" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:userpicker" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:userpickersearcher" name="UserPicker"/>
+    <CustomField id="10026" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:cascadingselectsearcher" name="CascadingSelect"/>
+    <CustomField id="10027" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:datetime" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:datetimerange" name="DateTime"/>
+    <CustomField id="10028" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:grouppicker" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:grouppickersearcher" name="GroupPicker"/>
+    <CustomField id="10029" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:labels" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:labelsearcher" name="Labels"/>
+    <CustomField id="10030" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:grouppickersearcher" name="MultiGroupPicker"/>
+    <CustomField id="10031" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:userpickersearcher" name="MultiUserPicker"/>
+    <CustomField id="10032" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:version" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:versionsearcher" name="SingleVersionPicker"/>
+    <CustomField id="10033" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:url" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:exacttextsearcher" name="URLField"/>
+    <CustomField id="10034" customfieldtypekey="com.atlassian.jira.plugin.system.customfieldtypes:multiversion" customfieldsearcherkey="com.atlassian.jira.plugin.system.customfieldtypes:versionsearcher" name="VersionPicker"/>
     <CustomFieldOption id="10000" customfield="10001" customfieldconfig="10011" sequence="0" value="abc"/>
     <CustomFieldOption id="10001" customfield="10001" customfieldconfig="10011" sequence="1" value="Another"/>
     <CustomFieldOption id="10002" customfield="10001" customfieldconfig="10011" sequence="2" value="The last option"/>
+    <CustomFieldOption id="10010" customfield="10023" customfieldconfig="10033" sequence="0" value="Option1" disabled="N"/>
+    <CustomFieldOption id="10011" customfield="10023" customfieldconfig="10033" sequence="1" value="Option2" disabled="N"/>
+    <CustomFieldOption id="10012" customfield="10023" customfieldconfig="10033" sequence="2" value="Option3" disabled="N"/>
+    <CustomFieldOption id="10013" customfield="10024" customfieldconfig="10034" sequence="0" value="SelectOption1" disabled="N"/>
+    <CustomFieldOption id="10014" customfield="10024" customfieldconfig="10034" sequence="1" value="SelectOption2" disabled="N"/>
+    <CustomFieldOption id="10015" customfield="10024" customfieldconfig="10034" sequence="2" value="SelectOption3" disabled="N"/>
+    <CustomFieldOption id="10016" customfield="10024" customfieldconfig="10034" sequence="3" value="Select Option 4" disabled="N"/>
+    <CustomFieldOption id="10017" customfield="10026" customfieldconfig="10036" sequence="0" value="colors" disabled="N"/>
+    <CustomFieldOption id="10018" customfield="10026" customfieldconfig="10036" sequence="1" value="numbers" disabled="N"/>
+    <CustomFieldOption id="10019" customfield="10026" customfieldconfig="10036" parentoptionid="10017" sequence="0" value="red" disabled="N"/>
+    <CustomFieldOption id="10020" customfield="10026" customfieldconfig="10036" parentoptionid="10017" sequence="1" value="blue" disabled="N"/>
+    <CustomFieldOption id="10021" customfield="10026" customfieldconfig="10036" parentoptionid="10017" sequence="2" value="green" disabled="N"/>
+    <CustomFieldOption id="10022" customfield="10026" customfieldconfig="10036" parentoptionid="10018" sequence="0" value="one" disabled="N"/>
+    <CustomFieldOption id="10023" customfield="10026" customfieldconfig="10036" parentoptionid="10018" sequence="1" value="two" disabled="N"/>
+    <CustomFieldOption id="10024" customfield="10026" customfieldconfig="10036" parentoptionid="10018" sequence="2" value="three" disabled="N"/>
+    <CustomFieldOption id="10025" customfield="10026" customfieldconfig="10036" parentoptionid="10018" sequence="3" value="four" disabled="N"/>
+    <CustomFieldOption id="10026" customfield="10026" customfieldconfig="10036" sequence="2" value="empty" disabled="N"/>
     <CustomFieldValue id="10001" issue="10000" customfield="10001" stringvalue="10001"/>
     <CustomFieldValue id="10002" issue="10020" customfield="10000" numbervalue="-17.0"/>
     <CustomFieldValue id="10003" issue="10021" customfield="10000" numbervalue="-15.0"/>
@@ -1164,16 +1214,61 @@ ___ Trusted Applications ___________________
     <FieldConfigScheme id="10011" name="Default Configuration Scheme for My Radio buttons" description="Default configuration scheme generated by JIRA" fieldid="customfield_10001"/>
     <FieldConfigScheme id="10020" name="Default Configuration Scheme for project" description="Default configuration scheme generated by JIRA" fieldid="customfield_10010"/>
     <FieldConfigScheme id="10021" name="Default Configuration Scheme for project" description="Default configuration scheme generated by JIRA" fieldid="customfield_10011"/>
+    <FieldConfigScheme id="10030" name="Default Configuration Scheme for DatePickerField" description="Default configuration scheme generated by JIRA" fieldid="customfield_10020"/>
+    <FieldConfigScheme id="10031" name="Default Configuration Scheme for HiddenJobSwitch" description="Default configuration scheme generated by JIRA" fieldid="customfield_10021"/>
+    <FieldConfigScheme id="10032" name="Default Configuration Scheme for JobCheckbox" description="Default configuration scheme generated by JIRA" fieldid="customfield_10022"/>
+    <FieldConfigScheme id="10033" name="Default Configuration Scheme for MultiCheckboxes" description="Default configuration scheme generated by JIRA" fieldid="customfield_10023"/>
+    <FieldConfigScheme id="10034" name="Default Configuration Scheme for SelectList" description="Default configuration scheme generated by JIRA" fieldid="customfield_10024"/>
+    <FieldConfigScheme id="10035" name="Default Configuration Scheme for UserPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10025"/>
+    <FieldConfigScheme id="10036" name="Default Configuration Scheme for CascadingSelect" description="Default configuration scheme generated by JIRA" fieldid="customfield_10026"/>
+    <FieldConfigScheme id="10037" name="Default Configuration Scheme for DateTime" description="Default configuration scheme generated by JIRA" fieldid="customfield_10027"/>
+    <FieldConfigScheme id="10038" name="Default Configuration Scheme for GroupPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10028"/>
+    <FieldConfigScheme id="10039" name="Default Configuration Scheme for Labels" description="Default configuration scheme generated by JIRA" fieldid="customfield_10029"/>
+    <FieldConfigScheme id="10040" name="Default Configuration Scheme for MultiGroupPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10030"/>
+    <FieldConfigScheme id="10041" name="Default Configuration Scheme for MultiUserPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10031"/>
+    <FieldConfigScheme id="10042" name="Default Configuration Scheme for SingleVersionPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10032"/>
+    <FieldConfigScheme id="10043" name="Default Configuration Scheme for URLField" description="Default configuration scheme generated by JIRA" fieldid="customfield_10033"/>
+    <FieldConfigScheme id="10044" name="Default Configuration Scheme for VersionPicker" description="Default configuration scheme generated by JIRA" fieldid="customfield_10034"/>
     <FieldConfigSchemeIssueType id="10002" fieldconfigscheme="10000" fieldconfiguration="10000"/>
     <FieldConfigSchemeIssueType id="10010" issuetype="1" fieldconfigscheme="10010" fieldconfiguration="10010"/>
     <FieldConfigSchemeIssueType id="10011" fieldconfigscheme="10011" fieldconfiguration="10011"/>
     <FieldConfigSchemeIssueType id="10020" fieldconfigscheme="10020" fieldconfiguration="10020"/>
     <FieldConfigSchemeIssueType id="10021" fieldconfigscheme="10021" fieldconfiguration="10021"/>
+    <FieldConfigSchemeIssueType id="10030" fieldconfigscheme="10030" fieldconfiguration="10030"/>
+    <FieldConfigSchemeIssueType id="10031" fieldconfigscheme="10031" fieldconfiguration="10031"/>
+    <FieldConfigSchemeIssueType id="10032" fieldconfigscheme="10032" fieldconfiguration="10032"/>
+    <FieldConfigSchemeIssueType id="10033" fieldconfigscheme="10033" fieldconfiguration="10033"/>
+    <FieldConfigSchemeIssueType id="10034" fieldconfigscheme="10034" fieldconfiguration="10034"/>
+    <FieldConfigSchemeIssueType id="10035" fieldconfigscheme="10035" fieldconfiguration="10035"/>
+    <FieldConfigSchemeIssueType id="10036" fieldconfigscheme="10036" fieldconfiguration="10036"/>
+    <FieldConfigSchemeIssueType id="10037" fieldconfigscheme="10037" fieldconfiguration="10037"/>
+    <FieldConfigSchemeIssueType id="10038" fieldconfigscheme="10038" fieldconfiguration="10038"/>
+    <FieldConfigSchemeIssueType id="10039" fieldconfigscheme="10039" fieldconfiguration="10039"/>
+    <FieldConfigSchemeIssueType id="10040" fieldconfigscheme="10040" fieldconfiguration="10040"/>
+    <FieldConfigSchemeIssueType id="10041" fieldconfigscheme="10041" fieldconfiguration="10041"/>
+    <FieldConfigSchemeIssueType id="10042" fieldconfigscheme="10042" fieldconfiguration="10042"/>
+    <FieldConfigSchemeIssueType id="10043" fieldconfigscheme="10043" fieldconfiguration="10043"/>
+    <FieldConfigSchemeIssueType id="10044" fieldconfigscheme="10044" fieldconfiguration="10044"/>
     <FieldConfiguration id="10000" name="Default Configuration for Issue Type" description="Default configuration generated by JIRA" fieldid="issuetype"/>
     <FieldConfiguration id="10010" name="Default Configuration for My Number Field" description="Default configuration generated by JIRA" fieldid="customfield_10000"/>
     <FieldConfiguration id="10011" name="Default Configuration for My Radio buttons" description="Default configuration generated by JIRA" fieldid="customfield_10001"/>
     <FieldConfiguration id="10020" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10010"/>
     <FieldConfiguration id="10021" name="Default Configuration for project" description="Default configuration generated by JIRA" fieldid="customfield_10011"/>
+    <FieldConfiguration id="10030" name="Default Configuration for DatePickerField" description="Default configuration generated by JIRA" fieldid="customfield_10020"/>
+    <FieldConfiguration id="10031" name="Default Configuration for HiddenJobSwitch" description="Default configuration generated by JIRA" fieldid="customfield_10021"/>
+    <FieldConfiguration id="10032" name="Default Configuration for JobCheckbox" description="Default configuration generated by JIRA" fieldid="customfield_10022"/>
+    <FieldConfiguration id="10033" name="Default Configuration for MultiCheckboxes" description="Default configuration generated by JIRA" fieldid="customfield_10023"/>
+    <FieldConfiguration id="10034" name="Default Configuration for SelectList" description="Default configuration generated by JIRA" fieldid="customfield_10024"/>
+    <FieldConfiguration id="10035" name="Default Configuration for UserPicker" description="Default configuration generated by JIRA" fieldid="customfield_10025"/>
+    <FieldConfiguration id="10036" name="Default Configuration for CascadingSelect" description="Default configuration generated by JIRA" fieldid="customfield_10026"/>
+    <FieldConfiguration id="10037" name="Default Configuration for DateTime" description="Default configuration generated by JIRA" fieldid="customfield_10027"/>
+    <FieldConfiguration id="10038" name="Default Configuration for GroupPicker" description="Default configuration generated by JIRA" fieldid="customfield_10028"/>
+    <FieldConfiguration id="10039" name="Default Configuration for Labels" description="Default configuration generated by JIRA" fieldid="customfield_10029"/>
+    <FieldConfiguration id="10040" name="Default Configuration for MultiGroupPicker" description="Default configuration generated by JIRA" fieldid="customfield_10030"/>
+    <FieldConfiguration id="10041" name="Default Configuration for MultiUserPicker" description="Default configuration generated by JIRA" fieldid="customfield_10031"/>
+    <FieldConfiguration id="10042" name="Default Configuration for SingleVersionPicker" description="Default configuration generated by JIRA" fieldid="customfield_10032"/>
+    <FieldConfiguration id="10043" name="Default Configuration for URLField" description="Default configuration generated by JIRA" fieldid="customfield_10033"/>
+    <FieldConfiguration id="10044" name="Default Configuration for VersionPicker" description="Default configuration generated by JIRA" fieldid="customfield_10034"/>
     <FieldLayout id="10000" name="Default Field Configuration" description="The default field configuration" type="default"/>
     <FieldLayoutItem id="10020" fieldlayout="10000" fieldidentifier="summary" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
     <FieldLayoutItem id="10021" fieldlayout="10000" fieldidentifier="issuetype" ishidden="false" isrequired="true" renderertype="jira-text-renderer"/>
@@ -1228,6 +1323,21 @@ ___ Trusted Applications ___________________
     <FieldScreenLayoutItem id="10041" fieldidentifier="customfield_10011" sequence="18" fieldscreentab="10000"/>
     <FieldScreenLayoutItem id="10050" fieldidentifier="customfield_10000" sequence="0" fieldscreentab="10010"/>
     <FieldScreenLayoutItem id="10051" fieldidentifier="labels" sequence="1" fieldscreentab="10010"/>
+    <FieldScreenLayoutItem id="10060" fieldidentifier="customfield_10020" sequence="19" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10061" fieldidentifier="customfield_10021" sequence="20" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10062" fieldidentifier="customfield_10022" sequence="21" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10063" fieldidentifier="customfield_10023" sequence="22" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10064" fieldidentifier="customfield_10024" sequence="23" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10065" fieldidentifier="customfield_10025" sequence="24" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10066" fieldidentifier="customfield_10026" sequence="25" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10067" fieldidentifier="customfield_10027" sequence="26" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10068" fieldidentifier="customfield_10028" sequence="27" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10069" fieldidentifier="customfield_10029" sequence="28" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10070" fieldidentifier="customfield_10030" sequence="29" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10071" fieldidentifier="customfield_10031" sequence="30" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10072" fieldidentifier="customfield_10032" sequence="31" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10073" fieldidentifier="customfield_10033" sequence="32" fieldscreentab="10000"/>
+    <FieldScreenLayoutItem id="10074" fieldidentifier="customfield_10034" sequence="33" fieldscreentab="10000"/>
     <FieldScreenScheme id="1" name="Default Screen Scheme" description="Default Screen Scheme"/>
     <FieldScreenSchemeItem id="10000" fieldscreen="1" fieldscreenscheme="1"/>
     <FieldScreenTab id="10000" name="Field Tab" sequence="0" fieldscreen="1"/>
@@ -1287,7 +1397,7 @@ ___ Trusted Applications ___________________
     <Label id="10020" issue="10050" label="a"/>
     <ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
     <ListenerConfig id="10110" clazz="com.atlassian.jira.event.listeners.history.IssueAssignHistoryListener" name="Issue Assignment Listener"/>
-    <ListenerConfig id="10310" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
+    <ListenerConfig id="10510" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
     <Membership id="10000" parentId="10000" childId="10000" membershipType="GROUP_USER" parentName="jira-administrators" lowerParentName="jira-administrators" childName="admin" lowerChildName="admin" directoryId="1"/>
     <Membership id="10001" parentId="10001" childId="10000" membershipType="GROUP_USER" parentName="jira-developers" lowerParentName="jira-developers" childName="admin" lowerChildName="admin" directoryId="1"/>
     <Membership id="10002" parentId="10002" childId="10000" membershipType="GROUP_USER" parentName="jira-users" lowerParentName="jira-users" childName="admin" lowerChildName="admin" directoryId="1"/>
@@ -1477,7 +1587,7 @@ ___ Trusted Applications ___________________
     <OSPropertyEntry id="10613" entityName="ServiceConfig" entityId="10370" propertyKey="initiallyFired" type="5"/>
     <OSPropertyEntry id="10614" entityName="jira.properties" entityId="1" propertyKey="jira.show.contact.administrators.form" type="1"/>
     <OSPropertyEntry id="10615" entityName="jira.properties" entityId="1" propertyKey="jira.contact.administrators.message" type="6"/>
-    <OSPropertyEntry id="10701" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
+    <OSPropertyEntry id="10900" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
     <OSPropertyNumber id="10002" value="22"/>
     <OSPropertyNumber id="10014" value="1"/>
     <OSPropertyNumber id="10015" value="1"/>
@@ -1554,7 +1664,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10362" value="text"/>
     <OSPropertyString id="10366" value="pl_PL"/>
     <OSPropertyString id="10443" value="Service Provider Token Remover"/>
-    <OSPropertyString id="10450" value="5008"/>
+    <OSPropertyString id="10450" value="5010"/>
     <OSPropertyString id="10500" value="10083"/>
     <OSPropertyString id="10600" value="1"/>
     <OSPropertyString id="10601" value="false"/>
@@ -1569,7 +1679,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10610" value="1"/>
     <OSPropertyString id="10611" value="1"/>
     <OSPropertyString id="10613" value="true"/>
-    <OSPropertyString id="10701" value="false"/>
+    <OSPropertyString id="10900" value="false"/>
     <OSPropertyText id="10022" value="AAABBA0ODAoPeNptj1FPgzAUhd/7K5r4jGmZmkDSBwaNogMWYM4svtTuOmtGR27L4v69bOiL8ek+nJzvO/dqDVuaDDvKbim/i2cs5iGVTUtDxiKSgdNoem8OVjzmdUKl9YA9GgevMU0PXQeojdrTBvAISMqhewOs3lcO0ImAkxRBnduZ8iBCNosCHgaMk0+D6nphNFgHcmsuAlm2sl7WeSOnWGlvjiA8DkAKZUazVVaD/OoNniZgFEUj7QyscKescReZSPxeOWeUJdOuPBPz+6gNXlbPN8HTZvMQzBlfk0aWogXnx0t+t/wL/wnbUw+l6kCkVVHIOs2TBVkOqD+Ug78PfgPSNG6BMC0CFBZN4P8f7FRdIKPx3oWYkJwGfM9tAhUAllLN8BrljKaWmkSeRtRCiwHCZ7g=X02dd"/>
     <OSPropertyText id="10501">
         <value><![CDATA[http://www.atlassian.com/*
@@ -1849,20 +1959,20 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="ChangeItem" seqId="10180"/>
     <SequenceValueItem seqName="ColumnLayout" seqId="10010"/>
     <SequenceValueItem seqName="ColumnLayoutItem" seqId="10020"/>
-    <SequenceValueItem seqName="Component" seqId="10020"/>
-    <SequenceValueItem seqName="ConfigurationContext" seqId="10030"/>
-    <SequenceValueItem seqName="CustomField" seqId="10020"/>
-    <SequenceValueItem seqName="CustomFieldOption" seqId="10010"/>
+    <SequenceValueItem seqName="Component" seqId="10120"/>
+    <SequenceValueItem seqName="ConfigurationContext" seqId="10130"/>
+    <SequenceValueItem seqName="CustomField" seqId="10120"/>
+    <SequenceValueItem seqName="CustomFieldOption" seqId="10110"/>
     <SequenceValueItem seqName="CustomFieldValue" seqId="10030"/>
     <SequenceValueItem seqName="ExternalEntity" seqId="210"/>
     <SequenceValueItem seqName="FavouriteAssociations" seqId="10010"/>
-    <SequenceValueItem seqName="FieldConfigScheme" seqId="10030"/>
-    <SequenceValueItem seqName="FieldConfigSchemeIssueType" seqId="10030"/>
-    <SequenceValueItem seqName="FieldConfiguration" seqId="10030"/>
+    <SequenceValueItem seqName="FieldConfigScheme" seqId="10130"/>
+    <SequenceValueItem seqName="FieldConfigSchemeIssueType" seqId="10130"/>
+    <SequenceValueItem seqName="FieldConfiguration" seqId="10130"/>
     <SequenceValueItem seqName="FieldLayout" seqId="10010"/>
     <SequenceValueItem seqName="FieldLayoutItem" seqId="10120"/>
     <SequenceValueItem seqName="FieldScreen" seqId="10010"/>
-    <SequenceValueItem seqName="FieldScreenLayoutItem" seqId="10060"/>
+    <SequenceValueItem seqName="FieldScreenLayoutItem" seqId="10160"/>
     <SequenceValueItem seqName="FieldScreenScheme" seqId="10000"/>
     <SequenceValueItem seqName="FieldScreenSchemeItem" seqId="10010"/>
     <SequenceValueItem seqName="FieldScreenTab" seqId="10020"/>
@@ -1875,14 +1985,14 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="IssueLinkType" seqId="10020"/>
     <SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
     <SequenceValueItem seqName="Label" seqId="10030"/>
-    <SequenceValueItem seqName="ListenerConfig" seqId="10410"/>
+    <SequenceValueItem seqName="ListenerConfig" seqId="10610"/>
     <SequenceValueItem seqName="Membership" seqId="10040"/>
     <SequenceValueItem seqName="Notification" seqId="10050"/>
     <SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
     <SequenceValueItem seqName="OSCurrentStep" seqId="10100"/>
     <SequenceValueItem seqName="OSGroup" seqId="10010"/>
     <SequenceValueItem seqName="OSMembership" seqId="10040"/>
-    <SequenceValueItem seqName="OSPropertyEntry" seqId="10800"/>
+    <SequenceValueItem seqName="OSPropertyEntry" seqId="11000"/>
     <SequenceValueItem seqName="OSUser" seqId="10040"/>
     <SequenceValueItem seqName="OSWorkflowEntry" seqId="10090"/>
     <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
@@ -1901,9 +2011,9 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="UpgradeHistory" seqId="10260"/>
     <SequenceValueItem seqName="UpgradeVersionHistory" seqId="10180"/>
     <SequenceValueItem seqName="User" seqId="10040"/>
-    <SequenceValueItem seqName="UserAttribute" seqId="10450"/>
+    <SequenceValueItem seqName="UserAttribute" seqId="10650"/>
     <SequenceValueItem seqName="UserHistoryItem" seqId="10300"/>
-    <SequenceValueItem seqName="Version" seqId="10010"/>
+    <SequenceValueItem seqName="Version" seqId="10110"/>
     <SequenceValueItem seqName="VoteHistory" seqId="10100"/>
     <SequenceValueItem seqName="Workflow" seqId="10010"/>
     <SequenceValueItem seqName="WorkflowScheme" seqId="10010"/>
@@ -1990,7 +2100,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UpgradeVersionHistory id="10070" timeperformed="2012-05-10 14:15:29.532" targetbuild="586" targetversion="4.2"/>
     <UpgradeVersionHistory id="10080" timeperformed="2012-07-17 16:03:14.129" targetbuild="713" targetversion="5.0"/>
     <User id="10000" directoryId="1" userName="admin" lowerUserName="admin" active="1" createdDate="2012-07-17 16:03:13.941" updatedDate="2012-07-17 16:03:13.941" firstName="" lowerFirstName="" lastName="" lowerLastName="" displayName="Administrator" lowerDisplayName="administrator" emailAddress="wojciech.seliga@spartez.com" lowerEmailAddress="wojciech.seliga@spartez.com" credential="{PKCS5S2}8wwXb4fhjeQULzdNPten8FvPbA7SIb7fYddILqk3RMdYyc4Fx1J5Ai8dRsGfNmaF"/>
-    <User id="10010" directoryId="1" userName="wseliga" lowerUserName="wseliga" active="1" createdDate="2012-07-17 16:03:13.941" updatedDate="2012-07-17 16:03:13.941" firstName="" lowerFirstName="" lastName="" lowerLastName="" displayName="Wojciech Seliga" lowerDisplayName="wojciech seliga" emailAddress="wojciech.seliga@spartez.com" lowerEmailAddress="wojciech.seliga@spartez.com" credential="h+FWjzwI6AxNOy84IsvY1ijksjsbOtkPgxkVk3cFUCgj2keeYpQw5tnEnZRgHMX54ykRzp46Bgp3EpG055k7Sg=="/>
+    <User id="10010" directoryId="1" userName="wseliga" lowerUserName="wseliga" active="1" createdDate="2012-07-17 16:03:13.941" updatedDate="2012-07-17 16:03:13.941" firstName="" lowerFirstName="" lastName="" lowerLastName="" displayName="Wojciech Seliga" lowerDisplayName="wojciech seliga" emailAddress="wojciech.seliga@spartez.com" lowerEmailAddress="wojciech.seliga@spartez.com" credential="{PKCS5S2}ahCuXzgdyn8xyGxsS31Li7311/D9T1eBGlUYDmFGM81INBva9B8NjEaM+lKPjBD9"/>
     <User id="10020" directoryId="1" userName="user" lowerUserName="user" active="1" createdDate="2012-07-17 16:03:13.941" updatedDate="2012-07-17 16:03:13.941" firstName="" lowerFirstName="" lastName="" lowerLastName="" displayName="My Test User" lowerDisplayName="my test user" emailAddress="testmail@example.com" lowerEmailAddress="testmail@example.com" credential="sUNhQEwHj/1UnAPbRDw/7eLz5TTXP3j3cwHtl9SkNqn9nbBe6LMlwK02Q4tD/shRDCBPwcHtsh0JQcAOniwc4g=="/>
     <User id="10030" directoryId="1" userName="a/user/with/slash" lowerUserName="a/user/with/slash" active="1" createdDate="2012-07-17 16:03:13.942" updatedDate="2012-07-17 16:03:13.942" firstName="" lowerFirstName="" lastName="" lowerLastName="" displayName="A User with / in its username" lowerDisplayName="a user with / in its username" emailAddress="user@example.com" lowerEmailAddress="user@example.com" credential="7uA8NE8ylKDMwOkZ4m+mZLXDwdBDpunmYQZavB6UEfUXLvYZ6QBxJomU8Yftv5u34vW6Mzyi71jMFpqSXjffqw=="/>
     <UserAssociation sourceName="admin" sinkNodeId="10050" sinkNodeEntity="Issue" associationType="WatchIssue"/>
@@ -2000,19 +2110,22 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UserAssociation sourceName="wseliga" sinkNodeId="10010" sinkNodeEntity="Issue" associationType="WatchIssue"/>
     <UserAttribute id="10231" userId="10000" directoryId="1" name="login.lastFailedLoginMillis" value="1280843860402" lowerValue="1280843860402"/>
     <UserAttribute id="10232" userId="10000" directoryId="1" name="login.totalFailedCount" value="4" lowerValue="4"/>
-    <UserAttribute id="10243" userId="10010" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
-    <UserAttribute id="10244" userId="10010" directoryId="1" name="login.lastLoginMillis" value="1285429488282" lowerValue="1285429488282"/>
-    <UserAttribute id="10245" userId="10010" directoryId="1" name="login.count" value="5" lowerValue="5"/>
     <UserAttribute id="10246" userId="10010" directoryId="1" name="login.lastFailedLoginMillis" value="1281082979187" lowerValue="1281082979187"/>
     <UserAttribute id="10247" userId="10010" directoryId="1" name="login.totalFailedCount" value="1" lowerValue="1"/>
-    <UserAttribute id="10248" userId="10010" directoryId="1" name="login.previousLoginMillis" value="1282146099696" lowerValue="1282146099696"/>
-    <UserAttribute id="10364" userId="10000" directoryId="1" name="invalidPasswordAttempts" value="0" lowerValue="0"/>
-    <UserAttribute id="10365" userId="10000" directoryId="1" name="requiresPasswordChange" value="false" lowerValue="false"/>
-    <UserAttribute id="10366" userId="10000" directoryId="1" name="lastAuthenticated" value="1342599113870" lowerValue="1342599113870"/>
-    <UserAttribute id="10367" userId="10000" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
-    <UserAttribute id="10368" userId="10000" directoryId="1" name="login.lastLoginMillis" value="1342599113879" lowerValue="1342599113879"/>
-    <UserAttribute id="10369" userId="10000" directoryId="1" name="login.previousLoginMillis" value="1342599067978" lowerValue="1342599067978"/>
-    <UserAttribute id="10370" userId="10000" directoryId="1" name="login.count" value="447" lowerValue="447"/>
+    <UserAttribute id="10557" userId="10000" directoryId="1" name="invalidPasswordAttempts" value="0" lowerValue="0"/>
+    <UserAttribute id="10558" userId="10000" directoryId="1" name="requiresPasswordChange" value="false" lowerValue="false"/>
+    <UserAttribute id="10559" userId="10000" directoryId="1" name="lastAuthenticated" value="1342620043173" lowerValue="1342620043173"/>
+    <UserAttribute id="10560" userId="10000" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
+    <UserAttribute id="10561" userId="10000" directoryId="1" name="login.lastLoginMillis" value="1342620043180" lowerValue="1342620043180"/>
+    <UserAttribute id="10562" userId="10000" directoryId="1" name="login.previousLoginMillis" value="1342620040889" lowerValue="1342620040889"/>
+    <UserAttribute id="10563" userId="10000" directoryId="1" name="login.count" value="451" lowerValue="451"/>
+    <UserAttribute id="10564" userId="10010" directoryId="1" name="invalidPasswordAttempts" value="0" lowerValue="0"/>
+    <UserAttribute id="10565" userId="10010" directoryId="1" name="requiresPasswordChange" value="false" lowerValue="false"/>
+    <UserAttribute id="10566" userId="10010" directoryId="1" name="lastAuthenticated" value="1342620043461" lowerValue="1342620043461"/>
+    <UserAttribute id="10567" userId="10010" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
+    <UserAttribute id="10568" userId="10010" directoryId="1" name="login.lastLoginMillis" value="1342620043467" lowerValue="1342620043467"/>
+    <UserAttribute id="10569" userId="10010" directoryId="1" name="login.previousLoginMillis" value="1285429488282" lowerValue="1285429488282"/>
+    <UserAttribute id="10570" userId="10010" directoryId="1" name="login.count" value="6" lowerValue="6"/>
     <UserHistoryItem id="10000" type="Project" entityId="10000" username="admin" lastViewed="1342599736337"/>
     <UserHistoryItem id="10001" type="Issue" entityId="10000" username="admin" lastViewed="1286977391865"/>
     <UserHistoryItem id="10010" type="Issue" entityId="10010" username="admin" lastViewed="1283158182197"/>
@@ -2026,9 +2139,9 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UserHistoryItem id="10060" type="Issue" entityId="10040" username="wseliga" lastViewed="1285171592835"/>
     <UserHistoryItem id="10070" type="Project" entityId="10020" username="admin" lastViewed="1285949013694"/>
     <UserHistoryItem id="10071" type="Issue" entityId="10050" username="admin" lastViewed="1285949013692"/>
-    <UserHistoryItem id="10080" type="Project" entityId="10010" username="admin" lastViewed="1342599778117"/>
+    <UserHistoryItem id="10080" type="Project" entityId="10010" username="admin" lastViewed="1342607699841"/>
     <UserHistoryItem id="10081" type="Issue" entityId="10060" username="admin" lastViewed="1286984533308"/>
-    <UserHistoryItem id="10090" type="Project" entityId="10030" username="admin" lastViewed="1342599393475"/>
+    <UserHistoryItem id="10090" type="Project" entityId="10030" username="admin" lastViewed="1342620068277"/>
     <UserHistoryItem id="10091" type="Issue" entityId="10070" username="admin" lastViewed="1336653372578"/>
     <UserHistoryItem id="10092" type="Issue" entityId="10071" username="admin" lastViewed="1336653387065"/>
     <UserHistoryItem id="10100" type="Dashboard" entityId="10010" username="admin" lastViewed="1342533794735"/>
@@ -2036,6 +2149,11 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UserHistoryItem id="10201" type="Project" entityId="10041" username="admin" lastViewed="1342599706536"/>
     <Version id="10000" project="10000" name="1.1" description="Some version" sequence="2" releasedate="2010-08-25 00:00:00.0"/>
     <Version id="10001" project="10000" name="1" description="initial version" sequence="1"/>
+    <Version id="10010" project="10030" name="1.0" sequence="1"/>
+    <Version id="10011" project="10030" name="1.1" sequence="2"/>
+    <Version id="10012" project="10030" name="1.2" sequence="3"/>
+    <Version id="10013" project="10030" name="2.0" sequence="4"/>
+    <Version id="10014" project="10030" name="2.0.1" sequence="5"/>
     <VoteHistory id="10000" issue="10000" votes="1" timestamp="2012-07-17 16:03:14.001"/>
     <VoteHistory id="10001" issue="10010" votes="1" timestamp="2012-07-17 16:03:14.001"/>
     <Workflow id="10000" name="test-workflow">
@@ -2387,7 +2505,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 
 ___ Entities ________________________________
 
-     Total                                         : 1150
+     Total                                         : 1268
 
      Action                                        : 7
      Application                                   : 1
@@ -2396,10 +2514,10 @@ ___ Entities ________________________________
      ChangeItem                                    : 83
      ColumnLayout                                  : 1
      ColumnLayoutItem                              : 12
-     Component                                     : 3
-     ConfigurationContext                          : 5
-     CustomField                                   : 4
-     CustomFieldOption                             : 3
+     Component                                     : 6
+     ConfigurationContext                          : 20
+     CustomField                                   : 19
+     CustomFieldOption                             : 20
      CustomFieldValue                              : 7
      Directory                                     : 1
      DirectoryAttribute                            : 1
@@ -2407,13 +2525,13 @@ ___ Entities ________________________________
      EventType                                     : 16
      ExternalEntity                                : 3
      FavouriteAssociations                         : 1
-     FieldConfigScheme                             : 5
-     FieldConfigSchemeIssueType                    : 5
-     FieldConfiguration                            : 5
+     FieldConfigScheme                             : 20
+     FieldConfigSchemeIssueType                    : 20
+     FieldConfiguration                            : 20
      FieldLayout                                   : 1
      FieldLayoutItem                               : 23
      FieldScreen                                   : 4
-     FieldScreenLayoutItem                         : 26
+     FieldScreenLayoutItem                         : 41
      FieldScreenScheme                             : 1
      FieldScreenSchemeItem                         : 1
      FieldScreenTab                                : 4
@@ -2463,9 +2581,9 @@ ___ Entities ________________________________
      UpgradeVersionHistory                         : 7
      User                                          : 4
      UserAssociation                               : 5
-     UserAttribute                                 : 15
+     UserAttribute                                 : 18
      UserHistoryItem                               : 21
-     Version                                       : 2
+     Version                                       : 7
      VoteHistory                                   : 2
      Workflow                                      : 1
      WorkflowScheme                                : 1

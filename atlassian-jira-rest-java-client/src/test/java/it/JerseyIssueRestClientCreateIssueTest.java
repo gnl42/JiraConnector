@@ -30,15 +30,19 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.domain.CimIssueType;
 import com.atlassian.jira.rest.client.domain.CimProject;
+import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueFieldId;
+import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.atlassian.jira.rest.client.domain.input.CannotTransformValueException;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -397,13 +401,16 @@ public class JerseyIssueRestClientCreateIssueTest extends AbstractJerseyRestClie
 		log.log("Filling fields:");
 		for (Map.Entry<String, CimFieldInfo> entry : issueType.getFields().entrySet()) {
 			final CimFieldInfo fieldInfo = entry.getValue();
+			final String fieldCustomType = fieldInfo.getSchema().getCustom();
+			final String fieldType = fieldInfo.getSchema().getType();
+			final String fieldId = fieldInfo.getId();
 
-			if ("project".equals(fieldInfo.getId()) || "issuetype".equals(fieldInfo.getId())) {
+			if ("project".equals(fieldId) || "issuetype".equals(fieldId)) {
 				// this field was already set by IssueInputBuilder constructor - skip it
 				continue;
 			}
 
-			log.log(MessageFormat.format("\t* [{0}] {1}\n\t\t| schema: {2}\n\t\t| required: {3}", fieldInfo.getId(), fieldInfo
+			log.log(MessageFormat.format("\t* [{0}] {1}\n\t\t| schema: {2}\n\t\t| required: {3}", fieldId, fieldInfo
 					.getName(), fieldInfo.getSchema(), fieldInfo.isRequired()));
 
 			// choose value for this field
@@ -415,18 +422,65 @@ public class JerseyIssueRestClientCreateIssueTest extends AbstractJerseyRestClie
 					log.log("\t\t\t* " + val);
 				}
 				if (allowedValues.iterator().hasNext()) {
-					final Object singleValue = allowedValues.iterator().next();
-					value = "array".equals(fieldInfo.getSchema().getType()) ? Collections.singletonList(singleValue)
-							: singleValue;
+					final boolean expectedArray = "array".equals(fieldType);
+					Object singleValue = allowedValues.iterator().next();
+
+					if ("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect".equals(fieldCustomType)) {
+						// select option with children - if any
+						final Iterable<Object> optionsWithChildren = Iterables.filter(allowedValues, new Predicate<Object>() {
+							@Override
+							public boolean apply(Object input) {
+								return ((CustomFieldOption) input).getChildren().iterator().hasNext();
+							}
+						});
+
+						if (optionsWithChildren.iterator().hasNext()) {
+							// there is option with children - set it
+							final CustomFieldOption option = (CustomFieldOption) optionsWithChildren.iterator().next();
+							value = new CustomFieldOption(option.getId(), option.getSelf(), option.getValue(),
+								Collections.<CustomFieldOption>emptyList(), option.getChildren().iterator().next());
+						}
+						else {
+							// no sub-values available, set only top level value
+							value = allowedValues.iterator().next();
+						}
+					}
+					else {
+						value = expectedArray ? Collections.singletonList(singleValue) : singleValue;	
+					}
 					log.log("\t\t| selecting value: " + value);
 				} else {
 					log.log("\t\t| there is no allowed value - leaving field blank");
 				}
 			} else {
-				if ("string".equals(fieldInfo.getSchema().getType())) {
-					value = "This is simple string value for field " + fieldInfo.getId() + " named " + fieldInfo.getName() + ".";
-				} else if ("user".equals(fieldInfo.getSchema().getType())) {
+				if ("com.atlassian.jirafisheyeplugin:jobcheckbox".equals(fieldCustomType)) {
+					value = "false";
+				}
+				else if ("com.atlassian.jira.plugin.system.customfieldtypes:url".equals(fieldCustomType)) {
+					value = "http://www.atlassian.com/";
+				}
+				else if ("string".equals(fieldType)) {
+					value = "This is simple string value for field " + fieldId + " named " + fieldInfo.getName() + ".";
+				} else if ("number".equals(fieldType)) {
+					value = 124;
+				} else if ("user".equals(fieldType)) {
 					value = IntegrationTestUtil.USER_ADMIN;
+				} else if ("array".equals(fieldType) && "user".equals(fieldInfo.getSchema().getItems())) {
+					value = ImmutableList.of(IntegrationTestUtil.USER_ADMIN);
+				} else if ("group".equals(fieldType)) {
+					// TODO change to group object when implemented
+					value = ComplexIssueInputFieldValue.with("name", IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS);
+				} else if ("array".equals(fieldType) && "group".equals(fieldInfo.getSchema().getItems())) {
+					// TODO change to group object when implemented
+					value = ImmutableList.of(ComplexIssueInputFieldValue.with("name", IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS));
+				} else if ("date".equals(fieldType)) {
+					value = JsonParseUtil.formatDate(new DateTime());
+				} else if ("datetime".equals(fieldType)) {
+					value = JsonParseUtil.formatDateTime(new DateTime());
+				} else if ("array".equals(fieldType) && "string".equals(fieldInfo.getSchema().getItems())) {
+					value = ImmutableList.of("one", "two", "three");
+				} else if ("timetracking".equals(fieldType)) {
+					value = new TimeTracking(60, 40, null); // time spent is not allowed
 				} else {
 					if (fieldInfo.isRequired()) {
 						fail("I don't know how to fill that required field, sorry.");
@@ -439,7 +493,7 @@ public class JerseyIssueRestClientCreateIssueTest extends AbstractJerseyRestClie
 				log.log("\t\t| value is null, skipping filed");
 			} else {
 				log.log(MessageFormat.format("\t\t| setting value => {0}", value));
-				builder.setFieldValue(fieldInfo.getId(), value);
+				builder.setFieldValue(fieldId, value);
 			}
 		}
 		log.log("");

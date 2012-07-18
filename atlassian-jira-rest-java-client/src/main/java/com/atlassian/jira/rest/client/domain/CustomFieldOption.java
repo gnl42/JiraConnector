@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -30,11 +31,16 @@ public class CustomFieldOption {
 	private final URI self;
 	private final Long id;
 	private final String value;
+	private final Iterable<CustomFieldOption> children;
+	@Nullable
+	private final CustomFieldOption child;
 
-	public CustomFieldOption(Long id, URI self, String value) {
+	public CustomFieldOption(Long id, URI self, String value, Iterable<CustomFieldOption> children, @Nullable CustomFieldOption child) {
 		this.value = value;
 		this.id = id;
 		this.self = self;
+		this.children = children;
+		this.child = child;
 	}
 
 	public URI getSelf() {
@@ -49,6 +55,15 @@ public class CustomFieldOption {
 		return value;
 	}
 
+	public Iterable<CustomFieldOption> getChildren() {
+		return children;
+	}
+
+	@Nullable
+	public CustomFieldOption getChild() {
+		return child;
+	}
+
 	/**
 	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
 	 * @return ToStringHelper
@@ -57,7 +72,9 @@ public class CustomFieldOption {
 		return Objects.toStringHelper(this)
 				.add("self", self)
 				.add("id", id)
-				.add("value", value);
+				.add("value", value)
+				.add("children", children)
+				.add("child", child);
 	}
 
 	@Override
@@ -67,7 +84,7 @@ public class CustomFieldOption {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, id, value);
+		return Objects.hashCode(self, id, value, children, child);
 	}
 
 	@Override
@@ -81,6 +98,8 @@ public class CustomFieldOption {
 		final CustomFieldOption other = (CustomFieldOption) obj;
 		return Objects.equal(this.self, other.self)
 				&& Objects.equal(this.id, other.id)
-				&& Objects.equal(this.value, other.value);
+				&& Objects.equal(this.value, other.value)
+				&& Objects.equal(this.children, other.children)
+				&& Objects.equal(this.child, other.child);
 	}
 }

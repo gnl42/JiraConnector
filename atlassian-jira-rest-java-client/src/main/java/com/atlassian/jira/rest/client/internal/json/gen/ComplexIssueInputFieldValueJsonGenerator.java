@@ -51,8 +51,10 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
 				array.put(generateFieldValueForJson(value));
 			}
 			return array;
-		} else if (rawValue instanceof CharSequence || rawValue instanceof Number) {
+		} else if (rawValue instanceof CharSequence) {
 			return rawValue.toString();
+		} else if (rawValue instanceof Number) {
+			return rawValue;
 		} else {
 			throw new JSONException("Cannot generate value - unknown type for me: " + rawValue.getClass());
 		}

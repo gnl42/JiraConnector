@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.CimFieldInfo;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -124,8 +125,15 @@ public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFie
 	}
 	
 	private  JsonParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
+		final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
+				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+				"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+				"com.atlassian.jira.plugin.system.customfieldtypes:select",
+				"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"
+		);
 		String type = "array".equals(fieldSchema.getType()) ? fieldSchema.getItems() : fieldSchema.getType();
-		if ("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons".equals(fieldSchema.getCustom())) {
+		final String custom = fieldSchema.getCustom();
+		if (custom != null && customFieldsTypesWithFieldOption.contains(custom)) {
 			type = "customFieldOption";
 		}
 		@SuppressWarnings("unchecked")
