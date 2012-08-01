@@ -128,7 +128,6 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 		final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST", pm).getComponents();
 		assertEquals(2, Iterables.size(components));
 		final BasicComponent basicComponent = Iterables.get(components, 0);
-		final BasicComponent basicComponent2 = Iterables.get(components, 1);
 
 		final ComponentInput componentInput = new ComponentInput("my component", "a description", null, null);
 		setUser1();
@@ -236,7 +235,6 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), null), pm);
 		assertEquals(adjustedComponent, updatedComponent);
 
-		final Component.AssigneeInfo ai = component.getAssigneeInfo();
 		adjustedComponent = new Component(component.getSelf(), component.getId(), newName, newDescription, IntegrationTestUtil.USER1_LATEST,
 				new Component.AssigneeInfo(IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, true));
 

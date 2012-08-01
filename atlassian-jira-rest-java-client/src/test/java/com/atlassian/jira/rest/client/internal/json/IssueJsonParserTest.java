@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -39,6 +40,7 @@ import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsEmptyIterable;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
@@ -235,6 +237,24 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssueJira50Representation() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
+		assertEquals(0, Iterables.size(issue.getComments()));
+		final BasicPriority priority = issue.getPriority();
+		assertNull(priority);
+		assertEquals("Pivotal Tracker provides time tracking information on the project level.\n"
+				+ "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.", issue.getDescription());
+		assertEquals("TIMETRACKING", issue.getProject().getKey());
+		assertNull(issue.getDueDate());
+		assertEquals(0, Iterables.size(issue.getAttachments()));
+		assertNull(issue.getIssueLinks());
+		assertNull(issue.getField("customfield_10000").getValue());
+		assertThat(issue.getComponents(), IsEmptyIterable.<BasicComponent>emptyIterable());
+		assertEquals(2, Iterables.size(issue.getWorklogs()));
+		assertEquals(0, issue.getWatchers().getNumWatchers());
+		assertFalse(issue.getWatchers().isWatching());
+		assertEquals(new TimeTracking(null, null, 840), issue.getTimeTracking());
+
+		assertNull(issue.getWorklogs().iterator().next().getVisibility());
+		assertNull(Iterables.get(issue.getWorklogs(), 1).getVisibility());
 	}
 
     @Test
