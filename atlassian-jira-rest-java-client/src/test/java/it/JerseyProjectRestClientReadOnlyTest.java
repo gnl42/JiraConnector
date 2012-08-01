@@ -20,7 +20,6 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.IssueType;
@@ -41,11 +40,14 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
+// Ignore "May produce NPE" warnings, as we know what we are doing in tests
+@SuppressWarnings("ConstantConditions")
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClientTest {
 
@@ -157,7 +159,7 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 				return project.getKey();
 			}
 		});
-		Assert.assertThat(projectsKeys, IterableMatcher.hasOnlyElements("ANNON", "ANONEDIT"));
+		Assert.assertThat(projectsKeys, containsInAnyOrder("ANNON", "ANONEDIT"));
 
 		setUser1();
 		assertEquals(3, Iterables.size(client.getProjectClient().getAllProjects(pm)));

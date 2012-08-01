@@ -21,7 +21,6 @@ import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
@@ -46,7 +45,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.hamcrest.collection.IsCollectionContaining;
 import org.joda.time.DateTime;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +59,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.*;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
@@ -134,10 +135,10 @@ public class JerseyIssueRestClientCreateIssueTest extends AbstractJerseyRestClie
 		assertEquals(assignee.getSelf(), actualAssignee.getSelf());
 
 		final Iterable<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
-		assertThat(affectedVersionsNames, IterableMatcher.hasOnlyElements(actualAffectedVersionsNames));
+		assertThat(affectedVersionsNames, containsInAnyOrder(toArray(actualAffectedVersionsNames, String.class)));
 
 		final Iterable<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
-		assertThat(fixVersionsNames, IterableMatcher.hasOnlyElements(actualFixVersionsNames));
+		assertThat(fixVersionsNames, containsInAnyOrder(toArray(actualFixVersionsNames, String.class)));
 
 		assertTrue(createdIssue.getComponents().iterator().hasNext());
 		assertEquals(component.getId(), createdIssue.getComponents().iterator().next().getId());
@@ -520,6 +521,6 @@ public class JerseyIssueRestClientCreateIssueTest extends AbstractJerseyRestClie
 		final Collection<FieldInput> actualValues = actualBuilder.build().getFields().values();
 		final Collection<FieldInput> expectedValues = issueInput.getFields().values();
 
-		assertThat(expectedValues, IsCollectionContaining.hasItems(actualValues.toArray(new FieldInput[actualValues.size()])));
+		assertThat(expectedValues, hasItems(toArray(actualValues, FieldInput.class)));
 	}
 }

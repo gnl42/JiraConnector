@@ -16,12 +16,12 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.domain.BasicWatchers;
-import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
+
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 public class WatchersJsonParserTest {
@@ -40,7 +40,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        assertThat(watcher.getUsers(), IterableMatcher.<BasicUser>hasOnlyElements(TestConstants.USER1, TestConstants.USER_ADMIN));
+        assertThat(watcher.getUsers(), containsInAnyOrder(TestConstants.USER1, TestConstants.USER_ADMIN));
 
     }
 

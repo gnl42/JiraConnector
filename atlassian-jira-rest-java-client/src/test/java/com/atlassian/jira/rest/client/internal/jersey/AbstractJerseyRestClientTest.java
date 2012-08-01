@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.internal.jersey;
 
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Assert;
@@ -24,33 +23,35 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+
 public class AbstractJerseyRestClientTest {
 	@Test
 	public void testExtractErrors() throws JSONException {
 		final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
 		final Collection<String> stringCollection = AbstractJerseyRestClient.extractErrors(str);
-		Assert.assertThat(stringCollection, IterableMatcher.hasOnlyElements("abcfsd"));
+		Assert.assertThat(stringCollection, containsInAnyOrder("abcfsd"));
 	}
 
 	@Test
 	public void testExtractErrors2() throws JSONException {
 		final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
 		final Collection<String> stringCollection = AbstractJerseyRestClient.extractErrors(str);
-		Assert.assertThat(stringCollection, IterableMatcher.hasOnlyElements("a", "b", "xxx"));
+		Assert.assertThat(stringCollection, containsInAnyOrder("a", "b", "xxx"));
 	}
 
 	@Test
 	public void testExtractErrors3() throws JSONException {
 		final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
 		final Collection<String> stringCollection = AbstractJerseyRestClient.extractErrors(str);
-		Assert.assertThat(stringCollection, IterableMatcher.hasOnlyElements("aa", "bb"));
+		Assert.assertThat(stringCollection, containsInAnyOrder("aa", "bb"));
 	}
 
 	@Test
 	public void testExtractErrors4() throws JSONException {
 		final String str = ResourceUtil.getStringFromResource("/json/error/valid4.json");
 		final Collection<String> stringCollection = AbstractJerseyRestClient.extractErrors(str);
-		Assert.assertThat(stringCollection, IterableMatcher.hasOnlyElements("a", "b", "y", "z"));
+		Assert.assertThat(stringCollection, containsInAnyOrder("a", "b", "y", "z"));
 	}
 
 }

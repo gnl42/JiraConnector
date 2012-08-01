@@ -20,7 +20,6 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
@@ -39,6 +38,7 @@ import java.util.Set;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -60,8 +60,8 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		try {
 			testAddWorklogImpl(ISSUE_KEY, createDefaulWorklogInputBuilder());
 		} catch (RestClientException ex) {
-			assertThat(ex.getErrorMessages(), IterableMatcher
-					.hasOnlyElements("You do not have the permission to see the specified issue.", "Login Required"));
+			assertThat(ex.getErrorMessages(),
+					containsInAnyOrder("You do not have the permission to see the specified issue.", "Login Required"));
 		}
 	}
 

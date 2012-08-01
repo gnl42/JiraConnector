@@ -20,7 +20,6 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
@@ -35,6 +34,7 @@ import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_4;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -306,7 +306,7 @@ public class JerseyComponentRestClientTest extends AbstractJerseyRestClientTest 
 
 	private void assertProjectHasComponents(String ...names) {
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getComponents(),
-				new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements(names));
+				new BasicComponentNameExtractionFunction()), containsInAnyOrder(names));
 	}
 
 }

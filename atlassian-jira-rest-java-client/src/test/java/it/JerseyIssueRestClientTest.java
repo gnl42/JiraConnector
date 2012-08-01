@@ -20,7 +20,6 @@ import com.atlassian.jira.functest.framework.UserProfile;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Attachment;
@@ -39,7 +38,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -70,6 +68,9 @@ import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_P
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_USERNAME;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
 
 
@@ -299,20 +300,19 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
 
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(),
-				Matchers.not(IterableMatcher.contains(USER_ADMIN)));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), not(hasItem(USER_ADMIN)));
 
 		issueClient.watch(issue1.getWatchers().getSelf(), pm);
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER_ADMIN));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), hasItem(USER_ADMIN));
 
 		issueClient.unwatch(issue1.getWatchers().getSelf(), pm);
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), Matchers.not(IterableMatcher.contains(USER_ADMIN)));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), not(hasItem(USER_ADMIN)));
 
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), hasItem(USER1));
 		issueClient.removeWatcher(issue1.getWatchers().getSelf(), USER1.getName(), pm);
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), Matchers.not(IterableMatcher.contains(USER1)));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), not(hasItem(USER1)));
 		issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1.getName(), pm);
-		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
+		Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), hasItem(USER1));
 	}
 
 	@Test
@@ -338,10 +338,10 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		setUser1();
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue("TST-1", pm);
-		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
+		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), hasItem(USER1));
 		// JIRA allows to watch already watched issue by you - such action effectively has no effect
 		issueClient.watch(issue.getWatchers().getSelf(), pm);
-		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
+		Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), pm).getUsers(), hasItem(USER1));
 	}
 
 	@Test
@@ -349,7 +349,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue1 = issueClient.getIssue("TST-1", pm);
 		issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1_USERNAME, pm);
-		assertThat(client.getIssueClient().getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.contains(USER1));
+		assertThat(client.getIssueClient().getWatchers(issue1.getWatchers().getSelf(), pm).getUsers(), hasItem(USER1));
 
 		setUser1();
 		assertTrue(client.getIssueClient().getIssue("TST-1", pm).getWatchers().isWatching());
@@ -545,7 +545,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				return from.getFilename();
 			}
 		});
-		assertThat(attachmentsNames, IterableMatcher.hasOnlyElements(filename1, filename2));
+		assertThat(attachmentsNames, containsInAnyOrder(filename1, filename2));
 		final Attachment pictureAttachment = Iterables.find(attachments, new Predicate<Attachment>() {
 			@Override
 			public boolean apply(@Nullable Attachment input) {

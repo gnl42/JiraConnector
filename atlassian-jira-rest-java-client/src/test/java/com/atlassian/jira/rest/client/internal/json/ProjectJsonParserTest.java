@@ -16,21 +16,23 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
+import org.hamcrest.collection.IsEmptyIterable;
 import org.joda.time.DateMidnight;
 import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static com.atlassian.jira.rest.client.IterableMatcher.hasOnlyElements;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
+// Ignore "May produce NPE" warnings, as we know what we are doing in tests
+@SuppressWarnings("ConstantConditions")
 public class ProjectJsonParserTest {
 	private final ProjectJsonParser parser = new ProjectJsonParser();
 
@@ -42,10 +44,10 @@ public class ProjectJsonParserTest {
 		assertEquals(TestConstants.USER_ADMIN, project.getLead());
 		assertEquals("http://example.com", project.getUri().toString());
 		assertEquals("TST", project.getKey());
-		assertThat(project.getVersions(), hasOnlyElements(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
-		assertThat(project.getComponents(), hasOnlyElements(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
+		assertThat(project.getVersions(), containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
+		assertThat(project.getComponents(), containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         assertNull(project.getName());
-		assertThat(project.getIssueTypes(), IterableMatcher.<IssueType>isEmpty());
+		assertThat(project.getIssueTypes(), IsEmptyIterable.<IssueType>emptyIterable());
 	}
 
 	@Test
@@ -62,7 +64,7 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey()); //2010-08-25
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
         assertEquals("Test Project", project.getName());
-		assertThat(project.getIssueTypes(), hasOnlyElements(
+		assertThat(project.getIssueTypes(), containsInAnyOrder(
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
@@ -77,7 +79,7 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey());
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
 		assertEquals("Test Project", project.getName());
-		assertThat(project.getIssueTypes(), hasOnlyElements(
+		assertThat(project.getIssueTypes(), containsInAnyOrder(
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", new URI("http://localhost:2990/jira/images/icons/bug.gif")),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", new URI("http://localhost:2990/jira/images/icons/newfeature.gif")),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", new URI("http://localhost:2990/jira/images/icons/task.gif")),

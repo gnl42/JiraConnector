@@ -18,7 +18,6 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -31,6 +30,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.hamcrest.collection.IsEmptyIterable;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -38,6 +38,8 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
+import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -50,14 +52,14 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 		}
 
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(),
-				new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1", "1"));
+				new VersionToNameMapper()), containsInAnyOrder("1.1", "1"));
 
 		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
 		final Version version = client.getVersionRestClient().createVersion(versionInput, pm);
 		assertVersionInputAndVersionEquals(versionInput, version);
 		assertNotNull(version.getId());
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
-				IterableMatcher.hasOnlyElements("1.1", "1", versionInput.getName()));
+				containsInAnyOrder("1.1", "1", versionInput.getName()));
 
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A version with this name already exists in this project.", new Runnable() {
 			@Override
@@ -183,11 +185,11 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 			}
 		});
 
-		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), IterableMatcher.hasOnlyElements(versionsInTheBeggining));
+		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), containsInAnyOrder(toArray(versionsInTheBeggining, Version.class)));
 		for (Version ver : versionsInTheBeggining) {
 			client.getVersionRestClient().removeVersion(ver.getSelf(), null, null, pm);
 		}
-		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), IterableMatcher.<Version>isEmpty());
+		assertThat(client.getProjectClient().getProject("TST", pm).getVersions(), IsEmptyIterable.<Version>emptyIterable());
 
 	}
 
@@ -198,8 +200,8 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 			return;
 		}
 		final Issue issue = client.getIssueClient().getIssue("TST-2", pm);
-		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1.1"));
-		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1", "1.1"));
+		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
+		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
 
 		final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST", pm).getVersions(), "1");
 
@@ -224,10 +226,10 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 		// now removing the first version
 		client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf(), pm);
 		final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2", pm);
-		assertThat(Iterables.transform(issueAfterVerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
-		assertThat(Iterables.transform(issueAfterVerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.hasOnlyElements("1"));
+		assertThat(Iterables.transform(issueAfterVerRemoval.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
+		assertThat(Iterables.transform(issueAfterVerRemoval.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST", pm).getVersions(), new VersionToNameMapper()),
-				IterableMatcher.hasOnlyElements("1"));
+				containsInAnyOrder("1"));
 
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "You cannot move the issues to the version being deleted.", new Runnable() {
 			@Override
@@ -239,8 +241,8 @@ public class JerseyVersionRestClientTest extends AbstractJerseyRestClientTest {
 		// now removing the other version
 		client.getVersionRestClient().removeVersion(version1.getSelf(), null, null, pm);
 		final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2", pm);
-		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
-		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IterableMatcher.<String>isEmpty());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable.<String>emptyIterable());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable.<String>emptyIterable());
 	}
 
 	private void assertInvalidMoveToVersion(final URI versionUri, @Nullable final URI moveFixIssuesToVersionUri,

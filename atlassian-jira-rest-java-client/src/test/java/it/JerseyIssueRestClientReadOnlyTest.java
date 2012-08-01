@@ -20,7 +20,6 @@ import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicUser;
@@ -58,6 +57,8 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 /**
@@ -76,7 +77,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf(), new NullProgressMonitor());
 		assertEquals(1, watchers.getNumWatchers());
 		assertFalse(watchers.isWatching());
-		assertThat(watchers.getUsers(), IterableMatcher.hasOnlyElements(USER1));
+		assertThat(watchers.getUsers(), containsInAnyOrder(USER1));
 	}
 
 	@Test
@@ -124,12 +125,12 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
-		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Iterable<String> expectedExpandos = isJira5xOrNewer()
 				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog") : ImmutableList.of("html");
-		assertThat(ImmutableList.copyOf(issue.getExpandos()), IterableMatcher.hasOnlyElements(expectedExpandos));
+		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
 
@@ -203,7 +204,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 
 		// although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
 		// have view watchers and voters permission
-		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf(), pm).getUsers(), IterableMatcher.hasOnlyElements(USER2));
+		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf(), pm).getUsers(), containsInAnyOrder(USER2));
 	}
 
 	@Test
@@ -211,7 +212,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf(), pm);
 		assertFalse(votes.hasVoted());
-		assertThat(votes.getUsers(), IterableMatcher.hasOnlyElements(USER1));
+		assertThat(votes.getUsers(), containsInAnyOrder(USER1));
 	}
 
 	@Test

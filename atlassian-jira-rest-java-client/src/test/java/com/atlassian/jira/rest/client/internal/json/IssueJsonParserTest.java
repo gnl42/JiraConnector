@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
-import com.atlassian.jira.rest.client.IterableMatcher;
 import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
@@ -39,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,8 +48,11 @@ import java.util.Iterator;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTimeFromIsoDate;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
+// Ignore "May produce NPE" warnings, as we know what we are doing in tests
+@SuppressWarnings("ConstantConditions")
 public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
@@ -81,7 +84,7 @@ public class IssueJsonParserTest {
 		assertEquals(TestConstants.USER1, issue.getAssignee());
 
 		// issue links
-		Assert.assertThat(issue.getIssueLinks(), IterableMatcher.hasOnlyElements(
+		Assert.assertThat(issue.getIssueLinks(), containsInAnyOrder(
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
 				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
@@ -218,7 +221,7 @@ public class IssueJsonParserTest {
 		assertEquals(4, Iterables.size(issue.getAttachments()));
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
-		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), IterableMatcher.hasOnlyElements("Component A", "Component B"));
+		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), containsInAnyOrder("Component A", "Component B"));
 		assertEquals(2, Iterables.size(issue.getWorklogs()));
 		assertEquals(1, issue.getWatchers().getNumWatchers());
 		assertFalse(issue.getWatchers().isWatching());
@@ -331,25 +334,25 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssueWithLabelsForJira5x0() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-with-labels.json");
-		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 	}
 
 	@Test
 	public void testParseIssueWithLabels() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-with-labels.json");
-		assertThat(issue.getLabels(), IterableMatcher.hasOnlyElements("a", "bcds"));
+		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 	}
 
 	@Test
 	public void testParseIssueWithoutLabelsForJira5x0() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
-		assertThat(issue.getLabels(), IterableMatcher.<String>isEmpty());
+		assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
 	}
 
 	@Test
 	public void testParseIssueWithoutLabels() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-without-labels.json");
-		assertThat(issue.getLabels(), IterableMatcher.<String>isEmpty());
+		assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
 	}
 
 }

@@ -16,8 +16,6 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.IterableMatcher;
-import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -37,6 +35,8 @@ import org.junit.matchers.JUnitMatchers;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 /**
@@ -59,18 +59,28 @@ public class CreateIssueMetadataJsonParserTest {
 		assertEquals("ANONEDIT", project.getKey());
 		assertEquals("Anonymous Editable Project", project.getName());
 		assertEquals(ImmutableMap.of(
-				"16x16", TestUtil.toUri("http://localhost:2990/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011"),
-				"48x48", TestUtil.toUri("http://localhost:2990/jira/secure/projectavatar?pid=10030&avatarId=10011")
+				"16x16", toUri("http://localhost:2990/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011"),
+				"48x48", toUri("http://localhost:2990/jira/secure/projectavatar?pid=10030&avatarId=10011")
 		), project.getAvatarUris());
 
 
 		// check some issue types
-		assertThat(project.getIssueTypes(), IterableMatcher.hasOnlyElements(
-			new CimIssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil.toUri("http://localhost:2990/jira/images/icons/bug.gif"), Collections.<String, CimFieldInfo>emptyMap()),
-			new CimIssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", TestUtil.toUri("http://localhost:2990/jira/images/icons/newfeature.gif"), Collections.<String, CimFieldInfo>emptyMap()),
-			new CimIssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", TestUtil.toUri("http://localhost:2990/jira/images/icons/task.gif"), Collections.<String, CimFieldInfo>emptyMap()),
-			new CimIssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", TestUtil.toUri("http://localhost:2990/jira/images/icons/improvement.gif"), Collections.<String, CimFieldInfo>emptyMap()),
-			new CimIssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", TestUtil.toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"), Collections.<String, CimFieldInfo>emptyMap())
+		assertThat(project.getIssueTypes(), containsInAnyOrder(
+				new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false,
+						"A problem which impairs or prevents the functions of the product.", toUri("http://localhost:2990/jira/images/icons/bug.gif"),
+						Collections.<String, CimFieldInfo>emptyMap()),
+				new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false,
+						"A new feature of the product, which has yet to be developed.", toUri("http://localhost:2990/jira/images/icons/newfeature.gif"),
+						Collections.<String, CimFieldInfo>emptyMap()),
+				new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false,
+						"A task that needs to be done.", toUri("http://localhost:2990/jira/images/icons/task.gif"),
+						Collections.<String, CimFieldInfo>emptyMap()),
+				new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false,
+						"An improvement or enhancement to an existing feature or task.", toUri("http://localhost:2990/jira/images/icons/improvement.gif"),
+						Collections.<String, CimFieldInfo>emptyMap()),
+				new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true,
+						"The sub-task of the issue", toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"),
+						Collections.<String, CimFieldInfo>emptyMap())
 		));
 	}
 
@@ -108,7 +118,7 @@ public class CreateIssueMetadataJsonParserTest {
 		final CimFieldInfo cf1001 = issueTypeFields.get("customfield_10001");
 		assertEquals(new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons", 10001L), cf1001.getSchema());
 		assertEquals(3, Iterables.size(cf1001.getAllowedValues()));
-		assertThat(cf1001.getOperations(), IterableMatcher.hasOnlyElements(StandardOperation.SET));
+		assertThat(cf1001.getOperations(), containsInAnyOrder(StandardOperation.SET));
 
 		// check allowed values types
 		assertAllowedValuesOfType(issueTypeFields.get("issuetype").getAllowedValues(), BasicIssueType.class);
