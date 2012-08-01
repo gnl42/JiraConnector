@@ -22,12 +22,14 @@ import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
+import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.*;
 
 public class WorklogInputJsonGeneratorTest {
@@ -36,62 +38,41 @@ public class WorklogInputJsonGeneratorTest {
 	private final WorklogInputJsonGenerator generator = new WorklogInputJsonGenerator(
 			JsonParseUtil.JIRA_DATE_TIME_FORMATTER.withZone(DateTimeZone.forID("+02:00"))
 	);
-	
+
 	public WorklogInputJsonGeneratorTest() throws URISyntaxException {
 		USER = new BasicUser(new URI("http://localhost:2990/jira/rest/api/2/user?username=wseliga"), "wseliga", "Wojciech Seliga");
 	}
 
 	@Test
-	public void testGenerate() throws Exception {
+	public void testGenerate() throws JSONException {
 		final WorklogInput worklogInput = new WorklogInput(
-				new URI("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
-				new URI("http://localhost:8090/jira/rest/api/latest/issue/TST-2"),
-				USER,
-				USER,
-				"my first work",
-				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"),
-				60,
-				Visibility.group("some-group")
-		);
+				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, USER, "my first work",
+				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")
-		));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")));
 	}
 
 	@Test
-	public void testGenerateWithoutVisibility() throws Exception {
+	public void testGenerateWithoutVisibility() throws JSONException {
 		final WorklogInput worklogInput = new WorklogInput(
-				new URI("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
-				new URI("http://localhost:8090/jira/rest/api/latest/issue/TST-2"),
-				USER,
-				USER,
-				"my first work",
-				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"),
-				60,
-				null
-		);
+				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, USER, "my first work",
+				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, null);
 
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")
-		));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
 	}
 
 	@Test
-	public void testGenerateWithoutAuthorAndUpdateAuthor() throws Exception {
+	public void testGenerateWithoutAuthorAndUpdateAuthor() throws JSONException {
 		final WorklogInput worklogInput = new WorklogInput(
-				new URI("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
-				new URI("http://localhost:8090/jira/rest/api/latest/issue/TST-2"),
-				null,
-				null,
-				"my first work",
-				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"),
-				60,
-				Visibility.group("some-group")
-		);
+				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), null, null, "my first work",
+				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")
-		));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));
 	}
 }
