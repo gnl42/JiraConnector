@@ -270,9 +270,8 @@ public interface IssueRestClient {
 	 * @param progressMonitor progress monitor
 	 * @param worklogUri	  URI for worklog in issue
 	 * @param worklogInput	worklog input object to create
-	 * @param adjustEstimateOption estimate adjustment configuration. Use static factory methods from AdjustEstimateOption to create one.
 	 */
-	void addWorklog(URI worklogUri, WorklogInput worklogInput, ProgressMonitor progressMonitor, AdjustEstimateOption adjustEstimateOption);
+	void addWorklog(URI worklogUri, WorklogInput worklogInput, ProgressMonitor progressMonitor);
 
 	/**
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable, ProgressMonitor)}

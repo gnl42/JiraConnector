@@ -18,7 +18,6 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
-import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.Issue;
@@ -104,7 +103,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
 				.build();
-		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm, AdjustEstimateOption.auto());
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm);
 
 		// check if estimate nad logged has changed
 		final Issue issueAfterFirstChange = issueClient.getIssue(issueKey, pm);
@@ -117,13 +116,13 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		assertEquals(expectedRemaningEstimate, actualRemainingEstimate);
 
 		// # Second change - test new; also we want to be sure that logged time are added, and not set to given value
+		final Integer newEstimateValue = 15;
 		final WorklogInput worklogInput2 = worklogInputBuilder
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
+				.setAdjustEstimateNew(newEstimateValue.toString())
 				.build();
-		final Integer newEstimateValue = 15;
-		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2, pm,
-				AdjustEstimateOption.setNew(newEstimateValue.toString()));
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2, pm);
 
 		// check if logged time has changed
 		final Issue issueAfterSecondChange = issueClient.getIssue(issueKey, pm);
@@ -139,8 +138,9 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		final WorklogInput worklogInput3 = worklogInputBuilder
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
+				.setAdjustEstimateLeave()
 				.build();
-		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput3, pm, AdjustEstimateOption.leave());
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput3, pm);
 
 		// check if logged time has changed
 		final Issue issueAfterThirdChange = issueClient.getIssue(issueKey, pm);
@@ -154,14 +154,14 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		assertEquals(expectedRemainingEstimate3, actualRemainingEstimate3);
 
 		// # Fourth change - test manual
+		final Integer reduceByValueManual = 7;
 		final WorklogInput worklogInput4 = worklogInputBuilder
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
+				.setAdjustEstimateManual(reduceByValueManual.toString())
 				.build();
-		
-		final Integer reduceByValueManual = 7;
-		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4, pm, AdjustEstimateOption.manual(reduceByValueManual
-				.toString()));
+
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4, pm);
 
 		// check if logged time has changed
 		final Issue issueAfterFourthChange = issueClient.getIssue(issueKey, pm);
@@ -210,7 +210,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 
 		// create and add new
 		final WorklogInput worklogInput = worklogInputBuilder.setIssueUri(issue.getSelf()).build();
-		issueClient.addWorklog(issue.getWorklogUri(), worklogInput, pm, AdjustEstimateOption.auto());
+		issueClient.addWorklog(issue.getWorklogUri(), worklogInput, pm);
 
 		// check if added correctly
 		final Issue issueWithWorklog = issueClient.getIssue(issueKey, pm);

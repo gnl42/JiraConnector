@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.internal.jersey;
 
-import com.atlassian.jira.rest.client.AdjustEstimateOption;
 import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.MetadataRestClient;
@@ -24,8 +23,8 @@ import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SessionRestClient;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.CimProject;
+import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Session;
@@ -54,6 +53,7 @@ import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator
 import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.WebResource;
@@ -428,14 +428,16 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				uriBuilder.queryParam("issuetypeIds", Joiner.on(",").join(options.issueTypeIds));
 			}
 
-			if (options.issueTypeNames != null) {
-				for (final String name : options.issueTypeNames) {
+			final Iterable<String> issueTypeNames = options.issueTypeNames;
+			if (issueTypeNames != null) {
+				for (final String name : issueTypeNames) {
 					uriBuilder.queryParam("issuetypeNames", name);
 				}
 			}
 
-			if (options.expandos != null && options.expandos.iterator().hasNext()) {
-				uriBuilder.queryParam("expand", Joiner.on(",").join(options.expandos));
+			final Iterable<String> expandos = options.expandos;
+			if (expandos != null && expandos.iterator().hasNext()) {
+				uriBuilder.queryParam("expand", Joiner.on(",").join(expandos));
 			}
 		}
 
@@ -443,11 +445,18 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	}
 
 	@Override
-	public void addWorklog(final URI worklogUri, final WorklogInput worklogInput, final ProgressMonitor progressMonitor, AdjustEstimateOption adjustEstimateOption) {
+	public void addWorklog(final URI worklogUri, final WorklogInput worklogInput, final ProgressMonitor progressMonitor) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(worklogUri)
-				.queryParam("adjustEstimate", adjustEstimateOption.adjustEstimate.restValue)
-				.queryParam("newEstimate", adjustEstimateOption.newEstimate == null ? "" : adjustEstimateOption.newEstimate)
-				.queryParam("reduceBy", adjustEstimateOption.reduceBy == null ? "" : adjustEstimateOption.reduceBy);
+				.queryParam("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
+
+		switch (worklogInput.getAdjustEstimate()) {
+			case NEW:
+				uriBuilder.queryParam("newEstimate", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+				break;
+			case MANUAL:
+				uriBuilder.queryParam("reduceBy", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+				break;
+		}
 
 		post(uriBuilder.build(), new Callable<JSONObject>() {
 			@Override
