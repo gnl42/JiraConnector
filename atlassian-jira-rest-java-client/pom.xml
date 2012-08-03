@@ -64,10 +64,11 @@
 			<plugin>
 				<groupId>com.atlassian.maven.plugins</groupId>
 				<artifactId>maven-jira-plugin</artifactId>
-				<version>3.7.2</version>
+				<version>3.11</version>
 				<configuration>
 					<productVersion>${jira.version}</productVersion>
 					<productDataVersion>${jira.data.version}</productDataVersion>
+					<jvmArgs>-Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
 					<!--<restVersion>4.2-SNAPSHOT</restVersion>-->
 				</configuration>
 				<executions>
