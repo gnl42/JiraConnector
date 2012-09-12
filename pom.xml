@@ -36,10 +36,9 @@
 		<url>http://atlassian.com/</url>
 	</organization>
 	<scm>
-		<connection>scm:svn:https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client</connection>
-		<developerConnection>scm:svn:https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client
-		</developerConnection>
-		<url>https://studio.atlassian.com/svn/JRJC/trunk/atlassian-jira-rest-java-client</url>
+		<connection>scm:git:ssh://git@bitbucket.org/atlassian/atlassian-jira-rest-java-client.git</connection>
+		<developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/atlassian-jira-rest-java-client.git</developerConnection>
+		<url>https://bitbucket.org/atlassian/atlassian-jira-rest-java-client/</url>
 	</scm>
 
 	<properties>
