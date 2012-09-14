@@ -9,7 +9,7 @@
 
 	<groupId>com.atlassian.jira</groupId>
 	<artifactId>jira-rest-java-client</artifactId>
-	<version>0.6-m7</version>
+	<version>0.6-m8-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>atlassian-jira-rest-java-client</name>
