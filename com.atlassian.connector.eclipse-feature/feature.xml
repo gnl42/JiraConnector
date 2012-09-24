@@ -57,7 +57,7 @@
       <import plugin="org.mortbay.jetty.server"/>
       <import plugin="org.mortbay.jetty.util"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.jasper"/>
+      <!-- <import plugin="org.apache.jasper"/> -->
       <import plugin="javax.servlet.jsp"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.forms"/>
