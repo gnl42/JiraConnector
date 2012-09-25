@@ -519,13 +519,13 @@ plugin@org.apache.httpcomponents.httpcore.nio.source,4.0.0=GET,http://archive.ec
 
 plugin@org.apache.httpcomponents.httpcore.source,4.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.httpcomponents.httpcore.source_4.0.0.v200905121600.jar
 
-plugin@org.apache.jasper,5.5.17=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper_5.5.17.v201004212143.jar
+!plugin@org.apache.jasper,5.5.17=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper_5.5.17.v201004212143.jar
 
-plugin@org.apache.jasper.glassfish,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.glassfish_2.1.0.v201004190952.jar
+!plugin@org.apache.jasper.glassfish,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.glassfish_2.1.0.v201004190952.jar
 
-plugin@org.apache.jasper.glassfish.source,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.glassfish.source_2.1.0.v201004190952.jar
+!plugin@org.apache.jasper.glassfish.source,2.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.glassfish.source_2.1.0.v201004190952.jar
 
-plugin@org.apache.jasper.source,5.5.17=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.source_5.5.17.v201004212143.jar
+!plugin@org.apache.jasper.source,5.5.17=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.jasper.source_5.5.17.v201004212143.jar
 
 plugin@org.apache.log4j,1.2.15=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.log4j_1.2.15.v201005080500.jar
 
