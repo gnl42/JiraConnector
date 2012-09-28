@@ -29,7 +29,7 @@ import java.util.Collections;
  *
  * @since v1.0
  */
-public class CustomFieldOptionJsonParser implements JsonParser<CustomFieldOption> {
+public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomFieldOption> {
 
 	private final JsonArrayParser<Iterable<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
 

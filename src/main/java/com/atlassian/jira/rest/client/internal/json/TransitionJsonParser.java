@@ -32,7 +32,7 @@ public class TransitionJsonParser {
         return new Transition(name, id, fields);
     }
 
-    public static class TransitionFieldJsonParser implements JsonParser<Transition.Field> {
+    public static class TransitionFieldJsonParser implements JsonObjectParser<Transition.Field> {
 
         @Override
         public Transition.Field parse(JSONObject json) throws JSONException {

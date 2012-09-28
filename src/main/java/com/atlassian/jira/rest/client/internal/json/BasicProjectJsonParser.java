@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class BasicProjectJsonParser implements JsonParser<BasicProject> {
+public class BasicProjectJsonParser implements JsonObjectParser<BasicProject> {
     @Override
     public BasicProject parse(JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);

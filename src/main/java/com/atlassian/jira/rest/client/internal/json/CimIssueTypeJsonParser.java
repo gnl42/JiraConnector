@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @since v1.0
  */
-public class CimIssueTypeJsonParser implements JsonParser<CimIssueType> {
+public class CimIssueTypeJsonParser implements JsonObjectParser<CimIssueType> {
 
 	final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	final CimFieldsInfoMapJsonParser fieldsParser = new CimFieldsInfoMapJsonParser();

@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-public class VersionJsonParser implements JsonParser<Version> {
+public class VersionJsonParser implements JsonObjectParser<Version> {
 	@Override
 	public Version parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);

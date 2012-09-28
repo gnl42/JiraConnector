@@ -25,7 +25,7 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-public class WorklogJsonParserV5 implements JsonParser<Worklog> {
+public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 
 	private final URI issue;
 

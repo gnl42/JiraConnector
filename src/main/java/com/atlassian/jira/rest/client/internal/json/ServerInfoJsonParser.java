@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-public class ServerInfoJsonParser implements JsonParser<ServerInfo> {
+public class ServerInfoJsonParser implements JsonObjectParser<ServerInfo> {
 	@Override
 	public ServerInfo parse(JSONObject json) throws JSONException {
 		final URI baseUri = JsonParseUtil.parseURI(json.getString("baseUrl"));

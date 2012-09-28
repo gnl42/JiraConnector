@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -27,8 +27,8 @@ import java.util.Collection;
 
 public class WatchersJsonParserBuilder {
 
-    public static JsonParser<Watchers> createWatchersParser() {
-        return new JsonParser<Watchers>() {
+    public static JsonObjectParser<Watchers> createWatchersParser() {
+        return new JsonObjectParser<Watchers>() {
             private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
 
             @Override
@@ -39,8 +39,8 @@ public class WatchersJsonParserBuilder {
         };
     }
 
-    public static JsonParser<BasicWatchers> createBasicWatchersParser() {
-        return new JsonParser<BasicWatchers>() {
+    public static JsonObjectParser<BasicWatchers> createBasicWatchersParser() {
+        return new JsonObjectParser<BasicWatchers>() {
             @Override
             public BasicWatchers parse(JSONObject json) throws JSONException {
                 return parseValueImpl(json);

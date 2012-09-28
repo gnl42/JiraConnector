@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class CommentJsonParser implements JsonParser<Comment> {
+public class CommentJsonParser implements JsonObjectParser<Comment> {
 
 	public static final String VISIBILITY_KEY = "visibility";
 	private final VisibilityJsonParser visibilityJsonParser = new VisibilityJsonParser();

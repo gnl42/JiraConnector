@@ -23,7 +23,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class IssueLinkJsonParser implements JsonParser<IssueLink> {
+public class IssueLinkJsonParser implements JsonObjectParser<IssueLink> {
 	private final IssueLinkTypeJsonParser issueLinkTypeJsonParser = new IssueLinkTypeJsonParser();
 
 	@Override

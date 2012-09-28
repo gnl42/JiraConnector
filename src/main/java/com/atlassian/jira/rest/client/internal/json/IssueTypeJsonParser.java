@@ -23,7 +23,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class IssueTypeJsonParser implements JsonParser<IssueType> {
+public class IssueTypeJsonParser implements JsonObjectParser<IssueType> {
 	private final BasicIssueTypeJsonParser basicIssueTypeJsonParser = new BasicIssueTypeJsonParser();
 	@Override
 	public IssueType parse(JSONObject json) throws JSONException {

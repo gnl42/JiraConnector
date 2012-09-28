@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * @since v1.0
  */
-public class CimProjectJsonParser implements JsonParser<CimProject> {
+public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
 
 	private final JsonArrayParser<Iterable<CimIssueType>> issueTypesParser = GenericJsonArrayParser.create(new CimIssueTypeJsonParser());
 

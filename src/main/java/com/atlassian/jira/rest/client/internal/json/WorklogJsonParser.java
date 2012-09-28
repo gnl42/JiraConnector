@@ -25,7 +25,7 @@ import org.joda.time.DateTime;
 
 import java.net.URI;
 
-public class WorklogJsonParser implements JsonParser<Worklog> {
+public class WorklogJsonParser implements JsonObjectParser<Worklog> {
 	
 	@Override
 	public Worklog parse(JSONObject json) throws JSONException {

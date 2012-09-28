@@ -17,8 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 
-public interface JsonArrayParser<T> {
-	T parse(JSONArray json) throws JSONException;
+public interface JsonArrayParser<T> extends JsonParser<JSONArray, T>
+{
 }

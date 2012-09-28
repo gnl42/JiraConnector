@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @since v1.0
  */
-public class FieldSchemaJsonParser implements JsonParser<FieldSchema> {
+public class FieldSchemaJsonParser implements JsonObjectParser<FieldSchema> {
 
 	@Override
 	public FieldSchema parse(JSONObject json) throws JSONException {

@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public class WatchersJsonParserTest {
     @Test
     public void testParseBasicWatchers() throws JSONException {
-        final JsonParser<BasicWatchers> parser = WatchersJsonParserBuilder.createBasicWatchersParser();
+        final JsonObjectParser<BasicWatchers> parser = WatchersJsonParserBuilder.createBasicWatchersParser();
         final BasicWatchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/basic-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());        
@@ -36,7 +36,7 @@ public class WatchersJsonParserTest {
 
     @Test
     public void testParseWatchers() throws JSONException {
-        final JsonParser<Watchers> parser = WatchersJsonParserBuilder.createWatchersParser();
+        final JsonObjectParser<Watchers> parser = WatchersJsonParserBuilder.createWatchersParser();
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());

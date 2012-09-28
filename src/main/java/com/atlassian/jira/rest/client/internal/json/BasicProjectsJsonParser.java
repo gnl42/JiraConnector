@@ -24,15 +24,15 @@ import java.util.ArrayList;
 
 public class BasicProjectsJsonParser implements JsonArrayParser<Iterable<BasicProject>> {
 
-	private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
+    private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
-	@Override
-	public Iterable<BasicProject> parse(JSONArray json) throws JSONException {
-		ArrayList<BasicProject> res = new ArrayList<BasicProject>(json.length());
-		for (int i = 0; i < json.length(); i++) {
-			res.add(basicProjectJsonParser.parse(json.getJSONObject(i)));
+    @Override
+    public Iterable<BasicProject> parse(JSONArray json) throws JSONException {
+        ArrayList<BasicProject> res = new ArrayList<BasicProject>(json.length());
+        for (int i = 0; i < json.length(); i++) {
+            res.add(basicProjectJsonParser.parse(json.getJSONObject(i)));
 
-		}
-		return res;
-	}
+        }
+        return res;
+    }
 }

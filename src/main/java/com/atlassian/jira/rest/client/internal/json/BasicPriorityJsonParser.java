@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class BasicPriorityJsonParser implements JsonParser<BasicPriority> {
+public class BasicPriorityJsonParser implements JsonObjectParser<BasicPriority> {
 	@Override
 	public BasicPriority parse(JSONObject json) throws JSONException {
 		final String name = json.getString("name");

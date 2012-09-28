@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class BasicUserJsonParser implements JsonParser<BasicUser> {
+public class BasicUserJsonParser implements JsonObjectParser<BasicUser> {
 	@Override
 	public BasicUser parse(JSONObject jsonObject) throws JSONException {
 		return JsonParseUtil.parseBasicUser(jsonObject);

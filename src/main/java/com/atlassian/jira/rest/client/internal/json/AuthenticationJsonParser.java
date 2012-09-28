@@ -22,7 +22,7 @@ import com.atlassian.jira.rest.client.domain.SessionCookie;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class AuthenticationJsonParser implements JsonParser<Authentication> {
+public class AuthenticationJsonParser implements JsonObjectParser<Authentication> {
 
     private final SessionCookieJsonParser sessionCookieJsonParser = new SessionCookieJsonParser();
     private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();

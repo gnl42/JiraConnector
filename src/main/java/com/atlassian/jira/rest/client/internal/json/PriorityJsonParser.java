@@ -23,7 +23,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class PriorityJsonParser implements JsonParser<Priority> {
+public class PriorityJsonParser implements JsonObjectParser<Priority> {
 	private final BasicPriorityJsonParser basicPriorityJsonParser = new BasicPriorityJsonParser();
 	@Override
 	public Priority parse(JSONObject json) throws JSONException {

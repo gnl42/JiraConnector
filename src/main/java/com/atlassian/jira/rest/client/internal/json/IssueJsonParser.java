@@ -85,7 +85,7 @@ import static com.atlassian.jira.rest.client.domain.IssueFieldId.WORKLOGS_FIELD;
 import static com.atlassian.jira.rest.client.domain.IssueFieldId.WORKLOG_FIELD;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
 
-public class IssueJsonParser implements JsonParser<Issue> {
+public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 	private static Set<String> SPECIAL_FIELDS = Sets.newHashSet(IssueFieldId.ids());
 
@@ -97,7 +97,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
-	private final JsonParser<BasicWatchers> watchersJsonParser
+	private final JsonObjectParser<BasicWatchers> watchersJsonParser
 			= WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
@@ -299,7 +299,7 @@ public class IssueJsonParser implements JsonParser<Issue> {
 	}
 
 	@Nullable
-	private <T> T getOptionalField(boolean shouldUseNestedValue, JSONObject s, final String fieldId, JsonParser<T> jsonParser)
+	private <T> T getOptionalField(boolean shouldUseNestedValue, JSONObject s, final String fieldId, JsonObjectParser<T> jsonParser)
 			throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
 		// for fields like assignee (when unassigned) value attribute may be missing completely

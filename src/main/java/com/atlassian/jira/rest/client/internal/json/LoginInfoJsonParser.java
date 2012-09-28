@@ -21,7 +21,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
-public class LoginInfoJsonParser implements JsonParser<LoginInfo> {
+public class LoginInfoJsonParser implements JsonObjectParser<LoginInfo> {
     @Override
     public LoginInfo parse(JSONObject json) throws JSONException {
         final int failedLoginCount = json.optInt("failedLoginCount");

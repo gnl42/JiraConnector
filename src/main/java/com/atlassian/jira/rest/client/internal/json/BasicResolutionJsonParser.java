@@ -25,7 +25,7 @@ import java.net.URI;
 /**
  * @since v0.1
  */
-public class BasicResolutionJsonParser implements JsonParser<BasicResolution> {
+public class BasicResolutionJsonParser implements JsonObjectParser<BasicResolution> {
 	@Override
 	public BasicResolution parse(JSONObject json) throws JSONException {
 		final String name = json.getString("name");

@@ -19,8 +19,8 @@ package com.atlassian.jira.rest.client.internal.jersey;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -76,7 +76,7 @@ public abstract class AbstractJerseyRestClient {
 		}
 	}
 
-	protected <T> T getAndParse(final URI uri, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+	protected <T> T getAndParse(final URI uri, final JsonObjectParser<T> parser, ProgressMonitor progressMonitor) {
 		return invoke(new Callable<T>() {
 			@Override
 			public T call() throws Exception {
@@ -110,7 +110,7 @@ public abstract class AbstractJerseyRestClient {
 		});
 	}
 
-	protected <T> T postAndParse(final URI uri, @Nullable final JSONObject postEntity, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+	protected <T> T postAndParse(final URI uri, @Nullable final JSONObject postEntity, final JsonObjectParser<T> parser, ProgressMonitor progressMonitor) {
 		return invoke(new Callable<T>() {
 			@Override
 			public T call() throws Exception {
@@ -148,11 +148,11 @@ public abstract class AbstractJerseyRestClient {
 
 	}
 
-	protected <T> T postAndParse(final URI uri, final Callable<JSONObject> callable, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+	protected <T> T postAndParse(final URI uri, final Callable<JSONObject> callable, final JsonObjectParser<T> parser, ProgressMonitor progressMonitor) {
 		return impl(uri, Method.POST, callable, parser);
 	}
 
-	protected <T> T putAndParse(final URI uri, final Callable<JSONObject> callable, final JsonParser<T> parser, ProgressMonitor progressMonitor) {
+	protected <T> T putAndParse(final URI uri, final Callable<JSONObject> callable, final JsonObjectParser<T> parser, ProgressMonitor progressMonitor) {
 		return impl(uri, Method.PUT, callable, parser);
 	}
 
@@ -160,7 +160,7 @@ public abstract class AbstractJerseyRestClient {
 		PUT, POST
 	}
 
-	private <T> T impl(final URI uri, final Method method, final Callable<JSONObject> callable, final JsonParser<T> parser) {
+	private <T> T impl(final URI uri, final Method method, final Callable<JSONObject> callable, final JsonObjectParser<T> parser) {
 		return invoke(new Callable<T>() {
 			@Override
 			public T call() throws Exception {

@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 /**
  * @since v0.1
  */
-public class ResolutionJsonParser implements JsonParser<Resolution> {
+public class ResolutionJsonParser implements JsonObjectParser<Resolution> {
 	private final BasicResolutionJsonParser basicResolutionJsonParser = new BasicResolutionJsonParser();
 	@Override
 	public Resolution parse(JSONObject json) throws JSONException {

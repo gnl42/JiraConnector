@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class VersionRelatedIssueCountJsonParser implements JsonParser<VersionRelatedIssuesCount> {
+public class VersionRelatedIssueCountJsonParser implements JsonObjectParser<VersionRelatedIssuesCount> {
 	@Override
 	public VersionRelatedIssuesCount parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);

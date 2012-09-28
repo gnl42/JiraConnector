@@ -24,7 +24,7 @@ import com.atlassian.jira.rest.client.internal.domain.AssigneeTypeConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class ComponentJsonParser implements JsonParser<Component> {
+public class ComponentJsonParser implements JsonObjectParser<Component> {
 	@Override
 	public Component parse(JSONObject json) throws JSONException {
 		final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);

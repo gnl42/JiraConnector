@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
 
-public class UserJsonParser implements JsonParser<User> {
+public class UserJsonParser implements JsonObjectParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {
 		final BasicUser basicUser = JsonParseUtil.parseBasicUser(json);
@@ -51,7 +51,7 @@ public class UserJsonParser implements JsonParser<User> {
 		// e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
 		final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
 		// we expect always expanded groups, serving them is anyway cheap - that was the case for JIRA prior 5.0, now groups are not expanded...
-		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json.getJSONObject("groups"), new JsonParser<String>() {
+		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json.getJSONObject("groups"), new JsonObjectParser<String>() {
 			@Override
 			public String parse(JSONObject json) throws JSONException {
 				return json.getString("name");

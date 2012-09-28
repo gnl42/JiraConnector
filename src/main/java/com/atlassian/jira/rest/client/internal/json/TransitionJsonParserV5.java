@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class TransitionJsonParserV5 implements JsonParser<Transition> {
+public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
     public Transition parse(JSONObject json) throws JSONException {

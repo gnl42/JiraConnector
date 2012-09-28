@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nullable;
 
-public class VisibilityJsonParser implements JsonParser<Visibility> {
+public class VisibilityJsonParser implements JsonObjectParser<Visibility> {
 	private static final String ROLE_TYPE = "ROLE";
 	private static final String GROUP_TYPE = "GROUP";
 

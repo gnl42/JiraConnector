@@ -41,8 +41,8 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.BasicIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.CreateIssueMetadataJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
@@ -100,9 +100,9 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	private final IssueJsonParser issueParser = new IssueJsonParser();
 	private final BasicIssueJsonParser basicIssueParser = new BasicIssueJsonParser();
-	private final JsonParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
+	private final JsonObjectParser<Watchers> watchersParser = WatchersJsonParserBuilder.createWatchersParser();
 	private final TransitionJsonParser transitionJsonParser = new TransitionJsonParser();
-	private final JsonParser<Transition> transitionJsonParserV5 = new TransitionJsonParserV5();
+	private final JsonObjectParser<Transition> transitionJsonParserV5 = new TransitionJsonParserV5();
 	private final VotesJsonParser votesJsonParser = new VotesJsonParser();
 	private final CreateIssueMetadataJsonParser createIssueMetadataJsonParser = new CreateIssueMetadataJsonParser();
 	private ServerInfo serverInfo;

@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.domain.TimeTracking;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class TimeTrackingJsonParser implements JsonParser<TimeTracking> {
+public class TimeTrackingJsonParser implements JsonObjectParser<TimeTracking> {
 	@Override
 	public TimeTracking parse(JSONObject json) throws JSONException {
 		final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "timeoriginalestimate");

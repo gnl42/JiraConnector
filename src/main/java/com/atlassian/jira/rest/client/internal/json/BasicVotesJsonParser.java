@@ -25,7 +25,7 @@ import java.net.URI;
 /**
  * @since v0.1
  */
-public class BasicVotesJsonParser implements JsonParser<BasicVotes> {
+public class BasicVotesJsonParser implements JsonObjectParser<BasicVotes> {
 	@Override
 	public BasicVotes parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);

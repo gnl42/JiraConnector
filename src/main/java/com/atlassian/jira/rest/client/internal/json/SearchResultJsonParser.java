@@ -23,7 +23,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Collection;
 
-public class SearchResultJsonParser implements JsonParser<SearchResult> {
+public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
 	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
 
 	@Override

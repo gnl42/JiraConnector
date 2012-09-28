@@ -30,31 +30,39 @@ import java.util.Collections;
  * @since v0.1
  */
 public class RestClientException extends RuntimeException {
-	private final Collection<String> errorMessages;
+    private final Collection<String> errorMessages;
 
     public RestClientException(Throwable cause) {
         super(cause);
-		errorMessages = Collections.emptyList();
+        errorMessages = Collections.emptyList();
     }
-	public RestClientException(String errorMessage, Throwable cause) {
-		super(errorMessage, cause);
-		this.errorMessages = Arrays.asList(errorMessage);
-	}
+    public RestClientException(String errorMessage, Throwable cause) {
+        super(errorMessage, cause);
+        this.errorMessages = Arrays.asList(errorMessage);
+    }
 
 
-	/**
-	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
-	 * @param cause the cause of this exception or <code>null</code>
-	 */
-	public RestClientException(Collection<String> errorMessages, Throwable cause) {
-		super(Joiner.on("\n").join(errorMessages), cause);
-		this.errorMessages = new ArrayList<String>(errorMessages);
-	}
+    /**
+     * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
+     * @param cause the cause of this exception or <code>null</code>
+     */
+    public RestClientException(Collection<String> errorMessages, Throwable cause) {
+        super(Joiner.on("\n").join(errorMessages), cause);
+        this.errorMessages = new ArrayList<String>(errorMessages);
+    }
 
-	/**
-	 * @return error messages used while building this exception object
-	 */
-	public Iterable<String> getErrorMessages() {
-		return errorMessages;
-	}
+    /**
+     * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
+     */
+    public RestClientException(Collection<String> errorMessages) {
+        super(Joiner.on("\n").join(errorMessages));
+        this.errorMessages = new ArrayList<String>(errorMessages);
+    }
+
+    /**
+     * @return error messages used while building this exception object
+     */
+    public Iterable<String> getErrorMessages() {
+        return errorMessages;
+    }
 }

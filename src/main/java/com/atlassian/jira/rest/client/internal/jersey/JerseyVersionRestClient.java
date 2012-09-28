@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
 import com.atlassian.jira.rest.client.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.domain.input.VersionPosition;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
@@ -87,7 +88,7 @@ public class JerseyVersionRestClient extends AbstractJerseyRestClient implements
 	@Override
 	public int getNumUnresolvedIssues(URI versionUri, ProgressMonitor progressMonitor) {
 		final URI unresolvedIssueCountUri = UriBuilder.fromUri(versionUri).path("unresolvedIssueCount").build();
-		return getAndParse(unresolvedIssueCountUri, new JsonParser<Integer>() {
+		return getAndParse(unresolvedIssueCountUri, new JsonObjectParser<Integer>() {
 			@Override
 			public Integer parse(JSONObject json) throws JSONException {
 				return json.getInt("issuesUnresolvedCount");

@@ -42,7 +42,7 @@ public class JsonParseUtil {
 	public static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
 	public static final String SELF_ATTR = "self";
 
-    public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonParser<T> jsonParser) throws JSONException {
+    public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonObjectParser<T> jsonParser) throws JSONException {
         final Collection<T> res = new ArrayList<T>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
@@ -50,7 +50,7 @@ public class JsonParseUtil {
         return res;
     }
     
-	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonParser<T> expandablePropertyBuilder)
+	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
 			throws JSONException {
 		final int numItems = json.getInt("size");
 		final Collection<T> items;

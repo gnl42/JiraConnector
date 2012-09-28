@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class IssueLinkTypeJsonParser implements JsonParser<IssueLinkType> {
+public class IssueLinkTypeJsonParser implements JsonObjectParser<IssueLinkType> {
 	private static final String KEY_DIRECTION = "direction";
 
 	@Override

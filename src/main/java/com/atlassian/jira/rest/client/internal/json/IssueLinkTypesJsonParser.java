@@ -4,7 +4,7 @@ import com.atlassian.jira.rest.client.domain.IssuelinksType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class IssueLinkTypesJsonParser implements JsonParser<Iterable<IssuelinksType>> {
+public class IssueLinkTypesJsonParser implements JsonObjectParser<Iterable<IssuelinksType>> {
 	private final IssuelinksTypeJsonParserV5 issueLinkTypeJsonParser = new IssuelinksTypeJsonParserV5();
 
 	@Override

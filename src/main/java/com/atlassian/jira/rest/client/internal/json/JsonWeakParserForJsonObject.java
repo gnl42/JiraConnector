@@ -20,9 +20,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
-    private final JsonParser<T> jsonParser;
+    private final JsonObjectParser<T> jsonParser;
 
-    public JsonWeakParserForJsonObject(JsonParser<T> jsonParser) {
+    public JsonWeakParserForJsonObject(JsonObjectParser<T> jsonParser) {
         this.jsonParser = jsonParser;
     }
 

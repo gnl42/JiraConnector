@@ -25,7 +25,7 @@ import org.joda.time.DateTime;
 
 import java.util.Collection;
 
-public class ChangelogJsonParser implements JsonParser<ChangelogGroup> {
+public class ChangelogJsonParser implements JsonObjectParser<ChangelogGroup> {
 	private final ChangelogItemJsonParser changelogItemJsonParser = new ChangelogItemJsonParser();
 
 	@Override

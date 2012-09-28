@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.domain.SessionCookie;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class SessionCookieJsonParser implements JsonParser<SessionCookie> {
+public class SessionCookieJsonParser implements JsonObjectParser<SessionCookie> {
     @Override
     public SessionCookie parse(JSONObject json) throws JSONException {
         return new SessionCookie(json.getString("name"), json.getString("value"));

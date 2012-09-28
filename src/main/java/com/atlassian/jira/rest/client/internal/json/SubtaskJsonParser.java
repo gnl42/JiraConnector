@@ -8,7 +8,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class SubtaskJsonParser implements JsonParser<Subtask> {
+public class SubtaskJsonParser implements JsonObjectParser<Subtask> {
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 

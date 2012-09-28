@@ -22,7 +22,7 @@ import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import com.atlassian.jira.rest.client.internal.json.ComponentJsonParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParser;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
@@ -78,7 +78,7 @@ public class JerseyComponentRestClient extends AbstractJerseyRestClient implemen
 	@Override
 	public int getComponentRelatedIssuesCount(URI componentUri, ProgressMonitor progressMonitor) {
 		final URI relatedIssueCountsUri = UriBuilder.fromUri(componentUri).path("relatedIssueCounts").build();
-		return getAndParse(relatedIssueCountsUri, new JsonParser<Integer>() {
+		return getAndParse(relatedIssueCountsUri, new JsonObjectParser<Integer>() {
 			@Override
 			public Integer parse(JSONObject json) throws JSONException {
 				return json.getInt("issueCount");

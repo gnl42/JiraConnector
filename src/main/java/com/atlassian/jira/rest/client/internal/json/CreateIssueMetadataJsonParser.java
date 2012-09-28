@@ -25,7 +25,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @since v1.0
  */
-public class CreateIssueMetadataJsonParser implements JsonParser<Iterable<CimProject>>{
+public class CreateIssueMetadataJsonParser implements JsonObjectParser<Iterable<CimProject>>{
 
 	private final GenericJsonArrayParser<CimProject> projectsParser = new GenericJsonArrayParser<CimProject>(new CimProjectJsonParser());
 

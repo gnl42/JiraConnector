@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-public class BasicComponentJsonParser implements JsonParser<BasicComponent> {
+public class BasicComponentJsonParser implements JsonObjectParser<BasicComponent> {
 
 	@Override
 	public BasicComponent parse(JSONObject json) throws JSONException {

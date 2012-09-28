@@ -38,11 +38,11 @@ import java.util.Set;
  * JSON parser that produces Map of String => CimFieldInfo
  * @since v1.0
  */
-public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFieldInfo>> {
+public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, CimFieldInfo>> {
 
 	private final FieldSchemaJsonParser fieldSchemaJsonParser = new FieldSchemaJsonParser();
 
-	protected final Map<String, JsonParser> registeredAllowedValueParsers = new HashMap<String, JsonParser>() {{
+	protected final Map<String, JsonObjectParser> registeredAllowedValueParsers = new HashMap<String, JsonObjectParser>() {{
 		put("project", new BasicProjectJsonParser());
 		put("version", new VersionJsonParser());
 		put("issuetype", new BasicIssueTypeJsonParser());
@@ -82,7 +82,7 @@ public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFie
 			return Collections.emptyList();
 		}
 
-		JsonParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
+        JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
 		if (allowedValuesJsonParser != null) {
 			JSONArray valuesToParse;
 			// fixes for JRADEV-12999
@@ -124,7 +124,7 @@ public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFie
 		return res;
 	}
 	
-	private  JsonParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
+	private  JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
 		final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
 				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
 				"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
@@ -137,7 +137,7 @@ public class CimFieldsInfoMapJsonParser implements JsonParser<Map<String, CimFie
 			type = "customFieldOption";
 		}
 		@SuppressWarnings("unchecked")
-		final JsonParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
+		final JsonObjectParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
 		if (jsonParser == null) {
 			throw new JSONException("Cannot find parser for field witch schema: " + fieldSchema);
 		}

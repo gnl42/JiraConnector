@@ -30,7 +30,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 
-public class ProjectJsonParser implements JsonParser<Project> {
+public class ProjectJsonParser implements JsonObjectParser<Project> {
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser componentJsonParser = new BasicComponentJsonParser();
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();

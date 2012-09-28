@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.domain.ChangelogItem;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class ChangelogItemJsonParser implements JsonParser<ChangelogItem> {
+public class ChangelogItemJsonParser implements JsonObjectParser<ChangelogItem> {
 	@Override
 	public ChangelogItem parse(JSONObject json) throws JSONException {
 		final String fieldTypeStr = JsonParseUtil.getNestedString(json, "fieldtype");
