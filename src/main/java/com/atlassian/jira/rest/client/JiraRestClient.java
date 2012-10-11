@@ -62,7 +62,12 @@ public interface JiraRestClient {
 	SearchRestClient getSearchClient();
 
 	/**
-	 * @return the client handling project versions
+	 * @return the client handling project versions.
 	 */
 	VersionRestClient getVersionRestClient();
+
+	/**
+	 * @return the client for project roles.
+	 */
+	ProjectRolesRestClient getProjectRolesRestClient();
 }

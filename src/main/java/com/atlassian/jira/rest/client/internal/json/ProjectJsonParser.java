@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Project;
@@ -31,9 +32,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class ProjectJsonParser implements JsonObjectParser<Project> {
+
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser componentJsonParser = new BasicComponentJsonParser();
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
+	private final BasicProjectRoleJsonParser basicProjectRoleJsonParser = new BasicProjectRoleJsonParser();
+
 	@Override
 	public Project parse(JSONObject json) throws JSONException {
 		URI self = JsonParseUtil.getSelfUri(json);
@@ -57,7 +61,9 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 		final Collection<IssueType> issueTypes = (issueTypesArray == null)
 				? Collections.<IssueType>emptyList()
 				: JsonParseUtil.parseJsonArray(issueTypesArray, issueTypeJsonParser);
-		return new Project(self, key, name, description, lead, uri, versions, components, issueTypes);
-
+		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil.getOptionalJsonObject(json, "roles"));
+		return new Project(self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
 	}
+
+
 }

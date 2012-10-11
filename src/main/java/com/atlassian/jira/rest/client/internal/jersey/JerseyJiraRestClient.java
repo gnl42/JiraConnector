@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.ProjectRestClient;
+import com.atlassian.jira.rest.client.ProjectRolesRestClient;
 import com.atlassian.jira.rest.client.SearchRestClient;
 import com.atlassian.jira.rest.client.SessionRestClient;
 import com.atlassian.jira.rest.client.UserRestClient;
@@ -55,6 +56,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	private final MetadataRestClient metadataRestClient;
 	private final SearchRestClient searchRestClient;
 	private final VersionRestClient versionRestClient;
+	private final ProjectRolesRestClient projectRolesRestClient;
 
 
 	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
@@ -98,6 +100,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
 		searchRestClient = new JerseySearchRestClient(baseUri, client);
 		versionRestClient = new JerseyVersionRestClient(baseUri, client);
+		projectRolesRestClient = new JerseyProjectRolesRestClient(baseUri, client);
     }
 
     @Override
@@ -138,6 +141,11 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	@Override
 	public VersionRestClient getVersionRestClient() {
 		return versionRestClient;
+	}
+
+	@Override
+	public ProjectRolesRestClient getProjectRolesRestClient() {
+		return projectRolesRestClient;
 	}
 
 	private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {

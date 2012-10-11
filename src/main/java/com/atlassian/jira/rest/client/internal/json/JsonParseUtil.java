@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -254,6 +255,11 @@ public class JsonParseUtil {
 	@Nullable
 	public static Long getOptionalLong(JSONObject jsonObject, String attributeName) throws JSONException {
 		return jsonObject.has(attributeName) ? jsonObject.getLong(attributeName) : null;
+	}
+
+	public static Optional<JSONArray> getOptionalArray(JSONObject jsonObject, String attributeName) throws JSONException {
+		return jsonObject.has(attributeName) ?
+				Optional.of(jsonObject.getJSONArray(attributeName)) : Optional.<JSONArray>absent();
 	}
 	
 	public static Map<String, URI> getAvatarUris(JSONObject jsonObject) throws JSONException {

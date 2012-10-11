@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.google.common.collect.Iterables;
@@ -85,6 +86,17 @@ public class ProjectJsonParserTest {
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", new URI("http://localhost:2990/jira/images/icons/task.gif")),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", new URI("http://localhost:2990/jira/images/icons/improvement.gif")),
 				new IssueType(new URI("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", new URI("http://localhost:2990/jira/images/icons/issue_subtask.gif"))
+		));
+	}
+
+	@Test
+	public void testParseProjectWithBasicRoles() throws JSONException, URISyntaxException {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-basic-role.json"));
+		final Iterable<BasicProjectRole> projectRoles = project.getProjectRoles();
+		assertThat(projectRoles, containsInAnyOrder(
+				new BasicProjectRole(new URI("http://localhost:2990/jira/rest/api/2/project/RST/role/10000"), "Users"),
+				new BasicProjectRole(new URI("http://localhost:2990/jira/rest/api/2/project/RST/role/10001"), "Developers"),
+				new BasicProjectRole(new URI("http://localhost:2990/jira/rest/api/2/project/RST/role/10002"), "Administrators")
 		));
 	}
 }

@@ -48,6 +48,7 @@
 		<jira.test-lib.version>${jira.version}</jira.test-lib.version>
 		<jdkLevel>1.6</jdkLevel>
 		<jersey.client.version>1.5</jersey.client.version>
+		<guava.version>13.0</guava.version>
 	</properties>
 	<build>
 		<testResources>
@@ -186,7 +187,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>r06</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>

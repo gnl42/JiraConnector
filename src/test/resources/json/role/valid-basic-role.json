@@ -1,0 +1,79 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/2/project/RST",
+	"id": "10010",
+	"key": "RST",
+	"description": "This project is visible only by Administrator",
+	"lead": {
+		"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+		"name": "admin",
+		"avatarUrls": {
+			"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName": "Administrator",
+		"active": true
+	},
+	"components": [
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/component/10010",
+			"id": "10010",
+			"name": "One Great Component",
+			"isAssigneeTypeValid": false
+		}
+	],
+	"issueTypes": [
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+			"id": "1",
+			"description": "A problem which impairs or prevents the functions of the product.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+			"name": "Bug",
+			"subtask": false
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/2",
+			"id": "2",
+			"description": "A new feature of the product, which has yet to be developed.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+			"name": "New Feature",
+			"subtask": false
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/3",
+			"id": "3",
+			"description": "A task that needs to be done.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+			"name": "Task",
+			"subtask": false
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/4",
+			"id": "4",
+			"description": "An improvement or enhancement to an existing feature or task.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+			"name": "Improvement",
+			"subtask": false
+		},
+		{
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/5",
+			"id": "5",
+			"description": "The sub-task of the issue",
+			"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+			"name": "Sub-task",
+			"subtask": true
+		}
+	],
+	"url": "http://atlassian.com",
+	"assigneeType": "PROJECT_LEAD",
+	"versions": [],
+	"name": "Restricted Project",
+	"roles": {
+		"Users": "http://localhost:2990/jira/rest/api/2/project/RST/role/10000",
+		"Administrators": "http://localhost:2990/jira/rest/api/2/project/RST/role/10002",
+		"Developers": "http://localhost:2990/jira/rest/api/2/project/RST/role/10001"
+	},
+	"avatarUrls": {
+		"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+		"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10010&avatarId=10011"
+	}
+}

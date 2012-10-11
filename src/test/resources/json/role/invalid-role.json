@@ -1,0 +1,5 @@
+{
+	"name":"Users",
+	"id":10000,
+	"description":"A project role that represents users in a project"
+}

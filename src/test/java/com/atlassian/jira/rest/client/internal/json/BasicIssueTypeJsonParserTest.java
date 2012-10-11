@@ -24,7 +24,8 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.junit.Assert.assertEquals;
 
 public class BasicIssueTypeJsonParserTest {
-    @Test
+
+	@Test
     public void testParse() throws JSONException {
         BasicIssueTypeJsonParser parser = new BasicIssueTypeJsonParser();
         final BasicIssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));

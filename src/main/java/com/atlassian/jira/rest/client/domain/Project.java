@@ -37,9 +37,11 @@ public class Project extends BasicProject {
 	private final Collection<Version> versions;
 	private final Collection<BasicComponent> components;
 	private final Collection<IssueType> issueTypes;
+	private final Collection<BasicProjectRole> projectRoles;
 
-	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri, Collection<Version> versions,
-				   Collection<BasicComponent> components, Collection<IssueType> issueTypes) {
+	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri,
+			Collection<Version> versions,Collection<BasicComponent> components,
+			Collection<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
 		super(self, key, name);
 		this.description = description;
 		this.lead = lead;
@@ -47,6 +49,7 @@ public class Project extends BasicProject {
 		this.versions = versions;
 		this.components = components;
 		this.issueTypes = issueTypes;
+		this.projectRoles = projectRoles;
 	}
 
 	/**
@@ -95,6 +98,13 @@ public class Project extends BasicProject {
 	 */
 	public Iterable<IssueType> getIssueTypes() {
 		return issueTypes;
+	}
+
+	/**
+	 * @return basic definition of this project's roles.
+	 */
+	public Iterable<BasicProjectRole> getProjectRoles() {
+		return projectRoles;
 	}
 
 	/**
