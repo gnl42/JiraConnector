@@ -26,11 +26,11 @@ import static org.junit.Assert.assertEquals;
 public class BasicIssueTypeJsonParserTest {
 
 	@Test
-    public void testParse() throws JSONException {
-        BasicIssueTypeJsonParser parser = new BasicIssueTypeJsonParser();
-        final BasicIssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));
-        assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true), issueType);
-    }
+	public void testParse() throws JSONException {
+		BasicIssueTypeJsonParser parser = new BasicIssueTypeJsonParser();
+		final BasicIssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid.json"));
+		assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true), issueType);
+	}
 
 	@Test
 	public void testParseWithoutId() throws JSONException {
