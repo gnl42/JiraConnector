@@ -62,4 +62,15 @@ public class BasicProjectRole implements AddressableEntity, NamedEntity {
 	public int hashCode() {
 		return Objects.hashCode(super.hashCode(), self, name);
 	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	public Objects.ToStringHelper getToStringHelper() {
+		return Objects.toStringHelper(this)
+				.add("self", self)
+				.add("name", name);
+	}
 }

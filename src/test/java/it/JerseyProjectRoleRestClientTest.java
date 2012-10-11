@@ -15,11 +15,13 @@
  */
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
@@ -50,6 +52,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		Mockito.when(restrictedProjectMock.getKey()).thenReturn("RST");
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithRoleKeyFromAnonymousProject() throws URISyntaxException {
 		final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProjectMock, 10000l, pm);
@@ -63,6 +66,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		Assert.assertEquals("/jira/secure/useravatar?size=small&avatarId=10083", actor.getAvatarUrl());
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithRoleKeyFromRestrictedProject() throws URISyntaxException {
 		setAdmin();
@@ -77,12 +81,14 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		Assert.assertEquals("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054", actor.getAvatarUrl());
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test(expected = RestClientException.class)
 	public void testGetProjectRoleWithRoleKeyFromRestrictedProjectWithoutPermission() {
 		setAnonymousMode();
 		client.getProjectRolesRestClient().getRole(restrictedProjectMock, 10000l, pm);
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithFullURI() throws URISyntaxException {
 		final URI roleURI = client.getProjectRolesRestClient().getRole(anonProjectMock, 10000l, pm).getSelf();
@@ -97,6 +103,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		Assert.assertEquals("/jira/secure/useravatar?size=small&avatarId=10083", actor.getAvatarUrl());
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetAllRolesForProject() {
 		Project anonymousProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
@@ -132,6 +139,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		));
 	}
 
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test(expected = RestClientException.class)
 	public void testGetProjectRoleWithRoleKeyErrorCode() {
 		client.getProjectRolesRestClient().getRole(anonProjectMock, -1l, pm);

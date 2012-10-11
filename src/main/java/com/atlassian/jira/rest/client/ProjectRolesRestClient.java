@@ -47,6 +47,7 @@ public interface ProjectRolesRestClient {
 	 * @param roleId unique role id.
 	 * @param progressMonitor progress monitor.
 	 * @return full information about selected role.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	ProjectRole getRole(Project project, long roleId, ProgressMonitor progressMonitor);
 
@@ -56,6 +57,7 @@ public interface ProjectRolesRestClient {
 	 * @param project project of the roles to retrieve.
 	 * @param progressMonitor progress monitor.
 	 * @return a collection of roles in the selected project.
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Iterable<ProjectRole> getRoles(Project project, ProgressMonitor progressMonitor);
 

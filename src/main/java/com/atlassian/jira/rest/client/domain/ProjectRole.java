@@ -70,4 +70,11 @@ public class ProjectRole extends BasicProjectRole {
 	public int hashCode() {
 		return Objects.hashCode(super.hashCode(), description, actors);
 	}
+
+	@Override
+	public Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper()
+				.add("description", description)
+				.add("actors", actors);
+	}
 }

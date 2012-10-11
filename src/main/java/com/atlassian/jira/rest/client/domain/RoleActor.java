@@ -81,4 +81,17 @@ public class RoleActor implements NamedEntity {
 	public int hashCode() {
 		return Objects.hashCode(super.hashCode(), name, avatarUrl, type, displayName);
 	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	public Objects.ToStringHelper getToStringHelper() {
+		return Objects.toStringHelper(this)
+				.add("displayName", displayName)
+				.add("type", type)
+				.add("name", name)
+				.add("avatarUrl", avatarUrl);
+	}
 }
