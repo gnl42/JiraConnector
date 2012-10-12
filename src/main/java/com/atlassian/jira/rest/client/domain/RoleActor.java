@@ -18,22 +18,41 @@ package com.atlassian.jira.rest.client.domain;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
+import java.net.URL;
+
 /**
  * Association between users and project roles.
  * @since 1.0
  */
 public class RoleActor implements NamedEntity {
 
+	/**
+	 * Default string identifying user with its implementation type.
+	 */
+	private static final String defaultRoleActorType = "atlassian-user-role-actor";
+
+	private final long id;
 	private final String displayName;
 	private final String type;
 	private final String name;
-	private final String avatarUrl;
+	private final URL avatarUrl;
 
-	public RoleActor(String displayName, String type, String name, String avatarUrl) {
+	public RoleActor(long id, String displayName, String type, String name, @Nullable URL avatarUrl) {
+		this.id = id;
 		this.displayName = displayName;
 		this.type = type;
 		this.name = name;
 		this.avatarUrl = avatarUrl;
+	}
+
+	/**
+	 * Returns the default string identifying user with its implementation type.
+	 * @return the default string identifying user with its implementation type.
+	 */
+	@SuppressWarnings("unused")
+	public static String getDefaultRoleActorType() {
+		return defaultRoleActorType;
 	}
 
 	@Override
@@ -58,11 +77,19 @@ public class RoleActor implements NamedEntity {
 	}
 
 	/**
-	 * Returns a relative path to the avatar of this role actor.
-	 * @return a relative path to the avatar of this role actor.
+	 * Returns an URL of the avatar of this role actor.
+	 * @return an URL of the avatar of this role actor.
 	 */
-	public String getAvatarUrl() {
+	public URL getAvatarUrl() {
 		return avatarUrl;
+	}
+
+	/**
+	 * Returns the unique identifier for this role actor.
+	 * @return the unique identifier for this role actor.
+	 */
+	public long getId() {
+		return id;
 	}
 
 	@Override

@@ -16,7 +16,9 @@
 package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
+import com.atlassian.jira.rest.client.ProjectRestClient;
 import com.atlassian.jira.rest.client.ProjectRolesRestClient;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
@@ -36,19 +38,22 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 
 	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectRoleJsonParser projectRoleJsonParser;
+	private final ProjectRestClient projectRestClient;
 
-	public JerseyProjectRolesRestClient(URI baseUri, ApacheHttpClient client) {
+	public JerseyProjectRolesRestClient(
+			final URI baseUri, final ApacheHttpClient client, final URI serverUri, final ProjectRestClient projectRestClient) {
 		super(baseUri, client);
-		projectRoleJsonParser = new ProjectRoleJsonParser();
+		this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
+		this.projectRestClient = projectRestClient;
 	}
 
 	@Override
-	public ProjectRole getRole(URI uri, ProgressMonitor progressMonitor) {
+	public ProjectRole getRole(final URI uri, final ProgressMonitor progressMonitor) {
 		return getAndParse(uri, projectRoleJsonParser, progressMonitor);
 	}
 
 	@Override
-	public ProjectRole getRole(Project project, long roleId, ProgressMonitor progressMonitor) {
+	public ProjectRole getRole(final BasicProject project, final long roleId, final ProgressMonitor progressMonitor) {
 		final URI roleUri = UriBuilder
 				.fromUri(baseUri)
 				.path(PROJECT_URI_PREFIX)
@@ -60,7 +65,8 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 	}
 
 	@Override
-	public Iterable<ProjectRole> getRoles(final Project project, final ProgressMonitor progressMonitor) {
+	public Iterable<ProjectRole> getRoles(final BasicProject basicProject, final ProgressMonitor progressMonitor) {
+		final Project project = projectRestClient.getProject(basicProject.getKey(), progressMonitor);
 		return Iterables.transform(
 			project.getProjectRoles(),
 			new Function<BasicProjectRole, ProjectRole>() {

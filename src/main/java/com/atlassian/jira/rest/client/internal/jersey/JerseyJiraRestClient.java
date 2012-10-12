@@ -100,7 +100,7 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		componentRestClient = new JerseyComponentRestClient(baseUri, client);
 		searchRestClient = new JerseySearchRestClient(baseUri, client);
 		versionRestClient = new JerseyVersionRestClient(baseUri, client);
-		projectRolesRestClient = new JerseyProjectRolesRestClient(baseUri, client);
+		projectRolesRestClient = new JerseyProjectRolesRestClient(baseUri, client, serverUri, projectRestClient);
     }
 
     @Override

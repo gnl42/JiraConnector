@@ -29,7 +29,7 @@ import java.util.Collection;
 public class BasicProjectRoleJsonParser implements JsonObjectParser<Collection<BasicProjectRole>> {
 
 	@Override
-	public Collection<BasicProjectRole> parse(final JSONObject json) throws JSONException {
+	public Collection<BasicProjectRole> parse(@Nullable final JSONObject json) throws JSONException {
 		return json == null ?
 			ImmutableSet.<BasicProjectRole>of() :
 			ImmutableSet.copyOf(Iterators.transform(

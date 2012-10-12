@@ -20,18 +20,31 @@ import junit.framework.Assert;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class RoleActorJsonParserTest {
 
-	private final RoleActorJsonParser roleActorJsonParser = new RoleActorJsonParser();
+	private final RoleActorJsonParser roleActorJsonParser;
+	private URI baseJiraURI;
+
+	public RoleActorJsonParserTest() throws URISyntaxException {
+		this.baseJiraURI = new URI("http://localhost:2990");
+		this.roleActorJsonParser = new RoleActorJsonParser(baseJiraURI);
+	}
 
 	@Test
 	public void testParseValidActorWithOptionalParam() throws Exception {
 		RoleActor actor =
 				roleActorJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/actor/valid-actor.json"));
+		Assert.assertEquals(10020l, actor.getId());
 		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals("/jira/secure/useravatar?size=small&avatarId=10083", actor.getAvatarUrl());
 		Assert.assertEquals("jira-users", actor.getDisplayName());
 		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
+		Assert.assertEquals(
+				UriBuilder.fromUri(baseJiraURI).path("/jira/secure/useravatar?size=small&avatarId=10083").build().toURL(),
+				actor.getAvatarUrl());
 	}
 
 	@Test
@@ -45,6 +58,7 @@ public class RoleActorJsonParserTest {
 
 	@Test(expected = JSONException.class)
 	public void testParseInvalidActor() throws Exception {
+		roleActorJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/actor/invalid-actor.json"));
 		roleActorJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/actor/invalid-actor.json"));
 	}
 }

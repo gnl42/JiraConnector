@@ -30,19 +30,20 @@ public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
 
 	private final RoleActorJsonParser roleActorJsonParser;
 
-	public ProjectRoleJsonParser() {
-		this.roleActorJsonParser = new RoleActorJsonParser();
+	public ProjectRoleJsonParser(URI baseJiraUri) {
+		this.roleActorJsonParser = new RoleActorJsonParser(baseJiraUri);
 	}
 
 	@Override
 	public ProjectRole parse(final JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
+		final long id = json.getLong("id");
 		final String name = json.getString("name");
 		final String description = json.getString("description");
 		final Optional<JSONArray> roleActorsOpt = JsonParseUtil.getOptionalArray(json, "actors");
 		final Collection<RoleActor> roleActors = roleActorsOpt.isPresent() ?
 				JsonParseUtil.parseJsonArray(roleActorsOpt.get(), roleActorJsonParser) : ImmutableSet.<RoleActor>of();
-		return new ProjectRole(self, name, description, roleActors);
+		return new ProjectRole(id, self, name, description, roleActors);
 	}
 
 }

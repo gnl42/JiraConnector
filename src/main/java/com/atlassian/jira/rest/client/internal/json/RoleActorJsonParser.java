@@ -19,16 +19,45 @@ import com.atlassian.jira.rest.client.domain.RoleActor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.ws.rs.core.UriBuilder;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 
+	private final URI baseJiraUri;
+
+	public RoleActorJsonParser(URI baseJiraUri) {
+		this.baseJiraUri = baseJiraUri;
+	}
+
 	@Override
 	public RoleActor parse(final JSONObject json) throws JSONException {
+		final long id = json.getLong("id");
 		final String displayName = json.getString("displayName");
 		final String type = json.getString("type");
 		final String name = json.getString("name");
-		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-		return new RoleActor(displayName, type, name, avatarUrl);
+		return new RoleActor(id, displayName, type, name, parseAvatarUrl(json));
+	}
+
+	private URL parseAvatarUrl(final JSONObject json) {
+		try {
+			final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
+			if (avatarUrl != null) {
+				URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
+				if (avatarUri.isAbsolute()) {
+					return avatarUri.toURL();
+				} else {
+					return UriBuilder.fromUri(baseJiraUri).path(avatarUrl).build().toURL();
+				}
+			} else {
+				return null;
+			}
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 
 }

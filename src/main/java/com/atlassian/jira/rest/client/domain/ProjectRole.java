@@ -32,9 +32,11 @@ public class ProjectRole extends BasicProjectRole {
 
 	private final String description;
 	private final Collection<RoleActor> actors;
+	private final long id;
 
-	public ProjectRole(URI self, String name, String description, Collection<RoleActor> actors) {
+	public ProjectRole(long id, URI self, String name, String description, Collection<RoleActor> actors) {
 		super(self, name);
+		this.id = id;
 		this.description = description;
 		this.actors = actors;
 	}
@@ -53,6 +55,14 @@ public class ProjectRole extends BasicProjectRole {
 	 */
 	public Iterable<RoleActor> getActors() {
 		return actors;
+	}
+
+	/**
+	 * Unique identifier for this project role.
+	 * @return the unique id for this project role.
+	 */
+	public long getId() {
+		return id;
 	}
 
 	@Override

@@ -15,7 +15,7 @@
  */
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 
 import java.net.URI;
@@ -29,7 +29,7 @@ public interface ProjectRolesRestClient {
 
 	/**
 	 * Retrieves a full information about the selected role.
-	 * Use this method {@link ProjectRolesRestClient#getRole(Project, long, ProgressMonitor)}
+	 * Use this method {@link ProjectRolesRestClient#getRole(BasicProject, long, ProgressMonitor)}
 	 * whenever you can, as this method is proof for potential changes of URI scheme used for exposing various
 	 * resources by JIRA REST API.
 	 *
@@ -49,7 +49,7 @@ public interface ProjectRolesRestClient {
 	 * @return full information about selected role.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	ProjectRole getRole(Project project, long roleId, ProgressMonitor progressMonitor);
+	ProjectRole getRole(BasicProject project, long roleId, ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves a collection of roles in the selected project.
@@ -59,6 +59,6 @@ public interface ProjectRolesRestClient {
 	 * @return a collection of roles in the selected project.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Iterable<ProjectRole> getRoles(Project project, ProgressMonitor progressMonitor);
+	Iterable<ProjectRole> getRoles(BasicProject project, ProgressMonitor progressMonitor);
 
 }

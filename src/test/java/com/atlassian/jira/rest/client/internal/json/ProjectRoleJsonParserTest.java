@@ -23,11 +23,19 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class ProjectRoleJsonParserTest {
 
-	private final ProjectRoleJsonParser parser = new ProjectRoleJsonParser();
+	private final ProjectRoleJsonParser parser;
+	private final URI baseJiraURI;
+
+	public ProjectRoleJsonParserTest() throws URISyntaxException {
+		this.baseJiraURI = new URI("http://localhost:2990");
+		this.parser = new ProjectRoleJsonParser(baseJiraURI);
+	}
 
 	@Test
 	public void testParseRoleDetail() throws Exception {
@@ -52,8 +60,19 @@ public class ProjectRoleJsonParserTest {
 		Assert.assertThat(
 				role.getActors(),
 				IsIterableContainingInAnyOrder.containsInAnyOrder(
-						new RoleActor("jira-users", "atlassian-group-role-actor", "jira-users", "/jira/secure/useravatar?size=small&avatarId=10083"),
-						new RoleActor("jira-superuser", "atlassian-user-role-actor", "superuser", null)
+						new RoleActor(
+								0l,
+								"jira-users",
+								"atlassian-group-role-actor",
+								"jira-users",
+								UriBuilder.fromUri(baseJiraURI).path("/jira/secure/useravatar?size=small&avatarId=10083").build().toURL()
+						),
+						new RoleActor(
+								0l,
+								"jira-superuser",
+								"atlassian-user-role-actor",
+								"superuser",
+								null)
 				)
 		);
 	}
