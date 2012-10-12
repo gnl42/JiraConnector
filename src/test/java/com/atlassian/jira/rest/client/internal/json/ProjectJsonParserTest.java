@@ -47,7 +47,7 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey());
 		assertThat(project.getVersions(), containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		assertThat(project.getComponents(), containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
-        assertNull(project.getName());
+		assertNull(project.getName());
 		assertThat(project.getIssueTypes(), IsEmptyIterable.<IssueType>emptyIterable());
 	}
 
