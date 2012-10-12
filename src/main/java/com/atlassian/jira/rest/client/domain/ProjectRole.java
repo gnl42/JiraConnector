@@ -15,6 +15,7 @@
  */
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -28,7 +29,7 @@ import java.util.Collection;
  * @see com.atlassian.jira.security.roles.ProjectRole
  */
 @SuppressWarnings("JavadocReference")
-public class ProjectRole extends BasicProjectRole {
+public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<Long> {
 
 	private final String description;
 	private final Collection<RoleActor> actors;
@@ -61,7 +62,7 @@ public class ProjectRole extends BasicProjectRole {
 	 * Unique identifier for this project role.
 	 * @return the unique id for this project role.
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

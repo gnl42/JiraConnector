@@ -16,12 +16,11 @@
 package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
-import com.atlassian.jira.rest.client.ProjectRestClient;
 import com.atlassian.jira.rest.client.ProjectRolesRestClient;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicProjectRole;
-import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
+import com.atlassian.jira.rest.client.internal.json.BasicProjectRoleJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectRoleJsonParser;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -29,6 +28,7 @@ import com.sun.jersey.client.apache.ApacheHttpClient;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.Collection;
 
 /**
  * Jersey-based implementation of ProjectRolesRestClient.
@@ -38,13 +38,13 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 
 	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectRoleJsonParser projectRoleJsonParser;
-	private final ProjectRestClient projectRestClient;
+	private final BasicProjectRoleJsonParser basicRoleJsonParser;
 
 	public JerseyProjectRolesRestClient(
-			final URI baseUri, final ApacheHttpClient client, final URI serverUri, final ProjectRestClient projectRestClient) {
+			final URI baseUri, final ApacheHttpClient client, final URI serverUri) {
 		super(baseUri, client);
 		this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
-		this.projectRestClient = projectRestClient;
+		this.basicRoleJsonParser = new BasicProjectRoleJsonParser();
 	}
 
 	@Override
@@ -66,9 +66,15 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 
 	@Override
 	public Iterable<ProjectRole> getRoles(final BasicProject basicProject, final ProgressMonitor progressMonitor) {
-		final Project project = projectRestClient.getProject(basicProject.getKey(), progressMonitor);
+		final URI rolesUris = UriBuilder
+				.fromUri(baseUri)
+				.path(PROJECT_URI_PREFIX)
+				.path(basicProject.getKey())
+				.path("role")
+				.build();
+		Collection<BasicProjectRole> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser, progressMonitor);
 		return Iterables.transform(
-			project.getProjectRoles(),
+			basicProjectRoles,
 			new Function<BasicProjectRole, ProjectRole>() {
 				@Override
 				public ProjectRole apply(final BasicProjectRole role) {
