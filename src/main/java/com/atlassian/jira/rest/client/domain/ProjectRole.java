@@ -43,7 +43,6 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
 	}
 
 	/**
-	 * Returns description of this project role.
 	 * @return description of this project role.
 	 */
 	public String getDescription() {
@@ -51,7 +50,6 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
 	}
 
 	/**
-	 * Actors associated with this role.
 	 * @return actors associated with this role.
 	 */
 	public Iterable<RoleActor> getActors() {
@@ -59,7 +57,6 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
 	}
 
 	/**
-	 * Unique identifier for this project role.
 	 * @return the unique id for this project role.
 	 */
 	public Long getId() {
@@ -83,7 +80,7 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
 	}
 
 	@Override
-	public Objects.ToStringHelper getToStringHelper() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return super.getToStringHelper()
 				.add("description", description)
 				.add("actors", actors);

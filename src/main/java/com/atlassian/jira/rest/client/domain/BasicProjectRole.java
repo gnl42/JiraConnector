@@ -40,7 +40,6 @@ public class BasicProjectRole implements AddressableEntity, NamedEntity {
 	}
 
 	/**
-	 * Returns the name of this project role.
 	 * @return the name of this project role.
 	 */
 	@Override
@@ -68,7 +67,7 @@ public class BasicProjectRole implements AddressableEntity, NamedEntity {
 		return getToStringHelper().toString();
 	}
 
-	public Objects.ToStringHelper getToStringHelper() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this)
 				.add("self", self)
 				.add("name", name);

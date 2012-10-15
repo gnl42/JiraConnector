@@ -26,6 +26,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -41,10 +42,19 @@ public class TestUtil {
 		}
 	}
 
+	public static URI buildURI(URI base, String... path) {
+		UriBuilder builder = UriBuilder.fromUri(base);
+		for (String p : path) {
+			builder.path(p);
+		}
+		return builder.build();
+	}
+
 	public static DateTime toDateTime(String isoDateTimeSt) {
 		return formatter.parseDateTime(isoDateTimeSt);
 	}
 
+	@SuppressWarnings("unused")
 	public static DateTime toDateTime(String isoDateTimeSt, DateTimeZone zone) {
 		return formatter.withZone(zone).parseDateTime(isoDateTimeSt);
 	}
@@ -57,6 +67,7 @@ public class TestUtil {
 		assertErrorCode(errorCode, null, runnable);
 	}
 
+	@SuppressWarnings("unused")
 	public static <T extends Throwable> void assertThrows(Class<T> clazz, String regexp, Runnable runnable) {
 		try {
 			runnable.run();

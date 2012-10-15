@@ -19,7 +19,7 @@ import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URL;
+import java.net.URI;
 
 /**
  * Association between users and project roles.
@@ -32,13 +32,13 @@ public class RoleActor implements NamedEntity {
 	 */
 	private static final String defaultRoleActorType = "atlassian-user-role-actor";
 
-	private final long id;
+	private final Long id;
 	private final String displayName;
 	private final String type;
 	private final String name;
-	private final URL avatarUrl;
+	private final URI avatarUrl;
 
-	public RoleActor(long id, String displayName, String type, String name, @Nullable URL avatarUrl) {
+	public RoleActor(Long id, String displayName, String type, String name, @Nullable URI avatarUrl) {
 		this.id = id;
 		this.displayName = displayName;
 		this.type = type;
@@ -47,7 +47,6 @@ public class RoleActor implements NamedEntity {
 	}
 
 	/**
-	 * Returns the default string identifying user with its implementation type.
 	 * @return the default string identifying user with its implementation type.
 	 */
 	@SuppressWarnings("unused")
@@ -61,7 +60,6 @@ public class RoleActor implements NamedEntity {
 	}
 
 	/**
-	 * Returns the viewable name of this role actor.
 	 * @return the viewable name of this role actor.
 	 */
 	public String getDisplayName() {
@@ -69,7 +67,6 @@ public class RoleActor implements NamedEntity {
 	}
 
 	/**
-	 * Returns a string that identifies the implementation type. This allows us to group common types.
 	 * @return string identifying the implementation type.
 	 */
 	public String getType() {
@@ -77,18 +74,16 @@ public class RoleActor implements NamedEntity {
 	}
 
 	/**
-	 * Returns an URL of the avatar of this role actor.
-	 * @return an URL of the avatar of this role actor.
+	 * @return an URI of the avatar of this role actor.
 	 */
-	public URL getAvatarUrl() {
+	public URI getAvatarUri() {
 		return avatarUrl;
 	}
 
 	/**
-	 * Returns the unique identifier for this role actor.
 	 * @return the unique identifier for this role actor.
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -97,7 +92,7 @@ public class RoleActor implements NamedEntity {
 		if (o instanceof RoleActor) {
 			RoleActor that = (RoleActor) o;
 			return Objects.equal(this.getName(), that.getName())
-					&& Objects.equal(this.getAvatarUrl(), that.getAvatarUrl())
+					&& Objects.equal(this.getAvatarUri(), that.getAvatarUri())
 					&& Objects.equal(this.getType(), that.getType())
 					&& Objects.equal(this.getDisplayName(), that.getDisplayName());
 		}
@@ -114,7 +109,7 @@ public class RoleActor implements NamedEntity {
 		return getToStringHelper().toString();
 	}
 
-	public Objects.ToStringHelper getToStringHelper() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this)
 				.add("displayName", displayName)
 				.add("type", type)

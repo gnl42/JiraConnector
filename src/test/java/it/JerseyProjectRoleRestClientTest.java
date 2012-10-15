@@ -18,6 +18,7 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
@@ -32,10 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.core.UriBuilder;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
@@ -56,68 +54,67 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
-	public void testGetProjectRoleWithRoleKeyFromAnonymousProject() throws URISyntaxException, MalformedURLException {
-		final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProjectMock, 10000l, pm);
+	public void testGetProjectRoleWithRoleKeyFromAnonymousProject() {
+		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l, pm);
 		Assert.assertNotNull(role);
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
-		RoleActor actor = Iterables.getOnlyElement(role.getActors());
+		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
 		Assert.assertEquals("jira-users", actor.getDisplayName());
 		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
 		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals(UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&avatarId=10083").build().toURL(),
-				actor.getAvatarUrl());
+		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"),
+				actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
-	public void testGetProjectRoleWithRoleKeyFromRestrictedProject() throws URISyntaxException, MalformedURLException {
-		setAdmin();
-		final ProjectRole role = client.getProjectRolesRestClient().getRole(restrictedProjectMock, 10000l, pm);
+	public void testGetProjectRoleWithRoleKeyFromRestrictedProject() {
+		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectMock.getKey(), pm);
+		final ProjectRole role = client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l, pm);
 		Assert.assertNotNull(role);
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
-		RoleActor actor = Iterables.getOnlyElement(role.getActors());
+		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
 		Assert.assertEquals("Administrator", actor.getDisplayName());
 		Assert.assertEquals("atlassian-user-role-actor", actor.getType());
 		Assert.assertEquals("admin", actor.getName());
-		Assert.assertEquals(
-				UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054").build().toURL(),
-				actor.getAvatarUrl());
+		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test(expected = RestClientException.class)
 	public void testGetProjectRoleWithRoleKeyFromRestrictedProjectWithoutPermission() {
+		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectMock.getSelf(), pm);
 		setAnonymousMode();
-		client.getProjectRolesRestClient().getRole(restrictedProjectMock, 10000l, pm);
+		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l, pm);
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
-	public void testGetProjectRoleWithFullURI() throws URISyntaxException, MalformedURLException {
-		final URI roleURI = client.getProjectRolesRestClient().getRole(anonProjectMock, 10000l, pm).getSelf();
+	public void testGetProjectRoleWithFullURI() {
+		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final URI roleURI = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l, pm).getSelf();
 		final ProjectRole role = client.getProjectRolesRestClient().getRole(roleURI, pm);
 		Assert.assertNotNull(role);
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
-		RoleActor actor = Iterables.getOnlyElement(role.getActors());
+		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
 		Assert.assertEquals("jira-users", actor.getDisplayName());
 		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
 		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals(
-				UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&avatarId=10083").build().toURL(),
-				actor.getAvatarUrl());
+		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
-	public void testGetAllRolesForProject() throws MalformedURLException {
-		Project anonymousProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+	public void testGetAllRolesForProject() {
+		final Project anonymousProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
 
 		// don't want to test if ProjectRole.self fields are equal.
-		Iterable<ProjectRole> projectRoles = Iterables.transform(
-				client.getProjectRolesRestClient().getRoles(anonymousProject, pm),
+		final Iterable<ProjectRole> projectRoles = Iterables.transform(
+				client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf(), pm),
 				new Function<ProjectRole, ProjectRole>() {
 					@Override
 					public ProjectRole apply(final ProjectRole role) {
@@ -129,28 +126,20 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		assertThat(projectRoles, containsInAnyOrder(
 				new ProjectRole(0l, null, "Users", "A project role that represents users in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-users",
-										"atlassian-group-role-actor",
-										"jira-users",
-										UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&avatarId=10083").build().toURL())
+								new RoleActor(0l, "jira-users", "atlassian-group-role-actor", "jira-users",
+										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
 						)),
 				new ProjectRole(0l, null, "Developers", "A project role that represents developers in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-developers",
-										"atlassian-group-role-actor",
-										"jira-developers",
-										UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&avatarId=10083").build().toURL()),
-								new RoleActor(0l, "My Test User",
-										"atlassian-user-role-actor",
-										"user",
-										UriBuilder.fromUri(jiraUri).path("/jira/secure/useravatar?size=small&avatarId=10082").build().toURL())
+								new RoleActor(0l, "jira-developers", "atlassian-group-role-actor", "jira-developers",
+										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083")),
+								new RoleActor(0l, "My Test User", "atlassian-user-role-actor", "user",
+										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10082"))
 						)),
 				new ProjectRole(0l, null, "Administrators", "A project role that represents administrators in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-administrators",
-										"atlassian-group-role-actor",
-										"jira-administrators",
-										UriBuilder.fromUri(jiraUri).path("jira/secure/useravatar?size=small&avatarId=10083").build().toURL())
+								new RoleActor(0l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators",
+										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
 						))
 		));
 	}
@@ -158,7 +147,8 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test(expected = RestClientException.class)
 	public void testGetProjectRoleWithRoleKeyErrorCode() {
-		client.getProjectRolesRestClient().getRole(anonProjectMock, -1l, pm);
+		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l, pm);
 	}
 
 }

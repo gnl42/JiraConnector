@@ -20,9 +20,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.ws.rs.core.UriBuilder;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 
 
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
@@ -35,27 +33,24 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 
 	@Override
 	public RoleActor parse(final JSONObject json) throws JSONException {
-		final long id = json.getLong("id");
+		// Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned for an admin role actor.
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final String displayName = json.getString("displayName");
 		final String type = json.getString("type");
 		final String name = json.getString("name");
 		return new RoleActor(id, displayName, type, name, parseAvatarUrl(json));
 	}
 
-	private URL parseAvatarUrl(final JSONObject json) {
-		try {
-			final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-			if (avatarUrl != null) {
-				URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
-				if (avatarUri.isAbsolute()) {
-					return avatarUri.toURL();
-				} else {
-					return UriBuilder.fromUri(baseJiraUri).path(avatarUrl).build().toURL();
-				}
+	private URI parseAvatarUrl(final JSONObject json) {
+		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
+		if (avatarUrl != null) {
+			URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
+			if (avatarUri.isAbsolute()) {
+				return avatarUri;
 			} else {
-				return null;
+				return UriBuilder.fromUri(baseJiraUri).path(avatarUrl).build();
 			}
-		} catch (MalformedURLException e) {
+		} else {
 			return null;
 		}
 	}

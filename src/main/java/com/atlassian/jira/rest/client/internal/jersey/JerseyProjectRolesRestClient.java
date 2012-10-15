@@ -17,7 +17,6 @@ package com.atlassian.jira.rest.client.internal.jersey;
 
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.ProjectRolesRestClient;
-import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectRoleJsonParser;
@@ -36,7 +35,6 @@ import java.util.Collection;
  */
 public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient implements ProjectRolesRestClient {
 
-	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectRoleJsonParser projectRoleJsonParser;
 	private final BasicProjectRoleJsonParser basicRoleJsonParser;
 
@@ -53,11 +51,9 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 	}
 
 	@Override
-	public ProjectRole getRole(final BasicProject project, final long roleId, final ProgressMonitor progressMonitor) {
+	public ProjectRole getRole(final URI projectUri, final Long roleId, final ProgressMonitor progressMonitor) {
 		final URI roleUri = UriBuilder
-				.fromUri(baseUri)
-				.path(PROJECT_URI_PREFIX)
-				.path(project.getKey())
+				.fromUri(projectUri)
 				.path("role")
 				.path(String.valueOf(roleId))
 				.build();
@@ -65,14 +61,12 @@ public class JerseyProjectRolesRestClient extends AbstractJerseyRestClient imple
 	}
 
 	@Override
-	public Iterable<ProjectRole> getRoles(final BasicProject basicProject, final ProgressMonitor progressMonitor) {
+	public Iterable<ProjectRole> getRoles(final URI projectUri, final ProgressMonitor progressMonitor) {
 		final URI rolesUris = UriBuilder
-				.fromUri(baseUri)
-				.path(PROJECT_URI_PREFIX)
-				.path(basicProject.getKey())
+				.fromUri(projectUri)
 				.path("role")
 				.build();
-		Collection<BasicProjectRole> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser, progressMonitor);
+		final Collection<BasicProjectRole> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser, progressMonitor);
 		return Iterables.transform(
 			basicProjectRoles,
 			new Function<BasicProjectRole, ProjectRole>() {

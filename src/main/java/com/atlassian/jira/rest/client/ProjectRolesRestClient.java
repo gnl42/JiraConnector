@@ -15,7 +15,6 @@
  */
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 
 import java.net.URI;
@@ -23,15 +22,12 @@ import java.net.URI;
 /**
  * The client handling roles resources.
  *
- * @since v1.0
+ * @since 1.0
  */
 public interface ProjectRolesRestClient {
 
 	/**
 	 * Retrieves a full information about the selected role.
-	 * Use this method {@link ProjectRolesRestClient#getRole(BasicProject, long, ProgressMonitor)}
-	 * whenever you can, as this method is proof for potential changes of URI scheme used for exposing various
-	 * resources by JIRA REST API.
 	 *
 	 * @param uri URI of the role to retrieve.
 	 * @param progressMonitor progress monitor.
@@ -43,22 +39,24 @@ public interface ProjectRolesRestClient {
 	/**
 	 * Retrieves a full information about the selected role.
 	 *
-	 * @param project project of the role to retrieve.
+	 * @param projectUri uri of the project of the role to retrieve.
 	 * @param roleId unique role id.
 	 * @param progressMonitor progress monitor.
 	 * @return full information about selected role.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	ProjectRole getRole(BasicProject project, long roleId, ProgressMonitor progressMonitor);
+	ProjectRole getRole(URI projectUri, Long roleId, ProgressMonitor progressMonitor);
 
 	/**
 	 * Retrieves a collection of roles in the selected project.
 	 *
-	 * @param project project of the roles to retrieve.
+	 * @param projectUri uri of the project of the roles to retrieve.
 	 * @param progressMonitor progress monitor.
 	 * @return a collection of roles in the selected project.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Iterable<ProjectRole> getRoles(BasicProject project, ProgressMonitor progressMonitor);
+	Iterable<ProjectRole> getRoles(URI projectUri, ProgressMonitor progressMonitor);
+
+
 
 }

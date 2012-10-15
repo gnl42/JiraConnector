@@ -38,7 +38,7 @@ import java.net.URI;
 /**
  * The client handling issue resources.
  *
- * @since v0.1
+ * @since 0.1
  */
 public interface IssueRestClient {
 	/**

@@ -15,6 +15,7 @@
  */
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
 import com.google.common.collect.Iterables;
@@ -23,24 +24,22 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.ws.rs.core.UriBuilder;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class ProjectRoleJsonParserTest {
 
 	private final ProjectRoleJsonParser parser;
-	private final URI baseJiraURI;
+	private final URI baseJiraURI = TestUtil.toUri("http://localhost:2990");
 
-	public ProjectRoleJsonParserTest() throws URISyntaxException {
-		this.baseJiraURI = new URI("http://localhost:2990");
+	public ProjectRoleJsonParserTest() {
 		this.parser = new ProjectRoleJsonParser(baseJiraURI);
 	}
 
 	@Test
 	public void testParseRoleDetail() throws Exception {
 		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-single-actor.json"));
-		Assert.assertEquals(new URI("http://www.example.com/jira/rest/api/2/project/MKY/role/10360"), role.getSelf());
+		Assert.assertEquals(TestUtil.toUri("http://www.example.com/jira/rest/api/2/project/MKY/role/10360"), role.getSelf());
 		Assert.assertEquals("Developers", role.getName());
 		Assert.assertEquals("A project role that represents developers in a project", role.getDescription());
 		Assert.assertNotNull(role.getActors());
@@ -53,26 +52,18 @@ public class ProjectRoleJsonParserTest {
 	@Test
 	public void testParseRoleWithMultipleActors() throws Exception {
 		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-multiple-actors.json"));
-		Assert.assertEquals(new URI("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
+		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
 		Assert.assertNotNull(role.getActors());
 		Assert.assertThat(
 				role.getActors(),
 				IsIterableContainingInAnyOrder.containsInAnyOrder(
-						new RoleActor(
-								0l,
-								"jira-users",
-								"atlassian-group-role-actor",
-								"jira-users",
-								UriBuilder.fromUri(baseJiraURI).path("/jira/secure/useravatar?size=small&avatarId=10083").build().toURL()
+						new RoleActor(0l, "jira-users", "atlassian-group-role-actor", "jira-users",
+								TestUtil.buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10083")
 						),
-						new RoleActor(
-								0l,
-								"jira-superuser",
-								"atlassian-user-role-actor",
-								"superuser",
-								null)
+						new RoleActor(0l, "jira-superuser", "atlassian-user-role-actor",
+								"superuser", null)
 				)
 		);
 	}
@@ -80,7 +71,7 @@ public class ProjectRoleJsonParserTest {
 	@Test
 	public void testParseRoleWithNoActors() throws Exception {
 		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-no-actors.json"));
-		Assert.assertEquals(new URI("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
+		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
 		Assert.assertNotNull(role.getActors());
@@ -89,6 +80,31 @@ public class ProjectRoleJsonParserTest {
 	@Test(expected = JSONException.class)
 	public void testInvalidRole() throws Exception {
 		parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/invalid-role.json"));
+	}
+
+	// This test checks the special "admin" case.
+	// Id field should not be optional, unfortunately it is not returned for an admin role actor.
+	@Test
+	public void testParseProjectRoleContainingActorWithoutIdField() throws JSONException, MalformedURLException {
+		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-actor-api-bug.json"));
+		Assert.assertNotNull(role);
+		Assert.assertEquals("Users", role.getName());
+		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
+		Assert.assertEquals(10000, role.getId().longValue());
+		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
+		Assert.assertThat(
+				role.getActors(),
+				IsIterableContainingInAnyOrder.containsInAnyOrder(
+						new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
+								TestUtil.buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
+						),
+						new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
+								TestUtil.buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10083")
+						),
+						new RoleActor(10030l, "Wojciech Seliga", "atlassian-user-role-actor", "wseliga",
+								TestUtil.buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10082"))
+				)
+		);
 	}
 
 }
