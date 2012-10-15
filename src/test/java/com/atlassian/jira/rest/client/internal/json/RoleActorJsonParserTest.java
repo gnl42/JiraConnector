@@ -56,6 +56,5 @@ public class RoleActorJsonParserTest {
 	@Test(expected = JSONException.class)
 	public void testParseInvalidActor() throws Exception {
 		roleActorJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/actor/invalid-actor-without-required-fields.json"));
-		roleActorJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/actor/invalid-actor-without-required-fields.json"));
 	}
 }

@@ -44,7 +44,7 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 	private URI parseAvatarUrl(final JSONObject json) {
 		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
 		if (avatarUrl != null) {
-			URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
+			final URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
 			if (avatarUri.isAbsolute()) {
 				return avatarUri;
 			} else {
