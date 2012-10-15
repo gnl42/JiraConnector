@@ -45,7 +45,7 @@ public class TestUtil {
 	public static URI buildURI(URI base, String... path) {
 		UriBuilder builder = UriBuilder.fromUri(base);
 		for (String p : path) {
-			builder.path(p);
+			builder = builder.path(p);
 		}
 		return builder.build();
 	}

@@ -69,7 +69,8 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
 			final ProjectRole that = (ProjectRole) o;
 			return super.equals(o)
 					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.actors, that.actors);
+					&& Objects.equal(this.actors, that.actors)
+					&& Objects.equal(this.id, that.id);
 		}
 		return false;
 	}

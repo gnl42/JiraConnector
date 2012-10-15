@@ -18,7 +18,6 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
@@ -28,126 +27,124 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
+import static com.atlassian.jira.rest.client.TestUtil.buildURI;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTest {
 
-	private Project anonProjectMock;
-	private Project restrictedProjectMock;
+	private static final String anonymousProjectKey = "ANNON";
+	private static final String restrictedProjectKey = "RST";
 
-	@Before
-	public void setup() {
-		this.anonProjectMock = Mockito.mock(Project.class);
-		Mockito.when(anonProjectMock.getKey()).thenReturn("ANNON");
-		this.restrictedProjectMock = Mockito.mock(Project.class);
-		Mockito.when(restrictedProjectMock.getKey()).thenReturn("RST");
-	}
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithRoleKeyFromAnonymousProject() {
-		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final Project anonProject = client.getProjectClient().getProject(anonymousProjectKey, pm);
 		final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l, pm);
-		Assert.assertNotNull(role);
-		Assert.assertEquals("Users", role.getName());
-		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
+		assertNotNull(role);
+		assertEquals("Users", role.getName());
+		assertEquals("A project role that represents users in a project", role.getDescription());
 		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
-		Assert.assertEquals("jira-users", actor.getDisplayName());
-		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
-		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"),
-				actor.getAvatarUri());
+		assertEquals("jira-users", actor.getDisplayName());
+		assertEquals("atlassian-group-role-actor", actor.getType());
+		assertEquals("jira-users", actor.getName());
+		assertEquals(buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithRoleKeyFromRestrictedProject() {
-		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectMock.getKey(), pm);
+		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectKey, pm);
 		final ProjectRole role = client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l, pm);
-		Assert.assertNotNull(role);
-		Assert.assertEquals("Users", role.getName());
-		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
+		assertNotNull(role);
+		assertEquals("Users", role.getName());
+		assertEquals("A project role that represents users in a project", role.getDescription());
 		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
-		Assert.assertEquals("Administrator", actor.getDisplayName());
-		Assert.assertEquals("atlassian-user-role-actor", actor.getType());
-		Assert.assertEquals("admin", actor.getName());
-		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor.getAvatarUri());
+		assertEquals("Administrator", actor.getDisplayName());
+		assertEquals("atlassian-user-role-actor", actor.getType());
+		assertEquals("admin", actor.getName());
+		assertEquals(buildURI(jiraUri, "jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor
+				.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
-	@Test(expected = RestClientException.class)
+	@Test
 	public void testGetProjectRoleWithRoleKeyFromRestrictedProjectWithoutPermission() {
-		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectMock.getSelf(), pm);
+		final Project restrictedProject = client.getProjectClient().getProject(restrictedProjectKey, pm);
 		setAnonymousMode();
+		exception.expect(RestClientException.class);
+		exception.expectMessage("com.sun.jersey.api.client.UniformInterfaceException: Client response status: 404");
 		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l, pm);
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetProjectRoleWithFullURI() {
-		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final Project anonProject = client.getProjectClient().getProject(anonymousProjectKey, pm);
 		final URI roleURI = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l, pm).getSelf();
 		final ProjectRole role = client.getProjectRolesRestClient().getRole(roleURI, pm);
-		Assert.assertNotNull(role);
-		Assert.assertEquals("Users", role.getName());
-		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
+		assertNotNull(role);
+		assertEquals("Users", role.getName());
+		assertEquals("A project role that represents users in a project", role.getDescription());
 		final RoleActor actor = Iterables.getOnlyElement(role.getActors());
-		Assert.assertEquals("jira-users", actor.getDisplayName());
-		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
-		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals(TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals("jira-users", actor.getDisplayName());
+		assertEquals("atlassian-group-role-actor", actor.getType());
+		assertEquals("jira-users", actor.getName());
+		assertEquals(buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test
 	public void testGetAllRolesForProject() {
-		final Project anonymousProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final Project anonymousProject = client.getProjectClient().getProject(anonymousProjectKey, pm);
 
-		// don't want to test if ProjectRole.self fields are equal.
 		final Iterable<ProjectRole> projectRoles = Iterables.transform(
 				client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf(), pm),
 				new Function<ProjectRole, ProjectRole>() {
 					@Override
 					public ProjectRole apply(final ProjectRole role) {
-						return new ProjectRole(0l, null, role.getName(), role.getDescription(), Lists.newArrayList(role.getActors()));
+						return new ProjectRole(role.getId(), null, role.getName(), role.getDescription(), Lists.newArrayList(role.getActors()));
 					}
 				}
 		);
 
 		assertThat(projectRoles, containsInAnyOrder(
-				new ProjectRole(0l, null, "Users", "A project role that represents users in a project",
+				new ProjectRole(10000l, null, "Users", "A project role that represents users in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-users", "atlassian-group-role-actor", "jira-users",
-										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
+								new RoleActor(10062l, "jira-users", "atlassian-group-role-actor", "jira-users",
+										buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
 						)),
-				new ProjectRole(0l, null, "Developers", "A project role that represents developers in a project",
+				new ProjectRole(10001l, null, "Developers", "A project role that represents developers in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-developers", "atlassian-group-role-actor", "jira-developers",
-										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083")),
-								new RoleActor(0l, "My Test User", "atlassian-user-role-actor", "user",
-										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10082"))
+								new RoleActor(10061l, "jira-developers", "atlassian-group-role-actor", "jira-developers",
+										buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083")),
+								new RoleActor(10063l, "My Test User", "atlassian-user-role-actor", "user",
+										buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10082"))
 						)),
-				new ProjectRole(0l, null, "Administrators", "A project role that represents administrators in a project",
+				new ProjectRole(10002l, null, "Administrators", "A project role that represents administrators in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(0l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators",
-										TestUtil.buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
+								new RoleActor(10060l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators",
+										buildURI(jiraUri, "jira/secure/useravatar?size=small&avatarId=10083"))
 						))
 		));
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
-	@Test(expected = RestClientException.class)
+	@Test
 	public void testGetProjectRoleWithRoleKeyErrorCode() {
-		final Project anonProject = client.getProjectClient().getProject(anonProjectMock.getKey(), pm);
+		final Project anonProject = client.getProjectClient().getProject(anonymousProjectKey, pm);
+		exception.expect(RestClientException.class);
+		exception.expectMessage("Can not retrieve a role actor for a null project role.");
 		client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l, pm);
 	}
 

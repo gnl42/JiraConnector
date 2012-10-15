@@ -92,6 +92,7 @@ public class RoleActor implements NamedEntity {
 		if (o instanceof RoleActor) {
 			RoleActor that = (RoleActor) o;
 			return Objects.equal(this.getName(), that.getName())
+					&& Objects.equal(this.id, that.getId())
 					&& Objects.equal(this.getAvatarUri(), that.getAvatarUri())
 					&& Objects.equal(this.getType(), that.getType())
 					&& Objects.equal(this.getDisplayName(), that.getDisplayName());
