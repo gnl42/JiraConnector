@@ -28,26 +28,13 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class TestUtil {
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.date();
 
 	public static URI toUri(String str) {
-		try {
-			return new URI(str);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static URI buildURI(URI base, String... path) {
-		UriBuilder builder = UriBuilder.fromUri(base);
-		for (String p : path) {
-			builder = builder.path(p);
-		}
-		return builder.build();
+		return UriBuilder.fromUri(str).build();
 	}
 
 	public static DateTime toDateTime(String isoDateTimeSt) {

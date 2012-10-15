@@ -23,7 +23,6 @@ import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
-import static com.atlassian.jira.rest.client.TestUtil.buildURI;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static junit.framework.Assert.assertEquals;
@@ -44,7 +43,7 @@ public class RoleActorJsonParserTest {
 		assertEquals("jira-users", actor.getName());
 		assertEquals("jira-users", actor.getDisplayName());
 		assertEquals("atlassian-group-role-actor", actor.getType());
-		assertEquals(buildURI(baseJiraURI, "jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals(toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@Test

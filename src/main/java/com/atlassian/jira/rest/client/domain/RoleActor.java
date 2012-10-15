@@ -30,7 +30,7 @@ public class RoleActor implements NamedEntity {
 	/**
 	 * Default string identifying user with its implementation type.
 	 */
-	private static final String defaultRoleActorType = "atlassian-user-role-actor";
+	private static final String DEFAULT_ROLE_ACTOR_TYPE = "atlassian-user-role-actor";
 
 	private final Long id;
 	private final String displayName;
@@ -51,7 +51,7 @@ public class RoleActor implements NamedEntity {
 	 */
 	@SuppressWarnings("unused")
 	public static String getDefaultRoleActorType() {
-		return defaultRoleActorType;
+		return DEFAULT_ROLE_ACTOR_TYPE;
 	}
 
 	@Override

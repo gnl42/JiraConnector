@@ -21,11 +21,9 @@ import com.atlassian.jira.rest.client.ProjectRestClient;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectsJsonParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectJsonParser;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.ws.rs.core.UriBuilder;
@@ -35,7 +33,7 @@ import java.util.concurrent.Callable;
 /**
  * Jersey-based implementation of ProjectRestClient
  *
- * @since v0.1
+ * @since 0.1
  */
 public class JerseyProjectRestClient extends AbstractJerseyRestClient implements ProjectRestClient {
 	private static final String PROJECT_URI_PREFIX = "project";

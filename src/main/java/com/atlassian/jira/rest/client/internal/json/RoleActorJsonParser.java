@@ -48,7 +48,7 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 			if (avatarUri.isAbsolute()) {
 				return avatarUri;
 			} else {
-				return UriBuilder.fromUri(baseJiraUri).path(avatarUrl).build();
+				return UriBuilder.fromUri(baseJiraUri.toString().concat(avatarUrl)).build();
 			}
 		} else {
 			return null;

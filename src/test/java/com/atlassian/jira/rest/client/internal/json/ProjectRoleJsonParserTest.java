@@ -27,7 +27,7 @@ import org.junit.rules.ExpectedException;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-import static com.atlassian.jira.rest.client.TestUtil.buildURI;
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -59,11 +59,9 @@ public class ProjectRoleJsonParserTest {
 		assertEquals("Users", role.getName());
 		assertEquals("A project role that represents users in a project", role.getDescription());
 		assertNotNull(role.getActors());
-		assertThat(
-				role.getActors(),
-				containsInAnyOrder(
-						new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
-								buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10083")
+		assertThat(role.getActors(),
+				containsInAnyOrder(new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
+								toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10083")
 						),
 						new RoleActor(10030l, "jira-superuser", "atlassian-user-role-actor", "superuser", null)
 				)
@@ -73,7 +71,7 @@ public class ProjectRoleJsonParserTest {
 	@Test
 	public void testParseRoleWithNoActors() throws Exception {
 		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-no-actors.json"));
-		assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
+		assertEquals(toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
 		assertEquals("Users", role.getName());
 		assertEquals("A project role that represents users in a project", role.getDescription());
 		assertNotNull(role.getActors());
@@ -100,13 +98,13 @@ public class ProjectRoleJsonParserTest {
 				role.getActors(),
 				containsInAnyOrder(
 						new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
-								buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
+								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
 						),
 						new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
-								buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10083")
+								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083")
 						),
 						new RoleActor(10030l, "Wojciech Seliga", "atlassian-user-role-actor", "wseliga",
-								buildURI(baseJiraURI, "/jira/secure/useravatar?size=small&avatarId=10082"))
+								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10082"))
 				)
 		);
 	}
