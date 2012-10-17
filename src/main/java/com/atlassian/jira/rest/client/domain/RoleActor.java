@@ -28,9 +28,17 @@ import java.net.URI;
 public class RoleActor implements NamedEntity {
 
 	/**
-	 * Default string identifying user with its implementation type.
+	 * Type of a role actor which associates a project with some particular user.
 	 */
-	private static final String DEFAULT_ROLE_ACTOR_TYPE = "atlassian-user-role-actor";
+	@SuppressWarnings("UnusedDeclaration")
+	private static final String TYPE_ATLASSIAN_USER_ROLE = "atlassian-user-role-actor";
+
+
+	/**
+	 * Type of a role actor which associates a project with a group of users, for instance: administrators, developers.
+	 */
+	@SuppressWarnings("UnusedDeclaration")
+	private static final String TYPE_ATLASSIAN_GROUP_ROLE = "atlassian-group-role-actor";
 
 	private final Long id;
 	private final String displayName;
@@ -44,14 +52,6 @@ public class RoleActor implements NamedEntity {
 		this.type = type;
 		this.name = name;
 		this.avatarUrl = avatarUrl;
-	}
-
-	/**
-	 * @return the default string identifying user with its implementation type.
-	 */
-	@SuppressWarnings("unused")
-	public static String getDefaultRoleActorType() {
-		return DEFAULT_ROLE_ACTOR_TYPE;
 	}
 
 	@Override

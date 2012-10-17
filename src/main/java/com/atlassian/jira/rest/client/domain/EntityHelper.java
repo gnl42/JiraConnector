@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Function;
@@ -98,6 +99,20 @@ public class EntityHelper {
 		@Override
 		public boolean apply(T input) {
 			return id.equals(input.getId());
+		}
+	}
+
+	public static class AddressEndsWithPredicate implements Predicate<AddressableEntity> {
+
+		private final String stringEnding;
+
+		public AddressEndsWithPredicate(String stringEnding) {
+			this.stringEnding = stringEnding;
+		}
+
+		@Override
+		public boolean apply(final AddressableEntity input) {
+			return input.getSelf().getPath().endsWith(stringEnding);
 		}
 	}
 }

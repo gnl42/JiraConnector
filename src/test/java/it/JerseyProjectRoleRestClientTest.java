@@ -18,13 +18,13 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -34,7 +34,6 @@ import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
-import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -59,7 +58,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		assertEquals("jira-users", actor.getDisplayName());
 		assertEquals("atlassian-group-role-actor", actor.getType());
 		assertEquals("jira-users", actor.getName());
-		assertEquals(toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -74,8 +73,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		assertEquals("Administrator", actor.getDisplayName());
 		assertEquals("atlassian-user-role-actor", actor.getType());
 		assertEquals("admin", actor.getName());
-		assertEquals(toUri(
-				jiraUri.toString() + "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor.getAvatarUri());
+		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -101,7 +99,7 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		assertEquals("jira-users", actor.getDisplayName());
 		assertEquals("atlassian-group-role-actor", actor.getType());
 		assertEquals("jira-users", actor.getName());
-		assertEquals(toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -122,39 +120,25 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 				new ProjectRole(10000l, null, "Users", "A project role that represents users in a project",
 						ImmutableList.<RoleActor>of(
 								new RoleActor(10062l, "jira-users", "atlassian-group-role-actor", "jira-users",
-										toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"))
+										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"))
 						)),
 				new ProjectRole(10001l, null, "Developers", "A project role that represents developers in a project",
 						ImmutableList.<RoleActor>of(
 								new RoleActor(10061l, "jira-developers", "atlassian-group-role-actor", "jira-developers",
-										toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10083")),
+										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083")),
 								new RoleActor(10063l, "My Test User", "atlassian-user-role-actor", "user",
-										toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10082"))
+										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10082"))
 						)),
 				new ProjectRole(10002l, null, "Administrators", "A project role that represents administrators in a project",
 						ImmutableList.<RoleActor>of(
 								new RoleActor(10060l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators",
-										toUri(jiraUri.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"))
+										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"))
 						))
 		));
 
-		class SelfEndsWithPredicate implements Predicate<ProjectRole> {
-
-			private final String stringEnding;
-
-			public SelfEndsWithPredicate(String stringEnding) {
-				this.stringEnding = stringEnding;
-			}
-
-			@Override
-			public boolean apply(final ProjectRole input) {
-				return input.getSelf().toString().endsWith(stringEnding);
-			}
-		}
-
-		assertNotNull(Iterables.find(projectRoles, new SelfEndsWithPredicate("project/ANNON/role/10000")));
-		assertNotNull(Iterables.find(projectRoles, new SelfEndsWithPredicate("project/ANNON/role/10001")));
-		assertNotNull(Iterables.find(projectRoles, new SelfEndsWithPredicate("project/ANNON/role/10002")));
+		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10000")));
+		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10001")));
+		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10002")));
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)

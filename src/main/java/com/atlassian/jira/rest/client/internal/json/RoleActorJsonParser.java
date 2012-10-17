@@ -42,14 +42,10 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 	}
 
 	private URI parseAvatarUrl(final JSONObject json) {
-		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-		if (avatarUrl != null) {
-			final URI avatarUri = UriBuilder.fromUri(avatarUrl).build();
-			if (avatarUri.isAbsolute()) {
-				return avatarUri;
-			} else {
-				return UriBuilder.fromUri(baseJiraUri.toString().concat(avatarUrl)).build();
-			}
+		final String pathToAvatar = JsonParseUtil.getOptionalString(json, "avatarUrl");
+		if (pathToAvatar != null) {
+			final URI avatarUri = UriBuilder.fromUri(pathToAvatar).build();
+			return avatarUri.isAbsolute() ? avatarUri : baseJiraUri.resolve(pathToAvatar);
 		} else {
 			return null;
 		}

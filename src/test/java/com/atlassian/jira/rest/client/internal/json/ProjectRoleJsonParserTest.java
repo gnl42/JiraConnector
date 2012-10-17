@@ -98,13 +98,13 @@ public class ProjectRoleJsonParserTest {
 				role.getActors(),
 				containsInAnyOrder(
 						new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
-								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
 						),
 						new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
-								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083")
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10083")
 						),
 						new RoleActor(10030l, "Wojciech Seliga", "atlassian-user-role-actor", "wseliga",
-								toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10082"))
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10082"))
 				)
 		);
 	}
