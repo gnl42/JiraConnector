@@ -105,7 +105,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 				.build();
 		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm);
 
-		// check if estimate nad logged has changed
+		// check if estimate has changed
 		final Issue issueAfterFirstChange = issueClient.getIssue(issueKey, pm);
 		final Integer actualTimeSpentAfterChange = getTimeSpentMinutesNotNull(issueAfterFirstChange.getTimeTracking());
 		final Integer expectedTimeSpentAfterChange = getTimeSpentMinutesNotNull(initialIssue.getTimeTracking()) + worklogInput.getMinutesSpent();
@@ -200,7 +200,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 				.build();
 		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm);
 
-		// check if estimate nad logged has changed
+		// check if estimate has changed
 		final Issue modifiedIssue = issueClient.getIssue(issueKey, pm);
 		final int actualRemainingEstimate = getRemainingEstimateMinutesNotNull(modifiedIssue.getTimeTracking());
 		// in current configuration 1w = 5d, 1d = 8h

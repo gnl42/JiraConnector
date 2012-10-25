@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class WorklogInputBuilderTest {
 
-	private URI dummyUri = TestUtil.toUri("http://jira.atlassian.com/");
+	private final URI dummyUri = TestUtil.toUri("http://jira.atlassian.com/");
 
 	@Test
 	public void testSetAdjustEstimateNewMinutes() throws Exception {
