@@ -13,8 +13,8 @@
 		"displayName":"Wojciech Seliga"
 	},
 	"updateAuthor":{
-		"self":"http://localhost:2990/jira/rest/api/2/user?username=wseliga",
-		"name":"wseliga",
-		"displayName":"Wojciech Seliga"
+		"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+		"name":"admin",
+		"displayName":"Administrator"
 	}
 }

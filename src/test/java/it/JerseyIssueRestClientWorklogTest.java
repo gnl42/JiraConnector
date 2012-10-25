@@ -120,7 +120,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		final WorklogInput worklogInput2 = worklogInputBuilder
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
-				.setAdjustEstimateNew(newEstimateValue.toString())
+				.setAdjustEstimateNew(newEstimateValue)
 				.build();
 		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2, pm);
 
@@ -154,11 +154,11 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		assertEquals(expectedRemainingEstimate3, actualRemainingEstimate3);
 
 		// # Fourth change - test manual
-		final Integer reduceByValueManual = 7;
+		final int reduceByValueManual = 7;
 		final WorklogInput worklogInput4 = worklogInputBuilder
 				.setIssueUri(initialIssue.getSelf())
 				.setMinutesSpent(2)
-				.setAdjustEstimateManual(reduceByValueManual.toString())
+				.setAdjustEstimateManual(reduceByValueManual)
 				.build();
 
 		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4, pm);
@@ -173,6 +173,39 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 		final Integer actualRemainingEstimate4 = getRemainingEstimateMinutesNotNull(issueAfterFourthChange.getTimeTracking());
 		final Integer expectedRemainingEstimate4 = getRemainingEstimateMinutesNotNull(issueAfterThirdChange.getTimeTracking()) - reduceByValueManual;
 		assertEquals(expectedRemainingEstimate4, actualRemainingEstimate4);
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_5)
+	@Test
+	public void testAddWorklogsWithEstimateAdjustmentUsingTimeUnits() {
+		final String issueKey = ISSUE_KEY;
+
+		// set estimate in issue
+		navigation.issue().setEstimates(ISSUE_KEY, "20", "20");
+
+		final WorklogInputBuilder worklogInputBuilder = createDefaulWorklogInputBuilder();
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// get issue
+		final Issue initialIssue = issueClient.getIssue(issueKey, pm);
+
+		// add worklog
+		final int estimateWeeks = 2;
+		final int estimateDays = 3;
+		final int estimateHours = 4;
+		final int estimateMinutes = 7;
+		final WorklogInput worklogInput = worklogInputBuilder
+				.setIssueUri(initialIssue.getSelf())
+				.setAdjustEstimateNew(String.format("%sw %sd %sh %sm", estimateWeeks, estimateDays, estimateHours, estimateMinutes))
+				.build();
+		issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput, pm);
+
+		// check if estimate nad logged has changed
+		final Issue modifiedIssue = issueClient.getIssue(issueKey, pm);
+		final int actualRemainingEstimate = getRemainingEstimateMinutesNotNull(modifiedIssue.getTimeTracking());
+		// in current configuration 1w = 5d, 1d = 8h
+		final int expectedRemaningEstimate = ((estimateWeeks * 5 + estimateDays) * 8 + estimateHours) * 60 + estimateMinutes;
+		assertEquals(expectedRemaningEstimate, actualRemainingEstimate);
 	}
 
 	private int getTimeSpentMinutesNotNull(@Nullable TimeTracking timeTracking) {
@@ -223,7 +256,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 	}
 
 	private WorklogInputBuilder createDefaulWorklogInputBuilder() {
-		return new WorklogInputBuilder()
+		return new WorklogInputBuilder(null)
 				.setComment("I created test for adding worklog.")
 				.setStartDate(new DateTime())
 				.setMinutesSpent(20);

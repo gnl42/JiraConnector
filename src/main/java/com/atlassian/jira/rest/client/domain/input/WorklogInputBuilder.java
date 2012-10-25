@@ -33,6 +33,7 @@ import java.net.URI;
  * {@link WorklogInputBuilder#copyFromWorklog(com.atlassian.jira.rest.client.domain.Worklog)} method.
  */
 public class WorklogInputBuilder {
+	public static final String ESTIMATE_UNIT_MINUTES = "m";
 	private URI self;
 	private URI issueUri;
 	private BasicUser author;
@@ -44,7 +45,8 @@ public class WorklogInputBuilder {
 	private WorklogInput.AdjustEstimate adjustEstimate = WorklogInput.AdjustEstimate.AUTO;
 	private String adjustEstimateValue;
 
-	public WorklogInputBuilder() {
+	public WorklogInputBuilder(URI issueUri) {
+		this.issueUri = issueUri;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -69,11 +71,23 @@ public class WorklogInputBuilder {
 
 	/**
 	 * Sets AdjustEstimate to NEW - sets estimate to specified value.
-	 * @param newEstimate new estimate value to set
+	 * @param newEstimate new estimate value to set.<br/>
+	 *                       You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
+	 *                       to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br/>
+	 *                       If you do not specify a time unit, minute will be assumed.
 	 * @return this worklog input builder object
 	 */
 	public WorklogInputBuilder setAdjustEstimateNew(String newEstimate) {
 		return setAdjustEstimate(WorklogInput.AdjustEstimate.NEW, newEstimate);
+	}
+
+	/**
+	 * Sets AdjustEstimate to NEW - sets estimate to specified value.
+	 * @param newEstimateMinutes new estimate value to set, in minutes.
+	 * @return this worklog input builder object
+	 */
+	public WorklogInputBuilder setAdjustEstimateNew(int newEstimateMinutes) {
+		return setAdjustEstimate(WorklogInput.AdjustEstimate.NEW, newEstimateMinutes + ESTIMATE_UNIT_MINUTES);
 	}
 
 	/**
@@ -86,11 +100,23 @@ public class WorklogInputBuilder {
 
 	/**
 	 * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
-	 * @param reduceEstimateBy the amount to reduce the remaining estimate by
+	 * @param reduceEstimateBy the amount to reduce the remaining estimate by<br/>
+	 *                            You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
+	 *                            to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br/>
+	 *                            If you do not specify a time unit, minute will be assumed.
 	 * @return this worklog input builder object
 	 */
 	public WorklogInputBuilder setAdjustEstimateManual(String reduceEstimateBy) {
 		return setAdjustEstimate(WorklogInput.AdjustEstimate.MANUAL, reduceEstimateBy);
+	}
+
+	/**
+	 * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
+	 * @param reduceEstimateByMinutes the amount to reduce the remaining estimate by, in minutes.
+	 * @return this worklog input builder object
+	 */
+	public WorklogInputBuilder setAdjustEstimateManual(int reduceEstimateByMinutes) {
+		return setAdjustEstimate(WorklogInput.AdjustEstimate.MANUAL, reduceEstimateByMinutes + ESTIMATE_UNIT_MINUTES);
 	}
 
 	/**

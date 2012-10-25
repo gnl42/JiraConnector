@@ -99,15 +99,12 @@ public class WorklogInput {
 	}
 
 	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
-		return new WorklogInputBuilder().setSelf(null).setIssueUri(issueUri).setAuthor(null).setUpdateAuthor(null)
-				.setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).setVisibility(null)
-				.build();
+		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).build();
 	}
 
 	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-		return new WorklogInputBuilder().setSelf(null).setIssueUri(issueUri).setAuthor(null).setUpdateAuthor(null)
-				.setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).setVisibility(visibility)
-				.build();
+		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
+				.setVisibility(visibility).build();
 	}
 
 	@Nullable

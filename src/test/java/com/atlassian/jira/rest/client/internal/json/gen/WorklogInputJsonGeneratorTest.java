@@ -35,19 +35,21 @@ import static org.junit.Assert.*;
 public class WorklogInputJsonGeneratorTest {
 
 	private final BasicUser USER;
+	private final BasicUser ADMIN;
 	private final WorklogInputJsonGenerator generator = new WorklogInputJsonGenerator(
 			JsonParseUtil.JIRA_DATE_TIME_FORMATTER.withZone(DateTimeZone.forID("+02:00"))
 	);
 
 	public WorklogInputJsonGeneratorTest() throws URISyntaxException {
 		USER = new BasicUser(new URI("http://localhost:2990/jira/rest/api/2/user?username=wseliga"), "wseliga", "Wojciech Seliga");
+		ADMIN = new BasicUser(new URI("http://localhost:2990/jira/rest/api/2/user?username=admin"), "admin", "Administrator");
 	}
 
 	@Test
 	public void testGenerate() throws JSONException {
 		final WorklogInput worklogInput = new WorklogInput(
 				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
-				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, USER, "my first work",
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, ADMIN, "my first work",
 				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
@@ -58,7 +60,7 @@ public class WorklogInputJsonGeneratorTest {
 	public void testGenerateWithoutVisibility() throws JSONException {
 		final WorklogInput worklogInput = new WorklogInput(
 				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
-				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, USER, "my first work",
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), ADMIN, USER, "my first work",
 				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, null);
 
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
