@@ -30,6 +30,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -74,6 +75,11 @@ public class JsonParseUtil {
 
 	public static URI getSelfUri(JSONObject jsonObject) throws JSONException {
 		return parseURI(jsonObject.getString(SELF_ATTR));
+	}
+
+	public static URI optSelfUri(JSONObject jsonObject, URI defaultUri) throws JSONException {
+		final String selfUri = jsonObject.optString(SELF_ATTR, null);
+		return selfUri != null ? parseURI(selfUri) : defaultUri;
 	}
 
 	@SuppressWarnings("unused")
@@ -154,7 +160,10 @@ public class JsonParseUtil {
 		if (!json.has(JsonParseUtil.SELF_ATTR) && "Anonymous".equals(username)) {
 			return null; // insane representation for unassigned user - JRADEV-4262
 		}
-		return new BasicUser(getSelfUri(json), username, json.optString("displayName", null));
+
+		// deleted user? BUG in REST API: JRA-30263
+		final URI selfUri = optSelfUri(json, UriBuilder.fromPath("incomplete://user/" + username).build());
+		return new BasicUser(selfUri, username, json.optString("displayName", null));
 	}
 
 	public static DateTime parseDateTime(JSONObject jsonObject, String attributeName) throws JSONException {

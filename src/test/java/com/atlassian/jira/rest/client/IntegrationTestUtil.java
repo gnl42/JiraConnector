@@ -83,4 +83,17 @@ public class IntegrationTestUtil {
         return UriBuilder.fromUri(uri).path(path).build();
     }
 
+	public static URI resolveURI(URI relativeUri) {
+		try {
+			// resolve would remove "jira" from context path, so we must add / to the end
+			return concat(environmentData.getBaseUrl().toURI(), "/").resolve(relativeUri);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static URI resolveURI(String relativeUri) {
+		return resolveURI(TestUtil.toUri(relativeUri));
+	}
+
 }

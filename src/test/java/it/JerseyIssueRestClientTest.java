@@ -17,17 +17,21 @@
 package it;
 
 import com.atlassian.jira.functest.framework.UserProfile;
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.Callback;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.Attachment;
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.IssueLink;
 import com.atlassian.jira.rest.client.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
@@ -63,7 +67,9 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMF
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
@@ -612,6 +618,10 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
 				issueClient.getAttachment(pm, attachments.iterator().next().getContentUri())));
 	}
+
+	private void setUserLanguageToEnUk() {
+		changeUserLanguageByValueOrName("en_UK", "angielski (UK)");
+	}
 	
 	private void changeUserLanguageByValueOrName(String value, String name) {
 		final UserProfile userProfile = navigation.userProfile();
@@ -633,13 +643,65 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		}
 	}
 
+	private void addUserThenExecuteCallbackAndRemoveUser(String username, Callback executeAsNewUser) {
+		setUserLanguageToEnUk();
+		administration.usersAndGroups().addUser(username, username, username, username + "@localhost");
+		navigation.login(username);
+		executeAsNewUser.execute();
+		navigation.login("admin");
+		administration.usersAndGroups().deleteUser(username);
+	}
+
+	@Test
+	public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
+		final String issueKey = "ANONEDIT-1";
+		final String testUser = "testusertoremove";
+
+		addUserThenExecuteCallbackAndRemoveUser(testUser, new Callback() {
+			@Override
+			public void execute() {
+				navigation.issue().logWork(issueKey, "3m");
+			}
+		});
+
+		// test worklog author
+		final Issue issue = client.getIssueClient().getIssue(issueKey, pm);
+		final Worklog worklog = issue.getWorklogs().iterator().next();
+		assertNotNull(worklog);
+		final BasicUser author = worklog.getAuthor();
+		assertNotNull(author);
+		assertEquals(toUri("incomplete://user/" + testUser), author.getSelf());
+	}
+
+	// this test will give us HTTP ERROR 500 on JIRA 4.2 and 4.3.4
+	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
+	@Test
+	public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
+		final String issueKey = "ANONEDIT-1";
+		final String testUser = "testusertoremove";
+
+		addUserThenExecuteCallbackAndRemoveUser(testUser, new Callback() {
+			@Override
+			public void execute() {
+				navigation.issue().addComment(issueKey, "Comment");
+			}
+		});
+
+		// Test comment author
+		final Issue issue = client.getIssueClient().getIssue(issueKey, pm);
+		final Comment comment = issue.getComments().iterator().next();
+		assertNotNull(comment);
+		final BasicUser author = comment.getAuthor();
+		assertNotNull(author);
+		assertEquals(resolveURI("rest/api/latest/user?username=" + testUser), author.getSelf());
+	}
 
 	@Test
 	public void testFetchingUnassignedIssue() {
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 
-		changeUserLanguageByValueOrName("en_UK", "angielski (UK)");
+		setUserLanguageToEnUk();
 		navigation.issue().unassignIssue("TST-5", "unassigning issue");
 		// this single line does instead of 2 above - func test suck with non-English locale
 		// but it does not work yet with JIRA 5.0-resthack...
@@ -650,7 +712,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 	@Test
 	public void testFetchingIssueWithAnonymousComment() {
-		changeUserLanguageByValueOrName("en_UK", "angielski (UK)");
+		setUserLanguageToEnUk();
 		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
 		assertEquals(USER_ADMIN, client.getIssueClient().getIssue("TST-5", pm).getAssignee());
 		navigation.logout();
