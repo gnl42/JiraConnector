@@ -46,6 +46,9 @@ public class WorklogInputBuilder {
 	private String adjustEstimateValue;
 
 	public WorklogInputBuilder(URI issueUri) {
+		if (issueUri == null) {
+			throw new IllegalArgumentException("The issueUri cannot be null");
+		}
 		this.issueUri = issueUri;
 	}
 

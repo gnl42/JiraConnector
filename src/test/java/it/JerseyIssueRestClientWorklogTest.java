@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS;
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
@@ -256,7 +257,7 @@ public class JerseyIssueRestClientWorklogTest extends AbstractJerseyRestClientTe
 	}
 
 	private WorklogInputBuilder createDefaulWorklogInputBuilder() {
-		return new WorklogInputBuilder(null)
+		return new WorklogInputBuilder(toUri("dummy://uri"))
 				.setComment("I created test for adding worklog.")
 				.setStartDate(new DateTime())
 				.setMinutesSpent(20);
