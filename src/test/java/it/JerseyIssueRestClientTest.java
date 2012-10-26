@@ -693,7 +693,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertNotNull(comment);
 		final BasicUser author = comment.getAuthor();
 		assertNotNull(author);
-		assertEquals(resolveURI("rest/api/latest/user?username=" + testUser), author.getSelf());
+		assertEquals(resolveURI("rest/api/" + (isJira5xOrNewer() ? "2" : "latest") +"/user?username=" + testUser), author.getSelf());
 	}
 
 	@Test
