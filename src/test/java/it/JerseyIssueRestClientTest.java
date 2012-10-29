@@ -69,7 +69,6 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
-import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
@@ -670,7 +669,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertNotNull(worklog);
 		final BasicUser author = worklog.getAuthor();
 		assertNotNull(author);
-		assertEquals(toUri("incomplete://user/" + testUser), author.getSelf());
+		assertTrue(author.isSelfUriIncomplete());
 	}
 
 	// this test will give us HTTP ERROR 500 on JIRA 4.2 and 4.3.4
@@ -693,7 +692,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertNotNull(comment);
 		final BasicUser author = comment.getAuthor();
 		assertNotNull(author);
-		assertEquals(resolveURI("rest/api/" + (isJira5xOrNewer() ? "2" : "latest") +"/user?username=" + testUser), author.getSelf());
+		assertEquals(resolveURI("rest/api/" + (isJira5xOrNewer() ? "2" : "latest") + "/user?username=" + testUser), author.getSelf());
 	}
 
 	@Test

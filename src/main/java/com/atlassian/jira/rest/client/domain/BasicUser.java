@@ -28,6 +28,14 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicUser implements AddressableEntity, NamedEntity {
+
+	/**
+	 * This value is used to mark incomplete user URI - when server response with user without selfUri set.
+	 * This may happen due to bug in JIRA REST API - for example in JRA-30263 bug, JIRA REST API will return
+	 * user without selfUri for deleted author of worklog entry.
+	 */
+	public static URI INCOMPLETE_URI = URI.create("incomplete://user");
+
     private final String name;
     private final String displayName;
     private final URI self;
@@ -45,8 +53,6 @@ public class BasicUser implements AddressableEntity, NamedEntity {
     public String getDisplayName() {
         return displayName;
     }
-
-
 
     @Override
 	public URI getSelf() {
@@ -74,5 +80,12 @@ public class BasicUser implements AddressableEntity, NamedEntity {
     public int hashCode() {
         return Objects.hashCode(self, name, displayName);
     }
+
+	/**
+	 * @return true when URI returned from server was incomplete. See {@link BasicUser#INCOMPLETE_URI} for more detail.
+	 */
+	public boolean isSelfUriIncomplete() {
+		return INCOMPLETE_URI.equals(self);
+	}
 
 }

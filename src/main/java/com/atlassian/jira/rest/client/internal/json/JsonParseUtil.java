@@ -30,7 +30,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -162,7 +161,7 @@ public class JsonParseUtil {
 		}
 
 		// deleted user? BUG in REST API: JRA-30263
-		final URI selfUri = optSelfUri(json, UriBuilder.fromPath("incomplete://user/" + username).build());
+		final URI selfUri = optSelfUri(json, BasicUser.INCOMPLETE_URI);
 		return new BasicUser(selfUri, username, json.optString("displayName", null));
 	}
 
