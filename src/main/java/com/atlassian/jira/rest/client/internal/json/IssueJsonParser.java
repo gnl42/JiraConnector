@@ -47,6 +47,8 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -246,7 +248,6 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final BasicUser assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_FIELD.id, userJsonParser);
 		final BasicUser reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_FIELD.id, userJsonParser);
 
-		final String transitionsUri = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_FIELD.id);
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_FIELD.id));
 		final Collection<IssueLink> issueLinks;
 		if (isJira5x0OrNewer) {
@@ -270,10 +271,22 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final Collection<BasicComponent> components = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
 		final Collection<Worklog> worklogs;
+		final URI selfUri = JsonParseUtil.getSelfUri(s);
+
+		final String transitionsUriString;
+		if (s.has(TRANSITIONS_FIELD.id)) {
+			Object transitionsObj = s.get(TRANSITIONS_FIELD.id);
+			transitionsUriString = (transitionsObj instanceof String) ? (String) transitionsObj : null;
+		}
+		else {
+			transitionsUriString = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_FIELD.id);
+		}
+		final URI transitionsUri = parseTransisionsUri(transitionsUriString, selfUri);
+
 		if (isJira5x0OrNewer) {
 			if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_FIELD.id) != null) {
 				worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s,
-						new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(JsonParseUtil.getSelfUri(s))),
+						new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(selfUri)),
 						FIELDS, WORKLOG_FIELD.id, WORKLOGS_FIELD.id);
 			} else {
 				worklogs = Collections.emptyList();
@@ -291,11 +304,17 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
-		return new Issue(summary, JsonParseUtil.getSelfUri(s), s.getString("key"), project, issueType, status,
+		return new Issue(summary, selfUri, s.getString("key"), project, issueType, status,
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
 				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
-				transitionsUri != null ? JsonParseUtil.parseURI(transitionsUri) : null, issueLinks,
+				transitionsUri, issueLinks,
 				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
+	}
+
+	private URI parseTransisionsUri(String transitionsUriString, URI selfUri) {
+		return transitionsUriString != null
+				? JsonParseUtil.parseURI(transitionsUriString)
+				: UriBuilder.fromUri(selfUri).path("transitions").queryParam("expand", "transitions.fields").build();
 	}
 
 	@Nullable

@@ -89,8 +89,4 @@ public abstract class AbstractJerseyRestClientTest extends NimbleFuncTestCase {
 		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
-	protected boolean doesJiraSupportRestIssueLinking() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
-	}
-
 }

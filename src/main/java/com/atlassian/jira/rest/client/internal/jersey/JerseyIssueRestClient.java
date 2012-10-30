@@ -178,13 +178,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public Iterable<Transition> getTransitions(final Issue issue, ProgressMonitor progressMonitor) {
-		if (issue.getTransitionsUri() != null) {
-			return getTransitions(issue.getTransitionsUri(), progressMonitor);
-		} else {
-			final UriBuilder transitionsUri = UriBuilder.fromUri(issue.getSelf());
-			return getTransitions(transitionsUri.path("transitions")
-					.queryParam("expand", "transitions.fields").build(), progressMonitor);
-		}
+		return getTransitions(issue.getTransitionsUri(), progressMonitor);
 	}
 
 	@Override
@@ -229,13 +223,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 
 	@Override
 	public void transition(final Issue issue, final TransitionInput transitionInput, final ProgressMonitor progressMonitor) {
-		if (issue.getTransitionsUri() != null) {
-			transition(issue.getTransitionsUri(), transitionInput, progressMonitor);
-		} else {
-			final UriBuilder uriBuilder = UriBuilder.fromUri(issue.getSelf());
-			uriBuilder.path("transitions");
-			transition(uriBuilder.build(), transitionInput, progressMonitor);
-		}
+		transition(issue.getTransitionsUri(), transitionInput, progressMonitor);
 	}
 
 

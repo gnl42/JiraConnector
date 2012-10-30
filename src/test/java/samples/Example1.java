@@ -20,18 +20,24 @@ import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.google.common.collect.Lists;
+import org.codehaus.jettison.json.JSONException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A sample code how to use JRJC library 
@@ -39,33 +45,46 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Example1 {
-	public static void main(String[] args) throws URISyntaxException {
+
+	private static URI jiraServerUri = URI.create("http://localhost:2990/jira");
+	private static boolean quiet = false;
+
+	public static void main(String[] args) throws URISyntaxException, JSONException {
+		parseArgs(args);
+
 		final JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
-		final URI jiraServerUri = new URI("http://localhost:8090/jira");
 		final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
 		final NullProgressMonitor pm = new NullProgressMonitor();
+		final int buildNumber = restClient.getMetadataClient().getServerInfo(pm).getBuildNumber();
 
-		// first let's get and print all visible projects
-		final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(pm);
-		for (BasicProject project : allProjects) {
-			System.out.println(project);
+		// first let's get and print all visible projects (only jira4.3+)
+		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
+			final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(pm);
+			for (BasicProject project : allProjects) {
+				println(project);
+			}
 		}
 
 		// let's now print all issues matching a JQL string (here: all assigned issues)
-		final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY", pm);
-		for (BasicIssue issue : searchResult.getIssues()) {
-			System.out.println(issue.getKey());
+		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
+			final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY", pm);
+			for (BasicIssue issue : searchResult.getIssues()) {
+				println(issue.getKey());
+			}
 		}
 
-		final Issue issue = restClient.getIssueClient().getIssue("TST-1", pm);
+		final Issue issue = restClient.getIssueClient().getIssue("TST-7", pm);
 
-		System.out.println(issue);
+		println(issue);
 
 		// now let's vote for it
 		restClient.getIssueClient().vote(issue.getVotesUri(), pm);
 
 		// now let's watch it
-		restClient.getIssueClient().watch(issue.getWatchers().getSelf(), pm);
+		final BasicWatchers watchers = issue.getWatchers();
+		if (watchers != null) {
+			restClient.getIssueClient().watch(watchers.getSelf(), pm);
+		}
 
 		// now let's start progress on this issue
 		final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
@@ -74,10 +93,36 @@ public class Example1 {
 
 		// and now let's resolve it as Incomplete
 		final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
-		Collection<FieldInput> fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
+		final Collection<FieldInput> fieldInputs;
+
+		// Starting from JIRA 5, fields are handled in different way -
+		if (buildNumber > ServerVersionConstants.BN_JIRA_5) {
+			fieldInputs = Arrays.asList(new FieldInput("resolution", ComplexIssueInputFieldValue.with("name", "Incomplete")));
+		}
+		else {
+			fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
+		}
 		final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment.valueOf("My comment"));
 		restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput, pm);
 
+	}
+
+	private static void println(Object o) {
+		if (!quiet) {
+			System.out.println(o);
+		}
+	}
+
+	private static void parseArgs(String[] argsArray) throws URISyntaxException {
+		final List<String> args = Lists.newArrayList(argsArray);
+		if (args.contains("-q")) {
+			quiet = true;
+			args.remove(args.indexOf("-q"));
+		}
+
+		if (!args.isEmpty()) {
+			jiraServerUri = new URI(args.get(0));
+		}
 	}
 
 	private static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {

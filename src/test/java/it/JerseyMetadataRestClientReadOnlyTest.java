@@ -16,6 +16,7 @@
 
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
@@ -38,11 +39,14 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static org.junit.Assert.*;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
+// Ignore "May produce NPE" warnings, as we know what we are doing in tests
+@SuppressWarnings("ConstantConditions")
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClientTest {
 	@Test
@@ -78,11 +82,9 @@ public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClie
 		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testGetIssueTypes() {
-		if (!doesJiraSupportRestIssueLinking()) {
-			return;
-		}
 		final Iterable<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes(pm);
 		assertEquals(1, Iterables.size(issueTypes));
 		final IssuelinksType issueType = Iterables.getOnlyElement(issueTypes);

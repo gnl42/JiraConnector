@@ -69,6 +69,7 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
@@ -144,7 +145,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
 		final double newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
-		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
+		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), pm);
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
 		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
@@ -369,7 +370,7 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 	private boolean isJraDev3516Fixed() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= BN_JIRA_4_3;
 	}
 
 	@Test
@@ -399,31 +400,33 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 				});
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testLinkIssuesWithRoleLevel() {
 		testLinkIssuesImpl(Comment.createWithRoleLevel("A comment about linking", "Administrators"));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testLinkIssuesWithGroupLevel() {
 		testLinkIssuesImpl(Comment.createWithGroupLevel("A comment about linking", "jira-administrators"));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testLinkIssuesWithSimpleComment() {
 		testLinkIssuesImpl(Comment.valueOf("A comment about linking"));
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testLinkIssuesWithoutComment() {
 		testLinkIssuesImpl(null);
 	}
 
+	@JiraBuildNumberDependent(BN_JIRA_4_3)
 	@Test
 	public void testLinkIssuesWithInvalidParams() {
-		if (!doesJiraSupportRestIssueLinking()) {
-			return;
-		}
 		assertErrorCode(Response.Status.NOT_FOUND,
 				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "Issue Does Not Exist" : "The issue no longer exists.", new Runnable() {
 			@Override
@@ -482,10 +485,6 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 
 	private void testLinkIssuesImpl(@Nullable Comment commentInput) {
-		if (!doesJiraSupportRestIssueLinking()) {
-			return;
-		}
-
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue originalIssue = issueClient.getIssue("TST-7", pm);
 		int origNumComments = Iterables.size(originalIssue.getComments());
@@ -519,11 +518,11 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 	}
 
 	private boolean doesJiraSupportAddingAttachment() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= BN_JIRA_4_3;
 	}
 
 	private boolean doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue() {
-		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+		return client.getMetadataClient().getServerInfo(pm).getBuildNumber() >= BN_JIRA_4_3;
 	}
 
 	@Test
