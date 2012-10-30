@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.domain.input;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 
 import java.net.URI;
@@ -46,9 +47,7 @@ public class WorklogInputBuilder {
 	private String adjustEstimateValue;
 
 	public WorklogInputBuilder(URI issueUri) {
-		if (issueUri == null) {
-			throw new IllegalArgumentException("The issueUri cannot be null");
-		}
+		Preconditions.checkNotNull(issueUri, "The issueUri cannot be null");
 		this.issueUri = issueUri;
 	}
 

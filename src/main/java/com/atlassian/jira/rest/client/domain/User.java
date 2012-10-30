@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
@@ -49,10 +50,8 @@ public class User extends BasicUser {
 	public User(URI self, String name, String displayName, String emailAddress, ExpandableProperty<String> groups,
 			Map<String, URI> avatarUris, @Nullable String timezone) {
 		super(self, name, displayName);
+		Preconditions.checkNotNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
 		this.timezone = timezone;
-		if (avatarUris.get(S48_48) == null) {
-			throw new IllegalArgumentException("At least one avatar URL is expected - for 48x48");
-		}
 		this.emailAddress = emailAddress;
 		this.avatarUris = Maps.newHashMap(avatarUris);
 		this.groups = groups;
@@ -82,6 +81,7 @@ public class User extends BasicUser {
 	 * @param sizeDefinition size like "16x16" or "48x48". URI for 48x48 should be always defined.
 	 * @return URI for specified size or <code>null</code> when there is no avatar image with given dimensions specified for this user
 	 */
+	@SuppressWarnings("UnusedDeclaration")
 	@Nullable
 	public URI getAvatarUri(String sizeDefinition) {
 		return avatarUris.get(sizeDefinition);
