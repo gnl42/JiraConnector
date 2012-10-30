@@ -56,9 +56,9 @@ public class JerseyIssueRestClientCommentTest extends AbstractJerseyRestClientTe
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	public void testAddCommentToIssueWithGroupLevelVisibility() {
-		Comment comment = Comment.createWithGroupLevel("Simple test comment restricted for admins.",
+		final Comment comment = Comment.createWithGroupLevel("Simple test comment restricted for admins.",
 				IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS);
-		String issueKey = "ANONEDIT-1";
+		final String issueKey = "ANONEDIT-1";
 		final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
 
 		// try to get as anonymous user
@@ -74,9 +74,9 @@ public class JerseyIssueRestClientCommentTest extends AbstractJerseyRestClientTe
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	public void testAddCommentToIssueWithRoleLevelVisibility() {
-		Comment comment = Comment.createWithRoleLevel("Simple test comment restricted for role Administrators.",
+		final Comment comment = Comment.createWithRoleLevel("Simple test comment restricted for role Administrators.",
 				IntegrationTestUtil.ROLE_ADMINISTRATORS);
-		String issueKey = "ANONEDIT-1";
+		final String issueKey = "ANONEDIT-1";
 		final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
 
 		// try to get as anonymous user
@@ -98,7 +98,7 @@ public class JerseyIssueRestClientCommentTest extends AbstractJerseyRestClientTe
 		}).iterator().hasNext();
 	}
 
-	private Comment testAddCommentToIssueImpl(String issueKey, Comment comment) {
+	private Comment testAddCommentToIssueImpl(final String issueKey, final Comment comment) {
 		final IssueRestClient issueClient = client.getIssueClient();
 		final Issue issue = issueClient.getIssue(issueKey, pm);
 		final List<Comment> initialComments = Lists.newArrayList(issue.getComments());
