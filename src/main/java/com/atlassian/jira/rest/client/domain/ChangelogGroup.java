@@ -16,10 +16,12 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 /**
  * Represents Issue change history group
+ *
  * @since 0.6
  */
 public class ChangelogGroup {
@@ -43,5 +45,30 @@ public class ChangelogGroup {
 
 	public Iterable<ChangelogItem> getItems() {
 		return items;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ChangelogGroup) {
+			ChangelogGroup that = (ChangelogGroup) obj;
+			return Objects.equal(this.author, that.author)
+					&& Objects.equal(this.created, that.created)
+					&& Objects.equal(this.items, that.items);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(author, created, items);
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("author", author)
+				.add("created", created)
+				.add("items", items)
+				.toString();
 	}
 }
