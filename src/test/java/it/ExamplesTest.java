@@ -48,7 +48,7 @@ public class ExamplesTest extends AbstractJerseyRestClientTest {
 		assertNotNull(resolution);
 		assertEquals("Incomplete", resolution.getName());
 
-		if (isJira4x3OrNewer()) {
+		if (isJira5xOrNewer()) {
 			// changelog
 			final Iterable<ChangelogGroup> changelog = issue.getChangelog();
 			assertEquals(2, Iterables.size(changelog));

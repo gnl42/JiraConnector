@@ -48,6 +48,7 @@ import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
 import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.ComplexIssueInputFieldValueJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.IssueInputJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
@@ -206,9 +207,10 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 				}
 				JSONObject fieldsJs = new JSONObject();
 				final Iterable<FieldInput> fields = transitionInput.getFields();
+				final ComplexIssueInputFieldValueJsonGenerator fieldValueGenerator = new ComplexIssueInputFieldValueJsonGenerator();
 				if (fields.iterator().hasNext()) {
 					for (FieldInput fieldInput : fields) {
-						fieldsJs.put(fieldInput.getId(), fieldInput.getValue());
+						fieldsJs.put(fieldInput.getId(), fieldValueGenerator.generateFieldValueForJson(fieldInput.getValue()));
 					}
 				}
 				if (fieldsJs.keys().hasNext()) {
