@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.OptionalIterable;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.BasicUser;
@@ -29,7 +30,6 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Collections;
 
 public class ProjectJsonParser implements JsonObjectParser<Project> {
 
@@ -58,9 +58,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 		final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
 		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
 		final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
-		final Collection<IssueType> issueTypes = (issueTypesArray == null)
-				? Collections.<IssueType>emptyList()
-				: JsonParseUtil.parseJsonArray(issueTypesArray, issueTypeJsonParser);
+		final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
 		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil.getOptionalJsonObject(json, "roles"));
 		return new Project(self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
 	}

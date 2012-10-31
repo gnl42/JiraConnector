@@ -20,6 +20,7 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.AddressableEntity;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.OptionalIterable;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.IssueType;
@@ -70,8 +71,10 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, project.getLead());
 		assertEquals(2, Iterables.size(project.getVersions()));
 		assertEquals(2, Iterables.size(project.getComponents()));
-		final Iterator<IssueType> issueTypesIterator = project.getIssueTypes().iterator();
+		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		if (isJira4x4OrNewer()) {
+			assertTrue(issueTypes.isPresent());
+			final Iterator<IssueType> issueTypesIterator = issueTypes.iterator();
 			assertTrue(issueTypesIterator.hasNext());
 			final IssueType it = issueTypesIterator.next();
 			if (isJira5xOrNewer()) {
@@ -83,7 +86,7 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 			assertEquals(it.getName(), "Bug");
 		}
 		else {
-			assertFalse(issueTypesIterator.hasNext());
+			assertFalse(issueTypes.isPresent());
 		}
 	}
 

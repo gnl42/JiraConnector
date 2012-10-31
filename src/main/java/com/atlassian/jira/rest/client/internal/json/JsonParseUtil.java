@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.ExpandableProperty;
+import com.atlassian.jira.rest.client.OptionalIterable;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.google.common.base.Optional;
@@ -50,6 +51,16 @@ public class JsonParseUtil {
         }
         return res;
     }
+
+	public static <T> OptionalIterable<T> parseOptionalJsonArray(JSONArray jsonArray, JsonObjectParser<T> jsonParser)
+			throws JSONException {
+		if (jsonArray == null) {
+			return OptionalIterable.absent();
+		}
+		else {
+			return new OptionalIterable<T>(JsonParseUtil.<T>parseJsonArray(jsonArray, jsonParser));
+		}
+	}
     
 	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
 			throws JSONException {

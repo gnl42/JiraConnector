@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.OptionalIterable;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.domain.IssueType;
@@ -47,7 +48,9 @@ public class ProjectJsonParserTest {
 		assertThat(project.getVersions(), containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		assertThat(project.getComponents(), containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
 		assertNull(project.getName());
-		assertThat(project.getIssueTypes(), IsEmptyIterable.<IssueType>emptyIterable());
+		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+		assertFalse(issueTypes.isPresent());
+		assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
 	}
 
 	@Test
@@ -64,7 +67,9 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey()); //2010-08-25
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
         assertEquals("Test Project", project.getName());
-		assertThat(project.getIssueTypes(), containsInAnyOrder(
+		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+		assertTrue(issueTypes.isPresent());
+		assertThat(issueTypes, containsInAnyOrder(
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
@@ -79,7 +84,9 @@ public class ProjectJsonParserTest {
 		assertEquals("TST", project.getKey());
 		assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
 		assertEquals("Test Project", project.getName());
-		assertThat(project.getIssueTypes(), containsInAnyOrder(
+		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+		assertTrue(issueTypes.isPresent());
+		assertThat(issueTypes, containsInAnyOrder(
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil.toUri("http://localhost:2990/jira/images/icons/bug.gif")),
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", TestUtil.toUri("http://localhost:2990/jira/images/icons/newfeature.gif")),
 				new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", TestUtil.toUri("http://localhost:2990/jira/images/icons/task.gif")),
