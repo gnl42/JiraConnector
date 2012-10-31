@@ -20,20 +20,13 @@ public class OptionalIterable<T> implements Iterable<T> {
 	@Nullable
 	private final Iterable<T> iterable;
 
-	private final boolean present;
-
 	@SuppressWarnings("unchecked")
 	public static <T> OptionalIterable<T> absent() {
 		return absentInstance;
 	}
 
 	public OptionalIterable(@Nullable Iterable<T> iterable) {
-		this(iterable, (iterable != null));
-	}
-
-	public OptionalIterable(@Nullable Iterable<T> iterable, boolean present) {
 		this.iterable = iterable;
-		this.present = present;
 	}
 
 	/**
@@ -48,6 +41,6 @@ public class OptionalIterable<T> implements Iterable<T> {
 	}
 
 	public boolean isPresent() {
-		return present;
+		return iterable != null;
 	}
 }
