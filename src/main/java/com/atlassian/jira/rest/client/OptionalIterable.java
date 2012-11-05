@@ -8,7 +8,7 @@ import java.util.Iterator;
 /**
  * Represent iterable which is optional (for example due to lack of field in old REST API version).<br/>
  * This iterable is intended to be not null, so you can always get items by using iterator. If you need
- * to check if value was actually provided then use {@link com.atlassian.jira.rest.client.OptionalIterable#isPresent()}.
+ * to check if value was actually provided then use {@link com.atlassian.jira.rest.client.OptionalIterable#isSupported}.
  *
  * @since v1.0
  */
@@ -30,17 +30,20 @@ public class OptionalIterable<T> implements Iterable<T> {
 	}
 
 	/**
-	 * @return iterator for original iterable if {@link OptionalIterable#isPresent()} is true,
+	 * @return iterator for original iterable if {@link OptionalIterable#isSupported} is true,
 	 *         or empty iterator in other case.
 	 */
 	@Override
 	public Iterator<T> iterator() {
-		return isPresent()
+		return isSupported()
 				? iterable.iterator()
 				: Collections.<T>emptyList().iterator();
 	}
 
-	public boolean isPresent() {
+	/**
+	 * @return true if server supports this field
+	 */
+	public boolean isSupported() {
 		return iterable != null;
 	}
 }

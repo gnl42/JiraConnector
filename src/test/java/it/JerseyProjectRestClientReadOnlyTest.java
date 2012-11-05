@@ -73,7 +73,7 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 		assertEquals(2, Iterables.size(project.getComponents()));
 		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		if (isJira4x4OrNewer()) {
-			assertTrue(issueTypes.isPresent());
+			assertTrue(issueTypes.isSupported());
 			final Iterator<IssueType> issueTypesIterator = issueTypes.iterator();
 			assertTrue(issueTypesIterator.hasNext());
 			final IssueType it = issueTypesIterator.next();
@@ -86,7 +86,7 @@ public class JerseyProjectRestClientReadOnlyTest extends AbstractJerseyRestClien
 			assertEquals(it.getName(), "Bug");
 		}
 		else {
-			assertFalse(issueTypes.isPresent());
+			assertFalse(issueTypes.isSupported());
 		}
 	}
 
