@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -58,12 +59,17 @@ public class JiraRestClientAdapter {
 	public Project[] getProjects() {
 		Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(new NullProgressMonitor());
 
-		return JiraRestConverter.convert(allProjects);
+		return JiraRestConverter.convertProjects(allProjects);
 	}
 
 	public NamedFilter[] getFavouriteFilters() throws Exception {
 		throw new Exception("not implemented");
 
+	}
+
+	public Resolution[] getResolutions() {
+		return JiraRestConverter.convertResolutions(restClient.getMetadataClient().getResolutions(
+				new NullProgressMonitor()));
 	}
 
 }

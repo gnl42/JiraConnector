@@ -422,7 +422,10 @@ public class JiraClient {
 
 	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getResolutions", null); //$NON-NLS-1$
-		return soapClient.getResolutions(monitor);
+
+		return restClient.getResolutions();
+
+//		return soapClient.getResolutions(monitor);
 	}
 
 	public ServerInfo getServerInfo(final IProgressMonitor monitor) throws JiraException {
