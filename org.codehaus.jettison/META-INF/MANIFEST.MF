@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jettison
+Bundle-SymbolicName: org.codehaus.jettison
+Bundle-Version: 1.0.0
+Bundle-ClassPath: jettison-1.1.jar
+Bundle-Vendor: Atlassian
+Export-Package: org.codehaus.jettison,
+ org.codehaus.jettison.badgerfish,
+ org.codehaus.jettison.json,
+ org.codehaus.jettison.mapped,
+ org.codehaus.jettison.util
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse Jira Rest Client
+Bundle-SymbolicName: com.atlassian.connector.eclipse.jira.restclient;singleton:=true
+Bundle-Version: 3.0.7.qualifier
+Bundle-ClassPath: jira-rest-java-client-0.6-m9.jar
+Export-Package: com.atlassian.jira.rest.client,
+ com.atlassian.jira.rest.client.auth,
+ com.atlassian.jira.rest.client.domain,
+ com.atlassian.jira.rest.client.domain.input,
+ com.atlassian.jira.rest.client.internal,
+ com.atlassian.jira.rest.client.internal.domain,
+ com.atlassian.jira.rest.client.internal.domain.input,
+ com.atlassian.jira.rest.client.internal.jersey,
+ com.atlassian.jira.rest.client.internal.json,
+ com.atlassian.jira.rest.client.internal.json.gen
+Require-Bundle: org.joda.time,
+ com.sun.jersey_1_5;bundle-version="1.0.0",
+ com.google.guava;bundle-version="1.0.0",
+ org.apache.commons.httpclient;bundle-version="3.1.0",
+ org.codehaus.jettison;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: Atlassian
