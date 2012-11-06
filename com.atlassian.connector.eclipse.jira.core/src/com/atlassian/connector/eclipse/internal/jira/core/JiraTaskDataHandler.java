@@ -1126,7 +1126,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						client.addCommentToIssue(issue.getKey(), newComment, monitor);
 						handled = true;
 					} else if (soapComment != null) {
-						client.addCommentToIssue(issue.getKey(), soapComment, monitor);
+						// no handling of comments visibility now
+//						client.addCommentToIssue(issue.getKey(), soapComment, monitor);
+						client.addCommentToIssue(issue.getKey(), soapComment.getComment(), monitor);
 						handled = true;
 					}
 

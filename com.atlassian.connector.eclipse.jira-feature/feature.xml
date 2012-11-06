@@ -28,12 +28,6 @@
       %license
    </license>
 
-<!--
-   <includes
-         id="org.eclipse.mylyn.jira_feature"
-         version="0.0.0"/>
--->
-
    <includes
          id="com.atlassian.connector.eclipse.monitor"
          version="0.0.0"
@@ -67,9 +61,6 @@
       <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="compatible"/>
-      <!--
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.4.0" match="greaterOrEqual"/>
-      -->
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
       <import plugin="javax.servlet"/>
       <import plugin="com.atlassian.connector.eclipse.branding.ui"/>
@@ -161,5 +152,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.jira.restclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

@@ -19,20 +19,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
@@ -56,6 +51,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDef
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.SingleIssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.TextFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSession;
@@ -118,6 +114,8 @@ public class JiraClient {
 
 	private final JiraWebSession webSession;
 
+	private JiraRestClientAdapter restClient = null;
+
 	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 		Assert.isNotNull(location);
 		Assert.isNotNull(configuration);
@@ -130,21 +128,26 @@ public class JiraClient {
 		this.webClient = new JiraWebClient(this, webSession);
 		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
+		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
+				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword());
 	}
 
 	public JiraClient(AbstractWebLocation location) {
 		this(location, new JiraLocalConfiguration());
 	}
 
-	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("addCommentToIssue", null); //$NON-NLS-1$
-		soapClient.addComment(issueKey, comment, monitor);
-	}
+//	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("addCommentToIssue", null); //$NON-NLS-1$
+//		soapClient.addComment(issueKey, comment, monitor);
+//	}
 
 	public void addCommentToIssue(String issueKey, String comment, IProgressMonitor monitor) throws JiraException {
-		Comment cmnt = new Comment();
-		cmnt.setComment(comment);
-		addCommentToIssue(issueKey, cmnt, monitor);
+
+		restClient.addComment(issueKey, comment);
+
+//		Comment cmnt = new Comment();
+//		cmnt.setComment(comment);
+//		addCommentToIssue(issueKey, cmnt, monitor);
 	}
 
 	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
@@ -170,25 +173,27 @@ public class JiraClient {
 		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
 	}
 
-	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] content, IProgressMonitor monitor)
-			throws JiraException {
+	public void addAttachment(JiraIssue jiraIssue, String comment, String filename, byte[] content,
+			IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addAttachment", null); //$NON-NLS-1$
 
-		String[] encodedContents = new String[] { new String(new Base64().encode(content)) };
-		String[] names = new String[] { filename };
+		restClient.attAttachment(jiraIssue.getKey(), content, filename);
 
-		try {
-			soapClient.addAttachmentsBase64EncodedToIssue(issue.getKey(), names, encodedContents, monitor);
-		} catch (Throwable e) {
-			if (e.toString().contains("java.lang.OutOfMemoryError")) { //$NON-NLS-1$
-				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
-				throw new JiraException(Messages.JiraClient_attachment_too_large, e);
-			}
-			throw new JiraException(e.toString(), e);
-		}
+//		String[] encodedContents = new String[] { new String(new Base64().encode(content)) };
+//		String[] names = new String[] { filename };
+//
+//		try {
+//			soapClient.addAttachmentsBase64EncodedToIssue(issue.getKey(), names, encodedContents, monitor);
+//		} catch (Throwable e) {
+//			if (e.toString().contains("java.lang.OutOfMemoryError")) { //$NON-NLS-1$
+//				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+//				throw new JiraException(Messages.JiraClient_attachment_too_large, e);
+//			}
+//			throw new JiraException(e.toString(), e);
+//		}
 
 		if (!StringUtils.isEmpty(comment)) {
-			addCommentToIssue(issue.getKey(), comment, monitor);
+			addCommentToIssue(jiraIssue.getKey(), comment, monitor);
 		}
 	}
 
@@ -396,6 +401,9 @@ public class JiraClient {
 	 */
 	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getNamedFilters", null); //$NON-NLS-1$
+
+//		return restClient.getFavouriteFilters();
+
 		return soapClient.getNamedFilters(monitor);
 	}
 
@@ -406,7 +414,10 @@ public class JiraClient {
 
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getProjects", null); //$NON-NLS-1$
-		return soapClient.getProjects(monitor);
+
+		return restClient.getProjects();
+
+//		return soapClient.getProjects(monitor);
 	}
 
 	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
@@ -501,10 +512,17 @@ public class JiraClient {
 
 	}
 
-	public void getAttachment(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+	public void getAttachment(JiraIssue jiraIssue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
 			throws JiraException {
+
+//		Issue issue = restClient.getIssueClient().getIssue(jiraIssue.getKey(), new NullProgressMonitor());
+//		
+//		issue.getAttachmentsUri().
+//		
+//		restClient.getIssueClient().getAttachment(new NullProgressMonitor(), attachmentUri)
+
 		JiraCorePlugin.getMonitoring().logJob("getAttachment", null); //$NON-NLS-1$
-		webClient.retrieveFile(issue, attachment, out, monitor);
+		webClient.retrieveFile(jiraIssue, attachment, out, monitor);
 	}
 
 	/**
@@ -551,6 +569,11 @@ public class JiraClient {
 
 	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addWorkLog", null); //$NON-NLS-1$
+
+//		Issue issue = restClient.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+//		
+//		restClient.getIssueClient().addWorklog(issue.getWorklogUri(), log.toWorkLogInput(), new NullProgressMonitor());
+
 		return soapClient.addWorkLog(issueKey, log, monitor);
 	}
 
