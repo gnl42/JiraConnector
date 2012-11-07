@@ -129,7 +129,8 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
 				"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
 				"com.atlassian.jira.plugin.system.customfieldtypes:select",
-				"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"
+				"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect",
+				"com.atlassian.jira.plugin.system.customfieldtypes:multiselect"
 		);
 		String type = "array".equals(fieldSchema.getType()) ? fieldSchema.getItems() : fieldSchema.getType();
 		final String custom = fieldSchema.getCustom();
