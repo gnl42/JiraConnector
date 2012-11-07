@@ -14,6 +14,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -103,8 +104,14 @@ public class JiraIssue implements Serializable {
 
 	private boolean markupDetected;
 
+	private URI self;
+
 	public String getId() {
 		return id;
+	}
+
+	public URI getSelf() {
+		return self;
 	}
 
 	public void setId(String id) {
@@ -539,6 +546,10 @@ public class JiraIssue implements Serializable {
 
 	public void setAssigneeName(String assigneeName) {
 		this.assigneeName = assigneeName;
+	}
+
+	public void setSelf(URI self) {
+		this.self = self;
 	}
 
 }

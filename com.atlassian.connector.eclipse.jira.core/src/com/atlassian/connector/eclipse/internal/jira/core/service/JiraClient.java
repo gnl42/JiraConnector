@@ -49,7 +49,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.SingleIssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.TextFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
@@ -129,7 +128,7 @@ public class JiraClient {
 		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
 		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
-				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword());
+				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), cache);
 	}
 
 	public JiraClient(AbstractWebLocation location) {
@@ -358,13 +357,18 @@ public class JiraClient {
 	 */
 	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByKey", null); //$NON-NLS-1$
-		SingleIssueCollector collector = new SingleIssueCollector();
-		rssClient.getIssueByKey(issueKey, collector, monitor);
-		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
-			throw new JiraException("Repository returned an unknown project for issue '" //$NON-NLS-1$
-					+ collector.getIssue().getKey() + "'"); //$NON-NLS-1$
-		}
-		return collector.getIssue();
+
+		JiraIssue issue = restClient.getIssueByKey(issueKey, monitor);
+
+		return issue;
+
+//		SingleIssueCollector collector = new SingleIssueCollector();
+//		rssClient.getIssueByKey(issueKey, collector, monitor);
+//		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
+//			throw new JiraException("Repository returned an unknown project for issue '" //$NON-NLS-1$
+//					+ collector.getIssue().getKey() + "'"); //$NON-NLS-1$
+//		}
+//		return collector.getIssue();
 	}
 
 	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
@@ -409,7 +413,10 @@ public class JiraClient {
 
 	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getPriorities", null); //$NON-NLS-1$
-		return soapClient.getPriorities(monitor);
+
+		return restClient.getPriorities();
+
+//		return soapClient.getPriorities(monitor);
 	}
 
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
@@ -449,6 +456,9 @@ public class JiraClient {
 
 	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getStatuses", null); //$NON-NLS-1$
+
+//		return restClient.getStatused();
+
 		return soapClient.getStatuses(monitor);
 	}
 

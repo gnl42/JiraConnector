@@ -16,9 +16,16 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -30,7 +37,11 @@ public class JiraRestClientAdapter {
 
 	private JiraRestClient restClient;
 
-	public JiraRestClientAdapter(String url, String userName, String password) {
+	private final JiraClientCache cache;
+
+	public JiraRestClientAdapter(String url, String userName, String password, JiraClientCache cache) {
+
+		this.cache = cache;
 
 		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
 		try {
@@ -70,6 +81,19 @@ public class JiraRestClientAdapter {
 	public Resolution[] getResolutions() {
 		return JiraRestConverter.convertResolutions(restClient.getMetadataClient().getResolutions(
 				new NullProgressMonitor()));
+	}
+
+	public Priority[] getPriorities() {
+		return JiraRestConverter.convertPriorities(restClient.getMetadataClient().getPriorities(
+				new NullProgressMonitor()));
+	}
+
+	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
+		return JiraRestConverter.convertIssue(getIssue(issueKey), cache, monitor);
+	}
+
+	public JiraStatus[] getStatuses() throws Exception {
+		throw new Exception("not implemented");
 	}
 
 }

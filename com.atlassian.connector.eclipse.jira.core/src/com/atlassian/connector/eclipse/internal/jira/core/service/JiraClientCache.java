@@ -51,6 +51,10 @@ public class JiraClientCache {
 		return data.statusesById.get(id);
 	}
 
+	public JiraStatus getStatusByName(String name) {
+		return data.statusesByName.get(name);
+	}
+
 	public JiraStatus[] getStatuses() {
 		return data.statuses;
 	}
@@ -82,8 +86,8 @@ public class JiraClientCache {
 	}
 
 	private void initializeProject(Project project, IProgressMonitor monitor) throws JiraException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.JiraClientCache_project_details_for,
-				project.getKey()), 5);
+		SubMonitor subMonitor = SubMonitor.convert(monitor,
+				NLS.bind(Messages.JiraClientCache_project_details_for, project.getKey()), 5);
 
 		synchronized (project) {
 			final JiraVersion version = new JiraVersion(data.serverInfo.getVersion());
@@ -153,13 +157,19 @@ public class JiraClientCache {
 
 		data.priorities = jiraClient.getPriorities(monitor);
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
+		data.prioritiesByName = new HashMap<String, Priority>(data.priorities.length);
 		for (Priority priority : data.priorities) {
 			data.prioritiesById.put(priority.getId(), priority);
+			data.prioritiesByName.put(priority.getName(), priority);
 		}
 	}
 
 	public Priority getPriorityById(String id) {
 		return data.prioritiesById.get(id);
+	}
+
+	public Priority getPriorityByName(String name) {
+		return data.prioritiesByName.get(name);
 	}
 
 	public Priority[] getPriorities() {
@@ -193,8 +203,10 @@ public class JiraClientCache {
 
 		data.statuses = jiraClient.getStatuses(submonitor.newChild(1));
 		data.statusesById = new HashMap<String, JiraStatus>(data.statuses.length);
+		data.statusesByName = new HashMap<String, JiraStatus>(data.statuses.length);
 		for (JiraStatus status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
+			data.statusesByName.put(status.getName(), status);
 		}
 	}
 
@@ -213,13 +225,19 @@ public class JiraClientCache {
 
 		data.resolutions = jiraClient.getResolutions(submonitor.newChild(0));
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
+		data.resolutionsByName = new HashMap<String, Resolution>(data.resolutions.length);
 		for (Resolution resolution : data.resolutions) {
 			data.resolutionsById.put(resolution.getId(), resolution);
+			data.resolutionsByName.put(resolution.getName(), resolution);
 		}
 	}
 
 	public Resolution getResolutionById(String id) {
 		return data.resolutionsById.get(id);
+	}
+
+	public Resolution getResolutionByName(String name) {
+		return data.resolutionsByName.get(name);
 	}
 
 	public Resolution[] getResolutions() {
@@ -263,6 +281,15 @@ public class JiraClientCache {
 			}
 			initializeProject(project, monitor);
 		}
+		return project;
+	}
+
+	public synchronized Project refreshProjectDetails(Project project, IProgressMonitor monitor) throws JiraException {
+		if (project == null) {
+			throw new JiraException("Project does not exist"); //$NON-NLS-1$
+		}
+		initializeProject(project, monitor);
+
 		return project;
 	}
 
@@ -351,4 +378,5 @@ public class JiraClientCache {
 		}
 		return user;
 	}
+
 }
