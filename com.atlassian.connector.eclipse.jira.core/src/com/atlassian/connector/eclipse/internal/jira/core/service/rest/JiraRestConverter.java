@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
@@ -131,6 +132,37 @@ public class JiraRestConverter {
 			cache.refreshProjectDetails(project, monitor);
 		}
 
+		jiraIssue.setCreated(issue.getCreationDate().toDate());
+		jiraIssue.setUpdated(issue.getUpdateDate().toDate());
+
+		if (project != null && project.getIssueTypeById(issue.getIssueType().getId().toString()) != null) {
+			jiraIssue.setType(project.getIssueTypeById(issue.getIssueType().getId().toString()));
+		} else {
+			jiraIssue.setType(cache.getIssueTypeById(issue.getIssueType().getId().toString()));
+		}
+
 		return jiraIssue;
+	}
+
+	public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
+		List<IssueType> issueTypes = new ArrayList<IssueType>();
+
+		for (com.atlassian.jira.rest.client.domain.IssueType issueType : allIssueTypes) {
+			issueTypes.add(convert(issueType));
+		}
+
+		return issueTypes.toArray(new IssueType[issueTypes.size()]);
+	}
+
+	private static IssueType convert(com.atlassian.jira.rest.client.domain.IssueType issueType) {
+		IssueType outIssueType = new IssueType();
+
+		outIssueType.setId(issueType.getId().toString());
+		outIssueType.setName(issueType.getName());
+		outIssueType.setDescription(issueType.getDescription());
+		outIssueType.setIcon(issueType.getIconUri().toString());
+		outIssueType.setSubTaskType(issueType.isSubtask());
+
+		return outIssueType;
 	}
 }

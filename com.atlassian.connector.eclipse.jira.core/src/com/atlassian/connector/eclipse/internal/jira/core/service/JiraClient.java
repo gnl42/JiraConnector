@@ -373,12 +373,20 @@ public class JiraClient {
 
 	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getIssueTypes", null); //$NON-NLS-1$
-		return soapClient.getIssueTypes(monitor);
+
+		return restClient.getIssueTypes();
+
+//		return soapClient.getIssueTypes(monitor);
 	}
 
-	public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+	public IssueType[] getIssueTypes(String projectKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getIssueTypesForProject", null); //$NON-NLS-1$
-		return soapClient.getIssueTypes(projectId, monitor);
+
+		//TODO rest remove this method as project retrieved by REST contains list of issue types (single project get)
+
+		return restClient.getIssueTypes(projectKey);
+
+//		return soapClient.getIssueTypes(projectKey, monitor);
 	}
 
 	/**

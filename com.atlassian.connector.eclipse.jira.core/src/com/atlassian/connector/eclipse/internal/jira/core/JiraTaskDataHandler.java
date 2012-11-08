@@ -262,7 +262,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		TaskAttribute types = createAttribute(data, JiraAttribute.TYPE);
 		IssueType[] jiraIssueTypes = project.getIssueTypes();
-		if (jiraIssueTypes == null) {
+		if (jiraIssueTypes == null || jiraIssueTypes.length == 0) {
 			jiraIssueTypes = client.getCache().getIssueTypes();
 		}
 		for (int i = 0; i < jiraIssueTypes.length; i++) {

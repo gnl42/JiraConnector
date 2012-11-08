@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
@@ -94,6 +95,17 @@ public class JiraRestClientAdapter {
 
 	public JiraStatus[] getStatuses() throws Exception {
 		throw new Exception("not implemented");
+	}
+
+	public IssueType[] getIssueTypes() {
+		return JiraRestConverter.convertIssueTypes(restClient.getMetadataClient().getIssueTypes(
+				new NullProgressMonitor()));
+	}
+
+	public IssueType[] getIssueTypes(String projectKey) {
+		return JiraRestConverter.convertIssueTypes(restClient.getProjectClient()
+				.getProject(projectKey, new NullProgressMonitor())
+				.getIssueTypes());
 	}
 
 }

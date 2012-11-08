@@ -95,7 +95,7 @@ public class JiraClientCache {
 			project.setComponents(jiraClient.getComponents(project.getKey(), subMonitor.newChild(1)));
 			project.setVersions(jiraClient.getVersions(project.getKey(), subMonitor.newChild(1)));
 
-			IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), subMonitor.newChild(1));
+			IssueType[] issueTypes = jiraClient.getIssueTypes(project.getKey(), subMonitor.newChild(1));
 			IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
 			for (IssueType issueType : subTaskIssueTypes) {
 				issueType.setSubTaskType(true);
