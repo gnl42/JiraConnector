@@ -23,6 +23,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
@@ -32,6 +33,8 @@ import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 
 public class JiraRestConverter {
+
+	private static final String FIELD_ENVIRONMENT_ID = "environment"; //$NON-NLS-1$
 
 	public static Project[] convertProjects(Iterable<BasicProject> allProjects) {
 		List<Project> projects = new ArrayList<Project>();
@@ -149,10 +152,40 @@ public class JiraRestConverter {
 
 		jiraIssue.setSubtasks(convert(issue.getSubtasks()));
 		jiraIssue.setType(convert(issue.getIssueType()));
-		jiraIssue.setUrl(url + "/browse/" + issue.getKey());
+		jiraIssue.setUrl(url + "/browse/" + issue.getKey()); //$NON-NLS-1$
 		jiraIssue.setComponents(convertComponents(issue.getComponents()));
 
+		// TODO rest use getter once available
+		Object env = issue.getField(FIELD_ENVIRONMENT_ID).getValue();
+		if (env != null) {
+			jiraIssue.setEnvironment(env.toString());
+		}
+
+		jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
+		jiraIssue.setFixVersions(convertVersions(issue.getFixVersions()));
+
 		return jiraIssue;
+	}
+
+	private static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
+		List<Version> outVersions = new ArrayList<Version>();
+
+		for (com.atlassian.jira.rest.client.domain.Version version : versions) {
+			outVersions.add(convert(version));
+		}
+
+		return outVersions.toArray(new Version[outVersions.size()]);
+	}
+
+	private static Version convert(com.atlassian.jira.rest.client.domain.Version version) {
+		Version outVersion = new Version(version.getId().toString());
+
+		outVersion.setName(version.getName());
+		outVersion.setReleaseDate(version.getReleaseDate().toDate());
+		outVersion.setArchived(version.isArchived());
+		outVersion.setReleased(version.isReleased());
+
+		return outVersion;
 	}
 
 	private static Component[] convertComponents(Iterable<BasicComponent> components) {
