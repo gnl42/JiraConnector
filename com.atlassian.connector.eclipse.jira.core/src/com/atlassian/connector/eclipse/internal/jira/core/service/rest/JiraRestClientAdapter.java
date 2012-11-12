@@ -110,13 +110,13 @@ public class JiraRestClientAdapter {
 				.getIssueTypes());
 	}
 
-	public JiraIssue getIssueByUrl(String issueUrl, IProgressMonitor monitor) throws JiraException {
+	public JiraIssue getIssueById(String issueId, IProgressMonitor monitor) throws JiraException {
 
 		// TODO rest remove once we have id in place
-		// strip key from url
-		String key = issueUrl;
+		// strip key from id = url_key
+		String issueKey = issueId.split("_")[1].replace('*', '-');
 
-		return JiraRestConverter.convertIssue(getIssue(key), cache /*, monitor*/);
+		return getIssueByKey(issueKey, monitor);
 	}
 
 	public List<JiraIssue> getIssues(String jql) throws JiraException {

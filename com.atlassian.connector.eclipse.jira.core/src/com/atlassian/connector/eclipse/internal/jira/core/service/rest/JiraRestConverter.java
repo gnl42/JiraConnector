@@ -23,6 +23,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 
@@ -98,7 +99,7 @@ public class JiraRestConverter {
 		JiraIssue jiraIssue = new JiraIssue();
 
 		// TODO rest: set real id if avaialble
-		jiraIssue.setId(issue.getSelf().toString());
+		jiraIssue.setId(issue.getSelf().toString() + "_" + issue.getKey().replace('-', '*'));
 		jiraIssue.setSelf(issue.getSelf());
 		jiraIssue.setKey(issue.getKey());
 		jiraIssue.setSummary(issue.getSummary());
@@ -144,7 +145,16 @@ public class JiraRestConverter {
 
 		jiraIssue.setSubtasks(JiraRestConverter.convert(issue.getSubtasks()));
 
+		jiraIssue.setType(JiraRestConverter.convert(issue.getIssueType()));
+
 		return jiraIssue;
+	}
+
+	private static IssueType convert(BasicIssueType issueType) {
+		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.isSubtask());
+
+		outIssueType.setName(issueType.getName());
+		return outIssueType;
 	}
 
 	private static Subtask[] convert(Iterable<com.atlassian.jira.rest.client.domain.Subtask> allSubtasks) {
@@ -158,8 +168,9 @@ public class JiraRestConverter {
 	}
 
 	private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
-		// TODO rest use real id if available 
-		return new Subtask(subtask.getIssueUri().toString(), subtask.getIssueKey());
+		// TODO rest use real id once available 
+		return new Subtask(subtask.getIssueUri().toString() + "_" + subtask.getIssueKey().replace('-', '*'),
+				subtask.getIssueKey());
 	}
 
 	public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
@@ -197,7 +208,8 @@ public class JiraRestConverter {
 	private static JiraIssue convert(BasicIssue issue) {
 		JiraIssue outIssue = new JiraIssue();
 
-		outIssue.setId(issue.getSelf().toString());
+		// TODO rest set real id
+		outIssue.setId(issue.getSelf().toString() + "_" + issue.getKey().replace('-', '*'));
 		outIssue.setKey(issue.getKey());
 		outIssue.setSelf(issue.getSelf());
 

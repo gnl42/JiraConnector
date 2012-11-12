@@ -389,10 +389,10 @@ public class JiraClient {
 //		return collector.getIssue();
 	}
 
-	public JiraIssue getIssueByUrl(String issueUrl, IProgressMonitor monitor) throws JiraException {
+	public JiraIssue getIssueById(String issueId, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByUrl", null); //$NON-NLS-1$
 
-		JiraIssue issue = restClient.getIssueByUrl(issueUrl, monitor);
+		JiraIssue issue = restClient.getIssueById(issueId, monitor);
 
 		return issue;
 	}

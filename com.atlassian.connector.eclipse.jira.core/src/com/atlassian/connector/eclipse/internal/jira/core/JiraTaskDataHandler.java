@@ -181,8 +181,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (task != null) {
 				return client.getIssueByKey(task.getTaskKey(), monitor);
 			} else {
-				// TODO REST: we use key as id temporary (check JiraRestConverter)
-				return client.getIssueByUrl(taskId, monitor);
+				// TODO REST: we use ur_key as id temporary (check JiraRestConverter)
+				return client.getIssueById(taskId, monitor);
 			}
 		} catch (NumberFormatException e) {
 			return client.getIssueByKey(taskId, monitor);
