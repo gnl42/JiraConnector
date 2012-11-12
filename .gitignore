@@ -1,3 +1,4 @@
 jira-rest-java-client.iml
 .idea
 target
+atlassian-ide-plugin.xml
