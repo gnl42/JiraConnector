@@ -94,7 +94,7 @@ public class JiraRestConverter {
 		return outPriority;
 	}
 
-	public static JiraIssue convertIssue(Issue issue, JiraClientCache cache /*, IProgressMonitor monitor*/)
+	public static JiraIssue convertIssue(Issue issue, JiraClientCache cache, String url /*, IProgressMonitor monitor*/)
 			throws JiraException {
 		JiraIssue jiraIssue = new JiraIssue();
 
@@ -146,6 +146,8 @@ public class JiraRestConverter {
 		jiraIssue.setSubtasks(JiraRestConverter.convert(issue.getSubtasks()));
 
 		jiraIssue.setType(JiraRestConverter.convert(issue.getIssueType()));
+
+		jiraIssue.setUrl(url + "/browse/" + issue.getKey());
 
 		return jiraIssue;
 	}

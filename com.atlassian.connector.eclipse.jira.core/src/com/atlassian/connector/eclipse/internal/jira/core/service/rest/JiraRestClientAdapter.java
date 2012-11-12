@@ -42,8 +42,11 @@ public class JiraRestClientAdapter {
 
 	private final JiraClientCache cache;
 
+	private final String url;
+
 	public JiraRestClientAdapter(String url, String userName, String password, JiraClientCache cache) {
 
+		this.url = url;
 		this.cache = cache;
 
 		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
@@ -92,7 +95,7 @@ public class JiraRestClientAdapter {
 	}
 
 	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return JiraRestConverter.convertIssue(getIssue(issueKey), cache /*, monitor*/);
+		return JiraRestConverter.convertIssue(getIssue(issueKey), cache /*, monitor*/, url);
 	}
 
 	public JiraStatus[] getStatuses() throws Exception {
@@ -129,7 +132,7 @@ public class JiraRestClientAdapter {
 		List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
 
 		for (JiraIssue issue : issues) {
-			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache));
+			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url));
 		}
 
 		return fullIssues;
