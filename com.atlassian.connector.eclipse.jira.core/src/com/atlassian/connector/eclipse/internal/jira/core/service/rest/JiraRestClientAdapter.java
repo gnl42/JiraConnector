@@ -15,6 +15,8 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -90,7 +92,7 @@ public class JiraRestClientAdapter {
 	}
 
 	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return JiraRestConverter.convertIssue(getIssue(issueKey), cache, monitor);
+		return JiraRestConverter.convertIssue(getIssue(issueKey), cache /*, monitor*/);
 	}
 
 	public JiraStatus[] getStatuses() throws Exception {
@@ -108,4 +110,28 @@ public class JiraRestClientAdapter {
 				.getIssueTypes());
 	}
 
+	public JiraIssue getIssueByUrl(String issueUrl, IProgressMonitor monitor) throws JiraException {
+
+		// TODO rest remove once we have id in place
+		// strip key from url
+		String key = issueUrl;
+
+		return JiraRestConverter.convertIssue(getIssue(key), cache /*, monitor*/);
+	}
+
+	public List<JiraIssue> getIssues(String jql) throws JiraException {
+		List<JiraIssue> issues = JiraRestConverter.convertIssues(restClient.getSearchClient()
+				.searchJql(jql, new NullProgressMonitor())
+				.getIssues());
+
+//		return issues;
+
+		List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
+
+		for (JiraIssue issue : issues) {
+			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache));
+		}
+
+		return fullIssues;
+	}
 }

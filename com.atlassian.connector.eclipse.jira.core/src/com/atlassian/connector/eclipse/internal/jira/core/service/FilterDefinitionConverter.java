@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -52,13 +53,13 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.PriorityFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ProjectFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ResolutionFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.SpecificUserFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.StatusFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserInGroupFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
@@ -551,6 +552,149 @@ public class FilterDefinitionConverter {
 		}
 
 		return sb.toString();
+	}
+
+	public String getJqlString(FilterDefinition filter) {
+		List<String> searchParams = new ArrayList<String>();
+
+		ProjectFilter projectFilter = filter.getProjectFilter();
+		if (projectFilter != null && projectFilter.getProjects().length > 0) {
+			StringBuilder param = new StringBuilder();
+			param.append("project in (");
+			List<String> projectKeys = new ArrayList<String>();
+			for (Project project : projectFilter.getProjects()) {
+				projectKeys.add(project.getKey());
+//				addParameter(sb, PROJECT_KEY, project.getId());
+			}
+			param.append(StringUtils.join(projectKeys, ","));
+			param.append(")");
+
+			searchParams.add(param.toString());
+		}
+
+//		ComponentFilter componentFilter = filter.getComponentFilter();
+//		if (componentFilter != null) {
+//			if (componentFilter.hasNoComponent()) {
+//				addParameter(sb, COMPONENT_KEY, COMPONENT_NONE);
+//			}
+//			if (componentFilter.getComponents() != null) {
+//				for (Component component : componentFilter.getComponents()) {
+//					addParameter(sb, COMPONENT_KEY, component.getId());
+//				}
+//			}
+//		}
+//
+//		VersionFilter fixForVersionFilter = filter.getFixForVersionFilter();
+//		if (fixForVersionFilter != null) {
+//			if (fixForVersionFilter.hasNoVersion()) {
+//				addParameter(sb, FIXFOR_KEY, VERSION_NONE);
+//			}
+//			if (fixForVersionFilter.isReleasedVersions()) {
+//				addParameter(sb, FIXFOR_KEY, VERSION_RELEASED);
+//			}
+//			if (fixForVersionFilter.isUnreleasedVersions()) {
+//				addParameter(sb, FIXFOR_KEY, VERSION_UNRELEASED);
+//			}
+//			if (fixForVersionFilter.getVersions() != null) {
+//				for (Version fixVersion : fixForVersionFilter.getVersions()) {
+//					addParameter(sb, FIXFOR_KEY, fixVersion.getId());
+//				}
+//			}
+//		}
+//
+//		VersionFilter reportedInVersionFilter = filter.getReportedInVersionFilter();
+//		if (reportedInVersionFilter != null) {
+//			if (reportedInVersionFilter.hasNoVersion()) {
+//				addParameter(sb, VERSION_KEY, VERSION_NONE);
+//			}
+//			if (reportedInVersionFilter.isReleasedVersions()) {
+//				addParameter(sb, VERSION_KEY, VERSION_RELEASED);
+//			}
+//			if (reportedInVersionFilter.isUnreleasedVersions()) {
+//				addParameter(sb, VERSION_KEY, VERSION_UNRELEASED);
+//			}
+//			if (reportedInVersionFilter.getVersions() != null) {
+//				for (Version reportedVersion : reportedInVersionFilter.getVersions()) {
+//					addParameter(sb, VERSION_KEY, reportedVersion.getId());
+//				}
+//			}
+//		}
+//
+//		IssueTypeFilter issueTypeFilter = filter.getIssueTypeFilter();
+//		if (issueTypeFilter != null) {
+//			for (IssueType issueType : issueTypeFilter.getIsueTypes()) {
+//				addParameter(sb, TYPE_KEY, issueType.getId());
+//			}
+//		}
+//
+//		StatusFilter statusFilter = filter.getStatusFilter();
+//		if (statusFilter != null) {
+//			for (JiraStatus status : statusFilter.getStatuses()) {
+//				addParameter(sb, STATUS_KEY, status.getId());
+//			}
+//		}
+//
+//		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
+//		if (resolutionFilter != null) {
+//			Resolution[] resolutions = resolutionFilter.getResolutions();
+//			if (resolutions.length == 0) {
+//				addParameter(sb, RESOLUTION_KEY, UNRESOLVED); // Unresolved
+//			} else {
+//				for (Resolution resolution : resolutions) {
+//					addParameter(sb, RESOLUTION_KEY, resolution.getId());
+//				}
+//			}
+//		}
+//
+//		PriorityFilter priorityFilter = filter.getPriorityFilter();
+//		if (priorityFilter != null) {
+//			for (Priority priority : priorityFilter.getPriorities()) {
+//				addParameter(sb, PRIORITY_KEY, priority.getId());
+//			}
+//		}
+//
+//		ContentFilter contentFilter = filter.getContentFilter();
+//		if (contentFilter != null) {
+//			String queryString = contentFilter.getQueryString();
+//			if (queryString != null) {
+//				addParameter(sb, QUERY_KEY, queryString);
+//			}
+//			if (contentFilter.isSearchingSummary()) {
+//				addParameter(sb, SUMMARY_KEY, "true"); //$NON-NLS-1$
+//			}
+//			if (contentFilter.isSearchingDescription()) {
+//				addParameter(sb, DESCRIPTION_KEY, "true"); //$NON-NLS-1$
+//			}
+//			if (contentFilter.isSearchingComments()) {
+//				addParameter(sb, BODY_KEY, "true"); //$NON-NLS-1$
+//			}
+//			if (contentFilter.isSearchingEnvironment()) {
+//				addParameter(sb, ENVIRONMENT_KEY, "true"); //$NON-NLS-1$
+//			}
+//		}
+//
+//		addUserFilter(sb, filter.getReportedByFilter(), REPORTER_KEY, ISSUE_NO_REPORTER);
+//		addUserFilter(sb, filter.getAssignedToFilter(), ASSIGNEE_KEY, UNASSIGNED);
+//
+//		addDateFilter(sb, filter.getCreatedDateFilter(), CREATED_KEY);
+//		addDateFilter(sb, filter.getUpdatedDateFilter(), UPDATED_KEY);
+//		addDateFilter(sb, filter.getDueDateFilter(), DUEDATE_KEY);
+//
+//		addOrdering(sb, filter.getOrdering());
+//
+//		EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
+//		if (estimateFilter != null) {
+//			float min = estimateFilter.getMinVariation();
+//			if (min != 0L) {
+//				addParameter(sb, "minRatioLimit", Float.toString(min)); //$NON-NLS-1$
+//			}
+//			float max = estimateFilter.getMaxVariation();
+//			if (max != 0L) {
+//				addParameter(sb, "maxRatioLimit", Float.toString(max)); //$NON-NLS-1$
+//			}
+//		}
+
+		return StringUtils.join(searchParams, " AND ");
 	}
 
 	private void addOrdering(StringBuilder sb, Order[] ordering) {

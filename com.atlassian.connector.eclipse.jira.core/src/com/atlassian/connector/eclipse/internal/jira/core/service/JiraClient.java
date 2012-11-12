@@ -266,7 +266,25 @@ public class JiraClient {
 	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector, IProgressMonitor monitor)
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
-		rssClient.findIssues(filterDefinition, collector, monitor);
+
+		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(getCharacterEncoding(monitor),
+				getLocalConfiguration().getDateFormat());
+
+		String jql = filterConverter.getJqlString(filterDefinition);
+
+		List<JiraIssue> issues = restClient.getIssues(jql);
+
+		if (!collector.isCancelled()) {
+			collector.start();
+
+			for (JiraIssue issue : issues) {
+				collector.collectIssue(issue);
+			}
+
+			collector.done();
+		}
+
+//		rssClient.findIssues(filterDefinition, collector, monitor);
 	}
 
 	/**
@@ -369,6 +387,14 @@ public class JiraClient {
 //					+ collector.getIssue().getKey() + "'"); //$NON-NLS-1$
 //		}
 //		return collector.getIssue();
+	}
+
+	public JiraIssue getIssueByUrl(String issueUrl, IProgressMonitor monitor) throws JiraException {
+		JiraCorePlugin.getMonitoring().logJob("getIssueByUrl", null); //$NON-NLS-1$
+
+		JiraIssue issue = restClient.getIssueByUrl(issueUrl, monitor);
+
+		return issue;
 	}
 
 	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
