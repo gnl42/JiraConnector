@@ -14,6 +14,9 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -22,6 +25,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -94,7 +98,7 @@ public class JiraRestConverter {
 		return outPriority;
 	}
 
-	public static JiraIssue convertIssue(Issue issue, JiraClientCache cache, String url /*, IProgressMonitor monitor*/)
+	public static JiraIssue convertIssue(Issue issue, JiraClientCache cache, String url, IProgressMonitor monitor)
 			throws JiraException {
 		JiraIssue jiraIssue = new JiraIssue();
 
@@ -130,9 +134,9 @@ public class JiraRestConverter {
 
 		Project project = cache.getProjectByKey(issue.getProject().getKey());
 		jiraIssue.setProject(project);
-//		if (project != null && !project.hasDetails()) {
-//			cache.refreshProjectDetails(project, monitor);
-//		}
+		if (project != null && !project.hasDetails()) {
+			cache.refreshProjectDetails(project, monitor);
+		}
 
 		jiraIssue.setCreated(issue.getCreationDate().toDate());
 		jiraIssue.setUpdated(issue.getUpdateDate().toDate());
@@ -143,13 +147,31 @@ public class JiraRestConverter {
 			jiraIssue.setType(cache.getIssueTypeById(issue.getIssueType().getId().toString()));
 		}
 
-		jiraIssue.setSubtasks(JiraRestConverter.convert(issue.getSubtasks()));
-
-		jiraIssue.setType(JiraRestConverter.convert(issue.getIssueType()));
-
+		jiraIssue.setSubtasks(convert(issue.getSubtasks()));
+		jiraIssue.setType(convert(issue.getIssueType()));
 		jiraIssue.setUrl(url + "/browse/" + issue.getKey());
+		jiraIssue.setComponents(convertComponents(issue.getComponents()));
 
 		return jiraIssue;
+	}
+
+	private static Component[] convertComponents(Iterable<BasicComponent> components) {
+
+		List<Component> outComponents = new ArrayList<Component>();
+
+		for (BasicComponent component : components) {
+			outComponents.add(convert(component));
+		}
+
+		return outComponents.toArray(new Component[outComponents.size()]);
+	}
+
+	private static Component convert(BasicComponent component) {
+		Component outComponent = new Component(component.getId().toString());
+
+		outComponent.setName(component.getName());
+
+		return outComponent;
 	}
 
 	private static IssueType convert(BasicIssueType issueType) {

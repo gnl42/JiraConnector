@@ -95,7 +95,7 @@ public class JiraRestClientAdapter {
 	}
 
 	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return JiraRestConverter.convertIssue(getIssue(issueKey), cache /*, monitor*/, url);
+		return JiraRestConverter.convertIssue(getIssue(issueKey), cache, url, monitor);
 	}
 
 	public JiraStatus[] getStatuses() throws Exception {
@@ -122,7 +122,7 @@ public class JiraRestClientAdapter {
 		return getIssueByKey(issueKey, monitor);
 	}
 
-	public List<JiraIssue> getIssues(String jql) throws JiraException {
+	public List<JiraIssue> getIssues(String jql, IProgressMonitor monitor) throws JiraException {
 		List<JiraIssue> issues = JiraRestConverter.convertIssues(restClient.getSearchClient()
 				.searchJql(jql, new NullProgressMonitor())
 				.getIssues());
@@ -132,7 +132,7 @@ public class JiraRestClientAdapter {
 		List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
 
 		for (JiraIssue issue : issues) {
-			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url));
+			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url, monitor));
 		}
 
 		return fullIssues;

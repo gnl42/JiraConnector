@@ -272,7 +272,7 @@ public class JiraClient {
 
 		String jql = filterConverter.getJqlString(filterDefinition);
 
-		List<JiraIssue> issues = restClient.getIssues(jql);
+		List<JiraIssue> issues = restClient.getIssues(jql, monitor);
 
 		if (!collector.isCancelled()) {
 			collector.start();
