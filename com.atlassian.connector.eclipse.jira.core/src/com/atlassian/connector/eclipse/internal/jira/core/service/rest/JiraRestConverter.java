@@ -14,14 +14,19 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.joda.time.DateTime;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
@@ -106,7 +111,7 @@ public class JiraRestConverter {
 		JiraIssue jiraIssue = new JiraIssue();
 
 		// TODO rest: set real id if avaialble
-		jiraIssue.setId(issue.getSelf().toString() + "_" + issue.getKey().replace('-', '*'));
+		jiraIssue.setId(generateIssueId(issue.getSelf().toString(), issue.getKey()));
 		jiraIssue.setSelf(issue.getSelf());
 		jiraIssue.setKey(issue.getKey());
 		jiraIssue.setSummary(issue.getSummary());
@@ -133,7 +138,23 @@ public class JiraRestConverter {
 			jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
 		}
 
-//		jiraIssue.setSecurityLevel(issue.get)
+		Object security = issue.getField("security").getValue();
+		if (security != null && security instanceof JSONObject) {
+			JSONObject json = (JSONObject) security;
+
+			try {
+				String id = json.getString("id");
+				String name = json.getString("name");
+
+				SecurityLevel securityLevel = new SecurityLevel(id);
+				securityLevel.setName(name);
+
+				jiraIssue.setSecurityLevel(securityLevel);
+			} catch (JSONException e) {
+				// TODO rest handle exception (log)
+				e.printStackTrace();
+			}
+		}
 
 		Project project = cache.getProjectByKey(issue.getProject().getKey());
 		jiraIssue.setProject(project);
@@ -164,7 +185,34 @@ public class JiraRestConverter {
 		jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
 		jiraIssue.setFixVersions(convertVersions(issue.getFixVersions()));
 
+		DateTime dueDate = issue.getDueDate();
+		if (dueDate != null) {
+			jiraIssue.setDue(dueDate.toDate());
+		}
+
+		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
+
 		return jiraIssue;
+	}
+
+	private static IssueLink[] convertIssueLinks(Iterable<com.atlassian.jira.rest.client.domain.IssueLink> issueLinks) {
+
+		List<IssueLink> outIssueLinks = new ArrayList<IssueLink>();
+
+		for (com.atlassian.jira.rest.client.domain.IssueLink issueLink : issueLinks) {
+			outIssueLinks.add(convert(issueLink));
+		}
+
+		return outIssueLinks.toArray(new IssueLink[outIssueLinks.size()]);
+	}
+
+	private static IssueLink convert(com.atlassian.jira.rest.client.domain.IssueLink issueLink) {
+		IssueLink outIssueLink = new IssueLink(generateIssueId(issueLink.getTargetIssueUri().toString(),
+				issueLink.getTargetIssueKey()), issueLink.getTargetIssueKey(), issueLink.getIssueLinkType().getName(),
+				issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getDescription(), "");
+
+		return outIssueLink;
+
 	}
 
 	private static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
@@ -226,8 +274,12 @@ public class JiraRestConverter {
 
 	private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
 		// TODO rest use real id once available 
-		return new Subtask(subtask.getIssueUri().toString() + "_" + subtask.getIssueKey().replace('-', '*'),
+		return new Subtask(generateIssueId(subtask.getIssueUri().toString(), subtask.getIssueKey()),
 				subtask.getIssueKey());
+	}
+
+	private static String generateIssueId(String uri, String issueKey) {
+		return uri + "_" + issueKey.replace('-', '*');
 	}
 
 	public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
@@ -266,7 +318,7 @@ public class JiraRestConverter {
 		JiraIssue outIssue = new JiraIssue();
 
 		// TODO rest set real id
-		outIssue.setId(issue.getSelf().toString() + "_" + issue.getKey().replace('-', '*'));
+		outIssue.setId(generateIssueId(issue.getSelf().toString(), issue.getKey()));
 		outIssue.setKey(issue.getKey());
 		outIssue.setSelf(issue.getSelf());
 

@@ -17,7 +17,8 @@ Require-Bundle: javax.xml.rpc;bundle-version="1.1.0",
  com.atlassian.connector.eclipse.commons.core;visibility:=reexport,
  com.atlassian.connector.eclipse.jira.restclient;bundle-version="3.0.7",
  org.joda.time;bundle-version="1.6.0",
- org.eclipse.mylyn.tasks.ui;bundle-version="[3.0.0,4.0.0)"
+ org.eclipse.mylyn.tasks.ui;bundle-version="[3.0.0,4.0.0)",
+ org.codehaus.jettison;bundle-version="1.0.0"
 Import-Package: org.eclipse.mylyn.internal.monitor.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.jira.core;x-friends:="com.atlassian.connector.eclipse.jira.ui",
