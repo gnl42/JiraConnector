@@ -19,6 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.joda.time.DateTime;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
@@ -36,6 +37,7 @@ import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Visibility;
 
 public class JiraRestConverter {
 
@@ -192,7 +194,35 @@ public class JiraRestConverter {
 
 		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
 
+		jiraIssue.setComments(convertComments(issue.getComments()));
+
 		return jiraIssue;
+	}
+
+	private static Comment[] convertComments(Iterable<com.atlassian.jira.rest.client.domain.Comment> comments) {
+		List<Comment> outComments = new ArrayList<Comment>();
+
+		for (com.atlassian.jira.rest.client.domain.Comment comment : comments) {
+			outComments.add(convert(comment));
+		}
+
+		return outComments.toArray(new Comment[outComments.size()]);
+	}
+
+	private static Comment convert(com.atlassian.jira.rest.client.domain.Comment comment) {
+		Comment outComment = new Comment();
+
+		outComment.setAuthor(comment.getAuthor().getDisplayName());
+		outComment.setComment(comment.getBody());
+		outComment.setCreated(comment.getCreationDate().toDate());
+		outComment.setMarkupDetected(true);
+
+		Visibility visibility = comment.getVisibility();
+		if (visibility != null) {
+			outComment.setRoleLevel(visibility.getValue());
+		}
+
+		return outComment;
 	}
 
 	private static IssueLink[] convertIssueLinks(Iterable<com.atlassian.jira.rest.client.domain.IssueLink> issueLinks) {
