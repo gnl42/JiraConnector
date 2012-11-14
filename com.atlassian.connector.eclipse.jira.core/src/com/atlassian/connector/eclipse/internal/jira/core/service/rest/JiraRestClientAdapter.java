@@ -13,6 +13,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -68,9 +69,13 @@ public class JiraRestClientAdapter {
 		return restClient.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 	}
 
-	public void attAttachment(String issueKey, byte[] content, String filename) {
+	public void addAttachment(String issueKey, byte[] content, String filename) {
 		restClient.getIssueClient().addAttachment(new NullProgressMonitor(), getIssue(issueKey).getAttachmentsUri(),
 				new ByteArrayInputStream(content), filename);
+	}
+
+	public InputStream getAttachment(URI attachmentUri) {
+		return restClient.getIssueClient().getAttachment(new NullProgressMonitor(), attachmentUri);
 	}
 
 	public Project[] getProjects() {

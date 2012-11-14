@@ -13,7 +13,7 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.service;
 
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -176,7 +176,7 @@ public class JiraClient {
 			IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addAttachment", null); //$NON-NLS-1$
 
-		restClient.attAttachment(jiraIssue.getKey(), content, filename);
+		restClient.addAttachment(jiraIssue.getKey(), content, filename);
 
 //		String[] encodedContents = new String[] { new String(new Base64().encode(content)) };
 //		String[] names = new String[] { filename };
@@ -559,17 +559,14 @@ public class JiraClient {
 
 	}
 
-	public void getAttachment(JiraIssue jiraIssue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+	public InputStream getAttachment(JiraIssue jiraIssue, Attachment attachment, IProgressMonitor monitor)
 			throws JiraException {
 
-//		Issue issue = restClient.getIssueClient().getIssue(jiraIssue.getKey(), new NullProgressMonitor());
-//		
-//		issue.getAttachmentsUri().
-//		
-//		restClient.getIssueClient().getAttachment(new NullProgressMonitor(), attachmentUri)
-
 		JiraCorePlugin.getMonitoring().logJob("getAttachment", null); //$NON-NLS-1$
-		webClient.retrieveFile(jiraIssue, attachment, out, monitor);
+
+		return restClient.getAttachment(attachment.getContent());
+
+//		webClient.retrieveFile(jiraIssue, attachment, out, monitor);
 	}
 
 	/**

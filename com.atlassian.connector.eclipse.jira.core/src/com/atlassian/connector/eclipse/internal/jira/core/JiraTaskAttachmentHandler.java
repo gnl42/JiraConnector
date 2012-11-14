@@ -11,11 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +51,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		return true;
 	}
 
-	private void downloadAttachment(TaskRepository repository, ITask task, String attachmentId, OutputStream out,
+	private InputStream downloadAttachment(TaskRepository repository, ITask task, String attachmentId,
 			IProgressMonitor monitor) throws CoreException {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
@@ -64,7 +61,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 				throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Attachment with id \"" //$NON-NLS-1$
 						+ attachmentId + "\" for JIRA issue \"" + task.getTaskKey() + "\" not found")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			client.getAttachment(issue, jiraAttachment, out, monitor);
+			return client.getAttachment(issue, jiraAttachment, monitor);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
@@ -77,9 +74,10 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		try {
 			monitor.beginTask(Messages.JiraTaskAttachmentHandler_Getting_attachment, IProgressMonitor.UNKNOWN);
 			TaskAttachmentMapper attachment = TaskAttachmentMapper.createFrom(attachmentAttribute);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
-			return new ByteArrayInputStream(out.toByteArray());
+//			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			return downloadAttachment(repository, task, attachment.getAttachmentId(), monitor);
+//			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
+//			return new ByteArrayInputStream(out.toByteArray());
 		} finally {
 			monitor.done();
 		}

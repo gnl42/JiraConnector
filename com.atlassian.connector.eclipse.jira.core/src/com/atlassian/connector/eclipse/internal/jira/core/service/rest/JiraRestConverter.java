@@ -19,6 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.joda.time.DateTime;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
@@ -193,10 +194,37 @@ public class JiraRestConverter {
 		}
 
 		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
-
 		jiraIssue.setComments(convertComments(issue.getComments()));
 
+		jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
+
 		return jiraIssue;
+	}
+
+	private static Attachment[] convertAttachments(
+			Iterable<com.atlassian.jira.rest.client.domain.Attachment> attachments) {
+
+		List<Attachment> outAttachments = new ArrayList<Attachment>();
+
+		for (com.atlassian.jira.rest.client.domain.Attachment attachment : attachments) {
+			outAttachments.add(convert(attachment));
+		}
+
+		return outAttachments.toArray(new Attachment[outAttachments.size()]);
+	}
+
+	private static Attachment convert(com.atlassian.jira.rest.client.domain.Attachment attachment) {
+		Attachment outAttachment = new Attachment();
+
+		// TODO rest change to real id 
+		outAttachment.setId(attachment.getSelf().toString());
+		outAttachment.setAuthor(attachment.getAuthor().getDisplayName());
+		outAttachment.setCreated(attachment.getCreationDate().toDate());
+		outAttachment.setName(attachment.getFilename());
+		outAttachment.setSize(attachment.getSize());
+		outAttachment.setContent(attachment.getContentUri());
+
+		return outAttachment;
 	}
 
 	private static Comment[] convertComments(Iterable<com.atlassian.jira.rest.client.domain.Comment> comments) {

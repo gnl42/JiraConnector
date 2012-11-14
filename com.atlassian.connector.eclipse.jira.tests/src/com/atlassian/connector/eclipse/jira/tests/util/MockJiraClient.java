@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.jira.tests.util;
 
-import java.io.OutputStream;
+import java.io.InputStream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.WebLocation;
@@ -267,9 +267,10 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void getAttachment(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+	public InputStream getAttachment(JiraIssue issue, Attachment attachment, IProgressMonitor monitor)
 			throws JiraException {
 		// ignore
+		return null;
 	}
 
 	@Override

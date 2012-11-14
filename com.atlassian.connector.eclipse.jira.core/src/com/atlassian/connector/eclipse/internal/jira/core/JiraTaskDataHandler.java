@@ -591,8 +591,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 			taskAttachment.setLength(attachment.getSize());
 			taskAttachment.setCreationDate(attachment.getCreated());
-			taskAttachment.setUrl(client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" //$NON-NLS-1$ //$NON-NLS-2$
-					+ attachment.getName());
+//			taskAttachment.setUrl(client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" //$NON-NLS-1$ //$NON-NLS-2$
+//					+ attachment.getName());
+			taskAttachment.setUrl(attachment.getContent().toString());
 			taskAttachment.applyTo(attribute);
 			i++;
 		}
