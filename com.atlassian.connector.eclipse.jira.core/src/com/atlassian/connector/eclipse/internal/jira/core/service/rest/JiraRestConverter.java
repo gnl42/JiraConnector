@@ -126,9 +126,9 @@ public class JiraRestConverter {
 		jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
 		jiraIssue.setStatus(cache.getStatusByName(issue.getStatus().getName()));
 		jiraIssue.setAssignee(issue.getAssignee().getName());
-		jiraIssue.setAssigneeName(issue.getAssignee().getName());
+		jiraIssue.setAssigneeName(issue.getAssignee().getDisplayName());
 		jiraIssue.setReporter(issue.getReporter().getName());
-		jiraIssue.setReporterName(issue.getReporter().getName());
+		jiraIssue.setReporterName(issue.getReporter().getDisplayName());
 		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionByName(issue.getResolution()
 				.getName()));
 		if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
