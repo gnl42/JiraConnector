@@ -342,7 +342,10 @@ public class JiraClient {
 
 	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getComponents", null); //$NON-NLS-1$
-		return soapClient.getComponents(projectKey, monitor);
+
+		return restClient.getComponents(projectKey);
+
+//		return soapClient.getComponents(projectKey, monitor);
 	}
 
 	public synchronized JiraLocalConfiguration getLocalConfiguration() {
@@ -424,6 +427,7 @@ public class JiraClient {
 	 */
 	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getKeyFromId", null); //$NON-NLS-1$
+		// it is used only in tests
 		return soapClient.getKeyFromId(issueId, monitor);
 	}
 

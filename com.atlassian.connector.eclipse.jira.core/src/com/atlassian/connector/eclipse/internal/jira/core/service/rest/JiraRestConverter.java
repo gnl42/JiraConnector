@@ -294,7 +294,7 @@ public class JiraRestConverter {
 		return outVersion;
 	}
 
-	private static Component[] convertComponents(Iterable<BasicComponent> components) {
+	static Component[] convertComponents(Iterable<BasicComponent> components) {
 
 		List<Component> outComponents = new ArrayList<Component>();
 

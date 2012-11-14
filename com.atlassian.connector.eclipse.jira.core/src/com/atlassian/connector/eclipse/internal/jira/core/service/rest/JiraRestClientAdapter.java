@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
@@ -141,5 +142,11 @@ public class JiraRestClientAdapter {
 		}
 
 		return fullIssues;
+	}
+
+	public Component[] getComponents(String projectKey) {
+		return JiraRestConverter.convertComponents(restClient.getProjectClient()
+				.getProject(projectKey, new NullProgressMonitor())
+				.getComponents());
 	}
 }
