@@ -28,6 +28,7 @@ public class BasicProjectJsonParser implements JsonObjectParser<BasicProject> {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final String key = json.getString("key");
         final String name = JsonParseUtil.getOptionalString(json, "name");
-        return new BasicProject(selfUri, key, name);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        return new BasicProject(selfUri, key, name, id);
     }
 }
