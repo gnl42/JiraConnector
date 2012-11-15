@@ -25,7 +25,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
@@ -286,10 +285,10 @@ public class MockJiraClient extends JiraClient {
 		// ignore
 	}
 
-	@Override
-	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return new JiraWorkLog[0];
-	}
+//	@Override
+//	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
+//		return new JiraWorkLog[0];
+//	}
 
 	@Override
 	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
