@@ -1,4 +1,7 @@
 jira-rest-java-client.iml
 .idea
+*.iml
+*.ipr
+*.iws
 target
 atlassian-ide-plugin.xml
