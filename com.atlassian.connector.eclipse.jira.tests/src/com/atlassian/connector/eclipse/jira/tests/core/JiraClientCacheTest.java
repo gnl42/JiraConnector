@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
@@ -51,16 +50,16 @@ public class JiraClientCacheTest extends TestCase {
 				}
 			};
 
-			@Override
-			public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
-				switch (whatProject[0]) {
-				case 2:
-					return new Version[] { MockJiraClient.createVersion("1", "Version 1"),
-							MockJiraClient.createVersion("2", "Version 2") };
-				default:
-					return null;
-				}
-			}
+//			@Override
+//			public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
+//				switch (whatProject[0]) {
+//				case 2:
+//					return new Version[] { MockJiraClient.createVersion("1", "Version 1"),
+//							MockJiraClient.createVersion("2", "Version 2") };
+//				default:
+//					return null;
+//				}
+//			}
 		};
 
 		// not initialized yet

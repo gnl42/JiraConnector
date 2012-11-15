@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
@@ -133,8 +132,6 @@ public class JiraRestClientAdapter {
 				.searchJql(jql, new NullProgressMonitor())
 				.getIssues());
 
-//		return issues;
-
 		List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
 
 		for (JiraIssue issue : issues) {
@@ -144,9 +141,26 @@ public class JiraRestClientAdapter {
 		return fullIssues;
 	}
 
-	public Component[] getComponents(String projectKey) {
-		return JiraRestConverter.convertComponents(restClient.getProjectClient()
-				.getProject(projectKey, new NullProgressMonitor())
-				.getComponents());
+//	public Component[] getComponents(String projectKey) {
+//		return JiraRestConverter.convertComponents(restClient.getProjectClient()
+//				.getProject(projectKey, new NullProgressMonitor())
+//				.getComponents());
+//	}
+//
+//	public Version[] getVersions(String projectKey) {
+//		return JiraRestConverter.convertVersions(restClient.getProjectClient()
+//				.getProject(projectKey, new NullProgressMonitor())
+//				.getVersions());
+//	}
+
+	public void getProjectDetails(Project project) {
+
+		com.atlassian.jira.rest.client.domain.Project projectWithDetails = restClient.getProjectClient().getProject(
+				project.getKey(), new NullProgressMonitor());
+
+		project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
+		project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
+		project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
+
 	}
 }

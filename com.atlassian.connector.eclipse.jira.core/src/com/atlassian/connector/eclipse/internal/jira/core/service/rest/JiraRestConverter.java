@@ -273,7 +273,7 @@ public class JiraRestConverter {
 
 	}
 
-	private static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
+	static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
 		List<Version> outVersions = new ArrayList<Version>();
 
 		for (com.atlassian.jira.rest.client.domain.Version version : versions) {
@@ -287,7 +287,12 @@ public class JiraRestConverter {
 		Version outVersion = new Version(version.getId().toString());
 
 		outVersion.setName(version.getName());
-		outVersion.setReleaseDate(version.getReleaseDate().toDate());
+
+		DateTime releaseDate = version.getReleaseDate();
+		if (releaseDate != null) {
+			outVersion.setReleaseDate(releaseDate.toDate());
+		}
+
 		outVersion.setArchived(version.isArchived());
 		outVersion.setReleased(version.isReleased());
 

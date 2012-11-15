@@ -92,20 +92,7 @@ public class JiraClientCache {
 		synchronized (project) {
 			final JiraVersion version = new JiraVersion(data.serverInfo.getVersion());
 
-			project.setComponents(jiraClient.getComponents(project.getKey(), subMonitor.newChild(1)));
-			project.setVersions(jiraClient.getVersions(project.getKey(), subMonitor.newChild(1)));
-
-			IssueType[] issueTypes = jiraClient.getIssueTypes(project.getKey(), subMonitor.newChild(1));
-			IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
-			for (IssueType issueType : subTaskIssueTypes) {
-				issueType.setSubTaskType(true);
-			}
-
-			IssueType[] projectIssueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
-			System.arraycopy(issueTypes, 0, projectIssueTypes, 0, issueTypes.length);
-			System.arraycopy(subTaskIssueTypes, 0, projectIssueTypes, issueTypes.length, subTaskIssueTypes.length);
-
-			project.setIssueTypes(projectIssueTypes);
+			jiraClient.getProjectDetails(project);
 
 			if (version.compareTo(JiraVersion.JIRA_3_13) >= 0) {
 				try {

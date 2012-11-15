@@ -18,7 +18,6 @@ import org.eclipse.mylyn.commons.net.WebLocation;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
-import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -169,15 +168,15 @@ public class MockJiraClient extends JiraClient {
 		return this.cache;
 	}
 
-	@Override
-	public Component[] getComponents(String key, IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
+//	@Override
+//	public Component[] getComponents(String key, IProgressMonitor monitor) throws JiraException {
+//		return null;
+//	}
 
-	@Override
-	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
+//	@Override
+//	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
+//		return null;
+//	}
 
 	@Override
 	public IssueField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
@@ -247,10 +246,10 @@ public class MockJiraClient extends JiraClient {
 		return new IssueType[0];
 	}
 
-	@Override
-	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
+//	@Override
+//	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
+//		return null;
+//	}
 
 	@Override
 	public void login(IProgressMonitor monitor) throws JiraException {

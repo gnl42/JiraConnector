@@ -14,9 +14,6 @@
 package com.atlassian.connector.eclipse.internal.jira.core.service;
 
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +25,6 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
@@ -45,7 +41,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ProjectRole;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
@@ -340,13 +335,13 @@ public class JiraClient {
 		return localConfiguration.getCharacterEncoding();
 	}
 
-	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getComponents", null); //$NON-NLS-1$
-
-		return restClient.getComponents(projectKey);
-
-//		return soapClient.getComponents(projectKey, monitor);
-	}
+//	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getComponents", null); //$NON-NLS-1$
+//
+//		return restClient.getComponents(projectKey);
+//
+////		return soapClient.getComponents(projectKey, monitor);
+//	}
 
 	public synchronized JiraLocalConfiguration getLocalConfiguration() {
 		return localConfiguration;
@@ -510,6 +505,13 @@ public class JiraClient {
 		return soapClient.getSubTaskIssueTypes(projectId, monitor);
 	}
 
+	public void getProjectDetails(Project project) {
+
+		JiraCorePlugin.getMonitoring().logJob("getProjectDetails", null); //$NON-NLS-1$
+
+		restClient.getProjectDetails(project);
+	}
+
 	public String getUserName() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		return (credentials != null) ? credentials.getUserName() : ""; //$NON-NLS-1$
@@ -521,16 +523,17 @@ public class JiraClient {
 	 * @param key
 	 *            the project key
 	 */
-	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getVersions", null); //$NON-NLS-1$
-		List<Version> versions = Arrays.asList(soapClient.getVersions(key, monitor));
-		Collections.sort(versions, new Comparator<Version>() {
-			public int compare(Version o1, Version o2) {
-				return o1.getSequence() > o2.getSequence() ? -1 : (o1.getSequence() == o2.getSequence() ? 0 : 1);
-			}
-		});
-		return versions.toArray(new Version[0]);
-	}
+//	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getVersions", null); //$NON-NLS-1$
+////		List<Version> versions = Arrays.asList(soapClient.getVersions(key, monitor));
+//		List<Version> versions = Arrays.asList(restClient.getVersions(key));
+//		Collections.sort(versions, new Comparator<Version>() {
+//			public int compare(Version o1, Version o2) {
+//				return o1.getSequence() > o2.getSequence() ? -1 : (o1.getSequence() == o2.getSequence() ? 0 : 1);
+//			}
+//		});
+//		return versions.toArray(new Version[0]);
+//	}
 
 	@Override
 	public int hashCode() {
