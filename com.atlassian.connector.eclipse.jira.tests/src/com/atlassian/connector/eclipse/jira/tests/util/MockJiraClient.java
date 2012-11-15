@@ -198,10 +198,10 @@ public class MockJiraClient extends JiraClient {
 		return new IssueType[0];
 	}
 
-	@Override
-	public String getKeyFromId(String issueId, IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
+//	@Override
+//	public String getKeyFromId(String issueId, IProgressMonitor monitor) throws JiraException {
+//		return null;
+//	}
 
 	@Override
 	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
@@ -231,29 +231,29 @@ public class MockJiraClient extends JiraClient {
 		return new SecurityLevel[0];
 	}
 
-	@Override
-	public IssueType[] getSubTaskIssueTypes(final String projectId, IProgressMonitor monitor) throws JiraException {
-		return new IssueType[0];
-	}
-
-	@Override
-	public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
-		return new IssueType[0];
-	}
-
-	@Override
-	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
-		return new IssueType[0];
-	}
+//	@Override
+//	public IssueType[] getSubTaskIssueTypes(final String projectId, IProgressMonitor monitor) throws JiraException {
+//		return new IssueType[0];
+//	}
+//
+//	@Override
+//	public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+//		return new IssueType[0];
+//	}
+//
+//	@Override
+//	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
+//		return new IssueType[0];
+//	}
 
 //	@Override
 //	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
 //		return null;
 //	}
 
-	@Override
-	public void login(IProgressMonitor monitor) throws JiraException {
-	}
+//	@Override
+//	public void login(IProgressMonitor monitor) throws JiraException {
+//	}
 
 	@Override
 	public void logout(IProgressMonitor monitor) {

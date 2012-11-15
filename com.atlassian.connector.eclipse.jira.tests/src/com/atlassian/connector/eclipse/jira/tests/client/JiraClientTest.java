@@ -71,15 +71,15 @@ public class JiraClientTest extends TestCase {
 		JiraTestUtil.tearDown();
 	}
 
-	public void testLogin() throws Exception {
-		client.login(null);
-		client.logout(null);
-		// should automatically login
-		client.getCache().refreshDetails(new NullProgressMonitor());
-
-		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
-		client.login(null);
-	}
+//	public void testLogin() throws Exception {
+//		client.login(null);
+//		client.logout(null);
+//		// should automatically login
+//		client.getCache().refreshDetails(new NullProgressMonitor());
+//
+//		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
+//		client.login(null);
+//	}
 
 	public void testStartStopIssue() throws Exception {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
@@ -156,25 +156,25 @@ public class JiraClientTest extends TestCase {
 		assertEquals("Reopened", issue.getStatus().getName());
 	}
 
-	public void testGetIdFromKey() throws Exception {
-		JiraIssue issue = JiraTestUtil.createIssue(client, "getIdFromKey");
-
-		String key = client.getKeyFromId(issue.getId(), null);
-		assertEquals(issue.getKey(), key);
-
-		try {
-			key = client.getKeyFromId("invalid", null);
-			fail("Expected JiraException, got: " + key);
-		} catch (JiraException e) {
-		}
-
-		try {
-			key = client.getKeyFromId("1", null);
-			fail("Expected JiraException, got: " + key);
-		} catch (JiraException e) {
-		}
-
-	}
+//	public void testGetIdFromKey() throws Exception {
+//		JiraIssue issue = JiraTestUtil.createIssue(client, "getIdFromKey");
+//
+//		String key = client.getKeyFromId(issue.getId(), null);
+//		assertEquals(issue.getKey(), key);
+//
+//		try {
+//			key = client.getKeyFromId("invalid", null);
+//			fail("Expected JiraException, got: " + key);
+//		} catch (JiraException e) {
+//		}
+//
+//		try {
+//			key = client.getKeyFromId("1", null);
+//			fail("Expected JiraException, got: " + key);
+//		} catch (JiraException e) {
+//		}
+//
+//	}
 
 	public void testReassign() throws Exception {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testReassign");
@@ -522,21 +522,21 @@ public class JiraClientTest extends TestCase {
 		assertTrue("Missing 'fixVersions': " + ids, ids.contains("fixVersions"));
 	}
 
-	public void testGetWorkLogs() throws Exception {
-		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
-
-		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
-		assertEquals(0, logs.length);
-
-		JiraWorkLog log = new JiraWorkLog();
-		log.setTimeSpent(5287);
-		log.setStartDate(new Date());
-		client.addWorkLog(issue.getKey(), log, null);
-
-		logs = client.getWorklogs(issue.getKey(), null);
-		assertEquals(1, logs.length);
-		assertEquals(5280, logs[0].getTimeSpent());
-	}
+//	public void testGetWorkLogs() throws Exception {
+//		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
+//
+//		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
+//		assertEquals(0, logs.length);
+//
+//		JiraWorkLog log = new JiraWorkLog();
+//		log.setTimeSpent(5287);
+//		log.setStartDate(new Date());
+//		client.addWorkLog(issue.getKey(), log, null);
+//
+//		logs = client.getWorklogs(issue.getKey(), null);
+//		assertEquals(1, logs.length);
+//		assertEquals(5280, logs[0].getTimeSpent());
+//	}
 
 	/**
 	 * Tests soap retrieval of the SecurityLevels

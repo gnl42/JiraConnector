@@ -100,6 +100,8 @@ public class JiraIssue implements Serializable {
 
 	private IssueLink[] issueLinks = new IssueLink[0];
 
+	private JiraWorkLog[] worklogs = new JiraWorkLog[0];
+
 	private SecurityLevel securityLevel;
 
 	private boolean markupDetected;
@@ -550,6 +552,14 @@ public class JiraIssue implements Serializable {
 
 	public void setSelf(URI self) {
 		this.self = self;
+	}
+
+	public JiraWorkLog[] getWorklogs() {
+		return worklogs;
+	}
+
+	public void setWorklogs(JiraWorkLog[] worklogs) {
+		this.worklogs = worklogs;
 	}
 
 }

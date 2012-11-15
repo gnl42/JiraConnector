@@ -167,22 +167,24 @@ public class JiraClientCache {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
 
 		IssueType[] issueTypes = jiraClient.getIssueTypes(submonitor.newChild(1));
-		IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
+//		IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
 
-		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
+//		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
+		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length);
 
 		for (IssueType issueType : issueTypes) {
 			data.issueTypesById.put(issueType.getId(), issueType);
 		}
 
-		for (IssueType issueType : subTaskIssueTypes) {
-			issueType.setSubTaskType(true);
-			data.issueTypesById.put(issueType.getId(), issueType);
-		}
+//		for (IssueType issueType : subTaskIssueTypes) {
+//			issueType.setSubTaskType(true);
+//			data.issueTypesById.put(issueType.getId(), issueType);
+//		}
 
-		data.issueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
+//		data.issueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
+		data.issueTypes = new IssueType[issueTypes.length];
 		System.arraycopy(issueTypes, 0, data.issueTypes, 0, issueTypes.length);
-		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
+//		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 	}
 
 	private void initializeStatuses(JiraClientData data, IProgressMonitor monitor) throws JiraException {

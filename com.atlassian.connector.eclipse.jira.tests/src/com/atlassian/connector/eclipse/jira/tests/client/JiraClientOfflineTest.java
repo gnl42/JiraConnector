@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.tests.support.TestProxy;
 
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
@@ -64,13 +63,13 @@ public class JiraClientOfflineTest extends TestCase {
 		}
 	}
 
-	public void testGetWorklogs() throws Exception {
-		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
-		server.addResponse(JiraTestUtil.getMessage("soap/get-worklogs-two-entries-success-response"));
-		JiraWorkLog[] worklogs = client.getWorklogs("KEY-1", null);
-		assertNotNull(worklogs);
-		assertEquals(2, worklogs.length);
-	}
+//	public void testGetWorklogs() throws Exception {
+//		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
+//		server.addResponse(JiraTestUtil.getMessage("soap/get-worklogs-two-entries-success-response"));
+//		JiraWorkLog[] worklogs = client.getWorklogs("KEY-1", null);
+//		assertNotNull(worklogs);
+//		assertEquals(2, worklogs.length);
+//	}
 
 	public void testHttpsRedirect() throws Exception {
 		client.getLocalConfiguration().setFollowRedirects(false);

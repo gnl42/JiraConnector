@@ -932,25 +932,26 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				return;
 			}
 		}
-		try {
-			JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
-			if (remoteWorklogs != null) {
-				int i = 1;
-				for (JiraWorkLog remoteWorklog : remoteWorklogs) {
-					String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
-					TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
-					attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
-					new WorkLogConverter().applyTo(remoteWorklog, attribute);
-					i++;
-				}
-			} else {
-				data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
+//		try {
+//			JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
+		JiraWorkLog[] remoteWorklogs = jiraIssue.getWorklogs();
+		if (remoteWorklogs != null) {
+			int i = 1;
+			for (JiraWorkLog remoteWorklog : remoteWorklogs) {
+				String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
+				TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
+				attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
+				new WorkLogConverter().applyTo(remoteWorklog, attribute);
+				i++;
 			}
-		} catch (JiraInsufficientPermissionException e) {
-			// ignore
-			trace(e);
+		} else {
 			data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
 		}
+//		} catch (JiraInsufficientPermissionException e) {
+//			// ignore
+//			trace(e);
+//			data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
+//		}
 	}
 
 	public void addOperations(TaskData data, JiraIssue issue, JiraClient client, TaskData oldTaskData,

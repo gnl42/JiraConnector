@@ -25,6 +25,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
@@ -39,6 +40,7 @@ import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Visibility;
+import com.atlassian.jira.rest.client.domain.Worklog;
 
 public class JiraRestConverter {
 
@@ -198,7 +200,39 @@ public class JiraRestConverter {
 
 		jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
 
+		jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
+
 		return jiraIssue;
+	}
+
+	private static JiraWorkLog[] convertWorklogs(Iterable<Worklog> worklogs) {
+		List<JiraWorkLog> outWorkLogs = new ArrayList<JiraWorkLog>();
+
+		for (Worklog worklog : worklogs) {
+			outWorkLogs.add(convert(worklog));
+		}
+
+		return outWorkLogs.toArray(new JiraWorkLog[outWorkLogs.size()]);
+
+	}
+
+	private static JiraWorkLog convert(Worklog worklog) {
+		JiraWorkLog outWorklog = new JiraWorkLog();
+
+//		outWorklog.setAdjustEstimate(worklog.get);
+		outWorklog.setAuthor(worklog.getAuthor().getDisplayName());
+		outWorklog.setComment(worklog.getComment());
+		outWorklog.setCreated(worklog.getCreationDate().toDate());
+//		outWorklog.setGroupLevel(worklog.get)
+//		outWorklog.setId(worklog.get)
+//		outWorklog.setNewRemainingEstimate(worklog.get);
+//		outWorklog.setRoleLevelId(worklog.get);
+		outWorklog.setStartDate(worklog.getStartDate().toDate());
+		outWorklog.setTimeSpent(worklog.getMinutesSpent());
+		outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
+		outWorklog.setUpdated(worklog.getUpdateDate().toDate());
+
+		return outWorklog;
 	}
 
 	private static Attachment[] convertAttachments(

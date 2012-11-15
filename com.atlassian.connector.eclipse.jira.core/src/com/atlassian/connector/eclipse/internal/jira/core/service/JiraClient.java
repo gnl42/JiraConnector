@@ -165,6 +165,8 @@ public class JiraClient {
 			addCommentToIssue(issue.getKey(), comment, monitor);
 		}*/
 		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+
+		// TODO rest: https://studio.atlassian.com/browse/JRJC-85
 	}
 
 	public void addAttachment(JiraIssue jiraIssue, String comment, String filename, byte[] content,
@@ -403,15 +405,15 @@ public class JiraClient {
 //		return soapClient.getIssueTypes(monitor);
 	}
 
-	public IssueType[] getIssueTypes(String projectKey, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getIssueTypesForProject", null); //$NON-NLS-1$
-
-		//TODO rest remove this method as project retrieved by REST contains list of issue types (single project get)
-
-		return restClient.getIssueTypes(projectKey);
-
-//		return soapClient.getIssueTypes(projectKey, monitor);
-	}
+//	public IssueType[] getIssueTypes(String projectKey, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getIssueTypesForProject", null); //$NON-NLS-1$
+//
+//		//TODO rest remove this method as project retrieved by REST contains list of issue types (single project get)
+//
+//		return restClient.getIssueTypes(projectKey);
+//
+////		return soapClient.getIssueTypes(projectKey, monitor);
+//	}
 
 	/**
 	 * Returns the corresponding key for <code>issueId</code>.
@@ -420,11 +422,11 @@ public class JiraClient {
 	 *            unique id of the issue
 	 * @return corresponding key or <code>null</code> if the id was not found
 	 */
-	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getKeyFromId", null); //$NON-NLS-1$
-		// it is used only in tests
-		return soapClient.getKeyFromId(issueId, monitor);
-	}
+//	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getKeyFromId", null); //$NON-NLS-1$
+//		// it is used only in tests
+//		return soapClient.getKeyFromId(issueId, monitor);
+//	}
 
 	public AbstractWebLocation getLocation() {
 		return location;
@@ -491,19 +493,20 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getStatuses", null); //$NON-NLS-1$
 
 //		return restClient.getStatused();
+		// TODO rest: https://studio.atlassian.com/browse/JRJC-93
 
 		return soapClient.getStatuses(monitor);
 	}
 
-	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getSubTaskIssueTypes", null); //$NON-NLS-1$
-		return soapClient.getSubTaskIssueTypes(monitor);
-	}
+//	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getSubTaskIssueTypes", null); //$NON-NLS-1$
+//		return soapClient.getSubTaskIssueTypes(monitor);
+//	}
 
-	public IssueType[] getSubTaskIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getSubTaskIssueTypesForProject", null); //$NON-NLS-1$
-		return soapClient.getSubTaskIssueTypes(projectId, monitor);
-	}
+//	public IssueType[] getSubTaskIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getSubTaskIssueTypesForProject", null); //$NON-NLS-1$
+//		return soapClient.getSubTaskIssueTypes(projectId, monitor);
+//	}
 
 	public void getProjectDetails(Project project) {
 
@@ -545,10 +548,10 @@ public class JiraClient {
 	 * login when the session is about to expire. If you need to check if the credentials are valid, call
 	 * {@link com.atlassian.connector.eclipse.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
-	public void login(IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("login", null); //$NON-NLS-1$
-		soapClient.login(monitor);
-	}
+//	public void login(IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("login", null); //$NON-NLS-1$
+//		soapClient.login(monitor);
+//	}
 
 	/**
 	 * Force the current session to be closed. This method should only be called during application shutdown and then
@@ -608,10 +611,10 @@ public class JiraClient {
 		}
 	}
 
-	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getWorklogs", null); //$NON-NLS-1$
-		return soapClient.getWorkLogs(issueKey, monitor);
-	}
+//	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getWorklogs", null); //$NON-NLS-1$
+//		return soapClient.getWorkLogs(issueKey, monitor);
+//	}
 
 	public SecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableSecurityLevels", null); //$NON-NLS-1$
