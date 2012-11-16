@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.IdentifiableEntity;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**

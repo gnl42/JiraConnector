@@ -20,8 +20,8 @@ import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.google.common.base.Objects;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Map;
 
