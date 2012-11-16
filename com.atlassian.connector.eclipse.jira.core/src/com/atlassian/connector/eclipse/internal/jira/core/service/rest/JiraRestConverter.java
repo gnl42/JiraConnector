@@ -41,6 +41,8 @@ import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.input.WorklogInput;
+import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
 
 public class JiraRestConverter {
 
@@ -228,7 +230,7 @@ public class JiraRestConverter {
 //		outWorklog.setNewRemainingEstimate(worklog.get);
 //		outWorklog.setRoleLevelId(worklog.get);
 		outWorklog.setStartDate(worklog.getStartDate().toDate());
-		outWorklog.setTimeSpent(worklog.getMinutesSpent());
+		outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
 		outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
 		outWorklog.setUpdated(worklog.getUpdateDate().toDate());
 
@@ -420,5 +422,32 @@ public class JiraRestConverter {
 		outIssue.setSelf(issue.getSelf());
 
 		return outIssue;
+	}
+
+	public static WorklogInput convert(JiraWorkLog jiraWorklog) {
+		WorklogInputBuilder worklogInputBuilder = new WorklogInputBuilder();
+
+		switch (jiraWorklog.getAdjustEstimate()) {
+		case AUTO:
+			worklogInputBuilder.setAdjustEstimateAuto();
+			break;
+		case LEAVE:
+			worklogInputBuilder.setAdjustEstimateLeave();
+			break;
+		case SET:
+			worklogInputBuilder.setAdjustEstimateNew((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
+			break;
+		case REDUCE:
+			worklogInputBuilder.setAdjustEstimateManual((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
+			break;
+		}
+
+		worklogInputBuilder.setComment(jiraWorklog.getComment());
+		worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
+		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
+//		worklogInputBuilder.setAuthor(new )
+//		worklogInputBuilder.se
+
+		return worklogInputBuilder.build();
 	}
 }

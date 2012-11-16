@@ -621,14 +621,16 @@ public class JiraClient {
 		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 	}
 
-	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
+	public void addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addWorkLog", null); //$NON-NLS-1$
 
 //		Issue issue = restClient.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
 //		
 //		restClient.getIssueClient().addWorklog(issue.getWorklogUri(), log.toWorkLogInput(), new NullProgressMonitor());
 
-		return soapClient.addWorkLog(issueKey, log, monitor);
+		restClient.addWorklog(issueKey, log);
+
+//		return soapClient.addWorkLog(issueKey, log, monitor);
 	}
 
 	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {

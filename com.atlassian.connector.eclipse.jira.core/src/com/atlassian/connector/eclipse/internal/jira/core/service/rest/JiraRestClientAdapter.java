@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
@@ -161,6 +162,10 @@ public class JiraRestClientAdapter {
 		project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
 		project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
 		project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
+	}
 
+	public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) {
+		restClient.getIssueClient().addWorklog(getIssue(issueKey).getWorklogUri(),
+				JiraRestConverter.convert(jiraWorklog), new NullProgressMonitor());
 	}
 }

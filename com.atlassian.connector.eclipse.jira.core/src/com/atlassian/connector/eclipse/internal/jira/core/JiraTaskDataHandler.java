@@ -89,6 +89,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  * @since 3.0
  */
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
@@ -1085,14 +1086,25 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					boolean handled = false;
 					boolean advWorkflowHandled = false;
 
+					if (!handled && changeIds.contains(TaskAttribute.WORKLOG_NEW)) {
+						postWorkLog(repository, client, taskData, issue, monitor);
+
+						changeIds.remove(TaskAttribute.WORKLOG_NEW);
+
+						if (changeIds.size() == 0) {
+							handled = true;
+						}
+					}
+
 					// if only reassigning do not do the workflow
-					if (!handled && changeIds.contains(TaskAttribute.USER_ASSIGNED)) {
+					if (!handled && (changeIds.contains(TaskAttribute.USER_ASSIGNED))) {
 						Set<String> anythingElse = new HashSet<String>(changeIds);
 						anythingElse.removeAll(Arrays.asList(TaskAttribute.USER_ASSIGNED, TaskAttribute.COMMENT_NEW));
 						if (anythingElse.size() == 0) {
 							// no more changes, so that's a re-assign operation (we can't count on operationId == REASSIGN_OPERATION)
 							client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getAssignee(taskData), newComment,
 									monitor);
+
 							handled = true;
 						}
 					}
@@ -1125,7 +1137,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						handled = true;
 					}
 
-					// at last try to at least post the comment (if everything else failed)
+					// try to at least post the comment (if everything else failed)
 					if (!handled && newComment != null && newComment.length() > 0) {
 						client.addCommentToIssue(issue.getKey(), newComment, monitor);
 						handled = true;
@@ -1136,7 +1148,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						handled = true;
 					}
 
-					postWorkLog(repository, client, taskData, issue, monitor);
+//					postWorkLog(repository, client, taskData, issue, monitor);
 
 					// and do advanced workflow if necessary
 					if (!advWorkflowHandled && !LEAVE_OPERATION.equals(operationId)
