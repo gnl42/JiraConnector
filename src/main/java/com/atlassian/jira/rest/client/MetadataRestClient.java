@@ -60,7 +60,16 @@ public interface MetadataRestClient {
      */
     Iterable<IssuelinksType> getIssueLinkTypes(ProgressMonitor progressMonitor);
 
-	/**
+    /**
+     * Retrieves from the server complete list of available statuses
+     * @param progressMonitor progress monitor
+     * @return complete information about status resource
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @since client 1.0, server 5.0
+     */
+    Iterable<Status> getStatuses(ProgressMonitor progressMonitor);
+
+    /**
 	 * Retrieves complete information about selected status
 	 * @param uri URI to this status resource (one can get it e.g. from <code>self</code> attribute
 	 * of <code>status</code> field of an issue)

@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.AddressableEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
@@ -28,7 +29,7 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicProject implements AddressableEntity, NamedEntity {
+public class BasicProject implements AddressableEntity, NamedEntity, IdentifiableEntity<Long> {
 	private final URI self;
 	private final String key;
     @Nullable
@@ -36,11 +37,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
     @Nullable
     private final Long id;
 
-    public BasicProject(URI self, String key, String name) {
-		this(self, key, name, null);
-    }
-
-    public BasicProject(URI self, String key, String name, Long id) {
+    public BasicProject(URI self, String key, String name, @Nullable Long id) {
         this.self = self;
         this.key = key;
         this.name = name;
@@ -76,7 +73,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 				add("self", self).
 				add("key", key).
 				add("name", name)
-                .add("id", name);
+                .add("id", id);
 	}
 
 	@Override

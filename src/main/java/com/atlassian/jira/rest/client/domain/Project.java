@@ -40,10 +40,10 @@ public class Project extends BasicProject {
 	private final OptionalIterable<IssueType> issueTypes;
 	private final Collection<BasicProjectRole> projectRoles;
 
-	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri,
+	public Project(URI self, String key, String name, @Nullable Long id, String description, BasicUser lead, URI uri,
 			Collection<Version> versions,Collection<BasicComponent> components,
 			OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
-		super(self, key, name);
+		super(self, key, name, id);
 		this.description = description;
 		this.lead = lead;
 		this.uri = uri;

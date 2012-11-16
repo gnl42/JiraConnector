@@ -16,10 +16,14 @@
 
 package com.atlassian.jira.rest.client.internal.jersey;
 
+import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SearchRestClient;
+import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.internal.json.FavouriteFilterJsonParser;
+import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.SearchResultJsonParser;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.codehaus.jettison.json.JSONException;
@@ -40,6 +44,7 @@ public class JerseySearchRestClient extends AbstractJerseyRestClient implements 
 	private static final int MAX_JQL_LENGTH_FOR_HTTP_GET = 500;
 	private static final String JQL_ATTRIBUTE = "jql";
 	private final SearchResultJsonParser searchResultJsonParser = new SearchResultJsonParser();
+    private final GenericJsonArrayParser<FavouriteFilter> favouriteFiltersJsonParser = GenericJsonArrayParser.create(new FavouriteFilterJsonParser());
 
 	private static final String SEARCH_URI_PREFIX = "search";
 	private final URI searchUri;
@@ -89,4 +94,10 @@ public class JerseySearchRestClient extends AbstractJerseyRestClient implements 
 			return getAndParse(uri, searchResultJsonParser, progressMonitor);
 		}
 	}
+
+    @Override
+    public Iterable<FavouriteFilter> getFavouriteFilters(NullProgressMonitor progressMonitor) {
+        final URI uri = UriBuilder.fromUri(baseUri).path("filter/favourite").build();
+        return getAndParse(uri, favouriteFiltersJsonParser, progressMonitor);
+    }
 }

@@ -29,12 +29,12 @@ import java.net.URI;
  */
 public class AddressableNamedEntity implements AddressableEntity, NamedEntity {
 	protected final URI self;
-	protected final String name;
+    protected final String name;
 
 	public AddressableNamedEntity(URI self, String name) {
 		this.name = name;
 		this.self = self;
-	}
+    }
 
 	@Override
 	public URI getSelf() {
@@ -45,7 +45,7 @@ public class AddressableNamedEntity implements AddressableEntity, NamedEntity {
 		return name;
 	}
 
-	@Override
+    @Override
 	public String toString() {
 		return getToStringHelper().toString();
 	}

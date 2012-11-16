@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 
@@ -27,8 +28,8 @@ import java.net.URI;
  */
 public class Resolution extends BasicResolution {
 	private final String description;
-	public Resolution(URI self, String name, String description) {
-		super(self, name);
+	public Resolution(URI self, String name, String description, @Nullable Long id) {
+		super(self, name, id);
 		this.description = description;
 	}
 

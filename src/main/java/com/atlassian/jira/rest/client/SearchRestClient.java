@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 
 import javax.annotation.Nullable;
@@ -50,4 +51,11 @@ public interface SearchRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL query, etc.)
 	 */
 	SearchResult searchJql(@Nullable String jql, int maxResults, int startAt, ProgressMonitor progressMonitor);
+
+    /**
+     * @param pm
+     * @return list of your favourite filters
+     * @since 1.2 client 5.0 server
+     */
+    Iterable<FavouriteFilter> getFavouriteFilters(NullProgressMonitor pm);
 }

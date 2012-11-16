@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 
@@ -28,11 +29,18 @@ import java.net.URI;
 public class Status extends BasicStatus {
 	private final String description;
 	private final URI iconUrl;
+    @Nullable
+    private final Long id;
 
-	public Status(URI self, String name, String description, URI iconUrl) {
-		super(self, name);
+    public Status(URI self, String name, String description, URI iconUrl) {
+        this(self, name, description, iconUrl, null);
+    }
+
+    public Status(URI self, String name, String description, URI iconUrl, @Nullable Long id) {
+		super(self, name, id);
 		this.description = description;
 		this.iconUrl = iconUrl;
+        this.id = id;
 	}
 
 	public String getDescription() {
@@ -43,11 +51,17 @@ public class Status extends BasicStatus {
 		return iconUrl;
 	}
 
-	@Override
+    @Nullable
+    public Long getId() {
+        return id;
+    }
+
+    @Override
 	public String toString() {
 		return getToStringHelper().
 				add("description", description).
 				add("iconUrl", iconUrl).
+                add("id", id).
 				toString();
 	}
 
@@ -56,14 +70,15 @@ public class Status extends BasicStatus {
 		if (obj instanceof Status) {
 			Status that = (Status) obj;
 			return super.equals(obj) && Objects.equal(this.description, that.description)
-					&& Objects.equal(this.iconUrl, that.iconUrl);
+					&& Objects.equal(this.iconUrl, that.iconUrl)
+                    && Objects.equal(this.id, that.id);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, iconUrl);
+		return Objects.hashCode(super.hashCode(), description, iconUrl, id);
 	}
 
 }

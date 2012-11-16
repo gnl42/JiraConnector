@@ -33,6 +33,7 @@ public class StatusJsonParser implements JsonObjectParser<Status> {
 		final BasicStatus basicStatus = basicStatusJsonParser.parse(json);
 		final String description = json.getString("description");
 		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Status(basicStatus.getSelf(), basicStatus.getName(), description, iconUri);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        return new Status(basicStatus.getSelf(), basicStatus.getName(), description, iconUri, id);
 	}
 }

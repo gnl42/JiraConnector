@@ -30,6 +30,7 @@ public class BasicResolutionJsonParser implements JsonObjectParser<BasicResoluti
 	public BasicResolution parse(JSONObject json) throws JSONException {
 		final String name = json.getString("name");
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		return new BasicResolution(selfUri, name);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		return new BasicResolution(selfUri, name, id);
 	}
 }

@@ -16,6 +16,9 @@
 
 package com.atlassian.jira.rest.client.domain;
 
+import com.atlassian.jira.rest.client.IdentifiableEntity;
+import org.jetbrains.annotations.Nullable;
+
 import java.net.URI;
 
 /**
@@ -23,9 +26,18 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicResolution extends AddressableNamedEntity {
+public class BasicResolution extends AddressableNamedEntity implements IdentifiableEntity<Long> {
 
-	public BasicResolution(URI self, String name) {
+    @Nullable
+    private final Long id;
+
+    public BasicResolution(URI self, String name, @Nullable Long id) {
 		super(self, name);
-	}
+        this.id = id;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
 }

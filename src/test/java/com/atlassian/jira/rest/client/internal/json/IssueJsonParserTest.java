@@ -75,7 +75,7 @@ public class IssueJsonParserTest {
 	private void assertExpectedIssue(Issue issue) {
 		assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
-		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", null), issue.getProject());
+		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", null, null), issue.getProject());
 		assertEquals("Major", issue.getPriority().getName());
 		assertNull(issue.getResolution());
 		assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());

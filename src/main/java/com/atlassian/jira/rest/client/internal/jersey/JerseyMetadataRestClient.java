@@ -50,7 +50,8 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final GenericJsonArrayParser<IssueType> issueTypesJsonParser = GenericJsonArrayParser.create(issueTypeJsonParser);
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
-	private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
+    private final GenericJsonArrayParser<Status> statusesJsonParser = GenericJsonArrayParser.create(statusJsonParser);
+    private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
 	private final GenericJsonArrayParser<Priority> prioritiesJsonParser = GenericJsonArrayParser.create(priorityJsonParser);
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 	private final GenericJsonArrayParser<Resolution> resolutionsJsonParser = GenericJsonArrayParser.create(resolutionJsonParser);
@@ -71,13 +72,19 @@ public class JerseyMetadataRestClient extends AbstractJerseyRestClient implement
 		return getAndParse(uri, issueTypesJsonParser, progressMonitor);
 	}
 
-	@Override
+    @Override
 	public Iterable<IssuelinksType> getIssueLinkTypes(ProgressMonitor progressMonitor) {
 		final URI uri = UriBuilder.fromUri(baseUri).path("issueLinkType").build();
 		return getAndParse(uri, issueLinkTypesJsonParser, progressMonitor);
 	}
 
-	@Override
+    @Override
+    public Iterable<Status> getStatuses(ProgressMonitor progressMonitor) {
+        final URI uri = UriBuilder.fromUri(baseUri).path("status").build();
+        return getAndParse(uri, statusesJsonParser, progressMonitor);
+    }
+
+    @Override
 	public Status getStatus(final URI uri, ProgressMonitor progressMonitor) {
 		return getAndParse(uri, statusJsonParser, progressMonitor);
 	}

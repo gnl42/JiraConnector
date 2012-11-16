@@ -26,6 +26,6 @@ public class BasicResolutionJsonParserTest {
 	public void testParse() throws Exception {
 		final BasicResolutionJsonParser parser = new BasicResolutionJsonParser();
 		final BasicResolution basicresolution = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/resolution/valid.json"));
-		Assert.assertEquals(new BasicResolution(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), "Incomplete"), basicresolution);
+		Assert.assertEquals(new BasicResolution(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), "Incomplete", null), basicresolution);
 	}
 }

@@ -47,6 +47,6 @@ public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
 
 		final Map<String, URI> avatarUris = JsonParseUtil.getAvatarUris(json.getJSONObject("avatarUrls"));
 		return new CimProject(basicProject.getSelf(), basicProject.getKey(),
-				basicProject.getName(), avatarUris, issueTypes);
+				basicProject.getName(), basicProject.getId(), avatarUris, issueTypes);
 	}
 }
