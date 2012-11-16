@@ -1097,7 +1097,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 
 					// if only reassigning do not do the workflow
-					if (!handled && (changeIds.contains(TaskAttribute.USER_ASSIGNED))) {
+					if (!handled && changeIds.contains(TaskAttribute.USER_ASSIGNED)) {
 						Set<String> anythingElse = new HashSet<String>(changeIds);
 						anythingElse.removeAll(Arrays.asList(TaskAttribute.USER_ASSIGNED, TaskAttribute.COMMENT_NEW));
 						if (anythingElse.size() == 0) {

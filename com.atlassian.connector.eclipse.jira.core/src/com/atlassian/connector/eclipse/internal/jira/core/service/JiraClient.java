@@ -29,7 +29,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
@@ -244,6 +243,8 @@ public class JiraClient {
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("deleteIssue", null); //$NON-NLS-1$
 		soapClient.deleteIssue(issue.getKey(), monitor);
+
+		// TODO rest: https://studio.atlassian.com/browse/JRJC-86
 	}
 
 	@Override
@@ -619,14 +620,12 @@ public class JiraClient {
 	public SecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableSecurityLevels", null); //$NON-NLS-1$
 		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
+
+		// TODO rest there is no list of security levels in REST at all
 	}
 
 	public void addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addWorkLog", null); //$NON-NLS-1$
-
-//		Issue issue = restClient.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
-//		
-//		restClient.getIssueClient().addWorklog(issue.getWorklogUri(), log.toWorkLogInput(), new NullProgressMonitor());
 
 		restClient.addWorklog(issueKey, log);
 
@@ -636,12 +635,14 @@ public class JiraClient {
 	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getProjectRoles", null); //$NON-NLS-1$
 		return soapClient.getProjectRoles(monitor);
+
+		// TODO rest https://studio.atlassian.com/browse/JRJC-108
 	}
 
-	public JiraConfiguration getConfiguration(IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getConfiguration", null); //$NON-NLS-1$
-		return soapClient.getConfiguration(monitor);
-	}
+//	public JiraConfiguration getConfiguration(IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("getConfiguration", null); //$NON-NLS-1$
+//		return soapClient.getConfiguration(monitor);
+//	}
 
 	public synchronized void setLocalConfiguration(JiraLocalConfiguration configuration) {
 		Assert.isNotNull(configuration);

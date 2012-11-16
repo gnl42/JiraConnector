@@ -31,7 +31,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
@@ -214,12 +213,12 @@ public class JiraUtil {
 	}
 
 	public static int getWorkDaysPerWeek(JiraClient jiraClient) {
-		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
-			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
-			return conf != null ? conf.getTimeTrackingDaysPerWeek() : JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK;
-		} else {
-			return getWorkDaysPerWeekLocal(jiraClient.getLocalConfiguration());
-		}
+//		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
+//			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
+//			return conf != null ? conf.getTimeTrackingDaysPerWeek() : JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK;
+//		} else {
+		return getWorkDaysPerWeekLocal(jiraClient.getLocalConfiguration());
+//		}
 	}
 
 	public static int getWorkHoursPerDay(TaskRepository repository) {
@@ -228,12 +227,12 @@ public class JiraUtil {
 	}
 
 	public static int getWorkHoursPerDay(JiraClient jiraClient) {
-		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
-			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
-			return conf != null ? conf.getTimeTrackingHoursPerDay() : JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY;
-		} else {
-			return getWorkHoursPerDayLocal(jiraClient.getLocalConfiguration());
-		}
+//		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
+//			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
+//			return conf != null ? conf.getTimeTrackingHoursPerDay() : JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY;
+//		} else {
+		return getWorkHoursPerDayLocal(jiraClient.getLocalConfiguration());
+//		}
 	}
 
 	public static int getWorkDaysPerWeekLocal(TaskRepository repository) {

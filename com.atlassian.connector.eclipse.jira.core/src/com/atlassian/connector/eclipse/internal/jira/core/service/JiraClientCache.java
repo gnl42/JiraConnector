@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -233,9 +232,9 @@ public class JiraClientCache {
 		return data.resolutions;
 	}
 
-	public JiraConfiguration getConfiguration() {
-		return data.configuration;
-	}
+//	public JiraConfiguration getConfiguration() {
+//		return data.configuration;
+//	}
 
 	/**
 	 * Requires Administration Privileges on the JIRA side
@@ -244,10 +243,10 @@ public class JiraClientCache {
 	 * @param monitor
 	 * @throws JiraException
 	 */
-	private void initializeConfiguration(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
-		data.configuration = jiraClient.getConfiguration(submonitor);
-	}
+//	private void initializeConfiguration(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+//		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_configuration, 1);
+//		data.configuration = jiraClient.getConfiguration(submonitor);
+//	}
 
 	public void setData(JiraClientData data) {
 		this.data = data;
@@ -311,9 +310,9 @@ public class JiraClientCache {
 	 * @param monitor
 	 * @throws JiraException
 	 */
-	public void refreshConfiguration(IProgressMonitor monitor) throws JiraException {
-		initializeConfiguration(data, monitor);
-	}
+//	public void refreshConfiguration(IProgressMonitor monitor) throws JiraException {
+//		initializeConfiguration(data, monitor);
+//	}
 
 	/**
 	 * Refresh any cached information with the latest values from the remote server. This operation may take a long time

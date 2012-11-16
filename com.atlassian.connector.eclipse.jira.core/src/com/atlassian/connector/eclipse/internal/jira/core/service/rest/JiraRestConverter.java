@@ -446,7 +446,6 @@ public class JiraRestConverter {
 		worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
 		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
 //		worklogInputBuilder.setAuthor(new )
-//		worklogInputBuilder.se
 
 		return worklogInputBuilder.build();
 	}
