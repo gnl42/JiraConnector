@@ -574,7 +574,8 @@ public class JiraClientTest extends TestCase {
 		worklog1.setStartDate(time);
 		worklog1.setTimeSpent(120);
 
-		JiraWorkLog receivedWorklog = client.addWorkLog(issue.getKey(), worklog1, null);
+		client.addWorkLog(issue.getKey(), worklog1, null);
+		JiraWorkLog receivedWorklog = client.getIssueByKey(issue.getKey(), null).getWorklogs()[0];
 		client.updateIssue(issue, "", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 
@@ -590,7 +591,8 @@ public class JiraClientTest extends TestCase {
 		worklog1.setStartDate(time);
 		worklog1.setTimeSpent(240);
 
-		receivedWorklog = client.addWorkLog(issue.getKey(), worklog1, null);
+		client.addWorkLog(issue.getKey(), worklog1, null);
+		receivedWorklog = client.getIssueByKey(issue.getKey(), null).getWorklogs()[1];
 		issue = client.getIssueByKey(issue.getKey(), null);
 
 		assertEquals(1200 - 240, issue.getEstimate());

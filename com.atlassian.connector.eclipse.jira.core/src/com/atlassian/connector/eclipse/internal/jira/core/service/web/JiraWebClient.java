@@ -54,7 +54,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
@@ -489,91 +488,91 @@ public class JiraWebClient {
 		return issueKey[0];
 	}
 
-	public void watchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		watchUnwatchIssue(issue, true, monitor);
-	}
+//	public void watchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+//		watchUnwatchIssue(issue, true, monitor);
+//	}
+//
+//	public void unwatchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+//		watchUnwatchIssue(issue, false, monitor);
+//	}
+//
+//	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch, IProgressMonitor monitor)
+//			throws JiraException {
+//		doInSession(monitor, new JiraWebSessionCallback() {
+//			@Override
+//			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
+//				StringBuilder urlBuffer = new StringBuilder(baseUrl);
+//				String version = client.getCache().getServerInfo(monitor).getVersion();
+//				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+//					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
+//					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
+//					urlBuffer.append("&watch=").append(watch ? "watch" : "unwatch"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+//				} else {
+//					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+//					urlBuffer.append("?watch=").append(Boolean.toString(watch)); //$NON-NLS-1$
+//				}
+//
+//				HeadMethod head = new HeadMethod(urlBuffer.toString());
+//
+//				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+//					prepareSecurityToken(head);
+//				}
+//
+//				try {
+//					int result = execute(head);
+//					if (result != HttpStatus.SC_OK) {
+//						throw new JiraException("Changing watch status failed. Return code: " + result); //$NON-NLS-1$
+//					}
+//				} finally {
+//					head.releaseConnection();
+//				}
+//			}
+//
+//		});
+//	}
 
-	public void unwatchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		watchUnwatchIssue(issue, false, monitor);
-	}
-
-	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch, IProgressMonitor monitor)
-			throws JiraException {
-		doInSession(monitor, new JiraWebSessionCallback() {
-			@Override
-			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo(monitor).getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
-					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
-					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
-					urlBuffer.append("&watch=").append(watch ? "watch" : "unwatch"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-				} else {
-					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
-					urlBuffer.append("?watch=").append(Boolean.toString(watch)); //$NON-NLS-1$
-				}
-
-				HeadMethod head = new HeadMethod(urlBuffer.toString());
-
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
-					prepareSecurityToken(head);
-				}
-
-				try {
-					int result = execute(head);
-					if (result != HttpStatus.SC_OK) {
-						throw new JiraException("Changing watch status failed. Return code: " + result); //$NON-NLS-1$
-					}
-				} finally {
-					head.releaseConnection();
-				}
-			}
-
-		});
-	}
-
-	public void voteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		voteUnvoteIssue(issue, true, monitor);
-	}
-
-	public void unvoteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		voteUnvoteIssue(issue, false, monitor);
-	}
-
-	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote, IProgressMonitor monitor)
-			throws JiraException {
-		doInSession(monitor, new JiraWebSessionCallback() {
-
-			@Override
-			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo(monitor).getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
-					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
-					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
-					urlBuffer.append("&vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-				} else {
-					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
-					urlBuffer.append("?vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				}
-
-				HeadMethod head = new HeadMethod(urlBuffer.toString());
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
-					prepareSecurityToken(head);
-				}
-
-				try {
-					int result = execute(head);
-					if (result != HttpStatus.SC_OK) {
-						throw new JiraException("Changing vote failed. Return code: " + result); //$NON-NLS-1$
-					}
-				} finally {
-					head.releaseConnection();
-				}
-			}
-
-		});
-	}
+//	public void voteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+//		voteUnvoteIssue(issue, true, monitor);
+//	}
+//
+//	public void unvoteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+//		voteUnvoteIssue(issue, false, monitor);
+//	}
+//
+//	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote, IProgressMonitor monitor)
+//			throws JiraException {
+//		doInSession(monitor, new JiraWebSessionCallback() {
+//
+//			@Override
+//			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
+//				StringBuilder urlBuffer = new StringBuilder(baseUrl);
+//				String version = client.getCache().getServerInfo(monitor).getVersion();
+//				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+//					urlBuffer.append("/secure/VoteOrWatchIssue.jspa"); //$NON-NLS-1$
+//					urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
+//					urlBuffer.append("&vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+//				} else {
+//					urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+//					urlBuffer.append("?vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//				}
+//
+//				HeadMethod head = new HeadMethod(urlBuffer.toString());
+//				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_4_1) >= 0) {
+//					prepareSecurityToken(head);
+//				}
+//
+//				try {
+//					int result = execute(head);
+//					if (result != HttpStatus.SC_OK) {
+//						throw new JiraException("Changing vote failed. Return code: " + result); //$NON-NLS-1$
+//					}
+//				} finally {
+//					head.releaseConnection();
+//				}
+//			}
+//
+//		});
+//	}
 
 	public void deleteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {

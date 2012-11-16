@@ -138,6 +138,11 @@ public class FilterDefinitionConverter {
 		this.dateFormat = dateFormat;
 	}
 
+	public FilterDefinitionConverter() {
+		this.encoding = null;
+		this.dateFormat = null;
+	}
+
 	public String toUrl(String repositoryUrl, FilterDefinition filter) {
 		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter); //$NON-NLS-1$
 	}

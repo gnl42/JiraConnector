@@ -265,8 +265,7 @@ public class JiraClient {
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
 
-		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(getCharacterEncoding(monitor),
-				getLocalConfiguration().getDateFormat());
+		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter();
 
 		String jql = filterConverter.getJqlString(filterDefinition);
 
