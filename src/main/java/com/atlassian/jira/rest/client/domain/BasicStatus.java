@@ -37,6 +37,6 @@ public class BasicStatus extends AddressableNamedEntity implements IdentifiableE
 
     @Override
     public Long getId() {
-        return null;
+        return id;
     }
 }

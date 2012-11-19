@@ -17,8 +17,10 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.AddressableEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -26,17 +28,25 @@ import java.net.URI;
  *
  * @since v0.2
  */
-public class BasicIssue implements AddressableEntity {
+public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
 	private final URI self;
 
 	private final String key;
+    @Nullable
+    private final Long id;
 
-	public BasicIssue(URI self, String key) {
+	public BasicIssue(URI self, String key, @Nullable Long id) {
 		this.self = self;
 		this.key = key;
+        this.id = id;
 	}
 
-	/**
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    /**
 	 * @return URI of this issue
 	 */
 	@Override

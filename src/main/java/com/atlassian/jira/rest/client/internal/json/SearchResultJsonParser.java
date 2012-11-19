@@ -24,14 +24,21 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Collection;
 
 public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
-	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
+    private final boolean full;
 
-	@Override
+    public SearchResultJsonParser(boolean full) {
+        this.full = full;
+    }
+
+    @Override
 	public SearchResult parse(JSONObject json) throws JSONException {
 		final int startAt = json.getInt("startAt");
 		final int maxResults = json.getInt("maxResults");
 		final int total = json.getInt("total");
-		final Collection<BasicIssue> issues = JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), basicIssueJsonParser);
+        final JSONObject names = JsonParseUtil.getOptionalJsonObject(json, "names");
+        final JSONObject schema = JsonParseUtil.getOptionalJsonObject(json, "schema");
+		final Collection<? extends BasicIssue> issues = JsonParseUtil.parseJsonArray(
+                json.getJSONArray("issues"), full ? new IssueJsonParser(true, names, schema) : new BasicIssueJsonParser());
 		return new SearchResult(startAt, maxResults, total, issues);
 	}
 }

@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-	public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
+	public Issue(String summary, URI self, String key, @Nullable Long id, BasicProject project, BasicIssueType issueType, BasicStatus status,
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
 			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
@@ -42,7 +42,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
 			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
-		super(self, key);
+		super(self, key, id);
 		this.summary = summary;
 		this.project = project;
 		this.status = status;

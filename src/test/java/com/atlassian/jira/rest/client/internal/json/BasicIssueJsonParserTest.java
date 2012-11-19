@@ -27,6 +27,6 @@ public class BasicIssueJsonParserTest {
 	public void testParse() throws Exception {
 		BasicIssueJsonParser parser = new BasicIssueJsonParser();
 		final BasicIssue basicIssue = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/issues1.json").getJSONArray("issues").getJSONObject(0));
-		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-7"), "TST-7"), basicIssue);
+		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-7"), "TST-7", null), basicIssue);
 	}
 }

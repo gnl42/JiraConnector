@@ -35,12 +35,12 @@ public class SearchResultJsonParserTest {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
-	final SearchResultJsonParser parser = new SearchResultJsonParser();
+	final SearchResultJsonParser parser = new SearchResultJsonParser(false);
 
 	@Test
 	public void testParse() throws Exception {
 		final SearchResult searchResult = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/issues1.json"));
-		final ArrayList<BasicIssue> issues = Lists.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-7"), "TST-7"));
+		final ArrayList<BasicIssue> issues = Lists.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-7"), "TST-7", null));
 
 		assertEquals(new SearchResult(0, 50, 1, issues), searchResult);
 	}
@@ -53,7 +53,7 @@ public class SearchResultJsonParserTest {
 		assertEquals(8, searchResult.getMaxResults());
 		assertEquals(0, searchResult.getStartIndex());
 		assertEquals(8, Iterables.size(searchResult.getIssues()));
-		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/RST-1"), "RST-1"), Iterables.getLast(searchResult.getIssues()));
+		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/RST-1"), "RST-1", null), Iterables.getLast(searchResult.getIssues()));
 	}
 
 	@Test

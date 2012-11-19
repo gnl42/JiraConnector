@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.domain.Priority;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -28,6 +29,10 @@ public class BasicPriorityJsonParser implements JsonObjectParser<BasicPriority> 
 		final String name = json.getString("name");
 		final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
+        if (iconUrl != null) {
+            return new Priority(selfUri, id, name, null, null, JsonParseUtil.parseURI(iconUrl));
+        }
 		return new BasicPriority(selfUri, id, name);
 	}
 }
