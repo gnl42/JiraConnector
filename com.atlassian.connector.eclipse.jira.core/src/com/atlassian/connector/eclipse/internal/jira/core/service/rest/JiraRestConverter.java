@@ -30,6 +30,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
+import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
@@ -38,6 +39,7 @@ import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
@@ -145,9 +147,9 @@ public class JiraRestConverter {
 			jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
 		}
 
-		Object security = issue.getField("security").getValue();
-		if (security != null && security instanceof JSONObject) {
-			JSONObject json = (JSONObject) security;
+		Field security = issue.getField("security");
+		if (security != null && security.getValue() != null && security.getValue() instanceof JSONObject) {
+			JSONObject json = (JSONObject) security.getValue();
 
 			try {
 				String id = json.getString("id");
@@ -448,5 +450,16 @@ public class JiraRestConverter {
 //		worklogInputBuilder.setAuthor(new )
 
 		return worklogInputBuilder.build();
+	}
+
+	public static ServerInfo convert(com.atlassian.jira.rest.client.domain.ServerInfo serverInfo) {
+		ServerInfo serverInfoOut = new ServerInfo();
+
+		serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
+		serverInfoOut.setBuildDate(serverInfo.getBuildDate().toDate());
+		serverInfoOut.setBuildNumber(Integer.valueOf(serverInfo.getBuildNumber()).toString());
+		serverInfoOut.setVersion(serverInfo.getVersion());
+
+		return serverInfoOut;
 	}
 }

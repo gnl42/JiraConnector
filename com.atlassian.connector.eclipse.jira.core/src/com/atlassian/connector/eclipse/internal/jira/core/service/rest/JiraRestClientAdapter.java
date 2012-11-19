@@ -29,6 +29,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
@@ -167,5 +168,9 @@ public class JiraRestClientAdapter {
 	public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) {
 		restClient.getIssueClient().addWorklog(getIssue(issueKey).getWorklogUri(),
 				JiraRestConverter.convert(jiraWorklog), new NullProgressMonitor());
+	}
+
+	public ServerInfo getServerInfo() {
+		return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo(new NullProgressMonitor()));
 	}
 }
