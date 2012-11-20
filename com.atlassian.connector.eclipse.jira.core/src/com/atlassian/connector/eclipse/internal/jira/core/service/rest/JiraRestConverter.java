@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -426,8 +427,8 @@ public class JiraRestConverter {
 		return outIssue;
 	}
 
-	public static WorklogInput convert(JiraWorkLog jiraWorklog) {
-		WorklogInputBuilder worklogInputBuilder = new WorklogInputBuilder();
+	public static WorklogInput convert(JiraWorkLog jiraWorklog, URI uri) {
+		WorklogInputBuilder worklogInputBuilder = new WorklogInputBuilder(uri);
 
 		switch (jiraWorklog.getAdjustEstimate()) {
 		case AUTO:

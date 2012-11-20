@@ -258,11 +258,11 @@ public class MockJiraClient extends JiraClient {
 	public void logout(IProgressMonitor monitor) {
 	}
 
-	@Override
-	public void quickSearch(String searchString, IssueCollector collector, IProgressMonitor monitor)
-			throws JiraException {
-		// ignore
-	}
+//	@Override
+//	public void quickSearch(String searchString, IssueCollector collector, IProgressMonitor monitor)
+//			throws JiraException {
+//		// ignore
+//	}
 
 	@Override
 	public InputStream getAttachment(JiraIssue issue, Attachment attachment, IProgressMonitor monitor)

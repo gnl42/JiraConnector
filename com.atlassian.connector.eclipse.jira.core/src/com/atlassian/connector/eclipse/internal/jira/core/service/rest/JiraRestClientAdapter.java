@@ -166,8 +166,9 @@ public class JiraRestClientAdapter {
 	}
 
 	public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) {
-		restClient.getIssueClient().addWorklog(getIssue(issueKey).getWorklogUri(),
-				JiraRestConverter.convert(jiraWorklog), new NullProgressMonitor());
+		Issue issue = getIssue(issueKey);
+		restClient.getIssueClient().addWorklog(issue.getWorklogUri(),
+				JiraRestConverter.convert(jiraWorklog, issue.getSelf()), new NullProgressMonitor());
 	}
 
 	public ServerInfo getServerInfo() {
