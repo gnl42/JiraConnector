@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -32,6 +33,9 @@ public class BasicIssueTypeJsonParser implements JsonObjectParser<BasicIssueType
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String name = json.getString("name");
         final boolean isSubtask = json.getBoolean("subtask");
-        return new BasicIssueType(selfUri, id, name, isSubtask);
+        final URI iconUrl = JsonParseUtil.parseURI(JsonParseUtil.getOptionalString(json, "iconUrl"));
+        return iconUrl != null
+            ? new IssueType(selfUri, id, name, isSubtask, null, iconUrl)
+            : new BasicIssueType(selfUri, id, name, isSubtask);
     }
 }
