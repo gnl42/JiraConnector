@@ -33,9 +33,9 @@ public class BasicIssueTypeJsonParser implements JsonObjectParser<BasicIssueType
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String name = json.getString("name");
         final boolean isSubtask = json.getBoolean("subtask");
-        final URI iconUrl = JsonParseUtil.parseURI(JsonParseUtil.getOptionalString(json, "iconUrl"));
+        final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
         return iconUrl != null
-            ? new IssueType(selfUri, id, name, isSubtask, null, iconUrl)
+            ? new IssueType(selfUri, id, name, isSubtask, null, JsonParseUtil.parseURI(iconUrl))
             : new BasicIssueType(selfUri, id, name, isSubtask);
     }
 }
