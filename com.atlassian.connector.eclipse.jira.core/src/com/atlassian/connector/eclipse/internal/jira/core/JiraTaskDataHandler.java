@@ -1005,9 +1005,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + action.getId());
 				TaskOperation.applyTo(attribute, action.getId(), action.getName());
 
-				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
-				for (String field : fields) {
-					if (TaskAttribute.RESOLUTION.equals(mapCommonAttributeKey(field))) {
+//				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
+				List<IssueField> fields = action.getFields();
+				for (IssueField field : fields) {
+					if (TaskAttribute.RESOLUTION.equals(mapCommonAttributeKey(field.getId()))) {
 						attribute.getMetaData().putValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID,
 								TaskAttribute.RESOLUTION);
 					}

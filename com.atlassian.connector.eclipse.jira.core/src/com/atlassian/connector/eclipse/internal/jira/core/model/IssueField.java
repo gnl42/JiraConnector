@@ -15,6 +15,7 @@ import java.io.Serializable;
 
 /**
  * @author Steffen Pingel
+ * @author Jacek Jaroczynski
  */
 public class IssueField implements Serializable {
 
@@ -23,6 +24,10 @@ public class IssueField implements Serializable {
 	private final String id;
 
 	private final String name;
+
+	private String type;
+
+	private boolean required;
 
 	public IssueField(String id, String name) {
 		this.id = id;
@@ -40,6 +45,14 @@ public class IssueField implements Serializable {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 }

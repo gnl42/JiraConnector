@@ -46,7 +46,6 @@ import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraClientFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
@@ -100,18 +99,6 @@ public class JiraTestUtil {
 		ITask task = TasksUi.getRepositoryModel().createTask(taskRepository, taskData.getTaskId());
 		TasksUiPlugin.getTaskDataManager().putUpdatedTaskData(task, taskData, true);
 		return task;
-	}
-
-	public static String getCustomField(JiraClient server, String name) throws JiraException {
-		refreshDetails(server);
-
-		CustomField[] fields = server.getCustomAttributes(null);
-		for (CustomField field : fields) {
-			if (field.getName().toLowerCase().startsWith(name.toLowerCase())) {
-				return field.getId();
-			}
-		}
-		return null;
 	}
 
 	public static Resolution getFixedResolution(JiraClient server) throws JiraException {

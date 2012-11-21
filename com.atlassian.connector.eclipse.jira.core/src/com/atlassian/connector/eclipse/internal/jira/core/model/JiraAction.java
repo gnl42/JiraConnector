@@ -12,9 +12,12 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Steffen Pingel
+ * @author Jacek Jaroczynski
  */
 public class JiraAction implements Serializable {
 
@@ -23,6 +26,8 @@ public class JiraAction implements Serializable {
 	private final String id;
 
 	private final String name;
+
+	private final List<IssueField> fields = new ArrayList<IssueField>();
 
 	public JiraAction(String id, String name) {
 		this.id = id;
@@ -35,6 +40,10 @@ public class JiraAction implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public List<IssueField> getFields() {
+		return fields;
 	}
 
 }

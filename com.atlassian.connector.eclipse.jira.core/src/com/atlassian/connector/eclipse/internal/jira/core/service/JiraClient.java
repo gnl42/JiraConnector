@@ -25,7 +25,6 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
-import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -322,7 +321,10 @@ public class JiraClient {
 	 */
 	public JiraAction[] getAvailableActions(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableActions", null); //$NON-NLS-1$
-		return soapClient.getAvailableActions(issueKey, monitor);
+
+		return restClient.getTransitions(issueKey);
+
+//		return soapClient.getAvailableActions(issueKey, monitor);
 	}
 
 	public String getBaseUrl() {
@@ -363,11 +365,6 @@ public class JiraClient {
 		return localConfiguration;
 	}
 
-	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("getCustomAttributes", null); //$NON-NLS-1$
-		return soapClient.getCustomAttributes(monitor);
-	}
-
 	/**
 	 * Returns editable attributes for <code>issueKey</code>
 	 * 
@@ -377,6 +374,8 @@ public class JiraClient {
 	 */
 	public IssueField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getEditableAttributes", null); //$NON-NLS-1$
+		// TODO rest https://studio.atlassian.com/browse/JRJC-105
+
 		return soapClient.getEditableAttributes(issueKey, monitor);
 	}
 

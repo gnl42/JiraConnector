@@ -23,8 +23,10 @@ import org.joda.time.DateTime;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -42,6 +44,7 @@ import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
@@ -462,5 +465,31 @@ public class JiraRestConverter {
 		serverInfoOut.setVersion(serverInfo.getVersion());
 
 		return serverInfoOut;
+	}
+
+	public static JiraAction[] convertTransitions(Iterable<Transition> transitions) {
+		List<JiraAction> actions = new ArrayList<JiraAction>();
+
+		for (Transition transition : transitions) {
+			actions.add(convert(transition));
+		}
+
+		return actions.toArray(new JiraAction[actions.size()]);
+	}
+
+	private static JiraAction convert(Transition transition) {
+		JiraAction action = new JiraAction(Integer.toString(transition.getId()), transition.getName());
+
+		for (com.atlassian.jira.rest.client.domain.Transition.Field field : transition.getFields()) {
+
+			// TODO rest set field name once available https://studio.atlassian.com/browse/JRJC-113
+			IssueField outField = new IssueField(field.getId(), field.getId());
+			outField.setType(field.getType());
+			outField.setRequired(field.isRequired());
+
+			action.getFields().add(outField);
+		}
+
+		return action;
 	}
 }
