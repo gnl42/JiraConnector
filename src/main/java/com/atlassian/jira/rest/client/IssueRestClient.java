@@ -277,6 +277,20 @@ public interface IssueRestClient {
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable, ProgressMonitor)}
 	 */
 	public enum Expandos {
-		CHANGELOG, SCHEMA, NAMES, TRANSITIONS
-	}
+		CHANGELOG("changelog"),
+        SCHEMA("schema"),
+        NAMES("names"),
+        TRANSITIONS("transitions"),
+        RENDERED_FIELDS("renderedFields");
+
+        private final String fieldName;
+
+        private Expandos(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+    }
 }

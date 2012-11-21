@@ -326,7 +326,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
 				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
 				transitionsUri, issueLinks,
-				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
+				votes, worklogs, watchers, expandos, subtasks, changelog, labels, s);
 	}
 
 	private URI parseTransisionsUri(String transitionsUriString, URI selfUri) {

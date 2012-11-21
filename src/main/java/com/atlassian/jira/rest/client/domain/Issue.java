@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.ExpandableResource;
 import com.google.common.base.Objects;
+import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
@@ -41,7 +42,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels,
+            @Nullable JSONObject rawObject) {
 		super(self, key, id);
 		this.summary = summary;
 		this.project = project;
@@ -71,7 +73,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.subtasks = subtasks;
 		this.changelog = changelog;
 		this.labels = labels;
-	}
+        this.rawObject = rawObject;
+    }
 
 	private final BasicStatus status;
 	private BasicIssueType issueType;
@@ -115,8 +118,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	@Nullable
 	private final Collection<ChangelogGroup> changelog;
 	private final Set<String> labels;
+    @Nullable
+    private final JSONObject rawObject;
 
-	public BasicStatus getStatus() {
+    public BasicStatus getStatus() {
 		return status;
 	}
 
@@ -334,7 +339,12 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return description;
 	}
 
-	@Override
+    @Nullable
+    public JSONObject getRawObject() {
+        return rawObject;
+    }
+
+    @Override
 	public String toString() {
 		return Objects.toStringHelper(this).addValue(super.toString()).
 				add("project", project).

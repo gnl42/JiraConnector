@@ -93,7 +93,7 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 	private static final Function<Expandos, String> EXPANDO_TO_PARAM = new Function<Expandos, String>() {
 		@Override
 		public String apply(Expandos from) {
-			return from.name().toLowerCase();
+			return from.getFieldName();
 		}
 	};
 	private final SessionRestClient sessionRestClient;
