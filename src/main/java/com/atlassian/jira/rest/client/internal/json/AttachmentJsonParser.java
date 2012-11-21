@@ -38,6 +38,7 @@ public class AttachmentJsonParser implements JsonObjectParser<Attachment> {
 		final String mimeType = json.getString("mimeType");
 		final URI contentURI = JsonParseUtil.parseURI(json.getString("content"));
 		final URI thumbnailURI = JsonParseUtil.parseOptionalURI(json, THUMBNAIL);
-		return new Attachment(selfUri, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		return new Attachment(selfUri, id, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);
 	}
 }

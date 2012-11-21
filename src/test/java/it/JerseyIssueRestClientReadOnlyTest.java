@@ -139,7 +139,7 @@ public class JerseyIssueRestClientReadOnlyTest extends AbstractJerseyRestClientT
 		assertNotNull(items);
 		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
 				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? UriBuilder.fromUri(jiraUri).path("/rest/api/2/").build()
-						: jiraRestRootUri, "/attachment/10040"),
+						: jiraRestRootUri, "/attachment/10040"), null,
 				"dla Paw\u0142a.txt", IntegrationTestUtil.USER_ADMIN, dateTime, 643, "text/plain",
 				IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 

@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.AddressableEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -28,8 +29,10 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class Attachment implements AddressableEntity {
+public class Attachment implements AddressableEntity, IdentifiableEntity<Long> {
     private final URI self;
+    @Nullable
+    private final Long id;
     private final String filename;
     private final BasicUser author;
     private final DateTime creationDate;
@@ -40,8 +43,10 @@ public class Attachment implements AddressableEntity {
     @Nullable
     private final URI thumbnailUri;
 
-    public Attachment(URI self, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
+    public Attachment(
+            URI self, @Nullable Long id, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
         this.self = self;
+        this.id = id;
         this.filename = filename;
         this.author = author;
         this.creationDate = creationDate;
@@ -90,9 +95,16 @@ public class Attachment implements AddressableEntity {
     }
 
     @Override
+    @Nullable
+    public Long getId() {
+        return id;
+    }
+
+    @Override
     public String toString() {
         return Objects.toStringHelper(this).
                 add("self", self).
+                add("id", id).
                 add("filename", filename).
                 add("author", author).
                 add("creationDate", creationDate).
@@ -108,6 +120,7 @@ public class Attachment implements AddressableEntity {
         if (obj instanceof Attachment) {
             Attachment that = (Attachment) obj;
             return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.id, that.id)
                     && Objects.equal(this.filename, that.filename)
                     && Objects.equal(this.author, that.author)
                     && this.creationDate.isEqual(that.creationDate)
@@ -121,6 +134,6 @@ public class Attachment implements AddressableEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
+        return Objects.hashCode(self, id, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
     }
 }
