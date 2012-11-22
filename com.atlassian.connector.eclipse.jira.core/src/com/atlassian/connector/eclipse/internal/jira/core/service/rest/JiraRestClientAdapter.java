@@ -19,8 +19,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
@@ -38,6 +41,9 @@ import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 
 public class JiraRestClientAdapter {
@@ -183,9 +189,38 @@ public class JiraRestClientAdapter {
 		return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo(new NullProgressMonitor()));
 	}
 
-	public JiraAction[] getTransitions(String issueKey) {
+	public Iterable<JiraAction> getTransitions(String issueKey) {
 
 		return JiraRestConverter.convertTransitions(restClient.getIssueClient().getTransitions(getIssue(issueKey),
 				new NullProgressMonitor()));
+	}
+
+	public void transitionIssue(JiraIssue issue, String transitionKey, String comment,
+			Iterable<IssueField> transitionFields) throws JiraException {
+
+		Comment outComment = (StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment));
+
+		List<FieldInput> fields = new ArrayList<FieldInput>();
+		for (IssueField transitionField : transitionFields) {
+			if (transitionField.isRequired()) {
+				String[] values = issue.getFieldValues(transitionField.getName());
+				if (values.length > 0) {
+					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with("name", //$NON-NLS-1$
+							values[0])));
+				} else {
+					throw new JiraException(NLS.bind("Field {0} is required for transition {1}",
+							transitionField.getName(), transitionKey));
+				}
+			}
+		}
+
+//		fields.add(new FieldInput("resolution", ComplexIssueInputFieldValue.with("name", "Duplicate")));
+//		fields.add(new FieldInput("resolution", new com.atlassian.jira.rest.client.domain.Resolution(null, "Duplicate",
+//				null)));
+
+		TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
+
+		restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput, new NullProgressMonitor());
+
 	}
 }

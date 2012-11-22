@@ -90,7 +90,7 @@ public class JiraRestConverter {
 		outResolution.setName(resolution.getName());
 		outResolution.setDescription(resolution.getDescription());
 		// TODO change to real id if available
-		outResolution.setId(Integer.toString((resolution.getSelf().toString().hashCode())));
+		outResolution.setId(resolution.getName());
 
 		return outResolution;
 	}
@@ -467,14 +467,14 @@ public class JiraRestConverter {
 		return serverInfoOut;
 	}
 
-	public static JiraAction[] convertTransitions(Iterable<Transition> transitions) {
+	public static Iterable<JiraAction> convertTransitions(Iterable<Transition> transitions) {
 		List<JiraAction> actions = new ArrayList<JiraAction>();
 
 		for (Transition transition : transitions) {
 			actions.add(convert(transition));
 		}
 
-		return actions.toArray(new JiraAction[actions.size()]);
+		return actions;
 	}
 
 	private static JiraAction convert(Transition transition) {

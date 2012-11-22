@@ -117,7 +117,7 @@ public class JiraTestUtil {
 		refreshDetails(server);
 
 		ArrayList<String> names = new ArrayList<String>();
-		JiraAction[] actions = server.getAvailableActions(issueKey, null);
+		Iterable<JiraAction> actions = server.getAvailableActions(issueKey, null);
 		for (JiraAction action : actions) {
 			names.add(action.getName());
 			if (action.getName().toLowerCase().startsWith(name)) {

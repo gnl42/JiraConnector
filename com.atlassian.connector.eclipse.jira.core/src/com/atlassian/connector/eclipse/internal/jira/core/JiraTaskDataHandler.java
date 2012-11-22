@@ -999,7 +999,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 //			attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, attributeId);
 //		}
 
-		JiraAction[] availableActions = client.getAvailableActions(issue.getKey(), monitor);
+		Iterable<JiraAction> availableActions = client.getAvailableActions(issue.getKey(), monitor);
 		if (availableActions != null) {
 			for (JiraAction action : availableActions) {
 				attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + action.getId());
@@ -1113,7 +1113,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					// if only adv workflow do not do the standard workflow
 					if (!handled && changeIds.contains(TaskAttribute.OPERATION)) {
 						Set<String> anythingElse = new HashSet<String>(changeIds);
-						anythingElse.removeAll(Arrays.asList(TaskAttribute.OPERATION, TaskAttribute.COMMENT_NEW));
+						anythingElse.removeAll(Arrays.asList(TaskAttribute.OPERATION, TaskAttribute.COMMENT_NEW,
+								TaskAttribute.RESOLUTION));
 						if (anythingElse.size() == 0) {
 							// no more changes, so that's a adv workflow operation
 							client.advanceIssueWorkflow(issue, operationId, newComment, monitor);

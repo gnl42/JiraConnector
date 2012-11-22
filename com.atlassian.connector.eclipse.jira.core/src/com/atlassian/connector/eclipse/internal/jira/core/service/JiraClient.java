@@ -14,6 +14,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.service;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -150,12 +151,16 @@ public class JiraClient {
 	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("advanceIssueWorkflow", null); //$NON-NLS-1$
-		String[] fields = getActionFields(issue.getKey(), actionKey, monitor);
-		soapClient.progressWorkflowAction(issue, actionKey, fields, monitor);
 
-		if (!StringUtils.isEmpty(comment)) {
-			addCommentToIssue(issue.getKey(), comment, monitor);
-		}
+		Iterable<IssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
+
+		restClient.transitionIssue(issue, actionKey, comment, fields);
+
+//		soapClient.progressWorkflowAction(issue, actionKey, fields, monitor);
+//
+//		if (!StringUtils.isEmpty(comment)) {
+//			addCommentToIssue(issue.getKey(), comment, monitor);
+//		}
 	}
 
 	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
@@ -306,10 +311,21 @@ public class JiraClient {
 	 *            Unique id for action to get fields for
 	 * @return array of field ids for given actionId
 	 */
-	public String[] getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
+	public Iterable<IssueField> getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getActionFields", null); //$NON-NLS-1$
-		return soapClient.getActionFields(issueKey, actionId, monitor);
+
+		Iterable<JiraAction> actions = getAvailableActions(issueKey, monitor);
+
+		for (JiraAction action : actions) {
+			if (action.getId().equals(actionId)) {
+				return action.getFields();
+			}
+		}
+
+		return Collections.emptyList();
+
+//		return soapClient.getActionFields(issueKey, actionId, monitor);
 	}
 
 	/**
@@ -319,7 +335,8 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
-	public JiraAction[] getAvailableActions(final String issueKey, IProgressMonitor monitor) throws JiraException {
+	public Iterable<JiraAction> getAvailableActions(final String issueKey, IProgressMonitor monitor)
+			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableActions", null); //$NON-NLS-1$
 
 		return restClient.getTransitions(issueKey);

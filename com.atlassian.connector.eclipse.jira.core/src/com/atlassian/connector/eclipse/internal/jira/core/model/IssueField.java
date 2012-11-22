@@ -55,4 +55,8 @@ public class IssueField implements Serializable {
 		this.required = required;
 	}
 
+	public boolean isRequired() {
+		return this.required;
+	}
+
 }
