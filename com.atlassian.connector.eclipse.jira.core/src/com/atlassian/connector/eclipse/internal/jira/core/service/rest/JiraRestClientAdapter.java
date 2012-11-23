@@ -43,6 +43,7 @@ import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 
@@ -221,6 +222,21 @@ public class JiraRestClientAdapter {
 		TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
 
 		restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput, new NullProgressMonitor());
+
+	}
+
+	/**
+	 * @param issue
+	 * @return issue key
+	 */
+	public String createIssue(JiraIssue issue) {
+
+		IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
+				Long.parseLong(issue.getType().getId()), issue.getSummary());
+
+		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()));
+
+		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 
 	}
 }

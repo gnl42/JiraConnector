@@ -238,7 +238,10 @@ public class JiraClient {
 				issue.getProject().setKey(project.getKey());
 			}
 		}
-		String issueKey = soapClient.createIssue(issue, monitor);
+
+		String issueKey = restClient.createIssue(issue);
+
+//		String issueKey = soapClient.createIssue(issue, monitor);
 		//String issueKey = webClient.createIssue(issue, monitor);
 		return getIssueByKey(issueKey, monitor);
 	}
@@ -426,6 +429,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByUrl", null); //$NON-NLS-1$
 
 		try {
+			// TODO rest issue due date field is not displayed if empty
 			JiraIssue issue = restClient.getIssueById(issueId, monitor);
 
 			return issue;
@@ -691,7 +695,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableSecurityLevels", null); //$NON-NLS-1$
 		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 
-		// TODO rest there is no list of security levels in REST at all
+		// TODO rest there is no list of security levels in REST at all, they should be available in edit meta
 	}
 
 	public void addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {

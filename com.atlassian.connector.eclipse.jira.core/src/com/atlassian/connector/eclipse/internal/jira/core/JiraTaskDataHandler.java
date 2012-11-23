@@ -1402,7 +1402,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (affectsVersionAttr != null) {
 			ArrayList<Version> affectsVersions = new ArrayList<Version>();
 			for (String value : affectsVersionAttr.getValues()) {
-				affectsVersions.add(new Version(value));
+				Version version = new Version(value);
+				version.setName(affectsVersionAttr.getOption(value));
+				affectsVersions.add(version);
 			}
 			issue.setReportedVersions(affectsVersions.toArray(new Version[affectsVersions.size()]));
 		}

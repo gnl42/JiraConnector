@@ -492,4 +492,20 @@ public class JiraRestConverter {
 
 		return action;
 	}
+
+	public static Iterable<com.atlassian.jira.rest.client.domain.Version> convert(Version[] reportedVersions) {
+		List<com.atlassian.jira.rest.client.domain.Version> outReportedVersions = new ArrayList<com.atlassian.jira.rest.client.domain.Version>();
+
+		for (Version version : reportedVersions) {
+			outReportedVersions.add(convert(version));
+		}
+
+		return outReportedVersions;
+	}
+
+	private static com.atlassian.jira.rest.client.domain.Version convert(Version version) {
+		com.atlassian.jira.rest.client.domain.Version outVersion = new com.atlassian.jira.rest.client.domain.Version(
+				null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
+		return outVersion;
+	}
 }
