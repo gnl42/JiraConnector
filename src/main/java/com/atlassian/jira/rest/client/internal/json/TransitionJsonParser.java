@@ -39,7 +39,7 @@ public class TransitionJsonParser {
             final String name = json.getString("id");
             final boolean isRequired = json.getBoolean("required");
             final String type = json.getString("type");
-            return new Transition.Field(name, isRequired, type);
+            return new Transition.Field(name, isRequired, type, null);
         }
     }
 }

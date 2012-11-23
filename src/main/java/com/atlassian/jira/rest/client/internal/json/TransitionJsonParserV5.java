@@ -44,7 +44,8 @@ public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
         public Transition.Field parse(JSONObject json, final String id) throws JSONException {
             final boolean isRequired = json.getBoolean("required");
             final String type = json.getJSONObject("schema").getString("type");
-            return new Transition.Field(id, isRequired, type);
+            final String name = JsonParseUtil.getOptionalString(json, "name");
+            return new Transition.Field(id, isRequired, type, name);
         }
     }
 }

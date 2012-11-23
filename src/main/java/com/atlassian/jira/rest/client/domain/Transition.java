@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.domain;
 import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -80,11 +81,14 @@ public class Transition implements NamedEntity{
         private final String id;
         private final boolean isRequired;
         private final String type;
+        @Nullable
+        private final String name;
 
-        public Field(String id, boolean isRequired, String type) {
+        public Field(String id, boolean isRequired, String type, @Nullable String name) {
             this.id = id;
             this.isRequired = isRequired;
             this.type = type;
+            this.name = name;
         }
 
         public String getId() {
@@ -97,6 +101,11 @@ public class Transition implements NamedEntity{
 
         public String getType() {
             return type;
+        }
+
+        @Nullable
+        public String getName() {
+            return name;
         }
 
         @Override
