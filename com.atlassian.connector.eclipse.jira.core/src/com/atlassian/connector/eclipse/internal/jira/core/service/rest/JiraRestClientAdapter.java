@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.joda.time.DateTime;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
@@ -38,6 +39,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCach
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
@@ -239,6 +241,13 @@ public class JiraRestClientAdapter {
 				.setAssignee(new BasicUser(null, issue.getAssignee(), null))
 				.setComponents(JiraRestConverter.convert(issue.getComponents()))
 				.setDescription(issue.getDescription());
+
+		if (issue.getDue() != null) {
+			issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
+		}
+
+		issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions())).setPriority(
+				new BasicPriority(null, Long.valueOf(issue.getPriority().getId()), issue.getPriority().getName()));
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 

@@ -113,8 +113,7 @@ public class JiraRestConverter {
 		outPriority.setDescription(priority.getDescription());
 		outPriority.setColour(priority.getStatusColor());
 		outPriority.setIcon(priority.getIconUri().toString());
-		// TODO set real id if avaialble
-		outPriority.setId(Integer.toString((priority.getSelf().toString().hashCode())));
+		outPriority.setId(priority.getId().toString());
 		outPriority.setSelf(priority.getSelf());
 
 		return outPriority;

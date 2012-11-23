@@ -1394,7 +1394,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (fixVersionAttr != null) {
 			ArrayList<Version> fixVersions = new ArrayList<Version>();
 			for (String value : fixVersionAttr.getValues()) {
-				fixVersions.add(new Version(value));
+				Version version = new Version(value);
+				version.setName(fixVersionAttr.getOption(value));
+				fixVersions.add(version);
 			}
 			issue.setFixVersions(fixVersions.toArray(new Version[fixVersions.size()]));
 		}
