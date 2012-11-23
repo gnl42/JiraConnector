@@ -252,6 +252,8 @@ public class JiraRestClientAdapter {
 
 		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
 
+		// TODO rest: allow to set security level
+
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 
 	}

@@ -430,6 +430,7 @@ public class JiraClient {
 
 		try {
 			// TODO rest issue due date field is not displayed if empty
+			// TODO rest retrieve/show custom fields
 			JiraIssue issue = restClient.getIssueById(issueId, monitor);
 
 			return issue;
