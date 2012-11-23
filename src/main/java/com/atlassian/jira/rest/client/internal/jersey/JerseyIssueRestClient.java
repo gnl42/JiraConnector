@@ -47,11 +47,7 @@ import com.atlassian.jira.rest.client.internal.json.TransitionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.TransitionJsonParserV5;
 import com.atlassian.jira.rest.client.internal.json.VotesJsonParser;
 import com.atlassian.jira.rest.client.internal.json.WatchersJsonParserBuilder;
-import com.atlassian.jira.rest.client.internal.json.gen.CommentJsonGenerator;
-import com.atlassian.jira.rest.client.internal.json.gen.ComplexIssueInputFieldValueJsonGenerator;
-import com.atlassian.jira.rest.client.internal.json.gen.IssueInputJsonGenerator;
-import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
-import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
+import com.atlassian.jira.rest.client.internal.json.gen.*;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -228,8 +224,20 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 		transition(issue.getTransitionsUri(), transitionInput, progressMonitor);
 	}
 
+    @Override
+    public void update(final Issue issue, final Iterable<FieldInput> fields, ProgressMonitor progressMonitor) {
+        invoke(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                JSONObject jsonObject = new IssueUpdateJsonGenerator().generate(fields);
+                final  WebResource issueResource = client.resource(issue.getSelf());
+                issueResource.put(jsonObject);
+                return null;
+            }
+        });
+    }
 
-	@Override
+    @Override
 	public void vote(final URI votesUri, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override

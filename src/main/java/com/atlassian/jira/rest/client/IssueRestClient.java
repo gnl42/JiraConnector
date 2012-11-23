@@ -23,11 +23,7 @@ import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Votes;
 import com.atlassian.jira.rest.client.domain.Watchers;
-import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
-import com.atlassian.jira.rest.client.domain.input.WorklogInput;
+import com.atlassian.jira.rest.client.domain.input.*;
 import com.google.common.annotations.Beta;
 
 import javax.annotation.Nullable;
@@ -150,7 +146,9 @@ public interface IssueRestClient {
 	 */
 	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
-	/**
+    void update(Issue issue, Iterable<FieldInput> fields, ProgressMonitor progressMonitor);
+
+    /**
 	 * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.
 	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
 	 * @param progressMonitor progress monitor
@@ -281,7 +279,8 @@ public interface IssueRestClient {
         SCHEMA("schema"),
         NAMES("names"),
         TRANSITIONS("transitions"),
-        RENDERED_FIELDS("renderedFields");
+        RENDERED_FIELDS("renderedFields"),
+        EDITMETA("editmeta");
 
         private final String fieldName;
 
