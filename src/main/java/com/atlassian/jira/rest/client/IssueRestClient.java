@@ -142,10 +142,17 @@ public interface IssueRestClient {
 	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
 	 * @param progressMonitor progress monitor
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
 	 */
 	void transition(Issue issue, TransitionInput transitionInput, ProgressMonitor progressMonitor);
 
+    /**
+     * Performs selected transition on selected issue.
+     * @since 1.1 client 5.0 server
+     * @param issue selected issue
+     * @param fields list of fields to change
+     * @param progressMonitor progress monitor
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     */
     void update(Issue issue, Iterable<FieldInput> fields, ProgressMonitor progressMonitor);
 
     /**

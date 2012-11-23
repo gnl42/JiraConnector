@@ -14,14 +14,14 @@ public class IssueUpdateJsonGenerator implements JsonGenerator<Iterable<FieldInp
 
     @Override
     public JSONObject generate(Iterable<FieldInput> fieldInputs) throws JSONException {
-        final JSONObject jsonObject = new JSONObject();
         final JSONObject fields = new JSONObject();
-        for (final FieldInput field : fieldInputs) {
-            if (field.getValue() != null) {
-                fields.put(field.getId(), generator.generateFieldValueForJson(field.getValue()));
+        if (fieldInputs != null) {
+            for (final FieldInput field : fieldInputs) {
+                if (field.getValue() != null) {
+                    fields.put(field.getId(), generator.generateFieldValueForJson(field.getValue()));
+                }
             }
         }
-        jsonObject.put("fields", fields);
-        return jsonObject;
+        return fields;
     }
 }

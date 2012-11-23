@@ -24,14 +24,7 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.Attachment;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.IssueLinkType;
-import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
@@ -40,6 +33,7 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -70,6 +64,7 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
@@ -208,7 +203,24 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		assertInvalidCommentInput(comment, "Group: some-fake-group does not exist.");
 	}
 
-	private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    @Test
+    public void testUpdateWithChangedSummary() throws Exception {
+        final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
+        String orgSummary = issue.getSummary();
+        client.getIssueClient().update(issue, ImmutableList.of(
+            new FieldInput(IssueFieldId.SUMMARY_FIELD, "fooo")
+        ), pm);
+        Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);
+        assertEquals("fooo", changedIssue.getSummary());
+        client.getIssueClient().update(issue, ImmutableList.of(
+            new FieldInput(IssueFieldId.SUMMARY_FIELD, orgSummary)
+        ), pm);
+        changedIssue = client.getIssueClient().getIssue("TST-1", pm);
+        assertEquals(orgSummary, changedIssue.getSummary());
+    }
+
+    private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
 		final Issue issue = client.getIssueClient().getIssue("TST-1", pm);
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue, pm);
 		final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");

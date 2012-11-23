@@ -201,14 +201,8 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
 								.generate(transitionInput.getComment()));
 					}
 				}
-				JSONObject fieldsJs = new JSONObject();
 				final Iterable<FieldInput> fields = transitionInput.getFields();
-				final ComplexIssueInputFieldValueJsonGenerator fieldValueGenerator = new ComplexIssueInputFieldValueJsonGenerator();
-				if (fields.iterator().hasNext()) {
-					for (FieldInput fieldInput : fields) {
-						fieldsJs.put(fieldInput.getId(), fieldValueGenerator.generateFieldValueForJson(fieldInput.getValue()));
-					}
-				}
+                JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
 				if (fieldsJs.keys().hasNext()) {
 					jsonObject.put("fields", fieldsJs);
 				}
@@ -229,8 +223,12 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
         invoke(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                JSONObject jsonObject = new IssueUpdateJsonGenerator().generate(fields);
+                JSONObject jsonObject = new JSONObject();
                 final  WebResource issueResource = client.resource(issue.getSelf());
+                JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
+                if (fieldsJs.keys().hasNext()) {
+                    jsonObject.put("fields", fieldsJs);
+                }
                 issueResource.put(jsonObject);
                 return null;
             }
