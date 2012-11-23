@@ -246,8 +246,11 @@ public class JiraRestClientAdapter {
 			issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
 		}
 
-		issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions())).setPriority(
-				new BasicPriority(null, Long.valueOf(issue.getPriority().getId()), issue.getPriority().getName()));
+		issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
+		issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()),
+				issue.getPriority().getName()));
+
+		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 

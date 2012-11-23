@@ -198,6 +198,8 @@ public class JiraRestConverter {
 		Object env = issue.getField(FIELD_ENVIRONMENT_ID).getValue();
 		if (env != null) {
 			jiraIssue.setEnvironment(env.toString());
+		} else {
+			jiraIssue.setEnvironment(""); //$NON-NLS-1$
 		}
 
 		jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
