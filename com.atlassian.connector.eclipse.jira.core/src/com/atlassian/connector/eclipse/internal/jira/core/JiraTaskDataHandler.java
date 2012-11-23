@@ -1383,7 +1383,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (componentsAttribute != null) {
 			ArrayList<Component> components = new ArrayList<Component>();
 			for (String value : componentsAttribute.getValues()) {
-				components.add(new Component(value));
+				Component component = new Component(value);
+				component.setName(componentsAttribute.getOption(value));
+				components.add(component);
 			}
 			issue.setComponents(components.toArray(new Component[components.size()]));
 		}

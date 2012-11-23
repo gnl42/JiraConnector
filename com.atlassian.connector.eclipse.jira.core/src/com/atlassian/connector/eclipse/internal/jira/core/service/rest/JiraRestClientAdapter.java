@@ -39,6 +39,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
@@ -234,7 +235,10 @@ public class JiraRestClientAdapter {
 		IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
 				Long.parseLong(issue.getType().getId()), issue.getSummary());
 
-		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()));
+		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()))
+				.setAssignee(new BasicUser(null, issue.getAssignee(), null))
+				.setComponents(JiraRestConverter.convert(issue.getComponents()))
+				.setDescription(issue.getDescription());
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 

@@ -42,6 +42,7 @@ import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
@@ -135,8 +136,13 @@ public class JiraRestConverter {
 		// TODO rest: do we need to use cache here? can't we create priority and other objects from issue?
 		jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
 		jiraIssue.setStatus(cache.getStatusByName(issue.getStatus().getName()));
-		jiraIssue.setAssignee(issue.getAssignee().getName());
-		jiraIssue.setAssigneeName(issue.getAssignee().getDisplayName());
+
+		BasicUser assignee = issue.getAssignee();
+		if (assignee != null) {
+			jiraIssue.setAssignee(assignee.getName());
+			jiraIssue.setAssigneeName(assignee.getDisplayName());
+		}
+
 		jiraIssue.setReporter(issue.getReporter().getName());
 		jiraIssue.setReporterName(issue.getReporter().getDisplayName());
 		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionByName(issue.getResolution()
@@ -507,5 +513,19 @@ public class JiraRestConverter {
 		com.atlassian.jira.rest.client.domain.Version outVersion = new com.atlassian.jira.rest.client.domain.Version(
 				null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
 		return outVersion;
+	}
+
+	public static Iterable<BasicComponent> convert(Component[] components) {
+		List<BasicComponent> outComponents = new ArrayList<BasicComponent>();
+
+		for (Component component : components) {
+			outComponents.add(convert(component));
+		}
+
+		return outComponents;
+	}
+
+	private static BasicComponent convert(Component component) {
+		return new BasicComponent(null, Long.valueOf(component.getId()), component.getName(), null);
 	}
 }
