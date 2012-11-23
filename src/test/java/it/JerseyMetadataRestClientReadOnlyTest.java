@@ -100,7 +100,7 @@ public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClie
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf(), pm);
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
-		assertThat(status.getIconUrl().toString(), anyOf(endsWith("/status_open.gif"), endsWith("/open.gif")));
+		assertThat(status.getIconUrl().toString(), anyOf(endsWith("/status_open.gif"), endsWith("/open.png")));
 		assertEquals("Open", status.getName());
 	}
 
