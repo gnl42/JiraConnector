@@ -128,7 +128,6 @@ public class JiraRestConverter {
 		jiraIssue.setSelf(issue.getSelf());
 		jiraIssue.setKey(issue.getKey());
 		jiraIssue.setSummary(issue.getSummary());
-		// TODO rest: description html vs text vs wiki markap
 		jiraIssue.setDescription(issue.getDescription());
 //		jiraIssue.setParentId();
 //		jiraIssue.setParentKey();
@@ -208,6 +207,8 @@ public class JiraRestConverter {
 		DateTime dueDate = issue.getDueDate();
 		if (dueDate != null) {
 			jiraIssue.setDue(dueDate.toDate());
+		} else {
+			jiraIssue.setDue(null);
 		}
 
 		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));

@@ -429,7 +429,6 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByUrl", null); //$NON-NLS-1$
 
 		try {
-			// TODO rest issue due date field is not displayed if empty
 			// TODO rest retrieve/show custom fields
 			JiraIssue issue = restClient.getIssueById(issueId, monitor);
 
