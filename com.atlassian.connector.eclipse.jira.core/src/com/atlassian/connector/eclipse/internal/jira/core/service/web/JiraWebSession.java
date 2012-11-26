@@ -46,6 +46,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.commons.net.WebUtil;
+import org.xml.sax.SAXException;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
@@ -135,6 +136,16 @@ public class JiraWebSession {
 			} catch (IOException e) {
 				throw new JiraException(e);
 			} catch (JiraException e) {
+				// in case of XML parsing failure display message in error log so that user can track this
+				if (isXmlParseFailure(e)) {
+					final String errorMessage = "Unable to parse XML reponse from JIRA. Base URL: " + baseUrl //$NON-NLS-1$
+							+ " call: " + callback //$NON-NLS-1$
+							+ (e.getCause() == null ? "" : " caused by: " + e.getCause().getMessage()); //$NON-NLS-1$//$NON-NLS-2$
+// XXX Uncomment when NPE is solved					
+//					JiraCorePlugin.getDefault().getLog()
+//					StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, errorMessage, e));
+				}
+
 				//if an exception occurs because of a missing login
 				if (isAuthenticationFailure(e)) {
 					//rinse and repeat with login
@@ -162,6 +173,10 @@ public class JiraWebSession {
 			throw new JiraException(e);
 		}
 		return false;
+	}
+
+	private boolean isXmlParseFailure(JiraException e) {
+		return (e.getCause() != null && e.getCause() instanceof SAXException);
 	}
 
 	private boolean isAuthenticationFailure(JiraException e) {
@@ -297,7 +312,7 @@ public class JiraWebSession {
 					tracker.log("Redirect to insecure location during login to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 					insecureRedirect = true;
 				}
-				
+
 				try {
 					URL base = new URL(baseUrl);
 					URL dest = new URL(url);

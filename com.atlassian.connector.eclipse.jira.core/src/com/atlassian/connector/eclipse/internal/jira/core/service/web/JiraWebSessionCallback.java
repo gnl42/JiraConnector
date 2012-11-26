@@ -97,4 +97,8 @@ public abstract class JiraWebSessionCallback {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "WEB[" + hostConfiguration.toString() + " baseUrl=" + baseUrl + " followRedirects=" + followRedirects + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
 }

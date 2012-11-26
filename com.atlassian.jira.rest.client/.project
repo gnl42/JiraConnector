@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.atlassian.connector.eclipse.jira.restclient</name>
+	<name>com.atlassian.jira.rest.client</name>
 	<comment></comment>
 	<projects>
 	</projects>
