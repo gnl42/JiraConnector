@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guava
 Bundle-SymbolicName: com.google.guava
-Bundle-Version: 1.0.0
+Bundle-Version: 13.0.0
 Bundle-ClassPath: guava-13.0.jar
-Bundle-Vendor: Atlassian
+Bundle-Vendor: Google
 Export-Package: com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
