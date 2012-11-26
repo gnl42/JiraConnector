@@ -160,4 +160,13 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		try {
+			return "RSS[" + super.toString() + " rssUrl=" + getRssUrl("") + "]"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		} catch (JiraException ex) {
+			return "RSS[" + super.toString() + " rssUrl=(exception thrown" + ex.getMessage() + ")]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
+	}
 }
