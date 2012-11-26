@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <associateSites>
-<associateSite label="Mylyn for Eclipse 3.6 and 3.7" url="http://download.eclipse.org/mylyn/releases/3.6"/>
+<associateSite label="Mylyn 3.8" url="http://archive.eclipse.org/mylyn/drops/3.8.0/v20120612-0600"/>
 <!--  <associateSite label="Mylyn Extras" url="http://download.eclipse.org/tools/mylyn/update/extras"/> -->
 <!-- <associateSite label="Subclipse" url="http://subclipse.tigris.org/update_1.6.x"/> -->
 <!-- <associateSite label="Subversive" url="http://download.eclipse.org/technology/subversive/0.7/update-site/"/> -->
-<associateSite label="SWTBot" url="http://download.eclipse.org/technology/swtbot/galileo/dev-build/update-site"/>
+<!-- <associateSite label="SWTBot" url="http://download.eclipse.org/technology/swtbot/galileo/dev-build/update-site"/> -->
 </associateSites>
