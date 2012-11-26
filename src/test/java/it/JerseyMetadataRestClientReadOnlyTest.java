@@ -81,7 +81,11 @@ public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClie
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
-		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
+//		assertTrue(issueType.getIconUri().toString().startsWith(jiraUri.toString()));
+		assertThat(issueType.getIconUri().toString(), anyOf(
+				endsWith("bug.gif"),
+				endsWith("issuetypes/bug.png")
+		));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_4_3)
@@ -100,8 +104,12 @@ public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClie
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1", pm).getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf(), pm);
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
-		assertThat(status.getIconUrl().toString(), anyOf(endsWith("/status_open.gif"), endsWith("/open.png")));
 		assertEquals("Open", status.getName());
+//		assertTrue(status.getIconUrl().toString().startsWith(jiraUri.toString()));
+		assertThat(status.getIconUrl().toString(), anyOf(
+				endsWith("status_open.gif"),
+				endsWith("statuses/open.png")
+		));
 	}
 
 	@Test
@@ -129,9 +137,9 @@ public class JerseyMetadataRestClientReadOnlyTest extends AbstractJerseyRestClie
 		assertEquals(expectedId, priority.getId());
 		assertTrue(priority.getIconUri().toString().startsWith(jiraUri.toString()));
 		assertThat(priority.getIconUri().toString(), anyOf(
-				endsWith("/images/icons/priority_major.gif"),
-				endsWith("images/icons/priorities/major.png")));
-
+				endsWith("priority_major.gif"),
+				endsWith("priorities/major.png")
+		));
 	}
 
 	@Test
