@@ -74,12 +74,18 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 						throw new JiraRedirectException();
 					}
 					String url = locationHeader.getValue();
-					if (!url.startsWith(baseUrl + "/browse/") && !url.startsWith(baseUrl + "/si/jira.issueviews:issue-xml/")) { //$NON-NLS-1$ //$NON-NLS-2$
+					if (!url.startsWith(baseUrl + "/browse/") //$NON-NLS-1$
+							&& !url.startsWith(baseUrl + "/si/jira.issueviews:issue-xml/") //$NON-NLS-1$
+							&& !url.startsWith(baseUrl + "/sr/jira.issueviews:searchrequest-xml/")) { //$NON-NLS-1$
 						throw new JiraRedirectException(url);
 					}
 
-					// request XML for single result
-					rssUrl = url + "?decorator=none&view=rss"; //$NON-NLS-1$
+					rssUrl = url;
+
+					if (!url.startsWith(baseUrl + "/sr/jira.issueviews:searchrequest-xml/")) {//$NON-NLS-1$
+						// request XML for single result
+						rssUrl += "?decorator=none&view=rss"; //$NON-NLS-1$
+					}
 					continue;
 				} else if (code != HttpStatus.SC_OK) {
 					StringBuilder sb = new StringBuilder("Unexpected result code "); //$NON-NLS-1$
