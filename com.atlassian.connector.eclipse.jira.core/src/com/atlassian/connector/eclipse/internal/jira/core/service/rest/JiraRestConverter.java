@@ -416,7 +416,7 @@ public class JiraRestConverter {
 		return outIssueType;
 	}
 
-	public static List<JiraIssue> convertIssues(Iterable<BasicIssue> issues) {
+	public static List<JiraIssue> convertIssues(Iterable<? extends BasicIssue> issues) {
 		List<JiraIssue> outIssues = new ArrayList<JiraIssue>();
 
 		for (BasicIssue issue : issues) {
