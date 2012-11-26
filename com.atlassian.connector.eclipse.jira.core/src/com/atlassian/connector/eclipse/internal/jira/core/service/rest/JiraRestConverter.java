@@ -168,8 +168,7 @@ public class JiraRestConverter {
 
 				jiraIssue.setSecurityLevel(securityLevel);
 			} catch (JSONException e) {
-				// TODO rest handle exception (log)
-				e.printStackTrace();
+				throw new JiraException(e);
 			}
 		}
 
