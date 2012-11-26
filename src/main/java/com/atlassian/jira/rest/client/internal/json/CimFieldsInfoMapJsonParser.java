@@ -49,6 +49,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		put("priority", new BasicPriorityJsonParser());
 		put("customFieldOption", new CustomFieldOptionJsonParser());
 		put("component", new BasicComponentJsonParser());
+        put("securitylevel", new SecurityLevelJsonParser());
 	}};
 
 	@Override
