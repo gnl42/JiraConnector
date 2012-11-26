@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Jira Rest Client
-Bundle-SymbolicName: com.atlassian.connector.eclipse.jira.restclient
-Bundle-Version: 1.0.0
-Bundle-ClassPath: jira-rest-java-client-1.0.jar
+Bundle-Name: Atlassian Jira Rest Java Client
+Bundle-SymbolicName: com.atlassian.jira.rest.client
+Bundle-Version: 1.1.0.2
+Bundle-ClassPath: jira-rest-java-client-1.1-m02-SNAPSHOT.jar
 Export-Package: com.atlassian.jira.rest.client,
  com.atlassian.jira.rest.client.auth,
  com.atlassian.jira.rest.client.domain,
