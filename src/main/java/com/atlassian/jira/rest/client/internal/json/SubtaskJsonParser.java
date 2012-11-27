@@ -16,10 +16,11 @@ public class SubtaskJsonParser implements JsonObjectParser<Subtask> {
 	public Subtask parse(JSONObject json) throws JSONException {
 		final URI issueUri = JsonParseUtil.parseURI(json.getString("self"));
 		final String issueKey = json.getString("key");
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final JSONObject fields = json.getJSONObject("fields");
 		final String summary = fields.getString("summary");
 		final Status status = statusJsonParser.parse(fields.getJSONObject("status"));
 		final IssueType issueType = issueTypeJsonParser.parse(fields.getJSONObject("issuetype"));
-		return new Subtask(issueKey, issueUri, summary, issueType, status);
+		return new Subtask(issueKey, id, issueUri, summary, issueType, status);
 	}
 }
