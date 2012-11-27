@@ -87,9 +87,9 @@ public class IssueJsonParserTest {
 
 		// issue links
 		Assert.assertThat(issue.getIssueLinks(), containsInAnyOrder(
-				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
+				new IssueLink("TST-1", null, toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
-				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
+				new IssueLink("TST-1", null, toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1"),
 						new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
 		));
 

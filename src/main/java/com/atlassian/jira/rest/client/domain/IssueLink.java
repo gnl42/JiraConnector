@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -27,12 +28,15 @@ import java.net.URI;
  */
 public class IssueLink {
 	private final String targetIssueKey;
-	private final URI targetIssueUri;
+    @Nullable
+    private final Long targetIssueId;
+    private final URI targetIssueUri;
 	private final IssueLinkType issueLinkType;
 
-	public IssueLink(String targetIssueKey, URI targetIssueUri, IssueLinkType issueLinkType) {
+	public IssueLink(String targetIssueKey, @Nullable Long targetIssueId, URI targetIssueUri, IssueLinkType issueLinkType) {
 		this.targetIssueKey = targetIssueKey;
-		this.targetIssueUri = targetIssueUri;
+        this.targetIssueId = targetIssueId;
+        this.targetIssueUri = targetIssueUri;
 		this.issueLinkType = issueLinkType;
 	}
 
@@ -40,7 +44,12 @@ public class IssueLink {
 		return targetIssueKey;
 	}
 
-	public URI getTargetIssueUri() {
+    @Nullable
+    public Long getTargetIssueId() {
+        return targetIssueId;
+    }
+
+    public URI getTargetIssueUri() {
 		return targetIssueUri;
 	}
 
@@ -52,6 +61,7 @@ public class IssueLink {
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("targetIssueKey", targetIssueKey).
+                add("targetIssueId", targetIssueId).
 				add("targetIssueUri", targetIssueUri).
 				add("issueLinkType", issueLinkType).
 				toString();
@@ -62,6 +72,7 @@ public class IssueLink {
 		if (obj instanceof IssueLink) {
 			IssueLink that = (IssueLink) obj;
 			return Objects.equal(this.targetIssueKey, that.targetIssueKey)
+                    && Objects.equal(this.targetIssueId, that.targetIssueId)
 					&& Objects.equal(this.targetIssueUri, that.targetIssueUri)
 					&& Objects.equal(this.issueLinkType, that.issueLinkType);
 		}
@@ -70,7 +81,7 @@ public class IssueLink {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(targetIssueKey, targetIssueUri, issueLinkType);
+		return Objects.hashCode(targetIssueKey, targetIssueId, targetIssueUri, issueLinkType);
 	}
 
 }
