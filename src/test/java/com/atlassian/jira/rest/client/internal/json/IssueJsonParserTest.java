@@ -123,7 +123,7 @@ public class IssueJsonParserTest {
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), TestConstants.USER1,
 				TestConstants.USER1, "a worklog viewable just by jira-users",
 				toDateTime("2010-08-17T16:53:15.848+0200"), toDateTime("2010-08-17T16:53:15.848+0200"),
-				toDateTime("2010-08-11T16:52:00.000+0200"), 3, Visibility.group("jira-users")), worklog);
+				toDateTime("2010-08-11T16:52:00.000+0200"), 3, null, Visibility.group("jira-users")), worklog);
 
 		final Worklog worklog3 = Iterables.get(worklogs, 3);
 		assertEquals("", worklog3.getComment());
@@ -270,7 +270,7 @@ public class IssueJsonParserTest {
         assertEquals(1, Iterables.size(worklogs));
         final Worklog worklog = Iterables.get(worklogs, 0);
         assertNull(worklog.getComment());
-        assertEquals(180, worklog.getMinutesSpent());
+        assertEquals(180, worklog.getMinutesSpent().intValue());
         assertEquals("Sample, User", worklog.getAuthor().getDisplayName());
 
     }

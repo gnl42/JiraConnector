@@ -37,12 +37,16 @@ public class Worklog {
 	private final DateTime creationDate;
 	private final DateTime updateDate;
 	private final DateTime startDate;
-	private final int minutesSpent;
-	@Nullable
+    @Nullable
+    private final Integer minutesSpent;
+    @Nullable
+    private final String timeSpent;
+    @Nullable
 	private final Visibility visibility;
 
 	public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-                   DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+                   DateTime creationDate, DateTime updateDate, DateTime startDate, @Nullable Integer minutesSpent,
+                   @Nullable String timeSpent, @Nullable Visibility visibility) {
 		this.self = self;
 		this.issueUri = issueUri;
 		this.author = author;
@@ -52,6 +56,7 @@ public class Worklog {
 		this.updateDate = updateDate;
 		this.startDate = startDate;
 		this.minutesSpent = minutesSpent;
+        this.timeSpent = timeSpent;
 		this.visibility = visibility;
 	}
 
@@ -88,11 +93,15 @@ public class Worklog {
 		return startDate;
 	}
 
-	public int getMinutesSpent() {
+	public Integer getMinutesSpent() {
 		return minutesSpent;
 	}
 
-	@Nullable
+    public String getTimeSpent() {
+        return timeSpent;
+    }
+
+    @Nullable
 	public Visibility getVisibility() {
 		return visibility;
 	}
@@ -109,6 +118,7 @@ public class Worklog {
 				add("updateDate", updateDate).
 				add("startDate", startDate).
 				add("minutesSpent", minutesSpent).
+                add("timeSpent", timeSpent).
 				add("visibility", visibility).
 				toString();
 	}
@@ -126,14 +136,14 @@ public class Worklog {
 					&& this.creationDate.isEqual(that.creationDate)
 					&& this.updateDate.isEqual(that.updateDate)
 					&& this.startDate.isEqual(that.startDate)
-					&& Objects.equal(this.minutesSpent, that.minutesSpent);
+					&& Objects.equal(this.minutesSpent, that.minutesSpent)
+                    && Objects.equal(this.timeSpent, that.timeSpent);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, timeSpent);
 	}
-
 }

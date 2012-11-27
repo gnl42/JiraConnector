@@ -41,12 +41,13 @@ public class WorklogInputBuilder {
 	private BasicUser updateAuthor;
 	private String comment;
 	private DateTime startDate;
-	private int minutesSpent;
-	private Visibility visibility;
+	private Integer minutesSpent;
+    private String timeSpent;
+    private Visibility visibility;
 	private WorklogInput.AdjustEstimate adjustEstimate = WorklogInput.AdjustEstimate.AUTO;
 	private String adjustEstimateValue;
 
-	public WorklogInputBuilder(URI issueUri) {
+    public WorklogInputBuilder(URI issueUri) {
 		Preconditions.checkNotNull(issueUri, "The issueUri cannot be null");
 		this.issueUri = issueUri;
 	}
@@ -61,6 +62,7 @@ public class WorklogInputBuilder {
 				.setComment(worklog.getComment())
 				.setStartDate(worklog.getStartDate())
 				.setMinutesSpent(worklog.getMinutesSpent())
+                .setTimeSpent(worklog.getTimeSpent())
 				.setVisibility(worklog.getVisibility());
 	}
 
@@ -162,17 +164,31 @@ public class WorklogInputBuilder {
 		return this;
 	}
 
-	public WorklogInputBuilder setMinutesSpent(int minutesSpent) {
+	public WorklogInputBuilder setMinutesSpent(Integer minutesSpent) {
+        if (minutesSpent != null) {
+            timeSpent = null;
+        }
 		this.minutesSpent = minutesSpent;
 		return this;
 	}
 
-	public WorklogInputBuilder setVisibility(Visibility visibility) {
+    public WorklogInputBuilder setTimeSpent(String timeSpent) {
+        if (timeSpent != null) {
+            minutesSpent = null;
+        }
+        this.timeSpent = timeSpent;
+        return this;
+    }
+
+    public WorklogInputBuilder setVisibility(Visibility visibility) {
 		this.visibility = visibility;
 		return this;
 	}
 
 	public WorklogInput build() {
-		return new WorklogInput(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, adjustEstimate, adjustEstimateValue);
+        if (minutesSpent != null) {
+            return new WorklogInput(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, null, visibility, adjustEstimate, adjustEstimateValue);
+        }
+		return new WorklogInput(self, issueUri, author, updateAuthor, comment, startDate, null, timeSpent, visibility, adjustEstimate, adjustEstimateValue);
 	}
 }

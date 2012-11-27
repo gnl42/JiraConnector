@@ -45,8 +45,11 @@ public class WorklogInput {
 	@Nullable
 	private final String comment;
 	private final DateTime startDate;
-	private final int minutesSpent;
-	@Nullable
+    @Nullable
+    private final Integer minutesSpent;
+    @Nullable
+    private final String timeSpent;
+    @Nullable
 	private final Visibility visibility;
 
 	@Nullable
@@ -61,17 +64,19 @@ public class WorklogInput {
 	 * @param updateAuthor author of worklog actualization
 	 * @param comment comment attached to worklog
 	 * @param startDate date of work start
-	 * @param minutesSpent time spend in minutes
+	 * @param minutesSpent time spend in minutes. Use either this or timeSpent, but not both
+     * @param timeSpent time spent. E.g. "1d 2h". Use either this or minutesSpent, but not both
 	 * @param visibility visibility settings for this worklog
 	 * @param adjustEstimate adjust estimate option
 	 * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set
 	 *                               to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
 	 */
 	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
+			@Nullable String comment, DateTime startDate, @Nullable Integer minutesSpent, @Nullable String timeSpent, @Nullable Visibility visibility,
 			AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
 		this.visibility = visibility;
 		this.minutesSpent = minutesSpent;
+        this.timeSpent = timeSpent;
 		this.startDate = startDate;
 		this.comment = comment;
 		this.updateAuthor = updateAuthor;
@@ -95,10 +100,15 @@ public class WorklogInput {
 	 */
 	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
 			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-		this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, AdjustEstimate.AUTO, null);
+		this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, null, visibility, AdjustEstimate.AUTO, null);
 	}
 
-	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
+    public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
+                        @Nullable String comment, DateTime startDate, String timeSpent, @Nullable Visibility visibility) {
+        this(self, issueUri, author, updateAuthor, comment, startDate, null, timeSpent, visibility, AdjustEstimate.AUTO, null);
+    }
+
+    public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
 		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).build();
 	}
 
@@ -107,7 +117,16 @@ public class WorklogInput {
 				.setVisibility(visibility).build();
 	}
 
-	@Nullable
+    public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, String timeSpent) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setTimeSpent(timeSpent).build();
+    }
+
+    public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, String timeSpent, @Nullable Visibility visibility) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setTimeSpent(timeSpent)
+                .setVisibility(visibility).build();
+    }
+
+    @Nullable
 	public URI getSelf() {
 		return self;
 	}
@@ -135,11 +154,17 @@ public class WorklogInput {
 		return startDate;
 	}
 
-	public int getMinutesSpent() {
+    @Nullable
+	public Integer getMinutesSpent() {
 		return minutesSpent;
 	}
 
-	@Nullable
+    @Nullable
+    public String getTimeSpent() {
+        return timeSpent;
+    }
+
+    @Nullable
 	public Visibility getVisibility() {
 		return visibility;
 	}
@@ -163,6 +188,7 @@ public class WorklogInput {
 				.add("comment", comment)
 				.add("startDate", startDate)
 				.add("minutesSpent", minutesSpent)
+                .add("timeSpent", timeSpent)
 				.add("visibility", visibility)
 				.add("adjustEstimate", adjustEstimate)
 				.add("adjustEstimateValue", adjustEstimateValue)
@@ -181,6 +207,7 @@ public class WorklogInput {
 					&& Objects.equal(this.comment, that.comment)
 					&& Objects.equal(this.startDate, that.startDate)
 					&& Objects.equal(this.minutesSpent, that.minutesSpent)
+                    && Objects.equal(this.timeSpent, that.timeSpent)
 					&& Objects.equal(this.visibility, that.visibility)
 					&& Objects.equal(this.adjustEstimate, that.adjustEstimate)
 					&& Objects.equal(this.adjustEstimateValue, that.adjustEstimateValue);
@@ -190,8 +217,8 @@ public class WorklogInput {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
-				adjustEstimate, adjustEstimateValue);
+		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, timeSpent,
+                visibility, adjustEstimate, adjustEstimateValue);
 	}
 
 	public static enum AdjustEstimate {
