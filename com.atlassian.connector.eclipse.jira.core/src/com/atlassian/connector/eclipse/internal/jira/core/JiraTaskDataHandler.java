@@ -1087,10 +1087,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					boolean handled = false;
 					boolean advWorkflowHandled = false;
 
-					if (!handled && changeIds.contains(TaskAttribute.WORKLOG_NEW)) {
+					if (!handled && changeIds.contains(IJiraConstants.WORKLOG_NEW)) {
 						postWorkLog(repository, client, taskData, issue, monitor);
 
-						changeIds.remove(TaskAttribute.WORKLOG_NEW);
+						changeIds.remove(IJiraConstants.WORKLOG_NEW);
 
 						if (changeIds.size() == 0) {
 							handled = true;

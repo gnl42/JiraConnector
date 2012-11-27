@@ -75,4 +75,6 @@ public class IJiraConstants {
 
 	public static final String ATTRIBUTE_ADJUST_ESTIMATE_OPTION = "attribute.adjust-estimate"; //$NON-NLS-1$
 
+	public static final String WORKLOG_NEW = "attribute.jira.worklog.new"; //$NON-NLS-1$
+
 }
