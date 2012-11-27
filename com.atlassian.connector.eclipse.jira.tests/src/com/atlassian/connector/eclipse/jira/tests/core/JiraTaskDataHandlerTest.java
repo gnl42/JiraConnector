@@ -321,7 +321,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, "testSubTask");
 
 		JiraIssue subTaskIssue = JiraTestUtil.newSubTask(client, parentIssue, "testSubTaskChild");
-		subTaskIssue = client.createSubTask(subTaskIssue, null);
+		subTaskIssue = client.createIssue(subTaskIssue, null);
 
 		TaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
 		TaskAttribute typeAttribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_TYPE);
@@ -344,14 +344,14 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, "testUpdateSubTask");
 		JiraIssue subTaskIssue = JiraTestUtil.newSubTask(client, parentIssue, "testUpdateSubTaskChild");
-		subTaskIssue = client.createSubTask(subTaskIssue, null);
+		subTaskIssue = client.createIssue(subTaskIssue, null);
 		TaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
 		assertEquals(subTaskIssue.getKey(), taskData.getRoot().getAttribute(JiraAttribute.ISSUE_KEY.id()).getValue());
 
 		taskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("new description");
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
-		JiraIssue updatedSubTaskIssue = client.getIssueByKey(taskData.getRoot().getAttribute(
-				JiraAttribute.ISSUE_KEY.id()).getValue(), null);
+		JiraIssue updatedSubTaskIssue = client.getIssueByKey(
+				taskData.getRoot().getAttribute(JiraAttribute.ISSUE_KEY.id()).getValue(), null);
 		assertEquals(subTaskIssue.getId(), updatedSubTaskIssue.getId());
 		assertEquals("new description", updatedSubTaskIssue.getDescription());
 	}
@@ -465,8 +465,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertTrue(result);
 
 		// create issue
-		taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue(
-				"testPostTaskDataCreateTaskWithSecurityLevel");
+		taskData.getRoot()
+				.getAttribute(JiraAttribute.SUMMARY.id())
+				.setValue("testPostTaskDataCreateTaskWithSecurityLevel");
 		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		assertNotNull(attribute);
 		attribute.setValue(SECURITY_LEVEL_DEVELOPERS);
@@ -818,8 +819,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("new summary");
 		taskData.getRoot().getAttribute(JiraAttribute.COMMENT_NEW.id()).setValue("comment");
-		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.SUMMARY,
-				JiraAttribute.COMMENT_NEW), new NullProgressMonitor());
+		dataHandler.postTaskData(repository, taskData,
+				buildChanged(taskData.getRoot(), JiraAttribute.SUMMARY, JiraAttribute.COMMENT_NEW),
+				new NullProgressMonitor());
 		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());

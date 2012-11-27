@@ -182,7 +182,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (task != null) {
 				return client.getIssueByKey(task.getTaskKey(), monitor);
 			} else {
-				// TODO REST: we use url_key as id temporary (check JiraRestConverter)
 				return client.getIssueById(taskId, monitor);
 			}
 		} catch (NumberFormatException e) {
@@ -1036,11 +1035,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 				JiraIssue issue = buildJiraIssue(taskData);
 				if (taskData.isNew()) {
-					if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
-						issue = client.createSubTask(issue, monitor);
-					} else {
-						issue = client.createIssue(issue, monitor);
-					}
+//					if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
+//						issue = client.createSubTask(issue, monitor);
+//					} else {
+					issue = client.createIssue(issue, monitor);
+//					}
 					if (issue == null) {
 						throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
 								JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null)); //$NON-NLS-1$
@@ -1347,6 +1346,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		String parentId = getAttributeValue(taskData, JiraAttribute.PARENT_ID);
 		if (parentId != null) {
 			issue.setParentId(parentId);
+		}
+
+		String parentKey = getAttributeValue(taskData, JiraAttribute.PARENT_KEY);
+		if (parentKey != null) {
+			issue.setParentKey(parentKey);
 		}
 
 		String securityLevelId = getAttributeValue(taskData, JiraAttribute.SECURITY_LEVEL);

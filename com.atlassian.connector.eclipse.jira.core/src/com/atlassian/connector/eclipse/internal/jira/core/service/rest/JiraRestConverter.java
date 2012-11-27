@@ -50,6 +50,7 @@ import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 
 public class JiraRestConverter {
 
@@ -123,13 +124,28 @@ public class JiraRestConverter {
 			throws JiraException {
 		JiraIssue jiraIssue = new JiraIssue();
 
-		// TODO rest: set real id if avaialble
-		jiraIssue.setId(generateIssueId(issue.getSelf().toString(), issue.getKey()));
+		Project project = cache.getProjectByKey(issue.getProject().getKey());
+		jiraIssue.setProject(project);
+		if (project != null && !project.hasDetails()) {
+			cache.refreshProjectDetails(project, monitor);
+		}
+
+//		jiraIssue.setId(generateIssueId(issue.getSelf().toString(), issue.getKey()));
+		jiraIssue.setId(issue.getId().toString());
 		jiraIssue.setSelf(issue.getSelf());
 		jiraIssue.setKey(issue.getKey());
 		jiraIssue.setSummary(issue.getSummary());
 		jiraIssue.setDescription(issue.getDescription());
-//		jiraIssue.setParentId();
+
+		if (issue.getIssueType().isSubtask()) {
+			Object parent = issue.getField("parent").getValue();
+			if (parent instanceof JSONObject) {
+				jiraIssue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, "key"));
+				jiraIssue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, "id"));
+			}
+
+		}
+
 //		jiraIssue.setParentKey();
 		// TODO rest: do we need to use cache here? can't we create priority and other objects from issue?
 		jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
@@ -170,12 +186,6 @@ public class JiraRestConverter {
 			} catch (JSONException e) {
 				throw new JiraException(e);
 			}
-		}
-
-		Project project = cache.getProjectByKey(issue.getProject().getKey());
-		jiraIssue.setProject(project);
-		if (project != null && !project.hasDetails()) {
-			cache.refreshProjectDetails(project, monitor);
 		}
 
 		jiraIssue.setCreated(issue.getCreationDate().toDate());
@@ -314,9 +324,9 @@ public class JiraRestConverter {
 	}
 
 	private static IssueLink convert(com.atlassian.jira.rest.client.domain.IssueLink issueLink) {
-		IssueLink outIssueLink = new IssueLink(generateIssueId(issueLink.getTargetIssueUri().toString(),
-				issueLink.getTargetIssueKey()), issueLink.getTargetIssueKey(), issueLink.getIssueLinkType().getName(),
-				issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getDescription(), "");
+		IssueLink outIssueLink = new IssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
+				issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
+				issueLink.getIssueLinkType().getDescription(), "");
 
 		return outIssueLink;
 
@@ -386,13 +396,12 @@ public class JiraRestConverter {
 
 	private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
 		// TODO rest use real id once available 
-		return new Subtask(generateIssueId(subtask.getIssueUri().toString(), subtask.getIssueKey()),
-				subtask.getIssueKey());
+		return new Subtask(subtask.getId().toString(), subtask.getIssueKey());
 	}
 
-	private static String generateIssueId(String uri, String issueKey) {
-		return uri + "_" + issueKey.replace('-', '*');
-	}
+//	private static String generateIssueId(String uri, String issueKey) {
+//		return uri + "_" + issueKey.replace('-', '*');
+//	}
 
 	public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
 		List<IssueType> issueTypes = new ArrayList<IssueType>();
@@ -429,8 +438,7 @@ public class JiraRestConverter {
 	private static JiraIssue convert(BasicIssue issue) {
 		JiraIssue outIssue = new JiraIssue();
 
-		// TODO rest set real id
-		outIssue.setId(generateIssueId(issue.getSelf().toString(), issue.getKey()));
+		outIssue.setId(issue.getId().toString());
 		outIssue.setKey(issue.getKey());
 		outIssue.setSelf(issue.getSelf());
 
