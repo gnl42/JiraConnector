@@ -20,11 +20,11 @@ import java.io.Serializable;
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Field field;
+	private final JiraFields field;
 
 	private final boolean ascending;
 
-	public Order(Field field, boolean ascending) {
+	public Order(JiraFields field, boolean ascending) {
 		this.field = field;
 		this.ascending = ascending;
 	}
@@ -33,7 +33,7 @@ public class Order implements Serializable {
 		return this.ascending;
 	}
 
-	public Field getField() {
+	public JiraFields getField() {
 		return field;
 	}
 
@@ -45,51 +45,5 @@ public class Order implements Serializable {
 	@Override
 	public String toString() {
 		return "order by " + field.toString() + " " + (this.ascending ? "asc" : "desc"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	}
-
-	public static final class Field {
-		private final String fieldName;
-
-		public static final Field ISSUE_TYPE = new Field("type"); //$NON-NLS-1$
-
-		public static final Field ISSUE_KEY = new Field("key"); //$NON-NLS-1$
-
-		public static final Field SUMMARY = new Field("summary"); //$NON-NLS-1$
-
-		public static final Field ASSIGNEE = new Field("assignee"); //$NON-NLS-1$
-
-		public static final Field REPORTER = new Field("reporter"); //$NON-NLS-1$
-
-		public static final Field PRIORITY = new Field("priority"); //$NON-NLS-1$
-
-		public static final Field STATUS = new Field("status"); //$NON-NLS-1$
-
-		public static final Field RESOLUTION = new Field("resolution"); //$NON-NLS-1$
-
-		public static final Field CREATED = new Field("created"); //$NON-NLS-1$
-
-		public static final Field UPDATED = new Field("updated"); //$NON-NLS-1$
-
-		public static final Field DUE_DATE = new Field("due"); //$NON-NLS-1$
-
-		// TODO how do we support custom fields?
-
-		private Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		public String getFieldName() {
-			return this.fieldName;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return this.fieldName;
-		}
 	}
 }
