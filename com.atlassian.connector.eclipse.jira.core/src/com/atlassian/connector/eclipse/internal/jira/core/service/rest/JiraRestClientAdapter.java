@@ -135,9 +135,9 @@ public class JiraRestClientAdapter {
 
 		// TODO rest remove once we have id in place
 		// strip key from id = url_key
-		String issueKey = issueId.split("_")[1].replace('*', '-');
+//		String issueKey = issueId.split("_")[1].replace('*', '-');
 
-		return getIssueByKey(issueKey, monitor);
+		return getIssueByKey(issueId, monitor);
 	}
 
 	public List<JiraIssue> getIssues(String jql, IProgressMonitor monitor) throws JiraException {
@@ -231,8 +231,9 @@ public class JiraRestClientAdapter {
 	/**
 	 * @param issue
 	 * @return issue key
+	 * @throws JiraException
 	 */
-	public String createIssue(JiraIssue issue) {
+	public String createIssue(JiraIssue issue) throws JiraException {
 
 		IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
 				Long.parseLong(issue.getType().getId()), issue.getSummary());
@@ -247,12 +248,22 @@ public class JiraRestClientAdapter {
 		}
 
 		issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
+
+		if (StringUtils.isEmpty(issue.getPriority().getId())) {
+			throw new JiraException("Priority not set");
+		}
 		issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()),
 				issue.getPriority().getName()));
 
 		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
 
 		// TODO rest: allow to set security level
+		// TODO rest: allow to set estimate
+
+		if (issue.getParentKey() != null) {
+			issueInputBuilder.setFieldInput(new FieldInput("parent", ComplexIssueInputFieldValue.with("key",
+					issue.getParentKey())));
+		}
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 
