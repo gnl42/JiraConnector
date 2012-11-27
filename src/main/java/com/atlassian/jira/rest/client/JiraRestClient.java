@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.sun.jersey.client.apache.ApacheHttpClient;
+
 /**
  * Main access point to REST client.
  * As there are many types resources exposed by JIRA REST API, various resources are grouped into clusters
@@ -70,4 +72,9 @@ public interface JiraRestClient {
 	 * @return the client for project roles.
 	 */
 	ProjectRolesRestClient getProjectRolesRestClient();
+
+    /**
+     * @return underlying ApacheHttpClient
+     */
+    ApacheHttpClient getTransportClient();
 }

@@ -57,13 +57,13 @@ public class JerseyJiraRestClient implements JiraRestClient {
 	private final SearchRestClient searchRestClient;
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
-
+    private final ApacheHttpClient client;
 
 	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
         this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
         DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
         authenticationHandler.configure(config);
-        final ApacheHttpClient client = new ApacheHttpClient(createDefaultClientHander(config)) {
+        client = new ApacheHttpClient(createDefaultClientHander(config)) {
             @Override
             public WebResource resource(URI u) {
                 final WebResource resource = super.resource(u);
@@ -92,7 +92,8 @@ public class JerseyJiraRestClient implements JiraRestClient {
                 return resource;
             }
         };
-		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
+
+        metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
         sessionRestClient = new JerseySessionRestClient(client, serverUri);
 		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient, metadataRestClient);
 		userRestClient = new JerseyUserRestClient(baseUri, client);
@@ -148,10 +149,14 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		return projectRolesRestClient;
 	}
 
-	private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
+    @Override
+    public ApacheHttpClient getTransportClient() {
+        return client;
+    }
+
+    private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
         final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
         return new ApacheHttpClientHandler(client, config);
     }
-
 }
 
