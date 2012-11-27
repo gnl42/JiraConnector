@@ -261,11 +261,11 @@ public class JiraClient {
 	 * See {@link #createIssue(JiraIssue)} for mandatory attributes of <code>issue</code>. Additionally the
 	 * <code>parentIssueId</code> must be set.
 	 */
-	public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("createSubTask", null); //$NON-NLS-1$
-		String issueKey = webClient.createSubTask(issue, monitor);
-		return getIssueByKey(issueKey, monitor);
-	}
+//	public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("createSubTask", null); //$NON-NLS-1$
+//		String issueKey = webClient.createSubTask(issue, monitor);
+//		return getIssueByKey(issueKey, monitor);
+//	}
 
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("deleteIssue", null); //$NON-NLS-1$

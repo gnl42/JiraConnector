@@ -345,7 +345,7 @@ public class JiraClientTest extends TestCase {
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, issue);
 
 		issue = JiraTestUtil.newSubTask(client, parentIssue, "testCreateSubTaskParent");
-		JiraIssue childIssue = client.createSubTask(issue, null);
+		JiraIssue childIssue = client.createIssue(issue, null);
 		assertEquals(parentIssue.getId(), childIssue.getParentId());
 
 		parentIssue = client.getIssueByKey(parentIssue.getKey(), null);
