@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,6 +50,7 @@ import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.google.common.collect.ImmutableMap;
 
 public class JiraRestClientAdapter {
 
@@ -258,9 +260,15 @@ public class JiraRestClientAdapter {
 		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
 
 		// TODO rest: allow to set security level
-		// TODO rest: allow to set estimate
 
-		if (issue.getParentKey() != null) {
+		Map<String, Object> map = ImmutableMap.<String, Object> builder()
+				.put("originalEstimate", String.valueOf(issue.getEstimate() / 60))
+				.put("remainingEstimate", String.valueOf(issue.getEstimate() / 60))
+				.build();
+
+		issueInputBuilder.setFieldInput(new FieldInput("timetracking", new ComplexIssueInputFieldValue(map)));
+
+		if (!StringUtils.isEmpty(issue.getParentKey())) {
 			issueInputBuilder.setFieldInput(new FieldInput("parent", ComplexIssueInputFieldValue.with("key",
 					issue.getParentKey())));
 		}

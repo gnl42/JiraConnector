@@ -130,12 +130,6 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		// ignore
-		return null;
-	}
-
-	@Override
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
