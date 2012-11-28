@@ -292,10 +292,17 @@ public class JiraClient {
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
 
-		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter();
+		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(getCharacterEncoding(monitor),
+				getLocalConfiguration().getDateFormat());
 
 		String jql = filterConverter.getJqlString(filterDefinition);
 
+		findIssues(jql, collector, monitor);
+
+//		rssClient.findIssues(filterDefinition, collector, monitor);
+	}
+
+	private void findIssues(String jql, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		try {
 
 			List<JiraIssue> issues = restClient.getIssues(jql, monitor);
@@ -312,8 +319,6 @@ public class JiraClient {
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
-
-//		rssClient.findIssues(filterDefinition, collector, monitor);
 	}
 
 	/**
@@ -499,9 +504,13 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getNamedFilters", null); //$NON-NLS-1$
 
 		// TODO rest https://studio.atlassian.com/browse/JRJC-88
-//		return restClient.getFavouriteFilters();
+		try {
+			return restClient.getFavouriteFilters();
+		} catch (RestClientException e) {
+			throw new JiraException(e);
+		}
 
-		return soapClient.getNamedFilters(monitor);
+//		return soapClient.getNamedFilters(monitor);
 	}
 
 	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
@@ -677,7 +686,8 @@ public class JiraClient {
 		if (query instanceof FilterDefinition) {
 			findIssues((FilterDefinition) query, collector, monitor);
 		} else if (query instanceof NamedFilter) {
-			executeNamedFilter((NamedFilter) query, collector, monitor);
+			findIssues(((NamedFilter) query).getJql(), collector, monitor);
+//			executeNamedFilter((NamedFilter) query, collector, monitor);
 		} else {
 			throw new IllegalArgumentException("Unknown query type: " + query.getClass()); //$NON-NLS-1$
 		}

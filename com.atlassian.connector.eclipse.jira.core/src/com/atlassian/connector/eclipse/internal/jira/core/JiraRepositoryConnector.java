@@ -51,6 +51,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.JiraFields;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Order;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
@@ -82,6 +83,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide"; //$NON-NLS-1$
+
+	public final static String FILTER_URL_PREFIX_NEW = "/issues/?"; //$NON-NLS-1$
 
 	private final JiraTaskDataHandler taskDataHandler;
 
@@ -295,7 +298,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			FilterDefinition changedFilter = new FilterDefinition();
 			changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, null, null, null));
 			// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
-			changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
+			changedFilter.setOrdering(new Order[] { new Order(JiraFields.UPDATED, false) });
 			return changedFilter;
 		}
 
@@ -305,7 +308,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		long minutes = (now.getTime() - lastSyncDate.getTime()) / (60 * 1000) + 1;
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, -minutes));
 		// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
-		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
+		changedFilter.setOrdering(new Order[] { new Order(JiraFields.UPDATED, false) });
 		return changedFilter;
 	}
 
