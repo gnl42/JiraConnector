@@ -84,6 +84,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide"; //$NON-NLS-1$
 
+	public final static String FILTER_URL_PREFIX_NEW = "/issues/?"; //$NON-NLS-1$
+
 	private final JiraTaskDataHandler taskDataHandler;
 
 	private final JiraTaskAttachmentHandler attachmentHandler;

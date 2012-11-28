@@ -26,9 +26,11 @@ public class NamedFilter implements JiraFilter, Serializable {
 
 	private String description;
 
-	private String project;
-
 	private String author;
+
+	private String jql;
+
+	private String viewUrl;
 
 	public String getDescription() {
 		return this.description;
@@ -54,14 +56,6 @@ public class NamedFilter implements JiraFilter, Serializable {
 		this.name = name;
 	}
 
-	public String getProject() {
-		return this.project;
-	}
-
-	public void setProject(String project) {
-		this.project = project;
-	}
-
 	public String getAuthor() {
 		return this.author;
 	}
@@ -78,6 +72,22 @@ public class NamedFilter implements JiraFilter, Serializable {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	public void setJql(String jql) {
+		this.jql = jql;
+	}
+
+	public String getJql() {
+		return jql;
+	}
+
+	public void setViewUrl(String url) {
+		this.viewUrl = url;
+	}
+
+	public String getViewUrl() {
+		return viewUrl;
 	}
 
 }

@@ -30,7 +30,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
@@ -61,6 +60,10 @@ public class JiraUtil {
 	private static final String KEY_FILTER_ID = "FilterID"; //$NON-NLS-1$
 
 	private static final String KEY_FILTER_NAME = "FilterName"; //$NON-NLS-1$
+
+	private static final String KEY_FILTER_JQL = "FilterJql"; //$NON-NLS-1$
+
+	private static final String KEY_FILTER_URL = "FilterUrl"; //$NON-NLS-1$
 
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration"; //$NON-NLS-1$
 
@@ -177,6 +180,8 @@ public class JiraUtil {
 			NamedFilter namedFilter = new NamedFilter();
 			namedFilter.setId(id);
 			namedFilter.setName(query.getAttribute(KEY_FILTER_NAME));
+			namedFilter.setJql(query.getAttribute(KEY_FILTER_JQL));
+			namedFilter.setViewUrl(query.getAttribute(KEY_FILTER_URL));
 			return namedFilter;
 		}
 		return null;
@@ -318,8 +323,9 @@ public class JiraUtil {
 			NamedFilter namedFilter = (NamedFilter) filter;
 			query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
 			query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
-			query.setUrl(taskRepository.getRepositoryUrl() + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId=" //$NON-NLS-1$
-					+ namedFilter.getId());
+			query.setAttribute(KEY_FILTER_JQL, namedFilter.getJql());
+			query.setAttribute(KEY_FILTER_URL, namedFilter.getViewUrl());
+			query.setUrl(namedFilter.getViewUrl());
 		} else if (filter instanceof FilterDefinition) {
 			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
 					JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());

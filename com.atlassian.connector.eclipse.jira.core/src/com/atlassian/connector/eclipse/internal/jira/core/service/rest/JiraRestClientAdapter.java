@@ -99,9 +99,10 @@ public class JiraRestClientAdapter {
 		return JiraRestConverter.convertProjects(allProjects);
 	}
 
-	public NamedFilter[] getFavouriteFilters() throws Exception {
-		throw new Exception("not implemented");
+	public NamedFilter[] getFavouriteFilters() {
 
+		return JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters(
+				new NullProgressMonitor()));
 	}
 
 	public Resolution[] getResolutions() {
@@ -259,14 +260,16 @@ public class JiraRestClientAdapter {
 
 		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
 
-		// TODO rest: allow to set security level
-
 		Map<String, Object> map = ImmutableMap.<String, Object> builder()
 				.put("originalEstimate", String.valueOf(issue.getEstimate() / 60))
 				.put("remainingEstimate", String.valueOf(issue.getEstimate() / 60))
 				.build();
-
 		issueInputBuilder.setFieldInput(new FieldInput("timetracking", new ComplexIssueInputFieldValue(map)));
+
+		if (issue.getSecurityLevel() != null) {
+			issueInputBuilder.setFieldValue("security",
+					ComplexIssueInputFieldValue.with("id", issue.getSecurityLevel().getId()));
+		}
 
 		if (!StringUtils.isEmpty(issue.getParentKey())) {
 			issueInputBuilder.setFieldInput(new FieldInput("parent", ComplexIssueInputFieldValue.with("key",

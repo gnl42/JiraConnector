@@ -29,6 +29,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
+import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
@@ -43,6 +44,7 @@ import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.Transition;
@@ -536,5 +538,26 @@ public class JiraRestConverter {
 
 	private static BasicComponent convert(Component component) {
 		return new BasicComponent(null, Long.valueOf(component.getId()), component.getName(), null);
+	}
+
+	public static NamedFilter[] convertNamedFilters(Iterable<FavouriteFilter> favouriteFilters) {
+		List<NamedFilter> outFilters = new ArrayList<NamedFilter>();
+
+		for (FavouriteFilter filter : favouriteFilters) {
+			outFilters.add(convert(filter));
+		}
+
+		return outFilters.toArray(new NamedFilter[outFilters.size()]);
+	}
+
+	private static NamedFilter convert(FavouriteFilter filter) {
+		NamedFilter outFilter = new NamedFilter();
+
+		outFilter.setId(filter.getId().toString());
+		outFilter.setName(filter.getName());
+		outFilter.setJql(filter.getJql());
+		outFilter.setViewUrl(filter.getViewUrl().toString());
+
+		return outFilter;
 	}
 }
