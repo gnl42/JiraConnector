@@ -96,6 +96,10 @@ public class FilterDefinitionConverter {
 		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter); //$NON-NLS-1$
 	}
 
+	public String toJqlUrl(String repositoryUrl, FilterDefinition filter) {
+		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW + getJqlString(filter);
+	}
+
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
 		try {
 			return toFilter(client, url, validate, false, null);

@@ -50,6 +50,7 @@ import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class JiraRestClientAdapter {
@@ -277,6 +278,16 @@ public class JiraRestClientAdapter {
 		}
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
+
+	}
+
+	public void assignIssue(String issueKey, String user, String comment) {
+		Issue issue = getIssue(issueKey);
+
+		ImmutableList<FieldInput> fields = ImmutableList.<FieldInput> of(new FieldInput("assignee",
+				ComplexIssueInputFieldValue.with("name", user)));
+
+		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
 
 	}
 }

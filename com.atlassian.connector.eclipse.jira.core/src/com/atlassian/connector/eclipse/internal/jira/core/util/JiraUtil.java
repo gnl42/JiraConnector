@@ -331,7 +331,7 @@ public class JiraUtil {
 					JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
 			String url = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
 			query.setAttribute(KEY_FILTER_CUSTOM_URL, url);
-			query.setUrl(url);
+			query.setUrl(converter.toJqlUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter));
 		}
 	}
 

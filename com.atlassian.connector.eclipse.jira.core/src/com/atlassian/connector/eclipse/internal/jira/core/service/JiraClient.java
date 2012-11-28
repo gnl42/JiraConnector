@@ -173,13 +173,21 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("assignIssueTo", null); //$NON-NLS-1$
 		/*PLE-1188
 		soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue, assigneeType, user), monitor);
+		*/
+
+//		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+
+		try {
+			restClient.assignIssue(issue.getKey(), user, comment);
+		} catch (RestClientException e) {
+			throw new JiraException(e);
+		}
 
 		if (!StringUtils.isEmpty(comment)) {
 			addCommentToIssue(issue.getKey(), comment, monitor);
-		}*/
-		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+		}
 
-		// TODO rest: https://studio.atlassian.com/browse/JRJC-85
+		// TODO rest: https://studio.atlassian.com/browse/JRJC-85 (single operation)
 	}
 
 	public void addAttachment(JiraIssue jiraIssue, String comment, String filename, byte[] content,
