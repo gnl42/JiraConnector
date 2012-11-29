@@ -479,6 +479,7 @@ public class JiraRestConverter {
 		ServerInfo serverInfoOut = new ServerInfo();
 
 		serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
+		serverInfoOut.setWebBaseUrl(serverInfo.getBaseUri().toString());
 		serverInfoOut.setBuildDate(serverInfo.getBuildDate().toDate());
 		serverInfoOut.setBuildNumber(Integer.valueOf(serverInfo.getBuildNumber()).toString());
 		serverInfoOut.setVersion(serverInfo.getVersion());

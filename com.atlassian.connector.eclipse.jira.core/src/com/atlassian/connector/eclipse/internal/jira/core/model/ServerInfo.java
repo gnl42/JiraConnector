@@ -119,7 +119,7 @@ public class ServerInfo implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.baseUrl + " - Jira " + this.edition + " " + this.version + "#" + this.buildNumber + " (" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return this.baseUrl + " - Jira " + this.version + "#" + this.buildNumber + " (" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(this.buildDate) + ")"; //$NON-NLS-1$
 	}
 

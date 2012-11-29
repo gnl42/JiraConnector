@@ -550,11 +550,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 			MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
 					repository.getRepositoryLabel()), null);
-			status.addAll(serverInfo.getStatistics().getStatus());
+//			status.addAll(serverInfo.getStatistics().getStatus());
 			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
 					"Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
-			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
+//			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+//					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
 			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
 			StatusHandler.log(status);
 		}

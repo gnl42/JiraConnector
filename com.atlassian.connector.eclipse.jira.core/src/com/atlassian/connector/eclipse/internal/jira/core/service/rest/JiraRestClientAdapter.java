@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
+import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -36,6 +37,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
+import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
@@ -232,6 +234,16 @@ public class JiraRestClientAdapter {
 
 	}
 
+	public void assignIssue(String issueKey, String user, String comment) {
+		Issue issue = getIssue(issueKey);
+
+		ImmutableList<FieldInput> fields = ImmutableList.<FieldInput> of(new FieldInput("assignee",
+				ComplexIssueInputFieldValue.with("name", user)));
+
+		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
+
+	}
+
 	/**
 	 * @param issue
 	 * @return issue key
@@ -281,11 +293,59 @@ public class JiraRestClientAdapter {
 
 	}
 
-	public void assignIssue(String issueKey, String user, String comment) {
-		Issue issue = getIssue(issueKey);
+	public void updateIssue(JiraIssue changedIssue) {
+		Issue issue = getIssue(changedIssue.getKey());
 
-		ImmutableList<FieldInput> fields = ImmutableList.<FieldInput> of(new FieldInput("assignee",
-				ComplexIssueInputFieldValue.with("name", user)));
+		List<FieldInput> fields = new ArrayList<FieldInput>();
+
+		fields.add(new FieldInput("issuetype", ComplexIssueInputFieldValue.with("id", changedIssue.getType().getId())));
+		fields.add(new FieldInput("priority",
+				ComplexIssueInputFieldValue.with("id", changedIssue.getPriority().getId())));
+
+		// TODO rest: how to clear due date?
+		String date = new DateTime(changedIssue.getDue()).toString("yyyy-MM-dd");
+		if (changedIssue.getDue() == null) {
+			date = null;
+		}
+		fields.add(new FieldInput("duedate", date));
+
+		// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
+		long originalEstimate = changedIssue.getEstimate() / 60;
+		if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+			originalEstimate = issue.getTimeTracking().getOriginalEstimateMinutes();
+		}
+
+		Map<String, Object> map = ImmutableMap.<String, Object> builder()
+				.put("originalEstimate", String.valueOf(originalEstimate))
+				.put("remainingEstimate", String.valueOf(changedIssue.getEstimate() / 60))
+				.build();
+
+		fields.add(new FieldInput("timetracking", new ComplexIssueInputFieldValue(map)));
+
+		List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
+		for (Version version : changedIssue.getReportedVersions()) {
+			reportedVersions.add(ComplexIssueInputFieldValue.with("id", version.getId()));
+		}
+		fields.add(new FieldInput("versions", reportedVersions));
+
+		List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
+		for (Version version : changedIssue.getFixVersions()) {
+			fixVersions.add(ComplexIssueInputFieldValue.with("id", version.getId()));
+		}
+		fields.add(new FieldInput("fixVersions", fixVersions));
+
+		List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
+		for (Component component : changedIssue.getComponents()) {
+			components.add(ComplexIssueInputFieldValue.with("id", component.getId()));
+		}
+		fields.add(new FieldInput("components", components));
+
+		fields.add(new FieldInput("security", ComplexIssueInputFieldValue.with("id", changedIssue.getSecurityLevel()
+				.getId())));
+
+		fields.add(new FieldInput("environment", changedIssue.getEnvironment()));
+
+		fields.add(new FieldInput("description", changedIssue.getDescription()));
 
 		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
 

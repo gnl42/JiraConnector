@@ -40,14 +40,11 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ProjectRole;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
-import com.atlassian.connector.eclipse.internal.jira.core.model.WebServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSession;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssClient;
 import com.atlassian.jira.rest.client.RestClientException;
 
 /**
@@ -90,15 +87,15 @@ public class JiraClient {
 
 	public final static String DEFAULT_CHARSET = "UTF-8"; //$NON-NLS-1$
 
-	private boolean attemptedToDetermineCharacterEncoding;
+//	private boolean attemptedToDetermineCharacterEncoding;
 
 	private final String baseUrl;
 
 	private final JiraClientCache cache;
 
-	private final JiraRssClient rssClient;
+//	private final JiraRssClient rssClient;
 
-	private final JiraWebClient webClient;
+//	private final JiraWebClient webClient;
 
 	private final AbstractWebLocation location;
 
@@ -119,8 +116,8 @@ public class JiraClient {
 
 		this.cache = new JiraClientCache(this);
 		this.webSession = new JiraWebSession(this);
-		this.webClient = new JiraWebClient(this, webSession);
-		this.rssClient = new JiraRssClient(this, webSession);
+//		this.webClient = new JiraWebClient(this, webSession);
+//		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
 		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
 				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), cache);
@@ -300,7 +297,7 @@ public class JiraClient {
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
 
-		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(getCharacterEncoding(monitor),
+		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(DEFAULT_CHARSET,
 				getLocalConfiguration().getDateFormat());
 
 		String jql = filterConverter.getJqlString(filterDefinition);
@@ -385,16 +382,16 @@ public class JiraClient {
 
 	public String getCharacterEncoding(IProgressMonitor monitor) throws JiraException {
 		if (localConfiguration.getCharacterEncoding() == null) {
-			String serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
-			if (serverEncoding != null) {
-				return serverEncoding;
-			} else if (!attemptedToDetermineCharacterEncoding) {
-				getCache().refreshServerInfo(monitor);
-				serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
-				if (serverEncoding != null) {
-					return serverEncoding;
-				}
-			}
+//			String serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
+//			if (serverEncoding != null) {
+//				return serverEncoding;
+//			} else if (!attemptedToDetermineCharacterEncoding) {
+//				getCache().refreshServerInfo(monitor);
+//				serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
+//				if (serverEncoding != null) {
+//					return serverEncoding;
+//				}
+//			}
 			// fallback
 			return DEFAULT_CHARSET;
 		}
@@ -565,11 +562,12 @@ public class JiraClient {
 			ServerInfo serverInfo = restClient.getServerInfo();
 
 			// get character encoding through web
-			WebServerInfo webServerInfo = webClient.getWebServerInfo(monitor);
-			serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
-			serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
+//			WebServerInfo webServerInfo = webClient.getWebServerInfo(monitor);
+//			serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
+			serverInfo.setCharacterEncoding(DEFAULT_CHARSET);
+//			serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
 
-			serverInfo.getStatistics().getStatus().addAll(webServerInfo.getStatistics().getStatus());
+//			serverInfo.getStatistics().getStatus().addAll(webServerInfo.getStatistics().getStatus());
 
 			return serverInfo;
 		} catch (RestClientException e) {
@@ -710,7 +708,13 @@ public class JiraClient {
 
 	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("updateIssue", null); //$NON-NLS-1$
-		soapClient.updateIssue(issue, monitor);
+//		soapClient.updateIssue(issue, monitor);
+
+		try {
+			restClient.updateIssue(issue);
+		} catch (RestClientException e) {
+			throw new JiraException(e);
+		}
 
 		if (!StringUtils.isEmpty(comment)) {
 			addCommentToIssue(issue.getKey(), comment, monitor);
@@ -769,15 +773,6 @@ public class JiraClient {
 		soapClient.purgeSession();
 
 		// TODO rest: what is happening here? should we do anything with REST client?
-	}
-
-	/**
-	 * For testing only.
-	 * 
-	 * @return
-	 */
-	public JiraWebSession getWebSession() {
-		return webSession;
 	}
 
 	public String getAssigneeParam(JiraIssue issue, int assigneeType, String user) {
