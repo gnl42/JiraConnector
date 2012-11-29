@@ -120,8 +120,8 @@ public class JiraRestClientAdapter {
 		return JiraRestConverter.convertIssue(getIssue(issueKey), cache, url, monitor);
 	}
 
-	public JiraStatus[] getStatuses() throws Exception {
-		throw new Exception("not implemented");
+	public JiraStatus[] getStatuses() {
+		return JiraRestConverter.convertStatuses(restClient.getMetadataClient().getStatuses(new NullProgressMonitor()));
 	}
 
 	public IssueType[] getIssueTypes() {

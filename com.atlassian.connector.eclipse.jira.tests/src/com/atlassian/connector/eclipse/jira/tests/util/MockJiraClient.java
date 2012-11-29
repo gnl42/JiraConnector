@@ -134,11 +134,11 @@ public class MockJiraClient extends JiraClient {
 		// ignore
 	}
 
-	@Override
-	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
-			throws JiraException {
-		// ignore
-	}
+//	@Override
+//	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
+//			throws JiraException {
+//		// ignore
+//	}
 
 	@Override
 	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector, IProgressMonitor monitor)

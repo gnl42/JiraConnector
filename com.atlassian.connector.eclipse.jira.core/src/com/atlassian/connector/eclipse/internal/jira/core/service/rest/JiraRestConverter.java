@@ -28,6 +28,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.IssueLink;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
+import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
@@ -47,6 +48,7 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
@@ -559,5 +561,25 @@ public class JiraRestConverter {
 		outFilter.setViewUrl(filter.getViewUrl().toString());
 
 		return outFilter;
+	}
+
+	public static JiraStatus[] convertStatuses(Iterable<Status> statuses) {
+		List<JiraStatus> outStatuses = new ArrayList<JiraStatus>();
+
+		for (Status status : statuses) {
+			outStatuses.add(convert(status));
+		}
+
+		return outStatuses.toArray(new JiraStatus[outStatuses.size()]);
+	}
+
+	private static JiraStatus convert(Status status) {
+		JiraStatus outStatus = new JiraStatus(status.getId().toString());
+
+		outStatus.setName(status.getName());
+		outStatus.setDescription(status.getDescription());
+		outStatus.setIcon(status.getIconUrl().toString());
+
+		return outStatus;
 	}
 }

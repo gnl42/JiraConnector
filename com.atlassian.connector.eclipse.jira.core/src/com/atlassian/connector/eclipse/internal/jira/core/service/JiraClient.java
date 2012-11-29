@@ -290,11 +290,11 @@ public class JiraClient {
 		return false;
 	}
 
-	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
-			throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("executeNamedFilter", null); //$NON-NLS-1$
-		rssClient.executeNamedFilter(filter, collector, monitor);
-	}
+//	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
+//			throws JiraException {
+//		JiraCorePlugin.getMonitoring().logJob("executeNamedFilter", null); //$NON-NLS-1$
+//		rssClient.executeNamedFilter(filter, collector, monitor);
+//	}
 
 	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector, IProgressMonitor monitor)
 			throws JiraException {
@@ -511,7 +511,6 @@ public class JiraClient {
 	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getNamedFilters", null); //$NON-NLS-1$
 
-		// TODO rest https://studio.atlassian.com/browse/JRJC-88
 		try {
 			return restClient.getFavouriteFilters();
 		} catch (RestClientException e) {
@@ -585,10 +584,13 @@ public class JiraClient {
 	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getStatuses", null); //$NON-NLS-1$
 
-//		return restClient.getStatused();
-		// TODO rest: https://studio.atlassian.com/browse/JRJC-93
+		try {
+			return restClient.getStatuses();
+		} catch (RestClientException e) {
+			throw new JiraException(e);
+		}
 
-		return soapClient.getStatuses(monitor);
+//		return soapClient.getStatuses(monitor);
 	}
 
 //	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
