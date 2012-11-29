@@ -743,7 +743,9 @@ public class JiraClient {
 
 	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getProjectRoles", null); //$NON-NLS-1$
-		return soapClient.getProjectRoles(monitor);
+//		return soapClient.getProjectRoles(monitor);
+
+		return new ProjectRole[0];
 
 		// TODO rest https://studio.atlassian.com/browse/JRJC-108
 	}
@@ -765,6 +767,8 @@ public class JiraClient {
 	public synchronized void purgeSession() {
 		webSession.purgeSession();
 		soapClient.purgeSession();
+
+		// TODO rest: what is happening here? should we do anything with REST client?
 	}
 
 	/**
