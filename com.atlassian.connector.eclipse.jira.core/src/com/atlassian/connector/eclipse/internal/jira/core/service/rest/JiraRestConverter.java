@@ -206,7 +206,6 @@ public class JiraRestConverter {
 		jiraIssue.setUrl(url + "/browse/" + issue.getKey()); //$NON-NLS-1$
 		jiraIssue.setComponents(convertComponents(issue.getComponents()));
 
-		// TODO rest use getter once available
 		Object env = issue.getField(FIELD_ENVIRONMENT_ID).getValue();
 		if (env != null) {
 			jiraIssue.setEnvironment(env.toString());
@@ -279,8 +278,7 @@ public class JiraRestConverter {
 	private static Attachment convert(com.atlassian.jira.rest.client.domain.Attachment attachment) {
 		Attachment outAttachment = new Attachment();
 
-		// TODO rest change to real id 
-		outAttachment.setId(attachment.getSelf().toString());
+		outAttachment.setId(attachment.getId().toString());
 		outAttachment.setAuthor(attachment.getAuthor().getDisplayName());
 		outAttachment.setCreated(attachment.getCreationDate().toDate());
 		outAttachment.setName(attachment.getFilename());
@@ -399,7 +397,6 @@ public class JiraRestConverter {
 	}
 
 	private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
-		// TODO rest use real id once available 
 		return new Subtask(subtask.getId().toString(), subtask.getIssueKey());
 	}
 

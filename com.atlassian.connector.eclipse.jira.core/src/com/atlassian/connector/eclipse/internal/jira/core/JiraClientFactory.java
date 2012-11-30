@@ -25,8 +25,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
@@ -128,9 +128,11 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 					client.purgeSession();
 					updateClient(client, repository);
 				} else if (event.getDelta().getType() == Type.CREDENTIALS || event.getDelta().getType() == Type.PROYX) {
+					updateClient(client, repository);
 					client.purgeSession();
 				} else {
 					updateClient(client, repository);
+					client.purgeSession();
 				}
 			}
 		}

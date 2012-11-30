@@ -18,6 +18,7 @@ import java.util.Date;
 
 /**
  * @author Brock Janiczak
+ * @author Jacek Jaroczynski
  */
 public class ServerInfo implements Serializable {
 
@@ -88,7 +89,6 @@ public class ServerInfo implements Serializable {
 		return characterEncoding;
 	}
 
-	// TODO rest remove once web calls are gone
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
@@ -97,7 +97,6 @@ public class ServerInfo implements Serializable {
 		return webBaseUrl;
 	}
 
-	// TODO rest remove once web calls are gone
 	public void setWebBaseUrl(String webBaseUrl) {
 		this.webBaseUrl = webBaseUrl;
 	}

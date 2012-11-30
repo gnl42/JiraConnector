@@ -14,14 +14,18 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.internal.commons.net.AuthenticatedProxy;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
@@ -42,6 +46,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCach
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
@@ -54,6 +59,7 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 public class JiraRestClientAdapter {
 
@@ -63,14 +69,40 @@ public class JiraRestClientAdapter {
 
 	private final String url;
 
-	public JiraRestClientAdapter(String url, String userName, String password, JiraClientCache cache) {
+	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache) {
 
 		this.url = url;
 		this.cache = cache;
 
-		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
+//		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
+//		this.restClient = restFactory.createWithBasicHttpAuthentication(new URI(url), userName, password);
 		try {
-			this.restClient = restFactory.createWithBasicHttpAuthentication(new URI(url), userName, password);
+			restClient = new JerseyJiraRestClientFactory().create(new URI(url), new BasicHttpAuthenticationHandler(
+					userName, password) {
+				@Override
+				public void configure(ApacheHttpClientConfig config) {
+					super.configure(config);
+					if (proxy != null) {
+						InetSocketAddress address = (InetSocketAddress) proxy.address();
+						if (proxy instanceof AuthenticatedProxy) {
+							AuthenticatedProxy authProxy = (AuthenticatedProxy) proxy;
+
+							config.getState().setProxyCredentials(AuthScope.ANY_REALM, address.getHostName(),
+									address.getPort(), authProxy.getUserName(), authProxy.getPassword());
+						}
+
+					}
+				}
+			});
+
+			if (proxy != null) {
+				final InetSocketAddress address = (InetSocketAddress) proxy.address();
+				restClient.getTransportClient()
+						.getProperties()
+						.put(ApacheHttpClientConfig.PROPERTY_PROXY_URI,
+								"http://" + address.getHostName() + ":" + address.getPort());
+			}
+
 		} catch (URISyntaxException e) {
 			// TODO jiraRestClient not initialized
 			e.printStackTrace();
@@ -138,10 +170,6 @@ public class JiraRestClientAdapter {
 	}
 
 	public JiraIssue getIssueById(String issueId, IProgressMonitor monitor) throws JiraException {
-
-		// TODO rest remove once we have id in place
-		// strip key from id = url_key
-//		String issueKey = issueId.split("_")[1].replace('*', '-');
 
 		return getIssueByKey(issueId, monitor);
 	}

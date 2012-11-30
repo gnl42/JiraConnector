@@ -14,6 +14,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core.service;
 
 import java.io.InputStream;
+import java.net.Proxy;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,8 +120,21 @@ public class JiraClient {
 //		this.webClient = new JiraWebClient(this, webSession);
 //		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
+
+		createRestClient();
+
+	}
+
+	private void createRestClient() {
+		Proxy proxy = null;
+		if (baseUrl.matches("https.*")) {
+			proxy = location.getProxyForHost(baseUrl, "HTTPS");
+		} else if (baseUrl.matches("http.*")) {
+			proxy = location.getProxyForHost(baseUrl, "HTTP");
+		}
+
 		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
-				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), cache);
+				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), proxy, cache);
 	}
 
 	public JiraClient(AbstractWebLocation location) {
@@ -475,8 +489,6 @@ public class JiraClient {
 //	public IssueType[] getIssueTypes(String projectKey, IProgressMonitor monitor) throws JiraException {
 //		JiraCorePlugin.getMonitoring().logJob("getIssueTypesForProject", null); //$NON-NLS-1$
 //
-//		//TODO rest remove this method as project retrieved by REST contains list of issue types (single project get)
-//
 //		return restClient.getIssueTypes(projectKey);
 //
 ////		return soapClient.getIssueTypes(projectKey, monitor);
@@ -769,10 +781,11 @@ public class JiraClient {
 	}
 
 	public synchronized void purgeSession() {
-		webSession.purgeSession();
+//		webSession.purgeSession();
 		soapClient.purgeSession();
+		createRestClient();
 
-		// TODO rest: what is happening here? should we do anything with REST client?
+		// TODO rest: rebuild REST client (how to get new TaskRepository properties? it looks like we have old ones) 
 	}
 
 	public String getAssigneeParam(JiraIssue issue, int assigneeType, String user) {
