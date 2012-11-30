@@ -91,14 +91,8 @@ public class JiraRestConverter {
 	}
 
 	private static Resolution convert(com.atlassian.jira.rest.client.domain.Resolution resolution) {
-		Resolution outResolution = new Resolution();
-
-		outResolution.setName(resolution.getName());
-		outResolution.setDescription(resolution.getDescription());
-		// TODO change to real id if available
-		outResolution.setId(resolution.getName());
-
-		return outResolution;
+		// TODO change first argument to real ID if available
+		return new Resolution(resolution.getName(), resolution.getName(), resolution.getDescription(), null);
 	}
 
 	public static Priority[] convertPriorities(Iterable<com.atlassian.jira.rest.client.domain.Priority> allPriorities) {
@@ -112,13 +106,12 @@ public class JiraRestConverter {
 	}
 
 	private static Priority convert(com.atlassian.jira.rest.client.domain.Priority priority) {
-		Priority outPriority = new Priority();
+		Priority outPriority = new Priority(priority.getId().toString());
 
 		outPriority.setName(priority.getName());
 		outPriority.setDescription(priority.getDescription());
 		outPriority.setColour(priority.getStatusColor());
 		outPriority.setIcon(priority.getIconUri().toString());
-		outPriority.setId(priority.getId().toString());
 		outPriority.setSelf(priority.getSelf());
 
 		return outPriority;
@@ -415,13 +408,11 @@ public class JiraRestConverter {
 	}
 
 	private static IssueType convert(com.atlassian.jira.rest.client.domain.IssueType issueType) {
-		IssueType outIssueType = new IssueType();
+		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.isSubtask());
 
-		outIssueType.setId(issueType.getId().toString());
 		outIssueType.setName(issueType.getName());
 		outIssueType.setDescription(issueType.getDescription());
 		outIssueType.setIcon(issueType.getIconUri().toString());
-		outIssueType.setSubTaskType(issueType.isSubtask());
 
 		return outIssueType;
 	}

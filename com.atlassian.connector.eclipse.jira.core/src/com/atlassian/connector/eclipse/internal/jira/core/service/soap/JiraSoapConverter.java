@@ -67,11 +67,10 @@ public class JiraSoapConverter {
 	}
 
 	protected static Priority convert(RemotePriority remotePriority) {
-		Priority priority = new Priority();
+		Priority priority = new Priority(remotePriority.getId());
 		priority.setColour(remotePriority.getColor());
 		priority.setDescription(remotePriority.getDescription());
 		priority.setIcon(remotePriority.getIcon());
-		priority.setId(remotePriority.getId());
 		priority.setName(remotePriority.getName());
 
 		return priority;
@@ -138,13 +137,8 @@ public class JiraSoapConverter {
 	}
 
 	protected static JiraStatus convert(RemoteStatus remoteStatus) {
-		JiraStatus status = new JiraStatus();
-		status.setDescription(remoteStatus.getDescription());
-		status.setIcon(remoteStatus.getIcon());
-		status.setId(remoteStatus.getId());
-		status.setName(remoteStatus.getName());
-
-		return status;
+		return new JiraStatus(remoteStatus.getId(), remoteStatus.getName(), remoteStatus.getDescription(),
+				remoteStatus.getIcon());
 	}
 
 	protected static Version[] convert(RemoteVersion[] remoteVersions) {
@@ -156,9 +150,8 @@ public class JiraSoapConverter {
 	}
 
 	protected static Version convert(RemoteVersion remoteVersion) {
-		Version version = new Version();
+		Version version = new Version(remoteVersion.getId());
 		version.setArchived(remoteVersion.isArchived());
-		version.setId(remoteVersion.getId());
 		version.setName(remoteVersion.getName());
 		version.setReleased(remoteVersion.isReleased());
 		version.setReleaseDate(remoteVersion.getReleaseDate() != null ? remoteVersion.getReleaseDate().getTime() : null);
@@ -176,13 +169,8 @@ public class JiraSoapConverter {
 	}
 
 	protected static Resolution convert(RemoteResolution remoteResolution) {
-		Resolution resolution = new Resolution();
-		resolution.setDescription(remoteResolution.getDescription());
-		resolution.setIcon(remoteResolution.getIcon());
-		resolution.setId(remoteResolution.getId());
-		resolution.setName(remoteResolution.getName());
-
-		return resolution;
+		return new Resolution(remoteResolution.getId(), remoteResolution.getName(), remoteResolution.getDescription(),
+				remoteResolution.getIcon());
 	}
 
 	protected static IssueType[] convert(RemoteIssueType[] remoteIssueTypes) {
@@ -194,13 +182,8 @@ public class JiraSoapConverter {
 	}
 
 	protected static IssueType convert(RemoteIssueType remoteIssueType) {
-		IssueType issueType = new IssueType();
-		issueType.setDescription(remoteIssueType.getDescription());
-		issueType.setIcon(remoteIssueType.getIcon());
-		issueType.setId(remoteIssueType.getId());
-		issueType.setName(remoteIssueType.getName());
-
-		return issueType;
+		return new IssueType(remoteIssueType.getId(), remoteIssueType.getName(), remoteIssueType.getDescription(),
+				remoteIssueType.getIcon());
 	}
 
 	protected static Project[] convert(RemoteProject[] remoteProjects) {

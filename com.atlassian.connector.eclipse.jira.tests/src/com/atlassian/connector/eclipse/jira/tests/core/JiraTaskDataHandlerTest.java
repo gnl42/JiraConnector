@@ -179,8 +179,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setAssignee("boo");
 		issue.setSummary("summary");
 		issue.setDescription("description");
-		JiraStatus status = new JiraStatus();
-		status.setId("1"); // open
+		JiraStatus status = new JiraStatus("1"); // 1 == open
 		status.setName("open");
 		issue.setStatus(status);
 		Date created = new Date();

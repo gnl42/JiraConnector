@@ -75,12 +75,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 		comps[2].setId("comp2");
 
 		Version[] vers = new Version[3];
-		vers[0] = new Version();
-		vers[0].setId("ver0");
-		vers[1] = new Version();
-		vers[1].setId("ver1");
-		vers[2] = new Version();
-		vers[2].setId("ver2");
+		vers[0] = new Version("ver0");
+		vers[1] = new Version("ver1");
+		vers[2] = new Version("ver2");
 
 		projects = new Project[2];
 		projects[0] = new Project();
@@ -101,40 +98,30 @@ public class FilterDefinitionConverterTest extends TestCase {
 		components[1].setId("comp1");
 
 		Version[] fixVersions = new Version[2];
-		fixVersions[0] = new Version();
-		fixVersions[0].setId("ver0");
-		fixVersions[1] = new Version();
-		fixVersions[1].setId("ver1");
+		fixVersions[0] = new Version("ver0");
+		fixVersions[1] = new Version("ver1");
 
 		Version[] repoVersions = new Version[2];
-		repoVersions[0] = new Version();
-		repoVersions[0].setId("ver1");
-		repoVersions[1] = new Version();
-		repoVersions[1].setId("ver2");
+		repoVersions[0] = new Version("ver1");
+		repoVersions[1] = new Version("ver2");
 
 		IssueType[] issueTypes = new IssueType[2];
-		issueTypes[0] = new IssueType();
-		issueTypes[0].setId("issue0");
-		issueTypes[1] = new IssueType();
-		issueTypes[1].setId("issue1");
+		issueTypes[0] = new IssueType("issue0", false);
+		issueTypes[1] = new IssueType("issue1", false);
 
 		JiraStatus[] statuses = new JiraStatus[2];
-		statuses[0] = new JiraStatus();
-		statuses[0].setId("status0");
-		statuses[1] = new JiraStatus();
-		statuses[1].setId("status1");
+		statuses[0] = new JiraStatus("status0");
+		statuses[1] = new JiraStatus("status1");
 
 		Resolution[] resolutions = new Resolution[2];
-		resolutions[0] = new Resolution();
-		resolutions[0].setId("resolution0");
-		resolutions[1] = new Resolution();
-		resolutions[1].setId("resolution1");
+		resolutions[0] = new Resolution("res0id", "res0name", "res0descr", "res0icon");
+		resolutions[1] = new Resolution("res1id", "res1name", "res1descr", "res1icon");
 
 		filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(projects));
-		filter.setComponentFilter(new ComponentFilter(components, true));
-		filter.setFixForVersionFilter(new VersionFilter(fixVersions, true, true, true));
-		filter.setReportedInVersionFilter(new VersionFilter(repoVersions, true, true, true));
+		filter.setComponentFilter(new ComponentFilter(components, false));
+		filter.setFixForVersionFilter(new VersionFilter(fixVersions, false, true, false));
+		filter.setReportedInVersionFilter(new VersionFilter(repoVersions, false, false, true));
 		filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes));
 		filter.setStatusFilter(new StatusFilter(statuses));
 		filter.setResolutionFilter(new ResolutionFilter(resolutions));
@@ -167,23 +154,17 @@ public class FilterDefinitionConverterTest extends TestCase {
 
 			@Override
 			public IssueType getIssueTypeById(String id) {
-				IssueType issueType = new IssueType();
-				issueType.setId(id);
-				return issueType;
+				return new IssueType(id, false);
 			};
 
 			@Override
 			public JiraStatus getStatusById(String id) {
-				JiraStatus status = new JiraStatus();
-				status.setId(id);
-				return status;
+				return new JiraStatus(id);
 			};
 
 			@Override
 			public Resolution getResolutionById(String id) {
-				Resolution resolution = new Resolution();
-				resolution.setId(id);
-				return resolution;
+				return new Resolution(id);
 			};
 		};
 		client.setCache(cache);

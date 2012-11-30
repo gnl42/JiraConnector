@@ -38,7 +38,9 @@ public class Version implements Serializable {
 		this.id = id;
 	}
 
-	public Version() {
+	public Version(String id, String name) {
+		this(id);
+		this.name = name;
 	}
 
 	public boolean isArchived() {

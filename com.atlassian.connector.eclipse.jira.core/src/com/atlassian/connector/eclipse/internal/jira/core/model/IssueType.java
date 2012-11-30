@@ -46,7 +46,11 @@ public class IssueType implements Serializable {
 		this.subTaskType = subTaskType;
 	}
 
-	public IssueType() {
+	public IssueType(String id, String name, String description, String icon) {
+		this(id, false);
+		this.name = name;
+		this.description = description;
+		this.icon = icon;
 	}
 
 	public String getDescription() {

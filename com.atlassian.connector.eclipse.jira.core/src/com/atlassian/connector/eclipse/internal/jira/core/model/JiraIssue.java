@@ -489,8 +489,7 @@ public class JiraIssue implements Serializable {
 	public void setValue(String field, String value) {
 		if ("resolution".equals(field)) { //$NON-NLS-1$
 			if (value != null) {
-				resolution = new Resolution();
-				resolution.setId(value);
+				resolution = new Resolution(value);
 			}
 		} else if ("assignee".equals(field)) { //$NON-NLS-1$
 			assignee = value;

@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.jira.tests.util;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.WebLocation;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
@@ -49,18 +50,11 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	public static IssueType createIssueType(String id, String name) {
-		IssueType issueType = new IssueType();
-		issueType.setId(id);
-		issueType.setName(name);
-		return issueType;
-
+		return new IssueType(id, name, null, null);
 	}
 
 	public static Priority createPriority(String id, String name) {
-		Priority priority = new Priority();
-		priority.setId(id);
-		priority.setName(name);
-		return priority;
+		return new Priority(id, name, null, null, null);
 	}
 
 	public static Project createProject() {
@@ -82,16 +76,20 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	public static Version createVersion(String id, String name) {
-		Version version = new Version();
-		version.setId(id);
-		version.setName(name);
-		return version;
+		return new Version(id, name);
 	}
 
 	private JiraClientCache cache;
 
+	static class MockWebLocation extends WebLocation {
+		MockWebLocation(String baseUrl) {
+			super(baseUrl);
+			setCredentials(AuthenticationType.REPOSITORY, "username", "password");
+		}
+	}
+
 	public MockJiraClient(String baseUrl) {
-		super(new WebLocation(baseUrl));
+		super(new MockWebLocation(baseUrl));
 		this.cache = super.getCache();
 	}
 

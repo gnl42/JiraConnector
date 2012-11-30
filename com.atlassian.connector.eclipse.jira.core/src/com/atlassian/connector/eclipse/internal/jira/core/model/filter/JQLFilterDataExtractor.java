@@ -173,25 +173,25 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
 	 */
 	@Override
 	public Collection<String> extractVersions(final VersionFilter filter) {
-		final List<String> fixVersionIds = new ArrayList<String>();
+		final List<String> fixVersionNames = new ArrayList<String>();
 
 		if (filter != null) {
 			if (filter.hasNoVersion()) {
-				fixVersionIds.add(JiraFieldSpecialValue.VERSION_NONE.getJql());
+				fixVersionNames.add(JiraFieldSpecialValue.VERSION_NONE.getJql());
 			}
 			if (filter.isReleasedVersions()) {
-				fixVersionIds.add(JiraFieldSpecialValue.VERSION_RELEASED.getJql());
+				fixVersionNames.add(JiraFieldSpecialValue.VERSION_RELEASED.getJql());
 			}
 			if (filter.isUnreleasedVersions()) {
-				fixVersionIds.add(JiraFieldSpecialValue.VERSION_UNRELEASED.getJql());
+				fixVersionNames.add(JiraFieldSpecialValue.VERSION_UNRELEASED.getJql());
 			}
 
 			if (filter.getVersions() != null) {
-				fixVersionIds.addAll(getVersionNames(Arrays.asList(filter.getVersions())));
+				fixVersionNames.addAll(getVersionNames(Arrays.asList(filter.getVersions())));
 			}
 		}
 
-		return fixVersionIds;
+		return fixVersionNames;
 	}
 
 	/**
