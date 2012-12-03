@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.lang.StringUtils;
@@ -42,10 +43,12 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
@@ -100,7 +103,7 @@ public class JiraRestClientAdapter {
 				restClient.getTransportClient()
 						.getProperties()
 						.put(ApacheHttpClientConfig.PROPERTY_PROXY_URI,
-								"http://" + address.getHostName() + ":" + address.getPort());
+								"http://" + address.getHostName() + ":" + address.getPort()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		} catch (URISyntaxException e) {
@@ -109,17 +112,27 @@ public class JiraRestClientAdapter {
 		}
 	}
 
-	public void addComment(String issueKey, String comment) {
-		restClient.getIssueClient().addComment(new NullProgressMonitor(), getIssue(issueKey).getCommentsUri(),
-				Comment.valueOf(comment));
+	public void addComment(final String issueKey, final String comment) throws JiraException {
 
+		call(new Callable<Void>() {
+			public Void call() throws Exception {
+				restClient.getIssueClient().addComment(new NullProgressMonitor(), getIssue(issueKey).getCommentsUri(),
+						Comment.valueOf(comment));
+
+				return null;
+			}
+		});
 	}
 
-	private Issue getIssue(String issueKey) {
-		return restClient.getIssueClient().getIssue(issueKey, new NullProgressMonitor());
+	private Issue getIssue(final String issueKeyOrId) throws JiraException {
+		return call(new Callable<Issue>() {
+			public Issue call() {
+				return restClient.getIssueClient().getIssue(issueKeyOrId, new NullProgressMonitor());
+			}
+		});
 	}
 
-	public void addAttachment(String issueKey, byte[] content, String filename) {
+	public void addAttachment(String issueKey, byte[] content, String filename) throws JiraException {
 		restClient.getIssueClient().addAttachment(new NullProgressMonitor(), getIssue(issueKey).getAttachmentsUri(),
 				new ByteArrayInputStream(content), filename);
 	}
@@ -150,8 +163,8 @@ public class JiraRestClientAdapter {
 				new NullProgressMonitor()));
 	}
 
-	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return JiraRestConverter.convertIssue(getIssue(issueKey), cache, url, monitor);
+	public JiraIssue getIssueByKeyOrId(String issueKeyOrId, IProgressMonitor monitor) throws JiraException {
+		return JiraRestConverter.convertIssue(getIssue(issueKeyOrId), cache, url, monitor);
 	}
 
 	public JiraStatus[] getStatuses() {
@@ -169,23 +182,26 @@ public class JiraRestClientAdapter {
 				.getIssueTypes());
 	}
 
-	public JiraIssue getIssueById(String issueId, IProgressMonitor monitor) throws JiraException {
+	public List<JiraIssue> getIssues(final String jql, final IProgressMonitor monitor) throws JiraException {
 
-		return getIssueByKey(issueId, monitor);
-	}
+		return call(new Callable<List<JiraIssue>>() {
 
-	public List<JiraIssue> getIssues(String jql, IProgressMonitor monitor) throws JiraException {
-		List<JiraIssue> issues = JiraRestConverter.convertIssues(restClient.getSearchClient()
-				.searchJql(jql, new NullProgressMonitor())
-				.getIssues());
+			public List<JiraIssue> call() throws Exception {
+				List<JiraIssue> issues = JiraRestConverter.convertIssues(restClient.getSearchClient()
+						.searchJql(jql, new NullProgressMonitor())
+						.getIssues());
 
-		List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
+				List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();
 
-		for (JiraIssue issue : issues) {
-			fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url, monitor));
-		}
+				for (JiraIssue issue : issues) {
+					fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url, monitor));
+				}
 
-		return fullIssues;
+				return fullIssues;
+			}
+
+		});
+
 	}
 
 //	public Component[] getComponents(String projectKey) {
@@ -210,24 +226,22 @@ public class JiraRestClientAdapter {
 		project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
 	}
 
-	public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) {
+	public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) throws JiraException {
 		Issue issue = getIssue(issueKey);
 		restClient.getIssueClient().addWorklog(issue.getWorklogUri(),
 				JiraRestConverter.convert(jiraWorklog, issue.getSelf()), new NullProgressMonitor());
 	}
 
-	public ServerInfo getServerInfo() {
-
-//		GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
-//		builder.withExpandedIssueTypesFields().withProjectKeys("TEST");
-//
-//		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
-//				new NullProgressMonitor());
-
-		return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo(new NullProgressMonitor()));
+	public ServerInfo getServerInfo() throws JiraException {
+		return call(new Callable<ServerInfo>() {
+			public ServerInfo call() {
+				return JiraRestConverter.convert(restClient.getMetadataClient()
+						.getServerInfo(new NullProgressMonitor()));
+			}
+		});
 	}
 
-	public Iterable<JiraAction> getTransitions(String issueKey) {
+	public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
 
 		return JiraRestConverter.convertTransitions(restClient.getIssueClient().getTransitions(getIssue(issueKey),
 				new NullProgressMonitor()));
@@ -243,8 +257,8 @@ public class JiraRestClientAdapter {
 			if (transitionField.isRequired()) {
 				String[] values = issue.getFieldValues(transitionField.getName());
 				if (values.length > 0) {
-					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with("name", //$NON-NLS-1$
-							values[0])));
+					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
+							JiraRestFields.NAME, values[0])));
 				} else {
 					throw new JiraException(NLS.bind("Field {0} is required for transition {1}",
 							transitionField.getName(), transitionKey));
@@ -262,11 +276,11 @@ public class JiraRestClientAdapter {
 
 	}
 
-	public void assignIssue(String issueKey, String user, String comment) {
+	public void assignIssue(String issueKey, String user, String comment) throws JiraException {
 		Issue issue = getIssue(issueKey);
 
-		ImmutableList<FieldInput> fields = ImmutableList.<FieldInput> of(new FieldInput("assignee",
-				ComplexIssueInputFieldValue.with("name", user)));
+		ImmutableList<FieldInput> fields = ImmutableList.<FieldInput> of(new FieldInput(JiraRestFields.ASSIGNEE,
+				ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
 
 		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
 
@@ -278,6 +292,12 @@ public class JiraRestClientAdapter {
 	 * @throws JiraException
 	 */
 	public String createIssue(JiraIssue issue) throws JiraException {
+
+//		GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
+//		builder.withExpandedIssueTypesFields().withProjectKeys("TEST");
+//
+//		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
+//				new NullProgressMonitor());
 
 		IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
 				Long.parseLong(issue.getType().getId()), issue.getSummary());
@@ -299,43 +319,45 @@ public class JiraRestClientAdapter {
 		issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()),
 				issue.getPriority().getName()));
 
-		issueInputBuilder.setFieldInput(new FieldInput("environment", issue.getEnvironment()));
+		issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
 
 		Map<String, Object> map = ImmutableMap.<String, Object> builder()
-				.put("originalEstimate", String.valueOf(issue.getEstimate() / 60))
-				.put("remainingEstimate", String.valueOf(issue.getEstimate() / 60))
+				.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
+				.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
 				.build();
-		issueInputBuilder.setFieldInput(new FieldInput("timetracking", new ComplexIssueInputFieldValue(map)));
+		issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING,
+				new ComplexIssueInputFieldValue(map)));
 
 		if (issue.getSecurityLevel() != null) {
-			issueInputBuilder.setFieldValue("security",
-					ComplexIssueInputFieldValue.with("id", issue.getSecurityLevel().getId()));
+			issueInputBuilder.setFieldValue(JiraRestFields.SECURITY,
+					ComplexIssueInputFieldValue.with(JiraRestFields.ID, issue.getSecurityLevel().getId()));
 		}
 
 		if (!StringUtils.isEmpty(issue.getParentKey())) {
-			issueInputBuilder.setFieldInput(new FieldInput("parent", ComplexIssueInputFieldValue.with("key",
-					issue.getParentKey())));
+			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(
+					JiraRestFields.KEY, issue.getParentKey())));
 		}
 
 		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
 
 	}
 
-	public void updateIssue(JiraIssue changedIssue) {
+	public void updateIssue(JiraIssue changedIssue) throws JiraException {
 		Issue issue = getIssue(changedIssue.getKey());
 
 		List<FieldInput> fields = new ArrayList<FieldInput>();
 
-		fields.add(new FieldInput("issuetype", ComplexIssueInputFieldValue.with("id", changedIssue.getType().getId())));
-		fields.add(new FieldInput("priority",
-				ComplexIssueInputFieldValue.with("id", changedIssue.getPriority().getId())));
+		fields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+				changedIssue.getType().getId())));
+		fields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+				changedIssue.getPriority().getId())));
 
 		// TODO rest: how to clear due date?
-		String date = new DateTime(changedIssue.getDue()).toString("yyyy-MM-dd");
+		String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
 		if (changedIssue.getDue() == null) {
 			date = null;
 		}
-		fields.add(new FieldInput("duedate", date));
+		fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
 		// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
 		long originalEstimate = changedIssue.getEstimate() / 60;
@@ -344,38 +366,55 @@ public class JiraRestClientAdapter {
 		}
 
 		Map<String, Object> map = ImmutableMap.<String, Object> builder()
-				.put("originalEstimate", String.valueOf(originalEstimate))
-				.put("remainingEstimate", String.valueOf(changedIssue.getEstimate() / 60))
+				.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(originalEstimate))
+				.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(changedIssue.getEstimate() / 60))
 				.build();
 
-		fields.add(new FieldInput("timetracking", new ComplexIssueInputFieldValue(map)));
+		fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 
 		List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
 		for (Version version : changedIssue.getReportedVersions()) {
-			reportedVersions.add(ComplexIssueInputFieldValue.with("id", version.getId()));
+			reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
 		}
-		fields.add(new FieldInput("versions", reportedVersions));
+		fields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
 
 		List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
 		for (Version version : changedIssue.getFixVersions()) {
-			fixVersions.add(ComplexIssueInputFieldValue.with("id", version.getId()));
+			fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
 		}
-		fields.add(new FieldInput("fixVersions", fixVersions));
+		fields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
 
 		List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
 		for (Component component : changedIssue.getComponents()) {
-			components.add(ComplexIssueInputFieldValue.with("id", component.getId()));
+			components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
 		}
-		fields.add(new FieldInput("components", components));
+		fields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
 
-		fields.add(new FieldInput("security", ComplexIssueInputFieldValue.with("id", changedIssue.getSecurityLevel()
-				.getId())));
+		fields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+				changedIssue.getSecurityLevel().getId())));
 
-		fields.add(new FieldInput("environment", changedIssue.getEnvironment()));
+		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
 
-		fields.add(new FieldInput("description", changedIssue.getDescription()));
+		fields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription()));
 
 		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
+
+	}
+
+	private <V> V call(Callable<V> callable) throws JiraException {
+		try {
+			return callable.call();
+		} catch (RestClientException e) {
+			if (e.getMessage().contains("Client response status: 401")) {
+				throw new JiraAuthenticationException(e.getMessage());
+			} else if (e.getMessage().contains("java.net.ConnectException: Connection refused: connect")) {
+				throw new JiraException("java.net.ConnectException: Connection refused: connect", e);
+			} else {
+				throw new JiraException(e);
+			}
+		} catch (Exception e) {
+			throw new JiraException(e);
+		}
 
 	}
 }

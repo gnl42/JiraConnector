@@ -45,7 +45,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDef
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSession;
 import com.atlassian.jira.rest.client.RestClientException;
 
 /**
@@ -104,7 +103,7 @@ public class JiraClient {
 
 	private JiraLocalConfiguration localConfiguration;
 
-	private final JiraWebSession webSession;
+//	private final JiraWebSession webSession;
 
 	private JiraRestClientAdapter restClient = null;
 
@@ -116,7 +115,7 @@ public class JiraClient {
 		this.localConfiguration = configuration;
 
 		this.cache = new JiraClientCache(this);
-		this.webSession = new JiraWebSession(this);
+//		this.webSession = new JiraWebSession(this);
 //		this.webClient = new JiraWebClient(this, webSession);
 //		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
@@ -127,10 +126,10 @@ public class JiraClient {
 
 	private void createRestClient() {
 		Proxy proxy = null;
-		if (baseUrl.matches("https.*")) {
-			proxy = location.getProxyForHost(baseUrl, "HTTPS");
-		} else if (baseUrl.matches("http.*")) {
-			proxy = location.getProxyForHost(baseUrl, "HTTP");
+		if (baseUrl.matches("https.*")) { //$NON-NLS-1$
+			proxy = location.getProxyForHost(baseUrl, "HTTPS"); //$NON-NLS-1$
+		} else if (baseUrl.matches("http.*")) { //$NON-NLS-1$
+			proxy = location.getProxyForHost(baseUrl, "HTTP"); //$NON-NLS-1$
 		}
 
 		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
@@ -449,7 +448,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByKey", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getIssueByKey(issueKey, monitor);
+			return restClient.getIssueByKeyOrId(issueKey, monitor);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -468,7 +467,7 @@ public class JiraClient {
 
 		try {
 			// TODO rest retrieve/show custom fields
-			return restClient.getIssueById(issueId, monitor);
+			return restClient.getIssueByKeyOrId(issueId, monitor);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -783,9 +782,8 @@ public class JiraClient {
 	public synchronized void purgeSession() {
 //		webSession.purgeSession();
 		soapClient.purgeSession();
-		createRestClient();
 
-		// TODO rest: rebuild REST client (how to get new TaskRepository properties? it looks like we have old ones) 
+		createRestClient();
 	}
 
 	public String getAssigneeParam(JiraIssue issue, int assigneeType, String user) {
@@ -804,5 +802,4 @@ public class JiraClient {
 			return user;
 		}
 	}
-
 }

@@ -58,8 +58,6 @@ import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 
 public class JiraRestConverter {
 
-	private static final String FIELD_ENVIRONMENT_ID = "environment"; //$NON-NLS-1$
-
 	public static Project[] convertProjects(Iterable<BasicProject> allProjects) {
 		List<Project> projects = new ArrayList<Project>();
 		for (BasicProject basicProject : allProjects) {
@@ -73,8 +71,7 @@ public class JiraRestConverter {
 
 		project.setName(basicProject.getName());
 		project.setKey(basicProject.getKey());
-		// TODO provide real project id
-		project.setId(Integer.toString(basicProject.getSelf().toString().hashCode()));
+		project.setId(basicProject.getId().toString());
 
 		return project;
 	}
@@ -91,7 +88,7 @@ public class JiraRestConverter {
 	}
 
 	private static Resolution convert(com.atlassian.jira.rest.client.domain.Resolution resolution) {
-		// TODO change first argument to real ID if available
+		// TODO rest change first argument to real ID if available
 		return new Resolution(resolution.getName(), resolution.getName(), resolution.getDescription(), null);
 	}
 
@@ -135,10 +132,10 @@ public class JiraRestConverter {
 		jiraIssue.setDescription(issue.getDescription());
 
 		if (issue.getIssueType().isSubtask()) {
-			Object parent = issue.getField("parent").getValue();
+			Object parent = issue.getField(JiraRestFields.PARENT).getValue();
 			if (parent instanceof JSONObject) {
-				jiraIssue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, "key"));
-				jiraIssue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, "id"));
+				jiraIssue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.KEY));
+				jiraIssue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.ID));
 			}
 
 		}
@@ -168,13 +165,13 @@ public class JiraRestConverter {
 			jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
 		}
 
-		Field security = issue.getField("security");
+		Field security = issue.getField(JiraRestFields.SECURITY);
 		if (security != null && security.getValue() != null && security.getValue() instanceof JSONObject) {
 			JSONObject json = (JSONObject) security.getValue();
 
 			try {
-				String id = json.getString("id");
-				String name = json.getString("name");
+				String id = json.getString(JiraRestFields.ID);
+				String name = json.getString(JiraRestFields.NAME);
 
 				SecurityLevel securityLevel = new SecurityLevel(id);
 				securityLevel.setName(name);
@@ -199,7 +196,7 @@ public class JiraRestConverter {
 		jiraIssue.setUrl(url + "/browse/" + issue.getKey()); //$NON-NLS-1$
 		jiraIssue.setComponents(convertComponents(issue.getComponents()));
 
-		Object env = issue.getField(FIELD_ENVIRONMENT_ID).getValue();
+		Object env = issue.getField(JiraRestFields.ENVIRONMENT).getValue();
 		if (env != null) {
 			jiraIssue.setEnvironment(env.toString());
 		} else {
@@ -321,7 +318,7 @@ public class JiraRestConverter {
 	private static IssueLink convert(com.atlassian.jira.rest.client.domain.IssueLink issueLink) {
 		IssueLink outIssueLink = new IssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
 				issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
-				issueLink.getIssueLinkType().getDescription(), "");
+				issueLink.getIssueLinkType().getDescription(), ""); //$NON-NLS-1$
 
 		return outIssueLink;
 

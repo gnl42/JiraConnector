@@ -33,8 +33,8 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientData;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 
 /**
@@ -137,7 +137,6 @@ public class JiraClientManager {
 	 * return with a exceptions carrying the failure reason.
 	 * 
 	 * @param monitor
-	 * 
 	 * @param baseUrl
 	 *            Base URL of the jira installation
 	 * @param username
@@ -173,7 +172,7 @@ public class JiraClientManager {
 
 	public JiraClient addClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 		if (clientByUrl.containsKey(location.getUrl())) {
-			throw new RuntimeException("A client with that name already exists"); //$NON-NLS-1$
+			throw new RuntimeException("A client with that url already exists"); //$NON-NLS-1$
 		}
 
 		JiraClient client = createClient(location, configuration);
