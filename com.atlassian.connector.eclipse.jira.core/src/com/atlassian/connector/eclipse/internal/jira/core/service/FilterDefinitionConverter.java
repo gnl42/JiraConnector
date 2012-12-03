@@ -359,13 +359,13 @@ public class FilterDefinitionConverter {
 		// estimation
 		EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
 		if (estimateFilter != null) {
-			float min = estimateFilter.getMinVariation();
+			long min = estimateFilter.getMinVariation();
 			if (min != 0L) {
-				addParameter(sb, "minRatioLimit", Float.toString(min)); //$NON-NLS-1$
+				addParameter(sb, "minRatioLimit", Long.toString(min)); //$NON-NLS-1$
 			}
-			float max = estimateFilter.getMaxVariation();
+			long max = estimateFilter.getMaxVariation();
 			if (max != 0L) {
-				addParameter(sb, "maxRatioLimit", Float.toString(max)); //$NON-NLS-1$
+				addParameter(sb, "maxRatioLimit", Long.toString(max)); //$NON-NLS-1$
 			}
 		}
 
@@ -444,18 +444,9 @@ public class FilterDefinitionConverter {
 		addJqlAndExpression(searchParams, jiraField.DUE_DATE(),
 				jqlFilter.extractDates(filter.getDueDateFilter(), dateFormat));
 
-// TODO not implemented yet
-//		EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
-//		if (estimateFilter != null) {
-//			float min = estimateFilter.getMinVariation();
-//			if (min != 0L) {
-//				addParameter(sb, "minRatioLimit", Float.toString(min)); //$NON-NLS-1$
-//			}
-//			float max = estimateFilter.getMaxVariation();
-//			if (max != 0L) {
-//				addParameter(sb, "maxRatioLimit", Float.toString(max)); //$NON-NLS-1$
-//			}
-//		}
+		// estimations
+		addJqlAndExpression(searchParams, jiraField.WORK_RATIO(),
+				jqlFilter.extractWorkRatios(filter.getEstimateVsActualFilter()));
 
 		String whereClause = StringUtils.join(searchParams, " AND "); //$NON-NLS-1$
 		String orderByClause = getJqlOrdering(filter.getOrdering());

@@ -61,6 +61,14 @@ import com.atlassian.jira.rest.client.RestClientException;
  */
 public class JiraClient {
 
+	private static final String URL_REGEXP_HTTP = "http.*"; //$NON-NLS-1$
+
+	private static final String URL_REGEXP_HTTPS = "https.*"; //$NON-NLS-1$
+
+	private static final String PROXY_TYPE_HTTP = "HTTP"; //$NON-NLS-1$
+
+	private static final String PROXY_TYPE_HTTPS = "HTTPS"; //$NON-NLS-1$
+
 	/**
 	 * Leave the assignee field as is (this does not apply when performing an assign to action)
 	 */
@@ -127,10 +135,10 @@ public class JiraClient {
 
 	private void createRestClient() {
 		Proxy proxy = null;
-		if (baseUrl.matches("https.*")) {
-			proxy = location.getProxyForHost(baseUrl, "HTTPS");
-		} else if (baseUrl.matches("http.*")) {
-			proxy = location.getProxyForHost(baseUrl, "HTTP");
+		if (baseUrl.matches(URL_REGEXP_HTTPS)) {
+			proxy = location.getProxyForHost(baseUrl, PROXY_TYPE_HTTPS);
+		} else if (baseUrl.matches(URL_REGEXP_HTTP)) {
+			proxy = location.getProxyForHost(baseUrl, PROXY_TYPE_HTTP);
 		}
 
 		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
