@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.Component
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.CurrentUserFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.EstimateVsActualFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDataExtractor;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueTypeFilter;
@@ -135,6 +136,7 @@ public abstract class FilterDataExtractorTest extends TestCase {
 		filterDefinition.setDueDateFilter(new DateRangeFilter(new DateTime(1900, 01, 01, 0, 0, 0, 0).toDate(),
 				new DateTime(2999, 12, 31, 23, 59, 59, 999).toDate()));
 		filterDefinition.setPriorityFilter(new PriorityFilter(priorities));
+		filterDefinition.setEstimateVsActualFilter(new EstimateVsActualFilter(10, 90));
 
 		return filterDefinition;
 	}
@@ -223,4 +225,8 @@ public abstract class FilterDataExtractorTest extends TestCase {
 	 */
 	public abstract void testExtractVersions();
 
+	/**
+	 * @see FilterDataExtractor#extractWorkRatios(EstimateVsActualFilter)
+	 */
+	public abstract void testExtractWorkRatios();
 }
