@@ -162,4 +162,12 @@ public class JQLFilterDataExtractorTest extends FilterDataExtractorTest {
 		assertCollectionsEqual(expected, actual);
 	}
 
+	@Override
+	public void testExtractWorkRatios() {
+		// just min + max
+		Collection<String> actual = extractor.extractWorkRatios(filterDefinition.getEstimateVsActualFilter());
+		Collection<String> expected = Lists.newArrayList(" >= 10", " <= 90");
+		assertCollectionsEqual(expected, actual);
+	}
+
 }

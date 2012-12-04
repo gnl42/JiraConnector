@@ -218,4 +218,20 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
 		return usersOrGroups;
 	}
 
+	@Override
+	public Collection<String> extractWorkRatios(EstimateVsActualFilter estimateFilter) {
+		final List<String> workRatios = new ArrayList<String>(2);
+		if (estimateFilter != null) {
+			final long minVariation = estimateFilter.getMinVariation();
+			if (minVariation != 0L) {
+				workRatios.add(" >= " + minVariation); //$NON-NLS-1$
+			}
+			final long maxVariation = estimateFilter.getMaxVariation();
+			if (maxVariation != 0L) {
+				workRatios.add(" <= " + maxVariation); //$NON-NLS-1$
+			}
+		}
+		return workRatios;
+	}
+
 }

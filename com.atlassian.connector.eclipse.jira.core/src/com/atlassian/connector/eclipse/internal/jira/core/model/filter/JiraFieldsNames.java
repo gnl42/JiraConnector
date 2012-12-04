@@ -103,6 +103,10 @@ public class JiraFieldsNames {
 		return value(JiraFields.UPDATED);
 	}
 
+	public String WORK_RATIO() {
+		return value(JiraFields.WORK_RATIO);
+	}
+
 	private final boolean isClassic;
 
 	/**

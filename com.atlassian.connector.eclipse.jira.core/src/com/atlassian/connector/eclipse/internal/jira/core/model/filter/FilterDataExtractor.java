@@ -137,6 +137,14 @@ public abstract class FilterDataExtractor {
 	public abstract Collection<String> extractVersions(VersionFilter filter);
 
 	/**
+	 * Extracts work ratio range from filter (logged work effort vs actual estimation).
+	 * 
+	 * @param estimateFilter
+	 * @return Collection&lt;String&gt; exact content depends on implementation
+	 */
+	public abstract Collection<String> extractWorkRatios(EstimateVsActualFilter estimateFilter);
+
+	/**
 	 * Converts <code>Collection&lt;Component&gt;</code> into <code>Collection&lt;Component.getId()&gt;</code>
 	 * 
 	 * @param components
@@ -315,4 +323,5 @@ public abstract class FilterDataExtractor {
 		}
 		return sb.toString();
 	}
+
 }

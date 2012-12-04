@@ -33,7 +33,8 @@ public enum JiraFields {
 	RESOLUTION("resolution"), //$NON-NLS-1$	
 	STATUS("status"), //$NON-NLS-1$
 	SUMMARY("summary"), //$NON-NLS-1$	
-	UPDATED("updated"); //$NON-NLS-1$
+	UPDATED("updated"), //$NON-NLS-1$
+	WORK_RATIO(null, "workratio"); //$NON-NLS-1$
 
 	private final String classicFieldName;
 

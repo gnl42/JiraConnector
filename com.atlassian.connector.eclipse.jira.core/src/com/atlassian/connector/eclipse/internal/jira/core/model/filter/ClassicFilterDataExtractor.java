@@ -154,4 +154,9 @@ public class ClassicFilterDataExtractor extends FilterDataExtractor {
 		return fixVersionIds;
 	}
 
+	@Override
+	public Collection<String> extractWorkRatios(EstimateVsActualFilter estimateFilter) {
+		throw new UnsupportedOperationException("Not implemented"); //$NON-NLS-1$
+	}
+
 }
