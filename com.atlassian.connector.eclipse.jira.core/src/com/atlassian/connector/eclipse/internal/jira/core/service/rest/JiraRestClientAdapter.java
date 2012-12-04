@@ -26,10 +26,14 @@ import java.util.concurrent.Callable;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.net.AuthenticatedProxy;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
@@ -107,8 +111,8 @@ public class JiraRestClientAdapter {
 			}
 
 		} catch (URISyntaxException e) {
-			// TODO jiraRestClient not initialized
-			e.printStackTrace();
+			// we should never get here as Mylyn constructs URI first and fails if it is incorrect
+			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
 		}
 	}
 
@@ -299,7 +303,7 @@ public class JiraRestClientAdapter {
 //		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
 //				new NullProgressMonitor());
 
-		IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
+		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
 				Long.parseLong(issue.getType().getId()), issue.getSummary());
 
 		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()))
@@ -338,8 +342,14 @@ public class JiraRestClientAdapter {
 					JiraRestFields.KEY, issue.getParentKey())));
 		}
 
-		return restClient.getIssueClient().createIssue(issueInputBuilder.build(), new NullProgressMonitor()).getKey();
+		return call(new Callable<String>() {
 
+			public String call() throws Exception {
+				return restClient.getIssueClient()
+						.createIssue(issueInputBuilder.build(), new NullProgressMonitor())
+						.getKey();
+			}
+		});
 	}
 
 	public void updateIssue(JiraIssue changedIssue) throws JiraException {
@@ -405,10 +415,24 @@ public class JiraRestClientAdapter {
 		try {
 			return callable.call();
 		} catch (RestClientException e) {
-			if (e.getMessage().contains("Client response status: 401")) {
+			if (e.getMessage().contains("Client response status: 401")) { //$NON-NLS-1$
 				throw new JiraAuthenticationException(e.getMessage());
-			} else if (e.getMessage().contains("java.net.ConnectException: Connection refused: connect")) {
-				throw new JiraException("java.net.ConnectException: Connection refused: connect", e);
+			} else if (e.getMessage().contains("java.net.ConnectException: Connection refused: connect")) { //$NON-NLS-1$
+				throw new JiraException("java.net.ConnectException: Connection refused: connect", e); //$NON-NLS-1$
+			} else if (e.getMessage().contains("java.net.UnknownHostException:")) { //$NON-NLS-1$
+				int index = e.getMessage().indexOf("java.net.UnknownHostException:"); //$NON-NLS-1$
+				if (index > -1) {
+					throw new JiraException(e.getMessage().substring(index), e);
+				} else {
+					throw e;
+				}
+			} else if (e.getMessage().contains("java.lang.IllegalArgumentException:")) { //$NON-NLS-1$
+				int index = e.getMessage().indexOf("java.lang.IllegalArgumentException:"); //$NON-NLS-1$
+				if (index > -1) {
+					throw new JiraException(e.getMessage().substring(index), e);
+				} else {
+					throw e;
+				}
 			} else {
 				throw new JiraException(e);
 			}
