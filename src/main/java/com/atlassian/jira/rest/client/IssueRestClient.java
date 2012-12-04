@@ -155,6 +155,26 @@ public interface IssueRestClient {
      */
     void update(Issue issue, Iterable<FieldInput> fields, ProgressMonitor progressMonitor);
 
+	/**
+	 * Deletes issue
+	 */
+	void removeIssue(URI issueUri, boolean deleteSubtasks, ProgressMonitor progressMonitor);
+
+	/**
+	 * Deletes issue
+	 */
+	void removeIssue(BasicIssue issue, boolean deleteSubtasks, ProgressMonitor progressMonitor);
+
+	/**
+	 * Delete issue
+	 */
+	void removeIssue(Long issueId, boolean deleteSubtasks, ProgressMonitor progressMonitor);
+
+	/**
+	 * Delete issue
+	 */
+	void removeIssue(String issueKey, boolean deleteSubtasks, ProgressMonitor progressMonitor);
+
     /**
 	 * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.
 	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>

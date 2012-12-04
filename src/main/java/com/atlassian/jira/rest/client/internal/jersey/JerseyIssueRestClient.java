@@ -235,7 +235,35 @@ public class JerseyIssueRestClient extends AbstractJerseyRestClient implements I
         });
     }
 
-    @Override
+	@Override
+	public void removeIssue(URI issueUri, boolean deleteSubtasks, ProgressMonitor progressMonitor) {
+		if (deleteSubtasks) {
+			delete(UriBuilder.fromUri(issueUri).queryParam("deleteSubtasks", "true").build(), progressMonitor);
+		} else {
+			delete(issueUri, progressMonitor);
+		}
+	}
+
+	@Override
+	public void removeIssue(BasicIssue issue, boolean deleteSubtasks, ProgressMonitor progressMonitor) {
+		removeIssue(issue.getSelf(), deleteSubtasks, progressMonitor);
+	}
+
+	@Override
+	public void removeIssue(Long issueId, boolean deleteSubtasks, ProgressMonitor progressMonitor) {
+		removeIssue(Long.toString(issueId), deleteSubtasks, progressMonitor);
+	}
+
+	@Override
+	public void removeIssue(String issueKey, boolean deleteSubtasks, ProgressMonitor progressMonitor) {
+		UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue").path(issueKey);
+		if (deleteSubtasks) {
+			uriBuilder.queryParam("deleteSubtasks", "true");
+		}
+		delete(uriBuilder.build(), progressMonitor);
+	}
+
+	@Override
 	public void vote(final URI votesUri, ProgressMonitor progressMonitor) {
 		invoke(new Callable<Void>() {
 			@Override
