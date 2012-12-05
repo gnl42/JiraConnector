@@ -77,4 +77,15 @@ public class WorklogInputJsonGeneratorTest {
 		assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
 				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));
 	}
+
+    @Test
+    public void testGenerateWithUnits() throws JSONException {
+        final WorklogInput worklogInput = new WorklogInput(
+                toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
+                toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, ADMIN, "my first work",
+                JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), "1h", Visibility.group("some-group")
+        );
+        assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
+                ResourceUtil.getJsonObjectFromResource("/json/worklogInput/validWithUnits.json")));
+    }
 }

@@ -93,10 +93,12 @@ public class Worklog {
 		return startDate;
 	}
 
+    @Nullable
 	public Integer getMinutesSpent() {
 		return minutesSpent;
 	}
 
+    @Nullable
     public String getTimeSpent() {
         return timeSpent;
     }

@@ -144,7 +144,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE, null)));
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
+                        TESTING_JIRA_5_OR_NEWER
+                            ? NUMERIC_CUSTOMFIELD_TYPE_V5
+                            : NUMERIC_CUSTOMFIELD_TYPE,
+                        TESTING_JIRA_5_OR_NEWER
+                            ? NUMERIC_CUSTOM_FIELD_NAME
+                            : null)));
 		final double newValue = 123;
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
 		client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
@@ -162,7 +168,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE, null)));
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
+                        TESTING_JIRA_5_OR_NEWER
+                                ? NUMERIC_CUSTOMFIELD_TYPE_V5
+                                : NUMERIC_CUSTOMFIELD_TYPE,
+                        TESTING_JIRA_5_OR_NEWER
+                                ? NUMERIC_CUSTOM_FIELD_NAME
+                                : null)));
 		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
 		// warning: Polish language here - I am asserting if the messages are indeed localized
 		// since 5.0 messages are changed and not localized
