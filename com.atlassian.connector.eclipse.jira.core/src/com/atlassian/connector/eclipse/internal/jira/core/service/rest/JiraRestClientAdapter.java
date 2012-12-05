@@ -50,6 +50,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
@@ -131,7 +132,8 @@ public class JiraRestClientAdapter {
 	private Issue getIssue(final String issueKeyOrId) throws JiraException {
 		return call(new Callable<Issue>() {
 			public Issue call() {
-				return restClient.getIssueClient().getIssue(issueKeyOrId, new NullProgressMonitor());
+				return restClient.getIssueClient().getIssue(issueKeyOrId,
+						ImmutableList.of(IssueRestClient.Expandos.EDITMETA), new NullProgressMonitor());
 			}
 		});
 	}

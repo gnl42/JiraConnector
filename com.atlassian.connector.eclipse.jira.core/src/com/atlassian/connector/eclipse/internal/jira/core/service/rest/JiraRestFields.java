@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
 public class JiraRestFields {
 	private JiraRestFields() throws Exception {
-		throw new Exception("Util class"); //$NON-NLS-1$
+		throw new Exception("Utility class"); //$NON-NLS-1$
 	}
 
 	static final String NAME = "name"; //$NON-NLS-1$
