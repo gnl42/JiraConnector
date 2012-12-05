@@ -60,41 +60,14 @@ public class JerseyJiraRestClient implements JiraRestClient {
     private final ApacheHttpClient client;
 
 	public JerseyJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
+		this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
         DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
         authenticationHandler.configure(config);
-        client = new ApacheHttpClient(createDefaultClientHander(config)) {
-            @Override
-            public WebResource resource(URI u) {
-                final WebResource resource = super.resource(u);
-                authenticationHandler.configure(resource, this);
-                return resource;
-            }
 
-            @Override
-            public AsyncWebResource asyncResource(URI u) {
-                final AsyncWebResource resource = super.asyncResource(u);
-                authenticationHandler.configure(resource, this);
-                return resource;
-            }
+		client = createDefaultClient(config, authenticationHandler);
 
-            @Override
-            public ViewResource viewResource(URI u) {
-                final ViewResource resource = super.viewResource(u);
-                authenticationHandler.configure(resource, this);
-                return resource;
-            }
-
-            @Override
-            public AsyncViewResource asyncViewResource(URI u) {
-                final AsyncViewResource resource = super.asyncViewResource(u);
-                authenticationHandler.configure(resource, this);
-                return resource;
-            }
-        };
-
-        metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
-        sessionRestClient = new JerseySessionRestClient(client, serverUri);
+		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
+		sessionRestClient = new JerseySessionRestClient(client, serverUri);
 		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient, metadataRestClient);
 		userRestClient = new JerseyUserRestClient(baseUri, client);
 		projectRestClient = new JerseyProjectRestClient(baseUri, client);
@@ -103,6 +76,21 @@ public class JerseyJiraRestClient implements JiraRestClient {
 		versionRestClient = new JerseyVersionRestClient(baseUri, client);
 		projectRolesRestClient = new JerseyProjectRolesRestClient(baseUri, client, serverUri);
     }
+
+	public JerseyJiraRestClient(final URI serverUri, final ApacheHttpClient client) {
+		this.baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
+		this.client = client;
+
+		metadataRestClient = new JerseyMetadataRestClient(baseUri, client);
+		sessionRestClient = new JerseySessionRestClient(client, serverUri);
+		issueRestClient = new JerseyIssueRestClient(baseUri, client, sessionRestClient, metadataRestClient);
+		userRestClient = new JerseyUserRestClient(baseUri, client);
+		projectRestClient = new JerseyProjectRestClient(baseUri, client);
+		componentRestClient = new JerseyComponentRestClient(baseUri, client);
+		searchRestClient = new JerseySearchRestClient(baseUri, client);
+		versionRestClient = new JerseyVersionRestClient(baseUri, client);
+		projectRolesRestClient = new JerseyProjectRolesRestClient(baseUri, client, serverUri);
+	}
 
     @Override
     public IssueRestClient getIssueClient() {
@@ -154,9 +142,41 @@ public class JerseyJiraRestClient implements JiraRestClient {
         return client;
     }
 
-    private static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
+    public static ApacheHttpClientHandler createDefaultClientHander(DefaultApacheHttpClientConfig config) {
         final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
         return new ApacheHttpClientHandler(client, config);
     }
+
+	public static ApacheHttpClient createDefaultClient(DefaultApacheHttpClientConfig config, final AuthenticationHandler authenticationHandler) {
+		return new ApacheHttpClient(createDefaultClientHander(config)) {
+			@Override
+			public WebResource resource(URI u) {
+				final WebResource resource = super.resource(u);
+				authenticationHandler.configure(resource, this);
+				return resource;
+			}
+
+			@Override
+			public AsyncWebResource asyncResource(URI u) {
+				final AsyncWebResource resource = super.asyncResource(u);
+				authenticationHandler.configure(resource, this);
+				return resource;
+			}
+
+			@Override
+			public ViewResource viewResource(URI u) {
+				final ViewResource resource = super.viewResource(u);
+				authenticationHandler.configure(resource, this);
+				return resource;
+			}
+
+			@Override
+			public AsyncViewResource asyncViewResource(URI u) {
+				final AsyncViewResource resource = super.asyncViewResource(u);
+				authenticationHandler.configure(resource, this);
+				return resource;
+			}
+		};
+	}
 }
 
