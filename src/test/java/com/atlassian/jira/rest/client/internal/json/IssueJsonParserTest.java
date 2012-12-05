@@ -72,7 +72,7 @@ public class IssueJsonParserTest {
 				issue.getIssueType());
 	}
 
-	private void assertExpectedIssue(Issue issue) {
+    private void assertExpectedIssue(Issue issue) {
 		assertEquals("Testing issue", issue.getSummary());
 		assertEquals("TST-2", issue.getKey());
 		assertEquals(new BasicProject(toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", null, null), issue.getProject());
@@ -292,6 +292,7 @@ public class IssueJsonParserTest {
 		assertEquals("SAM-2", subtask.getIssueKey());
 		assertEquals("Open", subtask.getStatus().getName());
 		assertEquals("Subtask", subtask.getIssueType().getName());
+        assertEquals("10001", subtask.getId().toString());
 	}
 
 	@Test
@@ -374,5 +375,14 @@ public class IssueJsonParserTest {
 		final Issue issue = parseIssue("/json/issue/valid-without-labels.json");
 		assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
 	}
+    @Test
+    public void testParseIssueWithLinks() throws Exception {
+        final Issue issue = parseIssue("/json/issue/valid-5.0-with-links.json");
 
+        Iterable<IssueLink> issueLinks = issue.getIssueLinks();
+        Assert.assertThat(issueLinks, containsInAnyOrder(
+                new IssueLink("MUT-19", (long) 10020, toUri("http://localhost:2990/jira/rest/api/2/issue/10020"),
+                        new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
+        ));
+    }
 }

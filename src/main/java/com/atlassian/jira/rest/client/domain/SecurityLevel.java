@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,22 @@ public class SecurityLevel extends AddressableNamedEntity implements Identifiabl
 
     @Override
 	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().add("id", id);
+		return super.getToStringHelper().add("id", id).add("name", name).add("description", description);
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SecurityLevel) {
+            SecurityLevel that = (SecurityLevel) obj;
+            return super.equals(obj)
+                && Objects.equal(this.id, that.id)
+                && Objects.equal(this.description, that.description);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, description);
+    }
 }
