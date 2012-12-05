@@ -55,13 +55,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE_V5;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
@@ -121,7 +115,13 @@ public class JerseyIssueRestClientTest extends AbstractJerseyRestClientTest {
 		final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 		assertNotNull(transitionFound);
 		assertTrue(Iterables.contains(transitionFound.getFields(),
-				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE, null)));
+				new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
+                        IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER
+                                ? NUMERIC_CUSTOMFIELD_TYPE_V5
+                                : NUMERIC_CUSTOMFIELD_TYPE,
+                        IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER
+                            ? NUMERIC_CUSTOM_FIELD_NAME
+                            : null)));
 		client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
 				Comment.valueOf("My test comment")), new NullProgressMonitor());
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1", pm);

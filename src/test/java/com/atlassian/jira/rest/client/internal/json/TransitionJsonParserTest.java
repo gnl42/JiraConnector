@@ -32,4 +32,14 @@ public class TransitionJsonParserTest {
         assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User", null), Iterables.getLast(transition.getFields()));
         assertEquals(5, transition.getId());
     }
+
+    @Test
+    public void testParseV5() throws Exception {
+        final TransitionJsonParserV5 parser = new TransitionJsonParserV5();
+
+        final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/validV5.json"));
+        assertEquals(4, Iterables.size(transition.getFields()));
+        assertEquals(new Transition.Field("assignee", false, "user", "Assignee"), Iterables.getFirst(transition.getFields(), null));
+        assertEquals(5, transition.getId());
+    }
 }

@@ -110,7 +110,7 @@ public class Transition implements NamedEntity{
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(id, isRequired, type);
+            return Objects.hashCode(id, isRequired, type, name);
         }
 
         @Override
@@ -119,7 +119,8 @@ public class Transition implements NamedEntity{
                 Field that = (Field) obj;
                 return Objects.equal(this.id, that.id)
                         && Objects.equal(this.isRequired, that.isRequired)
-                        && Objects.equal(this.type, that.type);
+                        && Objects.equal(this.type, that.type)
+                        && Objects.equal(this.name, that.name);
             }
             return false;
         }
@@ -130,6 +131,7 @@ public class Transition implements NamedEntity{
                     add("id", id).
                     add("isRequired", isRequired).
                     add("type", type).
+                    add("name", name).
                     toString();
         }
 

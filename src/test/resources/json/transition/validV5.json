@@ -1,0 +1,110 @@
+{
+    "id": "5",
+    "name": "Resolve Issue",
+    "to": {
+        "self": "http://localhost:2990/jira/rest/api/2/status/5",
+        "description": "A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed.",
+        "iconUrl": "http://localhost:2990/jira/images/icons/status_resolved.gif",
+        "name": "Resolved",
+        "id": "5"
+    },
+    "fields": {
+        "assignee": {
+            "required": false,
+            "schema": {
+                "type": "user",
+                "system": "assignee"
+            },
+            "name": "Assignee",
+            "autoCompleteUrl": "http://localhost:2990/jira/rest/api/latest/user/assignable/search?issueKey=TST-2&username=",
+            "operations": [
+                "set"
+            ]
+        },
+        "fixVersions": {
+            "required": false,
+            "schema": {
+                "type": "array",
+                "items": "version",
+                "system": "fixVersions"
+            },
+            "name": "Fix Version/s",
+            "operations": [
+                "set",
+                "add",
+                "remove"
+            ],
+            "allowedValues": [
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/version/10001",
+                    "id": "10001",
+                    "description": "initial version",
+                    "name": "1",
+                    "archived": false,
+                    "released": false
+                },
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/version/10000",
+                    "id": "10000",
+                    "description": "Some version",
+                    "name": "1.1",
+                    "overdue": true,
+                    "userReleaseDate": "25/sie/10",
+                    "archived": false,
+                    "releaseDate": "2010-08-25",
+                    "released": false
+                }
+            ]
+        },
+        "resolution": {
+            "required": true,
+            "schema": {
+                "type": "resolution",
+                "system": "resolution"
+            },
+            "name": "Resolution",
+            "operations": [
+                "set"
+            ],
+            "allowedValues": [
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/resolution/1",
+                    "name": "Fixed",
+                    "id": "1"
+                },
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/resolution/2",
+                    "name": "Won't Fix",
+                    "id": "2"
+                },
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/resolution/3",
+                    "name": "Duplicate",
+                    "id": "3"
+                },
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/resolution/4",
+                    "name": "Incomplete",
+                    "id": "4"
+                },
+                {
+                    "self": "http://localhost:2990/jira/rest/api/latest/resolution/5",
+                    "name": "Cannot Reproduce",
+                    "id": "5"
+                }
+            ]
+        },
+        "worklog": {
+            "required": false,
+            "schema": {
+                "type": "array",
+                "items": "worklog",
+                "system": "worklog"
+            },
+            "name": "Log Work",
+            "operations": [
+                "add"
+            ]
+        }
+    }
+}
