@@ -292,6 +292,7 @@ public class IssueJsonParserTest {
 		assertEquals("SAM-2", subtask.getIssueKey());
 		assertEquals("Open", subtask.getStatus().getName());
 		assertEquals("Subtask", subtask.getIssueType().getName());
+        assertEquals("10001", subtask.getId().toString());
 	}
 
 	@Test

@@ -49,6 +49,7 @@ public class Subtask implements IdentifiableEntity<Long> {
 	}
 
     @Override
+    @Nullable
     public Long getId() {
         return id;
     }
