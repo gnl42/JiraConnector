@@ -1,0 +1,6 @@
+{
+    "self":"http://localhost:8083/rest/api/2/securitylevel/10001",
+    "id":"10001",
+    "name":"foo",
+    "description":"bar"
+}
