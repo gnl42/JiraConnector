@@ -15,6 +15,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service;
 
 import java.io.InputStream;
 import java.net.Proxy;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -318,8 +319,7 @@ public class JiraClient {
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
 
-		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(DEFAULT_CHARSET,
-				getLocalConfiguration().getDateFormat());
+		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(DEFAULT_CHARSET, getDateFormat());
 
 		String jql = filterConverter.getJqlString(filterDefinition);
 
@@ -809,5 +809,13 @@ public class JiraClient {
 		default:
 			return user;
 		}
+	}
+
+	public SimpleDateFormat getDateTimeFormat() {
+		return restClient.getDateTimeFormat();
+	}
+
+	public SimpleDateFormat getDateFormat() {
+		return restClient.getDateFormat();
 	}
 }

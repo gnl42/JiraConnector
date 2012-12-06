@@ -18,6 +18,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -442,5 +443,13 @@ public class JiraRestClientAdapter {
 			throw new JiraException(e);
 		}
 
+	}
+
+	public SimpleDateFormat getDateTimeFormat() {
+		return new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"); //$NON-NLS-1$
+	}
+
+	public SimpleDateFormat getDateFormat() {
+		return new SimpleDateFormat("yyyy-MM-dd");
 	}
 }

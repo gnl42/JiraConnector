@@ -426,7 +426,17 @@ public class JiraUtil {
 	public static boolean isCustomDateTimeAttribute(TaskAttribute attribute) {
 		if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
 			String metaType = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-			if (JiraFieldType.DATETIME.getKey().equals(metaType) || JiraFieldType.DATE.getKey().equals(metaType)) {
+			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isCustomDateAttribute(TaskAttribute attribute) {
+		if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
+			String metaType = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+			if (JiraFieldType.DATE.getKey().equals(metaType)) {
 				return true;
 			}
 		}

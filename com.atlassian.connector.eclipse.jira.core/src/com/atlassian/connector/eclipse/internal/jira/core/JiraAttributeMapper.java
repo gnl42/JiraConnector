@@ -48,7 +48,15 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 	public Date getDateValue(TaskAttribute attribute) {
 		if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
 			try {
-				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+//				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+				return client.getDateTimeFormat().parse(attribute.getValue());
+			} catch (ParseException e) {
+				return null;
+			}
+		} else if (JiraUtil.isCustomDateAttribute(attribute)) {
+			try {
+//				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+				return client.getDateFormat().parse(attribute.getValue());
 			} catch (ParseException e) {
 				return null;
 			}
@@ -125,8 +133,9 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 				}
 				return options;
 			} else {
-				TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(
-						JiraAttribute.PROJECT.id());
+				TaskAttribute projectAttribute = attribute.getTaskData()
+						.getRoot()
+						.getMappedAttribute(JiraAttribute.PROJECT.id());
 				if (projectAttribute != null) {
 					Project project = client.getCache().getProjectById(projectAttribute.getValue());
 					if (project != null && project.hasDetails()) {

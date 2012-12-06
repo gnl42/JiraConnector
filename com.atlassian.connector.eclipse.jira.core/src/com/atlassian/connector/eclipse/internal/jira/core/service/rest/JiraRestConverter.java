@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -327,36 +328,65 @@ public class JiraRestConverter {
 
 	private static CustomField generateCustomField(Field field, String longType) {
 
-		JiraFieldType fieldType = JiraFieldType.fromKey(longType);
+		try {
 
-		List<String> values = null;
+			JiraFieldType fieldType = JiraFieldType.fromKey(longType);
 
-		switch (fieldType) {
-		case TEXTFIELD:
-		case TEXTAREA:
-		case URL:
-//		case DATE:
-			// TODO rest fix date NPE when generating editors
+			List<String> values = null;
 
-			values = ImmutableList.of(field.getValue().toString());
-			break;
-//		case DATETIME:
-//			String value = field.getValue().toString();
-		// TODO rest format datetime
-		case MULTIUSERPICKER:
-			// no support for multi users on the Mylyn side
+			switch (fieldType) {
+			case TEXTFIELD:
+			case TEXTAREA:
+			case URL:
+				values = ImmutableList.of(field.getValue().toString());
+				break;
+			case DATE:
+			case DATETIME:
+				values = ImmutableList.of(field.getValue().toString());
+				// TODO rest format datetime
+			case FLOATFIELD:
+				values = ImmutableList.of(field.getValue().toString());
+				break;
+			case MULTIUSERPICKER:
+				// no support for multi users on the Mylyn side
 //			values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
-			values = ImmutableList.of(JiraRestCustomFieldsParser.parseMultiUserPicker(field).toString());
-		default:
-			// not supported custom field
-		}
+				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
+				break;
+			case USERPICKER:
+				values = ImmutableList.of(JiraRestCustomFieldsParser.parseUserPicker(field));
+				break;
+			case SELECT:
+			case RADIOBUTTONS:
+				values = ImmutableList.of(JiraRestCustomFieldsParser.parseSelect(field));
+				break;
+			case MULTISELECT:
+			case MULTICHECKBOXES:
+				values = JiraRestCustomFieldsParser.parseMultiSelect(field);
+				break;
+			case LABELSS:
+				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+				break;
+			case GROUPPICKER:
+				values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
+				break;
+			case MULTIGROUPPICKER:
+//				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field),", ")); //$NON-NLS-1$
+				values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
+				break;
+			default:
+				// not supported custom field
+			}
 
-		if (values != null && !values.isEmpty()) {
+			if (values != null && !values.isEmpty()) {
 
-			CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
-			customField.setReadOnly(true);
+				CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
+				customField.setReadOnly(true);
 
-			return customField;
+				return customField;
+			}
+		} catch (JSONException e) {
+			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+					e.getMessage()));
 		}
 
 		return null;
