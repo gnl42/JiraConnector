@@ -212,6 +212,7 @@ public class JiraRestConverter {
 		if (env != null) {
 			jiraIssue.setEnvironment(env.toString());
 		} else {
+			// hack: empty value is necessary to display environment field in the issue editor
 			jiraIssue.setEnvironment(""); //$NON-NLS-1$
 		}
 
@@ -291,15 +292,6 @@ public class JiraRestConverter {
 									JiraCorePlugin.ID_PLUGIN, NLS.bind(
 											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
 						}
-
-//						Object value = field.getValue();
-//						if (value != null && value instanceof String) {
-//							CustomField customField = new CustomField(field.getId(),
-//									"com.atlassian.jira.plugin.system.customfieldtypes:textfield", field.getName(),
-//									ImmutableList.<String> of((String) value));
-//							customField.setReadOnly(true);
-//							customFields.add(customField);
-//						}
 					}
 				}
 
@@ -315,15 +307,6 @@ public class JiraRestConverter {
 		}
 
 		return new CustomField[0];
-
-//		if (editmeta == null) {
-//			throw new JiraException("Unable to retrieve fields' type information (edit meta)"); //$NON-NLS-1$
-//
-//		}
-
-//		JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "fields");
-
-//		JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.KEY)
 	}
 
 	private static CustomField generateCustomField(Field field, String longType) {
@@ -343,7 +326,6 @@ public class JiraRestConverter {
 			case DATE:
 			case DATETIME:
 				values = ImmutableList.of(field.getValue().toString());
-				// TODO rest format datetime
 			case FLOATFIELD:
 				values = ImmutableList.of(field.getValue().toString());
 				break;
@@ -370,7 +352,6 @@ public class JiraRestConverter {
 				values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
 				break;
 			case MULTIGROUPPICKER:
-//				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field),", ")); //$NON-NLS-1$
 				values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
 				break;
 			default:

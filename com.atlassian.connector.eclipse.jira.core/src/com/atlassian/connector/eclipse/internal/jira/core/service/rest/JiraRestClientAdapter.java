@@ -72,6 +72,10 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 public class JiraRestClientAdapter {
 
+	private static final SimpleDateFormat REST_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+
+	private static final SimpleDateFormat REST_DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"); //$NON-NLS-1$
+
 	private JiraRestClient restClient;
 
 	private final JiraClientCache cache;
@@ -446,10 +450,10 @@ public class JiraRestClientAdapter {
 	}
 
 	public SimpleDateFormat getDateTimeFormat() {
-		return new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"); //$NON-NLS-1$
+		return REST_DATETIME_FORMAT;
 	}
 
 	public SimpleDateFormat getDateFormat() {
-		return new SimpleDateFormat("yyyy-MM-dd");
+		return REST_DATE_FORMAT;
 	}
 }
