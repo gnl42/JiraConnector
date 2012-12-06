@@ -16,37 +16,38 @@
 
 package com.atlassian.jira.rest.client.auth;
 
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.filter.Filterable;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
-import com.sun.jersey.oauth.client.OAuthClientFilter;
-import com.sun.jersey.oauth.signature.OAuthParameters;
-import com.sun.jersey.oauth.signature.OAuthSecrets;
 
 /**
  * TODO: Document this class / interface here
+ * TODO: Urgent implement
  * This class is still under construction. Do not use.
  *
  * @since v0.1
  */
 public class OAuthAuthenticationHandler implements AuthenticationHandler {
+//
+//    private final OAuthParameters oAuthParameters;
+//    private final OAuthSecrets oAuthSecrets;
+//
+//    public OAuthAuthenticationHandler(OAuthParameters oAuthParameters, OAuthSecrets oAuthSecrets) {
+//        this.oAuthParameters = oAuthParameters;
+//        this.oAuthSecrets = oAuthSecrets;
+//    }
 
-    private final OAuthParameters oAuthParameters;
-    private final OAuthSecrets oAuthSecrets;
-
-    public OAuthAuthenticationHandler(OAuthParameters oAuthParameters, OAuthSecrets oAuthSecrets) {
-        this.oAuthParameters = oAuthParameters;
-        this.oAuthSecrets = oAuthSecrets;
-    }
+//    @Override
+//    public void configure(ApacheHttpClientConfig apacheHttpClientConfig) {
+//    }
+//
+//    @Override
+//    public void configure(Filterable filterable, Client client) {
+//        OAuthClientFilter filter = new OAuthClientFilter(client.getProviders(), oAuthParameters, oAuthSecrets);
+//        filterable.addFilter(filter);
+//    }
 
     @Override
-    public void configure(ApacheHttpClientConfig apacheHttpClientConfig) {
-    }
-
-    @Override
-    public void configure(Filterable filterable, Client client) {
-        OAuthClientFilter filter = new OAuthClientFilter(client.getProviders(), oAuthParameters, oAuthSecrets);
-        filterable.addFilter(filter);
+    public void configure(Request request) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

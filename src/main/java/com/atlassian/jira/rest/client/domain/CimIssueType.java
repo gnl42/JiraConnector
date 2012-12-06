@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;

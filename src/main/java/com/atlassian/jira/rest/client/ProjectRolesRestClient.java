@@ -16,6 +16,7 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.ProjectRole;
+import com.atlassian.util.concurrent.Promise;
 
 import java.net.URI;
 
@@ -30,33 +31,28 @@ public interface ProjectRolesRestClient {
 	 * Retrieves a full information about the selected role.
 	 *
 	 * @param uri URI of the role to retrieve.
-	 * @param progressMonitor progress monitor.
 	 * @return full information about selected role.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	ProjectRole getRole(URI uri, ProgressMonitor progressMonitor);
+	Promise<ProjectRole> getRole(URI uri);
 
 	/**
 	 * Retrieves a full information about the selected role.
 	 *
 	 * @param projectUri uri of the project of the role to retrieve.
 	 * @param roleId unique role id.
-	 * @param progressMonitor progress monitor.
 	 * @return full information about selected role.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	ProjectRole getRole(URI projectUri, Long roleId, ProgressMonitor progressMonitor);
+	Promise<ProjectRole> getRole(URI projectUri, Long roleId);
 
 	/**
 	 * Retrieves a collection of roles in the selected project.
 	 *
 	 * @param projectUri uri of the project of the roles to retrieve.
-	 * @param progressMonitor progress monitor.
 	 * @return a collection of roles in the selected project.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Iterable<ProjectRole> getRoles(URI projectUri, ProgressMonitor progressMonitor);
-
-
+	Promise<Iterable<ProjectRole>> getRoles(URI projectUri);
 
 }

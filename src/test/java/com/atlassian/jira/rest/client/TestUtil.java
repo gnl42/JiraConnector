@@ -88,17 +88,10 @@ public class TestUtil {
 	public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
 		try {
 			runnable.run();
-			Assert.fail(UniformInterfaceException.class + " exception expected");
-		} catch (UniformInterfaceException e) {
-			final String msg = e.getResponse().getEntity(String.class);
-			if (errorCode != e.getResponse().getStatus()) {
-				Assert.fail("Unexpected error code and message [" + msg
-						+ "]. Expected [" + errorCode + "], actual [" + e.getResponse().getStatus() + "]");
-			}
-//			Assert.assertEquals(errorCode, );
+			Assert.fail(RestClientException.class + " exception expected");
 		} catch (RestClientException e) {
-			Assert.assertTrue("Expected UniformInterfaceException cause, but was [" + e.getCause() + "]", e.getCause() instanceof UniformInterfaceException);
-			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
+            Assert.assertTrue(e.getStatusCode().isPresent());
+            Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
 			if (message != null) {
 				Assert.assertEquals(message, e.getMessage());
 			}
@@ -108,12 +101,10 @@ public class TestUtil {
 	public static void assertErrorCodeWithRegexp(int errorCode, String regExp, Runnable runnable) {
 		try {
 			runnable.run();
-			Assert.fail(UniformInterfaceException.class + " exception expected");
-		} catch (UniformInterfaceException e) {
-			Assert.assertEquals(errorCode, e.getResponse().getStatus());
+			Assert.fail(RestClientException.class + " exception expected");
 		} catch (RestClientException e) {
-			Assert.assertTrue(e.getCause() instanceof UniformInterfaceException);
-			Assert.assertEquals(errorCode, ((UniformInterfaceException) e.getCause()).getResponse().getStatus());
+            Assert.assertTrue(e.getStatusCode().isPresent());
+            Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
 			Assert.assertTrue("'" + e.getMessage() + "' does not match regexp '" + regExp + "'", e.getMessage().matches(regExp));
 		}
 	}

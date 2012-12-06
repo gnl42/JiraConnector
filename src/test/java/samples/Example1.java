@@ -17,19 +17,12 @@
 package samples;
 
 import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.BasicWatchers;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.SearchResult;
-import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
 
@@ -52,14 +45,13 @@ public class Example1 {
 	public static void main(String[] args) throws URISyntaxException, JSONException {
 		parseArgs(args);
 
-		final JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
+		final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 		final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
-		final NullProgressMonitor pm = new NullProgressMonitor();
-		final int buildNumber = restClient.getMetadataClient().getServerInfo(pm).getBuildNumber();
+		final int buildNumber = restClient.getMetadataClient().getServerInfo().claim().getBuildNumber();
 
 		// first let's get and print all visible projects (only jira4.3+)
 		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-			final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(pm);
+			final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
 			for (BasicProject project : allProjects) {
 				println(project);
 			}
@@ -67,29 +59,29 @@ public class Example1 {
 
 		// let's now print all issues matching a JQL string (here: all assigned issues)
 		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-			final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY", pm);
+			final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").claim();
 			for (BasicIssue issue : searchResult.getIssues()) {
 				println(issue.getKey());
 			}
 		}
 
-		final Issue issue = restClient.getIssueClient().getIssue("TST-7", pm);
+		final Issue issue = restClient.getIssueClient().getIssue("TST-7").claim();
 
 		println(issue);
 
 		// now let's vote for it
-		restClient.getIssueClient().vote(issue.getVotesUri(), pm);
+		restClient.getIssueClient().vote(issue.getVotesUri()).claim();
 
 		// now let's watch it
 		final BasicWatchers watchers = issue.getWatchers();
 		if (watchers != null) {
-			restClient.getIssueClient().watch(watchers.getSelf(), pm);
+			restClient.getIssueClient().watch(watchers.getSelf()).claim();
 		}
 
 		// now let's start progress on this issue
-		final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri(), pm);
+		final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
 		final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
-		restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()), pm);
+		restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId())).claim();
 
 		// and now let's resolve it as Incomplete
 		final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
@@ -103,8 +95,7 @@ public class Example1 {
 			fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
 		}
 		final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment.valueOf("My comment"));
-		restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput, pm);
-
+		restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
 	}
 
 	private static void println(Object o) {

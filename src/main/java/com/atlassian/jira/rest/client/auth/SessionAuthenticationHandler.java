@@ -16,34 +16,27 @@
 
 package com.atlassian.jira.rest.client.auth;
 
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.filter.Filterable;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
  * TODO: Document this class / interface here
+ * TODO: Implement or remove
  * This class is still under construction. Do not use.
  *
  * @since v0.1
  */
 public class SessionAuthenticationHandler implements AuthenticationHandler {
-    private final String username;
-    private final String password;
-
-    public SessionAuthenticationHandler(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    @Override
-    public void configure(ApacheHttpClientConfig apacheHttpClientConfig) {
-//        apacheHttpClientConfig.getState().getHttpState().addCookie();
-    }
+//    private final String username;
+//    private final String password;
+//
+//    public SessionAuthenticationHandler(String username, String password) {
+//        this.username = username;
+//        this.password = password;
+//    }
 
     @Override
-    public void configure(Filterable filterable, Client client) {
-//		webResource.cookie(new Comp)
-//        client.
+    public void configure(Request request) {
     }
+
 }

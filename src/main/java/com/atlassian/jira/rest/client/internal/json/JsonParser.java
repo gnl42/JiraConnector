@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public interface JsonParser<INPUT, T>
 {

@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
-public class ExamplesTest extends AbstractJerseyRestClientTest {
+public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 
 	@Test
 	public void testExample1() throws URISyntaxException, JSONException {
@@ -30,7 +30,7 @@ public class ExamplesTest extends AbstractJerseyRestClientTest {
 		Example1.main(new String[]{environmentData.getBaseUrl().toString(), "-q"});
 
 		// -- check state after example
-		final Issue issue = client.getIssueClient().getIssue("TST-7", ImmutableList.copyOf(IssueRestClient.Expandos.values()), pm);
+		final Issue issue = client.getIssueClient().getIssue("TST-7", ImmutableList.copyOf(IssueRestClient.Expandos.values())).claim();
 
 		// votes
 		final BasicVotes votes = issue.getVotes();

@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.util.concurrent.Promise;
 
 import java.net.URI;
 
@@ -31,24 +32,22 @@ public interface ProjectRestClient {
 	 * Retrieves complete information about given project.
 	 * 
 	 * @param key unique key of the project (usually 2+ characters)
-	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Project getProject(String key, ProgressMonitor progressMonitor);
+	Promise<Project> getProject(String key);
 
 	/**
 	 * Retrieves complete information about given project.
-	 * Use this method rather than {@link com.atlassian.jira.rest.client.ProjectRestClient#getProject(String, ProgressMonitor)}
+	 * Use this method rather than {@link com.atlassian.jira.rest.client.ProjectRestClient#getProject(String)}
 	 * wheever you can, as this method is proof for potential changes of URI scheme used for exposing various
 	 * resources by JIRA REST API.
 	 *
 	 * @param projectUri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
-	 * @param progressMonitor progress monitor
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Project getProject(URI projectUri, ProgressMonitor progressMonitor);
+    Promise<Project> getProject(URI projectUri);
 
 	/**
 	 * Returns all projects, which are visible for the currently logged in user. If no user is logged in, it returns the
@@ -57,8 +56,7 @@ public interface ProjectRestClient {
 	 * @since client: 0.2, server 4.3
 	 *
 	 * @return projects which the currently logged user can see
-	 * @param progressMonitor progress monitor
 	 */
-	Iterable<BasicProject> getAllProjects(ProgressMonitor progressMonitor);
+	Promise<Iterable<BasicProject>> getAllProjects();
 
 }

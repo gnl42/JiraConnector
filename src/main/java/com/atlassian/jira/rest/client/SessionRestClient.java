@@ -17,17 +17,18 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.util.concurrent.Promise;
 
 /**
  * Client handling the current user session
  *
- * @since v0.1
+ * @since v2.0.0
  */
 public interface SessionRestClient {
-	/**
-	 * @param progressMonitor progress monitor
+
+    /**
 	 * @return information about current session
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Session getCurrentSession(ProgressMonitor progressMonitor) throws RestClientException;
+	Promise<Session> getCurrentSession() throws RestClientException;
 }

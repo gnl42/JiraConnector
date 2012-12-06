@@ -16,10 +16,8 @@
 
 package com.atlassian.jira.rest.client.auth;
 
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.filter.Filterable;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
 * Anonymous handler - no credentials passed to the server. Only anonymously accessible operations will be possible. 
@@ -27,11 +25,9 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 * @since v0.1
 */
 public class AnonymousAuthenticationHandler implements AuthenticationHandler {
-	@Override
-	public void configure(ApacheHttpClientConfig apacheHttpClientConfig) {
-	}
 
-	@Override
-	public void configure(Filterable filterable, Client client) {
-	}
+    @Override
+    public void configure(Request request) {
+    }
+
 }

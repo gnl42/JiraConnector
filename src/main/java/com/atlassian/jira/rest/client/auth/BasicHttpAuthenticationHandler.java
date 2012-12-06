@@ -16,10 +16,9 @@
 
 package com.atlassian.jira.rest.client.auth;
 
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.filter.Filterable;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Handler for HTTP basic authentication.
@@ -29,6 +28,9 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
  * @since v0.1
  */
 public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
     private final String username;
     private final String password;
 
@@ -38,14 +40,13 @@ public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
     }
 
     @Override
-    public void configure(ApacheHttpClientConfig config) {
-        config.getState().setCredentials(null, null, -1, username, password);
-        // @todo check with Justus why 404 is returned instead of 401 when no credentials are provided automagically
-        config.getProperties().put(ApacheHttpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, true);
+    public void configure(final Request request) {
+        request.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
     }
 
-    @Override
-    public void configure(Filterable filterable, Client client) {
+    private String encodeCredentials() {
+        byte[] credentials = (username + ':' + password).getBytes();
+        return new String(Base64.encodeBase64(credentials));
     }
 
 }

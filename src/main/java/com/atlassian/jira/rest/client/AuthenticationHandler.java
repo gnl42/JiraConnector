@@ -16,9 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.filter.Filterable;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
+import com.atlassian.httpclient.api.Request;
 
 /**
  * TODO: Document this class / interface here
@@ -26,6 +24,7 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
  * @since v0.1
  */
 public interface AuthenticationHandler {
-    void configure(ApacheHttpClientConfig apacheHttpClientConfig);
-    void configure(Filterable filterable, Client client);
+
+    void configure(final Request request);
+
 }

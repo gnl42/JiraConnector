@@ -33,6 +33,7 @@ public class JsonFieldParser {
         put("java.lang.String", new StringFieldValueParser());
     }};
 
+    @SuppressWarnings("unchecked")
     public Field parse(JSONObject jsonObject, String id) throws JSONException {
         String type = jsonObject.getString("type");
         final String name = jsonObject.getString("name");

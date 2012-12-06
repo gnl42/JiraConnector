@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
+import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
 import java.net.URI;
@@ -25,22 +26,21 @@ import java.net.URI;
 /**
  * The client handling component resources
  *
- * @since v0.1
+ * @since v2.0
  */
 public interface ComponentRestClient {
 	/**
 	 * @param componentUri URI to selected component resource
-	 * @param progressMonitor progress monitor
 	 * @return complete information about selected component
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	Component getComponent(URI componentUri, ProgressMonitor progressMonitor);
+	Promise<Component> getComponent(URI componentUri);
 
-	Component createComponent(String projectKey, ComponentInput componentInput, ProgressMonitor progressMonitor);
+    Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
 
-	Component updateComponent(URI componentUri, ComponentInput componentInput, ProgressMonitor progressMonitor);
+    Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
 
-	void removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri, ProgressMonitor progressMonitor);
+	Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri);
 
-	int getComponentRelatedIssuesCount(URI componentUri, ProgressMonitor progressMonitor);
+	Promise<Integer> getComponentRelatedIssuesCount(URI componentUri);
 }

@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.util.concurrent.Promise;
 
 import java.net.URI;
 
@@ -28,23 +29,21 @@ import java.net.URI;
 public interface UserRestClient {
 	/**
 	 * Retrieves detailed information about selected user.
-	 * Try to use {@link #getUser(URI, ProgressMonitor)} instead as that method is more RESTful (well connected)
+	 * Try to use {@link #getUser(URI)} instead as that method is more RESTful (well connected)
 	 *
 	 * @param username JIRA username/login
-	 * @param progressMonitor progress monitor
 	 * @return complete information about given user
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	User getUser(String username, ProgressMonitor progressMonitor);
+	Promise<User> getUser(String username);
 
 	/**
 	 * Retrieves detailed information about selected user.
-	 * This method is preferred over {@link #getUser(String, ProgressMonitor)} as it's more RESTful (well connected) 
+	 * This method is preferred over {@link #getUser(String)} as it's more RESTful (well connected)
 	 *
 	 * @param userUri URI of user resource
-	 * @param progressMonitor progress monitor
 	 * @return complete information about given user
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-	User getUser(URI userUri, ProgressMonitor progressMonitor);
+    Promise<User> getUser(URI userUri);
 }

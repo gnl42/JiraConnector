@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package it;
 
-import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.domain.Issue;
 import org.junit.Test;
 
-import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public class SessionAuthenticationHandlerTest extends AbstractAsynchronousRestClientTest {
-/*
-	@Override
-	protected void setUpTest() {
-		super.setUpTest();
-		// @todo fix this test as cookie based authentication does not work yet
-//        client = new AsynchronousJiraRestClient(jiraUri, new SessionAuthenticationHandler("admin", "admin"));
-	}
-*/
+@Restore("jira2-export-unassigned.xml")
+public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	@Test
-	public void testGetCurrentSession() {
-		final Session session = client.getSessionClient().getCurrentSession().claim();
-		assertEquals(ADMIN_USERNAME, session.getUsername());
+	public void testGetUnassignedIssue() throws Exception {
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		assertEquals("TST-1", issue.getKey());
+		assertNull(issue.getAssignee());
 	}
+
 }

@@ -20,7 +20,6 @@ import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.NamedEntity;
-import com.atlassian.jira.rest.client.ProgressMonitor;
 import com.atlassian.jira.rest.client.internal.json.StandardOperation;
 import com.atlassian.jira.rest.client.internal.json.FieldSchema;
 import com.google.common.base.Objects;
