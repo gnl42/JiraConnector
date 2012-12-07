@@ -81,10 +81,16 @@
 		<echo message="Fetching connector-commons" />
 		<delete dir="${buildDirectory}/../../../connector-commons" />
 		<mkdir dir="${buildDirectory}/../../../connector-commons" />
+			
 		<exec executable="hg" failonerror="true">
 			<arg value="clone" />
 			<arg value="https://gdanskbamboo:Blah123@bitbucket.org/atlassian/connector-commons" />
 			<arg value="${buildDirectory}/../../../connector-commons" />
+		</exec>
+			
+		<exec executable="hg" failonerror="true" dir="${buildDirectory}/../../../connector-commons">
+			<arg value="update" />
+			<arg value="before-jira-rest" />
 		</exec>
 
 		<echo message="Fetching connector-commons done" />
