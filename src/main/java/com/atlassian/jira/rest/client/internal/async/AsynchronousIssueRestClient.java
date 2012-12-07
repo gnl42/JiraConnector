@@ -1,7 +1,9 @@
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.httpclient.apache.httpcomponents.MultiPartEntityBuilder;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Response;
+import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.jira.rest.client.*;
 import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.*;
@@ -13,6 +15,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -266,18 +272,28 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Void> addAttachment(final URI attachmentsUri, final InputStream in, final String filename) {
-        throw new UnsupportedOperationException("Not implemented");
+    public Promise<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
+        final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        entity.addPart("file", new InputStreamBody(inputStream, filename));
+        return postAttachments(attachmentsUri, entity);
     }
 
     @Override
     public Promise<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
-        throw new UnsupportedOperationException("Not implemented");
+        final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        for (final AttachmentInput attachmentInput : attachments) {
+            entity.addPart("file", new InputStreamBody(attachmentInput.getInputStream(), attachmentInput.getFilename()));
+        }
+        return postAttachments(attachmentsUri, entity);
     }
 
     @Override
     public Promise<Void> addAttachments(final URI attachmentsUri, final File... files) {
-        throw new UnsupportedOperationException("Not implemented");
+        final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        for (final File file : files) {
+            entity.addPart("file", new FileBody(file));
+        }
+        return postAttachments(attachmentsUri, entity);
     }
 
     @Override
@@ -312,6 +328,15 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         }
 
         return post(uriBuilder.build(), worklogInput, new WorklogInputJsonGenerator());
+    }
+
+    private Promise<Void> postAttachments(final URI attachmentsUri, final MultipartEntity multipartEntity) {
+        final ResponsePromise responsePromise = client()
+                .newRequest(attachmentsUri)
+                .setEntity(new MultiPartEntityBuilder(multipartEntity))
+                .setHeader("X-Atlassian-Token", "nocheck")
+                .post();
+        return call(responsePromise);
     }
 
     private String getLoggedUsername() {
