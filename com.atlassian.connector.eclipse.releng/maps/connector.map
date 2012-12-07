@@ -3,11 +3,6 @@
 ! <type>@<id>=SVN,<tag>[:revision],<svnRepositoryURL>,<preTagPath>,<postTagPath>
 !*******************************************************************************************
 
-plugin@org.codehaus.jettison=COPY,@buildDirectory@/../../../,org.codehaus.jettison
-plugin@com.google.guava=COPY,@buildDirectory@/../../../,com.google.guava
-plugin@com.sun.jersey_1_5=COPY,@buildDirectory@/../../../,com.sun.jersey_1_5
-plugin@com.atlassian.jira.rest.client=COPY,@buildDirectory@/../../../,com.atlassian.jira.rest.client
-
 feature@com.atlassian.connector.eclipse=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse-feature
 feature@com.atlassian.connector.eclipse.bamboo=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.bamboo-feature
 feature@com.atlassian.connector.eclipse.crucible=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.crucible-feature
@@ -57,6 +52,8 @@ plugin@com.atlassian.connector.eclipse.jira.core=COPY,@buildDirectory@/../../../
 plugin@com.atlassian.connector.eclipse.jira.ui=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.jira.ui
 plugin@com.atlassian.connector.eclipse.jira.tests=COPY,@buildDirectory@/../../../,com.atlassian.connector.eclipse.jira.tests
 
+plugin@com.atlassian.jira.rest.client=COPY,@buildDirectory@/../../../,com.atlassian.jira.rest.client
+
 plugin@com.atlassian.connector.commons=COPY,@buildDirectory@/../../../,connector-commons/com.atlassian.connector.commons
 !plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC/,,hg-migration/com.atlassian.connector.commons
 !plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC,,atlassian-connector-commons-3.1.4
@@ -65,6 +62,16 @@ plugin@com.atlassian.connector.commons.tests.dependencies=COPY,@buildDirectory@/
 !**************************************************
 ! 3rd party plugins
 !**************************************************
+plugin@org.codehaus.jettison=GET,file://@buildDirectory@/../../../bundles/jettison-1.1.jar
+plugin@com.google.guava=GET,file://@buildDirectory@/../../../bundles/guava-13.0.jar
+plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-apache-client-1.5.jar
+plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-client-1.5.jar
+plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-core-1.5.jar
+plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-json-1.5.jar
+plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-multipart-1.5.jar
+
+!plugin@com.sun.jersey_1_5=COPY,@buildDirectory@/../../../,com.sun.jersey_1_5
+
 plugin@com.thoughtworks.xstream=GET,file://@buildDirectory@/../../../bundles/com.thoughtworks.xstream_1.3.0.v20100826-1640.jar
 plugin@org.joda.time=GET,file://@buildDirectory@/../../../bundles/org.joda.time_1.6.0.v20081202-0100.jar
 plugin@org.jdom_jaxen=GET,file://@buildDirectory@/../../../bundles/org.jdom_jaxen_1.0.0.20081203-1100.jar
