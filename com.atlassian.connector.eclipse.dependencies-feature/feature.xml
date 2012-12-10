@@ -480,10 +480,4 @@
          install-size="0"
          version="0.0.0"/>
 
-   <plugin
-         id="com.sun.jersey_1_5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
 </feature>

@@ -17,7 +17,7 @@ Export-Package: com.atlassian.jira.rest.client,
 Require-Bundle: org.joda.time,
  org.codehaus.jettison,
  org.apache.commons.httpclient,
- com.sun.jersey_1_5,
- com.google.guava
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ com.google.guava,
+ com.sun.jersey;bundle-version="1.5.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Atlassian

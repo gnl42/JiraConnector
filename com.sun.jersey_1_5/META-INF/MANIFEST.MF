@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jersey_1_5
-Bundle-SymbolicName: com.sun.jersey_1_5
+Bundle-SymbolicName: com.sun.jersey
 Bundle-Version: 1.5.0
 Bundle-ClassPath: jersey-multipart-1.5.jar,
  jersey-apache-client-1.5.jar,
@@ -9,7 +9,8 @@ Bundle-ClassPath: jersey-multipart-1.5.jar,
  jersey-core-1.5.jar,
  jersey-client-1.5.jar
 Bundle-Vendor: Atlassian
-Export-Package: com.sun.jersey.api.client,
+Export-Package: 
+ com.sun.jersey.api.client,
  com.sun.jersey.api.client.async,
  com.sun.jersey.api.client.config,
  com.sun.jersey.api.client.filter,
