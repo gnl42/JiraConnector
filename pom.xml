@@ -163,16 +163,6 @@
 			<artifactId>joda-time</artifactId>
 			<version>1.6</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.sun.jersey</groupId>-->
-			<!--<artifactId>jersey-client</artifactId>-->
-			<!--<version>${jersey.client.version}</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>com.sun.jersey.contribs</groupId>-->
-			<!--<artifactId>jersey-multipart</artifactId>-->
-			<!--<version>${jersey.client.version}</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
@@ -218,17 +208,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- this should be one day extracted to a separate lib -->
-		<!--<dependency>-->
-			<!--<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>-->
-			<!--<artifactId>oauth-client</artifactId>-->
-			<!--<version>${jersey.client.version}</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>com.sun.jersey.contribs.jersey-oauth</groupId>-->
-			<!--<artifactId>oauth-signature</artifactId>-->
-			<!--<version>${jersey.client.version}</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>com.atlassian.jira</groupId>
 			<artifactId>jira-nimble-func-tests</artifactId>
@@ -238,7 +217,7 @@
         <dependency>
             <groupId>com.atlassian.httpclient</groupId>
             <artifactId>atlassian-httpclient-apache-httpcomponents</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.11.0</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
