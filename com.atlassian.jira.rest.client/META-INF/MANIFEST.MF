@@ -18,6 +18,6 @@ Require-Bundle: org.joda.time,
  org.codehaus.jettison,
  org.apache.commons.httpclient,
  com.google.guava,
- com.sun.jersey;bundle-version="1.5.0"
+ com.sun.jersey
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Atlassian
