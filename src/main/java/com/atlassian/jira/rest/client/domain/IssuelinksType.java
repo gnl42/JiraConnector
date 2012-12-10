@@ -5,7 +5,6 @@ import com.google.common.base.Objects;
 import java.net.URI;
 
 /**
- *
  * @since v0.5
  */
 public class IssuelinksType extends AddressableNamedEntity {

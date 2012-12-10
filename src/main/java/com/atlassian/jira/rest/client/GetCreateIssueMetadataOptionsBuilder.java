@@ -43,7 +43,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withExpandos(String ... expandos) {
+	public GetCreateIssueMetadataOptionsBuilder withExpandos(String... expandos) {
 		return withExpandos(ImmutableList.copyOf(expandos));
 	}
 
@@ -58,7 +58,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 
 	@SuppressWarnings("UnusedDeclaration")
 
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String ... issueTypeNames) {
+	public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
 		return withIssueTypeNames(ImmutableList.copyOf(issueTypeNames));
 	}
 
@@ -68,7 +68,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long ... issueTypeIds) {
+	public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
 		return withIssueTypeIds(ImmutableList.copyOf(issueTypeIds));
 	}
 
@@ -77,7 +77,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 		return this;
 	}
 
-	public GetCreateIssueMetadataOptionsBuilder withProjectKeys(String ... projectKeys) {
+	public GetCreateIssueMetadataOptionsBuilder withProjectKeys(String... projectKeys) {
 		return withProjectKeys(ImmutableList.copyOf(projectKeys));
 	}
 
@@ -87,7 +87,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withProjectIds(Long ... projectIds) {
+	public GetCreateIssueMetadataOptionsBuilder withProjectIds(Long... projectIds) {
 		return withProjectIds(ImmutableList.copyOf(projectIds));
 	}
 

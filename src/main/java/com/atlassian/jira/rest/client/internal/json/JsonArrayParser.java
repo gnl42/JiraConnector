@@ -18,6 +18,5 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONArray;
 
-public interface JsonArrayParser<T> extends JsonParser<JSONArray, T>
-{
+public interface JsonArrayParser<T> extends JsonParser<JSONArray, T> {
 }

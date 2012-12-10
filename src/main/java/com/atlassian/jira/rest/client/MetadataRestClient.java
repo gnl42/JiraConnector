@@ -34,36 +34,39 @@ import java.net.URI;
  */
 public interface MetadataRestClient {
 
-    /**
+	/**
 	 * Retrieves from the server complete information about selected issue type
 	 *
-     * @param uri URI to issue type resource (one can get it e.g. from <code>self</code> attribute
-     * of issueType field of an issue).
-     * @return complete information about issue type resource
+	 * @param uri URI to issue type resource (one can get it e.g. from <code>self</code> attribute
+	 *            of issueType field of an issue).
+	 * @return complete information about issue type resource
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Promise<IssueType> getIssueType(URI uri);
 
 	/**
 	 * Retrieves from the server complete list of available issue type
+	 *
 	 * @return complete information about issue type resource
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 * @since client 1.0, server 5.0
 	 */
 	Promise<Iterable<IssueType>> getIssueTypes();
 
-    /**
-     * Retrieves from the server complete list of available issue types
-     * @return list of available issue types for this JIRA instance
+	/**
+	 * Retrieves from the server complete list of available issue types
+	 *
+	 * @return list of available issue types for this JIRA instance
 	 * @throws RestClientException in case of problems (if linking is disabled on the server, connectivity, malformed messages, etc.)
-     * @since server 4.3, client 0.5
-     */
-    Promise<Iterable<IssuelinksType>> getIssueLinkTypes();
+	 * @since server 4.3, client 0.5
+	 */
+	Promise<Iterable<IssuelinksType>> getIssueLinkTypes();
 
 	/**
 	 * Retrieves complete information about selected status
+	 *
 	 * @param uri URI to this status resource (one can get it e.g. from <code>self</code> attribute
-	 * of <code>status</code> field of an issue)
+	 *            of <code>status</code> field of an issue)
 	 * @return complete information about the selected status
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
@@ -71,6 +74,7 @@ public interface MetadataRestClient {
 
 	/**
 	 * Retrieves from the server complete information about selected priority
+	 *
 	 * @param uri URI for the priority resource
 	 * @return complete information about the selected priority
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
@@ -79,6 +83,7 @@ public interface MetadataRestClient {
 
 	/**
 	 * Retrieves from the server complete list of available priorities
+	 *
 	 * @return complete information about the selected priority
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 * @since client 1.0, server 5.0
@@ -87,6 +92,7 @@ public interface MetadataRestClient {
 
 	/**
 	 * Retrieves from the server complete information about selected resolution
+	 *
 	 * @param uri URI for the resolution resource
 	 * @return complete information about the selected resolution
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
@@ -95,6 +101,7 @@ public interface MetadataRestClient {
 
 	/**
 	 * Retrieves from the server complete information about selected resolution
+	 *
 	 * @return complete information about the selected resolution
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 * @since client 1.0, server 5.0
@@ -103,6 +110,7 @@ public interface MetadataRestClient {
 
 	/**
 	 * Retrieves information about this JIRA instance
+	 *
 	 * @return information about this JIRA instance
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */

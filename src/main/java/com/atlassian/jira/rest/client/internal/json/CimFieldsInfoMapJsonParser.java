@@ -36,6 +36,7 @@ import java.util.Set;
 
 /**
  * JSON parser that produces Map of String => CimFieldInfo
+ *
  * @since v1.0
  */
 public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, CimFieldInfo>> {
@@ -82,7 +83,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 			return Collections.emptyList();
 		}
 
-        JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
+		JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
 		if (allowedValuesJsonParser != null) {
 			JSONArray valuesToParse;
 			// fixes for JRADEV-12999
@@ -92,17 +93,15 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 					&& "com.atlassian.jira.plugin.system.customfieldtypes:version".equals(fieldSchema.getCustom());
 			final boolean isMultiVersionCF = "array".equals(fieldSchema.getType())
 					&& "version".equals(fieldSchema.getItems())
-			 		&& "com.atlassian.jira.plugin.system.customfieldtypes:multiversion".equals(fieldSchema.getCustom());
+					&& "com.atlassian.jira.plugin.system.customfieldtypes:multiversion".equals(fieldSchema.getCustom());
 
 			if ((isProjectCF || isVersionCF || isMultiVersionCF) && allowedValues.get(0) instanceof JSONArray) {
 				valuesToParse = allowedValues.getJSONArray(0);
-			}
-			else {
+			} else {
 				valuesToParse = allowedValues;
 			}
 			return GenericJsonArrayParser.create(allowedValuesJsonParser).parse(valuesToParse);
-		}
-		else {
+		} else {
 			// fallback - just return collection of JSONObjects
 			int itemsLength = allowedValues.length();
 			List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
@@ -123,8 +122,8 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		}
 		return res;
 	}
-	
-	private  JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
+
+	private JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
 		final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
 				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
 				"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
@@ -141,8 +140,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		final JsonObjectParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
 		if (jsonParser == null) {
 			throw new JSONException("Cannot find parser for field witch schema: " + fieldSchema);
-		}
-		else {
+		} else {
 			return jsonParser;
 		}
 	}

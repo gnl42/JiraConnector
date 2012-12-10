@@ -26,23 +26,23 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Watchers extends BasicWatchers {
-    private final Collection<BasicUser> users;
+	private final Collection<BasicUser> users;
 
-    public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
-        super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
-        this.users = users;
-    }
+	public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
+		super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
+		this.users = users;
+	}
 
-    public Iterable<BasicUser> getUsers() {
-        return users;
-    }
+	public Iterable<BasicUser> getUsers() {
+		return users;
+	}
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
-                add("watchers", users).
-                toString();
-    }
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).addValue(super.toString()).
+				add("watchers", users).
+				toString();
+	}
 
 
 }

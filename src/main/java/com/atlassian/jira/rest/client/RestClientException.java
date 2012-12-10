@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,57 +32,57 @@ import java.util.Collections;
  */
 public class RestClientException extends RuntimeException {
 
-    private final Collection<String> errorMessages;
-    private final Optional<Integer> statusCode;
+	private final Collection<String> errorMessages;
+	private final Optional<Integer> statusCode;
 
-    public RestClientException(Throwable cause) {
-        super(cause);
-        errorMessages = Collections.emptyList();
-        this.statusCode = Optional.absent();
-    }
+	public RestClientException(Throwable cause) {
+		super(cause);
+		errorMessages = Collections.emptyList();
+		this.statusCode = Optional.absent();
+	}
 
-    public RestClientException(Throwable cause, int statusCode) {
-        super(cause);
-        errorMessages = Collections.emptyList();
-        this.statusCode = Optional.of(statusCode);
-    }
+	public RestClientException(Throwable cause, int statusCode) {
+		super(cause);
+		errorMessages = Collections.emptyList();
+		this.statusCode = Optional.of(statusCode);
+	}
 
-    public RestClientException(String errorMessage, Throwable cause) {
-        super(errorMessage, cause);
-        this.errorMessages = Arrays.asList(errorMessage);
-        statusCode = Optional.absent();
-    }
+	public RestClientException(String errorMessage, Throwable cause) {
+		super(errorMessage, cause);
+		this.errorMessages = Arrays.asList(errorMessage);
+		statusCode = Optional.absent();
+	}
 
-    /**
-     * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
-     */
-    public RestClientException(Collection<String> errorMessages, int statusCode) {
-        super(Joiner.on("\n").join(errorMessages));
-        this.errorMessages = new ArrayList<String>(errorMessages);
-        this.statusCode = Optional.of(statusCode);
-    }
+	/**
+	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
+	 */
+	public RestClientException(Collection<String> errorMessages, int statusCode) {
+		super(Joiner.on("\n").join(errorMessages));
+		this.errorMessages = new ArrayList<String>(errorMessages);
+		this.statusCode = Optional.of(statusCode);
+	}
 
-    /**
-     * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
-     * @param cause the cause of this exception or <code>null</code>
-     */
-    public RestClientException(Collection<String> errorMessages, Throwable cause, int statusCode) {
-        super(Joiner.on("\n").join(errorMessages), cause);
-        this.errorMessages = new ArrayList<String>(errorMessages);
-        this.statusCode = Optional.of(statusCode);
-    }
+	/**
+	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
+	 * @param cause         the cause of this exception or <code>null</code>
+	 */
+	public RestClientException(Collection<String> errorMessages, Throwable cause, int statusCode) {
+		super(Joiner.on("\n").join(errorMessages), cause);
+		this.errorMessages = new ArrayList<String>(errorMessages);
+		this.statusCode = Optional.of(statusCode);
+	}
 
-    /**
-     * @return error messages used while building this exception object
-     */
-    public Iterable<String> getErrorMessages() {
-        return errorMessages;
-    }
+	/**
+	 * @return error messages used while building this exception object
+	 */
+	public Iterable<String> getErrorMessages() {
+		return errorMessages;
+	}
 
-    /**
-     * @return optional error code of failed http request.
-     */
-    public Optional<Integer> getStatusCode() {
-        return statusCode;
-    }
+	/**
+	 * @return optional error code of failed http request.
+	 */
+	public Optional<Integer> getStatusCode() {
+		return statusCode;
+	}
 }

@@ -27,6 +27,7 @@ import java.util.Collection;
 public class VotesJsonParser implements JsonObjectParser<Votes> {
 	private final BasicVotesJsonParser basicVotesJsonParser = new BasicVotesJsonParser();
 	private final BasicUserJsonParser basicUserJsonParser = new BasicUserJsonParser();
+
 	@Override
 	public Votes parse(JSONObject json) throws JSONException {
 		final BasicVotes basicVotes = basicVotesJsonParser.parse(json);

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Input data used while transitioning an issue including new values for this issue and the optional comment.  
+ * Input data used while transitioning an issue including new values for this issue and the optional comment.
  *
  * @since v0.1
  */
@@ -35,8 +35,7 @@ public class TransitionInput {
 	private final Collection<FieldInput> fields;
 
 	/**
-	 *
-	 * @param id id of the issue transition which should be performed
+	 * @param id     id of the issue transition which should be performed
 	 * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
 	 */
 	public TransitionInput(int id, Collection<FieldInput> fields) {
@@ -45,9 +44,8 @@ public class TransitionInput {
 
 
 	/**
-	 *
-	 * @param id id of the issue transition which should be performed
-	 * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
+	 * @param id      id of the issue transition which should be performed
+	 * @param fields  new values for the issue fields. Use empty collection if no fields are to be changed
 	 * @param comment optional comment
 	 */
 	public TransitionInput(int id, Collection<FieldInput> fields, @Nullable Comment comment) {
@@ -57,8 +55,7 @@ public class TransitionInput {
 	}
 
 	/**
-	 *
-	 * @param id id of the issue transition which should be performed
+	 * @param id      id of the issue transition which should be performed
 	 * @param comment optional comment
 	 */
 	public TransitionInput(int id, @Nullable Comment comment) {

@@ -43,11 +43,11 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 		URI self = JsonParseUtil.getSelfUri(json);
 		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		final String key = json.getString("key");
-        final String name = JsonParseUtil.getOptionalString(json, "name");
+		final String name = JsonParseUtil.getOptionalString(json, "name");
 		final String urlStr = JsonParseUtil.getOptionalString(json, "url");
 		URI uri;
 		try {
-			 uri = urlStr == null || "".equals(urlStr) ? null : new URI(urlStr);
+			uri = urlStr == null || "".equals(urlStr) ? null : new URI(urlStr);
 		} catch (URISyntaxException e) {
 			uri = null;
 		}
@@ -56,10 +56,12 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 			description = null;
 		}
 		final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
-		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
+		final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json
+				.getJSONArray("components"), componentJsonParser);
 		final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
 		final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
-		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil.getOptionalJsonObject(json, "roles"));
+		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
+				.getOptionalJsonObject(json, "roles"));
 		return new Project(self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
 	}
 

@@ -58,7 +58,7 @@ public enum IssueFieldId {
 	IssueFieldId(String id) {
 		this.id = id;
 	}
-	
+
 	public static final Function<IssueFieldId, String> TRANSFORM_TO_ID_FUNCTION = new Function<IssueFieldId, String>() {
 		@Override
 		public String apply(IssueFieldId from) {
@@ -68,6 +68,7 @@ public enum IssueFieldId {
 
 	/**
 	 * Returns all fields ids.
+	 *
 	 * @return List of string id of each field.
 	 */
 	public static Iterable<String> ids() {

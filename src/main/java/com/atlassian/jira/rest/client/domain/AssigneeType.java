@@ -17,10 +17,10 @@
 package com.atlassian.jira.rest.client.domain;
 
 /**
-* Possible assignee types for project components
-*
-* @since client 0.3, server 4.4
-*/
+ * Possible assignee types for project components
+ *
+ * @since client 0.3, server 4.4
+ */
 public enum AssigneeType {
 	PROJECT_DEFAULT,
 	COMPONENT_LEAD,

@@ -25,7 +25,7 @@ import java.util.Collection;
 
 /**
  * Complete information about single JIRA project.
- * Many REST resources instead include just @{}BasicProject 
+ * Many REST resources instead include just @{}BasicProject
  *
  * @since v0.1
  */
@@ -41,7 +41,7 @@ public class Project extends BasicProject {
 	private final Collection<BasicProjectRole> projectRoles;
 
 	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri,
-			Collection<Version> versions,Collection<BasicComponent> components,
+			Collection<Version> versions, Collection<BasicComponent> components,
 			OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
 		super(self, key, name);
 		this.description = description;
@@ -62,7 +62,6 @@ public class Project extends BasicProject {
 	}
 
 	/**
-	 *
 	 * @return the person who leads this project
 	 */
 	public BasicUser getLead() {
@@ -85,7 +84,6 @@ public class Project extends BasicProject {
 	}
 
 	/**
-	 *
 	 * @return components defined for this project
 	 */
 	public Iterable<BasicComponent> getComponents() {

@@ -30,7 +30,7 @@ import com.google.common.collect.Iterables;
  */
 public class EntityHelper {
 
-	public static Function<IdentifiableEntity<String>,String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
+	public static Function<IdentifiableEntity<String>, String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
 		@Override
 		public String apply(IdentifiableEntity<String> entity) {
 			return entity.getId();

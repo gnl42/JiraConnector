@@ -51,7 +51,7 @@ public class IntegrationTestUtil {
 
 	static {
         try {
-			AsynchronousJiraRestClient client = new AsynchronousJiraRestClient(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
+			final AsynchronousJiraRestClient client = new AsynchronousJiraRestClient(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
 			TESTING_JIRA_5_OR_NEWER = client.getMetadataClient().getServerInfo().claim().getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";

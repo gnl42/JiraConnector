@@ -26,7 +26,7 @@ import java.util.Map;
 
 /**
  * Describes issue type with fields info map.<br/>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
@@ -49,6 +49,7 @@ public class CimIssueType extends IssueType {
 
 	/**
 	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+	 *
 	 * @return ToStringHelper
 	 */
 	@Override

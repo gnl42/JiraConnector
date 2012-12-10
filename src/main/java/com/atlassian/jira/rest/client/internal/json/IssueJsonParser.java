@@ -277,8 +277,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		if (s.has(TRANSITIONS_FIELD.id)) {
 			Object transitionsObj = s.get(TRANSITIONS_FIELD.id);
 			transitionsUriString = (transitionsObj instanceof String) ? (String) transitionsObj : null;
-		}
-		else {
+		} else {
 			transitionsUriString = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_FIELD.id);
 		}
 		final URI transitionsUri = parseTransisionsUri(transitionsUriString, selfUri);

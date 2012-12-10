@@ -45,7 +45,8 @@ public class ComponentJsonParser implements JsonObjectParser<Component> {
 			assigneeInfo = null;
 		}
 
-		return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent.getDescription(), lead, assigneeInfo);
+		return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent
+				.getDescription(), lead, assigneeInfo);
 	}
 
 	AssigneeType parseAssigneeType(String str) throws JSONException {

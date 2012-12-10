@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * Complete information about a single issue type defined in JIRA  
+ * Complete information about a single issue type defined in JIRA
  *
  * @since v0.1
  */

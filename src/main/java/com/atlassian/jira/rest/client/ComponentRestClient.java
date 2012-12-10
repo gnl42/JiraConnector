@@ -36,9 +36,9 @@ public interface ComponentRestClient {
 	 */
 	Promise<Component> getComponent(URI componentUri);
 
-    Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
+	Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
 
-    Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
+	Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
 
 	Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri);
 

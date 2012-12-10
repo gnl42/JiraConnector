@@ -40,7 +40,7 @@ public interface ProjectRolesRestClient {
 	 * Retrieves a full information about the selected role.
 	 *
 	 * @param projectUri uri of the project of the role to retrieve.
-	 * @param roleId unique role id.
+	 * @param roleId     unique role id.
 	 * @return full information about selected role.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */

@@ -31,14 +31,14 @@ import java.net.URI;
 public class BasicProject implements AddressableEntity, NamedEntity {
 	private final URI self;
 	private final String key;
-    @Nullable
-    private final String name;
+	@Nullable
+	private final String name;
 
 	public BasicProject(URI self, String key, String name) {
 		this.self = self;
 		this.key = key;
-        this.name = name;
-    }
+		this.name = name;
+	}
 
 	@Override
 	public URI getSelf() {
@@ -49,10 +49,10 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 		return key;
 	}
 
-    @Nullable
-    public String getName() {
-        return name;
-    }
+	@Nullable
+	public String getName() {
+		return name;
+	}
 
 	@Override
 	public String toString() {
@@ -71,7 +71,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 		if (obj instanceof BasicProject) {
 			BasicProject that = (BasicProject) obj;
 			return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.name, that.name)
+					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.key, that.key);
 		}
 		return false;

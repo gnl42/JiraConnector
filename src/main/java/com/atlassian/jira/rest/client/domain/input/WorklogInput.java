@@ -55,17 +55,18 @@ public class WorklogInput {
 
 	/**
 	 * Creates new WorklogInput with given values
-	 * @param self URI to this worklog, pass null if this is new worklog item.
-	 * @param issueUri URI to destination issue
-	 * @param author author of this worklog
-	 * @param updateAuthor author of worklog actualization
-	 * @param comment comment attached to worklog
-	 * @param startDate date of work start
-	 * @param minutesSpent time spend in minutes
-	 * @param visibility visibility settings for this worklog
-	 * @param adjustEstimate adjust estimate option
+	 *
+	 * @param self                URI to this worklog, pass null if this is new worklog item.
+	 * @param issueUri            URI to destination issue
+	 * @param author              author of this worklog
+	 * @param updateAuthor        author of worklog actualization
+	 * @param comment             comment attached to worklog
+	 * @param startDate           date of work start
+	 * @param minutesSpent        time spend in minutes
+	 * @param visibility          visibility settings for this worklog
+	 * @param adjustEstimate      adjust estimate option
 	 * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set
-	 *                               to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
+	 *                            to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
 	 */
 	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
 			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
@@ -84,14 +85,15 @@ public class WorklogInput {
 
 	/**
 	 * Creates new WorklogInput with given values. Sets adjust estimate option to default value - {@link AdjustEstimate#AUTO}.
-	 * @param self URI to this worklog, pass null if this is new worklog item.
-	 * @param issueUri URI to destination issue
-	 * @param author author of this worklog
+	 *
+	 * @param self         URI to this worklog, pass null if this is new worklog item.
+	 * @param issueUri     URI to destination issue
+	 * @param author       author of this worklog
 	 * @param updateAuthor author of worklog actualization
-	 * @param comment comment attached to worklog
-	 * @param startDate date of work start
+	 * @param comment      comment attached to worklog
+	 * @param startDate    date of work start
 	 * @param minutesSpent time spend in minutes
-	 * @param visibility visibility settings for this worklog
+	 * @param visibility   visibility settings for this worklog
 	 */
 	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
 			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
@@ -99,7 +101,8 @@ public class WorklogInput {
 	}
 
 	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
-		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).build();
+		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
+				.build();
 	}
 
 	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {

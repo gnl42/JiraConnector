@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Map;
 
 /**
- * Json Generator for ComplexIssueInputFieldValue 
+ * Json Generator for ComplexIssueInputFieldValue
  *
  * @since v1.0
  */
@@ -41,8 +41,7 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
 	public Object generateFieldValueForJson(Object rawValue) throws JSONException {
 		if (rawValue == null) {
 			return JSONObject.NULL;
-		}
-		else if (rawValue instanceof ComplexIssueInputFieldValue) {
+		} else if (rawValue instanceof ComplexIssueInputFieldValue) {
 			return generate((ComplexIssueInputFieldValue) rawValue);
 		} else if (rawValue instanceof Iterable) {
 			// array with values

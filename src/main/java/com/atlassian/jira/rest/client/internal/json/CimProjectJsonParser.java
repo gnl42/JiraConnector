@@ -34,7 +34,8 @@ import java.util.Map;
  */
 public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
 
-	private final JsonArrayParser<Iterable<CimIssueType>> issueTypesParser = GenericJsonArrayParser.create(new CimIssueTypeJsonParser());
+	private final JsonArrayParser<Iterable<CimIssueType>> issueTypesParser = GenericJsonArrayParser
+			.create(new CimIssueTypeJsonParser());
 
 	private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 

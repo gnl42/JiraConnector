@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2012 Atlassian
+ * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
@@ -29,8 +28,8 @@ import java.net.URI;
  */
 public class AsynchronousJiraRestClient implements JiraRestClient {
 
-    private final IssueRestClient issueRestClient;
-    private final SessionRestClient sessionRestClient;
+	private final IssueRestClient issueRestClient;
+	private final SessionRestClient sessionRestClient;
 	private final UserRestClient userRestClient;
 	private final ProjectRestClient projectRestClient;
 	private final ComponentRestClient componentRestClient;
@@ -39,13 +38,15 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
 
-
 	public AsynchronousJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
-        final HttpClient httpClient = new AsynchronousHttpClientFactory().client(baseUri, authenticationHandler);
+		this(serverUri, new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler));
+	}
+
+	public AsynchronousJiraRestClient(final URI serverUri, final HttpClient httpClient) {
+		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 
 		metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
-        sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
+		sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
 		issueRestClient = new AsynchronousIssueRestClient(baseUri, httpClient, sessionRestClient, metadataRestClient);
 		userRestClient = new AsynchronousUserRestClient(baseUri, httpClient);
 		projectRestClient = new AsynchronousProjectRestClient(baseUri, httpClient);
@@ -53,17 +54,17 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
 		versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
 		projectRolesRestClient = new AsynchronousProjectRolesRestClient(httpClient, serverUri);
-    }
+	}
 
-    @Override
-    public IssueRestClient getIssueClient() {
-        return issueRestClient;
-    }
+	@Override
+	public IssueRestClient getIssueClient() {
+		return issueRestClient;
+	}
 
-    @Override
-    public SessionRestClient getSessionClient() {
-        return sessionRestClient;
-    }
+	@Override
+	public SessionRestClient getSessionClient() {
+		return sessionRestClient;
+	}
 
 	@Override
 	public UserRestClient getUserClient() {

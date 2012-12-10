@@ -31,22 +31,21 @@ public class BasicProjectRoleJsonParser implements JsonObjectParser<Collection<B
 	@Override
 	public Collection<BasicProjectRole> parse(@Nullable final JSONObject json) throws JSONException {
 		return json == null ?
-			ImmutableSet.<BasicProjectRole>of() :
-			ImmutableSet.copyOf(Iterators.transform(
-				JsonParseUtil.getStringKeys(json),
-				new Function<String, BasicProjectRole>() {
-					@Override
-					public BasicProjectRole apply(@Nullable final String key) {
-						try {
-							return new BasicProjectRole(JsonParseUtil.parseURI(json.getString(key)), key);
-						} catch (JSONException e) {
-							throw new RestClientException(e);
+				ImmutableSet.<BasicProjectRole>of() :
+				ImmutableSet.copyOf(Iterators.transform(
+						JsonParseUtil.getStringKeys(json),
+						new Function<String, BasicProjectRole>() {
+							@Override
+							public BasicProjectRole apply(@Nullable final String key) {
+								try {
+									return new BasicProjectRole(JsonParseUtil.parseURI(json.getString(key)), key);
+								} catch (JSONException e) {
+									throw new RestClientException(e);
+								}
+							}
 						}
-					}
-				}
-		));
+				));
 	}
-
 
 
 }

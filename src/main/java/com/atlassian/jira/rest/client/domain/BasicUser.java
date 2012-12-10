@@ -36,50 +36,50 @@ public class BasicUser implements AddressableEntity, NamedEntity {
 	 */
 	public static URI INCOMPLETE_URI = URI.create("incomplete://user");
 
-    private final String name;
-    private final String displayName;
-    private final URI self;
+	private final String name;
+	private final String displayName;
+	private final URI self;
 
-    public BasicUser(URI self, String name, String displayName) {
-        this.self = self;
-        this.name = name;
-        this.displayName = displayName;
-    }
+	public BasicUser(URI self, String name, String displayName) {
+		this.self = self;
+		this.name = name;
+		this.displayName = displayName;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getDisplayName() {
-        return displayName;
-    }
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    @Override
+	@Override
 	public URI getSelf() {
-        return self;
-    }
+		return self;
+	}
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).add("name", name)
-                .add("displayName", displayName).add("self", self).toString();
-    }
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("name", name)
+				.add("displayName", displayName).add("self", self).toString();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicUser) {
-            BasicUser that = (BasicUser) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.displayName, that.displayName);
-        }
-        return false;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicUser) {
+			BasicUser that = (BasicUser) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.name, that.name)
+					&& Objects.equal(this.displayName, that.displayName);
+		}
+		return false;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(self, name, displayName);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, name, displayName);
+	}
 
 	/**
 	 * @return true when URI returned from server was incomplete. See {@link BasicUser#INCOMPLETE_URI} for more detail.

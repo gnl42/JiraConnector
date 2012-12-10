@@ -19,8 +19,8 @@ package com.atlassian.jira.rest.client;
 import javax.annotation.Nullable;
 
 /**
- * Set of optional parameters for {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}.
-  * {@link GetCreateIssueMetadataOptionsBuilder} is very useful for building objects of this class.
+ * Set of optional parameters for {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}.
+ * {@link GetCreateIssueMetadataOptionsBuilder} is very useful for building objects of this class.
  *
  * @since v1.0
  */
@@ -40,12 +40,11 @@ public class GetCreateIssueMetadataOptions {
 	public final Iterable<String> expandos;
 
 	/**
-	 *
-	 * @param expandos List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
+	 * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
 	 * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
-	 * @param issueTypeIds List of issue types Ids to filter results. Pass <code>null</code> to ignore.
-	 * @param projectKeys List of projects keys used to filter results. Pass <code>null</code> to ignore.
-	 * @param projectIds List of projects Ids used to filter results. Pass <code>null</code> to ignore.
+	 * @param issueTypeIds   List of issue types Ids to filter results. Pass <code>null</code> to ignore.
+	 * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to ignore.
+	 * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to ignore.
 	 */
 	public GetCreateIssueMetadataOptions(@Nullable Iterable<String> expandos, @Nullable Iterable<String> issueTypeNames,
 			@Nullable Iterable<Long> issueTypeIds, @Nullable Iterable<String> projectKeys,

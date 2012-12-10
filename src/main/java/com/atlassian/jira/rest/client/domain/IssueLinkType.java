@@ -29,6 +29,7 @@ public class IssueLinkType implements NamedEntity {
 		OUTBOUND,
 		INBOUND
 	}
+
 	private final String name;
 	private final String description;
 	private final Direction direction;

@@ -45,5 +45,5 @@ public interface UserRestClient {
 	 * @return complete information about given user
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-    Promise<User> getUser(URI userUri);
+	Promise<User> getUser(URI userUri);
 }

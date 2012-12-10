@@ -30,7 +30,7 @@ public class FieldInput implements IdentifiableEntity<String> {
 	private final Object value;
 
 	/**
-	 * @param id field id
+	 * @param id    field id
 	 * @param value new value for this issue field
 	 */
 	public FieldInput(String id, Object value) {

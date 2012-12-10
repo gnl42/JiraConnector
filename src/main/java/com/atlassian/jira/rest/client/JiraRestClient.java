@@ -25,15 +25,14 @@ package com.atlassian.jira.rest.client;
  */
 public interface JiraRestClient {
 	/**
-	 *
 	 * @return client for performing operations on selected issue
 	 */
-    IssueRestClient getIssueClient();
+	IssueRestClient getIssueClient();
 
 	/**
 	 * @return the client handling session information
 	 */
-    SessionRestClient getSessionClient();
+	SessionRestClient getSessionClient();
 
 	/**
 	 * @return the client handling full user information
@@ -52,7 +51,7 @@ public interface JiraRestClient {
 
 	/**
 	 * @return the client handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
-	 * priorities)
+	 *         priorities)
 	 */
 	MetadataRestClient getMetadataClient();
 

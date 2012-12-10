@@ -29,13 +29,13 @@ import java.net.URI;
 public class BasicWatchers implements AddressableEntity {
 	private final URI self;
 	private final boolean isWatching;
-    private final int numWatchers;
+	private final int numWatchers;
 
 	public BasicWatchers(URI self, boolean watching, int numWatchers) {
 		this.self = self;
 		isWatching = watching;
-        this.numWatchers = numWatchers;
-    }
+		this.numWatchers = numWatchers;
+	}
 
 	@Override
 	public URI getSelf() {
@@ -46,11 +46,11 @@ public class BasicWatchers implements AddressableEntity {
 		return isWatching;
 	}
 
-    public int getNumWatchers() {
-        return numWatchers;
-    }
+	public int getNumWatchers() {
+		return numWatchers;
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).
 				add("self", self).

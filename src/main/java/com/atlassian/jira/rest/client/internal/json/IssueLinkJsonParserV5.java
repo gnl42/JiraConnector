@@ -40,10 +40,11 @@ public class IssueLinkJsonParserV5 implements JsonObjectParser<IssueLink> {
 			direction = IssueLinkType.Direction.OUTBOUND;
 		}
 
-        final String key = link.getString("key");
-        final URI targetIssueUri = JsonParseUtil.parseURI(link.getString("self"));
+		final String key = link.getString("key");
+		final URI targetIssueUri = JsonParseUtil.parseURI(link.getString("self"));
 		final IssueLinkType issueLinkType = new IssueLinkType(issuelinksType.getName(),
-				direction.equals(IssueLinkType.Direction.INBOUND) ? issuelinksType.getInward() : issuelinksType.getOutward(), direction);
+				direction.equals(IssueLinkType.Direction.INBOUND) ? issuelinksType.getInward()
+						: issuelinksType.getOutward(), direction);
 		return new IssueLink(key, targetIssueUri, issueLinkType);
 	}
 }

@@ -23,6 +23,7 @@ import java.net.URI;
 
 /**
  * Association between users and project roles.
+ *
  * @since 1.0
  */
 public class RoleActor implements NamedEntity {

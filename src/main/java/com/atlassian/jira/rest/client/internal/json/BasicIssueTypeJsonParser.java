@@ -26,12 +26,12 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicIssueTypeJsonParser implements JsonObjectParser<BasicIssueType> {
-    @Override
-    public BasicIssueType parse(JSONObject json) throws JSONException {
-        final URI selfUri = JsonParseUtil.getSelfUri(json);
-        final Long id = JsonParseUtil.getOptionalLong(json, "id");
-        final String name = json.getString("name");
-        final boolean isSubtask = json.getBoolean("subtask");
-        return new BasicIssueType(selfUri, id, name, isSubtask);
-    }
+	@Override
+	public BasicIssueType parse(JSONObject json) throws JSONException {
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		final String name = json.getString("name");
+		final boolean isSubtask = json.getBoolean("subtask");
+		return new BasicIssueType(selfUri, id, name, isSubtask);
+	}
 }

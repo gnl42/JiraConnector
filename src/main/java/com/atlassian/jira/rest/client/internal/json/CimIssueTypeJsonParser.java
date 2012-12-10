@@ -39,7 +39,7 @@ public class CimIssueTypeJsonParser implements JsonObjectParser<CimIssueType> {
 	public CimIssueType parse(final JSONObject json) throws JSONException {
 		final IssueType issueType = issueTypeJsonParser.parse(json);
 		final JSONObject jsonFieldsMap = json.optJSONObject("fields");
-		
+
 		final Map<String, CimFieldInfo> fields = (jsonFieldsMap == null) ?
 				Collections.<String, CimFieldInfo>emptyMap() : fieldsParser.parse(jsonFieldsMap);
 

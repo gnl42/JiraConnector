@@ -30,7 +30,7 @@ import java.net.URI;
 public interface ProjectRestClient {
 	/**
 	 * Retrieves complete information about given project.
-	 * 
+	 *
 	 * @param key unique key of the project (usually 2+ characters)
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
@@ -47,15 +47,14 @@ public interface ProjectRestClient {
 	 * @return complete information about given project
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
-    Promise<Project> getProject(URI projectUri);
+	Promise<Project> getProject(URI projectUri);
 
 	/**
 	 * Returns all projects, which are visible for the currently logged in user. If no user is logged in, it returns the
 	 * list of projects that are visible when using anonymous access.
 	 *
-	 * @since client: 0.2, server 4.3
-	 *
 	 * @return projects which the currently logged user can see
+	 * @since client: 0.2, server 4.3
 	 */
 	Promise<Iterable<BasicProject>> getAllProjects();
 

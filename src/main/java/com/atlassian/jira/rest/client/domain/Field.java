@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 /**
- * JIRA issue field with its current value. 
+ * JIRA issue field with its current value.
  *
  * @since v0.1
  */
@@ -29,16 +29,16 @@ public class Field implements NamedEntity {
 
 	private final String name;
 
-    private final String type;
+	private final String type;
 
-    private final Object value;
+	private final Object value;
 
 	public Field(String id, String name, String type, Object value) {
 		this.id = id;
 		this.name = name;
-        this.type = type;
-        this.value = value;
-    }
+		this.type = type;
+		this.value = value;
+	}
 
 	public String getId() {
 		return id;
@@ -48,13 +48,13 @@ public class Field implements NamedEntity {
 		return name;
 	}
 
-    public String getType() {
-        return type;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public Object getValue() {
-        return value;
-    }
+	public Object getValue() {
+		return value;
+	}
 
 	@Override
 	public String toString() {

@@ -27,33 +27,27 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 /**
-* Transforms most of standard fields values into form understandable by input generator.
-*
-* @since v1.0
-*/
+ * Transforms most of standard fields values into form understandable by input generator.
+ *
+ * @since v1.0
+ */
 public class BaseValueTransformer implements ValueTransformer {
 
 	public Object apply(Object rawValue) {
 		if (rawValue == null) {
 			return null;
-		}
-		else if (rawValue instanceof String || rawValue instanceof Number || rawValue instanceof ComplexIssueInputFieldValue) {
+		} else if (rawValue instanceof String || rawValue instanceof Number || rawValue instanceof ComplexIssueInputFieldValue) {
 			return rawValue;
-		}
-		else if (rawValue instanceof BasicProject) {
+		} else if (rawValue instanceof BasicProject) {
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("key", ((BasicProject) rawValue).getKey()));
-		}
-		else if (rawValue instanceof CustomFieldOption) {
+		} else if (rawValue instanceof CustomFieldOption) {
 			return transformCustomFieldOption((CustomFieldOption) rawValue);
-		}
-		else if (rawValue instanceof TimeTracking) {
+		} else if (rawValue instanceof TimeTracking) {
 			return transformTimeTracking((TimeTracking) rawValue);
-		}
-		else if (rawValue instanceof IdentifiableEntity) {
+		} else if (rawValue instanceof IdentifiableEntity) {
 			final IdentifiableEntity identifiableEntity = (IdentifiableEntity) rawValue;
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", identifiableEntity.getId().toString()));
-		}
-		else if (rawValue instanceof NamedEntity) {
+		} else if (rawValue instanceof NamedEntity) {
 			final NamedEntity namedEntity = (NamedEntity) rawValue;
 			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("name", namedEntity.getName()));
 		}
@@ -67,9 +61,9 @@ public class BaseValueTransformer implements ValueTransformer {
 					"id", cfo.getId().toString(),
 					"value", cfo.getValue(),
 					"child", this.apply(cfo.getChild())));
-		}
-		else {
-			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue()));
+		} else {
+			return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo
+					.getValue()));
 		}
 	}
 

@@ -49,7 +49,7 @@ public class Component extends BasicComponent {
 
 	/**
 	 * @return detailed info about auto-assignee for this project component or <code>null</code> if such information is
-	 * not available (JIRA prior 4.4)
+	 *         not available (JIRA prior 4.4)
 	 * @since client 0.3, server 4.4
 	 */
 	@Nullable
@@ -147,7 +147,8 @@ public class Component extends BasicComponent {
 
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(super.hashCode(), assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
+			return Objects.hashCode(super
+					.hashCode(), assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
 		}
 
 	}

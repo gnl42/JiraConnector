@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 
 /**
  * Represents single item in Issue change history.
+ *
  * @since 0.6
  */
 public class ChangelogItem {

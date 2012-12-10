@@ -38,9 +38,8 @@ public class SearchResult {
 	}
 
 	/**
-	 *
 	 * @return 0-based start index of the returned issues (e.g. "3" means that 4th, 5th...maxResults issues matching given query
-	 * have been returned.
+	 *         have been returned.
 	 */
 	public int getStartIndex() {
 		return startIndex;
@@ -55,7 +54,7 @@ public class SearchResult {
 
 	/**
 	 * @return total number of issues (regardless of current maxResults and startIndex) matching given criteria.
-	 * Query JIRA another time with different startIndex to get subsequent issues
+	 *         Query JIRA another time with different startIndex to get subsequent issues
 	 */
 	public int getTotal() {
 		return total;

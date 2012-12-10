@@ -19,10 +19,10 @@ package com.atlassian.jira.rest.client.domain.input;
 import java.io.InputStream;
 
 /**
-* Data required to add an attachment
-*
-* @since v0.2
-*/
+ * Data required to add an attachment
+ *
+ * @since v0.2
+ */
 public class AttachmentInput {
 	private final InputStream in;
 	private final String filename;

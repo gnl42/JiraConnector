@@ -46,7 +46,7 @@ public class User extends BasicUser {
 	 */
 	@Nullable
 	private String timezone;
-	
+
 	public User(URI self, String name, String displayName, String emailAddress, ExpandableProperty<String> groups,
 			Map<String, URI> avatarUris, @Nullable String timezone) {
 		super(self, name, displayName);
@@ -66,7 +66,6 @@ public class User extends BasicUser {
 	}
 
 	/**
-	 *
 	 * @return user avatar image URI for 16x16 pixels
 	 * @since 0.5 client, 5.0 server
 	 */
@@ -106,8 +105,8 @@ public class User extends BasicUser {
 
 
 	/**
-	 * @since client 0.5, server 4.4
 	 * @return user timezone, like "Europe/Berlin" or <code>null</code> if timezone info is not available
+	 * @since client 0.5, server 4.4
 	 */
 	@Nullable
 	public String getTimezone() {

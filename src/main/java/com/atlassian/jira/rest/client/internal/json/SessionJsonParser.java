@@ -25,6 +25,7 @@ import java.net.URI;
 
 public class SessionJsonParser implements JsonObjectParser<Session> {
 	private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
+
 	@Override
 	public Session parse(JSONObject json) throws JSONException {
 		final URI userUri = JsonParseUtil.getSelfUri(json);

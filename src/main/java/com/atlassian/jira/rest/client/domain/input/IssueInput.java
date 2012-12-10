@@ -32,7 +32,7 @@ public class IssueInput {
 
 	private final Map<String, FieldInput> fields;
 
-	public static IssueInput createWithFields(FieldInput ... fields) {
+	public static IssueInput createWithFields(FieldInput... fields) {
 		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION));
 	}
 

@@ -19,7 +19,7 @@ package com.atlassian.jira.rest.client.domain;
 import java.net.URI;
 
 /**
- * Basic information about a JIRA issue status 
+ * Basic information about a JIRA issue status
  *
  * @since v0.1
  */
@@ -28,5 +28,5 @@ public class BasicStatus extends AddressableNamedEntity {
 	public BasicStatus(URI self, String name) {
 		super(self, name);
 	}
-	
+
 }

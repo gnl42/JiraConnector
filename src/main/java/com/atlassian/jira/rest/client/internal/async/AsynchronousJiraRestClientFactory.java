@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.AuthenticationHandler;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.JiraRestClientFactory;
@@ -30,15 +30,19 @@ import java.net.URI;
  */
 public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
 
-    @Override
-    public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        return new AsynchronousJiraRestClient(serverUri, authenticationHandler);
-    }
+	@Override
+	public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+		final HttpClient httpClient = new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler);
+		return new AsynchronousJiraRestClient(serverUri, httpClient);
+	}
 
 	@Override
 	public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) {
 		return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
 	}
 
-
+	@Override
+	public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
+		return new AsynchronousJiraRestClient(serverUri, httpClient);
+	}
 }

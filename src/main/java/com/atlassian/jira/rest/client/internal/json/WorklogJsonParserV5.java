@@ -46,6 +46,7 @@ public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 		// timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
 		final int secondsSpent = json.optInt("timeSpentSeconds", 0);
 		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
-        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, secondsSpent / 60, visibility);
+		return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate,
+				secondsSpent / 60, visibility);
 	}
 }

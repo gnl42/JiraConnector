@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2012 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
@@ -17,54 +32,54 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 /**
- * TODO: Document this class / interface here
+ * Asynchronous implementation of ComponentRestClient.
  *
- * @since v6.0
+ * @since v2.0
  */
 public class AsynchronousComponentRestClient extends AbstractAsynchronousRestClient implements ComponentRestClient {
 
-    private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
-    private final URI componentUri;
+	private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
+	private final URI componentUri;
 
-    public AsynchronousComponentRestClient(final URI baseUri, final HttpClient client) {
-        super(client);
-        componentUri = UriBuilder.fromUri(baseUri).path("component").build();
-    }
+	public AsynchronousComponentRestClient(final URI baseUri, final HttpClient client) {
+		super(client);
+		componentUri = UriBuilder.fromUri(baseUri).path("component").build();
+	}
 
-    @Override
-    public Promise<Component> getComponent(final URI componentUri) {
-        return getAndParse(componentUri, componentJsonParser);
-    }
+	@Override
+	public Promise<Component> getComponent(final URI componentUri) {
+		return getAndParse(componentUri, componentJsonParser);
+	}
 
-    @Override
-    public Promise<Component> createComponent(final String projectKey, final ComponentInput componentInput) {
-        final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(projectKey, componentInput);
-        return postAndParse(componentUri, helper, new ComponentInputWithProjectKeyJsonGenerator(), componentJsonParser);
-    }
+	@Override
+	public Promise<Component> createComponent(final String projectKey, final ComponentInput componentInput) {
+		final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(projectKey, componentInput);
+		return postAndParse(componentUri, helper, new ComponentInputWithProjectKeyJsonGenerator(), componentJsonParser);
+	}
 
-    @Override
-    public Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput) {
-        final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(null, componentInput);
-        return putAndParse(componentUri, helper, new ComponentInputWithProjectKeyJsonGenerator(), componentJsonParser);
-    }
+	@Override
+	public Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput) {
+		final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(null, componentInput);
+		return putAndParse(componentUri, helper, new ComponentInputWithProjectKeyJsonGenerator(), componentJsonParser);
+	}
 
-    @Override
-    public Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(componentUri);
-        if (moveIssueToComponentUri != null) {
-            uriBuilder.queryParam("moveIssuesTo", moveIssueToComponentUri);
-        }
-        return delete(uriBuilder.build());
-    }
+	@Override
+	public Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(componentUri);
+		if (moveIssueToComponentUri != null) {
+			uriBuilder.queryParam("moveIssuesTo", moveIssueToComponentUri);
+		}
+		return delete(uriBuilder.build());
+	}
 
-    @Override
-    public Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) {
-        final URI relatedIssueCountsUri = UriBuilder.fromUri(componentUri).path("relatedIssueCounts").build();
-        return getAndParse(relatedIssueCountsUri, new JsonObjectParser<Integer>() {
-            @Override
-            public Integer parse(JSONObject json) throws JSONException {
-                return json.getInt("issueCount");
-            }
-        });
-    }
+	@Override
+	public Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) {
+		final URI relatedIssueCountsUri = UriBuilder.fromUri(componentUri).path("relatedIssueCounts").build();
+		return getAndParse(relatedIssueCountsUri, new JsonObjectParser<Integer>() {
+			@Override
+			public Integer parse(JSONObject json) throws JSONException {
+				return json.getInt("issueCount");
+			}
+		});
+	}
 }

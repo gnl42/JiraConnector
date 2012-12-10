@@ -43,10 +43,10 @@ import java.net.URI;
  */
 public interface IssueRestClient {
 
-    /**
+	/**
 	 * Creates new issue.
 	 *
-	 * @param issue		   populated with data to create new issue
+	 * @param issue populated with data to create new issue
 	 * @return basicIssue with generated <code>issueKey</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
@@ -56,12 +56,12 @@ public interface IssueRestClient {
 	/**
 	 * Retrieves CreateIssueMetadata with specified filters.
 	 *
-	 * @param options		  optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.
+	 * @param options optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.
 	 * @return List of {@link CimProject} describing projects, issue types and fields.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since client 1.0, server 5.0
 	 */
-    Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options);
+	Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options);
 
 	/**
 	 * Retrieves issue with selected issue key.
@@ -76,7 +76,7 @@ public interface IssueRestClient {
 	 * Retrieves issue with selected issue key, with specified additional expandos.
 	 *
 	 * @param issueKey issue key (like TST-1, or JRA-9)
-	 * @param expand additional expands. Currently CHANGELOG is the only supported expand that is not expanded by default.
+	 * @param expand   additional expands. Currently CHANGELOG is the only supported expand that is not expanded by default.
 	 * @return issue with given <code>issueKey</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @since 0.6
@@ -91,15 +91,14 @@ public interface IssueRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @see com.atlassian.jira.rest.client.domain.Issue#getWatchers()
 	 */
-    Promise<Watchers> getWatchers(URI watchersUri);
+	Promise<Watchers> getWatchers(URI watchersUri);
 
 	/**
 	 * Retrieves complete information (if the caller has permission) about voters for selected issue.
 	 *
 	 * @param votesUri URI of voters resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
 	 * @return detailed information about voters of selected issue
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 * @see com.atlassian.jira.rest.client.domain.Issue#getVotesUri()
 	 */
 	Promise<Votes> getVotes(URI votesUri);
@@ -116,34 +115,35 @@ public interface IssueRestClient {
 	/**
 	 * Retrieves complete information (if the caller has permission) about transitions available for the selected issue in its current state.
 	 *
-	 * @since v0.5
 	 * @param issue issue
 	 * @return transitions about transitions available for the selected issue in its current state.
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since v0.5
 	 */
 	Promise<Iterable<Transition>> getTransitions(Issue issue);
 
 	/**
 	 * Performs selected transition on selected issue.
-	 * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
+	 *
+	 * @param transitionsUri  URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
 	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
 	 */
 	Promise<Void> transition(URI transitionsUri, TransitionInput transitionInput);
 
 	/**
 	 * Performs selected transition on selected issue.
-	 * @since v0.5
-	 * @param issue selected issue
+	 *
+	 * @param issue           selected issue
 	 * @param transitionInput data for this transition (fields modified, the comment, etc.)
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-
+	 * @since v0.5
 	 */
 	Promise<Void> transition(Issue issue, TransitionInput transitionInput);
 
 	/**
 	 * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.
+	 *
 	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -151,6 +151,7 @@ public interface IssueRestClient {
 
 	/**
 	 * Removes your vote from the selected issue. Removing a vote from the issue without your vote causes the exception.
+	 *
 	 * @param votesUri URI of votes resource for selected issue. Usually obtained by calling <code>Issue.getVotesUri()</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
@@ -158,37 +159,39 @@ public interface IssueRestClient {
 
 	/**
 	 * Starts watching selected issue
+	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
-    Promise<Void> watch(URI watchersUri);
+	Promise<Void> watch(URI watchersUri);
 
 	/**
 	 * Stops watching selected issue
+	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
-    Promise<Void> unwatch(URI watchersUri);
+	Promise<Void> unwatch(URI watchersUri);
 
 	/**
 	 * Adds selected person as a watcher for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
-	 * @param username user to add as a watcher
+	 * @param username    user to add as a watcher
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
-    Promise<Void> addWatcher(final URI watchersUri, final String username);
+	Promise<Void> addWatcher(final URI watchersUri, final String username);
 
 	/**
 	 * Removes selected person from the watchers list for selected issue. You need to have permissions to do that (otherwise
 	 * the exception is thrown).
 	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
-	 * @param username user to remove from the watcher list
+	 * @param username    user to remove from the watcher list
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
 	 */
-    Promise<Void> removeWatcher(final URI watchersUri, final String username);
+	Promise<Void> removeWatcher(final URI watchersUri, final String username);
 
 	/**
 	 * Creates link between two issues and adds a comment (optional) to the source issues.
@@ -197,42 +200,44 @@ public interface IssueRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, permissions, etc.)
 	 * @since client 0.2, server 4.3
 	 */
-    Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput);
+	Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput);
 
 	/**
 	 * Uploads attachments to JIRA (adding it to selected issue)
 	 *
 	 * @param attachmentsUri where to upload the attachment. You can get this URI by examining issue resource first
-	 * @param in stream from which to read data to upload
-	 * @param filename file name to use for the uploaded attachment
+	 * @param in             stream from which to read data to upload
+	 * @param filename       file name to use for the uploaded attachment
 	 * @since client 0.2, server 4.3
 	 */
-    Promise<Void> addAttachment(URI attachmentsUri, InputStream in, String filename);
+	Promise<Void> addAttachment(URI attachmentsUri, InputStream in, String filename);
 
 	/**
 	 * Uploads attachments to JIRA (adding it to selected issue)
 	 *
 	 * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue resource first
-	 * @param attachments attachments to upload
+	 * @param attachments    attachments to upload
 	 * @since client 0.2, server 4.3
 	 */
-    Promise<Void> addAttachments(URI attachmentsUri, AttachmentInput ... attachments);
+	Promise<Void> addAttachments(URI attachmentsUri, AttachmentInput... attachments);
 
 	/**
 	 * Uploads attachments to JIRA (adding it to selected issue)
+	 *
 	 * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue resource first
-	 * @param files files to upload
+	 * @param files          files to upload
 	 * @since client 0.2, server 4.3
 	 */
-    Promise<Void> addAttachments(URI attachmentsUri, File... files);
+	Promise<Void> addAttachments(URI attachmentsUri, File... files);
 
 	/**
 	 * Adds a comment to JIRA (adding it to selected issue)
+	 *
 	 * @param commentsUri where to add comment
-	 * @param comment the {@link Comment} to add
+	 * @param comment     the {@link Comment} to add
 	 * @since client 1.0, server 5.0
 	 */
-    Promise<Void> addComment(URI commentsUri, Comment comment);
+	Promise<Void> addComment(URI commentsUri, Comment comment);
 
 	/**
 	 * Retrieves the content of given attachment.
@@ -246,10 +251,10 @@ public interface IssueRestClient {
 	/**
 	 * Adds new worklog entry to issue.
 	 *
-	 * @param worklogUri	  URI for worklog in issue
-	 * @param worklogInput	worklog input object to create
+	 * @param worklogUri   URI for worklog in issue
+	 * @param worklogInput worklog input object to create
 	 */
-    Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput);
+	Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput);
 
 	/**
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable)}

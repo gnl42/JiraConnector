@@ -29,7 +29,7 @@ public class IssueLinkJsonParser implements JsonObjectParser<IssueLink> {
 	@Override
 	public IssueLink parse(JSONObject json) throws JSONException {
 		final String key = json.getString("issueKey");
-        final URI targetIssueUri = JsonParseUtil.parseURI(json.getString("issue"));
+		final URI targetIssueUri = JsonParseUtil.parseURI(json.getString("issue"));
 		final IssueLinkType issueLinkType = issueLinkTypeJsonParser.parse(json.getJSONObject("type"));
 		return new IssueLink(key, targetIssueUri, issueLinkType);
 	}

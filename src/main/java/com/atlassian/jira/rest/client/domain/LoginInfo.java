@@ -22,7 +22,7 @@ import org.joda.time.DateTime;
 import javax.annotation.Nullable;
 
 /**
- * Statistics about logins (successful and failed logins number and last date) for the current user 
+ * Statistics about logins (successful and failed logins number and last date) for the current user
  *
  * @since v0.1
  */

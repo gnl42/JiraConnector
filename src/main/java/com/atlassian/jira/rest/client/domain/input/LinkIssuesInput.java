@@ -31,9 +31,9 @@ public class LinkIssuesInput {
 
 	/**
 	 * @param fromIssueKey source issue key
-	 * @param toIssueKey destination issue key
-	 * @param linkType name of the link type (e.g. "Duplicate")
-	 * @param comment optional comment
+	 * @param toIssueKey   destination issue key
+	 * @param linkType     name of the link type (e.g. "Duplicate")
+	 * @param comment      optional comment
 	 */
 	public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType, @Nullable Comment comment) {
 		this.fromIssueKey = fromIssueKey;

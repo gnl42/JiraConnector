@@ -20,7 +20,7 @@ import java.net.URI;
 
 /**
  * Information about current user "session" - or in case of the recommended stateless connection (really RESTful design)
- * just the information about the user and the user login data.   
+ * just the information about the user and the user login data.
  *
  * @since v0.1
  */

@@ -24,12 +24,13 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class AuthenticationJsonParser implements JsonObjectParser<Authentication> {
 
-    private final SessionCookieJsonParser sessionCookieJsonParser = new SessionCookieJsonParser();
-    private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
-    @Override
-    public Authentication parse(JSONObject json) throws JSONException {
-        final SessionCookie sessionCookie = sessionCookieJsonParser.parse(json.getJSONObject("session"));
-        final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
-        return new Authentication(loginInfo, sessionCookie);
-    }
+	private final SessionCookieJsonParser sessionCookieJsonParser = new SessionCookieJsonParser();
+	private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
+
+	@Override
+	public Authentication parse(JSONObject json) throws JSONException {
+		final SessionCookie sessionCookie = sessionCookieJsonParser.parse(json.getJSONObject("session"));
+		final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
+		return new Authentication(loginInfo, sessionCookie);
+	}
 }

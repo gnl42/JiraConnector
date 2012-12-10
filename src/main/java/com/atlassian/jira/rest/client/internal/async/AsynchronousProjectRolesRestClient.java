@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2012 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
@@ -16,49 +31,49 @@ import java.net.URI;
 import java.util.Collection;
 
 /**
- * TODO: Document this class / interface here
+ * Asynchronous implementation of ProjectRolesRestClient.
  *
- * @since v6.0
+ * @since v2.0
  */
 public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRestClient implements ProjectRolesRestClient {
 
-    private final ProjectRoleJsonParser projectRoleJsonParser;
-    private final BasicProjectRoleJsonParser basicRoleJsonParser;
+	private final ProjectRoleJsonParser projectRoleJsonParser;
+	private final BasicProjectRoleJsonParser basicRoleJsonParser;
 
-    public AsynchronousProjectRolesRestClient(final HttpClient client, final URI serverUri) {
-        super(client);
-        this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
-        this.basicRoleJsonParser = new BasicProjectRoleJsonParser();
-    }
+	public AsynchronousProjectRolesRestClient(final HttpClient client, final URI serverUri) {
+		super(client);
+		this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
+		this.basicRoleJsonParser = new BasicProjectRoleJsonParser();
+	}
 
-    @Override
-    public Promise<ProjectRole> getRole(URI uri) {
-        return getAndParse(uri, projectRoleJsonParser);
-    }
+	@Override
+	public Promise<ProjectRole> getRole(URI uri) {
+		return getAndParse(uri, projectRoleJsonParser);
+	}
 
-    @Override
-    public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) {
-        final URI roleUri = UriBuilder
-                .fromUri(projectUri)
-                .path("role")
-                .path(String.valueOf(roleId))
-                .build();
-        return getAndParse(roleUri, projectRoleJsonParser);
-    }
+	@Override
+	public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) {
+		final URI roleUri = UriBuilder
+				.fromUri(projectUri)
+				.path("role")
+				.path(String.valueOf(roleId))
+				.build();
+		return getAndParse(roleUri, projectRoleJsonParser);
+	}
 
-    @Override
-    public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) {
-        final URI rolesUris = UriBuilder
-                .fromUri(projectUri)
-                .path("role")
-                .build();
-        final Promise<Collection<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
+	@Override
+	public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) {
+		final URI rolesUris = UriBuilder
+				.fromUri(projectUri)
+				.path("role")
+				.build();
+		final Promise<Collection<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
-        return Promises.promise(Iterables.transform(basicProjectRoles.claim(), new Function<BasicProjectRole, ProjectRole>() {
-            @Override
-            public ProjectRole apply(final BasicProjectRole basicProjectRole) {
-                return getRole(basicProjectRole.getSelf()).claim();
-            }
-        }));
-    }
+		return Promises.promise(Iterables.transform(basicProjectRoles.claim(), new Function<BasicProjectRole, ProjectRole>() {
+			@Override
+			public ProjectRole apply(final BasicProjectRole basicProjectRole) {
+				return getRole(basicProjectRole.getSelf()).claim();
+			}
+		}));
+	}
 }

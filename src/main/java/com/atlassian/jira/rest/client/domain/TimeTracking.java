@@ -58,7 +58,7 @@ public class TimeTracking {
 
 	/**
 	 * @return time spent [in minutes] on this issue or <code>null</code> when time spent information is not available to the caller
-	 * (in some strange circumstances)
+	 *         (in some strange circumstances)
 	 */
 	@Nullable
 	public Integer getTimeSpentMinutes() {

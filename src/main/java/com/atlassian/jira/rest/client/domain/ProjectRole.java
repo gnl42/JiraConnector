@@ -26,6 +26,7 @@ import java.util.Collection;
  * have a project X and a project Y, you would then be able to configure different RoleActors in the "testers" role
  * for project X than for project Y. You can use ProjectRole objects as the target of Notification and Permission
  * schemes.
+ *
  * @see com.atlassian.jira.security.roles.ProjectRole
  */
 @SuppressWarnings("JavadocReference")

@@ -38,7 +38,7 @@ public class ServerInfo {
 	private final String serverTitle;
 
 	public ServerInfo(URI baseUri, String version, int buildNumber, DateTime buildDate, @Nullable DateTime serverTime,
-					  String scmInfo, String serverTitle) {
+			String scmInfo, String serverTitle) {
 		this.baseUri = baseUri;
 		this.version = version;
 		this.buildNumber = buildNumber;
@@ -56,7 +56,6 @@ public class ServerInfo {
 	}
 
 	/**
-	 *
 	 * @return version of this JIRA instance (like "4.2.1")
 	 */
 	public String getVersion() {
@@ -79,7 +78,7 @@ public class ServerInfo {
 
 	/**
 	 * @return current time (when the response is generated) on the server side or <code>null</code>
-	 * when the user is not authenticated.
+	 *         when the user is not authenticated.
 	 */
 	@Nullable
 	public DateTime getServerTime() {

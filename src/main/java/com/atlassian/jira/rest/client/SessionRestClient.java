@@ -26,7 +26,7 @@ import com.atlassian.util.concurrent.Promise;
  */
 public interface SessionRestClient {
 
-    /**
+	/**
 	 * @return information about current session
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */

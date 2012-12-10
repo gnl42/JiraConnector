@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 /**
- * Cookie used for maintaining the session for this user 
+ * Cookie used for maintaining the session for this user
  *
  * @since v0.1
  */

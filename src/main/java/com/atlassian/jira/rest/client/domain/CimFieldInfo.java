@@ -30,7 +30,7 @@ import java.util.Set;
 
 /**
  * Contains information about field in IssueType.<br/>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
@@ -74,6 +74,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 
 	/**
 	 * Returns schema of this field that describes type of that field and contained items type.
+	 *
 	 * @return schema of this field.
 	 */
 	public FieldSchema getSchema() {
@@ -82,6 +83,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 
 	/**
 	 * Returns set of operations allowed for this field.
+	 *
 	 * @return set of operations allowed for this field.
 	 */
 	public Set<StandardOperation> getOperations() {
@@ -90,6 +92,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 
 	/**
 	 * Returns list of values that are allowed to be used as value to this field.
+	 *
 	 * @return list of allowed values.
 	 */
 	@Nullable

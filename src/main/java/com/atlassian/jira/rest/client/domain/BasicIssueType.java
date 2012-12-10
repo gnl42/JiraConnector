@@ -66,6 +66,7 @@ public class BasicIssueType implements AddressableEntity, NamedEntity, Identifia
 
 	/**
 	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+	 *
 	 * @return ToStringHelper
 	 */
 	protected Objects.ToStringHelper getToStringHelper() {

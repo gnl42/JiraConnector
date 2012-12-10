@@ -36,7 +36,7 @@ import java.util.Map;
 import static com.atlassian.jira.rest.client.domain.EntityHelper.toNamesList;
 
 /**
- * Builder for IssueInput class.  
+ * Builder for IssueInput class.
  *
  * @since 1.0
  */
@@ -114,7 +114,7 @@ public class IssueInputBuilder {
 	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *
-	 * @param id	Field's id
+	 * @param id    Field's id
 	 * @param value Complex value for field
 	 * @return this
 	 */
@@ -126,7 +126,7 @@ public class IssueInputBuilder {
 	/**
 	 * Sets value of field. This method transforms given value to one of understandable by input generator.
 	 *
-	 * @param id	Field's id
+	 * @param id    Field's id
 	 * @param value Field's value
 	 * @return this
 	 * @throws CannotTransformValueException When transformer cannot transform given value

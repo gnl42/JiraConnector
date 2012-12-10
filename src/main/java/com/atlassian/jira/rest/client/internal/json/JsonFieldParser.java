@@ -25,37 +25,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonFieldParser {
-    private static final String VALUE_ATTRIBUTE = "value";
+	private static final String VALUE_ATTRIBUTE = "value";
 
-    private Map<String, JsonObjectParser> registeredValueParsers = new HashMap<String, JsonObjectParser>() {{
-        put("com.atlassian.jira.plugin.system.customfieldtypes:float", new FloatingPointFieldValueParser());
+	private Map<String, JsonObjectParser> registeredValueParsers = new HashMap<String, JsonObjectParser>() {{
+		put("com.atlassian.jira.plugin.system.customfieldtypes:float", new FloatingPointFieldValueParser());
 		put("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", new FieldValueJsonParser<BasicUser>(new BasicUserJsonParser()));
-        put("java.lang.String", new StringFieldValueParser());
-    }};
+		put("java.lang.String", new StringFieldValueParser());
+	}};
 
-    @SuppressWarnings("unchecked")
-    public Field parse(JSONObject jsonObject, String id) throws JSONException {
-        String type = jsonObject.getString("type");
-        final String name = jsonObject.getString("name");
-        final Object valueObject = jsonObject.opt(VALUE_ATTRIBUTE);
-        final Object value;
-        // @todo ugly hack until https://jdog.atlassian.com/browse/JRADEV-3220 is fixed
-        if ("comment".equals(name)) {
-            type = "com.atlassian.jira.Comment";
-        }
+	@SuppressWarnings("unchecked")
+	public Field parse(JSONObject jsonObject, String id) throws JSONException {
+		String type = jsonObject.getString("type");
+		final String name = jsonObject.getString("name");
+		final Object valueObject = jsonObject.opt(VALUE_ATTRIBUTE);
+		final Object value;
+		// @todo ugly hack until https://jdog.atlassian.com/browse/JRADEV-3220 is fixed
+		if ("comment".equals(name)) {
+			type = "com.atlassian.jira.Comment";
+		}
 
-        if (valueObject == null) {
-            value = null;
-        } else {
-            final JsonObjectParser valueParser = registeredValueParsers.get(type);
-            if (valueParser != null) {
-                value = valueParser.parse(jsonObject);
-            } else {
-                value = valueObject.toString();
-        }
-        }
-        return new Field(id, name, type, value);
-    }
+		if (valueObject == null) {
+			value = null;
+		} else {
+			final JsonObjectParser valueParser = registeredValueParsers.get(type);
+			if (valueParser != null) {
+				value = valueParser.parse(jsonObject);
+			} else {
+				value = valueObject.toString();
+			}
+		}
+		return new Field(id, name, type, value);
+	}
 
 	static class FieldValueJsonParser<T> implements JsonObjectParser<T> {
 		private final JsonObjectParser<T> jsonParser;
@@ -75,31 +75,29 @@ public class JsonFieldParser {
 	}
 
 
+	static class FloatingPointFieldValueParser implements JsonObjectParser<Double> {
 
-    static class FloatingPointFieldValueParser implements JsonObjectParser<Double> {
+		@Override
+		public Double parse(JSONObject jsonObject) throws JSONException {
+			final String s = JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
+			if (s == null) {
+				return null;
+			}
+			try {
+				return Double.parseDouble(s);
+			} catch (NumberFormatException e) {
+				throw new JSONException("[" + s + "] is not a valid floating point number");
+			}
+		}
+	}
 
-        @Override
-        public Double parse(JSONObject jsonObject) throws JSONException {
-            final String s = JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
-            if (s == null) {
-                return null;
-            }
-            try {
-                return Double.parseDouble(s);
-            } catch (NumberFormatException e) {
-                throw new JSONException("[" + s + "] is not a valid floating point number");
-            }
-        }
-    }
+	static class StringFieldValueParser implements JsonObjectParser<String> {
 
-    static class StringFieldValueParser implements JsonObjectParser<String> {
-
-        @Override
-        public String parse(JSONObject jsonObject) throws JSONException {
-            return JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
-        }
-    }
-
+		@Override
+		public String parse(JSONObject jsonObject) throws JSONException {
+			return JsonParseUtil.getNullableString(jsonObject, VALUE_ATTRIBUTE);
+		}
+	}
 
 
 }

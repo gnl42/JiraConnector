@@ -69,10 +69,10 @@ public class ValueTransformerManager implements Function<Object, Object> {
 	public Object apply(@Nullable Object rawInput) {
 		if (rawInput instanceof Iterable) {
 			@SuppressWarnings("unchecked")
-			final Iterable<Object> rawInputObjects= (Iterable<Object>) rawInput;
+			final Iterable<Object> rawInputObjects = (Iterable<Object>) rawInput;
 			return ImmutableList.copyOf(Iterables.transform(rawInputObjects, this));
 		}
-		
+
 		for (ValueTransformer valueTransformer : valueTransformers) {
 			final Object transformedValue = valueTransformer.apply(rawInput);
 			if (!ValueTransformer.CANNOT_HANDLE.equals(transformedValue)) {

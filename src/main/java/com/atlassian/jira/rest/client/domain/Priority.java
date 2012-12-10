@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
- * Complete information about a JIRA issue priority 
+ * Complete information about a JIRA issue priority
  *
  * @since v0.1
  */

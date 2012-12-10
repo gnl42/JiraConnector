@@ -49,7 +49,7 @@ public class VersionRelatedIssuesCount {
 
 	/**
 	 * @return number of issues which have this version set in their Fix Version(s) field
-	 * (as a solely set version or one of multiple values set)
+	 *         (as a solely set version or one of multiple values set)
 	 */
 	public int getNumFixedIssues() {
 		return numFixedIssues;
@@ -57,7 +57,7 @@ public class VersionRelatedIssuesCount {
 
 	/**
 	 * @return number of issues which have this version set in their Affects Version(s) field
-	 * (as a solely set version or one of multiple values set)
+	 *         (as a solely set version or one of multiple values set)
 	 */
 	public int getNumAffectedIssues() {
 		return numAffectedIssues;

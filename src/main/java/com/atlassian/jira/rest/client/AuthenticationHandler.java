@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,18 @@ package com.atlassian.jira.rest.client;
 import com.atlassian.httpclient.api.Request;
 
 /**
- * TODO: Document this class / interface here
+ * Interface for classes which authenticate the requests. The configure method is invoked during each request.
+ * For instance, the implementation of this handling which would configure the request to do a basic http authentication would
+ * have a following implementation.
+ *
+ * 	public void configure(final Request request) {
+ *      request.setHeader("Authorization", "Basic " + base64EncodedCredentials());
+ * 	}
  *
  * @since v0.1
  */
 public interface AuthenticationHandler {
 
-    void configure(final Request request);
+	void configure(final Request request);
 
 }

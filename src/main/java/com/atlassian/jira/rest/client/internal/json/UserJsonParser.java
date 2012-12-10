@@ -51,12 +51,14 @@ public class UserJsonParser implements JsonObjectParser<User> {
 		// e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
 		final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
 		// we expect always expanded groups, serving them is anyway cheap - that was the case for JIRA prior 5.0, now groups are not expanded...
-		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json.getJSONObject("groups"), new JsonObjectParser<String>() {
+		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json
+				.getJSONObject("groups"), new JsonObjectParser<String>() {
 			@Override
 			public String parse(JSONObject json) throws JSONException {
 				return json.getString("name");
 			}
 		});
-		return new User(basicUser.getSelf(), basicUser.getName(), basicUser.getDisplayName(), emailAddress, groups, avatarUris, timezone);
+		return new User(basicUser.getSelf(), basicUser.getName(), basicUser
+				.getDisplayName(), emailAddress, groups, avatarUris, timezone);
 	}
 }

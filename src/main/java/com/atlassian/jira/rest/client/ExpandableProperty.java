@@ -28,34 +28,34 @@ import java.util.Collection;
  * @since v0.1
  */
 public class ExpandableProperty<T> {
-    private final int size;
+	private final int size;
 
 	public ExpandableProperty(int size) {
 		this.size = size;
-        items = null;
+		items = null;
 	}
 
-    public ExpandableProperty(int size, @Nullable Collection<T> items) {
-        this.size = size;
-        this.items = items;
-    }
+	public ExpandableProperty(int size, @Nullable Collection<T> items) {
+		this.size = size;
+		this.items = items;
+	}
 
 	public ExpandableProperty(Collection<T> items) {
 		this.size = items.size();
 		this.items = items;
 	}
 
-    public int getSize() {
-        return size;
-    }
+	public int getSize() {
+		return size;
+	}
 
 	@Nullable
-    final private Collection<T> items;
+	final private Collection<T> items;
 
-    @Nullable
+	@Nullable
 	public Iterable<T> getItems() {
-        return items;
-    }
+		return items;
+	}
 
 	@Override
 	public String toString() {

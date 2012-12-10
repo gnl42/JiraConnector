@@ -44,24 +44,23 @@ public class JsonParseUtil {
 	public static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
 	public static final String SELF_ATTR = "self";
 
-    public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonObjectParser<T> jsonParser) throws JSONException {
-        final Collection<T> res = new ArrayList<T>(jsonArray.length());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
-        }
-        return res;
-    }
+	public static <T> Collection<T> parseJsonArray(JSONArray jsonArray, JsonObjectParser<T> jsonParser) throws JSONException {
+		final Collection<T> res = new ArrayList<T>(jsonArray.length());
+		for (int i = 0; i < jsonArray.length(); i++) {
+			res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
+		}
+		return res;
+	}
 
 	public static <T> OptionalIterable<T> parseOptionalJsonArray(JSONArray jsonArray, JsonObjectParser<T> jsonParser)
 			throws JSONException {
 		if (jsonArray == null) {
 			return OptionalIterable.absent();
-		}
-		else {
+		} else {
 			return new OptionalIterable<T>(JsonParseUtil.<T>parseJsonArray(jsonArray, jsonParser));
 		}
 	}
-    
+
 	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
 			throws JSONException {
 		final int numItems = json.getInt("size");
@@ -82,7 +81,6 @@ public class JsonParseUtil {
 	}
 
 
-
 	public static URI getSelfUri(JSONObject jsonObject) throws JSONException {
 		return parseURI(jsonObject.getString(SELF_ATTR));
 	}
@@ -100,14 +98,14 @@ public class JsonParseUtil {
 		return json;
 	}
 
-    @Nullable
-    public static JSONObject getNestedOptionalObject(JSONObject json, String... path) throws JSONException {
-        for (int i = 0; i < path.length - 1; i++) {
-            String s = path[i];
-            json = json.getJSONObject(s);
-        }
-        return json.optJSONObject(path[path.length - 1]);
-    }
+	@Nullable
+	public static JSONObject getNestedOptionalObject(JSONObject json, String... path) throws JSONException {
+		for (int i = 0; i < path.length - 1; i++) {
+			String s = path[i];
+			json = json.getJSONObject(s);
+		}
+		return json.optJSONObject(path[path.length - 1]);
+	}
 
 	@SuppressWarnings("unused")
 	public static JSONArray getNestedArray(JSONObject json, String... path) throws JSONException {
@@ -118,13 +116,13 @@ public class JsonParseUtil {
 		return json.getJSONArray(path[path.length - 1]);
 	}
 
-    public static JSONArray getNestedOptionalArray(JSONObject json, String... path) throws JSONException {
-        for (int i = 0; json != null && i < path.length - 1; i++) {
-            String s = path[i];
-            json = json.optJSONObject(s);
-        }
-        return json == null ? null : json.optJSONArray(path[path.length - 1]);
-    }
+	public static JSONArray getNestedOptionalArray(JSONObject json, String... path) throws JSONException {
+		for (int i = 0; json != null && i < path.length - 1; i++) {
+			String s = path[i];
+			json = json.optJSONObject(s);
+		}
+		return json == null ? null : json.optJSONArray(path[path.length - 1]);
+	}
 
 
 	public static String getNestedString(JSONObject json, String... path) throws JSONException {
@@ -137,14 +135,14 @@ public class JsonParseUtil {
 	}
 
 	@SuppressWarnings("unused")
-    public static boolean getNestedBoolean(JSONObject json, String... path) throws JSONException {
+	public static boolean getNestedBoolean(JSONObject json, String... path) throws JSONException {
 
-        for (int i = 0; i < path.length - 1; i++) {
-            String s = path[i];
-            json = json.getJSONObject(s);
-        }
-        return json.getBoolean(path[path.length - 1]);
-    }
+		for (int i = 0; i < path.length - 1; i++) {
+			String s = path[i];
+			json = json.getJSONObject(s);
+		}
+		return json.getBoolean(path[path.length - 1]);
+	}
 
 
 	public static URI parseURI(String str) {
@@ -196,6 +194,7 @@ public class JsonParseUtil {
 
 	/**
 	 * Tries to parse date and time and return that. If fails then tries to parse date only.
+	 *
 	 * @param str String contains either date and time or date only
 	 * @return date and time or date only
 	 */
@@ -239,14 +238,14 @@ public class JsonParseUtil {
 	}
 
 
-    @Nullable
-    public static String getOptionalString(JSONObject jsonObject, String attributeName) {
+	@Nullable
+	public static String getOptionalString(JSONObject jsonObject, String attributeName) {
 		final Object res = jsonObject.opt(attributeName);
 		if (res == JSONObject.NULL || res == null) {
 			return null;
 		}
 		return res.toString();
-    }
+	}
 
 	@SuppressWarnings("unused")
 	@Nullable
@@ -280,15 +279,17 @@ public class JsonParseUtil {
 		return jsonObject.has(attributeName) ?
 				Optional.of(jsonObject.getJSONArray(attributeName)) : Optional.<JSONArray>absent();
 	}
-	
+
 	public static Map<String, URI> getAvatarUris(JSONObject jsonObject) throws JSONException {
 		Map<String, URI> uris = Maps.newHashMap();
-		
+
 		final Iterator iterator = jsonObject.keys();
 		while (iterator.hasNext()) {
 			final Object o = iterator.next();
 			if (!(o instanceof String)) {
-				throw new JSONException("Cannot parse URIs: key is expected to be valid String. Got " + (o == null ? "null" : o.getClass()) + " instead.");
+				throw new JSONException(
+						"Cannot parse URIs: key is expected to be valid String. Got " + (o == null ? "null" : o.getClass())
+								+ " instead.");
 			}
 			final String key = (String) o;
 			uris.put(key, JsonParseUtil.parseURI(jsonObject.getString(key)));

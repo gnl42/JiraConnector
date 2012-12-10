@@ -27,6 +27,7 @@ import java.net.URI;
  */
 public class Resolution extends BasicResolution {
 	private final String description;
+
 	public Resolution(URI self, String name, String description) {
 		super(self, name);
 		this.description = description;
