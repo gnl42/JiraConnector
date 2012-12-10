@@ -155,6 +155,9 @@ public class JiraClientCache {
 	}
 
 	public Priority getPriorityByName(String name) {
+		if (data.prioritiesByName == null) {
+			throw new RuntimeException(Messages.JiraClientCache_Update_repository_configuration);
+		}
 		return data.prioritiesByName.get(name);
 	}
 

@@ -8,7 +8,7 @@ Bundle-ClassPath: jersey-multipart-1.5.jar,
  jersey-json-1.5.jar,
  jersey-core-1.5.jar,
  jersey-client-1.5.jar
-Bundle-Vendor: Atlassian
+Bundle-Vendor: Sun
 Export-Package: 
  com.sun.jersey.api.client,
  com.sun.jersey.api.client.async,

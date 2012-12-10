@@ -45,5 +45,7 @@ public class Messages {
 
 	public static String JiraClientCache_getting_configuration;
 
+	public static String JiraClientCache_Update_repository_configuration;
+
 	public static String JiraClient_attachment_too_large;
 }
