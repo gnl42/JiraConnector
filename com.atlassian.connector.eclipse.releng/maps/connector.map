@@ -54,6 +54,8 @@ plugin@com.atlassian.connector.eclipse.jira.tests=COPY,@buildDirectory@/../../..
 
 plugin@com.sun.jersey=COPY,@buildDirectory@/../../../,com.sun.jersey
 plugin@com.atlassian.jira.rest.client=COPY,@buildDirectory@/../../../,com.atlassian.jira.rest.client
+plugin@org.codehaus.jettison=COPY,@buildDirectory@/../../../,org.codehaus.jettison
+plugin@com.google.guava=COPY,@buildDirectory@/../../../,com.google.guava
 
 
 plugin@com.atlassian.connector.commons=COPY,@buildDirectory@/../../../,connector-commons/com.atlassian.connector.commons
@@ -64,8 +66,8 @@ plugin@com.atlassian.connector.commons.tests.dependencies=COPY,@buildDirectory@/
 !**************************************************
 ! 3rd party plugins
 !**************************************************
-plugin@org.codehaus.jettison=GET,file://@buildDirectory@/../../../bundles/jettison-1.1.jar
-plugin@com.google.guava=GET,file://@buildDirectory@/../../../bundles/guava-13.0.jar
+!plugin@org.codehaus.jettison=GET,file://@buildDirectory@/../../../bundles/jettison-1.1.jar
+!plugin@com.google.guava=GET,file://@buildDirectory@/../../../bundles/guava-13.0.jar
 !plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-apache-client-1.5.jar
 !plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-client-1.5.jar
 !plugin@com.sun.jersey_1_5=GET,file://@buildDirectory@/../../../bundles/jersey-core-1.5.jar

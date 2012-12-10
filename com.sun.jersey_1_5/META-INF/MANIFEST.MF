@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jersey_1_5
+Bundle-Name: Jersey
 Bundle-SymbolicName: com.sun.jersey
 Bundle-Version: 1.5.0
 Bundle-ClassPath: jersey-multipart-1.5.jar,
