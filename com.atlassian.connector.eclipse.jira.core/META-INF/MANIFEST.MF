@@ -28,6 +28,7 @@ Export-Package: com.atlassian.connector.eclipse.internal.jira.core;x-friends:="c
  com.atlassian.connector.eclipse.internal.jira.core.model;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.model.filter;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.service;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
+ com.atlassian.connector.eclipse.internal.jira.core.service.rest;x-friends:="com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.service.soap;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.service.web;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.service.web.rss;x-friends:="com.atlassian.connector.eclipse.jira.ui",

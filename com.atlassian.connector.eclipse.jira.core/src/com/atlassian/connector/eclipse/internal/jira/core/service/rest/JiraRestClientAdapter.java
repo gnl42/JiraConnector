@@ -92,10 +92,13 @@ public class JiraRestClientAdapter {
 
 	private final String url;
 
-	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache) {
-
+	public JiraRestClientAdapter(String url, JiraClientCache cache) {
 		this.url = url;
 		this.cache = cache;
+	}
+
+	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache) {
+		this(url, cache);
 
 //		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
 //		this.restClient = restFactory.createWithBasicHttpAuthentication(new URI(url), userName, password);
