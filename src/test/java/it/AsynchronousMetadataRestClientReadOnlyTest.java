@@ -90,7 +90,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).claim();
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
-		assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("status_open.png")));
+		assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("open.png")));
 		assertEquals("Open", status.getName());
 	}
 
