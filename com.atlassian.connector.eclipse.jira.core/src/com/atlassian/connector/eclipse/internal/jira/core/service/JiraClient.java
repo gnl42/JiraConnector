@@ -115,7 +115,8 @@ public class JiraClient {
 
 	private JiraRestClientAdapter restClient = null;
 
-	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
+	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration,
+			JiraRestClientAdapter restClient) {
 		Assert.isNotNull(location);
 		Assert.isNotNull(configuration);
 		this.baseUrl = location.getUrl();
@@ -127,25 +128,31 @@ public class JiraClient {
 //		this.webClient = new JiraWebClient(this, webSession);
 //		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
-
-		createRestClient();
+		this.restClient = restClient;
 
 	}
 
-	private void createRestClient() {
+	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
+		this(location, configuration, null);
+		restClient = createRestClient(location, cache);
+	}
+
+	public JiraClient(AbstractWebLocation location) {
+		this(location, new JiraLocalConfiguration());
+	}
+
+	private static JiraRestClientAdapter createRestClient(final AbstractWebLocation location,
+			final JiraClientCache cache) {
 		Proxy proxy = null;
+		final String baseUrl = location.getUrl();
 		if (baseUrl.matches(URL_REGEXP_HTTPS)) {
 			proxy = location.getProxyForHost(baseUrl, PROXY_TYPE_HTTPS);
 		} else if (baseUrl.matches(URL_REGEXP_HTTP)) {
 			proxy = location.getProxyForHost(baseUrl, PROXY_TYPE_HTTP);
 		}
 
-		this.restClient = new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY)
-				.getUserName(), location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), proxy, cache);
-	}
-
-	public JiraClient(AbstractWebLocation location) {
-		this(location, new JiraLocalConfiguration());
+		return new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY).getUserName(),
+				location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), proxy, cache);
 	}
 
 //	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
@@ -319,7 +326,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("findIssues", null); //$NON-NLS-1$
 
 		FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(DEFAULT_CHARSET,
-				getLocalConfiguration().getDateFormat());
+				getLocalConfiguration().getDateTimeFormat());
 
 		String jql = filterConverter.getJqlString(filterDefinition);
 
@@ -790,8 +797,7 @@ public class JiraClient {
 	public synchronized void purgeSession() {
 //		webSession.purgeSession();
 		soapClient.purgeSession();
-
-		createRestClient();
+		restClient = createRestClient(location, cache);
 	}
 
 	public String getAssigneeParam(JiraIssue issue, int assigneeType, String user) {

@@ -39,6 +39,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueColl
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
 
 public class MockJiraClient extends JiraClient {
 
@@ -89,7 +90,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	public MockJiraClient(String baseUrl) {
-		super(new MockWebLocation(baseUrl));
+		super(new MockWebLocation(baseUrl), new JiraLocalConfiguration(), new MockJiraRestClientAdapter(baseUrl, null));
 		this.cache = super.getCache();
 	}
 

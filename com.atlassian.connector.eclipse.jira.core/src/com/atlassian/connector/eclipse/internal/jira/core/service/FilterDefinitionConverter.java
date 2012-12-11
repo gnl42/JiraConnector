@@ -17,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,44 +75,61 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFi
  */
 public class FilterDefinitionConverter {
 
+	/** JQL descending sort order */
 	private static final String JQL_SORT_DESCENDING = "DESC"; //$NON-NLS-1$
 
+	/** JQL ascending sort order */
 	private static final String JQL_SORT_ASCENDING = "ASC"; //$NON-NLS-1$
 
+	/** JQL ordering */
 	private static final String JQL_ORDER_BY = " ORDER BY "; //$NON-NLS-1$
 
+	/** Field name containing text to be searched for classic queries */
 	private static final String QUERY_KEY = "query"; //$NON-NLS-1$
+
+	/** Date format used for JQL queries */
+	public static final DateFormat JQL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm"); //$NON-NLS-1$
 
 	private final String encoding;
 
-	private final DateFormat dateFormat;
+	/** Date format used for classic queries */
+	private final DateFormat classicQueryDateTimeFormat;
 
+	/**
+	 * @param encoding
+	 * @param dateFormat
+	 *            date format which has to be used for classic queries; should match the one configured in JIRA; in case
+	 *            of JQL format is hard-coded and independent from user settings
+	 */
 	public FilterDefinitionConverter(String encoding, DateFormat dateFormat) {
 		Assert.isNotNull(dateFormat);
 		Assert.isNotNull(encoding);
 		this.encoding = encoding;
-		this.dateFormat = dateFormat;
+		this.classicQueryDateTimeFormat = dateFormat;
 	}
 
 	public String toUrl(String repositoryUrl, FilterDefinition filter) {
 		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter); //$NON-NLS-1$
 	}
 
-	public String toJqlUrl(String repositoryUrl, FilterDefinition filter) {
-		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW + getJqlString(filter);
+	public String toJqlUrl(String repositoryUrl, FilterDefinition filter) throws UnsupportedEncodingException {
+		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW
+				+ URLEncoder.encode(getJqlString(filter), encoding);
 	}
 
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
 		try {
 			return toFilter(client, url, validate, false, null);
-		} catch (JiraException e) {
+		} catch (JiraException ex) {
 			// can never happen since update parameter is false
-			throw new RuntimeException(e);
+			throw new RuntimeException(ex);
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate, boolean update,
-			IProgressMonitor monitor) throws JiraException {
+			IProgressMonitor monitor) throws JiraException, UnsupportedEncodingException {
 		final FilterDefinition filter = new FilterDefinition();
 
 		final int n = url.indexOf('?');
@@ -122,18 +141,14 @@ public class FilterDefinitionConverter {
 		for (String pair : url.substring(n + 1).split("&")) { //$NON-NLS-1$
 			String[] tokens = pair.split("="); //$NON-NLS-1$
 			if (tokens.length > 1) {
-				try {
-					String key = tokens[0];
-					String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding); //$NON-NLS-1$
-					List<String> values = params.get(key);
-					if (values == null) {
-						values = new ArrayList<String>();
-						params.put(key, values);
-					}
-					values.add(value);
-				} catch (UnsupportedEncodingException ex) {
-					// ignore
+				String key = tokens[0];
+				String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding); //$NON-NLS-1$
+				List<String> values = params.get(key);
+				if (values == null) {
+					values = new ArrayList<String>();
+					params.put(key, values);
 				}
+				values.add(value);
 			}
 		}
 
@@ -408,7 +423,8 @@ public class FilterDefinitionConverter {
 
 		// content (summary, description, environment, comments)
 		final ContentFilter contentFilter = filter.getContentFilter();
-		if ((contentFilter != null) && (contentFilter.getQueryString() != null)) {
+		if ((contentFilter != null) && (contentFilter.getQueryString() != null)
+				&& (contentFilter.getQueryString().length() > 0)) {
 			final String searchedString = " ~ \"" + contentFilter.getQueryString() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
 			final List<String> jqlOrQueryParts = new ArrayList<String>(4);
 			if (contentFilter.isSearchingSummary()) {
@@ -438,11 +454,11 @@ public class FilterDefinitionConverter {
 
 		// created, updated, due dates
 		addJqlAndExpression(searchParams, jiraField.CREATED(),
-				jqlFilter.extractDates(filter.getCreatedDateFilter(), dateFormat));
+				jqlFilter.extractDates(filter.getCreatedDateFilter(), JQL_DATE_TIME_FORMAT));
 		addJqlAndExpression(searchParams, jiraField.UPDATED(),
-				jqlFilter.extractDates(filter.getUpdatedDateFilter(), dateFormat));
+				jqlFilter.extractDates(filter.getUpdatedDateFilter(), JQL_DATE_TIME_FORMAT));
 		addJqlAndExpression(searchParams, jiraField.DUE_DATE(),
-				jqlFilter.extractDates(filter.getDueDateFilter(), dateFormat));
+				jqlFilter.extractDates(filter.getDueDateFilter(), JQL_DATE_TIME_FORMAT));
 
 		// estimations
 		addJqlAndExpression(searchParams, jiraField.WORK_RATIO(),
@@ -490,17 +506,21 @@ public class FilterDefinitionConverter {
 		String after = getId(params, key + ":after"); //$NON-NLS-1$
 		String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-		Date afterDate;
+		Date afterDate = null;
 		try {
-			afterDate = dateFormat.parse(after);
-		} catch (Exception ex) {
-			afterDate = null;
+			if (after != null) {
+				afterDate = classicQueryDateTimeFormat.parse(after);
+			}
+		} catch (ParseException ex) {
+			// swallow
 		}
-		Date beforeDate;
+		Date beforeDate = null;
 		try {
-			beforeDate = dateFormat.parse(before);
-		} catch (Exception ex) {
-			beforeDate = null;
+			if (before != null) {
+				beforeDate = classicQueryDateTimeFormat.parse(before);
+			}
+		} catch (ParseException ex) {
+			// swallow
 		}
 
 		String previous = getId(params, key + ":previous"); //$NON-NLS-1$
@@ -582,10 +602,10 @@ public class FilterDefinitionConverter {
 		if (filter instanceof DateRangeFilter) {
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
 			if (rangeFilter.getFromDate() != null) {
-				addParameter(sb, type + ":after", dateFormat.format(rangeFilter.getFromDate())); //$NON-NLS-1$
+				addParameter(sb, type + ":after", classicQueryDateTimeFormat.format(rangeFilter.getFromDate())); //$NON-NLS-1$
 			}
 			if (rangeFilter.getToDate() != null) {
-				addParameter(sb, type + ":before", dateFormat.format(rangeFilter.getToDate())); //$NON-NLS-1$
+				addParameter(sb, type + ":before", classicQueryDateTimeFormat.format(rangeFilter.getToDate())); //$NON-NLS-1$
 			}
 			if (rangeFilter.getFrom() != null && rangeFilter.getFrom().length() > 0) {
 				addParameter(sb, type + ":previous", rangeFilter.getFrom()); //$NON-NLS-1$
@@ -651,7 +671,7 @@ public class FilterDefinitionConverter {
 		try {
 			sb.append('&').append(name).append('=').append(URLEncoder.encode(value, encoding));
 		} catch (UnsupportedEncodingException ex) {
-			// ignore
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -682,27 +702,6 @@ public class FilterDefinitionConverter {
 		param.append(StringUtils.join(values, ",")); //$NON-NLS-1$
 		param.append(")"); //$NON-NLS-1$
 		// add to output list
-		searchParams.add(param.toString());
-	}
-
-	/**
-	 * Appends new part of JQL query with a "key = value" expression. Example:
-	 * 
-	 * <pre>
-	 * project = JIRA
-	 * </pre>
-	 * 
-	 * @param searchParams
-	 *            output list where new expression will be added
-	 * @param field
-	 *            name of the jira field
-	 * @param value
-	 */
-	private void addJqlEqualsExpression(Collection<String> searchParams, String field, String value) {
-		// create "key = value" query
-		StringBuilder param = new StringBuilder(field);
-		param.append(" = "); //$NON-NLS-1$
-		param.append(value);
 		searchParams.add(param.toString());
 	}
 
