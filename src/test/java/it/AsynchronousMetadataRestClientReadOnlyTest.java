@@ -23,6 +23,7 @@ import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -70,7 +71,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
-        assertThat(issueType.getIconUri().toString(), endsWith("bug.gif"));
+        assertThat(issueType.getIconUri().toString(), Matchers.anyOf(endsWith("bug.png"), endsWith("bug.gif")));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_4_3)
@@ -89,7 +90,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).claim();
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
-		assertTrue(status.getIconUrl().toString().endsWith("status_open.gif"));
+		assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("status_open.png")));
 		assertEquals("Open", status.getName());
 	}
 
@@ -117,7 +118,11 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		final Long expectedId = isJira5xOrNewer() ? 3L : null;
 		assertEquals(expectedId, priority.getId());
         assertThat(priority.getIconUri().toString(), startsWith(jiraUri.toString()));
-        assertThat(priority.getIconUri().toString(), endsWith("images/icons/priority_major.gif"));
+        assertThat(priority.getIconUri().toString(),
+                Matchers.anyOf(
+                    endsWith("images/icons/priority_major.gif"),
+                    endsWith("images/icons/priorities/major.png"))
+        );
 
 	}
 
