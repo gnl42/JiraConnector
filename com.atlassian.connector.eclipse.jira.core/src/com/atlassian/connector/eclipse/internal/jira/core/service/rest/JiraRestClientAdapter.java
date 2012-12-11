@@ -76,6 +76,16 @@ public class JiraRestClientAdapter {
 
 	private static final SimpleDateFormat REST_DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ"); //$NON-NLS-1$
 
+	private static final String HTTP_401 = "Client response status: 401"; //$NON-NLS-1$
+
+	private static final String HTTP_403 = "Client response status: 403"; //$NON-NLS-1$
+
+	private static final String CONNECTION_REFUSED = "java.net.ConnectException: Connection refused: connect"; //$NON-NLS-1$
+
+	private static final String UNKNOWN_HOST_EXCEPTION = "java.net.UnknownHostException:"; //$NON-NLS-1$
+
+	private static final String ILLEGAL_ARGUMENT_EXCEPTION = "java.lang.IllegalArgumentException:"; //$NON-NLS-1$
+
 	private JiraRestClient restClient;
 
 	private final JiraClientCache cache;
@@ -419,27 +429,22 @@ public class JiraRestClientAdapter {
 	}
 
 	private <V> V call(Callable<V> callable) throws JiraException {
+
 		try {
 			return callable.call();
 		} catch (RestClientException e) {
-			if (e.getMessage().contains("Client response status: 401")) { //$NON-NLS-1$
-				throw new JiraAuthenticationException(e.getMessage());
-			} else if (e.getMessage().contains("java.net.ConnectException: Connection refused: connect")) { //$NON-NLS-1$
-				throw new JiraException("java.net.ConnectException: Connection refused: connect", e); //$NON-NLS-1$
-			} else if (e.getMessage().contains("java.net.UnknownHostException:")) { //$NON-NLS-1$
-				int index = e.getMessage().indexOf("java.net.UnknownHostException:"); //$NON-NLS-1$
-				if (index > -1) {
-					throw new JiraException(e.getMessage().substring(index), e);
-				} else {
-					throw e;
-				}
-			} else if (e.getMessage().contains("java.lang.IllegalArgumentException:")) { //$NON-NLS-1$
-				int index = e.getMessage().indexOf("java.lang.IllegalArgumentException:"); //$NON-NLS-1$
-				if (index > -1) {
-					throw new JiraException(e.getMessage().substring(index), e);
-				} else {
-					throw e;
-				}
+			if (e.getMessage().contains(HTTP_401)) {
+				throw new JiraAuthenticationException(HTTP_401);
+			} else if (e.getMessage().contains(HTTP_403)) {
+				throw new JiraException(HTTP_403 + ". Captcha might be required. Please try to log in via browser."); //$NON-NLS-1$
+			} else if (e.getMessage().contains(CONNECTION_REFUSED)) {
+				throw new JiraException(CONNECTION_REFUSED, e);
+			} else if (e.getMessage().contains(UNKNOWN_HOST_EXCEPTION)) {
+				int index = e.getMessage().indexOf(UNKNOWN_HOST_EXCEPTION);
+				throw new JiraException(e.getMessage().substring(index), e);
+			} else if (e.getMessage().contains(ILLEGAL_ARGUMENT_EXCEPTION)) {
+				int index = e.getMessage().indexOf(ILLEGAL_ARGUMENT_EXCEPTION);
+				throw new JiraException(e.getMessage().substring(index), e);
 			} else {
 				throw new JiraException(e);
 			}
