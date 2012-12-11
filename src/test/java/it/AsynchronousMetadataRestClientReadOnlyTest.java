@@ -19,18 +19,7 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.BasicIssueType;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.BasicResolution;
-import com.atlassian.jira.rest.client.domain.BasicStatus;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.IssuelinksType;
-import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.Resolution;
-import com.atlassian.jira.rest.client.domain.ServerInfo;
-import com.atlassian.jira.rest.client.domain.Status;
-import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
@@ -40,6 +29,8 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
+import static org.hamcrest.core.StringEndsWith.endsWith;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.*;
 
 /**
@@ -79,7 +70,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
-		assertTrue(issueType.getIconUri().toString().endsWith("bug.gif"));
+        assertThat(issueType.getIconUri().toString(), endsWith("bug.gif"));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_4_3)
@@ -125,8 +116,8 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("Major loss of function.", priority.getDescription());
 		final Long expectedId = isJira5xOrNewer() ? 3L : null;
 		assertEquals(expectedId, priority.getId());
-		assertTrue(priority.getIconUri().toString().startsWith(jiraUri.toString()));
-		assertTrue(priority.getIconUri().toString().endsWith("/images/icons/priority_major.gif"));
+        assertThat(priority.getIconUri().toString(), startsWith(jiraUri.toString()));
+        assertThat(priority.getIconUri().toString(), endsWith("images/icons/priority_major.gif"));
 
 	}
 
