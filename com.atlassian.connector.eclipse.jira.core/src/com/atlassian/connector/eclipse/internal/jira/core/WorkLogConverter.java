@@ -123,7 +123,6 @@ public class WorkLogConverter {
 		return instance;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void applyTo(JiraWorkLog instance, TaskAttribute taskAttribute) {
 		Assert.isNotNull(taskAttribute);
 		for (TaskField<?> field : fields) {
@@ -132,7 +131,7 @@ public class WorkLogConverter {
 		}
 
 		if (instance.getAdjustEstimate() != null) {
-			TaskAttribute child = addAttribute(taskAttribute, new JiraField(String.class, ADJUST_ESTIMATE_KEY,
+			TaskAttribute child = addAttribute(taskAttribute, new JiraField<String>(String.class, ADJUST_ESTIMATE_KEY,
 					"adjustEstimate", "Adjust Estimate", TaskAttribute.TYPE_SHORT_TEXT)); //$NON-NLS-1$ //$NON-NLS-2$
 			child.setValue(instance.getAdjustEstimate().value());
 		}
