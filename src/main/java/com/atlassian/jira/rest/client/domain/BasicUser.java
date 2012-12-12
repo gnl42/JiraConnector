@@ -16,8 +16,6 @@
 
 package com.atlassian.jira.rest.client.domain;
 
-import com.atlassian.jira.rest.client.AddressableEntity;
-import com.atlassian.jira.rest.client.NamedEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -27,7 +25,7 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicUser implements AddressableEntity, NamedEntity {
+public class BasicUser extends AddressableNamedEntity {
 
 	/**
 	 * This value is used to mark incomplete user URI - when server response with user without selfUri set.
@@ -36,18 +34,11 @@ public class BasicUser implements AddressableEntity, NamedEntity {
 	 */
 	public static URI INCOMPLETE_URI = URI.create("incomplete://user");
 
-	private final String name;
 	private final String displayName;
-	private final URI self;
 
 	public BasicUser(URI self, String name, String displayName) {
-		this.self = self;
-		this.name = name;
+		super(self, name);
 		this.displayName = displayName;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getDisplayName() {
@@ -55,30 +46,24 @@ public class BasicUser implements AddressableEntity, NamedEntity {
 	}
 
 	@Override
-	public URI getSelf() {
-		return self;
-	}
-
-	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("name", name)
-				.add("displayName", displayName).add("self", self).toString();
+		return super.getToStringHelper()
+				.add("displayName", displayName)
+				.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof BasicUser) {
 			BasicUser that = (BasicUser) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.displayName, that.displayName);
+			return super.equals(that) && Objects.equal(this.displayName, that.displayName);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, displayName);
+		return Objects.hashCode(super.hashCode(), displayName);
 	}
 
 	/**
