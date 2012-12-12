@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.atlassian.jira</groupId>
+        <artifactId>jira-rest-java-client</artifactId>
+        <version>${jrjc.version}</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jira-rest-java-client-api</artifactId>
+    <name>JIRA REST Java Client - Public API</name>
+    <description>
+        The public API for JIRA REST Java Client
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${findbugs.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.util.concurrent</groupId>
+            <artifactId>atlassian-util-concurrent</artifactId>
+            <version>${atlassian.concurrent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.httpclient</groupId>
+            <artifactId>atlassian-httpclient-api</artifactId>
+            <version>${atlassian.httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.5</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
