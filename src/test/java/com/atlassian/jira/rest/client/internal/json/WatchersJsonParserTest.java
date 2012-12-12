@@ -40,7 +40,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        assertThat(watcher.getUsers(), containsInAnyOrder(TestConstants.USER1, TestConstants.USER_ADMIN));
+        assertThat(watcher.getUsers(), containsInAnyOrder(TestConstants.USER1_BASIC_DEPRECATED, TestConstants.USER_ADMIN_BASIC_DEPRECATED));
 
     }
 

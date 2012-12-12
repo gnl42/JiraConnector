@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.User;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -30,7 +31,7 @@ import java.util.Map;
 public class UserJsonParser implements JsonObjectParser<User> {
 	@Override
 	public User parse(JSONObject json) throws JSONException {
-		final BasicUser basicUser = JsonParseUtil.parseBasicUser(json);
+		final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
 		final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
 		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
 		Map<String, URI> avatarUris = Maps.newHashMap();
@@ -50,15 +51,13 @@ public class UserJsonParser implements JsonObjectParser<User> {
 		}
 		// e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
 		final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
-		// we expect always expanded groups, serving them is anyway cheap - that was the case for JIRA prior 5.0, now groups are not expanded...
-		final ExpandableProperty<String> groups = JsonParseUtil.parseExpandableProperty(json
-				.getJSONObject("groups"), new JsonObjectParser<String>() {
-			@Override
-			public String parse(JSONObject json) throws JSONException {
-				return json.getString("name");
-			}
-		});
-		return new User(basicUser.getSelf(), basicUser.getName(), basicUser
-				.getDisplayName(), emailAddress, groups, avatarUris, timezone);
+        // optional because groups are not returned for issue->{reporter,assignee}
+        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json.optJSONObject("groups"), new JsonObjectParser<String>() {
+            @Override
+            public String parse(JSONObject json) throws JSONException {
+                return json.getString("name");
+            }
+        });
+        return new User(basicUser.getSelf(), basicUser.getName(), basicUser.getDisplayName(), emailAddress, groups, avatarUris, timezone);
 	}
 }

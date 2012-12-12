@@ -65,6 +65,28 @@ public class EntityHelper {
 		return Iterables.find(entities, HasIdPredicate.forId(id));
 	}
 
+    public static <T extends Attachment> T findAttachmentByFileName(Iterable<T> attachments, final String fileName) {
+        return Iterables.find(attachments, HasFileNamePredicate.forFileName(fileName));
+    }
+
+    public static class HasFileNamePredicate<T extends Attachment> implements Predicate<T> {
+
+        private final String fileName;
+
+        public static <K extends Attachment> HasFileNamePredicate<K> forFileName(String fileName) {
+            return new HasFileNamePredicate<K>(fileName);
+        }
+
+        private HasFileNamePredicate(String fileName) {
+            this.fileName = fileName;
+        }
+
+        @Override
+        public boolean apply(T attachment) {
+            return fileName.equals(attachment.getFilename());
+        }
+    }
+
 
 	public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T> {
 

@@ -19,7 +19,11 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.domain.Version;
+import com.google.common.collect.ImmutableMap;
+
+import java.net.URI;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
@@ -39,9 +43,20 @@ public class TestConstants {
 
 	public static final String ADMIN_PASSWORD = "admin";
 
-	public static final BasicUser USER1 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=wseliga"), USER1_USERNAME, "Wojciech Seliga");
+    // USER1_BASIC_DEPRECATED is deprecated - all tests that use this constant should be reviewed (JIRA now returns more info than we test)
+    public static final BasicUser USER1_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=wseliga"), USER1_USERNAME, "Wojciech Seliga");
+    public static final BasicUser USER1_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME, "Wojciech Seliga");
+    public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME, "Wojciech Seliga", "wojciech.seliga@spartez.com", null, ImmutableMap.of(
+            "16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&avatarId=10082"),
+            "48x48", URI.create("http://localhost:8090/jira/secure/useravatar?avatarId=10082")), null);
 
-	public static final BasicUser USER_ADMIN = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), ADMIN_USERNAME, "Administrator");
+    // USER_ADMIN_DEPRECATED this is deprecated - all tests that use this constant should be reviewed (JIRA now returns more info than we test)
+    public static final BasicUser USER_ADMIN_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), ADMIN_USERNAME, "Administrator");
+    public static final BasicUser USER_ADMIN_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=admin"), ADMIN_USERNAME, "Administrator");
+    public static final User USER_ADMIN = new User(toUri("http://localhost:8090/jira/rest/api/2/user?username=admin"), ADMIN_USERNAME, "Administrator",
+            "wojciech.seliga@spartez.com", null, ImmutableMap.of(
+            "16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"),
+            "48x48",URI.create("http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054")), null);
 
 	public static final String USER2_USERNAME = "user";
 
@@ -63,4 +78,5 @@ public class TestConstants {
 			10001L, "Component B", "another description");
 
 	public static final String DEFAULT_JIRA_DUMP_FILE = "jira1-export.xml";
+
 }

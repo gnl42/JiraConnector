@@ -35,7 +35,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 	public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
-			@Nullable BasicUser reporter, @Nullable BasicUser assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
+			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
@@ -83,8 +83,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	@Nullable
 	private final String description;
 	@Nullable
-	private BasicUser reporter;
-	private BasicUser assignee;
+	private User reporter;
+	private User assignee;
 	@Nullable
 	private final BasicResolution resolution;
 	private Collection<Field> fields;
@@ -124,7 +124,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 * @return reporter of this issue or <code>null</code> if this issue has no reporter
 	 */
 	@Nullable
-	public BasicUser getReporter() {
+	public User getReporter() {
 		return reporter;
 	}
 
@@ -132,7 +132,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 * @return assignee of this issue or <code>null</code> if this issue is unassigned.
 	 */
 	@Nullable
-	public BasicUser getAssignee() {
+	public User getAssignee() {
 		return assignee;
 	}
 
@@ -294,7 +294,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 *
 	 * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on the server side does not serve
 	 *         this information (pre-5.0)
-	 * @see com.atlassian.jira.rest.client.IssueRestClient#getIssue(String, Iterable, com.atlassian.jira.rest.client.ProgressMonitor)
+	 * @see com.atlassian.jira.rest.client.IssueRestClient#getIssue(String, Iterable)
 	 * @since client 0.6, server 5.0
 	 */
 	@Nullable

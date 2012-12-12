@@ -61,24 +61,44 @@ public class JsonParseUtil {
 		}
 	}
 
-	public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
-			throws JSONException {
-		final int numItems = json.getInt("size");
-		final Collection<T> items;
-		JSONArray itemsJa = json.getJSONArray("items");
+    @SuppressWarnings("UnusedDeclaration")
+    public static <T> ExpandableProperty<T> parseExpandableProperty(JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
+            throws JSONException {
+        return parseExpandableProperty(json, false, expandablePropertyBuilder);
+    }
 
-		if (itemsJa.length() > 0) {
-			items = new ArrayList<T>(numItems);
-			for (int i = 0; i < itemsJa.length(); i++) {
-				final T item = expandablePropertyBuilder.parse(itemsJa.getJSONObject(i));
-				items.add(item);
-			}
-		} else {
-			items = null;
-		}
+    @Nullable
+    public static <T> ExpandableProperty<T> parseOptionalExpandableProperty(@Nullable JSONObject json, JsonObjectParser<T> expandablePropertyBuilder)
+            throws JSONException {
+        return parseExpandableProperty(json, true, expandablePropertyBuilder);
+    }
 
-		return new ExpandableProperty<T>(numItems, items);
-	}
+    @Nullable
+    private static <T> ExpandableProperty<T> parseExpandableProperty(@Nullable JSONObject json, Boolean optional, JsonObjectParser<T> expandablePropertyBuilder)
+            throws JSONException {
+        if (json == null) {
+            if (!optional) {
+                throw new IllegalArgumentException("json object cannot be null while optional is false");
+            }
+            return null;
+        }
+
+        final int numItems = json.getInt("size");
+        final Collection<T> items;
+        JSONArray itemsJa = json.getJSONArray("items");
+
+        if (itemsJa.length() > 0) {
+            items = new ArrayList<T>(numItems);
+            for (int i = 0; i < itemsJa.length(); i++) {
+                final T item = expandablePropertyBuilder.parse(itemsJa.getJSONObject(i));
+                items.add(item);
+            }
+        } else {
+            items = null;
+        }
+
+        return new ExpandableProperty<T>(numItems, items);
+    }
 
 
 	public static URI getSelfUri(JSONObject jsonObject) throws JSONException {

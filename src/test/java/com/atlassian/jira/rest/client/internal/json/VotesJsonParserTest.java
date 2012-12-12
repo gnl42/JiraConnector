@@ -33,7 +33,7 @@ public class VotesJsonParserTest {
 		final VotesJsonParser parser = new VotesJsonParser();
 		final Votes votes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/complete.json"));
 		assertEquals(2, Iterables.size(votes.getUsers()));
-		assertEquals(TestConstants.USER1, Iterables.get(votes.getUsers(), 0));
+		assertEquals(TestConstants.USER1_BASIC_DEPRECATED, Iterables.get(votes.getUsers(), 0));
 		assertFalse(votes.hasVoted());
 		assertEquals(2, votes.getVotes());
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), votes.getSelf());

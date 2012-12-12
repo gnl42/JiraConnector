@@ -30,6 +30,7 @@ import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_U
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestClientTest {
 
@@ -63,8 +64,8 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
 		assertEquals(TestConstants.USER1.getName(), session2.getUsername());
 		final DateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
 
-		final AsynchronousJiraRestClient client2 = new AsynchronousJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(),
-				"bad-password"));
+		final AsynchronousJiraRestClient client2 = new AsynchronousJiraRestClient(jiraUri,
+                new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(), "bad-password"));
 		final DateTime now = new DateTime();
 		TestUtil.assertErrorCode(401, new Runnable() {
 			@Override

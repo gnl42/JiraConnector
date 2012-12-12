@@ -47,7 +47,7 @@ public class User extends BasicUser {
 	@Nullable
 	private String timezone;
 
-	public User(URI self, String name, String displayName, String emailAddress, ExpandableProperty<String> groups,
+	public User(URI self, String name, String displayName, String emailAddress, @Nullable ExpandableProperty<String> groups,
 			Map<String, URI> avatarUris, @Nullable String timezone) {
 		super(self, name, displayName);
 		Preconditions.checkNotNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
@@ -89,20 +89,25 @@ public class User extends BasicUser {
 	/**
 	 * @return groups given user belongs to
 	 */
+    @Nullable
 	public ExpandableProperty<String> getGroups() {
 		return groups;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof User) {
-			User that = (User) obj;
-			return super.equals(obj) && Objects.equal(this.emailAddress, that.emailAddress)
-					&& Objects.equal(this.avatarUris, that.avatarUris);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            User that = (User) obj;
+            return super.equals(obj) && Objects.equal(this.emailAddress, that.emailAddress)
+                    && Objects.equal(this.avatarUris, that.avatarUris);
+        }
+        return false;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), emailAddress, avatarUris, groups, timezone);
+    }
 
 	/**
 	 * @return user timezone, like "Europe/Berlin" or <code>null</code> if timezone info is not available
@@ -119,6 +124,7 @@ public class User extends BasicUser {
 				add("emailAddress", emailAddress).
 				add("avatarUris", avatarUris).
 				add("groups", groups).
+                add("timezone", timezone).
 				toString();
 	}
 

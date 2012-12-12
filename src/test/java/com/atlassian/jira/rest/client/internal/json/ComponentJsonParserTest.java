@@ -50,7 +50,7 @@ public class ComponentJsonParserTest {
 		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		assertEquals("Component B", component.getName());
-		assertEquals(TestConstants.USER1, component.getLead());
+		assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
 		assertEquals("another description", component.getDescription());
 	}
 
@@ -70,7 +70,7 @@ public class ComponentJsonParserTest {
 		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid-with-id.json"));
 		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		assertEquals("Component B", component.getName());
-		assertEquals(TestConstants.USER1, component.getLead());
+		assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
 		assertEquals("another description", component.getDescription());
 		assertEquals(Long.valueOf(10001), component.getId());
 	}

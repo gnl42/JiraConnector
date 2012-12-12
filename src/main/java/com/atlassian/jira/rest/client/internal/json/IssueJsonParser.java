@@ -16,26 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Attachment;
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicIssueType;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.BasicResolution;
-import com.atlassian.jira.rest.client.domain.BasicStatus;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.BasicVotes;
-import com.atlassian.jira.rest.client.domain.BasicWatchers;
-import com.atlassian.jira.rest.client.domain.ChangelogGroup;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueFieldId;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.Subtask;
-import com.atlassian.jira.rest.client.domain.TimeTracking;
-import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.*;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -49,42 +30,9 @@ import org.joda.time.DateTime;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.AFFECTS_VERSIONS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.ASSIGNEE_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.ATTACHMENT_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.COMMENT_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.COMPONENTS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.CREATED_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.DESCRIPTION_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.DUE_DATE_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.FIX_VERSIONS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.ISSUE_TYPE_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.LABELS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.LINKS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.LINKS_PRE_5_0_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.PRIORITY_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.PROJECT_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.REPORTER_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.RESOLUTION_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.STATUS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.SUBTASKS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.SUMMARY_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.TIMETRACKING_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.TRANSITIONS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.UPDATED_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.VOTES_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.WATCHER_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.WATCHER_PRE_5_0_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.WORKLOGS_FIELD;
-import static com.atlassian.jira.rest.client.domain.IssueFieldId.WORKLOG_FIELD;
+import static com.atlassian.jira.rest.client.domain.IssueFieldId.*;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
@@ -110,7 +58,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
 	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
-	private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
+	private final UserJsonParser userJsonParser = new UserJsonParser();
 	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
 	private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
 	private final JsonWeakParserForString jsonWeakParserForString = new JsonWeakParserForString();
@@ -245,8 +193,8 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 		final BasicPriority priority = getOptionalField(shouldUseNestedValueAttribute, s, PRIORITY_FIELD.id, priorityJsonParser);
 		final BasicResolution resolution = getOptionalField(shouldUseNestedValueAttribute, s, RESOLUTION_FIELD.id, resolutionJsonParser);
-		final BasicUser assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_FIELD.id, userJsonParser);
-		final BasicUser reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_FIELD.id, userJsonParser);
+		final User assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_FIELD.id, userJsonParser);
+		final User reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_FIELD.id, userJsonParser);
 
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_FIELD.id));
 		final Collection<IssueLink> issueLinks;
@@ -352,6 +300,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				if (SPECIAL_FIELDS.contains(key)) {
 					continue;
 				}
+                // TODO: JRJC-122
+                // we should use fieldParser here (some new version as the old one probably won't work)
+                // enable IssueJsonParserTest#testParseIssueWithUserPickerCustomFieldFilledOut after fixing this
 				final Object value = json.opt(key);
 				res.add(new Field(key, namesMap.get(key), typesMap.get("key"), value != JSONObject.NULL ? value : null));
 			} catch (final Exception e) {

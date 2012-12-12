@@ -28,11 +28,11 @@ import java.net.URI;
  * @since v0.1
  */
 public class Worklog {
-	private final URI self;
+
+    private final URI self;
 	private final URI issueUri;
 	private final BasicUser author;
 	private final BasicUser updateAuthor;
-	@Nullable
 	private final String comment;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -71,7 +71,6 @@ public class Worklog {
 		return updateAuthor;
 	}
 
-	@Nullable
 	public String getComment() {
 		return comment;
 	}

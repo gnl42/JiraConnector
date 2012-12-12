@@ -42,7 +42,7 @@ public class ProjectJsonParserTest {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/valid.json"));
 		assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), project.getSelf());
 		assertEquals("This is my description here.\r\nAnother line.", project.getDescription());
-		assertEquals(TestConstants.USER_ADMIN, project.getLead());
+		assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, project.getLead());
 		assertEquals("http://example.com", project.getUri().toString());
 		assertEquals("TST", project.getKey());
 		assertThat(project.getVersions(), containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));

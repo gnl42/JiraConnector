@@ -33,8 +33,8 @@ public class WorklogJsonParserTest {
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid.json"));
         assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"), worklog.getSelf());
         assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), worklog.getIssueUri());
-        assertEquals(TestConstants.USER_ADMIN, worklog.getAuthor());
-        assertEquals(TestConstants.USER_ADMIN, worklog.getUpdateAuthor());
+        assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, worklog.getAuthor());
+        assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, worklog.getUpdateAuthor());
         assertEquals("my first work", worklog.getComment());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getCreationDate());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getUpdateDate());
@@ -49,8 +49,8 @@ public class WorklogJsonParserTest {
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-roleLevel.json"));
         assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/worklog/10011"), worklog.getSelf());
         assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), worklog.getIssueUri());
-        assertEquals(TestConstants.USER1, worklog.getAuthor());
-        assertEquals(TestConstants.USER1, worklog.getUpdateAuthor());
+        assertEquals(TestConstants.USER1_BASIC_DEPRECATED, worklog.getAuthor());
+        assertEquals(TestConstants.USER1_BASIC_DEPRECATED, worklog.getUpdateAuthor());
         assertEquals("another piece of work", worklog.getComment());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:38:00.013+0200"), worklog.getCreationDate());
         assertEquals(TestUtil.toDateTime("2010-08-17T16:38:24.948+0200"), worklog.getUpdateDate());
