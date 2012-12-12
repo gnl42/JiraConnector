@@ -168,6 +168,11 @@
             <artifactId>jersey-json</artifactId>
             <version>${jersey.client.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.client.version}</version>
+        </dependency>
         <!-- TODO compatibility with JIRA -->
         <dependency>
             <groupId>com.google.guava</groupId>
