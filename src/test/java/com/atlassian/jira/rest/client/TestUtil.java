@@ -17,8 +17,10 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.Transition;
-import com.sun.jersey.api.client.UniformInterfaceException;
+import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
+import com.google.common.collect.Iterators;
 import junit.framework.Assert;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
@@ -28,6 +30,9 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.Collection;
+
+import static com.google.common.collect.Iterators.getOnlyElement;
 
 public class TestUtil {
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
@@ -51,7 +56,7 @@ public class TestUtil {
 	}
 
 	public static void assertErrorCode(int errorCode, Runnable runnable) {
-		assertErrorCode(errorCode, null, runnable);
+		assertErrorCode(errorCode, StringUtils.EMPTY, runnable);
 	}
 
 	@SuppressWarnings("unused")
@@ -72,10 +77,13 @@ public class TestUtil {
 
 	}
 
-
 	public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
 		assertErrorCode(status.getStatusCode(), message, runnable);
 	}
+
+    public static void assertExpectedErrorCollection(final Collection<ErrorCollection> errors, final Runnable runnable) {
+        assertExpectedErrors(errors, runnable);
+    }
 
 	public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
 		assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
@@ -92,8 +100,16 @@ public class TestUtil {
 		} catch (RestClientException e) {
             Assert.assertTrue(e.getStatusCode().isPresent());
             Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
-			if (message != null) {
-				Assert.assertEquals(message, e.getMessage());
+			if (!StringUtils.isEmpty(message)) {
+                // We expect a single error message. Either error or error message.
+                Assert.assertEquals(1, e.getErrorCollections().size());
+                if (Iterators.getOnlyElement(e.getErrorCollections().iterator()).getErrorMessages().size() > 0) {
+                    Assert.assertEquals(getOnlyElement(getOnlyElement(e.getErrorCollections().iterator()).getErrorMessages().iterator()), message);
+                } else if (Iterators.getOnlyElement(e.getErrorCollections().iterator()).getErrors().size() > 0) {
+                    Assert.assertEquals(getOnlyElement(getOnlyElement(e.getErrorCollections().iterator()).getErrors().values().iterator()), message);
+                } else {
+                    Assert.fail("Expected an error message.");
+                }
 			}
 		}
 	}
@@ -102,11 +118,13 @@ public class TestUtil {
 		try {
 			runnable.run();
 			Assert.fail(RestClientException.class + " exception expected");
-		} catch (RestClientException e) {
-            Assert.assertTrue(e.getStatusCode().isPresent());
-            Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
-			Assert.assertTrue("'" + e.getMessage() + "' does not match regexp '" + regExp + "'", e.getMessage().matches(regExp));
-		}
+        } catch (RestClientException ex) {
+            final ErrorCollection errorElement = getOnlyElement(ex.getErrorCollections().iterator());
+            final String errorMessage = getOnlyElement(errorElement.getErrorMessages().iterator());
+            Assert.assertTrue("'" + ex.getMessage() + "' does not match regexp '" + regExp + "'", errorMessage.matches(regExp));
+            Assert.assertTrue(ex.getStatusCode().isPresent());
+            Assert.assertEquals(errorCode, ex.getStatusCode().get().intValue());
+        }
 	}
 
 
@@ -148,4 +166,13 @@ public class TestUtil {
 		}
 		return transitionFound;
 	}
+
+    private static void assertExpectedErrors(final Collection<ErrorCollection> expectedErrors, final Runnable runnable) {
+        try {
+            runnable.run();
+            Assert.fail(RestClientException.class + " exception expected");
+        } catch (RestClientException e) {
+            Assert.assertEquals(e.getErrorCollections(), expectedErrors);
+        }
+    }
 }

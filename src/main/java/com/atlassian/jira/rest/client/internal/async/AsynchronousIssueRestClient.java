@@ -94,6 +94,13 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 		return postAndParse(uriBuilder.build(), issue, new IssueInputJsonGenerator(), basicIssueParser);
 	}
 
+    @Override
+    public Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/bulk");
+
+        return postAndParse(uriBuilder.build(), issues, new IssuesInputJsonGenerator(), new BasicIssuesJsonParser());
+    }
+
 	@Override
 	public Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta");

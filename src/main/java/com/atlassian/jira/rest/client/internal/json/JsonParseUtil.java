@@ -301,4 +301,13 @@ public class JsonParseUtil {
 	public static Iterator<String> getStringKeys(JSONObject json) {
 		return json.keys();
 	}
+
+    public static Map<String,String> toStringMap(final JSONArray names, final JSONObject values) throws JSONException {
+        final Map<String, String> result = Maps.newHashMap();
+        for (int i = 0; i < names.length(); i++) {
+            final String key = names.getString(i);
+            result.put(key, values.getString(key));
+        }
+        return result;
+    }
 }

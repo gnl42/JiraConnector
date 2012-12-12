@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.google.common.base.Joiner;
+import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -32,52 +31,45 @@ import java.util.Collections;
  */
 public class RestClientException extends RuntimeException {
 
-	private final Collection<String> errorMessages;
 	private final Optional<Integer> statusCode;
+    private final Collection<ErrorCollection> errorCollections;
 
-	public RestClientException(Throwable cause) {
+	public RestClientException(final Throwable cause) {
 		super(cause);
-		errorMessages = Collections.emptyList();
+        this.errorCollections = Collections.emptyList();
 		this.statusCode = Optional.absent();
 	}
 
-	public RestClientException(Throwable cause, int statusCode) {
+	public RestClientException(final Throwable cause, final int statusCode) {
 		super(cause);
-		errorMessages = Collections.emptyList();
+        this.errorCollections = Collections.emptyList();
 		this.statusCode = Optional.of(statusCode);
 	}
 
-	public RestClientException(String errorMessage, Throwable cause) {
+	public RestClientException(final String errorMessage, final Throwable cause) {
 		super(errorMessage, cause);
-		this.errorMessages = Arrays.asList(errorMessage);
+		this.errorCollections = ImmutableList.of(new ErrorCollection(errorMessage));
 		statusCode = Optional.absent();
 	}
 
-	/**
-	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
-	 */
-	public RestClientException(Collection<String> errorMessages, int statusCode) {
-		super(Joiner.on("\n").join(errorMessages));
-		this.errorMessages = new ArrayList<String>(errorMessages);
+	public RestClientException(final Collection<ErrorCollection> errorCollections, final int statusCode) {
+		super(errorCollections.toString());
+		this.errorCollections = ImmutableList.copyOf(errorCollections);
 		this.statusCode = Optional.of(statusCode);
 	}
 
-	/**
-	 * @param errorMessages messages which will be joined with newline character and accessible then via {@link #getMessage()}
-	 * @param cause         the cause of this exception or <code>null</code>
-	 */
-	public RestClientException(Collection<String> errorMessages, Throwable cause, int statusCode) {
-		super(Joiner.on("\n").join(errorMessages), cause);
-		this.errorMessages = new ArrayList<String>(errorMessages);
+	public RestClientException(final Collection<ErrorCollection> errorCollections, final Throwable cause, final int statusCode) {
+		super(errorCollections.toString(), cause);
+        this.errorCollections = ImmutableList.copyOf(errorCollections);
 		this.statusCode = Optional.of(statusCode);
 	}
 
-	/**
-	 * @return error messages used while building this exception object
-	 */
-	public Iterable<String> getErrorMessages() {
-		return errorMessages;
-	}
+    /**
+     * @return error messages used while building this exception object
+     */
+    public Collection<ErrorCollection> getErrorCollections() {
+        return errorCollections;
+    }
 
 	/**
 	 * @return optional error code of failed http request.

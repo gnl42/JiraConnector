@@ -26,8 +26,10 @@ import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
+import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -60,8 +62,9 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
 		try {
 			testAddWorklogImpl(ISSUE_KEY, createDefaulWorklogInputBuilder());
 		} catch (RestClientException ex) {
-			assertThat(ex.getErrorMessages(),
-					containsInAnyOrder("You do not have the permission to see the specified issue.", "Login Required"));
+            final ErrorCollection errors = Iterators.getOnlyElement(ex.getErrorCollections().iterator());
+            assertThat(errors.getErrorMessages(),
+                    containsInAnyOrder("You do not have the permission to see the specified issue.", "Login Required"));
 		}
 	}
 

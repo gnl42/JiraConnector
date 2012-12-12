@@ -270,6 +270,17 @@
             </properties>
         </profile>
         <profile>
+            <id>jira-6.0</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.0-SNAPSHOT</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
             <id>releaseProfile</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>

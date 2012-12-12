@@ -20,6 +20,7 @@ import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Response;
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
@@ -27,6 +28,7 @@ import com.atlassian.jira.rest.client.internal.json.JsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -38,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -161,7 +162,7 @@ public abstract class AbstractAsynchronousRestClient {
 			public T apply(Response response) {
 				try {
 					final String body = response.getEntity();
-					final Collection<String> errorMessages = extractErrors(body);
+					final Collection<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
 					throw new RestClientException(errorMessages, response.getStatusCode());
 				} catch (JSONException e) {
 					throw new RestClientException(e, response.getStatusCode());
@@ -194,26 +195,44 @@ public abstract class AbstractAsynchronousRestClient {
 		};
 	}
 
+    static Collection<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
+        if (body == null) {
+            return Collections.emptyList();
+        }
+        final JSONObject jsonObject = new JSONObject(body);
+        final JSONArray issues = jsonObject.optJSONArray("issues");
+        final ImmutableList.Builder<ErrorCollection> results  = ImmutableList.builder();
+        if (issues != null && issues.length() == 0) {
+            final JSONArray errors = jsonObject.optJSONArray("errors");
+            for (int i = 0; i < errors.length(); i++ ) {
+                final JSONObject currentJsonObject = errors.getJSONObject(i);
+                results.add(getErrorsFromJson(currentJsonObject.getInt("status"), currentJsonObject.optJSONObject("elementErrors")));
+            }
+        } else {
+            results.add(getErrorsFromJson(status, jsonObject));
+        }
+        return results.build();
+    }
 
-	static Collection<String> extractErrors(final String body) throws JSONException {
-		if (body == null) {
-			return Collections.emptyList();
-		}
-		final JSONObject jsonObject = new JSONObject(body);
-		final Collection<String> errorMessages = new ArrayList<String>();
-		final JSONArray errorMessagesJsonArray = jsonObject.optJSONArray("errorMessages");
-		if (errorMessagesJsonArray != null) {
-			errorMessages.addAll(JsonParseUtil.toStringCollection(errorMessagesJsonArray));
-		}
-		final JSONObject errorJsonObject = jsonObject.optJSONObject("errors");
-		if (errorJsonObject != null) {
-			final JSONArray valuesJsonArray = errorJsonObject.toJSONArray(errorJsonObject.names());
-			if (valuesJsonArray != null) {
-				errorMessages.addAll(JsonParseUtil.toStringCollection(valuesJsonArray));
-			}
-		}
-		return errorMessages;
-	}
+    private static ErrorCollection getErrorsFromJson(final int status, final JSONObject jsonObject) throws JSONException {
+        final JSONObject jsonErrors = jsonObject.optJSONObject("errors");
+        final JSONArray jsonErrorMessages = jsonObject.optJSONArray("errorMessages");
+
+        final Collection<String> errorMessages;
+        if (jsonErrorMessages != null) {
+            errorMessages = JsonParseUtil.toStringCollection(jsonErrorMessages);
+        } else {
+            errorMessages = Collections.emptyList();
+        }
+
+        final Map<String,String> errors;
+        if (jsonErrors != null && jsonErrors.length() > 0) {
+            errors = JsonParseUtil.toStringMap(jsonErrors.names(), jsonErrors);
+        }  else {
+            errors = Collections.emptyMap();
+        }
+        return new ErrorCollection(status, errorMessages, errors);
+    }
 
 	private <T> EntityBuilder toEntity(final JsonGenerator<T> generator, final T bean) {
 		return new EntityBuilder() {

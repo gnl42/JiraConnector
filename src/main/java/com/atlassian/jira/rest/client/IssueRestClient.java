@@ -16,13 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.CimProject;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.Votes;
-import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.domain.*;
 import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
@@ -35,6 +29,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
 
 /**
  * The client handling issue resources.
@@ -62,6 +57,17 @@ public interface IssueRestClient {
 	 * @since client 1.0, server 5.0
 	 */
 	Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options);
+
+    /**
+     * Creates new issues in batch.
+     *
+     * @param issues populated with data to create new issue
+     * @return BulkOperationResult<BasicIssues> with generated <code>issueKey</code> and errors for failed issues
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @since client 1.1, server 6.0
+     */
+
+    Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues);
 
 	/**
 	 * Retrieves issue with selected issue key.
