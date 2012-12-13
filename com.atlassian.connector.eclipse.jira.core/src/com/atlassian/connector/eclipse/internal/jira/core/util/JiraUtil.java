@@ -57,6 +57,8 @@ public class JiraUtil {
 
 	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
 
+	private static final String KEY_FILTER_CUSTOM_JQL_URL = "FilterCustomJqlUrl"; //$NON-NLS-1$
+
 	private static final String KEY_FILTER_ID = "FilterID"; //$NON-NLS-1$
 
 	private static final String KEY_FILTER_NAME = "FilterName"; //$NON-NLS-1$
@@ -126,7 +128,7 @@ public class JiraUtil {
 		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
 		if (customUrl != null && customUrl.length() > 0) {
 			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
-					JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
+					JiraUtil.getLocalConfiguration(taskRepository).getDateTimeFormat());
 			return converter.toFilter(client, customUrl, validate);
 		}
 		return null;
@@ -136,9 +138,14 @@ public class JiraUtil {
 			IRepositoryQuery query, boolean validate, IProgressMonitor monitor) throws JiraException {
 		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
 		if (customUrl != null && customUrl.length() > 0) {
-			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
-					JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
-			return converter.toFilter(client, customUrl, validate, true, monitor);
+			try {
+				FilterDefinitionConverter converter = new FilterDefinitionConverter(
+						taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
+								.getDateTimeFormat());
+				return converter.toFilter(client, customUrl, validate, true, monitor);
+			} catch (UnsupportedEncodingException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 		return null;
 	}
@@ -320,18 +327,25 @@ public class JiraUtil {
 
 	public static void setQuery(TaskRepository taskRepository, IRepositoryQuery query, JiraFilter filter) {
 		if (filter instanceof NamedFilter) {
-			NamedFilter namedFilter = (NamedFilter) filter;
+			final NamedFilter namedFilter = (NamedFilter) filter;
 			query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
 			query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
 			query.setAttribute(KEY_FILTER_JQL, namedFilter.getJql());
 			query.setAttribute(KEY_FILTER_URL, namedFilter.getViewUrl());
 			query.setUrl(namedFilter.getViewUrl());
 		} else if (filter instanceof FilterDefinition) {
-			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
-					JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
-			String url = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
-			query.setAttribute(KEY_FILTER_CUSTOM_URL, url);
-			query.setUrl(converter.toJqlUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter));
+			try {
+				final FilterDefinitionConverter converter = new FilterDefinitionConverter(
+						taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
+								.getDateTimeFormat());
+				final String classicUrl = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
+				query.setAttribute(KEY_FILTER_CUSTOM_URL, classicUrl);
+				final String jqlUrl = converter.toJqlUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
+				query.setUrl(jqlUrl);
+				query.setAttribute(KEY_FILTER_CUSTOM_JQL_URL, jqlUrl);
+			} catch (UnsupportedEncodingException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 	}
 

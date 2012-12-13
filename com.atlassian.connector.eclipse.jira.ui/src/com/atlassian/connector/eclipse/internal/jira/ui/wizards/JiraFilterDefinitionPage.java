@@ -14,6 +14,7 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.wizards;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -121,7 +122,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private static final String JIRA_STATUS_RESOLVED = "5"; //$NON-NLS-1$
 
-	private static final int DATE_CONTROL_WIDTH_HINT = 290;
+	private static final int DATE_CONTROL_WIDTH_HINT = 350;
 
 	final static class ComponentLabelProvider implements ILabelProvider {
 
@@ -1084,6 +1085,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 		};
 
+		final DateFormat currentJiraDateTimeFormat = client.getLocalConfiguration().getDateTimeFormat();
+
 		{
 			Label createdLabel = new Label(c, SWT.NONE);
 			createdLabel.setText(Messages.JiraFilterDefinitionPage_Created + ":"); //$NON-NLS-1$
@@ -1099,12 +1102,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			createdStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			createdStartDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults()
 					.align(SWT.FILL, SWT.CENTER)
 					.grab(true, false)
 					.applyTo(createdStartDatePicker);
 			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			createdEndDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(createdEndDatePicker);
 
 			new Label(c, SWT.NONE);
@@ -1151,12 +1156,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			updatedStartDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults()
 					.align(SWT.FILL, SWT.CENTER)
 					.grab(true, false)
 					.applyTo(updatedStartDatePicker);
 			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			updatedEndDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(updatedEndDatePicker);
 
 			new Label(c, SWT.NONE);
@@ -1203,9 +1210,11 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__start_date_,
 					true, 0);
+			dueStartDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueStartDatePicker);
 			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
 					true, 0);
+			dueEndDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(dueEndDatePicker);
 
 			new Label(c, SWT.NONE);
@@ -1841,7 +1850,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			return false;
 		}
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(getTaskRepository().getCharacterEncoding(),
-				client.getLocalConfiguration().getDateFormat());
+				client.getLocalConfiguration().getDateTimeFormat());
 		this.workingCopy = converter.toFilter(client, searchUrl, false);
 		return true;
 	}

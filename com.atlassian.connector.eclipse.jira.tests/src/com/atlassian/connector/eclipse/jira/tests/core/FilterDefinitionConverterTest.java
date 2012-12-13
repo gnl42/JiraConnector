@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.jira.tests.core;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -82,11 +84,13 @@ public class FilterDefinitionConverterTest extends TestCase {
 		projects = new Project[2];
 		projects[0] = new Project();
 		projects[0].setId("prj0");
+		projects[0].setKey("PROJECTZERO");
 		projects[0].setComponents(comps);
 		projects[0].setVersions(vers);
 		projects[0].setDetails(true);
 		projects[1] = new Project();
 		projects[1].setId("prj1");
+		projects[1].setKey("PROJECTONE");
 		projects[1].setComponents(comps);
 		projects[1].setVersions(vers);
 		projects[1].setDetails(true);
@@ -98,24 +102,24 @@ public class FilterDefinitionConverterTest extends TestCase {
 		components[1].setId("comp1");
 
 		Version[] fixVersions = new Version[2];
-		fixVersions[0] = new Version("ver0");
-		fixVersions[1] = new Version("ver1");
+		fixVersions[0] = new Version("ver0", "ver0 name");
+		fixVersions[1] = new Version("ver1", "ver0 name");
 
 		Version[] repoVersions = new Version[2];
-		repoVersions[0] = new Version("ver1");
-		repoVersions[1] = new Version("ver2");
+		repoVersions[0] = new Version("ver1", "ver1 name");
+		repoVersions[1] = new Version("ver2", "ver2 name");
 
 		IssueType[] issueTypes = new IssueType[2];
-		issueTypes[0] = new IssueType("issue0", false);
-		issueTypes[1] = new IssueType("issue1", false);
+		issueTypes[0] = new IssueType("issue0", "issue0 name", "issue0 descr", null);
+		issueTypes[1] = new IssueType("issue1", "issue1 name", "issue1 descr", null);
 
 		JiraStatus[] statuses = new JiraStatus[2];
 		statuses[0] = new JiraStatus("status0");
 		statuses[1] = new JiraStatus("status1");
 
 		Resolution[] resolutions = new Resolution[2];
-		resolutions[0] = new Resolution("res0id", "res0name", "res0descr", "res0icon");
-		resolutions[1] = new Resolution("res1id", "res1name", "res1descr", "res1icon");
+		resolutions[0] = new Resolution("res0id", "res0 name", "res0 descr", "res0icon");
+		resolutions[1] = new Resolution("res1id", "res1 name", "res1 descr", "res1icon");
 
 		filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(projects));
@@ -183,6 +187,51 @@ public class FilterDefinitionConverterTest extends TestCase {
 				JiraUtil.getLocalConfiguration(taskRepository).getDateFormat()).toUrl("http://no.url.net/",
 				filter2Url2filter);
 		compareUrls(filter2Url, filter2Url2Filter2Url);
+	}
+
+	public void testGetJqlString() {
+		// Date 1970-01-01 in a localized date time format and in the local time zone
+		final String date19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
+		final String jqlExpected = calcExpectedJql(date19700101);
+
+		final FilterDefinitionConverter converter = new FilterDefinitionConverter(
+				taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
+		final String jqlResult = converter.getJqlString(filter);
+
+		assertEquals(jqlExpected, jqlResult);
+	}
+
+	public void testToJqlUrl() {
+		try {
+			// Date 1970-01-01 in a localized date time format and in the local time zone
+			final String date19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
+			final String jqlUrlExpected = "http://host.net//issues/?jql="
+					+ URLEncoder.encode(calcExpectedJql(date19700101), taskRepository.getCharacterEncoding());
+
+			final FilterDefinitionConverter converter = new FilterDefinitionConverter(
+					taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
+							.getDateFormat());
+			final String jqlUrlResult = converter.toJqlUrl(taskRepository.getUrl(), filter);
+
+			assertEquals(jqlUrlExpected, jqlUrlResult);
+		} catch (UnsupportedEncodingException ex) {
+			fail(ex.toString());
+		}
+	}
+
+	private String calcExpectedJql(String date) {
+		return "project in (PROJECTZERO,PROJECTONE) "
+				+ "AND component in (comp0,comp1) "
+				+ "AND fixVersion in (releasedVersions(),\"ver0 name\",\"ver0 name\") "
+				+ "AND affectedVersion in (unreleasedVersions(),\"ver1 name\",\"ver2 name\") "
+				+ "AND issuetype in (\"issue0 name\",\"issue1 name\") "
+				+ "AND status in (status0,status1) "
+				+ "AND resolution in (\"res0 name\",\"res1 name\") "
+				+ "AND (summary ~ \"query\" OR description ~ \"query\" OR comment ~ \"query\" OR environment ~ \"query\") "
+				+ "AND reporter in (reporter) AND assignee in (assignee) " + "AND (created >= \"" + date
+				+ "\" AND created <= \"" + date + "\") " + "AND (updated >= \"" + date
+				+ "\" AND updated <= \"" + date + "\") " + "AND (duedate >= \"" + date
+				+ "\" AND duedate <= \"" + date + "\") ";
 	}
 
 	private void compareUrls(String urlOne, String urlTwo) {
