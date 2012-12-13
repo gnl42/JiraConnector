@@ -5,12 +5,16 @@
 
     <parent>
         <groupId>com.atlassian.jira</groupId>
-        <artifactId>jira-rest-java-client</artifactId>
-        <version>${jrjc.version}</version>
+        <artifactId>jira-rest-java-client-parent</artifactId>
+        <version>2.0.0-m3-SNAPSHOT</version>
+        <!--<relativePath>..</relativePath>-->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-api</artifactId>
+
     <name>JIRA REST Java Client - Public API</name>
     <description>
         The public API for JIRA REST Java Client
@@ -41,12 +45,12 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>1.6</version>
+            <version>${joda.time.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-            <version>1.5</version>
+            <version>${jersey.client.version}</version>
         </dependency>
     </dependencies>
 

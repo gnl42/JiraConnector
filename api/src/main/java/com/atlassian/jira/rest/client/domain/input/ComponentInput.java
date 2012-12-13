@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 import com.atlassian.jira.rest.client.domain.AssigneeType;
-import com.atlassian.jira.rest.client.domain.AssigneeType;
 
 import javax.annotation.Nullable;
 

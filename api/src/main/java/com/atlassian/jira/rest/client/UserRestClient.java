@@ -39,7 +39,7 @@ public interface UserRestClient {
 
 	/**
 	 * Retrieves detailed information about selected user.
-	 * This method is preferred over {@link #getUser(String)} as it's more RESTful (well connected)
+	 * This method is preferred over {@link #getUser(String)} as com.atlassian.jira.rest.it's more RESTful (well connected)
 	 *
 	 * @param userUri URI of user resource
 	 * @return complete information about given user

@@ -20,7 +20,6 @@ import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SearchRestClient;
 import com.atlassian.jira.rest.client.domain.SearchResult;
-import com.atlassian.jira.rest.client.internal.json.SearchResultJsonParser;
 import com.atlassian.util.concurrent.Promise;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;

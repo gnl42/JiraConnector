@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.internal.async;
 import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.UserRestClient;
-import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
 import com.atlassian.util.concurrent.Promise;
 

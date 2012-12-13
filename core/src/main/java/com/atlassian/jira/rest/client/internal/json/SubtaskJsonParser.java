@@ -2,9 +2,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Subtask;
-import com.atlassian.jira.rest.client.domain.IssueType;
 import com.atlassian.jira.rest.client.domain.Status;
-import com.atlassian.jira.rest.client.domain.Subtask;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

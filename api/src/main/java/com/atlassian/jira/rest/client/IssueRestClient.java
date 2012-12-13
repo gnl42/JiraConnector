@@ -17,11 +17,7 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.domain.*;
-import com.atlassian.jira.rest.client.domain.input.AttachmentInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
-import com.atlassian.jira.rest.client.domain.input.WorklogInput;
+import com.atlassian.jira.rest.client.domain.input.*;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.annotations.Beta;
 

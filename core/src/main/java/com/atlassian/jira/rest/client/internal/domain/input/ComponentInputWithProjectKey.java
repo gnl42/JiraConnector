@@ -18,8 +18,6 @@ package com.atlassian.jira.rest.client.internal.domain.input;
 
 import com.atlassian.jira.rest.client.domain.AssigneeType;
 import com.atlassian.jira.rest.client.domain.input.ComponentInput;
-import com.atlassian.jira.rest.client.domain.AssigneeType;
-import com.atlassian.jira.rest.client.domain.input.ComponentInput;
 
 import javax.annotation.Nullable;
 

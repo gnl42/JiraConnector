@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CimIssueType;
 import com.atlassian.jira.rest.client.domain.CimProject;
 import org.codehaus.jettison.json.JSONArray;

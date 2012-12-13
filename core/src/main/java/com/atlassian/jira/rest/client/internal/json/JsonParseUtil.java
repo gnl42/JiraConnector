@@ -20,7 +20,6 @@ import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.ExpandableProperty;
 import com.atlassian.jira.rest.client.OptionalIterable;
 import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONArray;

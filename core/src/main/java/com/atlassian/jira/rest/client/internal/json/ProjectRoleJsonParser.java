@@ -17,8 +17,6 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.ProjectRole;
 import com.atlassian.jira.rest.client.domain.RoleActor;
-import com.atlassian.jira.rest.client.domain.ProjectRole;
-import com.atlassian.jira.rest.client.domain.RoleActor;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import org.codehaus.jettison.json.JSONArray;

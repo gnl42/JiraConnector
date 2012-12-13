@@ -18,8 +18,6 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.Priority;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

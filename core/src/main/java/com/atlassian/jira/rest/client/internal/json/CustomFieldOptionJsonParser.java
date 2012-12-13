@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
-import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 import com.atlassian.jira.rest.client.domain.EntityHelper;
-import com.atlassian.jira.rest.client.domain.EntityHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;

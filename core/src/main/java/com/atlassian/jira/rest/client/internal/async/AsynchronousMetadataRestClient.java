@@ -16,9 +16,9 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.internal.json.*;
 import com.atlassian.jira.rest.client.MetadataRestClient;
 import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.internal.json.*;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.ws.rs.core.UriBuilder;

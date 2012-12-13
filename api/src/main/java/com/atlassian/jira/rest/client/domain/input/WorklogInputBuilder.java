@@ -19,9 +19,6 @@ package com.atlassian.jira.rest.client.domain.input;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.Visibility;
-import com.atlassian.jira.rest.client.domain.Worklog;
 import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 

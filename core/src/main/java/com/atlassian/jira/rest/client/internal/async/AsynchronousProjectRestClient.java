@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.internal.async;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.ProjectRestClient;
-import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.Project;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectsJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectJsonParser;

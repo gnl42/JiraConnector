@@ -21,11 +21,6 @@ import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Component;
 import com.atlassian.jira.rest.client.internal.domain.AssigneeTypeConstants;
-import com.atlassian.jira.rest.client.domain.AssigneeType;
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.Component;
-import com.atlassian.jira.rest.client.internal.domain.AssigneeTypeConstants;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

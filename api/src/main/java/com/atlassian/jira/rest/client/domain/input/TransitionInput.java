@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.domain.input;
 
 import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Comment;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

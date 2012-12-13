@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

@@ -54,7 +54,7 @@ import java.util.*;
 public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient implements IssueRestClient {
 
 	private static final EnumSet<Expandos> DEFAULT_EXPANDS = EnumSet.of(Expandos.NAMES, Expandos.SCHEMA, Expandos.TRANSITIONS);
-	private static final Function<Expandos, String> EXPANDO_TO_PARAM = new Function<Expandos, String>() {
+	private static final Function<IssueRestClient.Expandos, String> EXPANDO_TO_PARAM = new Function<Expandos, String>() {
 		@Override
 		public String apply(Expandos from) {
 			return from.name().toLowerCase();

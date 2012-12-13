@@ -19,6 +19,8 @@ package com.atlassian.jira.rest.client.domain;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * Keeps field id that may be used to refer to field in fields maps.
@@ -72,6 +74,6 @@ public enum IssueFieldId {
 	 * @return List of string id of each field.
 	 */
 	public static Iterable<String> ids() {
-		return Collections2.transform(ImmutableList.copyOf(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
+        return Iterables.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
 	}
 }

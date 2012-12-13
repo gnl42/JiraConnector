@@ -20,8 +20,6 @@ import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.atlassian.jira.rest.client.NamedEntity;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.domain.TimeTracking;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.domain.input;
 
 import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.IdentifiableEntity;
-import com.atlassian.jira.rest.client.domain.IssueFieldId;
 import com.google.common.base.Objects;
 
 /**

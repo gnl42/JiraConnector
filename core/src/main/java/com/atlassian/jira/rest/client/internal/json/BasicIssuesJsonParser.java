@@ -19,9 +19,6 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BulkOperationErrorResult;
 import com.atlassian.jira.rest.client.domain.BulkOperationResult;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.BulkOperationErrorResult;
-import com.atlassian.jira.rest.client.domain.BulkOperationResult;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
