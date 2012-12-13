@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER_ADMIN_BASIC_LATEST;
 
 public class FilterJsonParserTest {
 
@@ -18,7 +19,7 @@ public class FilterJsonParserTest {
 				"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
-				TestConstants.USER_ADMIN, true);
+				USER_ADMIN_BASIC_LATEST, true);
 		Assert.assertEquals(expected, actual);
 	}
 
@@ -29,7 +30,7 @@ public class FilterJsonParserTest {
 				"Resolved bugs", "For testing shares.", "issuetype = Bug AND status = Resolved",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10003"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=issuetype+%3D+Bug+AND+status+%3D+Resolved"),
-				TestConstants.USER_ADMIN, true);
+				USER_ADMIN_BASIC_LATEST, true);
 		Assert.assertEquals(expected, actual);
 	}
 
@@ -40,7 +41,7 @@ public class FilterJsonParserTest {
 				"Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10001"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
-				TestConstants.USER_ADMIN, false);
+				USER_ADMIN_BASIC_LATEST, false);
 		Assert.assertEquals(expected, actual);
 	}
 
@@ -51,7 +52,7 @@ public class FilterJsonParserTest {
 				"All in project Test", "For testing subscriptions.", "project = TST",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10004"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST"),
-				TestConstants.USER_ADMIN, true);
+				USER_ADMIN_BASIC_LATEST, true);
 		Assert.assertEquals(expected, actual);
 	}
 
