@@ -18,7 +18,10 @@ package com.atlassian.jira.rest.client.internal.async;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.SearchRestClient;
+import com.atlassian.jira.rest.client.domain.Filter;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import com.atlassian.jira.rest.client.internal.json.FilterJsonParser;
+import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.SearchResultJsonParser;
 import com.atlassian.util.concurrent.Promise;
 import org.apache.commons.lang.StringUtils;
@@ -40,44 +43,49 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 	private static final String MAX_RESULTS_ATTRIBUTE = "maxResults";
 	private static final int MAX_JQL_LENGTH_FOR_HTTP_GET = 500;
 	private static final String JQL_ATTRIBUTE = "jql";
-	private final SearchResultJsonParser searchResultJsonParser = new SearchResultJsonParser();
-
+	private static final String FILTER_FAVOURITE_PATH = "filter/favourite";
+	private static final String FILTER_PATH_FORMAT = "filter/%s";
 	private static final String SEARCH_URI_PREFIX = "search";
+
+	private final SearchResultJsonParser searchResultJsonParser = new SearchResultJsonParser();
+	private final FilterJsonParser filterJsonParser = new FilterJsonParser();
+	private final GenericJsonArrayParser<Filter> filtersParser = GenericJsonArrayParser.create(new FilterJsonParser());
+
 	private final URI searchUri;
+	private final URI favouriteUri;
+	private final URI baseUri;
 
 	public AsynchronousSearchRestClient(final URI baseUri, final HttpClient asyncHttpClient) {
 		super(asyncHttpClient);
+		this.baseUri = baseUri;
 		this.searchUri = UriBuilder.fromUri(baseUri).path(SEARCH_URI_PREFIX).build();
+		this.favouriteUri = UriBuilder.fromUri(baseUri).path(FILTER_FAVOURITE_PATH).build();
 	}
 
 	@Override
 	public Promise<SearchResult> searchJql(@Nullable String jql) {
-		if (jql == null) {
-			jql = StringUtils.EMPTY;
-		}
-		if (jql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
+		final String notNullJql = StringUtils.defaultString(jql);
+		if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
 			final JSONObject postEntity = new JSONObject();
 			try {
-				postEntity.put(JQL_ATTRIBUTE, jql);
+				postEntity.put(JQL_ATTRIBUTE, notNullJql);
 			} catch (JSONException e) {
 				throw new RestClientException(e);
 			}
 			return postAndParse(searchUri, postEntity, searchResultJsonParser);
 		} else {
-			final URI uri = UriBuilder.fromUri(searchUri).queryParam(JQL_ATTRIBUTE, jql).build();
+			final URI uri = UriBuilder.fromUri(searchUri).queryParam(JQL_ATTRIBUTE, notNullJql).build();
 			return getAndParse(uri, searchResultJsonParser);
 		}
 	}
 
 	@Override
 	public Promise<SearchResult> searchJql(@Nullable String jql, int maxResults, int startAt) {
-		if (jql == null) {
-			jql = StringUtils.EMPTY;
-		}
-		if (jql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
+		final String notNullJql = StringUtils.defaultString(jql);
+		if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
 			final JSONObject postEntity = new JSONObject();
 			try {
-				postEntity.put(JQL_ATTRIBUTE, jql);
+				postEntity.put(JQL_ATTRIBUTE, notNullJql);
 				postEntity.put(START_AT_ATTRIBUTE, startAt);
 				postEntity.put(MAX_RESULTS_ATTRIBUTE, maxResults);
 			} catch (JSONException e) {
@@ -85,10 +93,25 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 			}
 			return postAndParse(searchUri, postEntity, searchResultJsonParser);
 		} else {
-			final URI uri = UriBuilder.fromUri(searchUri).queryParam(JQL_ATTRIBUTE, jql)
+			final URI uri = UriBuilder.fromUri(searchUri).queryParam(JQL_ATTRIBUTE, notNullJql)
 					.queryParam(MAX_RESULTS_ATTRIBUTE, maxResults)
 					.queryParam(START_AT_ATTRIBUTE, startAt).build();
 			return getAndParse(uri, searchResultJsonParser);
 		}
+	}
+
+	@Override
+	public Promise<Iterable<Filter>> getFavouriteFilters() {
+		return getAndParse(favouriteUri, filtersParser);
+	}
+
+	@Override
+	public Promise<Filter> getFilter(URI filterUri) {
+		return getAndParse(filterUri, filterJsonParser);
+	}
+
+	@Override
+	public Promise<Filter> getFilter(long id) {
+		return getFilter(UriBuilder.fromUri(baseUri).path(String.format(FILTER_PATH_FORMAT, id)).build());
 	}
 }

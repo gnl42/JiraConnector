@@ -1,0 +1,71 @@
+{
+	"self": "http://localhost:8090/jira/rest/api/latest/filter/10003",
+	"id": "10003",
+	"name": "Resolved bugs",
+	"description": "For testing shares.",
+	"owner": {
+		"self": "http://localhost:8090/jira/rest/api/latest/user?username=admin",
+		"name": "admin",
+		"avatarUrls": {
+			"16x16": "http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48": "http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName": "Administrator",
+		"active": true
+	},
+	"jql": "issuetype = Bug AND status = Resolved",
+	"viewUrl": "http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10003",
+	"searchUrl": "http://localhost:8090/jira/rest/api/latest/search?jql=issuetype+%3D+Bug+AND+status+%3D+Resolved",
+	"favourite": true,
+	"sharePermissions": [
+		{
+			"id": 10014,
+			"type": "project",
+			"project": {
+				"self": "http://localhost:8090/jira/rest/api/latest/project/RST",
+				"id": "10010",
+				"key": "RST",
+				"assigneeType": "PROJECT_LEAD",
+				"name": "Restricted Project",
+				"roles": {},
+				"avatarUrls": {
+					"16x16": "http://localhost:8090/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+					"48x48": "http://localhost:8090/jira/secure/projectavatar?pid=10010&avatarId=10011"
+				}
+			},
+			"role": {
+				"self": "http://localhost:8090/jira/rest/api/latest/project/RST/role/10000",
+				"name": "Users",
+				"id": 10000,
+				"description": "A project role that represents users in a project"
+			}
+		},
+		{
+			"id": 10015,
+			"type": "group",
+			"group": {
+				"name": "jira-users"
+			}
+		},
+		{
+			"id": 10016,
+			"type": "project",
+			"project": {
+				"self": "http://localhost:8090/jira/rest/api/latest/project/TST",
+				"id": "10000",
+				"key": "TST",
+				"assigneeType": "PROJECT_LEAD",
+				"name": "Test Project",
+				"roles": {},
+				"avatarUrls": {
+					"16x16": "http://localhost:8090/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+					"48x48": "http://localhost:8090/jira/secure/projectavatar?pid=10000&avatarId=10050"
+				}
+			}
+		}
+	],
+	"subscriptions": {
+		"size": 0,
+		"items": []
+	}
+}

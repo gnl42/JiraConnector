@@ -16,10 +16,12 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.rest.client.domain.Filter;
 import com.atlassian.jira.rest.client.domain.SearchResult;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
+import java.net.URI;
 
 /**
  * The client handling search REST resource
@@ -49,4 +51,30 @@ public interface SearchRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL query, etc.)
 	 */
 	Promise<SearchResult> searchJql(@Nullable String jql, int maxResults, int startAt);
+
+	/**
+	 * Retrieves list of your favourite filters.
+	 *
+	 * @return list of your favourite filters
+	 * @since 2.0 client, 5.0 server
+	 */
+	Promise<Iterable<Filter>> getFavouriteFilters();
+
+	/**
+	 * Retrieves filter for given URI.
+	 *
+	 * @param filterUri URI to filter resource (usually get from <code>self</code> attribute describing component elsewhere)
+	 * @return filter
+	 * @since 2.0 client, 5.0 server
+	 */
+	Promise<Filter> getFilter(URI filterUri);
+
+	/**
+	 * Retrieves filter for given id.
+	 *
+	 * @param id ID of the filter
+	 * @return filter
+	 * @since 2.0 client, 5.0 server
+	 */
+	Promise<Filter> getFilter(long id);
 }

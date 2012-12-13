@@ -1,0 +1,24 @@
+{
+	"self": "http://localhost:8090/jira/rest/api/latest/filter/10001",
+	"id": "10001",
+	"name": "Tasks in Test project - not favuorite filter",
+	"owner": {
+		"self": "http://localhost:8090/jira/rest/api/latest/user?username=admin",
+		"name": "admin",
+		"avatarUrls": {
+			"16x16": "http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48": "http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName": "Administrator",
+		"active": true
+	},
+	"jql": "project = TST AND issuetype = Task",
+	"viewUrl": "http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10001",
+	"searchUrl": "http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task",
+	"favourite": false,
+	"sharePermissions": [],
+	"subscriptions": {
+		"size": 0,
+		"items": []
+	}
+}

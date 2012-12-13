@@ -1,0 +1,30 @@
+{
+	"self": "http://localhost:8090/jira/rest/api/latest/filter/10004",
+	"id": "10004",
+	"name": "All in project Test",
+	"description": "For testing subscriptions.",
+	"owner": {
+		"self": "http://localhost:8090/jira/rest/api/latest/user?username=admin",
+		"name": "admin",
+		"avatarUrls": {
+			"16x16": "http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48": "http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName": "Administrator",
+		"active": true
+	},
+	"jql": "project = TST",
+	"viewUrl": "http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10004",
+	"searchUrl": "http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST",
+	"favourite": true,
+	"sharePermissions": [
+		{
+			"id": 10017,
+			"type": "global"
+		}
+	],
+	"subscriptions": {
+		"size": 4,
+		"items": []
+	}
+}

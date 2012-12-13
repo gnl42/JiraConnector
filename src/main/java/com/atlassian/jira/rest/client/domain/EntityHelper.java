@@ -23,6 +23,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+import java.util.NoSuchElementException;
+
 /**
  * Helper class for entities.
  *
@@ -57,12 +59,20 @@ public class EntityHelper {
 	}
 
 	public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
-		return Iterables.find(entities, HasNamePredicate.forName(name));
+		try {
+			return Iterables.find(entities, HasNamePredicate.forName(name));
+		} catch (NoSuchElementException ex) {
+			throw new NoSuchElementException(String.format("Entity with name \"%s\" not found. Entities: %s", name, entities.toString()));
+		}
 	}
 
 	@SuppressWarnings("unused")
 	public static <T extends IdentifiableEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
-		return Iterables.find(entities, HasIdPredicate.forId(id));
+		try {
+			return Iterables.find(entities, HasIdPredicate.forId(id));
+		} catch (NoSuchElementException ex) {
+			throw new NoSuchElementException(String.format("Entity with id \"%s\" not found. Entities: %s", id, entities.toString()));
+		}
 	}
 
     public static <T extends Attachment> T findAttachmentByFileName(Iterable<T> attachments, final String fileName) {
