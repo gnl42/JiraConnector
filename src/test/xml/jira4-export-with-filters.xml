@@ -4,25 +4,25 @@
 
 ___ Exported on _____________________________
 
-     on                                            : czwartek, 13 grudzień 2012 10:10:28 CET
+     on                                            : czwartek, 13 grudzień 2012 14:15:02 CET
      by                                            : admin ( Administrator )
 
 ___ Environment ____________________________
 
-     JIRA Build                                    : 5.2#812-sha1:c4fbab6f201d96f3f1b7620599da2758891df472
-     Build Date                                    : Thu Nov 08 00:00:00 CET 2012
+     JIRA Build                                    : 5.0#713-sha1:aec58e27a0d402341b1f1be2fc8c0204a0b070f6
+     Build Date                                    : Wed Feb 15 00:00:00 CET 2012
      JIRA Installation Type                        : unknown
      Java Version                                  : 1.6.0_26 - Sun Microsystems Inc.
      Current Working Directory                     : /home/ali/workspace/atl/jrjc/target/container/tomcat6x/cargo-jira-home
      Maximum Allowable Memory                      : 910MB
-     Total Memory                                  : 727MB
-     Free Memory                                   : 411MB
-     Used Memory                                   : 316MB
-     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 30198656(29490K) committed = 30474240(29760K) max = 50331648(49152K)
-     Memory Pool: PS Eden Space                    : PS Eden Space: init = 33554432(32768K) used = 29610696(28916K) committed = 317652992(310208K) max = 320077824(312576K)
-     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 5570560(5440K) used = 8923336(8714K) committed = 19333120(18880K) max = 19333120(18880K)
-     Memory Pool: PS Old Gen                       : PS Old Gen: init = 89522176(87424K) used = 292642872(285784K) committed = 425328640(415360K) max = 715849728(699072K)
-     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 50331648(49152K) used = 183288736(178992K) committed = 271777792(265408K) max = 536870912(524288K)
+     Total Memory                                  : 492MB
+     Free Memory                                   : 254MB
+     Used Memory                                   : 238MB
+     Memory Pool: Code Cache                       : Code Cache: init = 2555904(2496K) used = 20442752(19963K) committed = 20971520(20480K) max = 50331648(49152K)
+     Memory Pool: PS Eden Space                    : PS Eden Space: init = 33554432(32768K) used = 25024432(24437K) committed = 242614272(236928K) max = 268304384(262016K)
+     Memory Pool: PS Survivor Space                : PS Survivor Space: init = 5570560(5440K) used = 26981528(26349K) committed = 45481984(44416K) max = 45481984(44416K)
+     Memory Pool: PS Old Gen                       : PS Old Gen: init = 89522176(87424K) used = 197200528(192578K) committed = 228327424(222976K) max = 715849728(699072K)
+     Memory Pool: PS Perm Gen                      : PS Perm Gen: init = 50331648(49152K) used = 153349584(149755K) committed = 205783040(200960K) max = 536870912(524288K)
      JVM Input Arguments                           : -Xmx1024m -XX:MaxPermSize=512m -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,suspend=n,server=y -Xms128m -XX:PermSize=48m -Datlassian.dev.mode=true -Dplugin.resource.directories=/home/ali/workspace/atl/jrjc/src/main/resources -Dcargo.datasource.datasource=cargo.datasource.url=jdbc:hsqldb:/home/ali/workspace/atl/jrjc/target/jira/home/database|cargo.datasource.driver=org.hsqldb.jdbcDriver|cargo.datasource.username=sa|cargo.datasource.password=|cargo.datasource.type=javax.sql.DataSource|cargo.datasource.jndi=jdbc/JiraDS -Djira.home=/home/ali/workspace/atl/jrjc/target/jira/home -Dplugin.root.directories=/home/ali/workspace/atl/jrjc -Djava.awt.headless=true -Dcatalina.servlet.uriencoding=UTF-8 -Dbaseurl=http://rabbit:2990/jira -Datlassian.sdk.version=4.0 -Dcatalina.home=/home/ali/workspace/atl/jrjc/target/container/tomcat6x/apache-tomcat-6.0.20 -Dcatalina.base=/home/ali/workspace/atl/jrjc/target/container/tomcat6x/cargo-jira-home -Djava.io.tmpdir=/home/ali/workspace/atl/jrjc/target/container/tomcat6x/cargo-jira-home/temp -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.util.logging.config.file=/home/ali/workspace/atl/jrjc/target/container/tomcat6x/cargo-jira-home/conf/logging.properties
 
 ___ Database Configuration _________________
@@ -37,9 +37,9 @@ ___ Database Configuration _________________
 
 ___ Core Application Properties ____________
 
-     Version                                       : 5.2
-     Build #                                       : 812
-     Build Date                                    : Thu Nov 08 00:00:00 CET 2012
+     Version                                       : 5.0
+     Build #                                       : 713
+     Build Date                                    : Wed Feb 15 00:00:00 CET 2012
      Installation Type                             : unknown
      Server ID                                     : BWU2-SJPU-J495-LC4Y
      Base URL                                      : http://localhost:2990/jira
@@ -104,38 +104,19 @@ ___ Application Properties _________________
      jira.disable.multipart.get.http.request       : true
      jira.edition                                  : enterprise
      jira.email.fromheader.format                  : ${fullname} (JIRA)
-     jira.enabled.dark.features                    : 
-     jira.export.fetchsize                         : -1
      jira.exportimport.cleanxml                    : true
      jira.home                                     : 
      jira.i18n.include.meta-data                   : true
      jira.i18n.language.index                      : english
-     jira.import.maxqueuesize                      : 100
-     jira.import.threads                           : 10
-     jira.index.background.batch.size              : 1000
      jira.index.batch.maxbuffereddocs              : 300
      jira.index.batch.maxmergedocs                 : 2147483647
      jira.index.batch.mergefactor                  : 50
      jira.index.interactive.maxbuffereddocs        : 300
      jira.index.interactive.maxmergedocs           : 2147483647
      jira.index.interactive.mergefactor            : 4
-     jira.index.issue.maxqueuesize                 : 1000
-     jira.index.issue.minbatchsize                 : 50
-     jira.index.issue.threads                      : 10
      jira.index.lock.waittime                      : 30000
-     jira.index.max.reindexes                      : 2147483647
+     jira.index.max.reindexes                      : 4000
      jira.index.maxfieldlength                     : 10000
-     jira.index.mergepolicy.expungedeletespctallowed : 10
-     jira.index.mergepolicy.floorsegmentmb         : 2
-     jira.index.mergepolicy.maxmergeatonce         : 10
-     jira.index.mergepolicy.maxmergeatonceexplicit : 30
-     jira.index.mergepolicy.maxmergedsegmentmb     : 512
-     jira.index.mergepolicy.nocfspct               : 10
-     jira.index.mergepolicy.segmentspertier        : 10
-     jira.index.mergepolicy.usecompoundfile        : true
-     jira.index.sharedentity.maxqueuesize          : 1000
-     jira.index.sharedentity.minbatchsize          : 50
-     jira.index.sharedentity.threads               : 10
      jira.index.update.bulk.optimization           : 400
      jira.issue.actions.order                      : asc
      jira.issue.desc.environment                   : For example operating system, software platform and/or hardware specifications (include as appropriate for the issue).
@@ -162,25 +143,20 @@ ___ Application Properties _________________
      jira.lf.gadget.color5                         : #003366
      jira.lf.gadget.color6                         : #411E66
      jira.lf.gadget.color7                         : #bbb
-     jira.lf.hero.button.base.bg.colour            : #3b7fc4
-     jira.lf.hero.button.text.colour               : #ffffff
      jira.lf.logo.height                           : 30
-     jira.lf.logo.show.application.title           : false
-     jira.lf.logo.url                              : /images/icon-jira-logo.png
-     jira.lf.logo.width                            : 57
+     jira.lf.logo.url                              : /images/jira111x30.png
+     jira.lf.logo.width                            : 111
      jira.lf.menu.bgcolour                         : #326ca6
      jira.lf.menu.separator                        : #f0f0f0
      jira.lf.menu.textcolour                       : #ffffff
      jira.lf.text.activelinkcolour                 : #326ca6
      jira.lf.text.headingcolour                    : #292929
      jira.lf.text.linkcolour                       : #326ca6
-     jira.lf.top.bgcolour                          : #205081
-     jira.lf.top.hilightcolour                     : #296CA3
-     jira.lf.top.separator.bgcolor                 : #2E3D54
+     jira.lf.top.bgcolour                          : #003366
+     jira.lf.top.hilightcolour                     : #326ca6
+     jira.lf.top.separator.bgcolor                 : #003366
      jira.lf.top.textcolour                        : #ffffff
      jira.lf.top.texthilightcolour                 : #f0f0f0
-     jira.mail.fetch.disabled                      : false
-     jira.mail.send.disabled                       : false
      jira.max.AdminPage.history.items              : 5
      jira.max.Issue.history.items                  : 50
      jira.max.JQLQuery.history.items               : 10
@@ -233,12 +209,13 @@ ___ Application Properties _________________
      jira.setup                                    : true
      jira.show.contact.administrators.form         : false
      jira.subscription.email.max.issues            : 200
+     jira.subtask.quickcreateform.fields           : summary,issuetype,assignee,timetracking
+     jira.subtask.quickcreateform.template         : templates/jira/issue/subtask/quickcreationform-vertical.vm
      jira.table.cols.dashboard                     : issuetype, issuekey, summary, priority
      jira.table.cols.subtasks                      : issuetype, status, assignee, progress
      jira.table.cols.voted                         : issuetype, issuekey, summary, priority, status
      jira.table.cols.watched                       : issuetype, issuekey, summary, priority, status
      jira.table.gadget.max.rows                    : 50
-     jira.text.field.character.limit               : 0
      jira.thumbnail.maxheight                      : 200
      jira.thumbnail.maxwidth                       : 200
      jira.timetracking.copy.comment.to.work.desc.on.transition : true
@@ -257,11 +234,11 @@ ___ Application Properties _________________
                                                      /plugins/servlet/applinks
      jira.user.avatar.gravatar.enabled             : false
      jira.usermanagement.maxdisplaymembers         : 200
-     jira.version.patched                          : 812
+     jira.version.patched                          : 713
      jira.view.issue.links.sort.order              : type, status, priority
      jira.view.issue.show.quicksubtask.when.no.subtasks : false
      jira.viewcvs.root.type                        : cvsroot
-     jira.webresource.flushcounter                 : 5051
+     jira.webresource.flushcounter                 : 5052
      jira.webresource.superbatch.flushcounter      : 1
      jira.websudo.is.disabled                      : false
      jira.websudo.timeout                          : 10
@@ -274,7 +251,7 @@ ___ Application Properties _________________
      user.issues.per.page                          : 50
      user.keyboard.shortcuts.disabled              : false
      user.notifications.mimetype                   : html
-     user.notify.own.changes                       : false
+     user.notify.own.changes                       : true
      user.show.actions.in.navigator                : true
      webwork.i18n.encoding                         : UTF-8
      webwork.multipart.maxSize                     : 10485760
@@ -393,7 +370,7 @@ ___ User Plugins ____________________________
      jira-rest-java-client-2.0.0-m3-SNAPSHOT.jar   : jira-rest-java-client-2.0.0-m3-SNAPSHOT.jar
           Version                                       : 0.0
           Status                                        : disabled
-          Unloadable Reason                             : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/jrjc/target/jira/home/plugins/installed-plugins/jira-rest-java-client-2.0.0-m3-SNAPSHOT.jar (1355331311000)
+          Unloadable Reason                             : No plugin factories found for plugin file Unit: /home/ali/workspace/atl/jrjc/target/jira/home/plugins/installed-plugins/jira-rest-java-client-2.0.0-m3-SNAPSHOT.jar (1355403925000)
           Vendor                                        : (unknown)
           Description                                   : 
 
@@ -407,10 +384,10 @@ ___ User Plugins ____________________________
 
 ___ System Plugins __________________________
 
-     Number                                        : 97
+     Number                                        : 80
 
      ActiveObjects Plugin - OSGi Bundle            : com.atlassian.activeobjects.activeobjects-plugin
-          Version                                       : 0.19.16
+          Version                                       : 0.19.7
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : An OSGi bundle that provides a service that allows plugins to persist objects using the ActiveObjects framework
@@ -428,255 +405,201 @@ ___ System Plugins __________________________
           Description                                   : HttpComponents Core (OSGi bundle)
 
      Applinks Product Plugin                       : com.atlassian.applinks.applinks-plugin
-          Version                                       : 3.10.4
+          Version                                       : 3.6.4
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin that facilitates discovery, connections and authentication with remote applications
 
-     Atlassian - Administration - Quick Search - JIRA : com.atlassian.administration.atlassian-admin-quicksearch-jira
-          Version                                       : 1.1.1
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Administration Quick Search plugin for JIRA
-
-     Atlassian Bot Session Killer                  : com.atlassian.labs.atlassian-bot-killer
-          Version                                       : 1.7.2.1
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : This will remove unwanted http sessions for requests that exhibit Bot like behaviour. That is they make a single request, don't preserve cookies and never call again.
-
-     Atlassian Custom Apps Plugin                  : com.atlassian.plugins.atlassian-custom-apps-plugin
-          Version                                       : 1.15
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Create and edit custom applications shown in the application switcher.
-
      Atlassian Embedded Crowd - Administration Plugin : com.atlassian.crowd.embedded.admin
-          Version                                       : 1.4.3
+          Version                                       : 1.3.7
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides the administration of local and remote user directories.
 
      Atlassian Gadgets OAuth Service Provider Plugin : com.atlassian.gadgets.oauth.serviceprovider
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin that makes OAuth Service Providers Gadget aware.
 
-     Atlassian JIRA - Admin Helper Plugin          : com.atlassian.jira.plugins.jira-admin-helper-plugin
-          Version                                       : 1.5
+     Atlassian JIRA - Plugins - Admin Quick Navigation : com.atlassian.jira.jira-admin-quicknav-plugin
+          Version                                       : 5.0
           Status                                        : enabled
-          Vendor                                        : Atlassian Pty Ltd
-          Description                                   : The Admin Helper plugin helps admins determine visibility of custom fields and also provides reasons for why a user does not have certain permissions on an issue or does not receive notifications for that issue.
+          Vendor                                        : Atlassian
+          Description                                   : Inserts quick navigation component in JIRA Administration Panel
 
      Atlassian JIRA - Plugins - Admin Summary Component : com.atlassian.jira.jira-admin-summary-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Supplies Content to the JIRA Administration Summary Page
 
      Atlassian JIRA - Plugins - Application Properties : com.atlassian.jira.jira-application-properties-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides advanced application properties configuration
 
      Atlassian JIRA - Plugins - Closure Template Renderer : com.atlassian.jira.jira-soy-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides renderer for Closure templates
 
      Atlassian JIRA - Plugins - Common AppLinks Based Issue Link Plugin : com.atlassian.jira.jira-issue-link-applinks-common-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : ${project.organization.name}
           Description                                   : Provides the common utilities for AppLinks based issue link plugins
 
      Atlassian JIRA - Plugins - Confluence Link    : com.atlassian.jira.jira-issue-link-confluence-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : ${project.organization.name}
           Description                                   : Provides creation and rendering of issue links to Confluence pages
 
      Atlassian JIRA - Plugins - Gadgets Plugin     : com.atlassian.jira.gadgets
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides Gadgets and REST endpoints bundled with JIRA
 
-     Atlassian JIRA - Plugins - Header Plugin      : com.atlassian.jira.jira-header-plugin
-          Version                                       : 5.2
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Provides markup/styles/behaviour/plugin points for the header
-
-     Atlassian JIRA - Plugins - Invite User        : com.atlassian.jira.jira-invite-user-plugin
-          Version                                       : 1.6
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Allows administrators to invite users to sign up for an account
-
-     Atlassian JIRA - Plugins - Issue Navigation   : com.atlassian.jira.jira-issue-nav-plugin
-          Version                                       : 1.1.25.2
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Provides issue search and navigation
-
      Atlassian JIRA - Plugins - Issue Web Link     : com.atlassian.jira.jira-issue-link-web-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : ${project.organization.name}
           Description                                   : Provides creation and rendering of issue links to web pages
 
      Atlassian JIRA - Plugins - Look And Feel Logo Upload Plugin : com.atlassian.jira.lookandfeel
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides logo upload capabilities
 
      Atlassian JIRA - Plugins - Mail Plugin        : com.atlassian.jira.jira-mail-plugin
-          Version                                       : 5.2.16
+          Version                                       : 5.0
           Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Handles incoming and outgoing mail
-
-     Atlassian JIRA - Plugins - My JIRA Home       : com.atlassian.jira.jira-my-home-plugin
-          Version                                       : 5.2
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Lets the user pick a landing page.
+          Vendor                                        : ${project.organization.name}
+          Description                                   : JIRA provides cutting edge issue tracking and project management.
 
      Atlassian JIRA - Plugins - OAuth Consumer SPI : com.atlassian.jira.oauth.consumer
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides the Consumer SPI implementation required for OAuth in JIRA.
 
      Atlassian JIRA - Plugins - OAuth Service Provider SPI : com.atlassian.jira.oauth.serviceprovider
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides the OAuth Service Provider SPI implementation required for OAuth in JIRA.
 
      Atlassian JIRA - Plugins - Project Config Plugin : com.atlassian.jira.jira-project-config-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides easier project administration with JIRA
 
      Atlassian JIRA - Plugins - Quick Edit Plugin  : com.atlassian.jira.jira-quick-edit-plugin
-          Version                                       : 1.0.54
+          Version                                       : 1.0.29
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : This is the com.atlassian.jira:jira-quick-edit-plugin plugin for Atlassian JIRA.
 
      Atlassian JIRA - Plugins - REST Plugin        : com.atlassian.jira.rest
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Provides a REST interface for JIRA
 
      Atlassian JIRA - Plugins - Remote JIRA Link   : com.atlassian.jira.jira-issue-link-remote-jira-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : ${project.organization.name}
-          Description                                   : Provides creation and rendering of links to local and remote JIRA issues
+          Description                                   : Provides creation and rendering of links to remote JIRA issues
 
      Atlassian JIRA - Plugins - SAL Plugin         : com.atlassian.sal.jira
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems
           Description                                   : JIRA implementation of the Shared Application Access Layer (SAL)
 
      Atlassian JIRA - Plugins - Share Content Component : com.atlassian.jira.jira-share-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Allows users to share issue and searches
 
      Atlassian JIRA - Plugins - View Issue Panels  : com.atlassian.jira.jira-view-issue-plugin
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : ${project.organization.name}
           Description                                   : Provides WebPanels for the View Issue Page
 
-     Atlassian Navigation Links Plugin             : com.atlassian.plugins.atlassian-nav-links-plugin
-          Version                                       : 1.3.16
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Capabilities and Navigation API client and server implementation
-
      Atlassian OAuth Admin Plugin                  : com.atlassian.oauth.admin
-          Version                                       : 1.6.1
+          Version                                       : 1.3.10
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin that provides a single tabbed view for administering OAuth consumers and service provider information.
 
      Atlassian OAuth Consumer Plugin               : com.atlassian.oauth.consumer
-          Version                                       : 1.6.1
+          Version                                       : 1.3.10
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin that makes it possible for applications to become Consumers.
 
-     Atlassian OAuth Consumer SPI                  : com.atlassian.oauth.atlassian-oauth-consumer-spi-1.6.1
-          Version                                       : 1.6.1
+     Atlassian OAuth Consumer SPI                  : com.atlassian.oauth.atlassian-oauth-consumer-spi-1.3.10
+          Version                                       : 1.3.10
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Consumer SPIs to allow applications to provide custom implementations of storing token and consumer info
 
      Atlassian OAuth Service Provider Plugin       : com.atlassian.oauth.serviceprovider
-          Version                                       : 1.6.1
+          Version                                       : 1.3.10
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin that makes it possible for applications to become Service Providers.
 
-     Atlassian OAuth Service Provider SPI          : com.atlassian.oauth.atlassian-oauth-service-provider-spi-1.6.1
-          Version                                       : 1.6.1
+     Atlassian OAuth Service Provider SPI          : com.atlassian.oauth.atlassian-oauth-service-provider-spi-1.3.10
+          Version                                       : 1.3.10
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Service Provider SPIs to allow applications to provide custom implementations of storing token consumer info
 
      Atlassian REST - Module Types                 : com.atlassian.plugins.rest.atlassian-rest-module
-          Version                                       : 2.7.1
+          Version                                       : 2.5.5
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : A plugin that contains REST module types
 
-     Atlassian Remote Apps - Plugin                : com.atlassian.labs.remoteapps-plugin
-          Version                                       : 0.4.518.3
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : This is the parent for the Atlassian Remote Apps project
-
      Atlassian Soy Templates - Plugin              : com.atlassian.soy.soy-template-plugin
-          Version                                       : 1.1.3
+          Version                                       : 1.0.0-m3
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Base POM for Atlassian projects
 
      Atlassian Template Renderer API               : com.atlassian.templaterenderer.api
-          Version                                       : 1.4.2.2
+          Version                                       : 1.3.1
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : API and plugins for easily rendering content from different template engines.
 
      Atlassian Template Renderer Velocity 1.6 Plugin : com.atlassian.templaterenderer.atlassian-template-renderer-velocity1.6-plugin
-          Version                                       : 1.4.2.2
+          Version                                       : 1.3.1
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : API and plugins for easily rendering content from different template engines.
 
      Atlassian UI Plugin                           : com.atlassian.auiplugin
-          Version                                       : 5.0-m10
+          Version                                       : 3.5.5
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : An Atlassian plugin that contains the core javascript files used in Atlassian products.
 
      Atlassian Universal Plugin Manager Plugin     : com.atlassian.upm.atlassian-universal-plugin-manager-plugin
-          Version                                       : 2.7.6
+          Version                                       : 1.5.3
           Status                                        : enabled
-          Vendor                                        : Atlassian
+          Vendor                                        : Atlassian Pty Ltd
           Description                                   : This is the plugin that provides the Atlassian Universal Plugin Manager.
 
      Crowd REST API                                : crowd-rest-application-management
@@ -698,52 +621,58 @@ ___ System Plugins __________________________
           Description                                   : Crowd Password Encoders shipped with Crowd
 
      Embedded Gadgets Plugin                       : com.atlassian.gadgets.embedded
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin which allows gadgets to be embedded in pages
 
      English (United Kingdom) Language Pack        : com.atlassian.jira.jira-languages.en_UK
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : This plugin contains translations the core keys in JIRA for English (United Kingdom).
 
      English (United States) Language Pack         : com.atlassian.jira.jira-languages.en_US
-          Version                                       : 5.2
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : This plugin contains translations the core keys in JIRA for English (United States).
 
      FishEye Plugin                                : com.atlassian.jirafisheyeplugin
-          Version                                       : 5.2.5
+          Version                                       : 5.0.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems
           Description                                   : JIRA Fisheye Plugin
 
+     French (France) Language Pack                 : tac.jira.languages.fr_FR
+          Version                                       : 5.0.0-rc2-v2r1553-2012-01-05
+          Status                                        : enabled
+          Vendor                                        : Atlassian Community
+          Description                                   : This plugin contains translations for fr_FR
+
      Gadget Dashboard Plugin                       : com.atlassian.gadgets.dashboard
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin which renders a dashboard of gadgets
 
      Gadget Directory Plugin                       : com.atlassian.gadgets.directory
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin which renders a directory of gadgets
 
      Gadget Spec Publisher Plugin                  : com.atlassian.gadgets.publisher
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin which provides a way to publish gadget specs found in plugins
 
-     HipChat                                       : com.atlassian.labs.hipchat.hipchat-for-jira-plugin
-          Version                                       : 1.1.11
+     German (Germany) Language Pack                : tac.jira.languages.de_DE
+          Version                                       : 5.0.0-rc2-v2r3852-2012-01-06
           Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : This is the HipChat plugin for JIRA.
+          Vendor                                        : Atlassian Community
+          Description                                   : This plugin contains translations for de_DE
 
      ICU4J                                         : com.atlassian.bundles.icu4j-3.8.0.1
           Version                                       : 3.8.0.1
@@ -758,52 +687,34 @@ ___ System Plugins __________________________
           Description                                   : 
 
      JIRA Active Objects SPI implementation        : com.atlassian.activeobjects.jira.spi
-          Version                                       : 0.19.16
+          Version                                       : 0.19.7
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems
           Description                                   : A plugin that provides the DataSourceProvider service
 
      JIRA Activity Stream Plugin                   : com.atlassian.streams.streams-jira-plugin
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Lists recent activity in a single project, or in all projects.
 
      JIRA Bamboo Plugin                            : com.atlassian.jira.plugin.ext.bamboo
-          Version                                       : 5.1.11
+          Version                                       : 5.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
           Description                                   : Allows you to see builds and telemetry from a remote Bamboo server
 
-     JIRA Base URL Plugin                          : com.atlassian.jira.jira-baseurl-plugin
-          Version                                       : 1.4
+     JIRA Feedback Plugin                          : com.atlassian.plugin.atlassian-feedback-plugin
+          Version                                       : 1.1.3
           Status                                        : enabled
           Vendor                                        : Atlassian
-          Description                                   : Detects incorrectly-set base URLs in JIRA.
-
-     JIRA French (France) Language Pack            : tac.jira.languages.fr_FR
-          Version                                       : 5.2.0-rc4-v2r2192-2012-11-01
-          Status                                        : enabled
-          Vendor                                        : Atlassian Community
-          Description                                   : This plugin contains translations for fr_FR
-
-     JIRA German (Germany) Language Pack           : tac.jira.languages.de_DE
-          Version                                       : 5.2.0-rc4-v2r5597-2012-11-06
-          Status                                        : enabled
-          Vendor                                        : Atlassian Community
-          Description                                   : This plugin contains translations for de_DE
+          Description                                   : Provides a dialog for customers to provide feedback directly to Atlassian from within JIRA.
 
      JIRA Importers Plugin (JIM)                   : com.atlassian.jira.plugins.jira-importers-plugin
-          Version                                       : 5.0.2
+          Version                                       : 4.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : A plugin (originally part of JIRA 4.2 and older) which provides capability to import to JIRA issues from 3rd party issue trackers: Bugzilla, FogBugz and Mantis.
-
-     JIRA Issue Collector Plugin                   : com.atlassian.jira.collector.plugin.jira-issue-collector-plugin
-          Version                                       : 1.2.7
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : This plugin provides the ability to create issues from remote applications
 
      JIRA JSON-RPC Plugin                          : com.atlassian.jira.rpc.jira-json-rpc-plugin
           Version                                       : 1.0.4
@@ -811,35 +722,11 @@ ___ System Plugins __________________________
           Vendor                                        : Atlassian Software
           Description                                   : Exposes JIRA SOAP services using JSON-RPC
 
-     JIRA Japanese (Japan) Language Pack           : tac.jira.languages.ja_JP
-          Version                                       : 5.2.0-rc4-v2r14397-2012-11-07
-          Status                                        : enabled
-          Vendor                                        : Atlassian Community
-          Description                                   : This plugin contains translations for ja_JP
-
-     JIRA Monitoring Plugin                        : com.atlassian.jira.jira-monitoring-plugin
-          Version                                       : 05.5.4
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Records and exposes JIRA key performance metrics
-
-     JIRA Spanish (Spain) Language Pack            : tac.jira.languages.es_ES
-          Version                                       : 5.2.0-rc4-v2r11764-2012-11-01
-          Status                                        : enabled
-          Vendor                                        : Atlassian Community
-          Description                                   : This plugin contains translations for es_ES
-
      JIRA Streams Inline Actions Plugin            : com.atlassian.streams.jira.inlineactions
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
           Description                                   : JIRA Streams Inline Actions Plugin
-
-     JIRA Time Zone Detection plugin               : com.atlassian.jira.jira-tzdetect-plugin
-          Version                                       : 1.6
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Performs client-side time zone detection for JIRA.
 
      JIRA Usage Hints                              : jira.usage.hints
           Version                                       : 1.0
@@ -847,23 +734,11 @@ ___ System Plugins __________________________
           Vendor                                        : Atlassian
           Description                                   : This library includes the web fragments for JIRA usage hints displayed on issue operation dialogs. It should never be disabled.
 
-     JIRA WebHooks Plugin                          : com.atlassian.jira.plugins.webhooks.jira-webhooks-plugin
-          Version                                       : 1.0.4
+     JIRA What's New Plugin                        : com.atlassian.jira.whatsnew.jira-whatsnew-plugin
+          Version                                       : 1.1.0.1
           Status                                        : enabled
           Vendor                                        : Atlassian
-          Description                                   : This plugin provides the ability to register Web Hooks for events in JIRA
-
-     JIRA Welcome Plugin                           : com.atlassian.jira.welcome.jira-welcome-plugin
-          Version                                       : 1.1.29
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Displays a welcome dialog for first-time usage of JIRA, as well as a whats new dialog for users just having upgraded to this version of JIRA.
-
-     JIRA iCalendar Plugin                         : com.atlassian.jira.extra.jira-ical-feed
-          Version                                       : 1.0.9
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Provides an iCal feed of JIRA issues and versions
+          Description                                   : Displays a whats new dialog for users just having upgraded to this version of JIRA.
 
      JQL Functions                                 : jira.jql.function
           Version                                       : 1.0
@@ -877,6 +752,12 @@ ___ System Plugins __________________________
           Vendor                                        : Atlassian Pty Ltd
           Description                                   : Library for manipulating JSON
 
+     Japanese (Japan) Language Pack                : tac.jira.languages.ja_JP
+          Version                                       : 5.0.0-rc2-v2r10187-2012-01-05
+          Status                                        : enabled
+          Vendor                                        : Atlassian Community
+          Description                                   : This plugin contains translations for ja_JP
+
      Keyboard Shortcuts Plugin                     : jira.keyboard.shortcuts
           Version                                       : 1.0
           Status                                        : enabled
@@ -889,20 +770,8 @@ ___ System Plugins __________________________
           Vendor                                        : Atlassian Pty Ltd
           Description                                   : Neko HTML library as an OSGi bundle
 
-     Notifications and Tasks - Common Plugin       : com.atlassian.mywork.mywork-common-plugin
-          Version                                       : 1.1.0
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Provides Common Services to Notifications and Tasks
-
-     Notifications and Tasks - JIRA Provider Plugin : com.atlassian.mywork.mywork-jira-provider-plugin
-          Version                                       : 1.1.0
-          Status                                        : enabled
-          Vendor                                        : Atlassian
-          Description                                   : Generates Notifications and Tasks from JIRA
-
      Opensocial Plugin                             : com.atlassian.gadgets.opensocial
-          Version                                       : 3.2.0-m2-1
+          Version                                       : 3.1.21
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Plugin for OpenSocial API Support and Gadget Rendering
@@ -920,49 +789,55 @@ ___ System Plugins __________________________
           Description                                   : 
 
      RPC JIRA Plugin                               : com.atlassian.jira.ext.rpc
-          Version                                       : 5.1.3
+          Version                                       : 5.0.5
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : The standard JIRA RPC services, both SOAP and XML-RPC.
 
-     Streams API                                   : com.atlassian.streams.streams-api-5.1.6
-          Version                                       : 5.1.6
+     Spanish (Spain) Language Pack                 : tac.jira.languages.es_ES
+          Version                                       : 5.0.0-rc2-v2r6467-2011-12-29
+          Status                                        : enabled
+          Vendor                                        : Atlassian Community
+          Description                                   : This plugin contains translations for es_ES
+
+     Streams API                                   : com.atlassian.streams.streams-api-5.1.0
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Lists recent activity in a single project, or in all projects.
 
      Streams Core Plugin                           : com.atlassian.streams.core
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
           Description                                   : Streams Core Plugin
 
      Streams Inline Actions Plugin                 : com.atlassian.streams.actions
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
           Description                                   : Streams Inline Actions Plugin
 
      Streams Plugin                                : com.atlassian.streams
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian Software Systems Pty Ltd
           Description                                   : Streams Plugin
 
-     Streams SPI                                   : com.atlassian.streams.streams-spi-5.1.6
-          Version                                       : 5.1.6
+     Streams SPI                                   : com.atlassian.streams.streams-spi-5.1.0
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Lists recent activity in a single project, or in all projects.
 
      Streams Third Party Provider Plugin           : com.atlassian.streams.streams-thirdparty-plugin
-          Version                                       : 5.1.6
+          Version                                       : 5.1.0
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : Lists recent activity in a single project, or in all projects.
 
      Support Tools Plugin                          : com.atlassian.support.stp
-          Version                                       : 3.0.11
+          Version                                       : 2.9.5
           Status                                        : enabled
           Vendor                                        : Atlassian Support
           Description                                   : This is the Support Tools Plugin, developed to help Atlassian customers with our products.
@@ -980,16 +855,16 @@ ___ System Plugins __________________________
           Description                                   : This library includes the panels included on the user profile page.
 
      Workflow Designer Plugin                      : com.atlassian.jira.plugins.jira-workflow-designer
-          Version                                       : 3.0.0-m14
+          Version                                       : 2.5.2
           Status                                        : enabled
           Vendor                                        : Atlassian
           Description                                   : The visual way to edit JIRA Workflows.
 
-     jira-help-tips                                : com.atlassian.plugins.helptips.jira-help-tips
-          Version                                       : 0.29
+     jira-ical-feed                                : com.atlassian.jira.extra.jira-ical-feed
+          Version                                       : 1.0.2
           Status                                        : enabled
           Vendor                                        : Atlassian
-          Description                                   : Common way to display help tips in the UI of JIRA.
+          Description                                   : Provides an iCal feed of JIRA issues and versions
 
 
 ___ Listeners ______________________________
@@ -1006,16 +881,19 @@ ___ Services _______________________________
 
      Backup Service                                : com.atlassian.jira.service.services.export.ExportService
           Service Delay                                 : 43200000ms
-     Last Run                                      : 13.12.12 09:18
+     Last Run                                      : 13.12.12 14:14
           USE_DEFAULT_DIRECTORY                         : true
      Mail Queue Service                            : com.atlassian.jira.service.services.mail.MailQueueService
           Service Delay                                 : 60000ms
-     Last Run                                      : 13.12.12 10:09
+     Last Run                                      : 13.12.12 14:14
      Sample                                        : com.atlassian.jira.service.services.mail.MailFetcherService
           Service Delay                                 : 60000ms
-     Last Run                                      : 13.12.12 10:09
+     Last Run                                      : 13.12.12 14:13
      Service Provider Token Remover                : com.atlassian.sal.jira.scheduling.JiraPluginSchedulerService
           Service Delay                                 : 28800000ms
+     Last Run                                      : 13.12.12 14:13
+          pluginJobName                                 : Service Provider Token Remover
+          initiallyFired                                : true
 
 ___ Trusted Applications ___________________
 
@@ -1492,7 +1370,7 @@ ___ Trusted Applications ___________________
     <Label id="10033" issue="10074" label="bcds"/>
     <ListenerConfig id="10001" clazz="com.atlassian.jira.event.listeners.mail.MailListener" name="Mail Listener"/>
     <ListenerConfig id="10100" clazz="com.atlassian.jira.event.listeners.history.IssueAssignHistoryListener" name="Issue Assignment Listener"/>
-    <ListenerConfig id="10300" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
+    <ListenerConfig id="10400" clazz="com.atlassian.jira.event.listeners.search.IssueIndexListener" name="Issue Index Listener"/>
     <Membership id="10000" parentId="10000" childId="10000" membershipType="GROUP_USER" parentName="jira-administrators" lowerParentName="jira-administrators" childName="admin" lowerChildName="admin" directoryId="1"/>
     <Membership id="10001" parentId="10001" childId="10000" membershipType="GROUP_USER" parentName="jira-developers" lowerParentName="jira-developers" childName="admin" lowerChildName="admin" directoryId="1"/>
     <Membership id="10002" parentId="10002" childId="10000" membershipType="GROUP_USER" parentName="jira-users" lowerParentName="jira-users" childName="admin" lowerChildName="admin" directoryId="1"/>
@@ -1714,7 +1592,6 @@ ___ Trusted Applications ___________________
     <OSPropertyEntry id="10783" entityName="jira.properties" entityId="1" propertyKey="com.atlassian.upm.atlassian-universal-plugin-manager-plugin:build" type="5"/>
     <OSPropertyEntry id="10784" entityName="jira.properties" entityId="1" propertyKey="com.atlassian.jira.plugins.jira-workflow-designer:build" type="5"/>
     <OSPropertyEntry id="10785" entityName="fisheye-jira-plugin.properties" entityId="1" propertyKey="fisheye.ual.crucible.enabled.property.fix.complete" type="5"/>
-    <OSPropertyEntry id="10786" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
     <OSPropertyEntry id="10787" entityName="jira.properties" entityId="1" propertyKey="jira.user.avatar.gravatar.enabled" type="1"/>
     <OSPropertyEntry id="10788" entityName="jira.properties" entityId="1" propertyKey="jira.issue.inline.edit.disabled" type="1"/>
     <OSPropertyEntry id="10789" entityName="jira.properties" entityId="1" propertyKey="jira.issuenav.criteria.autoupdate" type="1"/>
@@ -1723,6 +1600,7 @@ ___ Trusted Applications ___________________
     <OSPropertyEntry id="10792" entityName="ExternalEntity" entityId="12" propertyKey="user.search.filter.id" type="6"/>
     <OSPropertyEntry id="10793" entityName="ExternalEntity" entityId="12" propertyKey="user.search.jql" type="6"/>
     <OSPropertyEntry id="10794" entityName="user.format.mapping" entityId="1" propertyKey="userName" type="5"/>
+    <OSPropertyEntry id="10980" entityName="jira.properties" entityId="1" propertyKey="jira.plugin.state-.com.atlassian.jira.plugin.system.issueoperations:attach-screenshot" type="5"/>
     <OSPropertyNumber id="10002" value="22"/>
     <OSPropertyNumber id="10014" value="1"/>
     <OSPropertyNumber id="10015" value="1"/>
@@ -1778,7 +1656,7 @@ ___ Trusted Applications ___________________
     <OSPropertyString id="10023" value="enterprise"/>
     <OSPropertyString id="10026" value="true"/>
     <OSPropertyString id="10032" value="show"/>
-    <OSPropertyString id="10033" value="812"/>
+    <OSPropertyString id="10033" value="713"/>
     <OSPropertyString id="10034" value="For example operating system, software platform and/or hardware specifications (include as appropriate for the issue)."/>
     <OSPropertyString id="10035">
         <value><![CDATA[An estimate of how much work remains until this issue will be resolved.<br>
@@ -1805,7 +1683,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10362" value="text"/>
     <OSPropertyString id="10366" value="pl_PL"/>
     <OSPropertyString id="10443" value="Service Provider Token Remover"/>
-    <OSPropertyString id="10450" value="5051"/>
+    <OSPropertyString id="10450" value="5052"/>
     <OSPropertyString id="10480" value="10083"/>
     <OSPropertyString id="10580" value="1"/>
     <OSPropertyString id="10581" value="false"/>
@@ -1827,8 +1705,8 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10783" value="1"/>
     <OSPropertyString id="10784" value="1"/>
     <OSPropertyString id="10785" value="1"/>
-    <OSPropertyString id="10786" value="false"/>
     <OSPropertyString id="10794" value="jira.user.format:user-name-user-format"/>
+    <OSPropertyString id="10980" value="false"/>
     <OSPropertyText id="10022" value="AAABBA0ODAoPeNptj1FPgzAUhd/7K5r4jGmZmkDSBwaNogMWYM4svtTuOmtGR27L4v69bOiL8ek+nJzvO/dqDVuaDDvKbim/i2cs5iGVTUtDxiKSgdNoem8OVjzmdUKl9YA9GgevMU0PXQeojdrTBvAISMqhewOs3lcO0ImAkxRBnduZ8iBCNosCHgaMk0+D6nphNFgHcmsuAlm2sl7WeSOnWGlvjiA8DkAKZUazVVaD/OoNniZgFEUj7QyscKescReZSPxeOWeUJdOuPBPz+6gNXlbPN8HTZvMQzBlfk0aWogXnx0t+t/wL/wnbUw+l6kCkVVHIOs2TBVkOqD+Ug78PfgPSNG6BMC0CFBZN4P8f7FRdIKPx3oWYkJwGfM9tAhUAllLN8BrljKaWmkSeRtRCiwHCZ7g=X02dd"/>
     <OSPropertyText id="10481">
         <value><![CDATA[http://www.atlassian.com/*
@@ -2048,11 +1926,11 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SchemePermissions id="10078" scheme="10000" permission="29" type="projectrole" parameter="10001"/>
     <SchemePermissions id="10079" scheme="10000" permission="10" type="group"/>
     <SchemePermissions id="10080" scheme="10000" permission="15" type="group"/>
-    <SearchRequest id="10000" name="Bugs in Test project" author="admin" user="admin" request="project = TST AND issuetype = Bug" favCount="1" nameLower="bugs in test project"/>
-    <SearchRequest id="10001" name="Tasks in Test project - not favuorite filter" author="admin" user="admin" request="project = TST AND issuetype = Task" favCount="0" nameLower="tasks in test project - not favuorite filter"/>
-    <SearchRequest id="10002" name="All new features! (shared with everyone)" author="admin" description="This filter returns all issues of type &quot;New Fature&quot;." user="admin" request="issuetype = &quot;New Feature&quot;" favCount="1" nameLower="all new features! (shared with everyone)"/>
-    <SearchRequest id="10003" name="Resolved bugs" author="admin" description="For testing shares." user="admin" request="issuetype = Bug AND status = Resolved" favCount="1" nameLower="resolved bugs"/>
-    <SearchRequest id="10004" name="All in project Test" author="admin" description="For testing subscriptions." user="admin" request="project = TST" favCount="1" nameLower="all in project test"/>
+    <SearchRequest id="10000" name="Bugs in Test project" author="admin" user="admin" request="project = TST AND issuetype = Bug" favCount="1"/>
+    <SearchRequest id="10001" name="Tasks in Test project - not favuorite filter" author="admin" user="admin" request="project = TST AND issuetype = Task" favCount="0"/>
+    <SearchRequest id="10002" name="All new features! (shared with everyone)" author="admin" description="This filter returns all issues of type &quot;New Fature&quot;." user="admin" request="issuetype = &quot;New Feature&quot;" favCount="1"/>
+    <SearchRequest id="10003" name="Resolved bugs" author="admin" description="For testing shares." user="admin" request="issuetype = Bug AND status = Resolved" favCount="1"/>
+    <SearchRequest id="10004" name="All in project Test" author="admin" description="For testing subscriptions." user="admin" request="project = TST" favCount="1"/>
     <SequenceValueItem seqName="Action" seqId="10150"/>
     <SequenceValueItem seqName="Avatar" seqId="10160"/>
     <SequenceValueItem seqName="ChangeGroup" seqId="10270"/>
@@ -2086,14 +1964,14 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="IssueLinkType" seqId="10020"/>
     <SequenceValueItem seqName="IssueTypeScreenSchemeEntity" seqId="10010"/>
     <SequenceValueItem seqName="Label" seqId="10130"/>
-    <SequenceValueItem seqName="ListenerConfig" seqId="10400"/>
+    <SequenceValueItem seqName="ListenerConfig" seqId="10500"/>
     <SequenceValueItem seqName="Membership" seqId="10140"/>
     <SequenceValueItem seqName="Notification" seqId="10150"/>
     <SequenceValueItem seqName="NotificationScheme" seqId="10010"/>
     <SequenceValueItem seqName="OSCurrentStep" seqId="10190"/>
     <SequenceValueItem seqName="OSGroup" seqId="10010"/>
     <SequenceValueItem seqName="OSMembership" seqId="10040"/>
-    <SequenceValueItem seqName="OSPropertyEntry" seqId="10880"/>
+    <SequenceValueItem seqName="OSPropertyEntry" seqId="11080"/>
     <SequenceValueItem seqName="OSUser" seqId="10040"/>
     <SequenceValueItem seqName="OSWorkflowEntry" seqId="10180"/>
     <SequenceValueItem seqName="OptionConfiguration" seqId="10010"/>
@@ -2116,7 +1994,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <SequenceValueItem seqName="UpgradeHistory" seqId="10360"/>
     <SequenceValueItem seqName="UpgradeVersionHistory" seqId="10280"/>
     <SequenceValueItem seqName="User" seqId="10140"/>
-    <SequenceValueItem seqName="UserAttribute" seqId="10650"/>
+    <SequenceValueItem seqName="UserAttribute" seqId="10750"/>
     <SequenceValueItem seqName="UserHistoryItem" seqId="10190"/>
     <SequenceValueItem seqName="Version" seqId="10010"/>
     <SequenceValueItem seqName="VoteHistory" seqId="10200"/>
@@ -2237,14 +2115,14 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <UserAttribute id="10330" userId="10020" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
     <UserAttribute id="10331" userId="10020" directoryId="1" name="login.lastLoginMillis" value="1355386995608" lowerValue="1355386995608"/>
     <UserAttribute id="10332" userId="10020" directoryId="1" name="login.count" value="2" lowerValue="2"/>
-    <UserAttribute id="10450" userId="10000" directoryId="1" name="invalidPasswordAttempts" value="0" lowerValue="0"/>
-    <UserAttribute id="10451" userId="10000" directoryId="1" name="requiresPasswordChange" value="false" lowerValue="false"/>
-    <UserAttribute id="10452" userId="10000" directoryId="1" name="lastAuthenticated" value="1355387546544" lowerValue="1355387546544"/>
-    <UserAttribute id="10453" userId="10000" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
-    <UserAttribute id="10454" userId="10000" directoryId="1" name="login.lastLoginMillis" value="1355387546548" lowerValue="1355387546548"/>
-    <UserAttribute id="10455" userId="10000" directoryId="1" name="login.previousLoginMillis" value="1355387478358" lowerValue="1355387478358"/>
-    <UserAttribute id="10456" userId="10000" directoryId="1" name="login.count" value="479" lowerValue="479"/>
     <UserAttribute id="10550" userId="10020" directoryId="1" name="login.previousLoginMillis" value="1354890484218" lowerValue="1354890484218"/>
+    <UserAttribute id="10657" userId="10000" directoryId="1" name="invalidPasswordAttempts" value="0" lowerValue="0"/>
+    <UserAttribute id="10658" userId="10000" directoryId="1" name="requiresPasswordChange" value="false" lowerValue="false"/>
+    <UserAttribute id="10659" userId="10000" directoryId="1" name="lastAuthenticated" value="1355404450925" lowerValue="1355404450925"/>
+    <UserAttribute id="10660" userId="10000" directoryId="1" name="login.currentFailedCount" value="0" lowerValue="0"/>
+    <UserAttribute id="10661" userId="10000" directoryId="1" name="login.lastLoginMillis" value="1355404450935" lowerValue="1355404450935"/>
+    <UserAttribute id="10662" userId="10000" directoryId="1" name="login.previousLoginMillis" value="1355404440779" lowerValue="1355404440779"/>
+    <UserAttribute id="10663" userId="10000" directoryId="1" name="login.count" value="481" lowerValue="481"/>
     <UserHistoryItem id="10000" type="Project" entityId="10000" username="admin" lastViewed="1355387540313"/>
     <UserHistoryItem id="10001" type="Issue" entityId="10000" username="admin" lastViewed="1354891472585"/>
     <UserHistoryItem id="10010" type="Issue" entityId="10010" username="admin" lastViewed="1354894856662"/>
