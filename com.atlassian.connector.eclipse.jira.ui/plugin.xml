@@ -55,7 +55,7 @@
             repositoryKind="jira"
             label="Apache"
             urlRepository="https://issues.apache.org/jira"/>
-      <repository addAutomatically="true"
+      <repository addAutomatically="false"
 			label="Atlassian Integrations Support" 
 			repositoryKind="jira" 
 			urlRepository="https://studio.atlassian.com" />

@@ -138,6 +138,11 @@ public class JiraClient {
 		restClient = createRestClient(location, cache);
 	}
 
+	/**
+	 * Only for Tests purposes
+	 * 
+	 * @param location
+	 */
 	public JiraClient(AbstractWebLocation location) {
 		this(location, new JiraLocalConfiguration());
 	}
@@ -152,8 +157,17 @@ public class JiraClient {
 			proxy = location.getProxyForHost(baseUrl, PROXY_TYPE_HTTP);
 		}
 
-		return new JiraRestClientAdapter(baseUrl, location.getCredentials(AuthenticationType.REPOSITORY).getUserName(),
-				location.getCredentials(AuthenticationType.REPOSITORY).getPassword(), proxy, cache);
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+
+		String username = ""; //$NON-NLS-1$
+		String password = null;
+
+		if (credentials != null) {
+			username = credentials.getUserName();
+			password = credentials.getPassword();
+		}
+
+		return new JiraRestClientAdapter(baseUrl, username, password, proxy, cache);
 	}
 
 //	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {
