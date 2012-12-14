@@ -16,23 +16,25 @@
 
 package it;
 
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("ConstantConditions")
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	private final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
 
 	@Test
 	public void testValidSession() {
@@ -43,7 +45,7 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
 
 	@Test
 	public void testInvalidCredentials() {
-		client = new AsynchronousJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(ADMIN_USERNAME, ADMIN_PASSWORD + "invalid"));
+		client = clientFactory.createWithBasicHttpAuthentication(jiraUri, ADMIN_USERNAME, ADMIN_PASSWORD + "invalid");
 		TestUtil.assertErrorCode(401, new Runnable() {
 			@Override
 			public void run() {
@@ -58,14 +60,15 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
 		assertEquals(ADMIN_USERNAME, session.getUsername());
 
 		// that is not a mistake - username and the password for this user is the same
-		client = new AsynchronousJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(),
-				TestConstants.USER1.getName()));
+		client = clientFactory.createWithBasicHttpAuthentication(jiraUri, TestConstants.USER1.getName(), TestConstants.USER1
+				.getName());
 		final Session session2 = client.getSessionClient().getCurrentSession().claim();
 		assertEquals(TestConstants.USER1.getName(), session2.getUsername());
 		final DateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
 
-		final AsynchronousJiraRestClient client2 = new AsynchronousJiraRestClient(jiraUri,
-                new BasicHttpAuthenticationHandler(TestConstants.USER1.getName(), "bad-password"));
+		final JiraRestClient client2 = clientFactory.createWithBasicHttpAuthentication(jiraUri, TestConstants.USER1
+				.getName(), "bad-password");
+
 		final DateTime now = new DateTime();
 		TestUtil.assertErrorCode(401, new Runnable() {
 			@Override

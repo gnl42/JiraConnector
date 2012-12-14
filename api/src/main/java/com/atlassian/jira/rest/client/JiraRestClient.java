@@ -69,4 +69,11 @@ public interface JiraRestClient {
 	 * @return the com.atlassian.jira.rest.client for project roles.
 	 */
 	ProjectRolesRestClient getProjectRolesRestClient();
+
+    /**
+     * Destroys this instance of JIRA Rest Client.
+	 *
+     * @throws Exception
+     */
+    void destroy() throws Exception;
 }

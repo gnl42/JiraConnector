@@ -18,10 +18,12 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.framework.NimbleFuncTestCase;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
+import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 
 import javax.ws.rs.core.UriBuilder;
@@ -31,7 +33,7 @@ import java.net.URISyntaxException;
 public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestCase {
 
 	protected URI jiraUri;
-	protected AsynchronousJiraRestClient client;
+	protected JiraRestClient client;
 	protected URI jiraRestRootUri;
 	protected URI jiraAuthRootUri;
 
@@ -59,11 +61,13 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 	}
 
 	protected void setClient(String username, String password) {
-		client = new AsynchronousJiraRestClient(jiraUri, new BasicHttpAuthenticationHandler(username, password));
+		final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
+		client = clientFactory.create(jiraUri, new BasicHttpAuthenticationHandler(username, password));
 	}
 
 	protected void setAnonymousMode() {
-		client = new AsynchronousJiraRestClient(jiraUri, new AnonymousAuthenticationHandler());
+		final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
+		client = clientFactory.create(jiraUri, new AnonymousAuthenticationHandler());
 	}
 
 	protected void setUser2() {
@@ -86,4 +90,18 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 		return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
 
+	@Override
+	public void afterMethod() {
+		try {
+			super.afterMethod();
+			// We may have an empty client when a particular test is disabled because the tests are run
+			// on not supported version of JIRA (example: run only on JIRA6 against JIRA5). In this case
+			// we don't create a client in beforeMethod.
+			if (client != null) {
+				client.destroy();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

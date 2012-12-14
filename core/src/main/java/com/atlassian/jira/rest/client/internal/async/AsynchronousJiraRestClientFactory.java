@@ -32,7 +32,8 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 
 	@Override
 	public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-		final HttpClient httpClient = new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler);
+		final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory()
+				.createClient(serverUri, authenticationHandler);
 		return new AsynchronousJiraRestClient(serverUri, httpClient);
 	}
 
@@ -43,6 +44,7 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 
 	@Override
 	public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
-		return new AsynchronousJiraRestClient(serverUri, httpClient);
+		final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
+		return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);
 	}
 }

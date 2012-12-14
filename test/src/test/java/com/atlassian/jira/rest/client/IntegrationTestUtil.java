@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 
 import javax.ws.rs.core.UriBuilder;
@@ -51,7 +51,8 @@ public class IntegrationTestUtil {
 
 	static {
         try {
-			final AsynchronousJiraRestClient client = new AsynchronousJiraRestClient(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
+			final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
+			final JiraRestClient client = clientFactory.create(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
 			TESTING_JIRA_5_OR_NEWER = client.getMetadataClient().getServerInfo().claim().getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";

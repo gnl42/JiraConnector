@@ -42,7 +42,7 @@ import java.util.Properties;
 public class AsynchronousHttpClientFactory {
 
 	@SuppressWarnings("unchecked")
-	public HttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+	public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
 		final HttpClientOptions options = new HttpClientOptions();
 		options.setRequestPreparer(new Effect<Request>() {
 			@Override
@@ -50,9 +50,30 @@ public class AsynchronousHttpClientFactory {
 				authenticationHandler.configure(request);
 			}
 		});
-		return new DefaultHttpClient(new NoOpEventPublisher(),
+		final DefaultHttpClient defaultHttpClient = new DefaultHttpClient(new NoOpEventPublisher(),
 				new RestClientApplicationProperties(serverUri),
 				ThreadLocalContextManagers.noop(), options);
+		return new AtlassianHttpClientDecorator(defaultHttpClient) {
+
+			@Override
+			public void destroy() throws Exception {
+				defaultHttpClient.destroy();
+			}
+		};
+	}
+
+	public DisposableHttpClient createClient(final HttpClient client) {
+		return new AtlassianHttpClientDecorator(client) {
+
+			@Override
+			public void destroy() throws Exception {
+				// This should never be implemented. This is simply creation of a wrapper
+				// for AtlassianHttpClient which is extended by a destroy method.
+				// Destroy method should never be called for AtlassianHttpClient coming from
+				// a client! Imagine you create a RestClient, pass your own HttpClient there
+				// and it gets destroy.
+			}
+		};
 	}
 
 	private static class NoOpEventPublisher implements EventPublisher {
@@ -151,4 +172,5 @@ public class AsynchronousHttpClientFactory {
 			}
 		}
 	}
+
 }

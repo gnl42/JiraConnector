@@ -15,7 +15,6 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.*;
 
 import javax.ws.rs.core.UriBuilder;
@@ -37,14 +36,12 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	private final SearchRestClient searchRestClient;
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
+	private final DisposableHttpClient httpClient;
 
-	public AsynchronousJiraRestClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-		this(serverUri, new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler));
-	}
-
-	public AsynchronousJiraRestClient(final URI serverUri, final HttpClient httpClient) {
+	public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
 		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 
+		this.httpClient = httpClient;
 		metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
 		sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
 		issueRestClient = new AsynchronousIssueRestClient(baseUri, httpClient, sessionRestClient, metadataRestClient);
@@ -101,5 +98,9 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		return projectRolesRestClient;
 	}
 
+	@Override
+	public void destroy() throws Exception {
+		httpClient.destroy();
+	}
 }
 
