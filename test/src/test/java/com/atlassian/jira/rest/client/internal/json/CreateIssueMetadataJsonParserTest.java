@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;

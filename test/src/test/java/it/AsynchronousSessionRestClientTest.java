@@ -20,7 +20,7 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
-import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.jira.rest.client.api.domain.Session;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
 import org.junit.Test;

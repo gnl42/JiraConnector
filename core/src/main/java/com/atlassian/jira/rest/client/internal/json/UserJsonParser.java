@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.User;
-import com.atlassian.jira.rest.client.ExpandableProperty;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONException;

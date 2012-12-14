@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.BasicResolution;
+import com.atlassian.jira.rest.client.api.domain.BasicResolution;
 import org.junit.Assert;
 import org.junit.Test;
 

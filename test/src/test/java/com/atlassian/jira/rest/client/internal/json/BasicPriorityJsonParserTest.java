@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import org.junit.Assert;
 import org.junit.Test;
 

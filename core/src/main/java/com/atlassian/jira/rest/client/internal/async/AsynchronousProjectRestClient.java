@@ -15,10 +15,10 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.ProjectRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.ProjectRestClient;
-import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectsJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectJsonParser;
 import com.atlassian.util.concurrent.Promise;
@@ -31,7 +31,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClient implements ProjectRestClient {
+public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClient implements ProjectRestClient
+{
 
 	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();

@@ -1,4 +1,4 @@
-package com.atlassian.jira.rest.client.domain.input;
+package com.atlassian.jira.rest.client.api.domain.input;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import org.hamcrest.Matchers;
@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import java.net.URI;
 
-import static com.atlassian.jira.rest.client.domain.input.WorklogInput.AdjustEstimate;
-import static com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder.ESTIMATE_UNIT_MINUTES;
+import static com.atlassian.jira.rest.client.api.domain.input.WorklogInput.AdjustEstimate;
+import static com.atlassian.jira.rest.client.api.domain.input.WorklogInputBuilder.ESTIMATE_UNIT_MINUTES;
 
 public class WorklogInputBuilderTest {
 

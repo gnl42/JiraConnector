@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.OptionalIterable;
+import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.BasicProjectRole;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Project;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.collection.IsEmptyIterable;

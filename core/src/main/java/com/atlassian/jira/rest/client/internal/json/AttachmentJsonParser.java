@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Attachment;
-import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.Attachment;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;

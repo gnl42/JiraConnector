@@ -17,9 +17,9 @@
 package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.JSONObjectMatcher;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.ServerInfo;
-import com.atlassian.jira.rest.client.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
+import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import org.junit.Assert;

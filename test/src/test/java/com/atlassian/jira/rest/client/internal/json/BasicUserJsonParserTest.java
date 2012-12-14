@@ -1,6 +1,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import org.junit.Assert;
 import org.junit.Test;
 

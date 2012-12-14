@@ -214,7 +214,4 @@
             </plugins>
         </pluginManagement>
     </build>
-    <properties>
-        <amps.version>4.1</amps.version>
-    </properties>
 </project>

@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.api.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.Iterators;
 import junit.framework.Assert;
 import org.apache.commons.lang.StringUtils;

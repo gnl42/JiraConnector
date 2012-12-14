@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.auth;
 
 import com.atlassian.httpclient.api.Request;
-import com.atlassian.jira.rest.client.AuthenticationHandler;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -27,7 +27,8 @@ import org.apache.commons.codec.binary.Base64;
  *
  * @since v0.1
  */
-public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
+public class BasicHttpAuthenticationHandler implements AuthenticationHandler
+{
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 

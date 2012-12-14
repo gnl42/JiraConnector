@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicIssueType;
-import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

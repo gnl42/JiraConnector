@@ -16,8 +16,8 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.ProjectRole;
-import com.atlassian.jira.rest.client.domain.RoleActor;
+import com.atlassian.jira.rest.client.api.domain.ProjectRole;
+import com.atlassian.jira.rest.client.api.domain.RoleActor;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;

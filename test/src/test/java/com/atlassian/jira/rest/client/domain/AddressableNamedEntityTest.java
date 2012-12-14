@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client.domain;
+package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import org.junit.Assert;

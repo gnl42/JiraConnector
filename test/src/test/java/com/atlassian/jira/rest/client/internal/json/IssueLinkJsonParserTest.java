@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import org.junit.Assert;
 import org.junit.Test;
 

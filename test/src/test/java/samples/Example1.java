@@ -16,12 +16,12 @@
 
 package samples;
 
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;

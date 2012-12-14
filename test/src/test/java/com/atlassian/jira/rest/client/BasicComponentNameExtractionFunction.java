@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.google.common.base.Function;
 
 public class BasicComponentNameExtractionFunction implements Function<BasicComponent, String> {

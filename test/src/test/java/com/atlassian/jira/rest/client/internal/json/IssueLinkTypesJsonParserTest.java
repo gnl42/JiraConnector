@@ -1,7 +1,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.IssuelinksType;
+import com.atlassian.jira.rest.client.api.domain.IssuelinksType;
 import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;

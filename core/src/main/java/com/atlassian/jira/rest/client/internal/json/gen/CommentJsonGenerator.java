@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
-import com.atlassian.jira.rest.client.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
-import com.atlassian.jira.rest.client.domain.ServerInfo;
-import com.atlassian.jira.rest.client.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
 import com.atlassian.jira.rest.client.internal.json.CommentJsonParser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

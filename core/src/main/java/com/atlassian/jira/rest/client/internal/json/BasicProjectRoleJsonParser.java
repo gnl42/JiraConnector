@@ -15,8 +15,8 @@
  */
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.BasicProjectRole;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;

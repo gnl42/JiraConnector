@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.ExpandableProperty;
+import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.jira.rest.client.api.domain.User;
 import com.google.common.collect.ImmutableList;
 import org.junit.Assert;
 import org.junit.Test;

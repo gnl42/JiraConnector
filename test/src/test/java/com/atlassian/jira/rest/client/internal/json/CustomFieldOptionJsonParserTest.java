@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.CustomFieldOption;
+import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
 import com.google.common.collect.ImmutableList;
 import junit.framework.Assert;
 import org.junit.Test;

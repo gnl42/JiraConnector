@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.Visibility;
-import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.Worklog;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;

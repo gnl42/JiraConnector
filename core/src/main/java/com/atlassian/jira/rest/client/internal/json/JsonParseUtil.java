@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.ExpandableProperty;
-import com.atlassian.jira.rest.client.OptionalIterable;
-import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.ExpandableProperty;
+import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONArray;

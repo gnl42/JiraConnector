@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.Component;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.Component;
 import org.junit.Assert;
 import org.junit.Test;
 

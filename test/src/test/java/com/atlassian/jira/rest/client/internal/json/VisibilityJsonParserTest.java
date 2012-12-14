@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;

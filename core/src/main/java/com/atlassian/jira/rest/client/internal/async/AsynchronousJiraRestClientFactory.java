@@ -16,9 +16,9 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.AuthenticationHandler;
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.JiraRestClientFactory;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 
 import java.net.URI;
@@ -28,7 +28,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
+public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory
+{
 
 	@Override
 	public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {

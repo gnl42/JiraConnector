@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
-import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 

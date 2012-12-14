@@ -17,10 +17,10 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.User;
-import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.api.domain.Version;
 import com.google.common.collect.ImmutableMap;
 
 import java.net.URI;

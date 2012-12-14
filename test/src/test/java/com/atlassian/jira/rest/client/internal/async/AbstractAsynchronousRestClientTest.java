@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import com.google.common.collect.Iterators;
 import org.codehaus.jettison.json.JSONException;

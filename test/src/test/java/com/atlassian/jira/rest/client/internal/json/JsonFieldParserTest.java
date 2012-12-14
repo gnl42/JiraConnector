@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Field;
+import com.atlassian.jira.rest.client.api.domain.Field;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
