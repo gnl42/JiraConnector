@@ -25,7 +25,9 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	public static final JiraVersion JIRA_4_2 = new JiraVersion("4.2"); //$NON-NLS-1$
 
-	public final static JiraVersion MIN_VERSION = JIRA_3_13;
+	public static final JiraVersion JIRA_5_0 = new JiraVersion("5.0"); //$NON-NLS-1$
+
+	public final static JiraVersion MIN_VERSION = JIRA_5_0;
 
 	private final int major;
 

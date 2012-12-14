@@ -80,6 +80,8 @@ public class JiraRestClientAdapter {
 
 	private static final String HTTP_403 = "Client response status: 403"; //$NON-NLS-1$
 
+	private static final String HTTP_302 = "Client response status: 302"; //$NON-NLS-1$
+
 	private static final String CONNECTION_REFUSED = "java.net.ConnectException: Connection refused: connect"; //$NON-NLS-1$
 
 	private static final String UNKNOWN_HOST_EXCEPTION = "java.net.UnknownHostException:"; //$NON-NLS-1$
@@ -448,8 +450,12 @@ public class JiraRestClientAdapter {
 			} else if (e.getMessage().contains(ILLEGAL_ARGUMENT_EXCEPTION)) {
 				int index = e.getMessage().indexOf(ILLEGAL_ARGUMENT_EXCEPTION);
 				throw new JiraException(e.getMessage().substring(index), e);
+			} else if (e.getMessage().contains(HTTP_302)) {
+				int index = e.getMessage().indexOf(HTTP_302);
+				throw new JiraException(e.getMessage().substring(index) + ". Https might be required."); //$NON-NLS-1$
 			} else {
-				throw new JiraException(e);
+				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
+				throw new JiraException(e.getMessage());
 			}
 		} catch (Exception e) {
 			throw new JiraException(e);
