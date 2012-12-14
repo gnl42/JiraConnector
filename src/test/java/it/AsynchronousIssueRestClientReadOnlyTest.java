@@ -107,6 +107,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	public void testGetIssue() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		assertEquals("TST-1", issue.getKey());
+		assertEquals(Long.valueOf(10000), issue.getId());
 		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
 		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());

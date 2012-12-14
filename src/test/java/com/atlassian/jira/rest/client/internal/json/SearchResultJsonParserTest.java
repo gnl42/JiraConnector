@@ -40,7 +40,7 @@ public class SearchResultJsonParserTest {
 	@Test
 	public void testParse() throws Exception {
 		final SearchResult searchResult = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/issues1.json"));
-		final ArrayList<BasicIssue> issues = Lists.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-7"), "TST-7"));
+		final ArrayList<BasicIssue> issues = Lists.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), "TST-7", 10040l));
 
 		assertEquals(new SearchResult(0, 50, 1, issues), searchResult);
 	}
@@ -49,11 +49,13 @@ public class SearchResultJsonParserTest {
 	public void testParseMany() throws Exception {
 		final SearchResult searchResult = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/many-issues.json"));
 
-		assertEquals(9, searchResult.getTotal());
+		assertEquals(15, searchResult.getTotal());
 		assertEquals(8, searchResult.getMaxResults());
 		assertEquals(0, searchResult.getStartIndex());
 		assertEquals(8, Iterables.size(searchResult.getIssues()));
-		assertEquals(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/RST-1"), "RST-1"), Iterables.getLast(searchResult.getIssues()));
+		final BasicIssue lastIssue = Iterables.getLast(searchResult.getIssues());
+		final BasicIssue expected = new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10030"), "TST-6", 10030l);
+		assertEquals(expected, lastIssue);
 	}
 
 	@Test

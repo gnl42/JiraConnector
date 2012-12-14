@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-	public Issue(String summary, URI self, String key, BasicProject project, BasicIssueType issueType, BasicStatus status,
+	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, BasicStatus status,
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
@@ -42,7 +42,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
 			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
-		super(self, key);
+		super(self, key, id);
 		this.summary = summary;
 		this.project = project;
 		this.status = status;
@@ -74,8 +74,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	private final BasicStatus status;
-	private BasicIssueType issueType;
-	private BasicProject project;
+	private final BasicIssueType issueType;
+	private final BasicProject project;
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
 	private final Collection<BasicComponent> components;
@@ -83,14 +83,14 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	@Nullable
 	private final String description;
 	@Nullable
-	private User reporter;
-	private User assignee;
+	private final User reporter;
+	private final User assignee;
 	@Nullable
 	private final BasicResolution resolution;
-	private Collection<Field> fields;
-	private DateTime creationDate;
-	private DateTime updateDate;
-	private DateTime dueDate;
+	private final Collection<Field> fields;
+	private final DateTime creationDate;
+	private final DateTime updateDate;
+	private final DateTime dueDate;
 	private final BasicPriority priority;
 	private final BasicVotes votes;
 	@Nullable
@@ -335,8 +335,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().
 				add("project", project).
 				add("status", status).
 				add("description", description).
@@ -361,7 +361,6 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("watchers", watchers).
 				add("timeTracking", timeTracking).
 				add("changelog", changelog).
-				add("labels", labels).
-				toString();
+				add("labels", labels);
 	}
 }

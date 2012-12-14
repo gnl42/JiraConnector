@@ -50,6 +50,7 @@ public class IssueJsonParserTest {
         assertEquals("Testing attachem2", issue.getSummary());
         assertEquals("TST-2", issue.getKey());
         assertEquals("my description", issue.getDescription());
+		assertEquals(Long.valueOf(10010), issue.getId());
 
         final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", "Test Project");
         assertEquals(expectedProject, issue.getProject());
@@ -217,6 +218,7 @@ public class IssueJsonParserTest {
 		assertEquals("Major", priority.getName());
 		assertEquals("my description", issue.getDescription());
 		assertEquals("TST", issue.getProject().getKey());
+		assertEquals(Long.valueOf(10000), issue.getId());
 		assertNotNull(issue.getDueDate());
 		assertEquals(toDateTimeFromIsoDate("2010-07-05"), issue.getDueDate());
 		assertEquals(4, Iterables.size(issue.getAttachments()));
@@ -236,6 +238,7 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssueJira50Representation() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
+		assertEquals(Long.valueOf(10001), issue.getId());
 		assertEquals(0, Iterables.size(issue.getComments()));
 		final BasicPriority priority = issue.getPriority();
 		assertNull(priority);

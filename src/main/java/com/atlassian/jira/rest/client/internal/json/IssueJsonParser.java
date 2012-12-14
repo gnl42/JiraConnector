@@ -42,13 +42,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	public static final String SCHEMA_SECTION = "schema";
 	public static final String NAMES_SECTION = "names";
 
+	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
 	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
 	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
-	private final JsonObjectParser<BasicWatchers> watchersJsonParser
-			= WatchersJsonParserBuilder.createBasicWatchersParser();
+	private final JsonObjectParser<BasicWatchers> watchersJsonParser = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
@@ -164,6 +164,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 	@Override
 	public Issue parse(JSONObject s) throws JSONException {
+		final BasicIssue basicIssue = basicIssueJsonParser.parse(s);
 		final Iterable<String> expandos = parseExpandos(s);
 		final boolean isJira5x0OrNewer = Iterables.contains(expandos, SCHEMA_SECTION);
 		final boolean shouldUseNestedValueAttribute = !isJira5x0OrNewer;
@@ -219,7 +220,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final Collection<BasicComponent> components = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
 		final Collection<Worklog> worklogs;
-		final URI selfUri = JsonParseUtil.getSelfUri(s);
+		final URI selfUri = basicIssue.getSelf();
 
 		final String transitionsUriString;
 		if (s.has(TRANSITIONS_FIELD.id)) {
@@ -251,7 +252,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
-		return new Issue(summary, selfUri, s.getString("key"), project, issueType, status,
+		return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status,
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
 				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
 				transitionsUri, issueLinks,

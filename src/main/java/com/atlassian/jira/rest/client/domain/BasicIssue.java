@@ -30,10 +30,12 @@ public class BasicIssue implements AddressableEntity {
 	private final URI self;
 
 	private final String key;
+	private final Long id;
 
-	public BasicIssue(URI self, String key) {
+	public BasicIssue(URI self, String key, Long id) {
 		this.self = self;
 		this.key = key;
+		this.id = id;
 	}
 
 	/**
@@ -51,12 +53,23 @@ public class BasicIssue implements AddressableEntity {
 		return key;
 	}
 
+	/**
+	 * @return issue id
+	 */
+	public Long getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("key", key).
-				toString();
+				add("id", id);
 	}
 
 	@Override
@@ -64,14 +77,15 @@ public class BasicIssue implements AddressableEntity {
 		if (obj instanceof BasicIssue) {
 			BasicIssue that = (BasicIssue) obj;
 			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.key, that.key);
+					&& Objects.equal(this.key, that.key)
+					&& Objects.equal(this.id, that.id);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, key);
+		return Objects.hashCode(self, key, id);
 	}
 
 }

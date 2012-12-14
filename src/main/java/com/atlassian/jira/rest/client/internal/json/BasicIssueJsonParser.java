@@ -27,6 +27,7 @@ public class BasicIssueJsonParser implements JsonObjectParser<BasicIssue> {
 	public BasicIssue parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
 		final String key = json.getString("key");
-		return new BasicIssue(selfUri, key);
+		final Long id = json.getLong("id");
+		return new BasicIssue(selfUri, key, id);
 	}
 }
