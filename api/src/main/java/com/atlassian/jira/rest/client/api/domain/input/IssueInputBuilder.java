@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class IssueInputBuilder {
 
-    private static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
+	private static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
 
 	private final ValueTransformerManager valueTransformerManager = new ValueTransformerManager()
 			.registerTransformer(new BaseValueTransformer());
@@ -88,7 +88,7 @@ public class IssueInputBuilder {
 
 	/**
 	 * Puts given FieldInput into fields collection. <strong><br/>
-     *
+	 * <p/>
 	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *
@@ -102,7 +102,7 @@ public class IssueInputBuilder {
 
 	/**
 	 * Puts new {@link FieldInput} with given id and value into fields collection.<br/>
-     *
+	 * <p/>
 	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *

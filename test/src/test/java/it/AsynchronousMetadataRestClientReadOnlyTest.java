@@ -71,7 +71,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
-        assertThat(issueType.getIconUri().toString(), Matchers.anyOf(endsWith("bug.png"), endsWith("bug.gif")));
+		assertThat(issueType.getIconUri().toString(), Matchers.anyOf(endsWith("bug.png"), endsWith("bug.gif")));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_4_3)
@@ -117,12 +117,12 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("Major loss of function.", priority.getDescription());
 		final Long expectedId = isJira5xOrNewer() ? 3L : null;
 		assertEquals(expectedId, priority.getId());
-        assertThat(priority.getIconUri().toString(), startsWith(jiraUri.toString()));
-        assertThat(priority.getIconUri().toString(),
-                Matchers.anyOf(
-                    endsWith("images/icons/priority_major.gif"),
-                    endsWith("images/icons/priorities/major.png"))
-        );
+		assertThat(priority.getIconUri().toString(), startsWith(jiraUri.toString()));
+		assertThat(priority.getIconUri().toString(),
+				Matchers.anyOf(
+						endsWith("images/icons/priority_major.gif"),
+						endsWith("images/icons/priorities/major.png"))
+		);
 
 	}
 

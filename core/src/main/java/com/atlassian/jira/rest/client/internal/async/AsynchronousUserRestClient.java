@@ -29,8 +29,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient implements UserRestClient
-{
+public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient implements UserRestClient {
 
 	private static final String USER_URI_PREFIX = "user";
 	private final UserJsonParser userJsonParser = new UserJsonParser();

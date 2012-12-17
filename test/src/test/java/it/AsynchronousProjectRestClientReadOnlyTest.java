@@ -79,13 +79,11 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
 			final IssueType it = issueTypesIterator.next();
 			if (isJira5xOrNewer()) {
 				assertEquals(Long.valueOf(1), it.getId());
-			}
-			else {
+			} else {
 				assertNull(it.getId());
 			}
 			assertEquals(it.getName(), "Bug");
-		}
-		else {
+		} else {
 			assertFalse(issueTypes.isSupported());
 		}
 	}
@@ -156,12 +154,13 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
 		final Iterable<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects().claim();
 		assertEquals(2, Iterables.size(anonymouslyAccessibleProjects));
 
-		final Iterable<String> projectsKeys = Iterables.transform(anonymouslyAccessibleProjects, new Function<BasicProject, String>() {
-			@Override
-			public String apply(BasicProject project) {
-				return project.getKey();
-			}
-		});
+		final Iterable<String> projectsKeys = Iterables
+				.transform(anonymouslyAccessibleProjects, new Function<BasicProject, String>() {
+					@Override
+					public String apply(BasicProject project) {
+						return project.getKey();
+					}
+				});
 		Assert.assertThat(projectsKeys, containsInAnyOrder("ANNON", "ANONEDIT"));
 
 		setUser1();
@@ -209,7 +208,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
 		assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
 		assertNotNull(resolution.getSelf());
 	}
-	
+
 	private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(final Iterable<T> entities, final String suffix) {
 		return Iterables.find(entities, new Predicate<T>() {
 			@Override

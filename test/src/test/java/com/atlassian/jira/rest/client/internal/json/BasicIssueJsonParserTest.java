@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BasicIssueJsonParserTest {
 
-    @Test
+	@Test
 	public void testParse() throws Exception {
 		BasicIssueJsonParser parser = new BasicIssueJsonParser();
 		final BasicIssue actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/basicIssue/valid.json"));

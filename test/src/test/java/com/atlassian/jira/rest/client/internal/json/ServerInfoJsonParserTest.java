@@ -34,7 +34,8 @@ public class ServerInfoJsonParserTest {
 	@Test
 	public void testParseAnonymous() throws Exception {
 		final ServerInfoJsonParser parser = new ServerInfoJsonParser();
-		final ServerInfo serverInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/serverInfo/valid-for-anonymous.json"));
+		final ServerInfo serverInfo = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/serverInfo/valid-for-anonymous.json"));
 		Assert.assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT",
 				580, TestUtil.toDateTime("2010-09-23T00:00:00.000+0200"), null, "128082", "Your Company JIRA"), serverInfo);
 

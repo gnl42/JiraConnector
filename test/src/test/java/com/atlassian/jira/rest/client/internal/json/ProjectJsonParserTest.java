@@ -46,8 +46,10 @@ public class ProjectJsonParserTest {
 		assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, project.getLead());
 		Assert.assertEquals("http://example.com", project.getUri().toString());
 		Assert.assertEquals("TST", project.getKey());
-		Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder.containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
-		Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder.containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
+		Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder
+				.containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
+		Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
+				.containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
 		Assert.assertNull(project.getName());
 		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		Assert.assertFalse(issueTypes.isSupported());
@@ -66,34 +68,51 @@ public class ProjectJsonParserTest {
 	public void testParseProjectInJira4x4() throws JSONException, URISyntaxException {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
 		Assert.assertEquals("TST", project.getKey()); //2010-08-25
-		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
-        Assert.assertEquals("Test Project", project.getName());
+		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
+				.toInstant());
+		Assert.assertEquals("Test Project", project.getName());
 		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		Assert.assertTrue(issueTypes.isSupported());
 		Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/4"), null, "Improvement", false, null, null),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issueType/5"), null, "Sub-task", true, null, null)
-        ));
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/4"), null, "Improvement", false, null, null),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/5"), null, "Sub-task", true, null, null)
+		));
 	}
 
 	@Test
 	public void testParseProjectInJira5x0() throws JSONException, URISyntaxException {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
 		Assert.assertEquals("TST", project.getKey());
-		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate().toInstant());
+		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
+				.toInstant());
 		Assert.assertEquals("Test Project", project.getName());
 		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		Assert.assertTrue(issueTypes.isSupported());
 		Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil.toUri("http://localhost:2990/jira/images/icons/bug.gif")),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", TestUtil.toUri("http://localhost:2990/jira/images/icons/newfeature.gif")),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", TestUtil.toUri("http://localhost:2990/jira/images/icons/task.gif")),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", TestUtil.toUri("http://localhost:2990/jira/images/icons/improvement.gif")),
-                new IssueType(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", TestUtil.toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"))
-        ));
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil
+						.toUri("http://localhost:2990/jira/images/icons/bug.gif")),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false, "A new feature of the product, which has yet to be developed.", TestUtil
+						.toUri("http://localhost:2990/jira/images/icons/newfeature.gif")),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", TestUtil
+						.toUri("http://localhost:2990/jira/images/icons/task.gif")),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false, "An improvement or enhancement to an existing feature or task.", TestUtil
+						.toUri("http://localhost:2990/jira/images/icons/improvement.gif")),
+				new IssueType(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true, "The sub-task of the issue", TestUtil
+						.toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"))
+		));
 	}
 
 	@Test
@@ -101,9 +120,12 @@ public class ProjectJsonParserTest {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
 		final Iterable<BasicProjectRole> projectRoles = project.getProjectRoles();
 		Assert.assertThat(projectRoles, IsIterableContainingInAnyOrder.containsInAnyOrder(
-                new BasicProjectRole(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10000"), "Users"),
-                new BasicProjectRole(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10001"), "Developers"),
-                new BasicProjectRole(TestUtil.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10002"), "Administrators")
-        ));
+				new BasicProjectRole(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10000"), "Users"),
+				new BasicProjectRole(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10001"), "Developers"),
+				new BasicProjectRole(TestUtil
+						.toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10002"), "Administrators")
+		));
 	}
 }

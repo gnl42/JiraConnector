@@ -28,8 +28,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory
-{
+public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
 
 	@Override
 	public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {

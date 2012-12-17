@@ -112,28 +112,30 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
 
 	@Test
 	public void testGetNotExistent() throws Exception {
-        final ErrorCollection.Builder ecb = ErrorCollection.builder();
-        ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.").status(400);
+		final ErrorCollection.Builder ecb = ErrorCollection.builder();
+		ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.")
+				.status(400);
 
-        TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
-            @Override
-            public void run() {
-                client.getSearchClient().getFilter(resolveURI("rest/api/latest/filter/999999")).claim();
-            }
-        });
+		TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
+			@Override
+			public void run() {
+				client.getSearchClient().getFilter(resolveURI("rest/api/latest/filter/999999")).claim();
+			}
+		});
 	}
 
 	@Test
 	public void testGetNotExistentById() throws Exception {
-        final ErrorCollection.Builder ecb = ErrorCollection.builder();
-        ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.").status(400);
+		final ErrorCollection.Builder ecb = ErrorCollection.builder();
+		ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.")
+				.status(400);
 
-        TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
-            @Override
-            public void run() {
-                client.getSearchClient().getFilter(999999).claim();
-            }
-        });
+		TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
+			@Override
+			public void run() {
+				client.getSearchClient().getFilter(999999).claim();
+			}
+		});
 
 	}
 

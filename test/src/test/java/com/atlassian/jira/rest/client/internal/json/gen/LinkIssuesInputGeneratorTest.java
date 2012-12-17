@@ -33,25 +33,31 @@ public class LinkIssuesInputGeneratorTest {
 	@Test
 	public void testGenerateWithoutComment() throws Exception {
 		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType");
-		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/no-comment.json")));
+		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+				.getJsonObjectFromResource("/json/issueLinkInput/no-comment.json")));
 	}
 
 	@Test
 	public void testGenerate() throws Exception {
 		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment.valueOf("simple comment"));
-		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/simple.json")));
+		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+				.getJsonObjectFromResource("/json/issueLinkInput/simple.json")));
 	}
 
 	@Test
 	public void testGenerateWithRoleLevel() throws Exception {
-		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment.createWithRoleLevel("simple comment", "Users"));
-		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/with-project-role.json")));
+		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment
+				.createWithRoleLevel("simple comment", "Users"));
+		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+				.getJsonObjectFromResource("/json/issueLinkInput/with-project-role.json")));
 	}
 
 	@Test
 	public void testGenerateWithGroupLevel() throws Exception {
-		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment.createWithGroupLevel("simple comment", "jira-users"));
-		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/with-user-group.json")));
+		LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment
+				.createWithGroupLevel("simple comment", "jira-users"));
+		Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+				.getJsonObjectFromResource("/json/issueLinkInput/with-user-group.json")));
 	}
 
 }

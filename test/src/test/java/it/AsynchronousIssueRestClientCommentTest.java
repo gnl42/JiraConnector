@@ -89,7 +89,7 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
 		// test if we can see added comment
 		assertFalse(hasComment(issue.getComments(), addedComment.getId()));
 	}
-	
+
 	private boolean hasComment(final Iterable<Comment> comments, final Long id) {
 		return Iterables.filter(comments, new Predicate<Comment>() {
 			@Override

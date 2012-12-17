@@ -16,18 +16,15 @@ import static com.atlassian.plugin.remotable.spi.util.OsgiServiceProxy.wrapServi
  *
  */
 @PublicComponent(SearchRestClient.class)
-public class SearchRestClientServiceFactory implements ServiceFactory
-{
-    @Override
-    public Object getService(Bundle bundle, ServiceRegistration registration)
-    {
-        return new AsynchronousSearchRestClient(URI.create("."),
-                wrapService(bundle.getBundleContext(), HostHttpClient.class, getClass().getClassLoader()));
-    }
+public class SearchRestClientServiceFactory implements ServiceFactory {
+	@Override
+	public Object getService(Bundle bundle, ServiceRegistration registration) {
+		return new AsynchronousSearchRestClient(URI.create("."),
+				wrapService(bundle.getBundleContext(), HostHttpClient.class, getClass().getClassLoader()));
+	}
 
-    @Override
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
-    )
-    {
-    }
+	@Override
+	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
+	) {
+	}
 }

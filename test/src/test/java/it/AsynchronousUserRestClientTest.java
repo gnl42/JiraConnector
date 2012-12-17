@@ -39,19 +39,20 @@ import static org.junit.Assert.*;
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClientTest {
 
-    @Test
-    public void testGetUser() throws JSONException {
+	@Test
+	public void testGetUser() throws JSONException {
 		final User user = client.getUserClient().getUser(ADMIN_USERNAME).claim();
 		assertEquals("wojciech.seliga@spartez.com", user.getEmailAddress());
 		assertEquals("admin", user.getName());
 		assertEquals("Administrator", user.getDisplayName());
-		assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
+		assertEquals(new ExpandableProperty<String>(3, ImmutableList
+				.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
 		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST.getSelf(), user.getSelf());
 		assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
 
 		final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).claim();
 		assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
-    }
+	}
 
 	@Test
 	public void testGetUserWithSlash() {
@@ -65,11 +66,11 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
 		final String username = "same-fake-user-which-does-not-exist";
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The user named '" + username + "' does not exist",
 				new Runnable() {
-			@Override
-			public void run() {
-				client.getUserClient().getUser(username).claim();
-			}
-		});
+					@Override
+					public void run() {
+						client.getUserClient().getUser(username).claim();
+					}
+				});
 	}
 
 	@Test

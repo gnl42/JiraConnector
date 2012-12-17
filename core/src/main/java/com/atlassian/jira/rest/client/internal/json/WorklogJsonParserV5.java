@@ -39,7 +39,7 @@ public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 		final URI self = JsonParseUtil.getSelfUri(json);
 		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
 		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
-        // comment is optional due to JRJC-49: JIRA can return worklog without comment
+		// comment is optional due to JRJC-49: JIRA can return worklog without comment
 		final String comment = json.optString("comment");
 		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
 		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");

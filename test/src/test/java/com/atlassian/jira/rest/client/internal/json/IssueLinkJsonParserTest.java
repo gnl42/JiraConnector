@@ -25,12 +25,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class IssueLinkJsonParserTest {
-    @Test
-    public void testParseIssueLink() throws Exception {
-        IssueLinkJsonParser parser = new IssueLinkJsonParser();
-        final IssueLink issueLink = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueLink/valid.json"));
-        Assert.assertEquals(new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND), issueLink.getIssueLinkType());
-        Assert.assertEquals("TST-2", issueLink.getTargetIssueKey());
-        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), issueLink.getTargetIssueUri());
-    }
+	@Test
+	public void testParseIssueLink() throws Exception {
+		IssueLinkJsonParser parser = new IssueLinkJsonParser();
+		final IssueLink issueLink = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueLink/valid.json"));
+		Assert.assertEquals(new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND), issueLink
+				.getIssueLinkType());
+		Assert.assertEquals("TST-2", issueLink.getTargetIssueKey());
+		Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), issueLink
+				.getTargetIssueUri());
+	}
 }

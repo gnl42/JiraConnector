@@ -26,8 +26,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousJiraRestClient implements JiraRestClient
-{
+public class AsynchronousJiraRestClient implements JiraRestClient {
 
 	private final IssueRestClient issueRestClient;
 	private final SessionRestClient sessionRestClient;
@@ -39,7 +38,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
 	private final DisposableHttpClient httpClient;
-    
+
 	public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
 		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 

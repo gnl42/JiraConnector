@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A sample code how to use JRJC library 
+ * A sample code how to use JRJC library
  *
  * @since v0.1
  */
@@ -87,7 +87,8 @@ public class Example1 {
 		// now let's start progress on this issue
 		final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
 		final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
-		restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId())).claim();
+		restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
+				.claim();
 
 		// and now let's resolve it as Incomplete
 		final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
@@ -96,8 +97,7 @@ public class Example1 {
 		// Starting from JIRA 5, fields are handled in different way -
 		if (buildNumber > ServerVersionConstants.BN_JIRA_5) {
 			fieldInputs = Arrays.asList(new FieldInput("resolution", ComplexIssueInputFieldValue.with("name", "Incomplete")));
-		}
-		else {
+		} else {
 			fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
 		}
 		final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment

@@ -36,7 +36,8 @@ public class ComponentJsonParserTest {
 	@Test
 	public void testParseBasicComponentWithNoDescription() throws Exception {
 		BasicComponentJsonParser parser = new BasicComponentJsonParser();
-		final BasicComponent component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/basic-no-description-valid.json"));
+		final BasicComponent component = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/component/basic-no-description-valid.json"));
 		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
 		Assert.assertEquals("Component A", component.getName());
 		Assert.assertNull(component.getDescription());
@@ -55,7 +56,8 @@ public class ComponentJsonParserTest {
 	@Test
 	public void testParseComponenWithNoLead() throws Exception {
 		ComponentJsonParser parser = new ComponentJsonParser();
-		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-no-lead-valid.json"));
+		final Component component = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/component/complete-no-lead-valid.json"));
 		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		Assert.assertEquals("Component B", component.getName());
 		Assert.assertNull(component.getLead());
@@ -65,7 +67,8 @@ public class ComponentJsonParserTest {
 	@Test
 	public void testParseComponentWithId() throws Exception {
 		ComponentJsonParser parser = new ComponentJsonParser();
-		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid-with-id.json"));
+		final Component component = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/component/complete-valid-with-id.json"));
 		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
 		Assert.assertEquals("Component B", component.getName());
 		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());

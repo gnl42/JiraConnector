@@ -45,101 +45,101 @@ import static org.junit.Assert.assertEquals;
 public class IssueJsonParserTest {
 	@Test
 	public void testParseIssue() throws Exception {
-        final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
+		final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 
-        assertEquals("Testing attachem2", issue.getSummary());
-        assertEquals("TST-2", issue.getKey());
-        assertEquals("my description", issue.getDescription());
+		assertEquals("Testing attachem2", issue.getSummary());
+		assertEquals("TST-2", issue.getKey());
+		assertEquals("my description", issue.getDescription());
 		assertEquals(Long.valueOf(10010), issue.getId());
 
-        final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", "Test Project");
-        assertEquals(expectedProject, issue.getProject());
+		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", "Test Project");
+		assertEquals(expectedProject, issue.getProject());
 
-        assertEquals("Major", issue.getPriority().getName());
-        assertNull(issue.getResolution());
-        assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
-        assertEquals(toDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
-        assertEquals(null, issue.getDueDate());
+		assertEquals("Major", issue.getPriority().getName());
+		assertNull(issue.getResolution());
+		assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
+		assertEquals(toDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
+		assertEquals(null, issue.getDueDate());
 
-        final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L, "Bug", false);
-        assertEquals(expectedIssueType, issue.getIssueType());
+		final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L, "Bug", false);
+		assertEquals(expectedIssueType, issue.getIssueType());
 
-        assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
-        assertEquals(TestConstants.USER1, issue.getAssignee());
+		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
+		assertEquals(TestConstants.USER1, issue.getAssignee());
 
-        // issue links
-        Assert.assertThat(issue.getIssueLinks(), containsInAnyOrder(
-                new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
-                        new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
-                new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
-                        new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
-        ));
+		// issue links
+		Assert.assertThat(issue.getIssueLinks(), containsInAnyOrder(
+				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
+						new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
+				new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
+						new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
+		));
 
-        // watchers
-        final BasicWatchers watchers = issue.getWatchers();
-        assertFalse(watchers.isWatching());
-        assertEquals(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-2/watchers"), watchers.getSelf());
-        assertEquals(1, watchers.getNumWatchers());
+		// watchers
+		final BasicWatchers watchers = issue.getWatchers();
+		assertFalse(watchers.isWatching());
+		assertEquals(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-2/watchers"), watchers.getSelf());
+		assertEquals(1, watchers.getNumWatchers());
 
-        // time tracking
-        assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
+		// time tracking
+		assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
 
-        // attachments
-        final Iterable<Attachment> attachments = issue.getAttachments();
-        assertEquals(7, Iterables.size(attachments));
-        final Attachment attachment = findAttachmentByFileName(attachments, "avatar1.png");
-        assertEquals(TestConstants.USER_ADMIN_BASIC, attachment.getAuthor());
-        assertEquals(359345, attachment.getSize());
-        assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10070/_thumb_10070.png"), attachment.getThumbnailUri());
-        assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10070/avatar1.png"), attachment.getContentUri());
-        Iterable<String> attachmentsNames = Iterables.transform(attachments, new Function<Attachment, String>() {
-            @Override
-            public String apply(Attachment a) {
-                return a.getFilename();
-            }
-        });
-        assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
-                "apache-tomcat-5.5.30.zip", "avatar1.png", "jira_logo.gif", "snipe.png", "transparent-png.png"));
+		// attachments
+		final Iterable<Attachment> attachments = issue.getAttachments();
+		assertEquals(7, Iterables.size(attachments));
+		final Attachment attachment = findAttachmentByFileName(attachments, "avatar1.png");
+		assertEquals(TestConstants.USER_ADMIN_BASIC, attachment.getAuthor());
+		assertEquals(359345, attachment.getSize());
+		assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10070/_thumb_10070.png"), attachment.getThumbnailUri());
+		assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10070/avatar1.png"), attachment.getContentUri());
+		Iterable<String> attachmentsNames = Iterables.transform(attachments, new Function<Attachment, String>() {
+			@Override
+			public String apply(Attachment a) {
+				return a.getFilename();
+			}
+		});
+		assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
+				"apache-tomcat-5.5.30.zip", "avatar1.png", "jira_logo.gif", "snipe.png", "transparent-png.png"));
 
-        // worklogs
-        final Iterable<Worklog> worklogs = issue.getWorklogs();
-        assertEquals(5, Iterables.size(worklogs));
-        final Worklog expectedWorklog1 = new Worklog(
-                toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
-                toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC,
-                TestConstants.USER1_BASIC, "another piece of work",
-                toDateTime("2010-08-17T16:38:00.013+02:00"), toDateTime("2010-08-17T16:38:24.948+02:00"),
-                toDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
-        final Worklog worklog1 = Iterables.get(worklogs, 1);
-        assertEquals(expectedWorklog1, worklog1);
+		// worklogs
+		final Iterable<Worklog> worklogs = issue.getWorklogs();
+		assertEquals(5, Iterables.size(worklogs));
+		final Worklog expectedWorklog1 = new Worklog(
+				toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
+				toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC,
+				TestConstants.USER1_BASIC, "another piece of work",
+				toDateTime("2010-08-17T16:38:00.013+02:00"), toDateTime("2010-08-17T16:38:24.948+02:00"),
+				toDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
+		final Worklog worklog1 = Iterables.get(worklogs, 1);
+		assertEquals(expectedWorklog1, worklog1);
 
-        final Worklog worklog2 = Iterables.get(worklogs, 2);
-        assertEquals(Visibility.group("jira-users"), worklog2.getVisibility());
+		final Worklog worklog2 = Iterables.get(worklogs, 2);
+		assertEquals(Visibility.group("jira-users"), worklog2.getVisibility());
 
-        final Worklog worklog3 = Iterables.get(worklogs, 3);
-        assertEquals(StringUtils.EMPTY, worklog3.getComment());
+		final Worklog worklog3 = Iterables.get(worklogs, 3);
+		assertEquals(StringUtils.EMPTY, worklog3.getComment());
 
-        // comments
-        assertEquals(4, Iterables.size(issue.getComments()));
-        final Comment comment = issue.getComments().iterator().next();
-        assertEquals(Visibility.Type.ROLE, comment.getVisibility().getType());
-        assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getAuthor());
-        assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getUpdateAuthor());
+		// comments
+		assertEquals(4, Iterables.size(issue.getComments()));
+		final Comment comment = issue.getComments().iterator().next();
+		assertEquals(Visibility.Type.ROLE, comment.getVisibility().getType());
+		assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getAuthor());
+		assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getUpdateAuthor());
 
-        // components
-        final Iterable<String> componentsNames = EntityHelper.toNamesList(issue.getComponents());
-        assertThat(componentsNames, containsInAnyOrder("Component A", "Component B"));
+		// components
+		final Iterable<String> componentsNames = EntityHelper.toNamesList(issue.getComponents());
+		assertThat(componentsNames, containsInAnyOrder("Component A", "Component B"));
 	}
 
-    @Test
-    public void testParseIssueWithCustomFieldsValues() throws Exception {
-        final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
+	@Test
+	public void testParseIssueWithCustomFieldsValues() throws Exception {
+		final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 
-        // test float value: number, com.atlassian.jira.plugin.system.customfieldtypes:float
-        assertEquals(1.457, issue.getField("customfield_10000").getValue());
+		// test float value: number, com.atlassian.jira.plugin.system.customfieldtypes:float
+		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 
-        // TODO: add assertions for more custom field types after fixing JRJC-122
-    }
+		// TODO: add assertions for more custom field types after fixing JRJC-122
+	}
 
 	private Issue parseIssue(final String resourcePath) throws JSONException {
 		final JSONObject issueJson = ResourceUtil.getJsonObjectFromResource(resourcePath);
@@ -191,7 +191,7 @@ public class IssueJsonParserTest {
 		assertEquals(Visibility.group("jira-users"), Iterables.get(issue.getWorklogs(), 2).getVisibility());
 	}
 
-    // TODO: temporary disabled as we want to run integration tests. Fix JRJC-122 and re-enable this test
+	// TODO: temporary disabled as we want to run integration tests. Fix JRJC-122 and re-enable this test
 //	@Test
 //	public void testParseIssueWithUserPickerCustomFieldFilledOut() throws JSONException {
 //		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-filled-out.json");
@@ -224,7 +224,8 @@ public class IssueJsonParserTest {
 		assertEquals(4, Iterables.size(issue.getAttachments()));
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
-		assertThat(Iterables.transform(issue.getComponents(), new BasicComponentNameExtractionFunction()), containsInAnyOrder("Component A", "Component B"));
+		assertThat(Iterables.transform(issue
+				.getComponents(), new BasicComponentNameExtractionFunction()), containsInAnyOrder("Component A", "Component B"));
 		assertEquals(2, Iterables.size(issue.getWorklogs()));
 		assertEquals(1, issue.getWatchers().getNumWatchers());
 		assertFalse(issue.getWatchers().isWatching());
@@ -243,7 +244,8 @@ public class IssueJsonParserTest {
 		final BasicPriority priority = issue.getPriority();
 		assertNull(priority);
 		assertEquals("Pivotal Tracker provides time tracking information on the project level.\n"
-				+ "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.", issue.getDescription());
+				+ "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.", issue
+				.getDescription());
 		assertEquals("TIMETRACKING", issue.getProject().getKey());
 		assertNull(issue.getDueDate());
 		assertEquals(0, Iterables.size(issue.getAttachments()));
@@ -259,23 +261,23 @@ public class IssueJsonParserTest {
 		assertNull(Iterables.get(issue.getWorklogs(), 1).getVisibility());
 	}
 
-    @Test
-    public void testParseIssueWithProjectNamePresentInRepresentation() throws JSONException {
-        final Issue issue = parseIssue("/json/issue/issue-with-project-name-present.json");
-        assertEquals("My Test Project", issue.getProject().getName());
-    }
+	@Test
+	public void testParseIssueWithProjectNamePresentInRepresentation() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/issue-with-project-name-present.json");
+		assertEquals("My Test Project", issue.getProject().getName());
+	}
 
-    @Test
-    public void testParseIssueJiraRepresentationJrjc49() throws JSONException {
-        final Issue issue = parseIssue("/json/issue/jrjc49.json");
-        final Iterable<Worklog> worklogs = issue.getWorklogs();
-        assertEquals(1, Iterables.size(worklogs));
-        final Worklog worklog = Iterables.get(worklogs, 0);
-        assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply",
-                StringUtils.EMPTY, worklog.getComment());
-        assertEquals(180, worklog.getMinutesSpent());
-        assertEquals("deleteduser", worklog.getAuthor().getName());
-    }
+	@Test
+	public void testParseIssueJiraRepresentationJrjc49() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/jrjc49.json");
+		final Iterable<Worklog> worklogs = issue.getWorklogs();
+		assertEquals(1, Iterables.size(worklogs));
+		final Worklog worklog = Iterables.get(worklogs, 0);
+		assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply",
+				StringUtils.EMPTY, worklog.getComment());
+		assertEquals(180, worklog.getMinutesSpent());
+		assertEquals("deleteduser", worklog.getAuthor().getName());
+	}
 
 	@Test
 	public void testParseIssueJira5x0RepresentationNullCustomField() throws JSONException {

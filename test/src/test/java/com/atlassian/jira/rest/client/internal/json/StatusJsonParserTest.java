@@ -22,8 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class StatusJsonParserTest {
-    @Test
-    public void testParse() throws Exception {
+	@Test
+	public void testParse() throws Exception {
 		final StatusJsonParser parser = new StatusJsonParser();
 		final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/complete.json"));
 		Assert.assertEquals(new Status(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/status/1"),

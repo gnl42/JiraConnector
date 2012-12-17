@@ -32,7 +32,7 @@ public class PriorityTest {
 	private static final Priority P6 = new Priority(toUri("http://localhost/1"), 6L, "a", "#223344", "a description2", toUri("http://localhost/2"));
 	private static final Priority P7 = new Priority(toUri("http://localhost/1"), 7L, "a", "#223344", "a description", toUri("http://localhost/3"));
 
-	
+
 	@Test
 	public void testEquals() throws Exception {
 		TestUtil.assertEqualsSymmetrical(P1, P2);

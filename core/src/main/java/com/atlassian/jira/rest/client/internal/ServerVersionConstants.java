@@ -20,5 +20,5 @@ public class ServerVersionConstants {
 	public static final int BN_JIRA_4_3 = 600;
 	public static final int BN_JIRA_4_4 = 640;
 	public static final int BN_JIRA_5 = 700;
-    public static final int BN_JIRA_6 = 6000;
+	public static final int BN_JIRA_6 = 6000;
 }

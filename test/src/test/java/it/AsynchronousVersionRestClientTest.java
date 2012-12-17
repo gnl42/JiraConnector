@@ -58,7 +58,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		final Version version = client.getVersionRestClient().createVersion(versionInput).claim();
 		assertVersionInputAndVersionEquals(versionInput, version);
 		assertNotNull(version.getId());
-		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim().getVersions(), new VersionToNameMapper()),
+		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), new VersionToNameMapper()),
 				containsInAnyOrder("1.1", "1", versionInput.getName()));
 
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A version with this name already exists in this project.", new Runnable() {
@@ -71,7 +72,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 
 		final VersionInput versionInput2 = VersionInput.create("TST", "My newly created version2", "A description\nwith\new line", null, false, false);
 		setAnonymousMode();
-		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND : Response.Status.UNAUTHORIZED, new Runnable() {
+		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND
+				: Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
 				client.getVersionRestClient().createVersion(versionInput2).claim();
@@ -103,7 +105,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		});
 
 		setAnonymousMode();
-		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND : Response.Status.UNAUTHORIZED, new Runnable() {
+		TestUtil.assertErrorCode(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? Response.Status.NOT_FOUND
+				: Response.Status.UNAUTHORIZED, new Runnable() {
 			@Override
 			public void run() {
 				client.getVersionRestClient().updateVersion(modifiedVersion.getSelf(), newVersionInput).claim();
@@ -111,8 +114,10 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		});
 
 		setAdmin();
-		final Version restrictedVersion = client.getVersionRestClient().createVersion(new VersionInputBuilder("RST").setName("My version").build()).claim();
-		final VersionInput restrictedVersionInput = new VersionInputBuilder("RST", restrictedVersion).setDescription("another description").build();
+		final Version restrictedVersion = client.getVersionRestClient().createVersion(new VersionInputBuilder("RST")
+				.setName("My version").build()).claim();
+		final VersionInput restrictedVersionInput = new VersionInputBuilder("RST", restrictedVersion)
+				.setDescription("another description").build();
 		setUser2();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "You must have browse project rights in order to view versions.", new Runnable() {
 			@Override
@@ -144,7 +149,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 			return;
 		}
 		final Iterable<Version> versionsInTheBeggining = client.getProjectClient().getProject("TST").claim().getVersions();
-		final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
+		final VersionInput versionInput = VersionInput
+				.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
 		final Version version = client.getVersionRestClient().createVersion(versionInput).claim();
 		assertEquals(version, client.getVersionRestClient().getVersion(version.getSelf()).claim());
 
@@ -184,7 +190,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 			}
 		});
 
-		assertThat(client.getProjectClient().getProject("TST").claim().getVersions(), containsInAnyOrder(toArray(versionsInTheBeggining, Version.class)));
+		assertThat(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), containsInAnyOrder(toArray(versionsInTheBeggining, Version.class)));
 		for (Version ver : versionsInTheBeggining) {
 			client.getVersionRestClient().removeVersion(ver.getSelf(), null, null).claim();
 		}
@@ -201,7 +208,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
 		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
 
-		final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST").claim().getVersions(), "1");
+		final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), "1");
 
 		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
 		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
@@ -218,15 +226,20 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
 
 		assertEquals(1, client.getVersionRestClient().getNumUnresolvedIssues(version.getSelf()).claim().intValue());
-		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient().getVersionRelatedIssuesCount(version.getSelf()).claim());
-		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient().getVersionRelatedIssuesCount(version.getSelf()).claim());
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient()
+				.getVersionRelatedIssuesCount(version.getSelf()).claim());
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient()
+				.getVersionRelatedIssuesCount(version.getSelf()).claim());
 
 		// now removing the first version
 		client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf()).claim();
 		final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-		assertThat(Iterables.transform(issueAfterVerRemoval.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-		assertThat(Iterables.transform(issueAfterVerRemoval.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim().getVersions(), new VersionToNameMapper()),
+		assertThat(Iterables.transform(issueAfterVerRemoval
+				.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
+		assertThat(Iterables.transform(issueAfterVerRemoval
+				.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
+		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), new VersionToNameMapper()),
 				containsInAnyOrder("1"));
 
 		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "You cannot move the issues to the version being deleted.", new Runnable() {
@@ -239,8 +252,10 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		// now removing the other version
 		client.getVersionRestClient().removeVersion(version1.getSelf(), null, null).claim();
 		final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable.<String>emptyIterable());
-		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable.<String>emptyIterable());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable
+				.<String>emptyIterable());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable
+				.<String>emptyIterable());
 	}
 
 	private void assertInvalidMoveToVersion(final URI versionUri, @Nullable final URI moveFixIssuesToVersionUri,
@@ -248,7 +263,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		TestUtil.assertErrorCode(status, expectedErrorMsg, new Runnable() {
 			@Override
 			public void run() {
-				client.getVersionRestClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri).claim();
+				client.getVersionRestClient().removeVersion(versionUri, moveFixIssuesToVersionUri, moveAffectedIssuesToVersionUri)
+						.claim();
 			}
 		});
 	}
@@ -258,7 +274,8 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final Version v3 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false)).claim();
+		final Version v3 = client.getVersionRestClient().createVersion(VersionInput
+				.create("TST", "my added version", "a description", null, false, false)).claim();
 		assertProjectHasOrderedVersions("TST", "1", "1.1", v3.getName());
 		client.getVersionRestClient().moveVersion(v3.getSelf(), VersionPosition.FIRST).claim();
 		assertProjectHasOrderedVersions("TST", v3.getName(), "1", "1.1");
@@ -291,8 +308,10 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
-		final Version v3 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version", "a description", null, false, false)).claim();
-		final Version v4 = client.getVersionRestClient().createVersion(VersionInput.create("TST", "my added version2", "a description2", null, true, false)).claim();
+		final Version v3 = client.getVersionRestClient().createVersion(VersionInput
+				.create("TST", "my added version", "a description", null, false, false)).claim();
+		final Version v4 = client.getVersionRestClient().createVersion(VersionInput
+				.create("TST", "my added version2", "a description2", null, true, false)).claim();
 		final Version v1 = Iterables.get(client.getProjectClient().getProject("TST").claim().getVersions(), 0);
 		final String v1n = v1.getName();
 		final String v3n = v3.getName();
@@ -324,6 +343,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 
 
 	private void assertProjectHasOrderedVersions(String projectKey, String... expectedVersions) {
-		assertEquals(Lists.newArrayList(expectedVersions), Lists.newArrayList(Iterables.transform(client.getProjectClient().getProject(projectKey).claim().getVersions(), new VersionToNameMapper())));
+		assertEquals(Lists.newArrayList(expectedVersions), Lists.newArrayList(Iterables.transform(client.getProjectClient()
+				.getProject(projectKey).claim().getVersions(), new VersionToNameMapper())));
 	}
 }

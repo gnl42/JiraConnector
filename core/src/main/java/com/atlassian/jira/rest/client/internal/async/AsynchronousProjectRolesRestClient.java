@@ -35,8 +35,7 @@ import java.util.Collection;
  *
  * @since v2.0
  */
-public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRestClient implements ProjectRolesRestClient
-{
+public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRestClient implements ProjectRolesRestClient {
 
 	private final ProjectRoleJsonParser projectRoleJsonParser;
 	private final BasicProjectRoleJsonParser basicRoleJsonParser;

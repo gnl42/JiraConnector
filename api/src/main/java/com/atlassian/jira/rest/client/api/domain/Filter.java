@@ -22,6 +22,7 @@ import java.net.URI;
 
 /**
  * Represents Filter
+ *
  * @since 2.0
  */
 public class Filter extends AddressableNamedEntity implements IdentifiableEntity<Long> {

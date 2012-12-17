@@ -47,7 +47,8 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		final SearchResult searchResultAsAnonymous = client.getSearchClient().searchJql(null).claim();
 		assertEquals(3, searchResultAsAnonymous.getTotal());
 
-		final SearchResult searchResultForReporterWseligaAsAnonymous = client.getSearchClient().searchJql("reporter=wseliga").claim();
+		final SearchResult searchResultForReporterWseligaAsAnonymous = client.getSearchClient().searchJql("reporter=wseliga")
+				.claim();
 		assertEquals(0, searchResultForReporterWseligaAsAnonymous.getTotal());
 	}
 

@@ -35,7 +35,8 @@ public class BasicIssueTypeJsonParserTest {
 	@Test
 	public void testParseWithoutId() throws JSONException {
 		BasicIssueTypeJsonParser parser = new BasicIssueTypeJsonParser();
-		final BasicIssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/valid-without-id.json"));
+		final BasicIssueType issueType = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/issueType/valid-without-id.json"));
 		Assert.assertEquals(new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), null, "Bug", true), issueType);
 	}
 

@@ -27,6 +27,7 @@ public class BasicStatusJsonParserTest {
 	public void testParse() throws JSONException {
 		final BasicStatusJsonParser parser = new BasicStatusJsonParser();
 		final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
-		Assert.assertEquals(new BasicStatus(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/status/1"), "Open"), basicStatus);
+		Assert.assertEquals(new BasicStatus(TestUtil
+				.toUri("http://localhost:8090/jira/rest/api/latest/status/1"), "Open"), basicStatus);
 	}
 }

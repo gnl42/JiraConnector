@@ -42,12 +42,14 @@ public class RoleActorJsonParserTest {
 		Assert.assertEquals("jira-users", actor.getName());
 		Assert.assertEquals("jira-users", actor.getDisplayName());
 		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
-		Assert.assertEquals(toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		Assert.assertEquals(toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor
+				.getAvatarUri());
 	}
 
 	@Test
 	public void testParseValidActorWithoutOptionalParams() throws JSONException {
-		final RoleActor actor = roleActorJsonParser.parse(getJsonObjectFromResource("/json/actor/valid-actor-without-avatar.json"));
+		final RoleActor actor = roleActorJsonParser
+				.parse(getJsonObjectFromResource("/json/actor/valid-actor-without-avatar.json"));
 		Assert.assertEquals(10020l, actor.getId().longValue());
 		Assert.assertEquals("jira-users", actor.getName());
 		Assert.assertEquals("jira-users", actor.getDisplayName());

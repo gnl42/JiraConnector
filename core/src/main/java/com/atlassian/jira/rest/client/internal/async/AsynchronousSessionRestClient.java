@@ -30,8 +30,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousSessionRestClient extends AbstractAsynchronousRestClient implements SessionRestClient
-{
+public class AsynchronousSessionRestClient extends AbstractAsynchronousRestClient implements SessionRestClient {
 
 	private final SessionJsonParser sessionJsonParser = new SessionJsonParser();
 	private final URI serverUri;

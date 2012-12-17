@@ -298,9 +298,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				if (SPECIAL_FIELDS.contains(key)) {
 					continue;
 				}
-                // TODO: JRJC-122
-                // we should use fieldParser here (some new version as the old one probably won't work)
-                // enable IssueJsonParserTest#testParseIssueWithUserPickerCustomFieldFilledOut after fixing this
+				// TODO: JRJC-122
+				// we should use fieldParser here (some new version as the old one probably won't work)
+				// enable IssueJsonParserTest#testParseIssueWithUserPickerCustomFieldFilledOut after fixing this
 				final Object value = json.opt(key);
 				res.add(new Field(key, namesMap.get(key), typesMap.get("key"), value != JSONObject.NULL ? value : null));
 			} catch (final Exception e) {

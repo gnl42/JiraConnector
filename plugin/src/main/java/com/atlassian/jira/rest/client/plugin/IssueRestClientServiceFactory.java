@@ -17,33 +17,29 @@ import static com.atlassian.plugin.remotable.spi.util.OsgiServiceProxy.wrapServi
  *
  */
 @PublicComponent(IssueRestClient.class)
-public class IssueRestClientServiceFactory implements ServiceFactory
-{
-    private final MetadataRestClientServiceFactory metadataRestClient;
-    private final SessionRestClientServiceFactory sessionRestClient;
+public class IssueRestClientServiceFactory implements ServiceFactory {
+	private final MetadataRestClientServiceFactory metadataRestClient;
+	private final SessionRestClientServiceFactory sessionRestClient;
 
-    @Inject
-    public IssueRestClientServiceFactory(MetadataRestClientServiceFactory metadataRestClient,
-                                         SessionRestClientServiceFactory sessionRestClient)
-    {
-        this.metadataRestClient = metadataRestClient;
-        this.sessionRestClient = sessionRestClient;
-    }
+	@Inject
+	public IssueRestClientServiceFactory(MetadataRestClientServiceFactory metadataRestClient,
+			SessionRestClientServiceFactory sessionRestClient) {
+		this.metadataRestClient = metadataRestClient;
+		this.sessionRestClient = sessionRestClient;
+	}
 
-    @Override
-    public Object getService(Bundle bundle, ServiceRegistration registration)
-    {
-        final HostHttpClient hostHttpClient = wrapService(bundle.getBundleContext(), HostHttpClient.class,
-                getClass().getClassLoader());
-        return new AsynchronousIssueRestClient(
-                URI.create("."), hostHttpClient,
-                sessionRestClient.getService(bundle, hostHttpClient),
-                metadataRestClient.getService(bundle, hostHttpClient));
-    }
+	@Override
+	public Object getService(Bundle bundle, ServiceRegistration registration) {
+		final HostHttpClient hostHttpClient = wrapService(bundle.getBundleContext(), HostHttpClient.class,
+				getClass().getClassLoader());
+		return new AsynchronousIssueRestClient(
+				URI.create("."), hostHttpClient,
+				sessionRestClient.getService(bundle, hostHttpClient),
+				metadataRestClient.getService(bundle, hostHttpClient));
+	}
 
-    @Override
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
-    )
-    {
-    }
+	@Override
+	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
+	) {
+	}
 }

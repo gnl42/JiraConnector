@@ -32,12 +32,15 @@ public class UserJsonParserTest {
 	public void testParse() throws Exception {
 		final UserJsonParser parser = new UserJsonParser();
 		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid.json"));
-		Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/secure/useravatar?size=large&ownerId=admin&avatarId=10054"), user.getAvatarUri());
+		Assert.assertEquals(TestUtil
+				.toUri("http://localhost:8090/jira/secure/useravatar?size=large&ownerId=admin&avatarId=10054"), user
+				.getAvatarUri());
 		Assert.assertNull(user.getSmallAvatarUri());
 		assertEquals("admin", user.getName());
 		assertEquals("Administrator", user.getDisplayName());
 		Assert.assertEquals("user@atlassian.com", user.getEmailAddress());
-		Assert.assertEquals(new ExpandableProperty<String>(3, ImmutableList.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
+		Assert.assertEquals(new ExpandableProperty<String>(3, ImmutableList
+				.of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
 		Assert.assertNull(user.getTimezone());
 	}
 
@@ -46,7 +49,8 @@ public class UserJsonParserTest {
 		final UserJsonParser parser = new UserJsonParser();
 		final User user = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/user/valid-5.0.json"));
 		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/secure/useravatar?avatarId=10082"), user.getAvatarUri());
-		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082"), user.getSmallAvatarUri());
+		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082"), user
+				.getSmallAvatarUri());
 		assertEquals("wseliga", user.getName());
 		assertEquals("Wojciech Seliga", user.getDisplayName());
 		Assert.assertEquals("wseliga@atlassian.com", user.getEmailAddress());

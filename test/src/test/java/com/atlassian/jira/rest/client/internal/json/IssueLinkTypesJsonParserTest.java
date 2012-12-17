@@ -14,9 +14,9 @@ public class IssueLinkTypesJsonParserTest {
 				.getJsonObjectFromResource("/json/issueLinks/issue-links-5.0.json"));
 		Assert.assertEquals(8, Iterables.size(issueLinks));
 		Assert.assertEquals(new IssuelinksType(TestUtil.toUri("https://jdog.atlassian.com/rest/api/2/issueLinkType/10160"),
-                "10160", "Bonfire Testing", "discovered while testing", "testing discovered"), Iterables.get(issueLinks, 0));
+				"10160", "Bonfire Testing", "discovered while testing", "testing discovered"), Iterables.get(issueLinks, 0));
 
 		Assert.assertEquals(new IssuelinksType(TestUtil.toUri("https://jdog.atlassian.com/rest/api/2/issueLinkType/10020"),
-                "10020", "Relates", "is related to", "relates to"), Iterables.getLast(issueLinks));
+				"10020", "Relates", "is related to", "relates to"), Iterables.getLast(issueLinks));
 	}
 }

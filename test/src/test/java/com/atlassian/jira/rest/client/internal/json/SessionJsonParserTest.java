@@ -21,6 +21,7 @@ import com.atlassian.jira.rest.client.api.domain.LoginInfo;
 import com.atlassian.jira.rest.client.api.domain.Session;
 import org.junit.Assert;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class SessionJsonParserTest {

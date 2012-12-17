@@ -53,7 +53,7 @@ public class WorklogInputJsonGeneratorTest {
 				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
 		Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-                ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class WorklogInputJsonGeneratorTest {
 				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, null);
 
 		Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-                ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
 	}
 
 	@Test
@@ -75,6 +75,6 @@ public class WorklogInputJsonGeneratorTest {
 				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
 		Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
-                ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));
+				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));
 	}
 }

@@ -221,11 +221,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getAttachmentsUri() {
-        return UriBuilder.fromUri(getSelf()).path("attachments").build();
+		return UriBuilder.fromUri(getSelf()).path("attachments").build();
 	}
 
 	public URI getWorklogUri() {
-        return UriBuilder.fromUri(getSelf()).path("worklog").build();
+		return UriBuilder.fromUri(getSelf()).path("worklog").build();
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getCommentsUri() {
-        return UriBuilder.fromUri(getSelf()).path("comment").build();
+		return UriBuilder.fromUri(getSelf()).path("comment").build();
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getVotesUri() {
-        return UriBuilder.fromUri(getSelf()).path("votes").build();
+		return UriBuilder.fromUri(getSelf()).path("votes").build();
 	}
 
 

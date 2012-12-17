@@ -48,8 +48,8 @@ public class TestConstants {
 	public static final BasicUser USER1_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME, "Wojciech Seliga");
 	public static final User USER1 = new User(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME,
 			"Wojciech Seliga", "wojciech.seliga@spartez.com", null, ImmutableMap.of(
-					"16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&avatarId=10082"),
-					"48x48", URI.create("http://localhost:8090/jira/secure/useravatar?avatarId=10082")), null);
+			"16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&avatarId=10082"),
+			"48x48", URI.create("http://localhost:8090/jira/secure/useravatar?avatarId=10082")), null);
 
 	// USER_ADMIN_DEPRECATED this is deprecated - all tests that use this constant should be reviewed (JIRA now returns more info than we test)
 	public static final BasicUser USER_ADMIN_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), ADMIN_USERNAME, "Administrator");

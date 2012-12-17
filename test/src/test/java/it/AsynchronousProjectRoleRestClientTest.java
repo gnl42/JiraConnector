@@ -82,7 +82,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).claim();
 		setAnonymousMode();
 		exception.expect(RestClientException.class);
-        exception.expectMessage("404");
+		exception.expectMessage("404");
 		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l).claim();
 	}
 
@@ -106,13 +106,15 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 	@Test
 	public void testGetAllRolesForProject() {
 		final Project anonymousProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
-		final Iterable<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf()).claim();
+		final Iterable<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf())
+				.claim();
 		final Iterable<ProjectRole> projectRolesWithoutSelf = Iterables.transform(
 				projectRoles,
 				new Function<ProjectRole, ProjectRole>() {
 					@Override
 					public ProjectRole apply(final ProjectRole role) {
-						return new ProjectRole(role.getId(), null, role.getName(), role.getDescription(), Lists.newArrayList(role.getActors()));
+						return new ProjectRole(role.getId(), null, role.getName(), role.getDescription(), Lists.newArrayList(role
+								.getActors()));
 					}
 				}
 		);

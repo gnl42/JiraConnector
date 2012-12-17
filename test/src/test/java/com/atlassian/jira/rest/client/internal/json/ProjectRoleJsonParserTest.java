@@ -54,18 +54,20 @@ public class ProjectRoleJsonParserTest {
 
 	@Test
 	public void testParseRoleWithMultipleActors() throws Exception {
-		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-multiple-actors.json"));
+		final ProjectRole role = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/role/valid-role-multiple-actors.json"));
 		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
 		Assert.assertNotNull(role.getActors());
 		Assert.assertThat(role.getActors(),
-                IsIterableContainingInAnyOrder.containsInAnyOrder(new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
-                        toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10083")
-                ),
-                        new RoleActor(10030l, "jira-superuser", "atlassian-user-role-actor", "superuser", null)
-                )
-        );
+				IsIterableContainingInAnyOrder
+						.containsInAnyOrder(new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
+								toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10083")
+						),
+								new RoleActor(10030l, "jira-superuser", "atlassian-user-role-actor", "superuser", null)
+						)
+		);
 	}
 
 	@Test
@@ -88,25 +90,26 @@ public class ProjectRoleJsonParserTest {
 	// Id field should not be optional, unfortunately it is not returned for an admin role actor.
 	@Test
 	public void testParseProjectRoleContainingActorWithoutIdField() throws JSONException, MalformedURLException {
-		final ProjectRole role = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/role/valid-role-without-user-actor-id.json"));
+		final ProjectRole role = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/role/valid-role-without-user-actor-id.json"));
 		Assert.assertNotNull(role);
 		Assert.assertEquals("Users", role.getName());
 		Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
 		Assert.assertEquals(10000, role.getId().longValue());
 		Assert.assertEquals("A project role that represents users in a project", role.getDescription());
 		Assert.assertThat(
-                role.getActors(),
-                IsIterableContainingInAnyOrder.containsInAnyOrder(
-                        new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
-                                baseJiraURI.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
-                        ),
-                        new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
-                                baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10083")
-                        ),
-                        new RoleActor(10030l, "Wojciech Seliga", "atlassian-user-role-actor", "wseliga",
-                                baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10082"))
-                )
-        );
+				role.getActors(),
+				IsIterableContainingInAnyOrder.containsInAnyOrder(
+						new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
+						),
+						new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10083")
+						),
+						new RoleActor(10030l, "Wojciech Seliga", "atlassian-user-role-actor", "wseliga",
+								baseJiraURI.resolve("/jira/secure/useravatar?size=small&avatarId=10082"))
+				)
+		);
 	}
 
 }

@@ -70,10 +70,10 @@ public interface JiraRestClient {
 	 */
 	ProjectRolesRestClient getProjectRolesRestClient();
 
-    /**
-     * Destroys this instance of JIRA Rest Client.
+	/**
+	 * Destroys this instance of JIRA Rest Client.
 	 *
-     * @throws Exception
-     */
-    void destroy() throws Exception;
+	 * @throws Exception
+	 */
+	void destroy() throws Exception;
 }

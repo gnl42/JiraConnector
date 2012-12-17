@@ -40,8 +40,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClient implements VersionRestClient
-{
+public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClient implements VersionRestClient {
 
 	private final URI versionRootUri;
 

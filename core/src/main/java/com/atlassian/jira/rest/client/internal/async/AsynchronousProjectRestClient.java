@@ -31,8 +31,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClient implements ProjectRestClient
-{
+public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClient implements ProjectRestClient {
 
 	private static final String PROJECT_URI_PREFIX = "project";
 	private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();

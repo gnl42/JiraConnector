@@ -43,7 +43,7 @@ public class CimIssueType extends IssueType {
 		return fields;
 	}
 
-    @Nullable
+	@Nullable
 	public CimFieldInfo getField(IssueFieldId fieldId) {
 		return fields.get(fieldId.id);
 	}

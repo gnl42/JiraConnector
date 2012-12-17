@@ -29,7 +29,7 @@ import java.net.URI;
  */
 public class Worklog {
 
-    private final URI self;
+	private final URI self;
 	private final URI issueUri;
 	private final BasicUser author;
 	private final BasicUser updateAuthor;

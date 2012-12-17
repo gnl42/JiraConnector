@@ -40,7 +40,8 @@ public class SearchResultJsonParserTest {
 	@Test
 	public void testParse() throws Exception {
 		final SearchResult searchResult = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/search/issues1.json"));
-		final ArrayList<BasicIssue> issues = Lists.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), "TST-7", 10040l));
+		final ArrayList<BasicIssue> issues = Lists
+				.newArrayList(new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), "TST-7", 10040l));
 
 		assertEquals(new SearchResult(0, 50, 1, issues), searchResult);
 	}

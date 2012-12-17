@@ -36,8 +36,7 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousComponentRestClient extends AbstractAsynchronousRestClient implements ComponentRestClient
-{
+public class AsynchronousComponentRestClient extends AbstractAsynchronousRestClient implements ComponentRestClient {
 
 	private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
 	private final URI componentUri;

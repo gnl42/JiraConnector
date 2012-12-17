@@ -25,12 +25,10 @@ import com.google.common.base.Objects;
  * @since v0.1
  */
 public class Field implements NamedEntity {
+
 	private final String id;
-
 	private final String name;
-
 	private final String type;
-
 	private final Object value;
 
 	public Field(String id, String name, String type, Object value) {

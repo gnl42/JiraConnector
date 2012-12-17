@@ -74,6 +74,6 @@ public enum IssueFieldId {
 	 * @return List of string id of each field.
 	 */
 	public static Iterable<String> ids() {
-        return Iterables.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
+		return Iterables.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
 	}
 }

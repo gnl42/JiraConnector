@@ -27,7 +27,8 @@ public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 		Example1.main(new String[]{environmentData.getBaseUrl().toString(), "-q"});
 
 		// -- check state after example
-		final Issue issue = client.getIssueClient().getIssue("TST-7", ImmutableList.copyOf(Lists.newArrayList(IssueRestClient.Expandos.values()))).claim();
+		final Issue issue = client.getIssueClient().getIssue("TST-7", ImmutableList.copyOf(Lists.newArrayList(IssueRestClient
+				.Expandos.values()))).claim();
 
 		// votes
 		final BasicVotes votes = issue.getVotes();

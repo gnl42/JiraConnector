@@ -29,10 +29,10 @@ import java.net.URISyntaxException;
 public class IntegrationTestUtil {
 	public static final BasicUser USER_ADMIN;
 	public static final BasicUser USER_ADMIN_LATEST;
-    public static final BasicUser USER1;
-    public static final BasicUser USER2;
+	public static final BasicUser USER1;
+	public static final BasicUser USER2;
 	public static final BasicUser USER1_LATEST;
-    public static final BasicUser USER2_LATEST;
+	public static final BasicUser USER2_LATEST;
 	public static final BasicUser USER_SLASH;
 	public static final BasicUser USER_SLASH_LATEST;
 
@@ -50,26 +50,28 @@ public class IntegrationTestUtil {
 	public static final String GROUP_JIRA_ADMINISTRATORS = "jira-administrators";
 
 	static {
-        try {
+		try {
 			final com.atlassian.jira.rest.client.api.JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
-			final com.atlassian.jira.rest.client.api.JiraRestClient client = clientFactory.create(environmentData.getBaseUrl().toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
-			TESTING_JIRA_5_OR_NEWER = client.getMetadataClient().getServerInfo().claim().getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
+			final com.atlassian.jira.rest.client.api.JiraRestClient client = clientFactory.create(environmentData.getBaseUrl()
+					.toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
+			TESTING_JIRA_5_OR_NEWER =
+					client.getMetadataClient().getServerInfo().claim().getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";
 
-            USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
-            USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
+			USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
+			USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
 			USER1_LATEST = new BasicUser(getLatestUserUri("wseliga"), "wseliga", "Wojciech Seliga");
-            USER2_LATEST = new BasicUser(getLatestUserUri("user"), "user", "My Test User");
+			USER2_LATEST = new BasicUser(getLatestUserUri("user"), "user", "My Test User");
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
 			USER_SLASH_LATEST = new BasicUser(getLatestUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
-            USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
+			USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
 			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 
-    }
+	}
 
 	private static URI getUserUri(String username) throws URISyntaxException {
 		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
@@ -77,12 +79,13 @@ public class IntegrationTestUtil {
 	}
 
 	private static URI getLatestUserUri(String username) throws URISyntaxException {
-		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user").queryParam("username", username).build();
+		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user")
+				.queryParam("username", username).build();
 	}
 
-    public static URI concat(URI uri, String path) {
-        return UriBuilder.fromUri(uri).path(path).build();
-    }
+	public static URI concat(URI uri, String path) {
+		return UriBuilder.fromUri(uri).path(path).build();
+	}
 
 	public static URI resolveURI(URI relativeUri) {
 		try {

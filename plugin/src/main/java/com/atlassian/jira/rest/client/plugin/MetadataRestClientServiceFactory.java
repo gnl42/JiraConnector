@@ -16,22 +16,18 @@ import static com.atlassian.plugin.remotable.spi.util.OsgiServiceProxy.wrapServi
  *
  */
 @PublicComponent(MetadataRestClient.class)
-public class MetadataRestClientServiceFactory implements ServiceFactory
-{
-    @Override
-    public Object getService(Bundle bundle, ServiceRegistration registration)
-    {
-        return getService(bundle, wrapService(bundle.getBundleContext(), HostHttpClient.class, getClass().getClassLoader()));
-    }
+public class MetadataRestClientServiceFactory implements ServiceFactory {
+	@Override
+	public Object getService(Bundle bundle, ServiceRegistration registration) {
+		return getService(bundle, wrapService(bundle.getBundleContext(), HostHttpClient.class, getClass().getClassLoader()));
+	}
 
-    MetadataRestClient getService(Bundle bundle, HostHttpClient hostHttpClient)
-    {
-        return new AsynchronousMetadataRestClient(URI.create("."), hostHttpClient);
-    }
+	MetadataRestClient getService(Bundle bundle, HostHttpClient hostHttpClient) {
+		return new AsynchronousMetadataRestClient(URI.create("."), hostHttpClient);
+	}
 
-    @Override
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
-    )
-    {
-    }
+	@Override
+	public void ungetService(Bundle bundle, ServiceRegistration registration, Object service
+	) {
+	}
 }

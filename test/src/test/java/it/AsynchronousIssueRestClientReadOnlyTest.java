@@ -116,7 +116,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 		assertEquals(3, Iterables.size(issue.getComments()));
 		final Iterable<String> expectedExpandos = isJira5xOrNewer()
-				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog") : ImmutableList.of("html");
+				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog")
+				: ImmutableList.of("html");
 		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
@@ -135,7 +136,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		// test for changelog
 		assertNull(issue.getChangelog());
 
-		final Issue issueWithChangelog = client.getIssueClient().getIssue("TST-2", EnumSet.of(IssueRestClient.Expandos.CHANGELOG)).claim();
+		final Issue issueWithChangelog = client.getIssueClient().getIssue("TST-2", EnumSet.of(IssueRestClient.Expandos.CHANGELOG))
+				.claim();
 		final Iterable<ChangelogGroup> changelog = issueWithChangelog.getChangelog();
 		if (isJira5xOrNewer()) {
 			assertNotNull(changelog);
@@ -191,7 +193,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 		// although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
 		// have view watchers and voters permission
-		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).claim().getUsers(), containsInAnyOrder(USER2));
+		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).claim()
+				.getUsers(), containsInAnyOrder(USER2));
 	}
 
 	@Test
@@ -207,7 +210,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		final Issue issue = client.getIssueClient().getIssue("RST-1").claim();
 		setUser2();
 		final String optionalDot = isJira5xOrNewer() ? "." : "";
-		assertErrorCode(Response.Status.FORBIDDEN, "You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
+		assertErrorCode(Response.Status.FORBIDDEN,
+				"You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
 			@Override
 			public void run() {
 				client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
@@ -244,7 +248,9 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
 		assertEquals(4, Iterables.size(transitions));
-		assertTrue(Iterables.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList())));
+		assertTrue(Iterables
+				.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+						.<Transition.Field>emptyList())));
 	}
 
 	@Test
@@ -252,16 +258,18 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
 		assertEquals(4, Iterables.size(transitions));
-		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
+		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+				.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitions, startProgressTransition));
 
 		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
-                Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim() ;
+				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
 		final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
 		assertEquals("In Progress", transitionedIssue.getStatus().getName());
 		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
 		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
-		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections.<Transition.Field>emptyList());
+		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections
+				.<Transition.Field>emptyList());
 		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
@@ -270,7 +278,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	public void testGetCreateIssueMetadata() throws URISyntaxException {
 		final Iterable<CimProject> metadataProjects = client
 				.getIssueClient()
-				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
+				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
+				.claim();
 
 		assertEquals(4, Iterables.size(metadataProjects));
 
@@ -284,7 +293,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		assertEquals(project.getName(), "Anonymous Editable Project");
 
 		for (CimIssueType issueType : project.getIssueTypes()) {
-			assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields().isEmpty());
+			assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields()
+					.isEmpty());
 		}
 	}
 
@@ -316,11 +326,11 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	@Test
 	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
 		final Iterable<CimProject> metadataProjects = client.getIssueClient()
-                .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder()
-                        .withProjectKeys("ANONEDIT", "TST")
-                        .withExpandedIssueTypesFields()
-                        .build())
-                .claim();
+				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder()
+						.withProjectKeys("ANONEDIT", "TST")
+						.withExpandedIssueTypesFields()
+						.build())
+				.claim();
 
 		assertEquals(2, Iterables.size(metadataProjects));
 
