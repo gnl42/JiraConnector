@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.domain;
 
 import com.atlassian.jira.rest.client.AddressableEntity;
+import com.atlassian.jira.rest.client.IdentifiableEntity;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -26,7 +27,7 @@ import java.net.URI;
  *
  * @since v0.2
  */
-public class BasicIssue implements AddressableEntity {
+public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
 	private final URI self;
 
 	private final String key;
