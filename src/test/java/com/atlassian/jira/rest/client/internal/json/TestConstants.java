@@ -79,6 +79,6 @@ public class TestConstants {
 	public static final BasicComponent BCOMPONENT_B = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10001"),
 			10001L, "Component B", "another description");
 
-	public static final String DEFAULT_JIRA_DUMP_FILE = "jira1-export.xml";
+	public static final String DEFAULT_JIRA_DUMP_FILE = "jira-dump.xml";
 
 }

@@ -22,7 +22,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@Restore("jira2-export-unassigned.xml")
+@Restore("jira-dump-unassigned.xml")
 public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	@Test

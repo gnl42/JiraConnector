@@ -33,7 +33,7 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN_LATE
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static org.junit.Assert.*;
 
-@RestoreOnce("jira4-export-with-filters.xml")
+@RestoreOnce("jira-dump-with-filters.xml")
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
 
 	public static final Filter FILTER_10000 = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,

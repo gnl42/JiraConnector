@@ -56,7 +56,7 @@ import static org.junit.Assert.assertEquals;
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
 // Restore data only once as we just creates issues here - tests doesn't change any settings and doesn't rely on other issues
-@RestoreOnce("jira3-export-for-creating-issue-tests.xml")
+@RestoreOnce("jira-dump-creating-issue-tests.xml")
 public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchronousRestClientTest {
 
 	@Rule
