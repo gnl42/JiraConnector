@@ -18,8 +18,8 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.framework.NimbleFuncTestCase;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.JiraRestClientFactory;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;

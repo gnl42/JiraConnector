@@ -1,6 +1,6 @@
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.IssuelinksType;
+import com.atlassian.jira.rest.client.api.domain.IssuelinksType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

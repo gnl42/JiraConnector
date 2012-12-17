@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.CimFieldInfo;
-import com.atlassian.jira.rest.client.domain.FieldSchema;
-import com.atlassian.jira.rest.client.domain.StandardOperation;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.api.domain.FieldSchema;
+import com.atlassian.jira.rest.client.api.domain.StandardOperation;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

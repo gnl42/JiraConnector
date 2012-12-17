@@ -15,7 +15,7 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
@@ -24,7 +24,7 @@ import com.atlassian.httpclient.api.EntityBuilder;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Response;
 import com.atlassian.httpclient.api.ResponsePromise;
-import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;

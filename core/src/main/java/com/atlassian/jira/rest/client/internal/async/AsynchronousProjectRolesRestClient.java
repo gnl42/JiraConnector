@@ -15,12 +15,12 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.BasicProjectRole;
-import com.atlassian.jira.rest.client.domain.ProjectRole;
+import com.atlassian.jira.rest.client.api.ProjectRolesRestClient;
+import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
+import com.atlassian.jira.rest.client.api.domain.ProjectRole;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectRoleJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectRoleJsonParser;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.ProjectRolesRestClient;
 import com.atlassian.util.concurrent.Promise;
 import com.atlassian.util.concurrent.Promises;
 import com.google.common.base.Function;
@@ -35,12 +35,13 @@ import java.util.Collection;
  *
  * @since v2.0
  */
-public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRestClient implements ProjectRolesRestClient {
+public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRestClient implements ProjectRolesRestClient
+{
 
 	private final ProjectRoleJsonParser projectRoleJsonParser;
 	private final BasicProjectRoleJsonParser basicRoleJsonParser;
 
-	public AsynchronousProjectRolesRestClient(final HttpClient client, final URI serverUri) {
+	public AsynchronousProjectRolesRestClient(final URI serverUri, final HttpClient client) {
 		super(client);
 		this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
 		this.basicRoleJsonParser = new BasicProjectRoleJsonParser();

@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import org.junit.Assert;
 import org.junit.Test;
 

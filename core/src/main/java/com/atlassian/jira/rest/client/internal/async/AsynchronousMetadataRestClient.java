@@ -16,8 +16,8 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.MetadataRestClient;
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.api.MetadataRestClient;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.json.*;
 import com.atlassian.util.concurrent.Promise;
 
@@ -29,7 +29,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClient implements MetadataRestClient {
+public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClient implements MetadataRestClient
+{
 
 	private static final String SERVER_INFO_RESOURCE = "/serverInfo";
 	private final ServerInfoJsonParser serverInfoJsonParser = new ServerInfoJsonParser();

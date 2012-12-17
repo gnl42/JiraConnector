@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
-import com.atlassian.jira.rest.client.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

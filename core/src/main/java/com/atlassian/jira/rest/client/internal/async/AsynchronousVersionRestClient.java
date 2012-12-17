@@ -15,9 +15,10 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rest.client.domain.VersionRelatedIssuesCount;
-import com.atlassian.jira.rest.client.domain.input.VersionInput;
+import com.atlassian.jira.rest.client.api.VersionRestClient;
+import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.VersionRelatedIssuesCount;
+import com.atlassian.jira.rest.client.api.domain.input.VersionInput;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.VersionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
@@ -25,8 +26,7 @@ import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.VersionRestClient;
-import com.atlassian.jira.rest.client.domain.input.VersionPosition;
+import com.atlassian.jira.rest.client.api.domain.input.VersionPosition;
 import com.atlassian.util.concurrent.Promise;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -40,7 +40,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClient implements VersionRestClient {
+public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClient implements VersionRestClient
+{
 
 	private final URI versionRootUri;
 

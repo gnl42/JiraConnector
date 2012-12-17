@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +33,7 @@ import org.junit.Test;
 import java.util.Iterator;
 
 import static com.atlassian.jira.rest.client.TestUtil.*;
-import static com.atlassian.jira.rest.client.domain.EntityHelper.findAttachmentByFileName;
+import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
 import static com.google.common.collect.Iterables.*;
 import static org.junit.Assert.assertEquals;
 

@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicResolution;
-import com.atlassian.jira.rest.client.domain.Resolution;
+import com.atlassian.jira.rest.client.api.domain.BasicResolution;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

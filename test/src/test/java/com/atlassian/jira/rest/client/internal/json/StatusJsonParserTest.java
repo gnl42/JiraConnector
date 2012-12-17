@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.Status;
+import com.atlassian.jira.rest.client.api.domain.Status;
 import org.junit.Assert;
 import org.junit.Test;
 

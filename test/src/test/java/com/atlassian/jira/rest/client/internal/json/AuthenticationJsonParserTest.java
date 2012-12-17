@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Authentication;
-import com.atlassian.jira.rest.client.domain.LoginInfo;
-import com.atlassian.jira.rest.client.domain.SessionCookie;
+import com.atlassian.jira.rest.client.api.domain.Authentication;
+import com.atlassian.jira.rest.client.api.domain.LoginInfo;
+import com.atlassian.jira.rest.client.api.domain.SessionCookie;
 import org.junit.Assert;
 import org.junit.Test;
 

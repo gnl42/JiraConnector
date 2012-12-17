@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.domain.Votes;
+import com.atlassian.jira.rest.client.api.domain.Votes;
 import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;

@@ -16,7 +16,7 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
-import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

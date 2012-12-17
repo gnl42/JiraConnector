@@ -15,14 +15,14 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.Component;
-import com.atlassian.jira.rest.client.domain.input.ComponentInput;
+import com.atlassian.jira.rest.client.api.ComponentRestClient;
+import com.atlassian.jira.rest.client.api.domain.Component;
+import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import com.atlassian.jira.rest.client.internal.json.ComponentJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.ComponentRestClient;
 import com.atlassian.util.concurrent.Promise;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -36,7 +36,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousComponentRestClient extends AbstractAsynchronousRestClient implements ComponentRestClient {
+public class AsynchronousComponentRestClient extends AbstractAsynchronousRestClient implements ComponentRestClient
+{
 
 	private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
 	private final URI componentUri;

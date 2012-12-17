@@ -15,9 +15,9 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.domain.User;
+import com.atlassian.jira.rest.client.api.UserRestClient;
+import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.UserRestClient;
 import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
 import com.atlassian.util.concurrent.Promise;
 
@@ -29,7 +29,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient implements UserRestClient {
+public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient implements UserRestClient
+{
 
 	private static final String USER_URI_PREFIX = "user";
 	private final UserJsonParser userJsonParser = new UserJsonParser();

@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicWatchers;
-import com.atlassian.jira.rest.client.domain.Watchers;
+import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.api.domain.Watchers;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;

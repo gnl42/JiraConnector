@@ -17,14 +17,15 @@
 package com.atlassian.jira.rest.client.auth;
 
 import com.atlassian.httpclient.api.Request;
-import com.atlassian.jira.rest.client.AuthenticationHandler;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 
 /**
  * Anonymous handler - no credentials passed to the server. Only anonymously accessible operations will be possible.
  *
  * @since v0.1
  */
-public class AnonymousAuthenticationHandler implements AuthenticationHandler {
+public class AnonymousAuthenticationHandler implements AuthenticationHandler
+{
 
 	@Override
 	public void configure(Request request) {

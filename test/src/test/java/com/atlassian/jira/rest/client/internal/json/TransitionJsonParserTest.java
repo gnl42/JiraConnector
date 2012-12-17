@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;

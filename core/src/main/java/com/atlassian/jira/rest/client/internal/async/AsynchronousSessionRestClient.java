@@ -15,11 +15,11 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.jira.rest.client.api.SessionRestClient;
 import com.atlassian.jira.rest.client.internal.json.SessionJsonParser;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.SessionRestClient;
-import com.atlassian.jira.rest.client.domain.Session;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.Session;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.ws.rs.core.UriBuilder;
@@ -30,7 +30,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousSessionRestClient extends AbstractAsynchronousRestClient implements SessionRestClient {
+public class AsynchronousSessionRestClient extends AbstractAsynchronousRestClient implements SessionRestClient
+{
 
 	private final SessionJsonParser sessionJsonParser = new SessionJsonParser();
 	private final URI serverUri;

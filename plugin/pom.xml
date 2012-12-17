@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.atlassian.jira</groupId>
+        <artifactId>jira-rest-java-client-parent</artifactId>
+        <version>2.0.0-m3-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.atlassian.jira</groupId>
+    <artifactId>jira-rest-java-client-plugin</artifactId>
+
+    <name>JIRA REST Java Client - Plugin</name>
+    <description>
+        JIRA REST Java Client bundled as a plugin.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-rest-java-client-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>remotable-plugins-spi</artifactId>
+            <version>${remotable.plugins.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-amps-plugin</artifactId>
+                <version>4.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <product>jira</product>
+                    <productVersion>${jira.version}</productVersion>
+                    <productDataVersion>${jira.data.version}</productDataVersion>
+                    <instructions>
+                        <Export-Package>com.atlassian.jira.rest.client.api*</Export-Package>
+                        <Atlassian-Plugin-Key>${project.groupId}.${project.artifactId}</Atlassian-Plugin-Key>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

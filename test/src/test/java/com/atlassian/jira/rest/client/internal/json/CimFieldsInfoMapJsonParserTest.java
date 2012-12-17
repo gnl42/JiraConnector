@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
 import org.junit.Assert;

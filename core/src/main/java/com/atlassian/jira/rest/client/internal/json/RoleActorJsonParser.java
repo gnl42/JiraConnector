@@ -15,7 +15,7 @@
  */
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.RoleActor;
+import com.atlassian.jira.rest.client.api.domain.RoleActor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

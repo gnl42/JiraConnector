@@ -17,11 +17,11 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.EntityHelper;
-import com.atlassian.jira.rest.client.domain.Project;
-import com.atlassian.jira.rest.client.domain.ProjectRole;
-import com.atlassian.jira.rest.client.domain.RoleActor;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
+import com.atlassian.jira.rest.client.api.domain.Project;
+import com.atlassian.jira.rest.client.api.domain.ProjectRole;
+import com.atlassian.jira.rest.client.api.domain.RoleActor;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;

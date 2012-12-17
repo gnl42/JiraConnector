@@ -15,7 +15,8 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.*;
+import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.jira.rest.client.api.*;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -25,7 +26,8 @@ import java.net.URI;
  *
  * @since v2.0
  */
-public class AsynchronousJiraRestClient implements JiraRestClient {
+public class AsynchronousJiraRestClient implements JiraRestClient
+{
 
 	private final IssueRestClient issueRestClient;
 	private final SessionRestClient sessionRestClient;
@@ -37,7 +39,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
 	private final DisposableHttpClient httpClient;
-
+    
 	public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
 		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 
@@ -50,7 +52,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		componentRestClient = new AsynchronousComponentRestClient(baseUri, httpClient);
 		searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
 		versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
-		projectRolesRestClient = new AsynchronousProjectRolesRestClient(httpClient, serverUri);
+		projectRolesRestClient = new AsynchronousProjectRolesRestClient(serverUri, httpClient);
 	}
 
 	@Override

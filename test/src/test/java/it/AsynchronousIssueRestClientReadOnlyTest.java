@@ -17,12 +17,12 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
-import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
-import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.domain.*;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
+import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.atlassian.jira.rest.client.api.domain.*;
+import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
