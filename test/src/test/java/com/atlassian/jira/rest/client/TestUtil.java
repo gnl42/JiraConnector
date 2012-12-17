@@ -97,7 +97,7 @@ public class TestUtil {
 		try {
 			runnable.run();
 			Assert.fail(RestClientException.class + " exception expected");
-		} catch (RestClientException e) {
+		} catch (com.atlassian.jira.rest.client.api.RestClientException e) {
             Assert.assertTrue(e.getStatusCode().isPresent());
             Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
 			if (!StringUtils.isEmpty(message)) {
@@ -118,7 +118,7 @@ public class TestUtil {
 		try {
 			runnable.run();
 			Assert.fail(RestClientException.class + " exception expected");
-        } catch (RestClientException ex) {
+        } catch (com.atlassian.jira.rest.client.api.RestClientException ex) {
             final ErrorCollection errorElement = getOnlyElement(ex.getErrorCollections().iterator());
             final String errorMessage = getOnlyElement(errorElement.getErrorMessages().iterator());
             Assert.assertTrue("'" + ex.getMessage() + "' does not match regexp '" + regExp + "'", errorMessage.matches(regExp));
@@ -171,7 +171,7 @@ public class TestUtil {
         try {
             runnable.run();
             Assert.fail(RestClientException.class + " exception expected");
-        } catch (RestClientException e) {
+        } catch (com.atlassian.jira.rest.client.api.RestClientException e) {
             Assert.assertEquals(e.getErrorCollections(), expectedErrors);
         }
     }

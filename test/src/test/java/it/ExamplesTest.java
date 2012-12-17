@@ -1,7 +1,7 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
-import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableList;
