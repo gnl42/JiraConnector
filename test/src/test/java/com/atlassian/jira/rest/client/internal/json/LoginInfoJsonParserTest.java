@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.LoginInfo;
-import junitx.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class LoginInfoJsonParserTest {
