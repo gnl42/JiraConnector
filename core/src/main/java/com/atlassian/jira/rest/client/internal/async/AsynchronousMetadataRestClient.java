@@ -41,6 +41,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 	private final GenericJsonArrayParser<Resolution> resolutionsJsonParser = GenericJsonArrayParser.create(resolutionJsonParser);
 	private final IssueLinkTypesJsonParser issueLinkTypesJsonParser = new IssueLinkTypesJsonParser();
+	private final GenericJsonArrayParser<Field> fieldsJsonParser = FieldJsonParser.createFieldsArrayParser();
 	private final URI baseUri;
 
 	public AsynchronousMetadataRestClient(final URI baseUri, HttpClient httpClient) {
@@ -97,5 +98,11 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
 	public Promise<ServerInfo> getServerInfo() {
 		final URI serverInfoUri = UriBuilder.fromUri(baseUri).path(SERVER_INFO_RESOURCE).build();
 		return getAndParse(serverInfoUri, serverInfoJsonParser);
+	}
+
+	@Override
+	public Promise<Iterable<Field>> getFields() {
+		final URI uri = UriBuilder.fromUri(baseUri).path("field").build();
+		return getAndParse(uri, fieldsJsonParser);
 	}
 }

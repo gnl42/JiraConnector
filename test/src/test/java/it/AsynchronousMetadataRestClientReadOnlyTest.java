@@ -30,6 +30,7 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.*;
@@ -41,6 +42,7 @@ import static org.junit.Assert.*;
 @SuppressWarnings("ConstantConditions")
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
+
 	@Test
 	public void testGetServerInfo() throws Exception {
 		final ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
@@ -143,5 +145,34 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals(basicResolution.getName(), resolution.getName());
 		assertEquals(basicResolution.getSelf(), resolution.getSelf());
 		assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
+	}
+
+	@Test
+	public void testGetAllFieldsAtOnce() {
+		final Iterable<Field> fields = client.getMetadataClient().getFields().claim();
+		assertThat(fields, hasItems(
+				new Field("progress", "Progress", FieldType.JIRA, false, true, false,
+						new FieldSchema("progress", null, "progress", null, null)),
+				new Field("summary", "Summary", FieldType.JIRA, true, true, true,
+						new FieldSchema("string", null, "summary", null, null)),
+				new Field("timetracking", "Time Tracking", FieldType.JIRA, true, false, true,
+						new FieldSchema("timetracking", null, "timetracking", null, null)),
+				new Field("issuekey", "Key", FieldType.JIRA, false, true, false, null),
+				new Field("issuetype", "Issue Type", FieldType.JIRA, true, true, true,
+						new FieldSchema("issuetype", null, "issuetype", null, null)),
+				new Field("votes", "Votes", FieldType.JIRA, false, true, false,
+						new FieldSchema("array", "votes", "votes", null, null)),
+				new Field("components", "Component/s", FieldType.JIRA, true, true, true,
+						new FieldSchema("array", "component", "components", null, null)),
+				new Field("aggregatetimespent", "Σ Time Spent", FieldType.JIRA, false, true, false,
+						new FieldSchema("number", null, "aggregatetimespent", null, null)),
+				new Field("thumbnail", "Images", FieldType.JIRA, false, true, false, null),
+				new Field("customfield_10000", "My Number Field New", FieldType.CUSTOM, true, true, true,
+					new FieldSchema("number", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:float", 10000l)),
+				new Field("customfield_10011", "project2", FieldType.CUSTOM, true, true, true,
+					new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:textarea", 10011l)),
+				new Field("workratio", "Work Ratio", FieldType.JIRA, false, true, true,
+					new FieldSchema("number", null, "workratio", null, null))
+		));
 	}
 }

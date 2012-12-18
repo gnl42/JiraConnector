@@ -1,0 +1,14 @@
+{
+	"id": "customfield_10000",
+	"name": "MultiSelect Custom IssueField",
+	"custom": true,
+	"orderable": true,
+	"navigable": true,
+	"searchable": true,
+	"schema": {
+		"type": "array",
+		"items": "string",
+		"custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+		"customId": 10000
+	}
+}

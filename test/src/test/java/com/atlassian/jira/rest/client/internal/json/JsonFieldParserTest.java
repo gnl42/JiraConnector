@@ -16,23 +16,24 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.Field;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class JsonFieldParserTest {
+public class JsonIssueFieldParserTest {
+
 	@Test
 	public void testParse() throws Exception {
-		JsonFieldParser parser = new JsonFieldParser();
-		final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/field/valid-fields.json");
-		final Field field = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
-		Assert.assertEquals(1.45, (Double) field.getValue(), 0.001);
+		JsonIssueFieldParser parserIssue = new JsonIssueFieldParser();
+		final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/field/valid-cim-fields.json");
+		final IssueField issueField = parserIssue.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
+		Assert.assertEquals(1.45, (Double) issueField.getValue(), 0.001);
 
-		final Field userField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
-		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userField.getValue());
+		final IssueField userIssueField = parserIssue.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
+		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userIssueField.getValue());
 
 	}
 

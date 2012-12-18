@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
-import com.atlassian.jira.rest.client.api.domain.Field;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -34,7 +34,7 @@ public class JsonFieldParser {
 	}};
 
 	@SuppressWarnings("unchecked")
-	public Field parse(JSONObject jsonObject, String id) throws JSONException {
+	public IssueField parse(JSONObject jsonObject, String id) throws JSONException {
 		String type = jsonObject.getString("type");
 		final String name = jsonObject.getString("name");
 		final Object valueObject = jsonObject.opt(VALUE_ATTRIBUTE);
@@ -54,7 +54,7 @@ public class JsonFieldParser {
 				value = valueObject.toString();
 			}
 		}
-		return new Field(id, name, type, value);
+		return new IssueField(id, name, type, value);
 	}
 
 	static class FieldValueJsonParser<T> implements JsonObjectParser<T> {

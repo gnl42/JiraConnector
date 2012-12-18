@@ -120,7 +120,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 				: ImmutableList.of("html");
 		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
-		assertTrue(Iterables.size(issue.getFields()) > 0);
+		assertTrue(Iterables.size(issue.getIssueFields()) > 0);
 
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();
@@ -147,7 +147,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
 
 			assertEquals(Collections
-					.singletonList(new ChangelogItem(ChangelogItem.FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
+					.singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
 					.getItems());
 
 			final ChangelogGroup chg2 = Iterables.get(changelog, 20);
@@ -156,10 +156,10 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
 			final List<ChangelogItem> expected = ImmutableList.of(
-					new ChangelogItem(ChangelogItem.FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
-					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
-					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
-					new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
+					new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
+					new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
+					new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
+					new ChangelogItem(FieldType.CUSTOM, "My Number IssueField New", null, null, null, "1.45")
 			);
 			assertEquals(expected, chg2.getItems());
 		}

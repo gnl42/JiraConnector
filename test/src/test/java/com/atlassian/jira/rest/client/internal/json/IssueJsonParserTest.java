@@ -195,7 +195,7 @@ public class IssueJsonParserTest {
 //	@Test
 //	public void testParseIssueWithUserPickerCustomFieldFilledOut() throws JSONException {
 //		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-filled-out.json");
-//		final Field extraUserField = issue.getFieldByName("Extra User");
+//		final IssueField extraUserField = issue.getFieldByName("Extra User");
 //		assertNotNull(extraUserField);
 //		assertEquals(BasicUser.class, extraUserField.getValue().getClass());
 //		assertEquals(TestConstants.USER1, extraUserField.getValue());
@@ -204,9 +204,9 @@ public class IssueJsonParserTest {
 	@Test
 	public void testParseIssueWithUserPickerCustomFieldEmpty() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-empty.json");
-		final Field extraUserField = issue.getFieldByName("Extra User");
-		assertNotNull(extraUserField);
-		assertNull(extraUserField.getValue());
+		final IssueField extraUserIssueField = issue.getFieldByName("Extra User");
+		assertNotNull(extraUserIssueField);
+		assertNull(extraUserIssueField.getValue());
 	}
 
 	@Test
@@ -316,36 +316,36 @@ public class IssueJsonParserTest {
 				"2012-04-12T14:28:28.255+0200",
 				user1,
 				ImmutableList.of(
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
-						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Radio Field", null, null, "10000", "One")
+						new ChangelogItem(FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
+						new ChangelogItem(FieldType.CUSTOM, "Radio IssueField", null, null, "10000", "One")
 				));
 
 		verifyChangelog(iterator.next(),
 				"2012-04-12T14:28:44.079+0200",
 				user1,
 				ImmutableList.of(
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
+						new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
 				));
 
 		verifyChangelog(iterator.next(),
 				"2012-04-12T14:30:09.690+0200",
 				user2,
 				ImmutableList.of(
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "summary", null, "Simple history test", null, "Simple history test - modified"),
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "issuetype", "1", "Bug", "2", "New Feature"),
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "priority", "3", "Major", "4", "Minor"),
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "description", null, "Initial Description", null, "Modified Description"),
-						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
-						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Radio Field", "10000", "One", "10001", "Two"),
-						new ChangelogItem(ChangelogItem.FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")
+						new ChangelogItem(FieldType.JIRA, "summary", null, "Simple history test", null, "Simple history test - modified"),
+						new ChangelogItem(FieldType.JIRA, "issuetype", "1", "Bug", "2", "New Feature"),
+						new ChangelogItem(FieldType.JIRA, "priority", "3", "Major", "4", "Minor"),
+						new ChangelogItem(FieldType.JIRA, "description", null, "Initial Description", null, "Modified Description"),
+						new ChangelogItem(FieldType.CUSTOM, "Date IssueField", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
+						new ChangelogItem(FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
+						new ChangelogItem(FieldType.CUSTOM, "Radio IssueField", "10000", "One", "10001", "Two"),
+						new ChangelogItem(FieldType.CUSTOM, "Text IssueField", null, "Initial text field value", null, "Modified text field value")
 				));
 
 		verifyChangelog(iterator.next(),
 				"2012-04-12T14:28:44.079+0200",
 				null,
 				ImmutableList.of(
-						new ChangelogItem(ChangelogItem.FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
+						new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
 				));
 	}
 

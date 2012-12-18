@@ -37,7 +37,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
-			@Nullable TimeTracking timeTracking, Collection<Field> fields, Collection<Comment> comments,
+			@Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
@@ -51,7 +51,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.expandos = expandos;
 		this.comments = comments;
 		this.attachments = attachments;
-		this.fields = fields;
+		this.issueFields = issueFields;
 		this.issueType = issueType;
 		this.reporter = reporter;
 		this.assignee = assignee;
@@ -87,7 +87,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final User assignee;
 	@Nullable
 	private final BasicResolution resolution;
-	private final Collection<Field> fields;
+	private final Collection<IssueField> issueFields;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
 	private final DateTime dueDate;
@@ -163,10 +163,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 * @return fields inaccessible by concrete getter methods (e.g. all custom fields)
+	 * @return issueFields inaccessible by concrete getter methods (e.g. all custom issueFields)
 	 */
-	public Iterable<Field> getFields() {
-		return fields;
+	public Iterable<IssueField> getIssueFields() {
+		return issueFields;
 	}
 
 	/**
@@ -174,10 +174,10 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	 * @return field with given id, or <code>null</code> when no field with given id exists for this issue
 	 */
 	@Nullable
-	public Field getField(String id) {
-		for (Field field : fields) {
-			if (field.getId().equals(id)) {
-				return field;
+	public IssueField getField(String id) {
+		for (IssueField issueField : issueFields) {
+			if (issueField.getId().equals(id)) {
+				return issueField;
 			}
 		}
 		return null;
@@ -185,17 +185,17 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 	/**
 	 * This method returns the first field with specified name.
-	 * Names of fields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
-	 * It's added just for convenience. For identify fields you should use id rather than name.
+	 * Names of issueFields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
+	 * It's added just for convenience. For identify issueFields you should use id rather than name.
 	 *
 	 * @param name name of the field.
 	 * @return the first field matching selected name or <code>null</code> when no field with given name exists for this issue
 	 */
 	@Nullable
-	public Field getFieldByName(String name) {
-		for (Field field : fields) {
-			if (field.getName().equals(name)) {
-				return field;
+	public IssueField getFieldByName(String name) {
+		for (IssueField issueField : issueFields) {
+			if (issueField.getName().equals(name)) {
+				return issueField;
 			}
 		}
 		return null;
@@ -344,7 +344,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("resolution", resolution).
 				add("reporter", reporter).
 				add("assignee", assignee).addValue("\n").
-				add("fields", fields).addValue("\n").
+				add("issueFields", issueFields).addValue("\n").
 				add("affectedVersions", affectedVersions).addValue("\n").
 				add("fixVersions", fixVersions).addValue("\n").
 				add("components", components).addValue("\n").

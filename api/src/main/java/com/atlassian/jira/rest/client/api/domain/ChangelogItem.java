@@ -102,7 +102,4 @@ public class ChangelogItem {
 				toString();
 	}
 
-	public enum FieldType {
-		JIRA, CUSTOM
-	}
 }

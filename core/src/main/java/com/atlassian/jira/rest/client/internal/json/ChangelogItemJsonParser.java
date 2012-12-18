@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.ChangelogItem;
+import com.atlassian.jira.rest.client.api.domain.FieldType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -24,11 +25,11 @@ public class ChangelogItemJsonParser implements JsonObjectParser<ChangelogItem> 
 	@Override
 	public ChangelogItem parse(JSONObject json) throws JSONException {
 		final String fieldTypeStr = JsonParseUtil.getNestedString(json, "fieldtype");
-		final ChangelogItem.FieldType fieldType;
+		final FieldType fieldType;
 		if ("jira".equalsIgnoreCase(fieldTypeStr)) {
-			fieldType = ChangelogItem.FieldType.JIRA;
+			fieldType = FieldType.JIRA;
 		} else if ("custom".equalsIgnoreCase(fieldTypeStr)) {
-			fieldType = ChangelogItem.FieldType.CUSTOM;
+			fieldType = FieldType.CUSTOM;
 		} else {
 			throw new JSONException("[" + fieldTypeStr + "] does not represent a valid field type. Expected [jira] or [custom].");
 		}

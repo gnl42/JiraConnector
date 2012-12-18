@@ -24,14 +24,14 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class Field implements NamedEntity {
+public class IssueField implements NamedEntity {
 
 	private final String id;
 	private final String name;
 	private final String type;
 	private final Object value;
 
-	public Field(String id, String name, String type, Object value) {
+	public IssueField(String id, String name, String type, Object value) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
@@ -71,8 +71,8 @@ public class Field implements NamedEntity {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Field) {
-			Field that = (Field) obj;
+		if (obj instanceof IssueField) {
+			final IssueField that = (IssueField) obj;
 			return Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
 					&& Objects.equal(this.type, that.type)

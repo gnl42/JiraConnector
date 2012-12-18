@@ -182,7 +182,7 @@
         "type":"com.atlassian.jira.plugin.system.customfieldtypes:textarea"
     },
     "customfield_10000":{
-        "name":"My Number Field New",
+        "name":"My Number IssueField New",
         "type":"com.atlassian.jira.plugin.system.customfieldtypes:float",
         "value":1.45
     }

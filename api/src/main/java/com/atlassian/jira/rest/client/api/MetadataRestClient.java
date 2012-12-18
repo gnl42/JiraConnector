@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api;
 
+import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.IssuelinksType;
 import com.atlassian.jira.rest.client.api.domain.Priority;
@@ -115,4 +116,12 @@ public interface MetadataRestClient {
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Promise<ServerInfo> getServerInfo();
+
+	/**
+	 * Retrieves information about JIRA custom and system fields.
+	 *
+	 * @return information about JIRA custom and system fields.
+	 * @throws
+	 */
+	Promise<Iterable<Field>> getFields();
 }
