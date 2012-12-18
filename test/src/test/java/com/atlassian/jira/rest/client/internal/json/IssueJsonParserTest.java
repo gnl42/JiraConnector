@@ -317,7 +317,7 @@ public class IssueJsonParserTest {
 				user1,
 				ImmutableList.of(
 						new ChangelogItem(FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
-						new ChangelogItem(FieldType.CUSTOM, "Radio IssueField", null, null, "10000", "One")
+						new ChangelogItem(FieldType.CUSTOM, "Radio Field", null, null, "10000", "One")
 				));
 
 		verifyChangelog(iterator.next(),
@@ -335,10 +335,10 @@ public class IssueJsonParserTest {
 						new ChangelogItem(FieldType.JIRA, "issuetype", "1", "Bug", "2", "New Feature"),
 						new ChangelogItem(FieldType.JIRA, "priority", "3", "Major", "4", "Minor"),
 						new ChangelogItem(FieldType.JIRA, "description", null, "Initial Description", null, "Modified Description"),
-						new ChangelogItem(FieldType.CUSTOM, "Date IssueField", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
+						new ChangelogItem(FieldType.CUSTOM, "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
 						new ChangelogItem(FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
-						new ChangelogItem(FieldType.CUSTOM, "Radio IssueField", "10000", "One", "10001", "Two"),
-						new ChangelogItem(FieldType.CUSTOM, "Text IssueField", null, "Initial text field value", null, "Modified text field value")
+						new ChangelogItem(FieldType.CUSTOM, "Radio Field", "10000", "One", "10001", "Two"),
+						new ChangelogItem(FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")
 				));
 
 		verifyChangelog(iterator.next(),

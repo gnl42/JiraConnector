@@ -1,0 +1,12 @@
+{
+	"id":"status",
+	"name":"Status",
+	"custom":false,
+	"orderable":false,
+	"navigable":true,
+	"searchable":true,
+	"schema":{
+		"type":"status",
+		"system":"status"
+	}
+}

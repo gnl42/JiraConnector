@@ -28,7 +28,6 @@ import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.api.domain.Comment;
-import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
@@ -93,16 +92,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	public static final String NAMES_SECTION = "names";
 
 	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
-	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
-	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
 	private final JsonObjectParser<BasicWatchers> watchersJsonParser = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
-	private final JsonIssueFieldParser issueFieldParser = new JsonIssueFieldParser();
 	private final CommentJsonParser commentJsonParser = new CommentJsonParser();
 	private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
@@ -194,17 +190,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Nullable
-	private String getOptionalFieldStringUnisex(boolean shouldUseNestedValueJson, JSONObject json, String attributeName)
+	private String getOptionalFieldStringUnisex(JSONObject json, String attributeName)
 			throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
-		if (shouldUseNestedValueJson) {
-			final JSONObject fieldJson = fieldsJson.optJSONObject(attributeName);
-			if (fieldJson != null) {
-				return JsonParseUtil.getOptionalString(fieldJson, VALUE_ATTR); // pre 5.0 way
-			} else {
-				return null;
-			}
-		}
 		return JsonParseUtil.getOptionalString(fieldsJson, attributeName);
 	}
 
@@ -310,8 +298,8 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return null;
 	}
 
-	private Collection<IssueField> parseFieldsJira5x0(JSONObject issueJson) throws JSONException {
-		final JSONObject names = issueJson.optJSONObject(NAMES_SECTION);
+	private Collection<IssueField> parseFields(JSONObject issueJson) throws JSONException {
+		final JSONObject names = (providedNames != null) ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
 		final Map<String, String> namesMap = parseNames(names);
 		final JSONObject schema = (providedSchema != null) ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);
 		final Map<String, String> typesMap = parseSchema(schema);
@@ -361,20 +349,6 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		while (iterator.hasNext()) {
 			final String key = iterator.next();
 			res.put(key, json.getString(key));
-		}
-		return res;
-	}
-
-
-	private Collection<IssueField> parseFields(JSONObject json) throws JSONException {
-		ArrayList<IssueField> res = new ArrayList<IssueField>(json.length());
-		final Iterator<String> iterator = JsonParseUtil.getStringKeys(json);
-		while (iterator.hasNext()) {
-			final String key = iterator.next();
-			if (SPECIAL_FIELDS.contains(key)) {
-				continue;
-			}
-			res.add(issueFieldParser.parse(json.getJSONObject(key), key));
 		}
 		return res;
 	}

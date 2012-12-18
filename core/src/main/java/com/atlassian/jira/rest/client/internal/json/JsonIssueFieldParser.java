@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JsonFieldParser {
+public class JsonIssueFieldParser {
 	private static final String VALUE_ATTRIBUTE = "value";
 
 	private Map<String, JsonObjectParser> registeredValueParsers = new HashMap<String, JsonObjectParser>() {{

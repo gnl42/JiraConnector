@@ -159,7 +159,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 					new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
 					new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
 					new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
-					new ChangelogItem(FieldType.CUSTOM, "My Number IssueField New", null, null, null, "1.45")
+					new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
 			);
 			assertEquals(expected, chg2.getItems());
 		}
