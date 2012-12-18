@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.atlassian.jira</groupId>
@@ -9,15 +10,10 @@
         <version>2.0.0-m3-SNAPSHOT</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-core</artifactId>
 
     <name>JIRA REST Java Client - Implementation</name>
-    <description>
-        Implementation of JIRA REST Java Client.
-    </description>
+    <description>Implementation of JIRA REST Java Client.</description>
 
     <dependencies>
         <dependency>
@@ -27,29 +23,16 @@
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${jersey.client.version}</version>
+            <artifactId>jersey-client</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey.client.version}</version>
+            <artifactId>jersey-json</artifactId>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda.time.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>${findbugs.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -70,5 +53,4 @@
 
         <!-- tests dependencies -->
     </dependencies>
-
 </project>

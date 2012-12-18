@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.atlassian.jira</groupId>
@@ -9,15 +10,11 @@
         <version>2.0.0-m3-SNAPSHOT</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-plugin</artifactId>
+    <packaging>atlassian-plugin</packaging>
 
     <name>JIRA REST Java Client - Plugin</name>
-    <description>
-        JIRA REST Java Client bundled as a plugin.
-    </description>
+    <description>JIRA REST Java Client bundled as a plugin.</description>
 
     <dependencies>
         <dependency>
@@ -29,6 +26,41 @@
             <groupId>com.atlassian.plugins</groupId>
             <artifactId>remotable-plugins-spi</artifactId>
             <version>${remotable.plugins.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.httpclient</groupId>
+            <artifactId>atlassian-httpclient-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+        <groupId>com.atlassian.httpclient</groupId>
+            <artifactId>atlassian-httpclient-spi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.httpclient</groupId>
+            <artifactId>atlassian-httpclient-apache-httpcomponents</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -52,5 +84,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
