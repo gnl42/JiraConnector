@@ -57,6 +57,7 @@ public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
 	/**
 	 * @return issue id
 	 */
+	@Override
 	public Long getId() {
 		return id;
 	}
