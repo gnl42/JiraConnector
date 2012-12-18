@@ -50,12 +50,31 @@ public class BasicVotes implements AddressableEntity {
 		return hasVoted;
 	}
 
-	@Override
-	public String toString() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("votes", votes).
-				add("hasVoted", hasVoted).
-				toString();
+				add("hasVoted", hasVoted);
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicVotes) {
+			final BasicVotes that = (BasicVotes) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.votes, that.votes)
+					&& Objects.equal(this.hasVoted, that.hasVoted);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, votes, hasVoted);
 	}
 }

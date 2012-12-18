@@ -38,11 +38,21 @@ public class Watchers extends BasicWatchers {
 	}
 
 	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("watchers", users).
-				toString();
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().add("watchers", users);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), users);
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Watchers) {
+			final Watchers that = (Watchers) obj;
+			return super.equals(that) && Objects.equal(this.users, that.users);
+		}
+		return false;
+	}
 }

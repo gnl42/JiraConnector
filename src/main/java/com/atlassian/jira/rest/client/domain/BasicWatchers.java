@@ -50,12 +50,31 @@ public class BasicWatchers implements AddressableEntity {
 		return numWatchers;
 	}
 
-	@Override
-	public String toString() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("isWatching", isWatching).
-				add("numWatchers", numWatchers).
-				toString();
+				add("numWatchers", numWatchers);
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicWatchers) {
+			final BasicWatchers that = (BasicWatchers) obj;
+			return Objects.equal(this.self, that.self)
+					&& Objects.equal(this.isWatching, that.isWatching)
+					&& Objects.equal(this.numWatchers, that.numWatchers);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(self, isWatching, numWatchers);
 	}
 }
