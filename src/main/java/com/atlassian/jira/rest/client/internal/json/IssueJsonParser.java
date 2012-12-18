@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.domain.*;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -43,16 +42,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	public static final String NAMES_SECTION = "names";
 
 	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
-	private final IssueLinkJsonParser issueLinkJsonParser = new IssueLinkJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
 	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
-	private final WorklogJsonParser worklogJsonParser = new WorklogJsonParser();
 	private final JsonObjectParser<BasicWatchers> watchersJsonParser = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
-	private final JsonFieldParser fieldParser = new JsonFieldParser();
 	private final CommentJsonParser commentJsonParser = new CommentJsonParser();
 	private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
@@ -65,6 +61,19 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 	private static final String FIELDS = "fields";
 	private static final String VALUE_ATTR = "value";
+
+	private final JSONObject providedNames;
+	private final JSONObject providedSchema;
+
+	public IssueJsonParser() {
+		providedNames = null;
+		providedSchema = null;
+	}
+
+	public IssueJsonParser(final JSONObject providedNames, final JSONObject providedSchema) {
+		this.providedNames = providedNames;
+		this.providedSchema = providedSchema;
+	}
 
 	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
 		final String expando = json.getString("expand");
@@ -87,32 +96,24 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return res;
 	}
 
-	private <T> Collection<T> parseOptionalArrayNotNullable(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+	private <T> Collection<T> parseOptionalArrayNotNullable(JSONObject json, JsonWeakParser<T> jsonParser, String... path)
 			throws JSONException {
-		Collection<T> res = parseOptionalArray(shouldUseNestedValueJson, json, jsonParser, path);
+		Collection<T> res = parseOptionalArray(json, jsonParser, path);
 		return res == null ? Collections.<T>emptyList() : res;
 	}
 
 	@Nullable
-	private <T> Collection<T> parseOptionalArray(boolean shouldUseNestedValueJson, JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+	private <T> Collection<T> parseOptionalArray(JSONObject json, JsonWeakParser<T> jsonParser, String... path)
 			throws JSONException {
-		if (shouldUseNestedValueJson) {
-			final JSONObject js = JsonParseUtil.getNestedOptionalObject(json, path);
-			if (js == null) {
-				return null;
-			}
-			return parseArray(js, jsonParser, VALUE_ATTR);
-		} else {
-			final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
-			if (jsonArray == null) {
-				return null;
-			}
-			final Collection<T> res = new ArrayList<T>(jsonArray.length());
-			for (int i = 0; i < jsonArray.length(); i++) {
-				res.add(jsonParser.parse(jsonArray.get(i)));
-			}
-			return res;
+		final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
+		if (jsonArray == null) {
+			return null;
 		}
+		final Collection<T> res = new ArrayList<T>(jsonArray.length());
+		for (int i = 0; i < jsonArray.length(); i++) {
+			res.add(jsonParser.parse(jsonArray.get(i)));
+		}
+		return res;
 	}
 
 	private String getFieldStringValue(JSONObject json, String attributeName) throws JSONException {
@@ -139,17 +140,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Nullable
-	private String getOptionalFieldStringUnisex(boolean shouldUseNestedValueJson, JSONObject json, String attributeName)
+	private String getOptionalFieldStringUnisex(JSONObject json, String attributeName)
 			throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
-		if (shouldUseNestedValueJson) {
-			final JSONObject fieldJson = fieldsJson.optJSONObject(attributeName);
-			if (fieldJson != null) {
-				return JsonParseUtil.getOptionalString(fieldJson, VALUE_ATTR); // pre 5.0 way
-			} else {
-				return null;
-			}
-		}
 		return JsonParseUtil.getOptionalString(fieldsJson, attributeName);
 	}
 
@@ -166,58 +159,41 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	public Issue parse(JSONObject s) throws JSONException {
 		final BasicIssue basicIssue = basicIssueJsonParser.parse(s);
 		final Iterable<String> expandos = parseExpandos(s);
-		final boolean isJira5x0OrNewer = Iterables.contains(expandos, SCHEMA_SECTION);
-		final boolean shouldUseNestedValueAttribute = !isJira5x0OrNewer;
-		final Collection<Comment> comments;
-		if (isJira5x0OrNewer) {
-			final JSONObject commentsJson = s.getJSONObject(FIELDS).getJSONObject(COMMENT_FIELD.id);
-			comments = parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
-
-		} else {
-			final Collection<Comment> commentsTmp = parseOptionalArray(
-					shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), FIELDS, COMMENT_FIELD.id);
-			comments = commentsTmp != null ? commentsTmp : Lists.<Comment>newArrayList();
-		}
+		final JSONObject jsonFields = s.getJSONObject(FIELDS);
+		final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
+		final Collection<Comment> comments = (commentsJson == null)	? Lists.<Comment>newArrayList()
+				: parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
 
 		final String summary = getFieldStringValue(s, SUMMARY_FIELD.id);
-		final String description = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, DESCRIPTION_FIELD.id);
+		final String description = getOptionalFieldStringUnisex(s, DESCRIPTION_FIELD.id);
 
-		final Collection<Attachment> attachments = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
-		final Collection<Field> fields = isJira5x0OrNewer ? parseFieldsJira5x0(s) : parseFields(s.getJSONObject(FIELDS));
+		final Collection<Attachment> attachments = parseOptionalArray(s, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
+		final Collection<Field> fields = parseFields(s);
 
 		final BasicIssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(s, ISSUE_TYPE_FIELD.id));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, CREATED_FIELD.id));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, UPDATED_FIELD.id));
 
-		final String dueDateString = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, DUE_DATE_FIELD.id);
+		final String dueDateString = getOptionalFieldStringUnisex(s, DUE_DATE_FIELD.id);
 		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
-		final BasicPriority priority = getOptionalField(shouldUseNestedValueAttribute, s, PRIORITY_FIELD.id, priorityJsonParser);
-		final BasicResolution resolution = getOptionalField(shouldUseNestedValueAttribute, s, RESOLUTION_FIELD.id, resolutionJsonParser);
-		final User assignee = getOptionalField(shouldUseNestedValueAttribute, s, ASSIGNEE_FIELD.id, userJsonParser);
-		final User reporter = getOptionalField(shouldUseNestedValueAttribute, s, REPORTER_FIELD.id, userJsonParser);
+		final BasicPriority priority = getOptionalField(s, PRIORITY_FIELD.id, priorityJsonParser);
+		final BasicResolution resolution = getOptionalField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
+		final User assignee = getOptionalField(s, ASSIGNEE_FIELD.id, userJsonParser);
+		final User reporter = getOptionalField(s, REPORTER_FIELD.id, userJsonParser);
 
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_FIELD.id));
 		final Collection<IssueLink> issueLinks;
-		if (isJira5x0OrNewer) {
-			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
-					new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
-		} else {
-			issueLinks = parseOptionalArray(shouldUseNestedValueAttribute, s,
-					new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParser), FIELDS, LINKS_PRE_5_0_FIELD.id);
-		}
+		issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
 
-		Collection<Subtask> subtasks = null;
-		if (isJira5x0OrNewer) {
-			subtasks = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
-		}
+		Collection<Subtask> subtasks = parseOptionalArray(s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
-		final BasicVotes votes = getOptionalField(shouldUseNestedValueAttribute, s, VOTES_FIELD.id, votesJsonParser);
+		final BasicVotes votes = getOptionalField(s, VOTES_FIELD.id, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_FIELD.id));
 
-		final Collection<Version> fixVersions = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
-		final Collection<Version> affectedVersions = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
-		final Collection<BasicComponent> components = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
+		final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
+		final Collection<Version> affectedVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
+		final Collection<BasicComponent> components = parseOptionalArray(s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
 		final Collection<Worklog> worklogs;
 		final URI selfUri = basicIssue.getSelf();
@@ -227,31 +203,26 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 			Object transitionsObj = s.get(TRANSITIONS_FIELD.id);
 			transitionsUriString = (transitionsObj instanceof String) ? (String) transitionsObj : null;
 		} else {
-			transitionsUriString = getOptionalFieldStringUnisex(shouldUseNestedValueAttribute, s, TRANSITIONS_FIELD.id);
+			transitionsUriString = getOptionalFieldStringUnisex(s, TRANSITIONS_FIELD.id);
 		}
 		final URI transitionsUri = parseTransisionsUri(transitionsUriString, selfUri);
 
-		if (isJira5x0OrNewer) {
-			if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_FIELD.id) != null) {
-				worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s,
-						new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(selfUri)),
-						FIELDS, WORKLOG_FIELD.id, WORKLOGS_FIELD.id);
-			} else {
-				worklogs = Collections.emptyList();
-			}
+		if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_FIELD.id) != null) {
+			worklogs = parseOptionalArray(s,
+					new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(selfUri)),
+					FIELDS, WORKLOG_FIELD.id, WORKLOGS_FIELD.id);
 		} else {
-			worklogs = parseOptionalArray(shouldUseNestedValueAttribute, s, new JsonWeakParserForJsonObject<Worklog>(worklogJsonParser), FIELDS, WORKLOG_FIELD.id);
+			worklogs = Collections.emptyList();
 		}
 
-		final BasicWatchers watchers = getOptionalField(shouldUseNestedValueAttribute, s,
-				isJira5x0OrNewer ? WATCHER_FIELD.id : WATCHER_PRE_5_0_FIELD.id, watchersJsonParser);
-		final TimeTracking timeTracking = getOptionalField(shouldUseNestedValueAttribute, s, TIMETRACKING_FIELD.id,
-				isJira5x0OrNewer ? new TimeTrackingJsonParserV5() : new TimeTrackingJsonParser());
 
-		final Set<String> labels = Sets.newHashSet(parseOptionalArrayNotNullable(shouldUseNestedValueAttribute, s,
-				jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
+		final BasicWatchers watchers = getOptionalField(s, WATCHER_FIELD.id, watchersJsonParser);
+		final TimeTracking timeTracking = getOptionalField(s, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
-		final Collection<ChangelogGroup> changelog = parseOptionalArray(false, s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
+		final Set<String> labels = Sets.newHashSet(parseOptionalArrayNotNullable(s, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
+
+		final Collection<ChangelogGroup> changelog = parseOptionalArray(
+				s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
 		return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status,
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
 				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
@@ -266,30 +237,21 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Nullable
-	private <T> T getOptionalField(boolean shouldUseNestedValue, JSONObject s, final String fieldId, JsonObjectParser<T> jsonParser)
+	private <T> T getOptionalField(JSONObject s, final String fieldId, JsonObjectParser<T> jsonParser)
 			throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
 		// for fields like assignee (when unassigned) value attribute may be missing completely
 		if (fieldJson != null) {
-			if (shouldUseNestedValue) {
-				final JSONObject valueJsonObject = fieldJson.optJSONObject(VALUE_ATTR);
-				if (valueJsonObject != null) {
-					return jsonParser.parse(valueJsonObject);
-				}
-
-			} else {
-				return jsonParser.parse(fieldJson);
-			}
-
+			return jsonParser.parse(fieldJson);
 		}
 		return null;
 	}
 
-	private Collection<Field> parseFieldsJira5x0(JSONObject issueJson) throws JSONException {
-		final JSONObject names = issueJson.optJSONObject(NAMES_SECTION);
+	private Collection<Field> parseFields(JSONObject issueJson) throws JSONException {
+		final JSONObject names = (providedNames != null) ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
 		final Map<String, String> namesMap = parseNames(names);
-		final JSONObject types = issueJson.optJSONObject(SCHEMA_SECTION);
-		final Map<String, String> typesMap = parseSchema(types);
+		final JSONObject schema = (providedSchema != null) ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);
+		final Map<String, String> typesMap = parseSchema(schema);
 
 		final JSONObject json = issueJson.getJSONObject(FIELDS);
 		final ArrayList<Field> res = new ArrayList<Field>(json.length());
@@ -336,20 +298,6 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		while (iterator.hasNext()) {
 			final String key = iterator.next();
 			res.put(key, json.getString(key));
-		}
-		return res;
-	}
-
-
-	private Collection<Field> parseFields(JSONObject json) throws JSONException {
-		ArrayList<Field> res = new ArrayList<Field>(json.length());
-		final Iterator<String> iterator = getStringKeys(json);
-		while (iterator.hasNext()) {
-			final String key = iterator.next();
-			if (SPECIAL_FIELDS.contains(key)) {
-				continue;
-			}
-			res.add(fieldParser.parse(json.getJSONObject(key), key));
 		}
 		return res;
 	}

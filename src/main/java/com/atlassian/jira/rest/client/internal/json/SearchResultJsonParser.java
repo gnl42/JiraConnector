@@ -16,22 +16,32 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.domain.BasicIssue;
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.Collection;
+import java.util.Collections;
 
 public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
-	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
 
 	@Override
 	public SearchResult parse(JSONObject json) throws JSONException {
 		final int startAt = json.getInt("startAt");
 		final int maxResults = json.getInt("maxResults");
 		final int total = json.getInt("total");
-		final Collection<BasicIssue> issues = JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), basicIssueJsonParser);
+		final JSONArray issuesJsonArray = json.getJSONArray("issues");
+
+		final Iterable<Issue> issues;
+		if (issuesJsonArray.length() > 0) {
+			final IssueJsonParser issueParser = new IssueJsonParser(json.getJSONObject("names"), json.getJSONObject("schema"));
+			final GenericJsonArrayParser<Issue> issuesParser = GenericJsonArrayParser.create(issueParser);
+			issues = issuesParser.parse(issuesJsonArray);
+		}
+		else {
+			issues = Collections.emptyList();
+		}
 		return new SearchResult(startAt, maxResults, total, issues);
 	}
 }

@@ -266,6 +266,16 @@ public interface IssueRestClient {
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable)}
 	 */
 	public enum Expandos {
-		CHANGELOG, SCHEMA, NAMES, TRANSITIONS
+		CHANGELOG("changelog"), SCHEMA("schema"), NAMES("names"), TRANSITIONS("transitions");
+
+		private final String value;
+
+		private Expandos(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
 	}
 }

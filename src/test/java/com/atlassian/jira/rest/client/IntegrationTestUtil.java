@@ -18,18 +18,22 @@ package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.User;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClient;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
+import com.google.common.collect.ImmutableMap;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class IntegrationTestUtil {
+	public static final User USER_ADMIN_FULL;
 	public static final BasicUser USER_ADMIN;
 	public static final BasicUser USER_ADMIN_LATEST;
-    public static final BasicUser USER1;
+	public static final User USER1_FULL;
+	public static final BasicUser USER1;
     public static final BasicUser USER2;
 	public static final BasicUser USER1_LATEST;
     public static final BasicUser USER2_LATEST;
@@ -56,13 +60,25 @@ public class IntegrationTestUtil {
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";
 
-            USER1 = new BasicUser(getUserUri("wseliga"), "wseliga", "Wojciech Seliga");
-            USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
+			USER1_FULL = new User(getUserUri("wseliga"), "wseliga", "Wojciech Seliga", "wojciech.seliga@spartez.com", null, ImmutableMap.of(
+					"16x16", resolveURI("secure/useravatar?size=small&avatarId=10082"),
+					"48x48", resolveURI("secure/useravatar?avatarId=10082")
+			), null);
+			USER1 = new BasicUser(USER1_FULL.getSelf(), USER1_FULL.getName(), USER1_FULL.getDisplayName());
 			USER1_LATEST = new BasicUser(getLatestUserUri("wseliga"), "wseliga", "Wojciech Seliga");
+
+			USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
             USER2_LATEST = new BasicUser(getLatestUserUri("user"), "user", "My Test User");
+
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
 			USER_SLASH_LATEST = new BasicUser(getLatestUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
-            USER_ADMIN = new BasicUser(getUserUri("admin"), "admin", "Administrator");
+
+
+            USER_ADMIN_FULL = new User(getUserUri("admin"), "admin", "Administrator", "wojciech.seliga@spartez.com", null, ImmutableMap.of(
+					"16x16", resolveURI("secure/useravatar?size=small&ownerId=admin&avatarId=10054"),
+					"48x48", resolveURI("secure/useravatar?ownerId=admin&avatarId=10054")
+			), null);
+            USER_ADMIN = new BasicUser(USER_ADMIN_FULL.getSelf(), USER_ADMIN_FULL.getName(), USER_ADMIN_FULL.getDisplayName());
 			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

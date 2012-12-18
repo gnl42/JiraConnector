@@ -16,80 +16,77 @@
 
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicPriority;
+import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicStatus;
+import com.atlassian.jira.rest.client.domain.BasicVotes;
+import com.atlassian.jira.rest.client.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.SearchResult;
-import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
+import java.lang.reflect.InvocationTargetException;
 
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
+import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static org.junit.Assert.*;
 
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	@Test
 	public void testJqlSearch() {
-		if (!isJqlSupportedByRest()) {
-			return;
-		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).claim();
 		assertEquals(11, searchResultForNull.getTotal());
 
 		final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").claim();
 		assertEquals(1, searchResultForReporterWseliga.getTotal());
+	}
 
+	@Test
+	public void testJqlSearchAsAnonymous() {
 		setAnonymousMode();
-		final SearchResult searchResultAsAnonymous = client.getSearchClient().searchJql(null).claim();
-		assertEquals(3, searchResultAsAnonymous.getTotal());
+		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).claim();
+		assertEquals(3, searchResultForNull.getTotal());
 
-		final SearchResult searchResultForReporterWseligaAsAnonymous = client.getSearchClient().searchJql("reporter=wseliga").claim();
-		assertEquals(0, searchResultForReporterWseligaAsAnonymous.getTotal());
+		final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").claim();
+		assertEquals(0, searchResultForReporterWseliga.getTotal());
 	}
 
 	@Test
 	public void testJqlSearchWithPaging() {
-		if (!isJqlSupportedByRest()) {
-			return;
-		}
 		final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3).claim();
 		assertEquals(11, searchResultForNull.getTotal());
 		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
 		assertEquals(3, searchResultForNull.getStartIndex());
 		assertEquals(3, searchResultForNull.getMaxResults());
 
-		// seems pagination works differently between 4.4 and 5.0
-		// check the rationale https://jdog.atlassian.com/browse/JRADEV-8889
 		final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1).claim();
 		assertEquals(11, search2.getTotal());
 		assertEquals(2, Iterables.size(search2.getIssues()));
-		if (IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER) {
-			assertEquals("TST-6", Iterables.get(search2.getIssues(), 0).getKey());
-			assertEquals("TST-5", Iterables.get(search2.getIssues(), 1).getKey());
-		} else {
-			assertEquals("TST-7", Iterables.get(search2.getIssues(), 0).getKey());
-			assertEquals("TST-6", Iterables.get(search2.getIssues(), 1).getKey());
-		}
-		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 1 : 0, search2.getStartIndex());
+		assertEquals("TST-6", Iterables.get(search2.getIssues(), 0).getKey());
+		assertEquals("TST-5", Iterables.get(search2.getIssues(), 1).getKey());
+		assertEquals(1, search2.getStartIndex());
 		assertEquals(2, search2.getMaxResults());
 
 		setUser1();
 		final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5).claim();
 		assertEquals(10, search3.getTotal());
-		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 10, Iterables.size(search3.getIssues()));
-		assertEquals(IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? 5 : 0, search3.getStartIndex());
+		assertEquals(5, Iterables.size(search3.getIssues()));
+		assertEquals(5, search3.getStartIndex());
 		assertEquals(10, search3.getMaxResults());
 	}
 
 	@Test
 	public void testVeryLongJqlWhichWillBePost() {
-		if (!isJqlSupportedByRest()) {
-			return;
-		}
 		final String coreJql = "summary ~ fsdsfdfds";
 		StringBuilder sb = new StringBuilder(coreJql);
 		for (int i = 0; i < 500; i++) {
@@ -103,14 +100,9 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals(3, searchResultForNull.getMaxResults());
 	}
 
-
 	@Test
 	public void testJqlSearchUnescapedCharacter() {
-		if (!isJqlSupportedByRest()) {
-			return;
-		}
-		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST,
-				"Error in the JQL Query: The character '/' is a reserved JQL character. You must enclose it in a string or use the escape '\\u002f' instead. (line 1, character 11)", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, new Runnable() {
 			@Override
 			public void run() {
 				client.getSearchClient().searchJql("reporter=a/user/with/slash").claim();
@@ -118,10 +110,45 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		});
 	}
 
-
-	private boolean isJqlSupportedByRest() {
-		return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+	// TODO: REFACTOR AFTER MERGE
+	private static <K> void assertEmptyIterable(Iterable<K> iterable) {
+		assertThat(iterable, Matchers.<K>emptyIterable());
 	}
 
+	@Test
+	public void jqlSearchShouldReturnIssueWithDetails() throws InvocationTargetException, IllegalAccessException {
+		final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").claim();
+		assertEquals(1, searchResult.getTotal());
+		final Issue issue = Iterables.get(searchResult.getIssues(), 0);
 
+		assertEquals("TST-7", issue.getKey());
+		assertEquals(Long.valueOf(10040), issue.getId());
+		assertEquals(resolveURI("rest/api/latest/issue/10040"), issue.getSelf());
+		assertEquals("A task where someone will vote", issue.getSummary());
+		assertNull(issue.getDescription()); // by default search doesn't retrieve description
+		assertEquals(new BasicPriority(resolveURI("rest/api/2/priority/3"), 3L, "Major"), issue.getPriority());
+		assertEquals(new BasicStatus(resolveURI("rest/api/2/status/1"), "Open"), issue.getStatus());
+		assertEmptyIterable(issue.getComments());
+		assertEmptyIterable(issue.getComments());
+		assertEmptyIterable(issue.getComponents());
+		assertEmptyIterable(issue.getWorklogs());
+		assertEmptyIterable(issue.getSubtasks());
+		assertEmptyIterable(issue.getIssueLinks());
+		assertEmptyIterable(issue.getFixVersions());
+		assertEmptyIterable(issue.getAffectedVersions());
+		assertEmptyIterable(issue.getLabels());
+		assertNull(issue.getDueDate());
+		assertNull(issue.getTimeTracking());
+		assertNull(issue.getResolution());
+		assertNull(issue.getChangelog());
+		assertNull(issue.getAttachments());
+		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
+		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
+		assertEquals(IntegrationTestUtil.USER1_FULL, issue.getReporter());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_FULL, issue.getAssignee());
+		assertEquals(new BasicProject(resolveURI("rest/api/2/project/TST"), "TST", "Test Project"), issue.getProject());
+		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
+		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
+		assertEquals(new BasicIssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false), issue.getIssueType());
+	}
 }

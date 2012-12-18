@@ -28,9 +28,9 @@ public class SearchResult {
 	private final int startIndex;
 	private final int maxResults;
 	private final int total;
-	private final Iterable<BasicIssue> issues;
+	private final Iterable<Issue> issues;
 
-	public SearchResult(int startIndex, int maxResults, int total, Iterable<BasicIssue> issues) {
+	public SearchResult(int startIndex, int maxResults, int total, Iterable<Issue> issues) {
 		this.startIndex = startIndex;
 		this.maxResults = maxResults;
 		this.total = total;
@@ -60,7 +60,7 @@ public class SearchResult {
 		return total;
 	}
 
-	public Iterable<BasicIssue> getIssues() {
+	public Iterable<Issue> getIssues() {
 		return issues;
 	}
 
