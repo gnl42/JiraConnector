@@ -106,7 +106,7 @@ public class IssueInputBuilder {
 	 * <br/>
 	 * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
 	 *
-	 * @param id    IssueField's id
+	 * @param id    Field's id
 	 * @param value Complex value for field
 	 * @return this
 	 */
@@ -118,8 +118,8 @@ public class IssueInputBuilder {
 	/**
 	 * Sets value of field. This method transforms given value to one of understandable by input generator.
 	 *
-	 * @param id    IssueField's id
-	 * @param value IssueField's value
+	 * @param id    Field's id
+	 * @param value Field's value
 	 * @return this
 	 * @throws CannotTransformValueException When transformer cannot transform given value
 	 */

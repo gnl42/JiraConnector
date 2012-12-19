@@ -52,7 +52,7 @@ public class FieldJsonParserTest {
 
 	@Test
 	public void testParseMultipleCustomFields() throws JSONException {
-		GenericJsonArrayParser<Field> fieldsParser = FieldJsonParser.createFieldsArrayParser();
+		JsonArrayParser<Iterable<Field>> fieldsParser = FieldJsonParser.createFieldsArrayParser();
 		final Iterable<Field> fields = fieldsParser.parse(ResourceUtil.getJsonArrayFromResource("/json/field/valid-multiple-fields.json"));
 
 		assertThat(fields, Matchers.hasItems(

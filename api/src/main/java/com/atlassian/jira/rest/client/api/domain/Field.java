@@ -29,14 +29,14 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 	private final String id;
 	private final String name;
 	private final FieldType custom;
-	private final Boolean orderable;
-	private final Boolean navigable;
-	private final Boolean searchable;
+	private final boolean orderable;
+	private final boolean navigable;
+	private final boolean searchable;
 	@Nullable
 	private final FieldSchema schema;
 
-	public Field(String id, String name, FieldType custom, Boolean orderable, Boolean navigable, Boolean searchable, FieldSchema schema) {
-
+	public Field(String id, String name, FieldType custom, boolean orderable, boolean navigable, boolean searchable,
+			@Nullable FieldSchema schema) {
 		this.id = id;
 		this.name = name;
 		this.custom = custom;
@@ -54,23 +54,28 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 		return name;
 	}
 
+	@SuppressWarnings("unused")
 	public FieldType getCustom() {
 		return custom;
 	}
 
-	public Boolean getOrderable() {
+	@SuppressWarnings("unused")
+	public boolean isOrderable() {
 		return orderable;
 	}
 
-	public Boolean getNavigable() {
+	@SuppressWarnings("unused")
+	public boolean isNavigable() {
 		return navigable;
 	}
 
-	public Boolean getSearchable() {
+	@SuppressWarnings("unused")
+	public boolean isSearchable() {
 		return searchable;
 	}
 
 	@Nullable
+	@SuppressWarnings("unused")
 	public FieldSchema getSchema() {
 		return schema;
 	}

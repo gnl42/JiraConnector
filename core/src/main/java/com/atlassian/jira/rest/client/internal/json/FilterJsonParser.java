@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 /**
- * JSON parser for IssueField
+ * JSON parser for Filter.
  *
  * @since v2.0
  */

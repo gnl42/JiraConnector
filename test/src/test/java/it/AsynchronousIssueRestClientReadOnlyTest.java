@@ -120,7 +120,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 				: ImmutableList.of("html");
 		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
-		assertTrue(Iterables.size(issue.getIssueFields()) > 0);
+		assertTrue(Iterables.size(issue.getFields()) > 0);
 
 		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();

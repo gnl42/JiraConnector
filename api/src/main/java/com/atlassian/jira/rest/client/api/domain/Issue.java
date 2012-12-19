@@ -163,9 +163,9 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	/**
-	 * @return issueFields inaccessible by concrete getter methods (e.g. all custom issueFields)
+	 * @return fields inaccessible by concrete getter methods (e.g. all custom issueFields)
 	 */
-	public Iterable<IssueField> getIssueFields() {
+	public Iterable<IssueField> getFields() {
 		return issueFields;
 	}
 
@@ -185,8 +185,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 	/**
 	 * This method returns the first field with specified name.
-	 * Names of issueFields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
-	 * It's added just for convenience. For identify issueFields you should use id rather than name.
+	 * Names of fields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
+	 * It's added just for convenience. For identify fields you should use id rather than name.
 	 *
 	 * @param name name of the field.
 	 * @return the first field matching selected name or <code>null</code> when no field with given name exists for this issue
@@ -344,7 +344,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("resolution", resolution).
 				add("reporter", reporter).
 				add("assignee", assignee).addValue("\n").
-				add("issueFields", issueFields).addValue("\n").
+				add("fields", issueFields).addValue("\n").
 				add("affectedVersions", affectedVersions).addValue("\n").
 				add("fixVersions", fixVersions).addValue("\n").
 				add("components", components).addValue("\n").

@@ -121,7 +121,7 @@ public interface MetadataRestClient {
 	 * Retrieves information about JIRA custom and system fields.
 	 *
 	 * @return information about JIRA custom and system fields.
-	 * @throws
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
 	 */
 	Promise<Iterable<Field>> getFields();
 }

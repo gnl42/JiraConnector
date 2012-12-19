@@ -41,7 +41,7 @@ public class FieldJsonParser implements JsonObjectParser<Field> {
 		return new Field(id, name, custom, orderable, navigable, searchable, schema);
 	}
 
-	public static GenericJsonArrayParser<Field> createFieldsArrayParser() {
+	public static JsonArrayParser<Iterable<Field>> createFieldsArrayParser() {
 		return GenericJsonArrayParser.create(new FieldJsonParser());
 	}
 }

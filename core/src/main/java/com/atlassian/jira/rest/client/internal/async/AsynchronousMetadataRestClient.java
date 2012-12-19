@@ -41,7 +41,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 	private final GenericJsonArrayParser<Resolution> resolutionsJsonParser = GenericJsonArrayParser.create(resolutionJsonParser);
 	private final IssueLinkTypesJsonParser issueLinkTypesJsonParser = new IssueLinkTypesJsonParser();
-	private final GenericJsonArrayParser<Field> fieldsJsonParser = FieldJsonParser.createFieldsArrayParser();
+	private final JsonArrayParser<Iterable<Field>> fieldsJsonParser = FieldJsonParser.createFieldsArrayParser();
 	private final URI baseUri;
 
 	public AsynchronousMetadataRestClient(final URI baseUri, HttpClient httpClient) {

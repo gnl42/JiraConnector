@@ -125,13 +125,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		this.providedSchema = providedSchema;
 	}
 
-	static Iterable<String> parseExpandos(JSONObject json) throws JSONException {
+	static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
 		final String expando = json.getString("expand");
 		return Splitter.on(',').split(expando);
 	}
 
 
-	private <T> Collection<T> parseArray(JSONObject jsonObject, JsonWeakParser<T> jsonParser, String arrayAttribute)
+	private <T> Collection<T> parseArray(final JSONObject jsonObject, final JsonWeakParser<T> jsonParser, final String arrayAttribute)
 			throws JSONException {
 //        String type = jsonObject.getString("type");
 //        final String name = jsonObject.getString("name");
@@ -146,14 +146,14 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return res;
 	}
 
-	private <T> Collection<T> parseOptionalArrayNotNullable(JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+	private <T> Collection<T> parseOptionalArrayNotNullable(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
 			throws JSONException {
 		Collection<T> res = parseOptionalArray(json, jsonParser, path);
 		return res == null ? Collections.<T>emptyList() : res;
 	}
 
 	@Nullable
-	private <T> Collection<T> parseOptionalArray(JSONObject json, JsonWeakParser<T> jsonParser, String... path)
+	private <T> Collection<T> parseOptionalArray(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
 			throws JSONException {
 		final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
 		if (jsonArray == null) {
@@ -166,7 +166,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return res;
 	}
 
-	private String getFieldStringValue(JSONObject json, String attributeName) throws JSONException {
+	private String getFieldStringValue(final JSONObject json, final String attributeName) throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 
 		final Object summaryObject = fieldsJson.get(attributeName);
@@ -179,7 +179,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		throw new JSONException("Cannot parse [" + attributeName + "] from available fields");
 	}
 
-	private JSONObject getFieldUnisex(JSONObject json, String attributeName) throws JSONException {
+	private JSONObject getFieldUnisex(final JSONObject json, final String attributeName) throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 		final JSONObject fieldJson = fieldsJson.getJSONObject(attributeName);
 		if (fieldJson.has(VALUE_ATTR)) {
@@ -190,13 +190,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Nullable
-	private String getOptionalFieldStringUnisex(JSONObject json, String attributeName)
+	private String getOptionalFieldStringUnisex(final JSONObject json, final String attributeName)
 			throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 		return JsonParseUtil.getOptionalString(fieldsJson, attributeName);
 	}
 
-	private String getFieldStringUnisex(JSONObject json, String attributeName) throws JSONException {
+	private String getFieldStringUnisex(final JSONObject json, final String attributeName) throws JSONException {
 		final JSONObject fieldsJson = json.getJSONObject(FIELDS);
 		final Object fieldJson = fieldsJson.get(attributeName);
 		if (fieldJson instanceof JSONObject) {
@@ -206,7 +206,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Override
-	public Issue parse(JSONObject s) throws JSONException {
+	public Issue parse(final JSONObject s) throws JSONException {
 		final BasicIssue basicIssue = basicIssueJsonParser.parse(s);
 		final Iterable<String> expandos = parseExpandos(s);
 		final JSONObject jsonFields = s.getJSONObject(FIELDS);
@@ -281,14 +281,14 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
 	}
 
-	private URI parseTransisionsUri(String transitionsUriString, URI selfUri) {
+	private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) {
 		return transitionsUriString != null
 				? JsonParseUtil.parseURI(transitionsUriString)
 				: UriBuilder.fromUri(selfUri).path("transitions").queryParam("expand", "transitions.fields").build();
 	}
 
 	@Nullable
-	private <T> T getOptionalField(JSONObject s, final String fieldId, JsonObjectParser<T> jsonParser)
+	private <T> T getOptionalField(final JSONObject s, final String fieldId, final JsonObjectParser<T> jsonParser)
 			throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
 		// for fields like assignee (when unassigned) value attribute may be missing completely
@@ -298,7 +298,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return null;
 	}
 
-	private Collection<IssueField> parseFields(JSONObject issueJson) throws JSONException {
+	private Collection<IssueField> parseFields(final JSONObject issueJson) throws JSONException {
 		final JSONObject names = (providedNames != null) ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
 		final Map<String, String> namesMap = parseNames(names);
 		final JSONObject schema = (providedSchema != null) ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);
@@ -331,7 +331,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return res;
 	}
 
-	private Map<String, String> parseSchema(JSONObject json) throws JSONException {
+	private Map<String, String> parseSchema(final JSONObject json) throws JSONException {
 		final HashMap<String, String> res = Maps.newHashMap();
 		final Iterator<String> it = JsonParseUtil.getStringKeys(json);
 		while (it.hasNext()) {
@@ -343,7 +343,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		return res;
 	}
 
-	private Map<String, String> parseNames(JSONObject json) throws JSONException {
+	private Map<String, String> parseNames(final JSONObject json) throws JSONException {
 		final HashMap<String, String> res = Maps.newHashMap();
 		final Iterator<String> iterator = getStringKeys(json);
 		while (iterator.hasNext()) {

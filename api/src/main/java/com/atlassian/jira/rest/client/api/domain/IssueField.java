@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.Objects;
 
@@ -24,7 +25,7 @@ import com.google.common.base.Objects;
  *
  * @since v0.1
  */
-public class IssueField implements NamedEntity {
+public class IssueField implements NamedEntity, IdentifiableEntity<String> {
 
 	private final String id;
 	private final String name;
