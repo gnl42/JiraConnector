@@ -21,8 +21,6 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
-import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -40,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.google.common.collect.Iterables.toArray;
@@ -179,25 +176,6 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	}
 
 	@Test
-	public void testGetIssueWithNoViewWatchersPermission() {
-		setUser1();
-		assertTrue(client.getIssueClient().getIssue("TST-1").claim().getWatchers().isWatching());
-
-		setUser2();
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		assertFalse(issue.getWatchers().isWatching());
-		client.getIssueClient().watch(issue.getWatchers().getSelf()).claim();
-		final Issue watchedIssue = client.getIssueClient().getIssue("TST-1").claim();
-		assertTrue(watchedIssue.getWatchers().isWatching());
-		assertEquals(2, watchedIssue.getWatchers().getNumWatchers());
-
-		// although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
-		// have view watchers and voters permission
-		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).claim()
-				.getUsers(), containsInAnyOrder(USER2));
-	}
-
-	@Test
 	public void testGetVoter() {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
@@ -251,26 +229,6 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		assertTrue(Iterables
 				.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
 						.<Transition.Field>emptyList())));
-	}
-
-	@Test
-	public void testTransition() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
-		assertEquals(4, Iterables.size(transitions));
-		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
-				.<Transition.Field>emptyList());
-		assertTrue(Iterables.contains(transitions, startProgressTransition));
-
-		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
-				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
-		final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
-		assertEquals("In Progress", transitionedIssue.getStatus().getName());
-		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
-		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
-		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections
-				.<Transition.Field>emptyList());
-		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)

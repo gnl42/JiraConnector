@@ -46,11 +46,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.TestUtil.assertExpectedErrorCollection;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
@@ -736,6 +738,45 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertNull(comment.getAuthor());
 		assertNull(comment.getUpdateAuthor());
 
+	}
+
+	@Test
+	public void testGetIssueWithNoViewWatchersPermission() {
+		setUser1();
+		assertTrue(client.getIssueClient().getIssue("TST-1").claim().getWatchers().isWatching());
+
+		setUser2();
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		assertFalse(issue.getWatchers().isWatching());
+		client.getIssueClient().watch(issue.getWatchers().getSelf()).claim();
+		final Issue watchedIssue = client.getIssueClient().getIssue("TST-1").claim();
+		assertTrue(watchedIssue.getWatchers().isWatching());
+		assertEquals(2, watchedIssue.getWatchers().getNumWatchers());
+
+		// although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
+		// have view watchers and voters permission
+		assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).claim().getUsers(),
+				containsInAnyOrder(USER2));
+	}
+
+	@Test
+	public void testTransition() throws Exception {
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+		assertEquals(4, Iterables.size(transitions));
+		final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+				.<Transition.Field>emptyList());
+		assertTrue(Iterables.contains(transitions, startProgressTransition));
+
+		client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
+				Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
+		final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
+		assertEquals("In Progress", transitionedIssue.getStatus().getName());
+		final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
+		assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
+		final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections
+				.<Transition.Field>emptyList());
+		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
 }
