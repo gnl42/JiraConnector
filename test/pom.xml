@@ -67,10 +67,6 @@
                     <artifactId>jersey-server</artifactId>
                 </exclusion>
 				<exclusion>
-					<groupId>com.sun.jersey.contribs</groupId>
-					<artifactId>jersey-apache-client</artifactId>
-				</exclusion>
-                <exclusion>
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
                 </exclusion>
@@ -92,7 +88,29 @@
                 <jira.version>5.0</jira.version>
                 <jira.data.version>5.0</jira.data.version>
                 <jira.test-lib.version>5.0</jira.test-lib.version>
-            </properties>
+				<testkit.version>5.0.24</testkit.version>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.atlassian.jira</groupId>
+					<artifactId>jira-func-tests</artifactId>
+					<version>${jira.test-lib.version}</version>
+					<exclusions>
+						<exclusion>
+							<groupId>com.sun.jersey</groupId>
+							<artifactId>jersey-server</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.sun.jersey.contribs</groupId>
+							<artifactId>jersey-apache-client</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>javax.jms</groupId>
+							<artifactId>jms</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			</dependencies>
         </profile>
         <profile>
             <id>jira-5.1</id>
@@ -103,7 +121,29 @@
                 <jira.version>5.1</jira.version>
                 <jira.data.version>5.1</jira.data.version>
                 <jira.test-lib.version>5.1</jira.test-lib.version>
+				<testkit.version>5.0.24</testkit.version>
             </properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.atlassian.jira</groupId>
+					<artifactId>jira-func-tests</artifactId>
+					<version>${jira.test-lib.version}</version>
+					<exclusions>
+						<exclusion>
+							<groupId>com.sun.jersey</groupId>
+							<artifactId>jersey-server</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.sun.jersey.contribs</groupId>
+							<artifactId>jersey-apache-client</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>javax.jms</groupId>
+							<artifactId>jms</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			</dependencies>
         </profile>
         <profile>
             <id>jira-5.2</id>
