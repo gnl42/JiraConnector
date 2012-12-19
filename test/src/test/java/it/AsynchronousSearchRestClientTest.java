@@ -30,13 +30,14 @@ import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Matchers;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
-import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -142,13 +143,18 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertNull(issue.getResolution());
 		assertNull(issue.getChangelog());
 		assertNull(issue.getAttachments());
-//		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
-//		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
+		assertEquals(toDateTimeIgnoringTimezone("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
+		assertEquals(toDateTimeIgnoringTimezone("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
 		assertEquals(IntegrationTestUtil.USER1_FULL, issue.getReporter());
 		assertEquals(IntegrationTestUtil.USER_ADMIN_FULL, issue.getAssignee());
 		assertEquals(new BasicProject(resolveURI("rest/api/2/project/TST"), "TST", "Test Project"), issue.getProject());
 		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
 		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
 		assertEquals(new BasicIssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false), issue.getIssueType());
+	}
+
+	// JIRA does not store timezone information in its dump file
+	private DateTime toDateTimeIgnoringTimezone(final String date) {
+		return ISODateTimeFormat.dateTimeParser().parseDateTime(date);
 	}
 }

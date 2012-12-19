@@ -43,7 +43,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>5.0</jira.version>
+        <jira.version>5.2</jira.version>
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
         <remotable.plugins.version>0.6.0</remotable.plugins.version>
