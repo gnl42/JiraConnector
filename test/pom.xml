@@ -12,6 +12,10 @@
     <name>JIRA REST Java Client - Tests</name>
     <description>Tests of JIRA REST Java Client.</description>
 
+	<properties>
+		<plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
+	</properties>
+
     <dependencies>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
@@ -62,6 +66,10 @@
                     <groupId>com.sun.jersey</groupId>
                     <artifactId>jersey-server</artifactId>
                 </exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-apache-client</artifactId>
+				</exclusion>
                 <exclusion>
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
@@ -71,7 +79,7 @@
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-nimble-func-tests</artifactId>
-            <version>0.2.2</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     <profiles>
