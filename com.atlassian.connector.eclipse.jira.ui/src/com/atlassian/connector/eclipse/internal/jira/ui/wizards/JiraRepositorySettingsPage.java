@@ -83,6 +83,7 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiPlugin;
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Jacek Jaroczynski
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
@@ -122,7 +123,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
 				Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
 		setNeedsProxy(true);
-		setNeedsHttpAuth(true);
+		setNeedsHttpAuth(false);
 	}
 
 	@Override
