@@ -1,4 +1,3 @@
 Please see project documentation at https://studio.atlassian.com/wiki/display/JRJC/.
 
-In order to start JIRA please execute
-    atlas-debug from test directory.
+In order to start JIRA please execute atlas-debug from test directory.
