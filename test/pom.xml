@@ -85,7 +85,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>5.2</jira.version>
+                <jira.version>5.0</jira.version>
                 <jira.data.version>5.0</jira.data.version>
                 <jira.test-lib.version>5.0</jira.test-lib.version>
 				<testkit.version>5.0.24</testkit.version>
