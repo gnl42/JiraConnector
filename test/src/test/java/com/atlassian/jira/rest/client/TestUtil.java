@@ -36,6 +36,7 @@ import java.util.Collection;
 import static com.google.common.collect.Iterators.getOnlyElement;
 
 public class TestUtil {
+	private static DateTimeFormatter universalDateTimeParser = ISODateTimeFormat.dateTimeParser();
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.date();
 
@@ -44,7 +45,7 @@ public class TestUtil {
 	}
 
 	public static DateTime toDateTime(String isoDateTimeSt) {
-		return formatter.parseDateTime(isoDateTimeSt);
+		return universalDateTimeParser.parseDateTime(isoDateTimeSt);
 	}
 
 	@SuppressWarnings("unused")
