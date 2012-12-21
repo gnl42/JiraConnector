@@ -226,10 +226,10 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final String dueDateString = getOptionalFieldStringUnisex(s, DUE_DATE_FIELD.id);
 		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
-		final BasicPriority priority = getOptionalField(s, PRIORITY_FIELD.id, priorityJsonParser);
-		final BasicResolution resolution = getOptionalField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
-		final User assignee = getOptionalField(s, ASSIGNEE_FIELD.id, userJsonParser);
-		final User reporter = getOptionalField(s, REPORTER_FIELD.id, userJsonParser);
+		final BasicPriority priority = getOptionalNestedField(s, PRIORITY_FIELD.id, priorityJsonParser);
+		final BasicResolution resolution = getOptionalNestedField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
+		final User assignee = getOptionalNestedField(s, ASSIGNEE_FIELD.id, userJsonParser);
+		final User reporter = getOptionalNestedField(s, REPORTER_FIELD.id, userJsonParser);
 
 		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_FIELD.id));
 		final Collection<IssueLink> issueLinks;
@@ -237,7 +237,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 		Collection<Subtask> subtasks = parseOptionalArray(s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
-		final BasicVotes votes = getOptionalField(s, VOTES_FIELD.id, votesJsonParser);
+		final BasicVotes votes = getOptionalNestedField(s, VOTES_FIELD.id, votesJsonParser);
 		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_FIELD.id));
 
 		final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
@@ -265,8 +265,8 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		}
 
 
-		final BasicWatchers watchers = getOptionalField(s, WATCHER_FIELD.id, watchersJsonParser);
-		final TimeTracking timeTracking = getOptionalField(s, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
+		final BasicWatchers watchers = getOptionalNestedField(s, WATCHER_FIELD.id, watchersJsonParser);
+		final TimeTracking timeTracking = getOptionalNestedField(s, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
 		final Set<String> labels = Sets
 				.newHashSet(parseOptionalArrayNotNullable(s, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
@@ -287,7 +287,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Nullable
-	private <T> T getOptionalField(final JSONObject s, final String fieldId, final JsonObjectParser<T> jsonParser)
+	private <T> T getOptionalNestedField(final JSONObject s, final String fieldId, final JsonObjectParser<T> jsonParser)
 			throws JSONException {
 		final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
 		// for fields like assignee (when unassigned) value attribute may be missing completely
