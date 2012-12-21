@@ -38,7 +38,6 @@ import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.codehaus.jettison.json.JSONArray;
@@ -211,7 +210,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final Iterable<String> expandos = parseExpandos(s);
 		final JSONObject jsonFields = s.getJSONObject(FIELDS);
 		final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
-		final Collection<Comment> comments = (commentsJson == null) ? Lists.<Comment>newArrayList()
+		final Collection<Comment> comments = (commentsJson == null) ? Collections.<Comment>emptyList()
 				: parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
 
 		final String summary = getFieldStringValue(s, SUMMARY_FIELD.id);
