@@ -28,18 +28,18 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 
 	private final String id;
 	private final String name;
-	private final FieldType custom;
+	private final FieldType fieldType;
 	private final boolean orderable;
 	private final boolean navigable;
 	private final boolean searchable;
 	@Nullable
 	private final FieldSchema schema;
 
-	public Field(String id, String name, FieldType custom, boolean orderable, boolean navigable, boolean searchable,
+	public Field(String id, String name, FieldType fieldType, boolean orderable, boolean navigable, boolean searchable,
 			@Nullable FieldSchema schema) {
 		this.id = id;
 		this.name = name;
-		this.custom = custom;
+		this.fieldType = fieldType;
 		this.orderable = orderable;
 		this.navigable = navigable;
 		this.searchable = searchable;
@@ -55,8 +55,8 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 	}
 
 	@SuppressWarnings("unused")
-	public FieldType getCustom() {
-		return custom;
+	public FieldType getFieldType() {
+		return fieldType;
 	}
 
 	@SuppressWarnings("unused")
@@ -82,7 +82,7 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(id, name, custom, orderable, navigable, searchable, schema);
+		return Objects.hashCode(id, name, fieldType, orderable, navigable, searchable, schema);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 			final Field that = (Field) obj;
 			return Objects.equal(this.id, that.id)
 					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.custom, that.custom)
+					&& Objects.equal(this.fieldType, that.fieldType)
 					&& Objects.equal(this.orderable, that.orderable)
 					&& Objects.equal(this.navigable, that.navigable)
 					&& Objects.equal(this.searchable, that.searchable)
@@ -104,7 +104,7 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 		return Objects.toStringHelper(this)
 				.add("id", id)
 				.add("name", name)
-				.add("custom", custom)
+				.add("fieldType", fieldType)
 				.add("orderable", orderable)
 				.add("navigable", navigable)
 				.add("searchable", searchable)
