@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2010 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.atlassian.jira.rest.client.plugin;
 
 import com.atlassian.httpclient.api.HttpClient;
@@ -13,14 +29,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @PublicComponent(IssueRestClient.class)
 public final class IssueRestClientServiceFactory extends AbstractRestClientServiceFactory<IssueRestClient>
 {
-    private final MetadataRestClientServiceFactory metadataRestClient;
-    private final SessionRestClientServiceFactory sessionRestClient;
+    private final MetadataRestClientServiceFactory metadataRestClientServiceFactory;
+    private final SessionRestClientServiceFactory sessionRestClientServiceFactory;
 
     @Inject
-    public IssueRestClientServiceFactory(MetadataRestClientServiceFactory metadataRestClient, SessionRestClientServiceFactory sessionRestClient)
+    public IssueRestClientServiceFactory(MetadataRestClientServiceFactory metadataRestClientServiceFactory, SessionRestClientServiceFactory sessionRestClientServiceFactory)
     {
-        this.metadataRestClient = checkNotNull(metadataRestClient);
-        this.sessionRestClient = checkNotNull(sessionRestClient);
+        this.metadataRestClientServiceFactory = checkNotNull(metadataRestClientServiceFactory);
+        this.sessionRestClientServiceFactory = checkNotNull(sessionRestClientServiceFactory);
     }
 
     @Override
@@ -29,7 +45,7 @@ public final class IssueRestClientServiceFactory extends AbstractRestClientServi
         return new AsynchronousIssueRestClient(
                 baseUri,
                 httpClient,
-                sessionRestClient.getService(baseUri, httpClient),
-                metadataRestClient.getService(baseUri, httpClient));
+                sessionRestClientServiceFactory.getService(baseUri, httpClient),
+                metadataRestClientServiceFactory.getService(baseUri, httpClient));
     }
 }

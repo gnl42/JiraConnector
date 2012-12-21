@@ -9,7 +9,10 @@
     
     <component key="issueClient" interface="com.atlassian.jira.rest.client.api.IssueRestClient"
                class="com.atlassian.jira.rest.client.plugin.IssueRestClientServiceFactory" public="true" />
-    
+
+    <component key="componentClient" interface="com.atlassian.jira.rest.client.api.ComponentRestClient"
+               class="com.atlassian.jira.rest.client.plugin.ComponentRestClientServiceFactory" public="true" />
+
     <component key="metadataClient" interface="com.atlassian.jira.rest.client.api.MetadataRestClient"
                    class="com.atlassian.jira.rest.client.plugin.MetadataRestClientServiceFactory" public="true" />
     
