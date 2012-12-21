@@ -29,7 +29,6 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.Iterables;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -37,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
+import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -108,11 +108,6 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 				client.getSearchClient().searchJql("reporter=a/user/with/slash").claim();
 			}
 		});
-	}
-
-	// TODO: REFACTOR AFTER MERGE
-	private static <K> void assertEmptyIterable(Iterable<K> iterable) {
-		assertThat(iterable, Matchers.<K>emptyIterable());
 	}
 
 	@Test

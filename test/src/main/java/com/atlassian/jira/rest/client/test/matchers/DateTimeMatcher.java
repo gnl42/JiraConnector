@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client;
+package com.atlassian.jira.rest.client.test.matchers;
 
 import org.hamcrest.Description;
 import org.joda.time.DateTime;
@@ -39,6 +39,6 @@ public class DateTimeMatcher extends TypeSafeMatcher<DateTime> {
 
 	@Override
 	public void describeTo(Description description) {
-		description.appendText("datetime equal to  " + expected);
+		description.appendText("datetime equal to " + expected);
 	}
 }

@@ -17,20 +17,17 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
-import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Filter;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN_LATEST;

@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
-import com.atlassian.jira.rest.client.JSONObjectMatcher;
+import com.atlassian.jira.rest.client.test.matchers.JSONObjectMatcher;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import org.junit.Assert;

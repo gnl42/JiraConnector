@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client;
+package com.atlassian.jira.rest.client.test.matchers;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.Description;

@@ -16,7 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.DateTimeMatcher;
+import com.atlassian.jira.rest.client.test.matchers.DateTimeMatcher;
 import com.atlassian.jira.rest.client.api.domain.Version;
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;

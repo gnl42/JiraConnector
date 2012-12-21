@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.Iterators;
 import junit.framework.Assert;
 import org.apache.commons.lang.StringUtils;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
@@ -179,5 +180,9 @@ public class TestUtil {
 		} catch (com.atlassian.jira.rest.client.api.RestClientException e) {
 			Assert.assertEquals(e.getErrorCollections(), expectedErrors);
 		}
+	}
+
+	public static <K> void assertEmptyIterable(Iterable<K> iterable) {
+		org.junit.Assert.assertThat(iterable, Matchers.<K>emptyIterable());
 	}
 }
