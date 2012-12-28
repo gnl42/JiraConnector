@@ -416,7 +416,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueNonAscii() throws Exception {
-		String summary = "\u00C4\u00D6\u00DC\nnewline";
+		String summary = "\u00C4\u00D6\u00DC";
 		String description = "\"&\n\u00A9\\ ',><br/>&nbsp; ";
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
