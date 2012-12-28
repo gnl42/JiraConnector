@@ -422,8 +422,11 @@ public class JiraRestClientAdapter {
 		}
 		fields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
 
-		fields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
-				changedIssue.getSecurityLevel().getId())));
+		// TODO rest how to clear security level?
+		if (changedIssue.getSecurityLevel() != null) {
+			fields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+					changedIssue.getSecurityLevel().getId())));
+		}
 
 		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
 

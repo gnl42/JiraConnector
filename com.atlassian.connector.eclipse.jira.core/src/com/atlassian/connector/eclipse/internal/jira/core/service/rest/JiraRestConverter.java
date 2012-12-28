@@ -651,8 +651,10 @@ public class JiraRestConverter {
 	public static Iterable<com.atlassian.jira.rest.client.domain.Version> convert(Version[] reportedVersions) {
 		List<com.atlassian.jira.rest.client.domain.Version> outReportedVersions = new ArrayList<com.atlassian.jira.rest.client.domain.Version>();
 
-		for (Version version : reportedVersions) {
-			outReportedVersions.add(convert(version));
+		if (reportedVersions != null) {
+			for (Version version : reportedVersions) {
+				outReportedVersions.add(convert(version));
+			}
 		}
 
 		return outReportedVersions;
@@ -667,8 +669,10 @@ public class JiraRestConverter {
 	public static Iterable<BasicComponent> convert(Component[] components) {
 		List<BasicComponent> outComponents = new ArrayList<BasicComponent>();
 
-		for (Component component : components) {
-			outComponents.add(convert(component));
+		if (components != null) {
+			for (Component component : components) {
+				outComponents.add(convert(component));
+			}
 		}
 
 		return outComponents;

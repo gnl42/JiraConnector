@@ -195,6 +195,7 @@ public class JiraTestUtil {
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
+		issue.setPriority(client.getCache().getPriorities()[0]);
 		return issue;
 	}
 

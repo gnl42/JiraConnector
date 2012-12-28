@@ -78,6 +78,8 @@ public class JiraClientOfflineTest extends TestCase {
 			client.getServerInfo(null);
 			fail("Expected JiraServiceUnavailableException");
 		} catch (JiraServiceUnavailableException e) {
+		} catch (JiraException e) {
+			assertTrue(e.getMessage().contains("Client response status: 302. Https might be required."));
 		}
 	}
 
