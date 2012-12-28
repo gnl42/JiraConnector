@@ -431,8 +431,22 @@ public class JiraClientTest extends TestCase {
 		assertEquals("comment: \u00C4\u00D6\u00DC", issue.getComments()[0].getComment());
 	}
 
-	public void testUpdateIssueMultipleLinesOfText() throws Exception {
+	public void testIssueMultipleLinesOfSummary() throws Exception {
 		String summary = "line1\nline2";
+
+		try {
+			JiraIssue issue = JiraTestUtil.createIssue(client, summary);
+			assertEquals(summary, issue.getSummary());
+
+			issue = client.getIssueByKey(issue.getKey(), null);
+			assertEquals(summary, issue.getSummary());
+		} catch (JiraServiceUnavailableException e) {
+			assertTrue(e.getMessage().contains("The summary is invalid because it contains newline characters."));
+		}
+	}
+
+	public void testUpdateIssueMultipleLinesOfDescription() throws Exception {
+		String summary = "summary";
 		String description = "\nline2\n\nline4\n";
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
