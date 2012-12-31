@@ -32,6 +32,8 @@ public final class Comment implements Serializable {
 
 	private boolean markupDetected;
 
+	private String authorDisplayName;
+
 	public Comment(String comment, String author, String roleLvel, Date created) {
 		this.comment = comment;
 		this.author = author;
@@ -87,4 +89,11 @@ public final class Comment implements Serializable {
 		return this.author + ": " + this.comment; //$NON-NLS-1$
 	}
 
+	public void setAuthorDisplayName(String displayName) {
+		this.authorDisplayName = displayName;
+	}
+
+	public String getAuthorDisplayName() {
+		return authorDisplayName;
+	}
 }

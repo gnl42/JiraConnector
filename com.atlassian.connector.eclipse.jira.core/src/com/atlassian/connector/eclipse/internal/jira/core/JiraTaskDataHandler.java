@@ -554,7 +554,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (Comment comment : comments) {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_COMMENT + i);
 			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
-			taskComment.setAuthor(getPerson(data, client, comment.getAuthor(), null));
+			taskComment.setAuthor(getPerson(data, client, comment.getAuthorDisplayName(), null));
 			taskComment.setNumber(i);
 			String commentText = comment.getComment();
 			if (comment.isMarkupDetected()) {

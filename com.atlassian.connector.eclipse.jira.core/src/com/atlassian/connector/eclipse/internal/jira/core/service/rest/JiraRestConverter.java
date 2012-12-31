@@ -441,7 +441,8 @@ public class JiraRestConverter {
 	private static Comment convert(com.atlassian.jira.rest.client.domain.Comment comment) {
 		Comment outComment = new Comment();
 
-		outComment.setAuthor(comment.getAuthor().getDisplayName());
+		outComment.setAuthor(comment.getAuthor().getName());
+		outComment.setAuthorDisplayName(comment.getAuthor().getDisplayName());
 		outComment.setComment(comment.getBody());
 		outComment.setCreated(comment.getCreationDate().toDate());
 		outComment.setMarkupDetected(true);
