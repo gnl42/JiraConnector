@@ -580,7 +580,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_ATTACHMENT + i);
 			TaskAttachmentMapper taskAttachment = TaskAttachmentMapper.createFrom(attribute);
 			taskAttachment.setAttachmentId(attachment.getId());
-			taskAttachment.setAuthor(getPerson(data, client, attachment.getAuthor(), null));
+			taskAttachment.setAuthor(getPerson(data, client, attachment.getAuthorDisplayName(), null));
 			taskAttachment.setFileName(attachment.getName());
 			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
 				taskAttachment.setDescription(CONTEXT_ATTACHMENT_DESCRIPTION);
@@ -1107,8 +1107,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						anythingElse.removeAll(Arrays.asList(TaskAttribute.USER_ASSIGNED, TaskAttribute.COMMENT_NEW));
 						if (anythingElse.size() == 0) {
 							// no more changes, so that's a re-assign operation (we can't count on operationId == REASSIGN_OPERATION)
-							client.assignIssueTo(issue, getAssignee(taskData), newComment,
-									monitor);
+							client.assignIssueTo(issue, getAssignee(taskData), newComment, monitor);
 
 							handled = true;
 						}

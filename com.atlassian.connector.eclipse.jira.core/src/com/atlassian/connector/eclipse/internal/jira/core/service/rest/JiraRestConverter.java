@@ -419,7 +419,8 @@ public class JiraRestConverter {
 		Attachment outAttachment = new Attachment();
 
 		outAttachment.setId(attachment.getId().toString());
-		outAttachment.setAuthor(attachment.getAuthor().getDisplayName());
+		outAttachment.setAuthor(attachment.getAuthor().getName());
+		outAttachment.setAuthorDisplayName(attachment.getAuthor().getDisplayName());
 		outAttachment.setCreated(attachment.getCreationDate().toDate());
 		outAttachment.setName(attachment.getFilename());
 		outAttachment.setSize(attachment.getSize());

@@ -282,6 +282,7 @@ public class JiraClientTest extends TestCase {
 			client.addAttachment(issue, "", "testAttachEmptyFile.txt", new byte[0], null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
+			assertTrue(e.getMessage().contains("Cannot attach empty file"));
 		}
 
 		client.addAttachment(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' }, null);

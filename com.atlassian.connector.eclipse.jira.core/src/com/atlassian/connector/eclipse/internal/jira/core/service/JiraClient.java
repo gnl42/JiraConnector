@@ -237,6 +237,10 @@ public class JiraClient {
 			IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("addAttachment", null); //$NON-NLS-1$
 
+		if (content.length == 0) {
+			throw new JiraException("Cannot attach empty file");
+		}
+
 		try {
 			restClient.addAttachment(jiraIssue.getKey(), content, filename);
 		} catch (RestClientException e) {

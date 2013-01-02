@@ -34,6 +34,8 @@ public class Attachment implements Serializable {
 
 	private URI content;
 
+	private String authorDisplayName;
+
 	public Attachment() {
 	}
 
@@ -96,6 +98,14 @@ public class Attachment implements Serializable {
 
 	public void setContent(URI content) {
 		this.content = content;
+	}
+
+	public void setAuthorDisplayName(String authorDisplayName) {
+		this.authorDisplayName = authorDisplayName;
+	}
+
+	public String getAuthorDisplayName() {
+		return authorDisplayName;
 	}
 
 }
