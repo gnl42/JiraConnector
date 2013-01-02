@@ -44,6 +44,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
@@ -497,23 +498,28 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testBasicAuth() throws Exception {
-		basicAuth(JiraFixture.ENTERPRISE_3_13_BASIC_AUTH.getRepositoryUrl());
+		basicAuth(JiraFixture.SNAPSHOT.getRepositoryUrl());
 	}
 
 	private void basicAuth(String url) throws Exception {
-		UserCredentials credentials = CommonTestUtil.getCredentials(PrivilegeLevel.GUEST);
+
+		// test case that BasicAuth credentials by Mylyn does not override Repository Credentials (sent as BasicAuth by REST client)
+		UserCredentials credentials = CommonTestUtil.getCredentials(PrivilegeLevel.ANONYMOUS);
 		UserCredentials httpCredentials = CommonTestUtil.getCredentials(PrivilegeLevel.USER);
 		WebLocation location = new WebLocation(url, credentials.getUserName(), credentials.getPassword());
 		location.setCredentials(AuthenticationType.HTTP, httpCredentials.getUserName(), httpCredentials.getPassword());
 		client = new JiraClient(location);
-		assertNotNull(client.getCache().getServerInfo(null));
 
-		client = new JiraClient(new WebLocation(url, credentials.getUserName(), credentials.getPassword()));
 		try {
 			assertNotNull(client.getCache().getServerInfo(null));
-			fail("Expected JiraServiceUnavailableException");
-		} catch (JiraServiceUnavailableException expected) {
+			fail("Expected JiraAuthenticationException");
+		} catch (JiraAuthenticationException expected) {
 		}
+
+		// test credentials to make sure that above exception does not happen
+		credentials = CommonTestUtil.getCredentials(PrivilegeLevel.USER);
+		client = new JiraClient(new WebLocation(url, credentials.getUserName(), credentials.getPassword()));
+		assertNotNull(client.getCache().getServerInfo(null));
 	}
 
 	public void testCharacterEncoding() throws Exception {
