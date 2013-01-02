@@ -36,7 +36,6 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.Arrays;
 
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.NAMES;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
