@@ -329,17 +329,22 @@ public class JiraRestClientAdapter {
 				Long.parseLong(issue.getType().getId()), issue.getSummary());
 
 		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()))
-				.setAssignee(new BasicUser(null, issue.getAssignee(), null))
 				.setComponents(JiraRestConverter.convert(issue.getComponents()))
 				.setDescription(issue.getDescription());
+
+		if (issue.getAssignee() != null) {
+			issueInputBuilder.setAssignee(new BasicUser(null, issue.getAssignee(), null));
+		}
 
 		if (issue.getDue() != null) {
 			issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
 		}
 
-		issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
+		if (issue.getFixVersions() != null) {
+			issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
+		}
 
-		if (StringUtils.isEmpty(issue.getPriority().getId())) {
+		if (issue.getPriority() == null || StringUtils.isEmpty(issue.getPriority().getId())) {
 			throw new JiraException("Priority not set");
 		}
 		issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()),
@@ -362,6 +367,9 @@ public class JiraRestClientAdapter {
 		if (!StringUtils.isEmpty(issue.getParentKey())) {
 			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(
 					JiraRestFields.KEY, issue.getParentKey())));
+		} else if (!StringUtils.isEmpty(issue.getParentId())) {
+			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(
+					JiraRestFields.ID, issue.getParentId())));
 		}
 
 		return call(new Callable<String>() {

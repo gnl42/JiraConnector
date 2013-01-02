@@ -72,14 +72,14 @@ public class JiraTestUtil {
 	}
 
 	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
-		issue = client.createIssue(issue, null);
+		JiraIssue createdIssue = client.createIssue(issue, null);
 		List<JiraIssue> list = testIssues.get(client);
 		if (list == null) {
 			list = new ArrayList<JiraIssue>();
 			testIssues.put(client, list);
 		}
-		list.add(issue);
-		return issue;
+		list.add(createdIssue);
+		return createdIssue;
 	}
 
 	public static JiraIssue createIssue(JiraClient client, String summary) throws JiraException {
@@ -208,6 +208,7 @@ public class JiraTestUtil {
 		issue.setParentId(parent.getId());
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
+		issue.setPriority(client.getCache().getPriorities()[0]);
 		for (IssueType type : project.getIssueTypes()) {
 			if (type.isSubTaskType()) {
 				issue.setType(type);

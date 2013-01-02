@@ -329,6 +329,7 @@ public class JiraClientTest extends TestCase {
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testCreateIssue");
 		issue.setAssignee(client.getUserName());
+		issue.setPriority(client.getCache().getPriorities()[0]);
 
 		JiraIssue createdIssue = JiraTestUtil.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
@@ -336,12 +337,15 @@ public class JiraClientTest extends TestCase {
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
 		assertEquals(issue.getAssignee(), createdIssue.getAssignee());
 		assertEquals(client.getUserName(), createdIssue.getReporter());
+		assertEquals(issue.getPriority(), createdIssue.getPriority());
 		// TODO why are these null?
 		// assertNotNull(issue.getCreated());
 		// assertNotNull(issue.getUpdated());
 
 		// change privilege level
 		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
+		issue.setAssignee(null);
+		issue.setFixVersions(null);
 
 		createdIssue = JiraTestUtil.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
