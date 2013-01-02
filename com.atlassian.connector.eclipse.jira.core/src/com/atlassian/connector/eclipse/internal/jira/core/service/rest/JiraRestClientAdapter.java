@@ -282,7 +282,9 @@ public class JiraRestClientAdapter {
 		for (IssueField transitionField : transitionFields) {
 			if (transitionField.isRequired()) {
 				String[] values = issue.getFieldValues(transitionField.getName());
-				if (values.length > 0) {
+				if (values.length > 0 && transitionField.getName().equals(JiraRestFields.SUMMARY)) {
+					fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
+				} else if (values.length > 0) {
 					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
 							JiraRestFields.NAME, values[0])));
 				} else {
@@ -437,7 +439,7 @@ public class JiraRestClientAdapter {
 		}
 
 		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
-
+		fields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
 		fields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription()));
 
 		fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,

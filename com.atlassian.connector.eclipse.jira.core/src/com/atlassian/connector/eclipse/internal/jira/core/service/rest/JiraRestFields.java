@@ -52,4 +52,6 @@ public class JiraRestFields {
 
 	static final String ENVIRONMENT = "environment"; //$NON-NLS-1$
 
+	public static final String SUMMARY = "summary"; //$NON-NLS-1$
+
 }

@@ -396,6 +396,7 @@ public class JiraClientTest extends TestCase {
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testUpdateIssue");
 		issue.setAssignee(client.getUserName());
+		issue.setPriority(client.getCache().getPriorities()[0]);
 
 		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueChanged");
@@ -416,6 +417,8 @@ public class JiraClientTest extends TestCase {
 		}
 
 		issue.setSummary("testUpdateIssueGuest");
+		issue.setAssignee(null);
+		issue.setFixVersions(null);
 		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
