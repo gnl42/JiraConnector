@@ -48,7 +48,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthentica
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraFixture;
 import com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil;
 import com.atlassian.connector.eclipse.jira.tests.util.MockIssueCollector;
@@ -455,7 +454,7 @@ public class JiraClientTest extends TestCase {
 
 			issue = client.getIssueByKey(issue.getKey(), null);
 			assertEquals(summary, issue.getSummary());
-		} catch (JiraServiceUnavailableException e) {
+		} catch (JiraException e) {
 			assertTrue(e.getMessage().contains("The summary is invalid because it contains newline characters."));
 		}
 	}
