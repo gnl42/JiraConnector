@@ -192,39 +192,48 @@ public class JiraClientTest extends TestCase {
 		}
 
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "", null);
+			client.assignIssueTo(issue, "", "", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 			assertThat(e.getHtmlMessage(), containsString("Issues must be assigned."));
+		} catch (JiraException e) {
+			assertThat(e.getMessage(), containsString("Issues must be assigned."));
 		}
 
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+			client.assignIssueTo(issue, client.getUserName(), "", null);
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
+		} catch (JiraException e) {
+			assertEquals("Issue already assigned to (" + client.getUserName() + ").", e.getMessage());
 		}
 
 		String guestUsername = CommonTestUtil.getCredentials(PrivilegeLevel.GUEST).getUserName();
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
+			client.assignIssueTo(issue, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
 			assertThat(
 					e.getHtmlMessage(),
 					either(containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
 							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
+		} catch (JiraException e) {
+			assertThat(
+					e.getMessage(),
+					either(containsString("User 'guest@mylyn.eclipse.org' cannot be assigned issues.")).or(
+							equalTo("User &#39;guest@mylyn.eclipse.org&#39; cannot be assigned issues.")));
 		}
 
-		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "", null);
+		client.assignIssueTo(issue, "admin@mylyn.eclipse.org", "", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("admin@mylyn.eclipse.org", issue.getAssignee());
 
-		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+		client.assignIssueTo(issue, client.getUserName(), "", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(client.getUserName(), issue.getAssignee());
 
 		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+			client.assignIssueTo(issue, issue.getAssignee(), "", null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}

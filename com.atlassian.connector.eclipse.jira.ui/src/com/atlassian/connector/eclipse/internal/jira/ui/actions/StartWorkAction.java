@@ -260,7 +260,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 					final JiraIssue issue = getIssue(task);
 
 					if (!isAssignedToMe(taskData, task)) {
-						client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getCurrentUser(task), null, monitor);
+						client.assignIssueTo(issue, getCurrentUser(task), null, monitor);
 						shouldSynchronize = true;
 					}
 

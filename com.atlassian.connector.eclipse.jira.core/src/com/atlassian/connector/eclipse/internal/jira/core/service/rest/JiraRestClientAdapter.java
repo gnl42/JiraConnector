@@ -432,6 +432,9 @@ public class JiraRestClientAdapter {
 
 		fields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription()));
 
+		fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
+				changedIssue.getAssignee())));
+
 		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
 
 	}

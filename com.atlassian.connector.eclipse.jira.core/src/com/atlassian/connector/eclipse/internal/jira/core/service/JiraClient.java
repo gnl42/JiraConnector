@@ -208,7 +208,7 @@ public class JiraClient {
 //		}
 	}
 
-	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
+	public void assignIssueTo(JiraIssue issue, String user, String comment, IProgressMonitor monitor)
 			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("assignIssueTo", null); //$NON-NLS-1$
 		/*PLE-1188
@@ -216,6 +216,9 @@ public class JiraClient {
 		*/
 
 //		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+		if (user != null && user.equals(issue.getAssignee())) {
+			throw new JiraException("Issue already assigned to (" + user + ")."); //$NON-NLS-1$//$NON-NLS-2$
+		}
 
 		try {
 			restClient.assignIssue(issue.getKey(), user, comment);

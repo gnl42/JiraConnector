@@ -418,7 +418,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getId()); //$NON-NLS-1$
 		setAttributeValue(data, JiraAttribute.MODIFICATION_DATE, JiraUtil.dateToString(jiraIssue.getUpdated()));
 		setAttributeValue(data, JiraAttribute.USER_ASSIGNED,
-				getPerson(data, client, jiraIssue.getAssignee(), jiraIssue.getAssigneeName()));
+				getPerson(data, client, jiraIssue.getAssignee(), jiraIssue.getAssigneeDisplayName()));
 		setAttributeValue(data, JiraAttribute.USER_REPORTER,
 				getPerson(data, client, jiraIssue.getReporter(), jiraIssue.getReporterName()));
 		setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
@@ -1107,7 +1107,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						anythingElse.removeAll(Arrays.asList(TaskAttribute.USER_ASSIGNED, TaskAttribute.COMMENT_NEW));
 						if (anythingElse.size() == 0) {
 							// no more changes, so that's a re-assign operation (we can't count on operationId == REASSIGN_OPERATION)
-							client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getAssignee(taskData), newComment,
+							client.assignIssueTo(issue, getAssignee(taskData), newComment,
 									monitor);
 
 							handled = true;

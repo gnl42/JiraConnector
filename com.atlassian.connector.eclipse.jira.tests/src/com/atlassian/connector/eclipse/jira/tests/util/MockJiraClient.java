@@ -111,7 +111,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
+	public void assignIssueTo(JiraIssue issue, String user, String comment, IProgressMonitor monitor)
 			throws JiraException {
 		// ignore
 	}

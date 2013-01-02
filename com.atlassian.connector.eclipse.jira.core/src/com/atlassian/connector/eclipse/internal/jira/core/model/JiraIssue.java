@@ -541,7 +541,7 @@ public class JiraIssue implements Serializable {
 		this.reporterName = reporterName;
 	}
 
-	public String getAssigneeName() {
+	public String getAssigneeDisplayName() {
 		return assigneeName;
 	}
 
