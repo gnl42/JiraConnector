@@ -48,6 +48,15 @@ public class EntityHelper {
 		});
 	}
 
+	public static Iterable<String> toFileNamesList(Iterable<? extends Attachment> attachments) {
+		return Iterables.transform(attachments, new Function<Attachment, String>() {
+			@Override
+			public String apply(Attachment a) {
+				return a.getFilename();
+			}
+		});
+	}
+
 	@SuppressWarnings("unused")
 	public static <T> Iterable<String> toStringIdList(Iterable<IdentifiableEntity<T>> items) {
 		return Iterables.transform(items, new Function<IdentifiableEntity<T>, String>() {

@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -27,7 +28,7 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class Worklog {
+public class Worklog implements AddressableEntity {
 
 	private final URI self;
 	private final URI issueUri;

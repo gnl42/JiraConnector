@@ -25,18 +25,29 @@ import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.test.matchers.AddressableEntityMatchers;
+import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
 import com.google.common.collect.Iterables;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
-import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
+import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
@@ -113,8 +124,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 	@Test
 	public void jqlSearchShouldReturnIssueWithDetails() throws InvocationTargetException, IllegalAccessException {
 		final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").claim();
-		assertEquals(1, searchResult.getTotal());
-		final Issue issue = Iterables.get(searchResult.getIssues(), 0);
+		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
 
 		assertEquals("TST-7", issue.getKey());
 		assertEquals(Long.valueOf(10040), issue.getId());
@@ -123,8 +133,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertNull(issue.getDescription()); // by default search doesn't retrieve description
 		assertEquals(new BasicPriority(resolveURI("rest/api/2/priority/3"), 3L, "Major"), issue.getPriority());
 		assertEquals(new BasicStatus(resolveURI("rest/api/2/status/1"), "Open"), issue.getStatus());
-		assertEmptyIterable(issue.getComments());
-		assertEmptyIterable(issue.getComments());
+		assertEmptyIterable(issue.getComments());  // not expanded by default
 		assertEmptyIterable(issue.getComponents());
 		assertEmptyIterable(issue.getWorklogs());
 		assertEmptyIterable(issue.getSubtasks());
@@ -146,5 +155,94 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
 		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
 		assertEquals(new BasicIssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false), issue.getIssueType());
+	}
+
+	@Test
+	public void jqlSearchWithAllFieldsRequestedShouldReturnIssueWithAllFields() throws InvocationTargetException, IllegalAccessException {
+		final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-2", null, null, "*all").claim();
+		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+
+		assertEquals("TST-2", issue.getKey());
+		assertEquals("Testing attachem2", issue.getSummary());
+		assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
+		assertThat(issue.getComponents(), NamedEntityMatchers.entitiesWithNames("Component A", "Component B"));
+
+		// comments
+		final Iterable<Comment> comments = issue.getComments();
+		assertEquals(3, Iterables.size(comments));
+		assertEquals("a comment viewable only by jira-users", Iterables.getLast(comments).getBody());
+
+		// worklogs
+		final Iterable<Worklog> worklogs = issue.getWorklogs();
+		assertThat(worklogs, AddressableEntityMatchers.entitiesWithSelf(
+				resolveURI("rest/api/2/issue/10010/worklog/10010"),
+				resolveURI("rest/api/2/issue/10010/worklog/10011"),
+				resolveURI("rest/api/2/issue/10010/worklog/10012"),
+				resolveURI("rest/api/2/issue/10010/worklog/10020"),
+				resolveURI("rest/api/2/issue/10010/worklog/10021")
+		));
+
+		final Worklog actualWorklog = Iterables.getLast(worklogs);
+		final Worklog expectedWorklog = new Worklog(resolveURI("rest/api/2/issue/10010/worklog/10021"),
+				resolveURI("rest/api/latest/issue/10010"), IntegrationTestUtil.USER_ADMIN, IntegrationTestUtil.USER_ADMIN,
+				"Another work for 7 min", toDateTime("2010-08-27T15:00:02.104"), toDateTime("2010-08-27T15:00:02.104"),
+				toDateTime("2010-08-27T14:59:00.000"), 7, null);
+		assertEquals(expectedWorklog, actualWorklog);
+
+		// issue links
+		assertThat(issue.getIssueLinks(), IsIterableContainingInOrder.contains(
+				new IssueLink("TST-1", resolveURI("rest/api/2/issue/10000"), new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
+				new IssueLink("TST-1", resolveURI("rest/api/2/issue/10000"), new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
+		));
+
+		// fix versions
+		final Version actualFixVersion = Iterables.getOnlyElement(issue.getFixVersions());
+		final Version expectedFixVersion = new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toDateTime("2010-08-25T00:00:00.000"));
+		assertEquals(expectedFixVersion, actualFixVersion);
+
+		// affected versions
+		assertThat(issue.getAffectedVersions(), IsIterableContainingInOrder.contains(
+				new Version(resolveURI("rest/api/2/version/10001"), 10001L, "1", "initial version", false, false, null),
+				new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toDateTime("2010-08-25T00:00:00.000"))
+		));
+
+		// dates
+		assertNull(issue.getDueDate());
+		assertEquals(toDateTime("2010-08-30T10:49:33.000"), issue.getUpdateDate());
+		assertEquals(toDateTime("2010-07-26T13:29:18.000"), issue.getCreationDate());
+
+		// attachments
+		final Iterable<String> attachmentsNames = EntityHelper.toFileNamesList(issue.getAttachments());
+		assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
+				"apache-tomcat-5.5.30.zip", "jira_logo.gif", "snipe.png", "transparent-png.png"));
+	}
+
+	@Test
+	public void jqlSearchShouldReturnIssueWithLabelsAndDueDate() throws Exception {
+		final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-1").claim();
+		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+		assertEquals("TST-1", issue.getKey());
+		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
+		assertEquals(toDateTime("2010-07-05T00:00:00.000"), issue.getDueDate());
+	}
+
+	@Test
+	public void jqlSearchWithMinimalFieldSetShouldReturnParseableIssues() throws Exception {
+		final String fields = "summary,issuetype,created,updated,project,status";
+		final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-1", null, null, fields).claim();
+		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+		assertEquals("TST-1", issue.getKey());
+		assertEquals("My sample test", issue.getSummary());
+		assertEquals("Bug", issue.getIssueType().getName());
+		assertEquals(toDateTime("2010-07-23T12:16:56.000"), issue.getCreationDate());
+		assertEquals(toDateTime("2010-08-17T16:36:29.000"), issue.getUpdateDate());
+		assertEquals("Test Project", issue.getProject().getName());
+		assertEquals(Long.valueOf(10000), issue.getId());
+		assertEquals("Open", issue.getStatus().getName());
+
+		// this issue has labels, but they were not returned by JIRA REST API
+		assertEmptyIterable(issue.getLabels());
+		final Issue fullIssue = client.getIssueClient().getIssue(issue.getKey()).claim();
+		assertThat(fullIssue.getLabels(), containsInAnyOrder("a", "bcds"));
 	}
 }

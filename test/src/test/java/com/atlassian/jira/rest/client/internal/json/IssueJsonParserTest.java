@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.api.domain.*;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
@@ -92,12 +91,7 @@ public class IssueJsonParserTest {
 		assertEquals(359345, attachment.getSize());
 		assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10070/_thumb_10070.png"), attachment.getThumbnailUri());
 		assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10070/avatar1.png"), attachment.getContentUri());
-		Iterable<String> attachmentsNames = Iterables.transform(attachments, new Function<Attachment, String>() {
-			@Override
-			public String apply(Attachment a) {
-				return a.getFilename();
-			}
-		});
+		final Iterable<String> attachmentsNames = EntityHelper.toFileNamesList(attachments);
 		assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
 				"apache-tomcat-5.5.30.zip", "avatar1.png", "jira_logo.gif", "snipe.png", "transparent-png.png"));
 

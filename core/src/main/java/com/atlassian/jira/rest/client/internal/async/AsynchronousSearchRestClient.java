@@ -36,6 +36,7 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.Arrays;
 
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.NAMES;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
@@ -62,6 +63,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 	private static final String FILTER_PATH_FORMAT = "filter/%s";
 	private static final String SEARCH_URI_PREFIX = "search";
 	private static final String EXPAND_ATTRIBUTE = "expand";
+	private static final String FIELDS_ATTRIBUTE = "fields";
 
 	private final SearchResultJsonParser searchResultJsonParser = new SearchResultJsonParser();
 	private final FilterJsonParser filterJsonParser = new FilterJsonParser();
@@ -80,47 +82,51 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 
 	@Override
 	public Promise<SearchResult> searchJql(@Nullable String jql) {
-		return searchJqlImpl(jql, null, null);
+		return searchJql(jql, null, null, null);
 	}
 
 	@Override
 	public Promise<SearchResult> searchJql(@Nullable String jql, int maxResults, int startAt) {
-		return searchJqlImpl(jql, maxResults, startAt);
+		return searchJql(jql, maxResults, startAt, null);
 	}
 
-	private Promise<SearchResult> searchJqlImpl(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt) {
+	public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable String fields) {
 		final Iterable<String> expandosValues = Iterables.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
 		final String notNullJql = StringUtils.defaultString(jql);
 		if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
-			return searchJqlImplPost(maxResults, startAt, expandosValues, notNullJql);
+			return searchJqlImplPost(maxResults, startAt, expandosValues, notNullJql, fields);
 		} else {
-			return searchJqlImplGet(maxResults, startAt, expandosValues, notNullJql);
+			return searchJqlImplGet(maxResults, startAt, expandosValues, notNullJql, fields);
 		}
 	}
 
-	private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql) {
+	private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql, @Nullable String fields) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(searchUri)
 				.queryParam(JQL_ATTRIBUTE, jql)
 				.queryParam(EXPAND_ATTRIBUTE, Joiner.on(",").join(expandosValues));
 
-		if (maxResults != null) {
-			uriBuilder.queryParam(MAX_RESULTS_ATTRIBUTE, maxResults);
-		}
-		if (startAt != null) {
-			uriBuilder.queryParam(START_AT_ATTRIBUTE, startAt);
-		}
+		addOptionalQueryParam(uriBuilder, FIELDS_ATTRIBUTE, fields);
+		addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
+		addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
 
 		return getAndParse(uriBuilder.build(), searchResultJsonParser);
 	}
 
-	private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql) {
+	private void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object... values) {
+		if (values != null && values.length > 0 && values[0] != null) {
+			uriBuilder.queryParam(key, values);
+		}
+	}
+
+	private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql, String fields) {
 		final JSONObject postEntity = new JSONObject();
 
 		try {
 			postEntity.put(JQL_ATTRIBUTE, jql)
 					.put(EXPAND_ATTRIBUTE, ImmutableList.copyOf(expandosValues))
 					.putOpt(START_AT_ATTRIBUTE, startAt)
-					.putOpt(MAX_RESULTS_ATTRIBUTE, maxResults);
+					.putOpt(MAX_RESULTS_ATTRIBUTE, maxResults)
+					.putOpt(FIELDS_ATTRIBUTE, fields);
 		} catch (JSONException e) {
 			throw new RestClientException(e);
 		}
