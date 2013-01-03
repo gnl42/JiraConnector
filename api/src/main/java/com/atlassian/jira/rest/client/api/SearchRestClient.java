@@ -39,32 +39,22 @@ public interface SearchRestClient {
 	Promise<SearchResult> searchJql(@Nullable String jql);
 
 	/**
-	 * Performs a JQL search and returns issues matching the query using default maxResults (as configured in JIRA - usually 50) and startAt=0
+	 * Performs a JQL search and returns issues matching the query. The first startAt issues will be skipped and SearchResult will
+	 * contain at most maxResults issues. List of issue fields which should be included in the result may be specified.
 	 *
-	 * @param jql        a valid JQL query (will be properly encoded by JIRA client). Restricted JQL characters (like '/') must be properly escaped.
-	 * @param maxResults maximum results (page/window size) for this search. The page will contain issues from
-	 *                   <code>startAt div maxResults</code> (no remnant) and will include at most <code>maxResults</code> matching issues.
-	 * @param startAt    starting index (0-based) defining the page/window for the results. It will be aligned by the server to the beginning
-	 *                   on the page (startAt = startAt div maxResults). For example for startAt=5 and maxResults=3 the results will include matching issues
-	 *                   with index 3, 4 and 5. For startAt = 6 and maxResults=3 the issues returned are from position 6, 7 and 8.
-	 * @return issues matching given JQL query
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL query, etc.)
-	 */
-	Promise<SearchResult> searchJql(@Nullable String jql, int maxResults, int startAt);
-
-	/**
-	 * Performs a JQL search and returns issues matching the query using default maxResults (as configured in JIRA - usually 50)
-	 * and startAt=0. Optional fields parameter allow to specify list of issue fields which should be included in search result.
-	 *
-	 * @param jql        a valid JQL query (will be properly encoded by JIRA client). Restricted JQL characters (like '/') must be properly escaped.
-	 * @param maxResults maximum results (page/window size) for this search. The page will contain issues from
-	 *                   <code>startAt div maxResults</code> (no remnant) and will include at most <code>maxResults</code> matching issues.
-	 * @param startAt    starting index (0-based) defining the page/window for the results. It will be aligned by the server to the beginning
-	 *                   on the page (startAt = startAt div maxResults). For example for startAt=5 and maxResults=3 the results will include matching issues
-	 *                   with index 3, 4 and 5. For startAt = 6 and maxResults=3 the issues returned are from position 6, 7 and 8.
+	 * @param jql        a valid JQL query (will be properly encoded by JIRA client). Restricted JQL characters (like '/') must
+	 *                   be properly escaped. All issues matches to the null or empty JQL.
+	 * @param maxResults maximum results for this search. When null is given, the default maxResults configured in JIRA is
+	 *                   used (usually 50).
+	 * @param startAt    starting index (0-based) defining how many issues should be skipped in the results. For example for
+	 *                   startAt=5 and maxResults=3 the results will include matching issues with index 5, 6 and 7.
+	 *                   For startAt = 0 and maxResults=3 the issues returned are from position 0, 1 and 2.
+	 *                   When null is given, the default startAt is used (0).
 	 * @param fields     comma separated list of fields which should be retrieved. You can specify *all for all fields
-	 *                   or *navigable (which is the default value) which will cause to include just navigable fields in result.
-	 *                   To ignore specific field you can use "-" before field's name.
+	 *                   or *navigable (which is the default value, used when null is given) which will cause to include only
+	 *                   navigable fields in the result. To ignore the specific field you can use "-" before the field's name.
+	 *                   Note that the following fields: summary, issuetype, created, updated, project and status are
+	 *                   required. These fields are included in *all and *navigable.
 	 * @return issues matching given JQL query
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL query, etc.)
 	 */

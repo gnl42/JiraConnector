@@ -84,11 +84,6 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 		return searchJql(jql, null, null, null);
 	}
 
-	@Override
-	public Promise<SearchResult> searchJql(@Nullable String jql, int maxResults, int startAt) {
-		return searchJql(jql, maxResults, startAt, null);
-	}
-
 	public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable String fields) {
 		final Iterable<String> expandosValues = Iterables.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
 		final String notNullJql = StringUtils.defaultString(jql);
