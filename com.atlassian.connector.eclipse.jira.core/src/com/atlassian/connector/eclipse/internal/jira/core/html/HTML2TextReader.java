@@ -127,9 +127,10 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return processEntity();
 		} else if (fIsPreformattedText) {
 			return processPreformattedText(c);
-		} else if (c == '\n') {
-			return EMPTY_STRING;
 		}
+//		else if (c == '\n') {
+//			return EMPTY_STRING;
+//		}
 
 		return null;
 	}
