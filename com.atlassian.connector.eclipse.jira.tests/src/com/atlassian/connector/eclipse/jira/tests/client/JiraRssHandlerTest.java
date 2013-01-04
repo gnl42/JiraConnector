@@ -21,8 +21,8 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRs
 public class JiraRssHandlerTest extends TestCase {
 
 	public void testUnescape() {
-		assertEquals("\n", JiraRssHandler.stripTags("\n<br/>\n"));
-		assertEquals("\n\n", JiraRssHandler.stripTags("\n<br/>\n<br/>\n"));
+		assertEquals("\n\n\n", JiraRssHandler.stripTags("\n<br/>\n"));
+		assertEquals("\n\n\n\n\n", JiraRssHandler.stripTags("\n<br/>\n<br/>\n"));
 	}
 
 	public void testHasMarkup() {
