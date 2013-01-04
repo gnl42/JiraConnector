@@ -23,6 +23,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
@@ -881,11 +882,16 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWithoutEditPermission");
 
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).setValue("-1");
+		taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).setValue("");
 
-		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED),
-				new NullProgressMonitor());
-		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+		// cannot unassing issue
+		try {
+			dataHandler.postTaskData(repository, taskData,
+					buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED), new NullProgressMonitor());
+		} catch (CoreException e) {
+			assertTrue(e.getMessage().contains("Issues must be assigned."));
+		}
+//		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 
 		setUp();
 		init(jiraUrl(), PrivilegeLevel.READ_ONLY);
@@ -894,13 +900,19 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).setValue(userCredentials.username);
 
-		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED),
-				new NullProgressMonitor());
+		// no permission to set assignee
+		try {
+			dataHandler.postTaskData(repository, taskData,
+					buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED), new NullProgressMonitor());
+		} catch (CoreException e) {
+			assertTrue(e.getMessage().contains(
+					"Field 'assignee' cannot be set. It is not on the appropriate screen, or unknown."));
+		}
 
-		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		assertEquals(userCredentials.username, taskData.getRoot()
-				.getAttribute(JiraAttribute.USER_ASSIGNED.id())
-				.getValue());
+//		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+//		assertEquals(userCredentials.username, taskData.getRoot()
+//				.getAttribute(JiraAttribute.USER_ASSIGNED.id())
+//				.getValue());
 	}
 
 	private String jiraUrl() {
