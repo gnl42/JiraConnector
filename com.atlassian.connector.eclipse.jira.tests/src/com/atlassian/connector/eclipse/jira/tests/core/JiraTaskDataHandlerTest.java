@@ -508,7 +508,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("2", operations.get(4).getValue());
 
 		// resolve issue
-		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
+		issue.setResolution(client.getCache().getResolutionByName(Resolution.FIXED_NAME));
 		client.advanceIssueWorkflow(issue, "5", "", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 
