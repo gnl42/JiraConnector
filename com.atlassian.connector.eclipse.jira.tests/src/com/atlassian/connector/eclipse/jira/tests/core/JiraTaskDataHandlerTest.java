@@ -73,6 +73,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private static final String SECURITY_LEVEL_DEVELOPERS = "10000";
 
+	private static final String SECURITY_LEVEL_NONE = "-1";
+
 	private TaskRepository repository;
 
 	private JiraTaskDataHandler dataHandler;
@@ -418,9 +420,18 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(SECURITY_LEVEL_USERS, attribute.getValue());
 		assertEquals("Users", attribute.getOption(SECURITY_LEVEL_USERS));
 
+		// remove security level attribute means no change during update
 		taskData.getRoot().removeAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals(SECURITY_LEVEL_USERS, taskData.getRoot()
+				.getAttribute(JiraAttribute.SECURITY_LEVEL.id())
+				.getValue());
 
+		// set security level attribute to "-1" means clear security level
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		attribute.setValue(SECURITY_LEVEL_NONE);
+		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals("-1", taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id()).getValue());
 	}

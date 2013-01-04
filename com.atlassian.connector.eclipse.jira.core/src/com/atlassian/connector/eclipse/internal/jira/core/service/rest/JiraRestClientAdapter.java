@@ -433,12 +433,11 @@ public class JiraRestClientAdapter {
 		fields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
 
 		if (changedIssue.getSecurityLevel() != null) {
+			// security level value "-1" clears security level
 			fields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 					changedIssue.getSecurityLevel().getId())));
 		} else {
-			// clear security level
-			fields.add(new FieldInput(JiraRestFields.SECURITY,
-					ComplexIssueInputFieldValue.with(JiraRestFields.ID, "-1"))); //$NON-NLS-1$
+			// do not clear security level as it might be not available on the screen
 		}
 
 		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
