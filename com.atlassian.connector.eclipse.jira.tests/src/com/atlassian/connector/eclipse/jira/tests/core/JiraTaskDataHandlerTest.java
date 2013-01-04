@@ -532,7 +532,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testReadOnly() throws Exception {
 		init(jiraUrl(), PrivilegeLevel.GUEST);
 
-		JiraIssue issue = JiraTestUtil.createIssue(client, "testReadOnly");
+		JiraIssue issue = JiraTestUtil.createIssueWithoutAssignee(client, "testReadOnly");
 
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));

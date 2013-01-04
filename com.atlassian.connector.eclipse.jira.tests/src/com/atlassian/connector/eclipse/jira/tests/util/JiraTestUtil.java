@@ -87,6 +87,12 @@ public class JiraTestUtil {
 		return createIssue(client, issue);
 	}
 
+	public static JiraIssue createIssueWithoutAssignee(JiraClient client, String summary) throws JiraException {
+		JiraIssue issue = newIssue(client, summary);
+		issue.setAssignee(null);
+		return createIssue(client, issue);
+	}
+
 	public static IRepositoryQuery createQuery(TaskRepository taskRepository, JiraFilter filter) {
 		IRepositoryQuery query = TasksUi.getRepositoryModel().createRepositoryQuery(taskRepository);
 		JiraUtil.setQuery(taskRepository, query, filter);
