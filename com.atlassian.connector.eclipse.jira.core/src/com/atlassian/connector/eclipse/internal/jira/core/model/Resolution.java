@@ -25,6 +25,8 @@ public class Resolution implements Serializable {
 
 	public static final String FIXED_ID = "1"; //$NON-NLS-1$
 
+	public static final String FIXED_NAME = "Fixed"; //$NON-NLS-1$
+
 	public static final String WONT_FIX_ID = "2"; //$NON-NLS-1$
 
 	public static final String DUPLICATE_ID = "3"; //$NON-NLS-1$
