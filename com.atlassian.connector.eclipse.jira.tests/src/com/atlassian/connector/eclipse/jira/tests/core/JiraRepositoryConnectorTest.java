@@ -183,7 +183,19 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 		JiraTestResultCollector collector = new JiraTestResultCollector();
 		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
-		assertEquals(2, collector.results.size());
+
+		// "abc def" is translated in JQL to ~"abc def" (not OR as it was for classic search) 
+		assertEquals(0, collector.results.size());
+
+		queryString = currentTimeMillis + "";
+		filter = new FilterDefinition();
+		filter.setContentFilter(new ContentFilter(queryString, true, false, false, false));
+
+		query = JiraTestUtil.createQuery(repository, filter);
+		collector = new JiraTestResultCollector();
+		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
+
+		assertEquals(1, collector.results.size());
 	}
 
 	public void testPerformQueryLimitNumberOfResults() throws Exception {
