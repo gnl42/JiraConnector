@@ -55,7 +55,7 @@ public class JiraUtil {
 
 	private static final String FOLLOW_REDIRECTS_KEY = "jira.followRedirects"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
+	public static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
 
 	private static final String KEY_FILTER_CUSTOM_JQL_URL = "FilterCustomJqlUrl"; //$NON-NLS-1$
 

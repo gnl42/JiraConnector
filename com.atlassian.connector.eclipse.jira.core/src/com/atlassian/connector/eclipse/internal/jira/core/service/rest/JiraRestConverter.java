@@ -487,9 +487,7 @@ public class JiraRestConverter {
 	}
 
 	private static Version convert(com.atlassian.jira.rest.client.domain.Version version) {
-		Version outVersion = new Version(version.getId().toString());
-
-		outVersion.setName(version.getName());
+		Version outVersion = new Version(version.getId().toString(), version.getName());
 
 		DateTime releaseDate = version.getReleaseDate();
 		if (releaseDate != null) {
@@ -522,9 +520,8 @@ public class JiraRestConverter {
 	}
 
 	private static IssueType convert(BasicIssueType issueType) {
-		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.isSubtask());
+		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
 
-		outIssueType.setName(issueType.getName());
 		return outIssueType;
 	}
 
@@ -557,9 +554,8 @@ public class JiraRestConverter {
 	}
 
 	private static IssueType convert(com.atlassian.jira.rest.client.domain.IssueType issueType) {
-		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.isSubtask());
+		IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
 
-		outIssueType.setName(issueType.getName());
 		outIssueType.setDescription(issueType.getDescription());
 		outIssueType.setIcon(issueType.getIconUri().toString());
 

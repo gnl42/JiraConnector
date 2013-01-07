@@ -117,9 +117,9 @@ public class FilterDefinitionConverter {
 				+ URLEncoder.encode(getJqlString(filter), encoding);
 	}
 
-	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
+	public FilterDefinition toFilter(JiraClient client, String classicUrl, boolean validate) {
 		try {
-			return toFilter(client, url, validate, false, null);
+			return toFilter(client, classicUrl, validate, false, null);
 		} catch (JiraException ex) {
 			// can never happen since update parameter is false
 			throw new RuntimeException(ex);
@@ -128,17 +128,17 @@ public class FilterDefinitionConverter {
 		}
 	}
 
-	public FilterDefinition toFilter(JiraClient client, String url, boolean validate, boolean update,
+	public FilterDefinition toFilter(JiraClient client, String classicUrl, boolean validate, boolean update,
 			IProgressMonitor monitor) throws JiraException, UnsupportedEncodingException {
 		final FilterDefinition filter = new FilterDefinition();
 
-		final int n = url.indexOf('?');
+		final int n = classicUrl.indexOf('?');
 		if (n == -1) {
 			return filter;
 		}
 
 		final HashMap<String, List<String>> params = new HashMap<String, List<String>>();
-		for (String pair : url.substring(n + 1).split("&")) { //$NON-NLS-1$
+		for (String pair : classicUrl.substring(n + 1).split("&")) { //$NON-NLS-1$
 			String[] tokens = pair.split("="); //$NON-NLS-1$
 			if (tokens.length > 1) {
 				String key = tokens[0];

@@ -150,9 +150,8 @@ public class JiraSoapConverter {
 	}
 
 	protected static Version convert(RemoteVersion remoteVersion) {
-		Version version = new Version(remoteVersion.getId());
+		Version version = new Version(remoteVersion.getId(), remoteVersion.getName());
 		version.setArchived(remoteVersion.isArchived());
-		version.setName(remoteVersion.getName());
 		version.setReleased(remoteVersion.isReleased());
 		version.setReleaseDate(remoteVersion.getReleaseDate() != null ? remoteVersion.getReleaseDate().getTime() : null);
 		version.setSequence(remoteVersion.getSequence().longValue());

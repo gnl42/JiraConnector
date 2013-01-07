@@ -70,9 +70,9 @@ public class JiraCustomQueryTest extends TestCase {
 		comps[2].setId("comp2");
 
 		Version[] vers = new Version[3];
-		vers[0] = new Version("ver0");
-		vers[1] = new Version("ver1");
-		vers[2] = new Version("ver2");
+		vers[0] = new Version("ver0", "ver0");
+		vers[1] = new Version("ver1", "ver1");
+		vers[2] = new Version("ver2", "ver2");
 
 		projects = new Project[2];
 		projects[0] = new Project();
@@ -97,24 +97,24 @@ public class JiraCustomQueryTest extends TestCase {
 		components[1].setId("comp1");
 
 		Version[] fixVersions = new Version[2];
-		fixVersions[0] = new Version("ver0");
-		fixVersions[1] = new Version("ver1");
+		fixVersions[0] = new Version("ver0", "ver0");
+		fixVersions[1] = new Version("ver1", "ver1");
 
 		Version[] repoVersions = new Version[2];
-		repoVersions[0] = new Version("ver1");
-		repoVersions[1] = new Version("ver2");
+		repoVersions[0] = new Version("ver1", "ver1");
+		repoVersions[1] = new Version("ver2", "ver2");
 
 		IssueType[] issueTypes = new IssueType[2];
-		issueTypes[0] = new IssueType("issue0", false);
-		issueTypes[1] = new IssueType("issue1", false);
+		issueTypes[0] = new IssueType("issue0", "issue0", false);
+		issueTypes[1] = new IssueType("issue1", "issue1", false);
 
 		JiraStatus[] statuses = new JiraStatus[2];
 		statuses[0] = new JiraStatus("status0");
 		statuses[1] = new JiraStatus("status1");
 
 		Resolution[] resolutions = new Resolution[2];
-		resolutions[0] = new Resolution("resolution0");
-		resolutions[1] = new Resolution("resolution1");
+		resolutions[0] = new Resolution("resolution0", "resolution0");
+		resolutions[1] = new Resolution("resolution1", "resolution0");
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(projects));
@@ -137,7 +137,7 @@ public class JiraCustomQueryTest extends TestCase {
 		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 		IRepositoryQuery customQuery = JiraTestUtil.createQuery(taskRepository, filter);
-		String queryUrl = customQuery.getUrl();
+		String queryUrl = customQuery.getAttribute(JiraUtil.KEY_FILTER_CUSTOM_URL);
 
 		MockJiraClient client = new MockJiraClient("");
 
@@ -159,7 +159,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 			@Override
 			public IssueType getIssueTypeById(String id) {
-				return new IssueType(id, false);
+				return new IssueType(id, id, false);
 			};
 
 			@Override
@@ -169,7 +169,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 			@Override
 			public Resolution getResolutionById(String id) {
-				return new Resolution(id);
+				return new Resolution(id, id);
 			};
 		};
 		client.setCache(cache);
@@ -268,7 +268,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		filter = new FilterDefinition();
 		Resolution[] resolutions = new Resolution[1];
-		resolutions[0] = new Resolution("123");
+		resolutions[0] = new Resolution("123", "123");
 		resolutionFilter = new ResolutionFilter(resolutions);
 		filter.setResolutionFilter(resolutionFilter);
 		queryUrl = converter.toUrl(repositoryUrl, filter);
@@ -292,7 +292,7 @@ public class JiraCustomQueryTest extends TestCase {
 		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 		IRepositoryQuery customQuery = JiraTestUtil.createQuery(taskRepository, filter);
-		String queryUrl = customQuery.getUrl();
+		String queryUrl = customQuery.getAttribute(JiraUtil.KEY_FILTER_CUSTOM_URL);
 
 		MockJiraClient client = new MockJiraClient("");
 
@@ -314,7 +314,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 			@Override
 			public IssueType getIssueTypeById(String id) {
-				return new IssueType(id, false);
+				return new IssueType(id, id, false);
 			};
 
 			@Override
@@ -324,7 +324,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 			@Override
 			public Resolution getResolutionById(String id) {
-				Resolution resolution = new Resolution(id);
+				Resolution resolution = new Resolution(id, id);
 				return resolution;
 			};
 		};

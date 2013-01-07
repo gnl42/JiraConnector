@@ -20,9 +20,11 @@ import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteVersi
 public class JiraSoapConverterTest extends TestCase {
 
 	public void testConvertVersions() {
-		RemoteVersion[] versions = JiraSoapConverter.convert(new Version[] { new Version("11782"), new Version("11783") });
+		RemoteVersion[] versions = JiraSoapConverter.convert(new Version[] { new Version("11782", "11782"),
+				new Version("11783", "11783") });
 		assertNotNull(versions);
 		assertEquals(2, versions.length);
 		assertEquals("11782", versions[0].getId());
+		assertEquals("11782", versions[0].getName());
 	}
 }

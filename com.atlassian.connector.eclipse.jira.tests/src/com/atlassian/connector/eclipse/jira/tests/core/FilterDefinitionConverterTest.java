@@ -77,9 +77,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 		comps[2].setId("comp2");
 
 		Version[] vers = new Version[3];
-		vers[0] = new Version("ver0");
-		vers[1] = new Version("ver1");
-		vers[2] = new Version("ver2");
+		vers[0] = new Version("ver0", "ver0");
+		vers[1] = new Version("ver1", "ver1");
+		vers[2] = new Version("ver2", "ver2");
 
 		projects = new Project[2];
 		projects[0] = new Project();
@@ -158,7 +158,7 @@ public class FilterDefinitionConverterTest extends TestCase {
 
 			@Override
 			public IssueType getIssueTypeById(String id) {
-				return new IssueType(id, false);
+				return new IssueType(id, id, false);
 			};
 
 			@Override
@@ -168,7 +168,7 @@ public class FilterDefinitionConverterTest extends TestCase {
 
 			@Override
 			public Resolution getResolutionById(String id) {
-				return new Resolution(id);
+				return new Resolution(id, id);
 			};
 		};
 		client.setCache(cache);
@@ -229,9 +229,8 @@ public class FilterDefinitionConverterTest extends TestCase {
 				+ "AND resolution in (\"res0 name\",\"res1 name\") "
 				+ "AND (summary ~ \"query\" OR description ~ \"query\" OR comment ~ \"query\" OR environment ~ \"query\") "
 				+ "AND reporter in (reporter) AND assignee in (assignee) " + "AND (created >= \"" + date
-				+ "\" AND created <= \"" + date + "\") " + "AND (updated >= \"" + date
-				+ "\" AND updated <= \"" + date + "\") " + "AND (duedate >= \"" + date
-				+ "\" AND duedate <= \"" + date + "\") ";
+				+ "\" AND created <= \"" + date + "\") " + "AND (updated >= \"" + date + "\" AND updated <= \"" + date
+				+ "\") " + "AND (duedate >= \"" + date + "\" AND duedate <= \"" + date + "\") ";
 	}
 
 	private void compareUrls(String urlOne, String urlTwo) {

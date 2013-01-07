@@ -16,11 +16,10 @@ import junit.framework.TestCase;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFilter;
 
-@SuppressWarnings("restriction")
 public class VersionFilterTest extends TestCase {
 
 	public void testCopy() {
-		Version[] versions = new Version[] { new Version("v") };
+		Version[] versions = new Version[] { new Version("v", "v") };
 		VersionFilter filter1 = new VersionFilter(versions, true, true, true);
 
 		VersionFilter filter2 = filter1.copy();
@@ -31,7 +30,7 @@ public class VersionFilterTest extends TestCase {
 		assertEquals(filter1.getVersions().length, filter2.getVersions().length);
 		assertEquals(filter1.getVersions()[0], filter2.getVersions()[0]);
 
-		versions[0] = new Version("x");
+		versions[0] = new Version("x", "x");
 		assertEquals(versions[0], filter1.getVersions()[0]);
 
 		assertNotSame(filter1.getVersions()[0], filter2.getVersions()[0]);

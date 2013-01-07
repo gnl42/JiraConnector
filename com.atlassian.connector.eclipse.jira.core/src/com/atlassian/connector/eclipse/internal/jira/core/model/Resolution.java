@@ -43,14 +43,15 @@ public class Resolution implements Serializable {
 
 	private String icon;
 
-	public Resolution(String id) {
+	public Resolution(String id, String name) {
 		Assert.isNotNull(id);
+		Assert.isNotNull(name);
 		this.id = id;
+		this.name = name;
 	}
 
 	public Resolution(String id, String name, String description, String icon) {
-		this(id);
-		this.name = name;
+		this(id, name);
 		this.description = description;
 		this.icon = icon;
 	}

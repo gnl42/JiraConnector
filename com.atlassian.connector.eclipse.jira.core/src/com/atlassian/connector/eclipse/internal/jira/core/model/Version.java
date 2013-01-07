@@ -34,12 +34,8 @@ public class Version implements Serializable {
 
 	private long sequence;
 
-	public Version(String id) {
-		this.id = id;
-	}
-
 	public Version(String id, String name) {
-		this(id);
+		this.id = id;
 		this.name = name;
 	}
 

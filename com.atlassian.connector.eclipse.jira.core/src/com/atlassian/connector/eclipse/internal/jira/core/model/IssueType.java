@@ -40,17 +40,19 @@ public class IssueType implements Serializable {
 
 	private boolean subTaskType;
 
-	public IssueType(String id, boolean subTaskType) {
-		Assert.isNotNull(id);
-		this.id = id;
-		this.subTaskType = subTaskType;
-	}
-
 	public IssueType(String id, String name, String description, String icon) {
-		this(id, false);
+		this(id, name, false);
 		this.name = name;
 		this.description = description;
 		this.icon = icon;
+	}
+
+	public IssueType(String id, String name, boolean subTaskType) {
+		Assert.isNotNull(id);
+		Assert.isNotNull(name);
+		this.id = id;
+		this.name = name;
+		this.subTaskType = subTaskType;
 	}
 
 	public String getDescription() {

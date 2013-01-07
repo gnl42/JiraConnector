@@ -1382,7 +1382,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		TaskAttribute typeAttribute = getAttribute(taskData, JiraAttribute.TYPE);
 		boolean subTaskType = (typeAttribute != null) ? hasSubTaskType(typeAttribute) : false;
-		IssueType issueType = new IssueType(getAttributeValue(taskData, JiraAttribute.TYPE), subTaskType);
+		IssueType issueType = new IssueType(getAttributeValue(taskData, JiraAttribute.TYPE), getAttributeValue(
+				taskData, JiraAttribute.TYPE), subTaskType);
 		issue.setType(issueType);
 
 		issue.setStatus(new JiraStatus(getAttributeValue(taskData, JiraAttribute.STATUS)));
@@ -1402,8 +1403,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (fixVersionAttr != null) {
 			ArrayList<Version> fixVersions = new ArrayList<Version>();
 			for (String value : fixVersionAttr.getValues()) {
-				Version version = new Version(value);
-				version.setName(fixVersionAttr.getOption(value));
+				Version version = new Version(value, fixVersionAttr.getOption(value));
 				fixVersions.add(version);
 			}
 			issue.setFixVersions(fixVersions.toArray(new Version[fixVersions.size()]));
@@ -1414,8 +1414,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (affectsVersionAttr != null) {
 			ArrayList<Version> affectsVersions = new ArrayList<Version>();
 			for (String value : affectsVersionAttr.getValues()) {
-				Version version = new Version(value);
-				version.setName(affectsVersionAttr.getOption(value));
+				Version version = new Version(value, affectsVersionAttr.getOption(value));
 				affectsVersions.add(version);
 			}
 			issue.setReportedVersions(affectsVersions.toArray(new Version[affectsVersions.size()]));
@@ -1445,7 +1444,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		String resolutionId = getAttributeValue(taskData, JiraAttribute.RESOLUTION);
 		if (resolutionId != null) {
-			issue.setResolution(new Resolution(resolutionId));
+			issue.setResolution(new Resolution(resolutionId, resolutionId));
 		}
 
 		return issue;
