@@ -90,6 +90,9 @@ public class FilterDefinitionConverter {
 	/** Date format used for JQL queries */
 	public static final DateFormat JQL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm"); //$NON-NLS-1$
 
+	/** Date format used for JQL queries */
+	public static final DateFormat JQL_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+
 	private final String encoding;
 
 	/** Date format used for classic queries */
@@ -458,7 +461,7 @@ public class FilterDefinitionConverter {
 		addJqlAndExpression(searchParams, jiraField.UPDATED(),
 				jqlFilter.extractDates(filter.getUpdatedDateFilter(), JQL_DATE_TIME_FORMAT));
 		addJqlAndExpression(searchParams, jiraField.DUE_DATE(),
-				jqlFilter.extractDates(filter.getDueDateFilter(), JQL_DATE_TIME_FORMAT));
+				jqlFilter.extractDates(filter.getDueDateFilter(), JQL_DATE_FORMAT));
 
 		// estimations
 		addJqlAndExpression(searchParams, jiraField.WORK_RATIO(),
