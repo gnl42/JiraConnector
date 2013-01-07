@@ -133,6 +133,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
 		namedFilter.setDescription("Test Filter Description");
+		namedFilter.setViewUrl("filterUrl");
 		RepositoryQuery query = (RepositoryQuery) JiraTestUtil.createQuery(repository, namedFilter);
 		String filterUrl = query.getUrl();
 
