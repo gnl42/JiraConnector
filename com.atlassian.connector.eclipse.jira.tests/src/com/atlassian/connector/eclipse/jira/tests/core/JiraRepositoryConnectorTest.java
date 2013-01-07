@@ -324,7 +324,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// close issue
 		String resolveOperation = JiraTestUtil.getOperation(client, issue.getKey(), "resolve");
-		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
+		issue.setResolution(client.getCache().getResolutionByName(Resolution.FIXED_NAME));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 		SynchronizationSession session = createSession(task);
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
@@ -409,7 +409,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(issue.getCreated(), task.getCreationDate());
 
 		// close issue
-		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
+		issue.setResolution(client.getCache().getResolutionByName(Resolution.FIXED_NAME));
 		client.advanceIssueWorkflow(issue, "2", "", null);
 
 		issue = client.getIssueByKey(issue.getKey(), null);
