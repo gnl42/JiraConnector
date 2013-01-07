@@ -23,9 +23,9 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 
@@ -187,13 +187,14 @@ public class JiraFilterTest extends TestCase {
 		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(Status.OK_STATUS, result);
 
-		repository.setProperty("jira.datePattern", "MM/dd/yyyy");
-		filter = new FilterDefinition();
-		date = new GregorianCalendar(2008, 9, 1);
-		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
-		query = JiraTestUtil.createQuery(repository, filter);
-		result = connector.performQuery(repository, query, hitCollector, null, null);
-		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
+		// repository date pattern is not used in REST (all dates are formatted according to REST pattern)
+//		repository.setProperty("jira.datePattern", "MM/dd/yyyy");
+//		filter = new FilterDefinition();
+//		date = new GregorianCalendar(2008, 9, 1);
+//		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+//		query = JiraTestUtil.createQuery(repository, filter);
+//		result = connector.performQuery(repository, query, hitCollector, null, null);
+//		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
 	}
 
 }
