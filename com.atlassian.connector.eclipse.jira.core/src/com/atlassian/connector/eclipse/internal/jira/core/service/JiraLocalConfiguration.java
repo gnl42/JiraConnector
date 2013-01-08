@@ -119,6 +119,9 @@ public class JiraLocalConfiguration {
 		if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {
 			return false;
 		}
+		if (maxSearchResults != other.maxSearchResults) {
+			return false;
+		}
 		return true;
 	}
 
@@ -182,6 +185,7 @@ public class JiraLocalConfiguration {
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + workDaysPerWeek;
 		result = prime * result + workHoursPerDay;
+		result = prime * result + maxSearchResults;
 		return result;
 	}
 
