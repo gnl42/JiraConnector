@@ -191,8 +191,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 
 	public void testGetJqlString() {
 		// Date 1970-01-01 in a localized date time format and in the local time zone
-		final String date19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
-		final String jqlExpected = calcExpectedJql(date19700101);
+		final String datetime19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
+		final String date19700101 = FilterDefinitionConverter.JQL_DATE_FORMAT.format(new Date(0));
+		final String jqlExpected = calcExpectedJql(datetime19700101, date19700101);
 
 		final FilterDefinitionConverter converter = new FilterDefinitionConverter(
 				taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository).getDateFormat());
@@ -204,9 +205,11 @@ public class FilterDefinitionConverterTest extends TestCase {
 	public void testToJqlUrl() {
 		try {
 			// Date 1970-01-01 in a localized date time format and in the local time zone
-			final String date19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
+			final String datetime19700101 = FilterDefinitionConverter.JQL_DATE_TIME_FORMAT.format(new Date(0));
+			final String date19700101 = FilterDefinitionConverter.JQL_DATE_FORMAT.format(new Date(0));
 			final String jqlUrlExpected = "http://host.net//issues/?jql="
-					+ URLEncoder.encode(calcExpectedJql(date19700101), taskRepository.getCharacterEncoding());
+					+ URLEncoder.encode(calcExpectedJql(datetime19700101, date19700101),
+							taskRepository.getCharacterEncoding());
 
 			final FilterDefinitionConverter converter = new FilterDefinitionConverter(
 					taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
@@ -219,7 +222,7 @@ public class FilterDefinitionConverterTest extends TestCase {
 		}
 	}
 
-	private String calcExpectedJql(String date) {
+	private String calcExpectedJql(String datetime, String date) {
 		return "project in (PROJECTZERO,PROJECTONE) "
 				+ "AND component in (comp0,comp1) "
 				+ "AND fixVersion in (releasedVersions(),\"ver0 name\",\"ver0 name\") "
@@ -228,9 +231,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 				+ "AND status in (status0,status1) "
 				+ "AND resolution in (\"res0 name\",\"res1 name\") "
 				+ "AND (summary ~ \"query\" OR description ~ \"query\" OR comment ~ \"query\" OR environment ~ \"query\") "
-				+ "AND reporter in (reporter) AND assignee in (assignee) " + "AND (created >= \"" + date
-				+ "\" AND created <= \"" + date + "\") " + "AND (updated >= \"" + date + "\" AND updated <= \"" + date
-				+ "\") " + "AND (duedate >= \"" + date + "\" AND duedate <= \"" + date + "\") ";
+				+ "AND reporter in (reporter) AND assignee in (assignee) " + "AND (created >= \"" + datetime
+				+ "\" AND created <= \"" + datetime + "\") " + "AND (updated >= \"" + datetime + "\" AND updated <= \""
+				+ datetime + "\") " + "AND (duedate >= \"" + date + "\" AND duedate <= \"" + date + "\") ";
 	}
 
 	private void compareUrls(String urlOne, String urlTwo) {
