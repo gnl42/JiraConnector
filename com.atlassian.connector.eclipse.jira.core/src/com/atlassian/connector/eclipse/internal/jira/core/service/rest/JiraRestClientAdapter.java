@@ -476,6 +476,10 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
 			throw new JiraException(e);
 		}
 
