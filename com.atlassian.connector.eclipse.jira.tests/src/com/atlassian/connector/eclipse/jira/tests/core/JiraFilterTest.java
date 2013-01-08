@@ -174,7 +174,9 @@ public class JiraFilterTest extends TestCase {
 		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
 		query = JiraTestUtil.createQuery(repository, filter);
 		result = connector.performQuery(repository, query, hitCollector, null, null);
-		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
+//		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
+		// TaskRepository locale is not used in date parsing in REST 
+		assertEquals(IStatus.OK, result.getSeverity());
 	}
 
 	public void testCustomQueryWrongDatePattern() throws Exception {
