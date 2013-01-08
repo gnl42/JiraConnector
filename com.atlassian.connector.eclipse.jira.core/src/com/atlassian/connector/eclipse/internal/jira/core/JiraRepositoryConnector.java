@@ -237,6 +237,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 				}
 			} catch (JiraException e) {
+				e.printStackTrace();
 				IStatus status = JiraCorePlugin.toStatus(repository, e);
 				trace(status);
 				throw new CoreException(status);
