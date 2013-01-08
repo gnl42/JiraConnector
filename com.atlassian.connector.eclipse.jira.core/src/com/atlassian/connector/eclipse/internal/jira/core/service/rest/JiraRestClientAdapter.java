@@ -51,6 +51,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
@@ -79,6 +80,8 @@ public class JiraRestClientAdapter {
 	private static final String HTTP_401 = "Client response status: 401"; //$NON-NLS-1$
 
 	private static final String HTTP_403 = "Client response status: 403"; //$NON-NLS-1$
+
+	public static final String HTTP_404 = "Client response status: 404"; //$NON-NLS-1$
 
 	private static final String HTTP_302 = "Client response status: 302"; //$NON-NLS-1$
 
@@ -464,13 +467,15 @@ public class JiraRestClientAdapter {
 				throw new JiraException(CONNECTION_REFUSED, e);
 			} else if (e.getMessage().contains(UNKNOWN_HOST_EXCEPTION)) {
 				int index = e.getMessage().indexOf(UNKNOWN_HOST_EXCEPTION);
-				throw new JiraException(e.getMessage().substring(index), e);
+				throw new JiraServiceUnavailableException(e.getMessage().substring(index));
 			} else if (e.getMessage().contains(ILLEGAL_ARGUMENT_EXCEPTION)) {
 				int index = e.getMessage().indexOf(ILLEGAL_ARGUMENT_EXCEPTION);
 				throw new JiraException(e.getMessage().substring(index), e);
 			} else if (e.getMessage().contains(HTTP_302)) {
 				int index = e.getMessage().indexOf(HTTP_302);
 				throw new JiraException(e.getMessage().substring(index) + ". Https might be required."); //$NON-NLS-1$
+			} else if (e.getMessage().contains(HTTP_404)) {
+				throw new JiraServiceUnavailableException(e);
 			} else {
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
 				throw new JiraException(e.getMessage());
