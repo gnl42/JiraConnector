@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.jira.tests.client;
 
 import junit.framework.TestCase;
 
-
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
@@ -66,15 +65,18 @@ public class JiraWebClientTest extends TestCase {
 	}
 
 	public void testDoInSession() throws Exception {
-		JiraIssue issue = JiraTestUtil.createIssue(client, "testDoInSession");
-		webClient.updateIssue(issue, "updated", null);
-		issue = client.getIssueByKey(issue.getKey(), null);
-		assertEquals(1, issue.getComments().length);
-		webSession.doLogout(null);
-		webClient.updateIssue(issue, "updatedAgain", null);
-		issue = client.getIssueByKey(issue.getKey(), null);
-		assertNotNull(issue);
-		assertEquals(2, issue.getComments().length);
+
+		// webclient is not used any more
+
+//		JiraIssue issue = JiraTestUtil.createIssue(client, "testDoInSession");
+//		webClient.updateIssue(issue, "updated", null);
+//		issue = client.getIssueByKey(issue.getKey(), null);
+//		assertEquals(1, issue.getComments().length);
+//		webSession.doLogout(null);
+//		webClient.updateIssue(issue, "updatedAgain", null);
+//		issue = client.getIssueByKey(issue.getKey(), null);
+//		assertNotNull(issue);
+//		assertEquals(2, issue.getComments().length);
 	}
 
 }
