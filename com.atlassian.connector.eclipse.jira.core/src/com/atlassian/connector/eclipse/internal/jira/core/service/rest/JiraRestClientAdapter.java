@@ -211,13 +211,14 @@ public class JiraRestClientAdapter {
 				.getIssueTypes());
 	}
 
-	public List<JiraIssue> getIssues(final String jql, final IProgressMonitor monitor) throws JiraException {
+	public List<JiraIssue> getIssues(final String jql, final int maxSearchResult, final IProgressMonitor monitor)
+			throws JiraException {
 
 		return call(new Callable<List<JiraIssue>>() {
 
 			public List<JiraIssue> call() throws Exception {
 				List<JiraIssue> issues = JiraRestConverter.convertIssues(restClient.getSearchClient()
-						.searchJql(jql, new NullProgressMonitor())
+						.searchJql(jql, maxSearchResult, 0, new NullProgressMonitor())
 						.getIssues());
 
 				List<JiraIssue> fullIssues = new ArrayList<JiraIssue>();

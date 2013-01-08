@@ -415,6 +415,17 @@ public class JiraUtil {
 		configuration.setWorkDaysPerWeek(getWorkDaysPerWeekLocal(repository));
 		configuration.setDefaultCharacterEncoding(repository.getCharacterEncoding());
 		configuration.setUseServerTimeTrackingSettings(isUseServerTimeTrackingSettings(repository));
+
+		if (repository.getProperty(MAX_SEARCH_RESULTS) == null) {
+			configuration.setMaxSearchResults(DEFAULT_MAX_SEARCH_RESULTS);
+		} else {
+			try {
+				configuration.setMaxSearchResults(Integer.valueOf(repository.getProperty(MAX_SEARCH_RESULTS)));
+			} catch (NumberFormatException e) {
+				configuration.setMaxSearchResults(DEFAULT_MAX_SEARCH_RESULTS);
+			}
+		}
+
 		return configuration;
 	}
 

@@ -96,7 +96,7 @@ public class MockJiraRestClientAdapter extends JiraRestClientAdapter {
 	}
 
 	@Override
-	public List<JiraIssue> getIssues(String jql, IProgressMonitor monitor) throws JiraException {
+	public List<JiraIssue> getIssues(String jql, int maxResult, IProgressMonitor monitor) throws JiraException {
 		return new ArrayList<JiraIssue>();
 	}
 

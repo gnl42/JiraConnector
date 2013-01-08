@@ -211,17 +211,20 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 
 		try {
-			JiraUtil.setMaxSearchResults(repository, JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+//			JiraUtil.setMaxSearchResults(repository, JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
 			JiraTestResultCollector collector = new JiraTestResultCollector();
 			connector.performQuery(repository, query, collector, null, null);
 			assertEquals(4, collector.results.size());
 
-			JiraUtil.setMaxSearchResults(repository, 2);
+//			JiraUtil.setMaxSearchResults(repository, 2);
+			client.getLocalConfiguration().setMaxSearchResults(2);
 			collector = new JiraTestResultCollector();
 			connector.performQuery(repository, query, collector, null, null);
 			assertEquals(2, collector.results.size());
 
-			JiraUtil.setMaxSearchResults(repository, -1);
+//			JiraUtil.setMaxSearchResults(repository, -1);
+			// <= 0 means default
+			client.getLocalConfiguration().setMaxSearchResults(-1);
 			collector = new JiraTestResultCollector();
 			connector.performQuery(repository, query, collector, null, null);
 			assertEquals(4, collector.results.size());

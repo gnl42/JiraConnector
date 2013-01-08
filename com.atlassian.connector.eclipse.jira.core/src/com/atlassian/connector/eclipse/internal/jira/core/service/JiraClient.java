@@ -357,7 +357,7 @@ public class JiraClient {
 	private void findIssues(String jql, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		try {
 
-			List<JiraIssue> issues = restClient.getIssues(jql, monitor);
+			List<JiraIssue> issues = restClient.getIssues(jql, localConfiguration.getMaxSearchResults(), monitor);
 
 			if (!collector.isCancelled()) {
 				collector.start();
