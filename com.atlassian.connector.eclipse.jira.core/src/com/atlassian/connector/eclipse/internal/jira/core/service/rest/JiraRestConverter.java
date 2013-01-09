@@ -155,13 +155,12 @@ public class JiraRestConverter {
 
 		if (issue.getPriority() != null) {
 			jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
-			System.out.println("###");
 		} else if (cache.getPriorities().length > 0) {
 			jiraIssue.setPriority(cache.getPriorities()[0]);
-			System.out.println("@@@");
 		} else {
 			jiraIssue.setPriority(null);
-			System.out.println("$$$");
+			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, NLS.bind(
+					"Found issue with empty priority: {0}", issue.getKey())));
 		}
 
 		jiraIssue.setStatus(cache.getStatusByName(issue.getStatus().getName()));

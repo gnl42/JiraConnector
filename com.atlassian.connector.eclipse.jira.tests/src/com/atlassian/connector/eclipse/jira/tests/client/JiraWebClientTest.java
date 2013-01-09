@@ -13,8 +13,6 @@ package com.atlassian.connector.eclipse.jira.tests.client;
 
 import junit.framework.TestCase;
 
-import com.atlassian.connector.eclipse.internal.jira.core.model.JiraIssue;
-import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSession;
@@ -48,23 +46,23 @@ public class JiraWebClientTest extends TestCase {
 
 		// web client not used any more
 
-		JiraIssue issue = new JiraIssue();
-		Project project = client.getCache().getProjects()[0];
-		issue.setProject(project);
-		issue.setType(client.getCache().getIssueTypes()[0]);
-		issue.setSummary("testCreateIssue");
-
-		String key = webClient.createIssue(issue, null);
-		try {
-			String projectName = project.getKey();
-			assertEquals(projectName, key.substring(0, projectName.length()));
-		} finally {
-			try {
-				client.deleteIssue(client.getIssueByKey(key, null), null);
-			} catch (Exception e) {
-				// ignore
-			}
-		}
+//		JiraIssue issue = new JiraIssue();
+//		Project project = client.getCache().getProjects()[0];
+//		issue.setProject(project);
+//		issue.setType(client.getCache().getIssueTypes()[0]);
+//		issue.setSummary("testCreateIssue");
+//
+//		String key = webClient.createIssue(issue, null);
+//		try {
+//			String projectName = project.getKey();
+//			assertEquals(projectName, key.substring(0, projectName.length()));
+//		} finally {
+//			try {
+//				client.deleteIssue(client.getIssueByKey(key, null), null);
+//			} catch (Exception e) {
+//				// ignore
+//			}
+//		}
 	}
 
 	public void testDoInSession() throws Exception {
