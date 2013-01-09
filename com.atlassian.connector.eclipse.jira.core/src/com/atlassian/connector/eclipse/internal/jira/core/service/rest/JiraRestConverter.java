@@ -153,13 +153,17 @@ public class JiraRestConverter {
 
 		}
 
-		// TODO rest: do we need to use cache here? can't we create priority and other objects from issue?
-		if (issue.getPriority() == null) {
-			System.out.println("### " + issue.getKey());
+		if (issue.getPriority() != null) {
+			jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
+			System.out.println("###");
+		} else if (cache.getPriorities().length > 0) {
+			jiraIssue.setPriority(cache.getPriorities()[0]);
+			System.out.println("@@@");
+		} else {
+			jiraIssue.setPriority(null);
+			System.out.println("$$$");
 		}
-		issue.getPriority().toString();
 
-		jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
 		jiraIssue.setStatus(cache.getStatusByName(issue.getStatus().getName()));
 
 		BasicUser assignee = issue.getAssignee();
