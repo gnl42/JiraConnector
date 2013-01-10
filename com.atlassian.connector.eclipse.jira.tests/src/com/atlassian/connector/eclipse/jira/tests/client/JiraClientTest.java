@@ -30,6 +30,7 @@ import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.repositories.core.auth.UserCredentials;
 import org.eclipse.mylyn.commons.sdk.util.CommonTestUtil;
 import org.eclipse.mylyn.commons.sdk.util.CommonTestUtil.PrivilegeLevel;
+import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
@@ -58,6 +59,10 @@ import com.atlassian.connector.eclipse.jira.tests.util.MockIssueCollector;
  * @author Thomas Ehrnhoefer
  */
 public class JiraClientTest extends TestCase {
+
+	private final static String MESSAGE = "It seems that you have tried to perform a workflow operation ({0}) "
+			+ "that is not valid for the current state of this issue ({1}). "
+			+ "The likely cause is that somebody has changed the issue recently, please look at the issue history for details.";
 
 	private JiraClient client;
 
@@ -91,7 +96,8 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, startOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Action 4 is invalid"));
+			assertTrue(e.getMessage().contains(NLS.bind(MESSAGE, "Start Progress", issue.getKey())));
+//			assertThat(e.getMessage(), containsString());
 		}
 
 		String stopOperation = JiraTestUtil.getOperation(client, issue.getKey(), "stop");
@@ -101,13 +107,14 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, stopOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Action 301 is invalid"));
+			assertTrue(e.getMessage().contains(NLS.bind(MESSAGE, "Stop Progress", issue.getKey())));
+//			assertThat(e.getMessage(), containsString("Action 301 is invalid"));
 		}
 		client.advanceIssueWorkflow(issue, startOperation, null, null);
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
-		final String resolveMsg = "It seems that you have tried to perform a workflow operation (Resolve Issue) that is not valid for the current state of this issue ";
+
 		Resolution resolution = JiraTestUtil.getFixedResolution(client);
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
 
@@ -125,7 +132,8 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
+			assertTrue(e.getMessage().contains(NLS.bind(MESSAGE, "Resolve Issue", issue.getKey())));
+//			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
 		}
 
 		// have to get "close" operation after resolving issue
@@ -139,14 +147,16 @@ public class JiraClientTest extends TestCase {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
+			assertTrue(e.getMessage().contains(NLS.bind(MESSAGE, "Resolve Issue", issue.getKey())));
+//			assertThat(e.getMessage(), containsString("Action 5 is invalid"));
 		}
 
 		try {
 			client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
-			assertThat(e.getMessage(), containsString("Action 701 is invalid"));
+			assertTrue(e.getMessage().contains(NLS.bind(MESSAGE, "Close Issue", issue.getKey())));
+//			assertThat(e.getMessage(), containsString("Action 701 is invalid"));
 		}
 
 		String reopenOperation = JiraTestUtil.getOperation(client, issue.getKey(), "reopen");
