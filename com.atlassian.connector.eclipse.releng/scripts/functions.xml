@@ -98,9 +98,7 @@
 				</first>
 			</pathconvert>
 			
-			<echo message="application: @{application}" />
-			<echo message="lanuncher: @{application}.launcher" />
-			<echo message="lanuncher 2: ${@{application}.launcher}" />
+			<echo message="lanuncher set to: ${@{application}.launcher}" />
 
 			<!-- launch the eclipse application -->
 			<java fork="true" jar="${@{application}.launcher}" dir="." timeout="@{timeout}" failonerror="@{failonerror}"
