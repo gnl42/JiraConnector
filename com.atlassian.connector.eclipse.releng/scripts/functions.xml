@@ -89,7 +89,8 @@
 			<pathconvert property="@{application}.launcher">
 				<first count="1">
 					<sort>
-						<fileset dir="${base.builder.home}/eclipse/plugins" includes="**/org.eclipse.equinox.launcher*.jar" />
+						<!-- <fileset dir="${base.builder.home}/eclipse/plugins" includes="**/org.eclipse.equinox.launcher*.jar" /> -->
+						<fileset dir="${base.builder.home}/eclipse/plugins" includes="**/org.eclipse.equinox.launcher.jar" />
 						<reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
 							<date />
 						</reverse>
