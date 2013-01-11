@@ -97,6 +97,8 @@
 					</sort>
 				</first>
 			</pathconvert>
+			
+			<echo message="lanuncher: @{application}.launcher" />
 
 			<!-- launch the eclipse application -->
 			<java fork="true" jar="${@{application}.launcher}" dir="." timeout="@{timeout}" failonerror="@{failonerror}"
