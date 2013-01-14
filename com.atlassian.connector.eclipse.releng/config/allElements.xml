@@ -30,6 +30,11 @@
 			<property name="id" value="com.atlassian.connector.eclipse.bamboo" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
+					<property name="type" value="feature" />
+					<property name="id" value="com.atlassian.connector.eclipse.directclickthrough" />
+		</ant>
+		<!--
+		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.crucible" />
 		</ant>
@@ -49,6 +54,7 @@
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.subversive" />
 		</ant>
+		-->
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.test" />
@@ -84,6 +90,11 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.directclickthrough" />
+		</ant>
+		<!--
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.crucible" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -102,6 +113,7 @@
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.cvs" />
 		</ant>
+		-->
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.jira" />
@@ -127,12 +139,18 @@
 	<target name="assemble.com.atlassian.connector.eclipse.bamboo">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.directclickthrough">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<!--
 	<target name="assemble.com.atlassian.connector.eclipse.crucible">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
+	-->
 	<target name="assemble.com.atlassian.connector.eclipse.dependencies">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
+	<!--
 	<target name="assemble.com.atlassian.connector.eclipse.perforce">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
@@ -145,6 +163,7 @@
 	<target name="assemble.com.atlassian.connector.eclipse.cvs">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
+	-->
 	<target name="assemble.com.atlassian.connector.eclipse.jira">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>

@@ -17,23 +17,14 @@ Require-Bundle:
 Export-Package: com.atlassian.connector.eclipse.internal.core;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.fisheye.core,
-   com.atlassian.connector.eclipse.fisheye.ui,
-   com.atlassian.connector.eclipse.ui,
-   com.atlassian.connector.eclipse.directclickthrough.ui",
- com.atlassian.connector.eclipse.internal.core.client;
-  x-friends:="com.atlassian.connector.eclipse.bamboo.core,
-   com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.fisheye.core,
-   com.atlassian.connector.eclipse.fisheye.ui,
+   com.atlassian.connector.eclipse.directclickthrough.ui,
    com.atlassian.connector.eclipse.ui",
+ com.atlassian.connector.eclipse.internal.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.core,com.atlassian.connector.eclipse.bamboo.ui,com.atlassian.connector.eclipse.ui",
  com.atlassian.connector.eclipse.internal.core.jobs;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,
-   com.atlassian.connector.eclipse.fisheye.core,
-   com.atlassian.connector.eclipse.fisheye.ui,
-   com.atlassian.connector.eclipse.ui,
-   com.atlassian.connector.eclipse.directclickthrough.ui"
+   com.atlassian.connector.eclipse.directclickthrough.ui,
+   com.atlassian.connector.eclipse.ui"
 Bundle-Activator: com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin
 Bundle-ClassPath: .
 Bundle-Vendor: Atlassian
