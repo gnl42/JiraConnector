@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.atlassian.connector.eclipse.directclickthrough"
+      label="%featureName"
+      version="3.1.0.qualifier"
+      provider-name="%providerName"
+      plugin="com.atlassian.connector.eclipse.branding.ui">
+
+   <description url="http://atlassian.com">
+      %description
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="org.eclipse.mylyn.commons.core"/>
+      <import plugin="org.eclipse.mylyn.commons.ui"/>
+      <import plugin="org.eclipse.mylyn.commons.workbench"/>
+      <import plugin="com.atlassian.connector.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui"/>
+      <import plugin="org.eclipse.mylyn.tasks.core"/>
+      <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
+      <import plugin="org.mortbay.jetty.server"/>
+      <import plugin="org.mortbay.jetty.util"/>
+      <import plugin="com.atlassian.connector.eclipse.core"/>
+   </requires>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.directclickthrough.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
