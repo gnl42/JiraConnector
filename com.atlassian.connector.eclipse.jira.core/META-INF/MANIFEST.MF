@@ -21,7 +21,6 @@ Require-Bundle: javax.xml.rpc;bundle-version="1.1.0",
  org.codehaus.jettison;bundle-version="1.0.0",
  com.google.guava;bundle-version="13.0.0",
  com.sun.jersey;bundle-version="1.5.0"
-Import-Package: org.eclipse.mylyn.internal.monitor.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.jira.core;x-friends:="com.atlassian.connector.eclipse.jira.ui",
  com.atlassian.connector.eclipse.internal.jira.core.html;x-friends:="com.atlassian.connector.eclipse.jira.ui",
