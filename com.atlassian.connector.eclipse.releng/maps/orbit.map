@@ -215,9 +215,11 @@ plugin@javax.wsdl,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/dro
 plugin@javax.wsdl,1.5.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.5.1.v201005080630.jar
 
 !plugin@javax.wsdl,1.6.2=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.6.2.v201005080631.jar
-plugin@javax.wsdl,1.6.2=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.6.2.v201005080631.jar
+!plugin@javax.wsdl,1.6.2=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl_1.6.2.v201005080631.jar
+plugin@javax.wsdl,1.6.2=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/plugins/javax.wsdl_1.6.2.v201012040545.jar
 
-plugin@javax.wsdl.source,1.6.2=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl.source_1.6.2.v201005080631.jar
+!plugin@javax.wsdl.source,1.6.2=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl.source_1.6.2.v201005080631.jar
+plugin@javax.wsdl.source,1.6.2=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/plugins/javax.wsdl.source_1.6.2.v201012040545.jar
 
 plugin@javax.wsdl15,1.5.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.wsdl15_1.5.1.v200806030409.jar
 
