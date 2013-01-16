@@ -42,7 +42,6 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.mylyn.monitor.ui"/>
       <import plugin="org.eclipse.mylyn.monitor.core"/>
-      <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
    </requires>
 
    <plugin
