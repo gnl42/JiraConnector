@@ -431,7 +431,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, ITask task, IProgressMonitor monitor)
 			throws CoreException {
-		final String projectId = task.getAttribute(JiraAttribute.PROJECT.id());
+		final String projectId = (task == null ? null : task.getAttribute(JiraAttribute.PROJECT.id()));
 		if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
 			try {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
