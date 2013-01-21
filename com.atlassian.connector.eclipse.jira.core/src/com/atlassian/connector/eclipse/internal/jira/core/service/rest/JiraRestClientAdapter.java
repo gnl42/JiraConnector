@@ -176,10 +176,15 @@ public class JiraRestClientAdapter {
 		return JiraRestConverter.convertProjects(allProjects);
 	}
 
-	public NamedFilter[] getFavouriteFilters() {
+	public NamedFilter[] getFavouriteFilters() throws JiraException {
 
-		return JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters(
-				new NullProgressMonitor()));
+		return call(new Callable<NamedFilter[]>() {
+
+			public NamedFilter[] call() throws Exception {
+				return JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters(
+						new NullProgressMonitor()));
+			}
+		});
 	}
 
 	public Resolution[] getResolutions() {
