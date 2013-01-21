@@ -24,6 +24,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
+import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
@@ -47,6 +48,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Subtask;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
+import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
@@ -241,6 +243,8 @@ public class JiraRestConverter {
 
 		jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
 
+		jiraIssue.setRank(getRankFromIssue(issue));
+
 		return jiraIssue;
 	}
 
@@ -249,20 +253,21 @@ public class JiraRestConverter {
 
 		if (editmeta != null) {
 
-			JSONObject fields = JsonParseUtil.getOptionalJsonObject(editmeta, "fields");
+			JSONObject fieldsFromEditMeta = JsonParseUtil.getOptionalJsonObject(editmeta, "fields");
 
-			if (fields != null) {
+			if (fieldsFromEditMeta != null) {
 
 				List<CustomField> customFields = new ArrayList<CustomField>();
 
 				for (Field field : issue.getFields()) {
 					if (field.getId().startsWith("customfield") && field.getValue() != null) { //$NON-NLS-1$
 
-						JSONObject jsonField = JsonParseUtil.getOptionalJsonObject(fields, field.getId());
+						JSONObject jsonFieldFromEditMeta = JsonParseUtil.getOptionalJsonObject(fieldsFromEditMeta,
+								field.getId());
 
-						if (jsonField != null) {
+						if (jsonFieldFromEditMeta != null) {
 							try {
-								JSONObject schema = (JSONObject) jsonField.get("schema");
+								JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
 
 								if (schema != null) {
 
@@ -296,9 +301,10 @@ public class JiraRestConverter {
 												"Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
 							}
 						} else {
-							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
-									JiraCorePlugin.ID_PLUGIN, NLS.bind(
-											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
+							// skip this (it is common to have not visible custom fields like GH Rank)
+//							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+//									JiraCorePlugin.ID_PLUGIN, NLS.bind(
+//											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
 						}
 					}
 				}
@@ -376,6 +382,40 @@ public class JiraRestConverter {
 		} catch (JSONException e) {
 			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
 					e.getMessage()));
+		}
+
+		return null;
+	}
+
+	private static Integer getRankFromIssue(Issue issue) {
+		JSONObject schemaFields = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(),
+				IssueRestClient.Expandos.SCHEMA.getFieldName());
+
+		if (schemaFields != null) {
+
+			for (Field field : issue.getFields()) {
+				if (field.getId().startsWith("customfield") && field.getValue() != null) { //$NON-NLS-1$
+
+					JSONObject jsonFieldFromSchema = JsonParseUtil.getOptionalJsonObject(schemaFields, field.getId());
+
+					if (jsonFieldFromSchema != null) {
+						String longType = JsonParseUtil.getOptionalString(jsonFieldFromSchema, "custom"); //$NON-NLS-1$
+
+						if (JiraAttribute.RANK.getType().getKey().equals(longType)) {
+							try {
+								return Integer.valueOf(field.getValue().toString());
+							} catch (NumberFormatException e) {
+								StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+										JiraCorePlugin.ID_PLUGIN, NLS.bind(
+												"Unable to parse Rank value [{0}].", field.getValue().toString()))); //$NON-NLS-1$
+							}
+						}
+					}
+				}
+			}
+		} else {
+			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+					"Unable to retrieve fields' type information (schema). Skipping searching for Rank.")); //$NON-NLS-1$
 		}
 
 		return null;

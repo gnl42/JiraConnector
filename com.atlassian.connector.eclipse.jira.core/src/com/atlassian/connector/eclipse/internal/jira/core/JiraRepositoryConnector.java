@@ -529,6 +529,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (taskData.isPartial()) {
 			task.setModificationDate(originalModificationDate);
 		}
+
+		// store rank for sorting
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.RANK.id());
+		if (attribute != null) {
+			task.setAttribute(TaskAttribute.RANK, attribute.getValue());
+		}
 	}
 
 	@Override

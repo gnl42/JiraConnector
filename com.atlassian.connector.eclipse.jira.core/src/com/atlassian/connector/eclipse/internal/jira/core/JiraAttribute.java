@@ -100,7 +100,9 @@ public enum JiraAttribute {
 	PROJECT_ROLES(IJiraConstants.ATTRIBUTE_PROJECT_ROLES, JiraFieldType.SELECT, Messages.JiraAttribute_Viewable_by,
 			true, false),
 
-	VOTES(IJiraConstants.ATTRIBUTE_VOTES, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Votes, true, true);
+	VOTES(IJiraConstants.ATTRIBUTE_VOTES, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Votes, true, true),
+
+	RANK(TaskAttribute.RANK, JiraFieldType.RANK, Messages.JiraAttribute_unknown, true, true);
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {

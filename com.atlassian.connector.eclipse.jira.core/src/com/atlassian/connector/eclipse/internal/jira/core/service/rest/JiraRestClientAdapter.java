@@ -156,7 +156,8 @@ public class JiraRestClientAdapter {
 		return call(new Callable<Issue>() {
 			public Issue call() {
 				return restClient.getIssueClient().getIssue(issueKeyOrId,
-						ImmutableList.of(IssueRestClient.Expandos.EDITMETA), new NullProgressMonitor());
+						ImmutableList.of(IssueRestClient.Expandos.EDITMETA, IssueRestClient.Expandos.SCHEMA),
+						new NullProgressMonitor());
 			}
 		});
 	}

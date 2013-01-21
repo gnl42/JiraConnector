@@ -108,6 +108,8 @@ public class JiraIssue implements Serializable {
 
 	private URI self;
 
+	private Integer rank = null;
+
 	public String getId() {
 		return id;
 	}
@@ -559,6 +561,14 @@ public class JiraIssue implements Serializable {
 
 	public void setWorklogs(JiraWorkLog[] worklogs) {
 		this.worklogs = worklogs;
+	}
+
+	public void setRank(Integer rank) {
+		this.rank = rank;
+	}
+
+	public Integer getRank() {
+		return this.rank;
 	}
 
 }

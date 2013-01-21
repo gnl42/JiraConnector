@@ -100,6 +100,8 @@ public enum JiraFieldType {
 
 	UNKNOWN(null),
 
+	RANK("com.pyxis.greenhopper.jira:gh-global-rank"), //$NON-NLS-1$
+
 	URL("com.atlassian.jira.plugin.system.customfieldtypes:url", TaskAttribute.TYPE_URL), //$NON-NLS-1$
 
 	USERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", TaskAttribute.TYPE_PERSON), //$NON-NLS-1$

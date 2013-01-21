@@ -262,6 +262,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 
+		createAttribute(data, JiraAttribute.RANK);
+
 		TaskAttribute types = createAttribute(data, JiraAttribute.TYPE);
 		IssueType[] jiraIssueTypes = project.getIssueTypes();
 		if (jiraIssueTypes == null || jiraIssueTypes.length == 0) {
@@ -433,6 +435,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			setAttributeValue(data, JiraAttribute.PRIORITY, jiraIssue.getPriority().getId());
 		} else {
 			removeAttribute(data, JiraAttribute.PRIORITY);
+		}
+
+		if (jiraIssue.getRank() != null) {
+			setAttributeValue(data, JiraAttribute.RANK, jiraIssue.getRank().toString());
 		}
 
 		SecurityLevel securityLevel = jiraIssue.getSecurityLevel();
