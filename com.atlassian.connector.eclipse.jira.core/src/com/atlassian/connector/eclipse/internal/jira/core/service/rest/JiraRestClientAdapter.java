@@ -497,11 +497,11 @@ public class JiraRestClientAdapter {
 
 	}
 
-	public SimpleDateFormat getDateTimeFormat() {
+	public static SimpleDateFormat getDateTimeFormat() {
 		return REST_DATETIME_FORMAT;
 	}
 
-	public SimpleDateFormat getDateFormat() {
+	public static SimpleDateFormat getDateFormat() {
 		return REST_DATE_FORMAT;
 	}
 }

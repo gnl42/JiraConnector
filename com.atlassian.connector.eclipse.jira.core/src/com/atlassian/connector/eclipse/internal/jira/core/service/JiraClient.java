@@ -135,7 +135,8 @@ public class JiraClient {
 
 	public JiraClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
 		this(location, configuration, null);
-		restClient = createRestClient(location, cache);
+		// lazy initialization of REST client so creating JIRA client does not trigger SecureStorage
+//		restClient = createRestClient(location, cache);
 	}
 
 	/**
@@ -145,6 +146,14 @@ public class JiraClient {
 	 */
 	public JiraClient(AbstractWebLocation location) {
 		this(location, new JiraLocalConfiguration());
+	}
+
+	private JiraRestClientAdapter getRestClient() {
+		if (restClient == null) {
+			restClient = createRestClient(location, cache);
+		}
+
+		return restClient;
 	}
 
 	private static JiraRestClientAdapter createRestClient(final AbstractWebLocation location,
@@ -178,7 +187,7 @@ public class JiraClient {
 	public void addCommentToIssue(String issueKey, String comment, IProgressMonitor monitor) throws JiraException {
 
 		try {
-			restClient.addComment(issueKey, comment);
+			getRestClient().addComment(issueKey, comment);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -195,7 +204,7 @@ public class JiraClient {
 		try {
 			Iterable<IssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
 
-			restClient.transitionIssue(issue, actionKey, comment, fields);
+			getRestClient().transitionIssue(issue, actionKey, comment, fields);
 
 		} catch (RestClientException e) {
 			throw new JiraException(e);
@@ -218,7 +227,7 @@ public class JiraClient {
 //		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
 
 		try {
-			restClient.assignIssue(issue.getKey(), user, comment);
+			getRestClient().assignIssue(issue.getKey(), user, comment);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -239,7 +248,7 @@ public class JiraClient {
 		}
 
 		try {
-			restClient.addAttachment(jiraIssue.getKey(), content, filename);
+			getRestClient().addAttachment(jiraIssue.getKey(), content, filename);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -298,7 +307,7 @@ public class JiraClient {
 
 		try {
 
-			String issueKey = restClient.createIssue(issue);
+			String issueKey = getRestClient().createIssue(issue);
 
 //		String issueKey = soapClient.createIssue(issue, monitor);
 			//String issueKey = webClient.createIssue(issue, monitor);
@@ -357,7 +366,7 @@ public class JiraClient {
 	private void findIssues(String jql, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		try {
 
-			List<JiraIssue> issues = restClient.getIssues(jql, localConfiguration.getMaxSearchResults(), monitor);
+			List<JiraIssue> issues = getRestClient().getIssues(jql, localConfiguration.getMaxSearchResults(), monitor);
 
 			if (!collector.isCancelled()) {
 				collector.start();
@@ -411,7 +420,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableActions", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getTransitions(issueKey);
+			return getRestClient().getTransitions(issueKey);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -482,7 +491,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByKey", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getIssueByKeyOrId(issueKey, monitor);
+			return getRestClient().getIssueByKeyOrId(issueKey, monitor);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -501,7 +510,7 @@ public class JiraClient {
 
 		try {
 			// TODO rest retrieve/show custom fields
-			return restClient.getIssueByKeyOrId(issueId, monitor);
+			return getRestClient().getIssueByKeyOrId(issueId, monitor);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -511,7 +520,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueTypes", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getIssueTypes();
+			return getRestClient().getIssueTypes();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -554,7 +563,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getNamedFilters", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getFavouriteFilters();
+			return getRestClient().getFavouriteFilters();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -566,7 +575,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getPriorities", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getPriorities();
+			return getRestClient().getPriorities();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -578,7 +587,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getProjects", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getProjects();
+			return getRestClient().getProjects();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -590,7 +599,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getResolutions", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getResolutions();
+			return getRestClient().getResolutions();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -604,7 +613,7 @@ public class JiraClient {
 		// get server information through SOAP
 //		ServerInfo serverInfo = soapClient.getServerInfo(monitor);
 		try {
-			ServerInfo serverInfo = restClient.getServerInfo();
+			ServerInfo serverInfo = getRestClient().getServerInfo();
 
 			// get character encoding through web
 //			WebServerInfo webServerInfo = webClient.getWebServerInfo(monitor);
@@ -628,7 +637,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getStatuses", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getStatuses();
+			return getRestClient().getStatuses();
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -651,7 +660,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getProjectDetails", null); //$NON-NLS-1$
 
 		try {
-			restClient.getProjectDetails(project);
+			getRestClient().getProjectDetails(project);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -717,7 +726,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getAttachment", null); //$NON-NLS-1$
 
 		try {
-			return restClient.getAttachment(attachment.getContent());
+			return getRestClient().getAttachment(attachment.getContent());
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -756,7 +765,7 @@ public class JiraClient {
 //		soapClient.updateIssue(issue, monitor);
 
 		try {
-			restClient.updateIssue(issue);
+			getRestClient().updateIssue(issue);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -782,7 +791,7 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("addWorkLog", null); //$NON-NLS-1$
 
 		try {
-			restClient.addWorklog(issueKey, log);
+			getRestClient().addWorklog(issueKey, log);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}
@@ -837,10 +846,10 @@ public class JiraClient {
 	}
 
 	public SimpleDateFormat getDateTimeFormat() {
-		return restClient.getDateTimeFormat();
+		return JiraRestClientAdapter.getDateTimeFormat();
 	}
 
 	public SimpleDateFormat getDateFormat() {
-		return restClient.getDateFormat();
+		return JiraRestClientAdapter.getDateFormat();
 	}
 }
