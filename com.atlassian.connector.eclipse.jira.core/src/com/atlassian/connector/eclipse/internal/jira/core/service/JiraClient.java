@@ -328,6 +328,7 @@ public class JiraClient {
 //		return getIssueByKey(issueKey, monitor);
 //	}
 
+	// only for tests purposes
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("deleteIssue", null); //$NON-NLS-1$
 		soapClient.deleteIssue(issue.getKey(), monitor);
@@ -782,9 +783,10 @@ public class JiraClient {
 
 	public SecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getAvailableSecurityLevels", null); //$NON-NLS-1$
-		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 
-		// TODO rest there is no list of security levels in REST at all, they should be available in edit meta
+		return getRestClient().getSecurityLevels(projectKey);
+
+//		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 	}
 
 	public void addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {

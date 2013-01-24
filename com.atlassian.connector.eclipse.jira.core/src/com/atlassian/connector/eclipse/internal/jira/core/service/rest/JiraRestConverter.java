@@ -195,8 +195,7 @@ public class JiraRestConverter {
 				String id = json.getString(JiraRestFields.ID);
 				String name = json.getString(JiraRestFields.NAME);
 
-				SecurityLevel securityLevel = new SecurityLevel(id);
-				securityLevel.setName(name);
+				SecurityLevel securityLevel = new SecurityLevel(id, name);
 
 				jiraIssue.setSecurityLevel(securityLevel);
 			} catch (JSONException e) {

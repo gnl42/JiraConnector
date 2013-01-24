@@ -46,12 +46,14 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.NamedFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Priority;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
+import com.atlassian.connector.eclipse.internal.jira.core.model.SecurityLevel;
 import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
+import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.JiraRestClient;
 import com.atlassian.jira.rest.client.NullProgressMonitor;
@@ -60,6 +62,9 @@ import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.domain.BasicPriority;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.domain.CimIssueType;
+import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
@@ -503,5 +508,46 @@ public class JiraRestClientAdapter {
 
 	public static SimpleDateFormat getDateFormat() {
 		return REST_DATE_FORMAT;
+	}
+
+	public SecurityLevel[] getSecurityLevels(String projectKey) throws JiraException {
+
+		GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
+
+		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(
+				builder.withExpandedIssueTypesFields().withProjectKeys(projectKey).build(), new NullProgressMonitor());
+
+		if (createIssueMetadata.iterator().hasNext()) {
+			CimProject cimProject = createIssueMetadata.iterator().next();
+
+			// get first issue type (security level is the same for all issue types in the project)
+			if (cimProject.getIssueTypes().iterator().hasNext()) {
+				CimIssueType cimIssueType = cimProject.getIssueTypes().iterator().next();
+
+				CimFieldInfo cimFieldSecurity = cimIssueType.getFields().get(JiraRestFields.SECURITY);
+
+				if (cimFieldSecurity != null) {
+					Iterable<Object> allowedValues = cimFieldSecurity.getAllowedValues();
+
+					List<SecurityLevel> securityLevels = new ArrayList<SecurityLevel>();
+
+					for (Object allowedValue : allowedValues) {
+						if (allowedValue instanceof com.atlassian.jira.rest.client.domain.SecurityLevel) {
+							com.atlassian.jira.rest.client.domain.SecurityLevel securityLevel = (com.atlassian.jira.rest.client.domain.SecurityLevel) allowedValue;
+
+							securityLevels.add(new SecurityLevel(securityLevel.getId().toString(),
+									securityLevel.getName()));
+						}
+					}
+
+					return securityLevels.toArray(new SecurityLevel[securityLevels.size()]);
+				} else {
+					// (security might not exist if not defined for project)
+					return new SecurityLevel[0];
+				}
+			}
+		}
+
+		throw new JiraException("Cannot retrieve security levels metadata."); //$NON-NLS-1$
 	}
 }

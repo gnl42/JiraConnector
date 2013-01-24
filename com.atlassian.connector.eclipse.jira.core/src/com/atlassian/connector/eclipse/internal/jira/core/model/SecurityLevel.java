@@ -22,11 +22,7 @@ public class SecurityLevel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final SecurityLevel NONE = new SecurityLevel("-1"); //$NON-NLS-1$
-
-	static {
-		NONE.setName(Messages.SecurityLevel_None);
-	}
+	public static final SecurityLevel NONE = new SecurityLevel("-1", Messages.SecurityLevel_None); //$NON-NLS-1$
 
 	private String id;
 
@@ -38,6 +34,11 @@ public class SecurityLevel implements Serializable {
 	}
 
 	public SecurityLevel() {
+	}
+
+	public SecurityLevel(String id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	public String getId() {
