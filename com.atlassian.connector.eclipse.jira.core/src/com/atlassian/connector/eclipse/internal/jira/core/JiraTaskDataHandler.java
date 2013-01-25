@@ -653,21 +653,22 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					data.getRoot().deepAddCopy(attribute);
 				}
 			} else {
-				try {
-					IssueField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
-					if (editableAttributes != null) {
-						for (IssueField field : editableAttributes) {
-							// TODO rest temporary all custom fields are read only
+//				try {
+//				IssueField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
+				IssueField[] editableAttributes = jiraIssue.getEditableFields();
+				if (editableAttributes != null) {
+					for (IssueField field : editableAttributes) {
+						// TODO rest temporary all custom fields are read only
 //							if (!field.getId().startsWith("customfield")) {
-							editableKeys.add(mapCommonAttributeKey(field.getId()));
-//							}
-						}
+						editableKeys.add(mapCommonAttributeKey(field.getId()));
 					}
-				} catch (JiraInsufficientPermissionException e) {
-					trace(e);
-					// flag as read-only to avoid calling getEditableAttributes() on each sync
-					data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY);
 				}
+//					}
+//				} catch (JiraInsufficientPermissionException e) {
+//					trace(e);
+//					// flag as read-only to avoid calling getEditableAttributes() on each sync
+//					data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY);
+//				}
 			}
 		}
 		return editableKeys;
@@ -1652,6 +1653,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return TaskAttribute.TYPE_SHORT_TEXT;
 	}
 
+	/**
+	 * Translates JIRA attributes to Mylyn values
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public String mapCommonAttributeKey(String key) {
 		if ("summary".equals(key)) { //$NON-NLS-1$
 			return JiraAttribute.SUMMARY.id();

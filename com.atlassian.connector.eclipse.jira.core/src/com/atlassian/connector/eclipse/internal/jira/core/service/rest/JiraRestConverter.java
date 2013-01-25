@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -133,6 +134,7 @@ public class JiraRestConverter {
 		JiraIssue jiraIssue = new JiraIssue();
 
 		jiraIssue.setCustomFields(getCustomFieldsFromIssue(issue));
+		jiraIssue.setEditableFields(getEditableFieldsFromIssue(issue));
 
 		Project project = cache.getProjectByKey(issue.getProject().getKey());
 		jiraIssue.setProject(project);
@@ -320,6 +322,89 @@ public class JiraRestConverter {
 		}
 
 		return new CustomField[0];
+	}
+
+	private static IssueField[] getEditableFieldsFromIssue(Issue issue) {
+
+		List<IssueField> editableFields = new ArrayList<IssueField>();
+
+		JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
+
+		if (editmeta != null) {
+
+			try {
+				JSONObject fieldsFromEditMeta = JsonParseUtil.getNestedObject(editmeta, "fields");
+
+				if (fieldsFromEditMeta != null) {
+
+					@SuppressWarnings("rawtypes")
+					Iterator keys = fieldsFromEditMeta.keys();
+
+					while (keys.hasNext()) {
+						String key = (String) keys.next();
+						JSONObject jsonFieldFromEditMeta = fieldsFromEditMeta.getJSONObject(key);
+//
+						if (jsonFieldFromEditMeta != null) {
+							boolean required = jsonFieldFromEditMeta.getBoolean("required");
+							String name = jsonFieldFromEditMeta.getString(JiraRestFields.NAME);
+
+							IssueField editableField = new IssueField(key, name);
+							editableField.setRequired(required);
+
+							editableFields.add(editableField);
+
+						} else {
+							StatusHandler.log(new org.eclipse.core.runtime.Status(
+									IStatus.WARNING,
+									JiraCorePlugin.ID_PLUGIN,
+									NLS.bind(
+											"Unable to retrieve field' type information (edit meta) for [{0}]. Skipping this one.", key))); //$NON-NLS-1$
+						}
+					}
+				} else {
+					StatusHandler.log(new org.eclipse.core.runtime.Status(
+							IStatus.WARNING,
+							JiraCorePlugin.ID_PLUGIN,
+							NLS.bind(
+									"Unable to retrieve 'fields' information (edit meta) for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
+				}
+			} catch (JSONException e) {
+				StatusHandler.log(new org.eclipse.core.runtime.Status(
+						IStatus.WARNING,
+						JiraCorePlugin.ID_PLUGIN,
+						NLS.bind(
+								"Unable to parse type information (edit meta) for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
+			}
+		} else {
+			StatusHandler.log(new org.eclipse.core.runtime.Status(
+					IStatus.WARNING,
+					JiraCorePlugin.ID_PLUGIN,
+					NLS.bind(
+							"Unable to retrieve 'editmeta' information for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
+		}
+
+//						JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
+//
+//						if (schema != null) {
+//
+//							String type = JsonParseUtil.getOptionalString(schema, "type");
+//
+//							if (type != null) {
+//								editableField.setType(type);
+//							} else {
+//								StatusHandler.log(new org.eclipse.core.runtime.Status(
+//										IStatus.WARNING,
+//										JiraCorePlugin.ID_PLUGIN,
+//										NLS.bind(
+//												"Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
+//							}
+//
+
+		if (editableFields.size() > 0) {
+			return editableFields.toArray(new IssueField[editableFields.size()]);
+		}
+
+		return new IssueField[0];
 	}
 
 	private static CustomField generateCustomField(Field field, String longType) {

@@ -96,6 +96,8 @@ public class JiraIssue implements Serializable {
 
 	private CustomField[] customFields = new CustomField[0];
 
+	private IssueField[] editableFields = new IssueField[0];
+
 	private Subtask[] subtasks = new Subtask[0];
 
 	private IssueLink[] issueLinks = new IssueLink[0];
@@ -569,6 +571,14 @@ public class JiraIssue implements Serializable {
 
 	public Integer getRank() {
 		return this.rank;
+	}
+
+	public IssueField[] getEditableFields() {
+		return editableFields;
+	}
+
+	public void setEditableFields(IssueField[] editableFields) {
+		this.editableFields = editableFields;
 	}
 
 }
