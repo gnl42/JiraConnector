@@ -558,7 +558,8 @@ public class JiraClientTest extends TestCase {
 	public void testGetEditableFields() throws Exception {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getEditableFields");
 
-		IssueField[] fields = client.getEditableAttributes(issue.getKey(), null);
+//		IssueField[] fields = client.getEditableAttributes(issue.getKey(), null);
+		IssueField[] fields = issue.getEditableFields();
 		Set<String> ids = new HashSet<String>();
 		for (IssueField field : fields) {
 			ids.add(field.getId());
