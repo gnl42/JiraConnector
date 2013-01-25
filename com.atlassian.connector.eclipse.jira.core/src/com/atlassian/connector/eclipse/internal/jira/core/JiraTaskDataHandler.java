@@ -656,12 +656,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 //				try {
 //				IssueField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
 				IssueField[] editableAttributes = jiraIssue.getEditableFields();
-				if (editableAttributes != null) {
+				if (editableAttributes != null && editableAttributes.length > 0) {
 					for (IssueField field : editableAttributes) {
 						// TODO rest temporary all custom fields are read only
 //							if (!field.getId().startsWith("customfield")) {
 						editableKeys.add(mapCommonAttributeKey(field.getId()));
 					}
+				} else {
+					// flag as read-only to avoid calling getEditableAttributes() on each sync
+					data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY);
 				}
 //					}
 //				} catch (JiraInsufficientPermissionException e) {
