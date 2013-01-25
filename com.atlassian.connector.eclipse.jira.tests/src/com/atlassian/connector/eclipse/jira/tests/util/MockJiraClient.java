@@ -171,10 +171,10 @@ public class MockJiraClient extends JiraClient {
 //		return null;
 //	}
 
-	@Override
-	public IssueField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
+//	@Override
+//	public IssueField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
+//		return null;
+//	}
 
 	public JiraIssue getIssueById(String issue) throws JiraException {
 		return null;
