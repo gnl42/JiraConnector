@@ -11,11 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui.editor;
 
-import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
-import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.PersonAttributeEditor;
@@ -32,6 +27,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.services.IServiceLocator;
 
+import com.atlassian.connector.eclipse.internal.jira.core.IJiraConstants;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
+
 class JiraAttributeEditorFactory extends AttributeEditorFactory {
 	private final TaskDataModel model;
 
@@ -45,14 +43,14 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
 		if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
 			return new TimeSpanAttributeEditor(model, taskAttribute);
 		}
-		if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
-			String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
-				return new DateTimeAttributeEditor(model, taskAttribute, true);
-			} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
-				return new DateTimeAttributeEditor(model, taskAttribute, false);
-			}
-		}
+//		if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
+//			String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+//			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
+//				return new DateTimeAttributeEditor(model, taskAttribute, true);
+//			} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
+//				return new DateTimeAttributeEditor(model, taskAttribute, false);
+//			}
+//		}
 		if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
 			CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(model,
 					taskAttribute);

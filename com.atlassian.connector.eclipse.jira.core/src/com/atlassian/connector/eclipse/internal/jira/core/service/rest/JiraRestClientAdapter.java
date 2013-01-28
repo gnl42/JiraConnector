@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
+import com.atlassian.connector.eclipse.internal.jira.core.model.CustomField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueField;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -400,9 +401,9 @@ public class JiraRestClientAdapter {
 	}
 
 	public void updateIssue(JiraIssue changedIssue) throws JiraException {
-		Issue issue = getIssue(changedIssue.getKey());
+		final Issue issue = getIssue(changedIssue.getKey());
 
-		List<FieldInput> fields = new ArrayList<FieldInput>();
+		final List<FieldInput> fields = new ArrayList<FieldInput>();
 
 		fields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getType().getId())));
@@ -462,7 +463,17 @@ public class JiraRestClientAdapter {
 		fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
 				changedIssue.getAssignee())));
 
-		restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
+		for (CustomField customField : changedIssue.getCustomFields()) {
+			fields.add(JiraRestConverter.convert(customField));
+		}
+
+		call(new Callable<Void>() {
+
+			public Void call() throws Exception {
+				restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
+				return null;
+			}
+		});
 
 	}
 
@@ -488,7 +499,10 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage().substring(index) + ". Https might be required."); //$NON-NLS-1$
 			} else if (e.getMessage().contains(HTTP_404)) {
 				throw new JiraServiceUnavailableException(e);
+			} else if (e.getMessage().contains("java.lang.NullPointerException")) {
+				throw new RuntimeException(e);
 			} else {
+
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
 				throw new JiraException(e.getMessage());
 			}

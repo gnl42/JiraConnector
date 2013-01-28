@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -62,11 +64,15 @@ import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.google.common.collect.ImmutableList;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 public class JiraRestConverter {
 
 	private JiraRestConverter() throws Exception {
@@ -426,6 +432,7 @@ public class JiraRestConverter {
 			case DATE:
 			case DATETIME:
 				values = ImmutableList.of(field.getValue().toString());
+				break;
 			case FLOATFIELD:
 				values = ImmutableList.of(field.getValue().toString());
 				break;
@@ -461,7 +468,7 @@ public class JiraRestConverter {
 			if (values != null && !values.isEmpty()) {
 
 				CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
-				customField.setReadOnly(true);
+				customField.setReadOnly(false);
 
 				return customField;
 			}
@@ -853,5 +860,94 @@ public class JiraRestConverter {
 		outStatus.setIcon(status.getIconUrl().toString());
 
 		return outStatus;
+	}
+
+	public static FieldInput convert(CustomField customField) {
+
+		JiraFieldType fieldType = JiraFieldType.fromKey(customField.getKey());
+
+		switch (fieldType) {
+		case TEXTFIELD:
+		case TEXTAREA:
+		case URL:
+			if (customField.getValues().get(0) != null) {
+				return new FieldInput(customField.getId(), customField.getValues().get(0));
+			}
+			break;
+		case DATE:
+
+			if (customField.getValues().get(0) != null) {
+				String date = null;
+
+				try {
+					date = new DateTime(Long.valueOf(customField.getValues().get(0))).toString(JiraRestFields.DATE_FORMAT);
+				} catch (IllegalArgumentException e) {
+					date = new DateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_FORMAT);
+				}
+
+				return new FieldInput(customField.getId(), date);
+			}
+			break;
+		case DATETIME:
+
+			if (customField.getValues().get(0) != null) {
+				String date = null;
+
+				try {
+					date = new DateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_TIME_FORMAT);
+				} catch (IllegalArgumentException e) {
+
+					date = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
+							.withLocale(Locale.ENGLISH)
+							.parseDateTime(customField.getValues().get(0))
+							.toString(JiraRestFields.DATE_TIME_FORMAT);
+				}
+
+				return new FieldInput(customField.getId(), date);
+			}
+
+			break;
+
+//			values = ImmutableList.of(field.getValue().toString());
+//		case FLOATFIELD:
+//			values = ImmutableList.of(field.getValue().toString());
+//			break;
+//		case MULTIUSERPICKER:
+//			// no support for multi users on the Mylyn side
+////		values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
+//			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
+//			break;
+//		case USERPICKER:
+//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseUserPicker(field));
+//			break;
+//		case SELECT:
+//		case RADIOBUTTONS:
+//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseSelect(field));
+//			break;
+//		case MULTISELECT:
+//		case MULTICHECKBOXES:
+//			values = JiraRestCustomFieldsParser.parseMultiSelect(field);
+//			break;
+//		case LABELSS:
+//			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+//			break;
+//		case GROUPPICKER:
+//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
+//			break;
+//		case MULTIGROUPPICKER:
+//			values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
+//			break;
+		default:
+			// not supported custom field
+		}
+
+//		if (values != null && !values.isEmpty()) {
+//
+//			CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
+//			customField.setReadOnly(false);
+//
+//			return customField;
+//		}
+		return null;
 	}
 }

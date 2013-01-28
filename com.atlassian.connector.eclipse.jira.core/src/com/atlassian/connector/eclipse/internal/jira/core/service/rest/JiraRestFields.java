@@ -30,6 +30,8 @@ public class JiraRestFields {
 
 	static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
+	static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"; //$NON-NLS-1$
+
 	static final String DUEDATE = "duedate"; //$NON-NLS-1$
 
 	static final String PRIORITY = "priority"; //$NON-NLS-1$

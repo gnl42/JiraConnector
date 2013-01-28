@@ -23,7 +23,7 @@ public enum JiraFieldType {
 
 	DATE("com.atlassian.jira.plugin.system.customfieldtypes:datepicker", TaskAttribute.TYPE_DATE), //$NON-NLS-1$
 
-	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATE), //$NON-NLS-1$
+	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATETIME), //$NON-NLS-1$
 
 	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float", IJiraConstants.TYPE_NUMBER), //$NON-NLS-1$
 
