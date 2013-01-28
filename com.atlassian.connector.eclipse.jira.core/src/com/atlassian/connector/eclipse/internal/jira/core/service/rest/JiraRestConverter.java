@@ -240,7 +240,9 @@ public class JiraRestConverter {
 		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
 		jiraIssue.setComments(convertComments(issue.getComments()));
 
-		jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
+		if (issue.getAttachments() != null) {
+			jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
+		}
 
 		jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
 
