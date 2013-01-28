@@ -580,7 +580,7 @@ public class JiraRestConverter {
 		outComment.setAuthorDisplayName(comment.getAuthor().getDisplayName());
 		outComment.setComment(comment.getBody());
 		outComment.setCreated(comment.getCreationDate().toDate());
-		outComment.setMarkupDetected(true);
+		outComment.setMarkupDetected(false);
 
 		Visibility visibility = comment.getVisibility();
 		if (visibility != null) {
