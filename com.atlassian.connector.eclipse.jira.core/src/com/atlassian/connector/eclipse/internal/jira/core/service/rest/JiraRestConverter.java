@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -940,14 +941,29 @@ public class JiraRestConverter {
 				return new FieldInput(customField.getId(), Float.parseFloat(customField.getValues().get(0)));
 			}
 			break;
-//		case MULTIUSERPICKER:
-//			// no support for multi users on the Mylyn side
-////		values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
-//			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
-//			break;
+		case MULTIUSERPICKER:
+			// no support for multi users on the Mylyn side
+
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
+
+				List<ComplexIssueInputFieldValue> usersFields = new ArrayList<ComplexIssueInputFieldValue>();
+
+				List<String> users = Arrays.asList(customField.getValues().get(0).split(",")); //$NON-NLS-1$
+
+				for (String user : users) {
+					usersFields.add(ComplexIssueInputFieldValue.with(JiraRestFields.NAME, StringUtils.strip(user)));
+				}
+
+				return new FieldInput(customField.getId(), usersFields);
+
+			}
+//			for (Version version : changedIssue.getReportedVersions()) {
+//				reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
+//			}
+
+			break;
 		case USERPICKER:
-			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-					&& customField.getValues().get(0).length() > 0) {
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 				return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
 						customField.getValues().get(0)));
 			}

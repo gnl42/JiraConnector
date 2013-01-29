@@ -36,7 +36,7 @@ public class JiraRestCustomFieldsParser {
 			Object o = jsonArray.get(i);
 
 			if (o instanceof JSONObject) {
-				users.add(JsonParseUtil.getOptionalString((JSONObject) o, "displayName"));
+				users.add(JsonParseUtil.getOptionalString((JSONObject) o, "name"));
 			}
 		}
 
