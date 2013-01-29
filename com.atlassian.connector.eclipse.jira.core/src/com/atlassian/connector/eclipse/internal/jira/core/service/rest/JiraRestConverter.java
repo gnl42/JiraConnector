@@ -893,13 +893,14 @@ public class JiraRestConverter {
 		case TEXTFIELD:
 		case TEXTAREA:
 		case URL:
-			if (customField.getValues().get(0) != null) {
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 				return new FieldInput(customField.getId(), customField.getValues().get(0));
 			}
 			break;
 		case DATE:
 
-			if (customField.getValues().get(0) != null) {
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
+					&& customField.getValues().get(0).length() > 0) {
 				String date = null;
 
 				try {
@@ -913,7 +914,8 @@ public class JiraRestConverter {
 			break;
 		case DATETIME:
 
-			if (customField.getValues().get(0) != null) {
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
+					&& customField.getValues().get(0).length() > 0) {
 				String date = null;
 
 				try {
@@ -931,10 +933,12 @@ public class JiraRestConverter {
 
 			break;
 
-//			values = ImmutableList.of(field.getValue().toString());
-//		case FLOATFIELD:
-//			values = ImmutableList.of(field.getValue().toString());
-//			break;
+		case FLOATFIELD:
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
+					&& customField.getValues().get(0).length() > 0) {
+				return new FieldInput(customField.getId(), Float.parseFloat(customField.getValues().get(0)));
+			}
+			break;
 //		case MULTIUSERPICKER:
 //			// no support for multi users on the Mylyn side
 ////		values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
@@ -971,6 +975,6 @@ public class JiraRestConverter {
 //
 //			return customField;
 //		}
-		return null;
+		return new FieldInput(customField.getId(), null);
 	}
 }
