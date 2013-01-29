@@ -805,6 +805,8 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getProjectRoles", null); //$NON-NLS-1$
 //		return soapClient.getProjectRoles(monitor);
 
+		// not used
+		// restClient.getProjectRolesRestClient().getRoles(projectUri, progressMonitor)
 		return new ProjectRole[0];
 
 		// TODO rest https://studio.atlassian.com/browse/JRJC-108

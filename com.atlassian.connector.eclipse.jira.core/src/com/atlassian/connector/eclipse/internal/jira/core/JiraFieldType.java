@@ -42,7 +42,7 @@ public enum JiraFieldType {
 			"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 
 	MULTIGROUPPICKER(
-			"com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
+			"com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
 	MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 

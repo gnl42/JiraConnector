@@ -484,7 +484,8 @@ public class JiraRestConverter {
 				values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
 				break;
 			case MULTIGROUPPICKER:
-				values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
+				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field),
+						", ")); //$NON-NLS-1$
 				break;
 			default:
 				// not supported custom field
@@ -942,17 +943,18 @@ public class JiraRestConverter {
 			}
 			break;
 		case MULTIUSERPICKER:
+		case MULTIGROUPPICKER:
 			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 
-				List<ComplexIssueInputFieldValue> usersFields = new ArrayList<ComplexIssueInputFieldValue>();
+				List<ComplexIssueInputFieldValue> fields = new ArrayList<ComplexIssueInputFieldValue>();
 
-				List<String> users = Arrays.asList(customField.getValues().get(0).split(",")); //$NON-NLS-1$
+				List<String> items = Arrays.asList(customField.getValues().get(0).split(",")); //$NON-NLS-1$
 
-				for (String user : users) {
-					usersFields.add(ComplexIssueInputFieldValue.with(JiraRestFields.NAME, StringUtils.strip(user)));
+				for (String item : items) {
+					fields.add(ComplexIssueInputFieldValue.with(JiraRestFields.NAME, StringUtils.strip(item)));
 				}
 
-				return new FieldInput(customField.getId(), usersFields);
+				return new FieldInput(customField.getId(), fields);
 
 			}
 			break;
