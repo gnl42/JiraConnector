@@ -942,8 +942,6 @@ public class JiraRestConverter {
 			}
 			break;
 		case MULTIUSERPICKER:
-			// no support for multi users on the Mylyn side
-
 			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 
 				List<ComplexIssueInputFieldValue> usersFields = new ArrayList<ComplexIssueInputFieldValue>();
@@ -957,12 +955,9 @@ public class JiraRestConverter {
 				return new FieldInput(customField.getId(), usersFields);
 
 			}
-//			for (Version version : changedIssue.getReportedVersions()) {
-//				reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
-//			}
-
 			break;
 		case USERPICKER:
+		case GROUPPICKER:
 			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 				return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
 						customField.getValues().get(0)));
@@ -978,9 +973,6 @@ public class JiraRestConverter {
 //			break;
 //		case LABELSS:
 //			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
-//			break;
-//		case GROUPPICKER:
-//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
 //			break;
 //		case MULTIGROUPPICKER:
 //			values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
