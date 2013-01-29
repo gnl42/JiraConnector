@@ -183,8 +183,9 @@ public class JiraRestConverter {
 
 		if (issue.getReporter() != null) {
 			jiraIssue.setReporter(issue.getReporter().getName());
+			jiraIssue.setReporterName(issue.getReporter().getDisplayName());
 		}
-		jiraIssue.setReporterName(issue.getReporter().getDisplayName());
+
 		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionByName(issue.getResolution()
 				.getName()));
 		if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
