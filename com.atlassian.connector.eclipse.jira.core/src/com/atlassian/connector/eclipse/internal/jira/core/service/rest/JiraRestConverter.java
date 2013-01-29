@@ -188,14 +188,17 @@ public class JiraRestConverter {
 
 		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionByName(issue.getResolution()
 				.getName()));
-		if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
-			jiraIssue.setInitialEstimate(issue.getTimeTracking().getOriginalEstimateMinutes() * 60);
-		}
-		if (issue.getTimeTracking().getRemainingEstimateMinutes() != null) {
-			jiraIssue.setEstimate(issue.getTimeTracking().getRemainingEstimateMinutes() * 60);
-		}
-		if (issue.getTimeTracking().getTimeSpentMinutes() != null) {
-			jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
+
+		if (issue.getTimeTracking() != null) {
+			if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+				jiraIssue.setInitialEstimate(issue.getTimeTracking().getOriginalEstimateMinutes() * 60);
+			}
+			if (issue.getTimeTracking().getRemainingEstimateMinutes() != null) {
+				jiraIssue.setEstimate(issue.getTimeTracking().getRemainingEstimateMinutes() * 60);
+			}
+			if (issue.getTimeTracking().getTimeSpentMinutes() != null) {
+				jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
+			}
 		}
 
 		Field security = issue.getField(JiraRestFields.SECURITY);
@@ -223,10 +226,16 @@ public class JiraRestConverter {
 			jiraIssue.setType(cache.getIssueTypeById(issue.getIssueType().getId().toString()));
 		}
 
-		jiraIssue.setSubtasks(convert(issue.getSubtasks()));
+		if (issue.getSubtasks() != null) {
+			jiraIssue.setSubtasks(convert(issue.getSubtasks()));
+		}
+
 		jiraIssue.setType(convert(issue.getIssueType()));
 		jiraIssue.setUrl(url + "/browse/" + issue.getKey()); //$NON-NLS-1$
-		jiraIssue.setComponents(convertComponents(issue.getComponents()));
+
+		if (issue.getComponents() != null) {
+			jiraIssue.setComponents(convertComponents(issue.getComponents()));
+		}
 
 		Object env = issue.getField(JiraRestFields.ENVIRONMENT).getValue();
 		if (env != null) {
@@ -236,8 +245,12 @@ public class JiraRestConverter {
 			jiraIssue.setEnvironment(""); //$NON-NLS-1$
 		}
 
-		jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
-		jiraIssue.setFixVersions(convertVersions(issue.getFixVersions()));
+		if (issue.getAffectedVersions() != null) {
+			jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
+		}
+		if (issue.getFixVersions() != null) {
+			jiraIssue.setFixVersions(convertVersions(issue.getFixVersions()));
+		}
 
 		DateTime dueDate = issue.getDueDate();
 		if (dueDate != null) {
@@ -246,14 +259,21 @@ public class JiraRestConverter {
 			jiraIssue.setDue(null);
 		}
 
-		jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
-		jiraIssue.setComments(convertComments(issue.getComments()));
+		if (issue.getIssueLinks() != null) {
+			jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
+		}
+
+		if (issue.getComments() != null) {
+			jiraIssue.setComments(convertComments(issue.getComments()));
+		}
 
 		if (issue.getAttachments() != null) {
 			jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
 		}
 
-		jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
+		if (issue.getWorklogs() != null) {
+			jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
+		}
 
 		jiraIssue.setRank(getRankFromIssue(issue));
 
