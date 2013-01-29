@@ -64,6 +64,7 @@ import com.atlassian.jira.rest.client.domain.Status;
 import com.atlassian.jira.rest.client.domain.Transition;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
@@ -944,9 +945,13 @@ public class JiraRestConverter {
 ////		values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
 //			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
 //			break;
-//		case USERPICKER:
-//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseUserPicker(field));
-//			break;
+		case USERPICKER:
+			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
+					&& customField.getValues().get(0).length() > 0) {
+				return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
+						customField.getValues().get(0)));
+			}
+			break;
 //		case SELECT:
 //		case RADIOBUTTONS:
 //			values = ImmutableList.of(JiraRestCustomFieldsParser.parseSelect(field));

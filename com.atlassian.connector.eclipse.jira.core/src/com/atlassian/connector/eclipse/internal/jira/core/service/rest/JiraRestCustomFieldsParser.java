@@ -47,7 +47,7 @@ public class JiraRestCustomFieldsParser {
 
 		JSONObject jsonValue = (JSONObject) field.getValue();
 
-		String value = JsonParseUtil.getOptionalString(jsonValue, "displayName");
+		String value = JsonParseUtil.getOptionalString(jsonValue, "name");
 
 		if (value == null) {
 			throw new JSONException(NLS.bind("Cannot parse field [{0}]", field.getName())); //$NON-NLS-1$
