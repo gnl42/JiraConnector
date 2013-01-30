@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,6 +32,7 @@ import org.joda.time.format.DateTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraFieldType;
+import com.atlassian.connector.eclipse.internal.jira.core.model.AllowedValue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
@@ -70,6 +72,7 @@ import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -384,6 +387,27 @@ public class JiraRestConverter {
 							IssueField editableField = new IssueField(key, name);
 							editableField.setRequired(required);
 
+							Optional<JSONArray> allowedValuesObject = JsonParseUtil.getOptionalArray(
+									jsonFieldFromEditMeta, "allowedValues"); //$NON-NLS-1$
+
+							if (allowedValuesObject != null
+									&& !Optional.<JSONArray> absent().equals(allowedValuesObject)) {
+								List<AllowedValue> allowedValues = new ArrayList<AllowedValue>();
+
+								JSONArray alloweValuesArray = allowedValuesObject.get();
+								for (int i = 0; i < alloweValuesArray.length(); ++i) {
+									JSONObject allowedValue = alloweValuesArray.getJSONObject(i);
+									String optionalId = JsonParseUtil.getOptionalString(allowedValue, "id");
+									String optionalValue = JsonParseUtil.getOptionalString(allowedValue, "value");
+									if (optionalValue != null && optionalId != null) {
+										allowedValues.add(new AllowedValue(optionalId, optionalValue));
+
+									}
+								}
+
+								editableField.setAllowedValues(allowedValues);
+							}
+
 							editableFields.add(editableField);
 
 						} else {
@@ -415,23 +439,6 @@ public class JiraRestConverter {
 					NLS.bind(
 							"Unable to retrieve 'editmeta' information for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
 		}
-
-//						JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
-//
-//						if (schema != null) {
-//
-//							String type = JsonParseUtil.getOptionalString(schema, "type");
-//
-//							if (type != null) {
-//								editableField.setType(type);
-//							} else {
-//								StatusHandler.log(new org.eclipse.core.runtime.Status(
-//										IStatus.WARNING,
-//										JiraCorePlugin.ID_PLUGIN,
-//										NLS.bind(
-//												"Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
-//							}
-//
 
 		if (editableFields.size() > 0) {
 			return editableFields.toArray(new IssueField[editableFields.size()]);
@@ -965,31 +972,33 @@ public class JiraRestConverter {
 						customField.getValues().get(0)));
 			}
 			break;
-//		case SELECT:
-//		case RADIOBUTTONS:
-//			values = ImmutableList.of(JiraRestCustomFieldsParser.parseSelect(field));
-//			break;
-//		case MULTISELECT:
-//		case MULTICHECKBOXES:
-//			values = JiraRestCustomFieldsParser.parseMultiSelect(field);
-//			break;
+		case SELECT:
+		case RADIOBUTTONS:
+			if (customField.getValues().size() > 0) {
+				String value = CustomField.NONE_ALLOWED_VALUE.equals(customField.getValues().get(0)) ? ""
+						: customField.getValues().get(0);
+				return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with("value", value));
+			}
+			break;
+		case MULTISELECT:
+		case MULTICHECKBOXES:
+
+//			if (customField.getValues().size() > 0) {
+			List<ComplexIssueInputFieldValue> values = new ArrayList<ComplexIssueInputFieldValue>();
+			for (String value : customField.getValues()) {
+				values.add(ComplexIssueInputFieldValue.with("value", value));
+			}
+
+			return new FieldInput(customField.getId(), values);
+//			}
+
 //		case LABELSS:
 //			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
-//			break;
-//		case MULTIGROUPPICKER:
-//			values = JiraRestCustomFieldsParser.parseMultiGroupPicker(field);
 //			break;
 		default:
 			// not supported custom field
 		}
 
-//		if (values != null && !values.isEmpty()) {
-//
-//			CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
-//			customField.setReadOnly(false);
-//
-//			return customField;
-//		}
 		return new FieldInput(customField.getId(), null);
 	}
 }

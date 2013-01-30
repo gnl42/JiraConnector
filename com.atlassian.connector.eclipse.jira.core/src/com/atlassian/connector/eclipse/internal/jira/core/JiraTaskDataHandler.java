@@ -54,6 +54,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.connector.eclipse.internal.jira.core.html.HTML2TextReader;
+import com.atlassian.connector.eclipse.internal.jira.core.model.AllowedValue;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Attachment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Comment;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
@@ -525,7 +526,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		updateMarkup(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 
-		HashSet<String> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData, forceCache, monitor);
+		Map<String, List<AllowedValue>> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData,
+				forceCache, monitor);
 		updateProperties(data, editableKeys);
 	}
 
@@ -630,9 +632,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private HashSet<String> getEditableKeys(TaskData data, JiraIssue jiraIssue, JiraClient client,
+	private Map<String, List<AllowedValue>> getEditableKeys(TaskData data, JiraIssue jiraIssue, JiraClient client,
 			TaskData oldTaskData, boolean forceCache, IProgressMonitor monitor) throws JiraException {
-		HashSet<String> editableKeys = new HashSet<String>();
+		Map<String, List<AllowedValue>> editableKeys = new HashMap<String, List<AllowedValue>>();
 		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData, forceCache)) {
 				if (oldTaskData == null) {
@@ -644,7 +646,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				// avoid server round-trips
 				for (TaskAttribute attribute : oldTaskData.getRoot().getAttributes().values()) {
 					if (!attribute.getMetaData().isReadOnly()) {
-						editableKeys.add(attribute.getId());
+						editableKeys.put(attribute.getId(), Collections.<AllowedValue> emptyList());
 					}
 				}
 
@@ -660,7 +662,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					for (IssueField field : editableAttributes) {
 						// TODO rest temporary all custom fields are read only
 //							if (!field.getId().startsWith("customfield")) {
-						editableKeys.add(mapCommonAttributeKey(field.getId()));
+						editableKeys.put(mapCommonAttributeKey(field.getId()), field.getAlloweValues());
 					}
 				} else {
 					// flag as read-only to avoid calling getEditableAttributes() on each sync
@@ -677,10 +679,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return editableKeys;
 	}
 
-	private void updateProperties(TaskData data, HashSet<String> editableKeys) {
+	private void updateProperties(TaskData data, Map<String, List<AllowedValue>> editableKeys) {
 		for (TaskAttribute attribute : data.getRoot().getAttributes().values()) {
 			TaskAttributeMetaData properties = attribute.getMetaData();
-			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
+			boolean editable = editableKeys.containsKey(attribute.getId().toLowerCase());
 			if (editable && (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX) //
 					|| !JiraAttribute.valueById(attribute.getId()).isHidden())) {
 				properties.setKind(TaskAttribute.KIND_DEFAULT);
@@ -692,6 +694,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					|| JiraAttribute.PROJECT_ROLES.id().equals(attribute.getId())) {
 				properties.setReadOnly(false);
 			} else {
+
+				if (editable && attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
+					List<AllowedValue> allowedValues = editableKeys.get(attribute.getId().toLowerCase());
+
+					if (allowedValues != null) {
+//						attribute.putOption(CustomField.NONE_ALLOWED_VALUE, "None");
+						for (AllowedValue allowedValue : allowedValues) {
+							attribute.putOption(allowedValue.getValue(), allowedValue.getValue());
+						}
+					}
+				}
+
 				// make attributes read-only if can't find editing options
 				String key = properties.getValue(IJiraConstants.META_TYPE);
 				Map<String, String> options = attribute.getOptions();

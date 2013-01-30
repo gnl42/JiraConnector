@@ -25,6 +25,8 @@ public class CustomField extends IssueField {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String NONE_ALLOWED_VALUE = "-1"; //$NON-NLS-1$
+
 	private final String key;
 
 	private final List<String> values;

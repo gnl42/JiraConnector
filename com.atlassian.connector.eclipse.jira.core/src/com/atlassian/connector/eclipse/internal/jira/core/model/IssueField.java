@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Steffen Pingel
@@ -28,6 +30,8 @@ public class IssueField implements Serializable {
 	private String type;
 
 	private boolean required;
+
+	private List<AllowedValue> allowedValues = Collections.emptyList();
 
 	public IssueField(String id, String name) {
 		this.id = id;
@@ -57,6 +61,14 @@ public class IssueField implements Serializable {
 
 	public boolean isRequired() {
 		return this.required;
+	}
+
+	public void setAllowedValues(List<AllowedValue> allowedValues) {
+		this.allowedValues = allowedValues;
+	}
+
+	public List<AllowedValue> getAlloweValues() {
+		return allowedValues;
 	}
 
 }
