@@ -16,8 +16,11 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
@@ -156,7 +159,13 @@ public class JiraClientCache {
 
 	public Priority getPriorityByName(String name) {
 		if (data.prioritiesByName == null) {
-			throw new RuntimeException(Messages.JiraClientCache_Update_repository_configuration);
+			TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
+					jiraClient.getLocation().getUrl());
+
+			String repo = (repository != null ? repository.getRepositoryLabel() : jiraClient.getLocation().getUrl());
+
+			throw new RuntimeException(NLS.bind("{0} for [{1}]", //$NON-NLS-1$
+					Messages.JiraClientCache_Update_repository_configuration, repo));
 		}
 		return data.prioritiesByName.get(name);
 	}
