@@ -449,6 +449,8 @@ public class JiraRestConverter {
 
 	private static CustomField generateCustomField(Field field, String longType) {
 
+		boolean readonly = false;
+
 		try {
 
 			JiraFieldType fieldType = JiraFieldType.fromKey(longType);
@@ -486,6 +488,7 @@ public class JiraRestConverter {
 				break;
 			case LABELSS:
 				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+				readonly = true;
 				break;
 			case GROUPPICKER:
 				values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
@@ -501,7 +504,7 @@ public class JiraRestConverter {
 			if (values != null && !values.isEmpty()) {
 
 				CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
-				customField.setReadOnly(false);
+				customField.setReadOnly(readonly);
 
 				return customField;
 			}
@@ -993,7 +996,7 @@ public class JiraRestConverter {
 //			}
 
 //		case LABELSS:
-//			values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+			// no support for edit
 //			break;
 		default:
 			// not supported custom field

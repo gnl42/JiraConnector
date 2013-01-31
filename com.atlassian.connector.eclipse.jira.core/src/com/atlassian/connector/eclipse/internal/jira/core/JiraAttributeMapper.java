@@ -68,7 +68,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 	@Override
 	public void setDateValue(TaskAttribute attribute, Date date) {
 		if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
-			attribute.setValue(JiraRssHandler.getDateTimeFormat().format(date));
+			attribute.setValue(date != null ? JiraRssHandler.getDateTimeFormat().format(date) : "");
 		} else {
 			super.setDateValue(attribute, date);
 		}
