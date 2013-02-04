@@ -1209,11 +1209,11 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			composite.setLayoutData(layoutData);
 
 			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__start_date_,
-					true, 0);
+					false, 0);
 			dueStartDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueStartDatePicker);
 			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
-					true, 0);
+					false, 0);
 			dueEndDatePicker.setDateFormat(currentJiraDateTimeFormat);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(dueEndDatePicker);
 

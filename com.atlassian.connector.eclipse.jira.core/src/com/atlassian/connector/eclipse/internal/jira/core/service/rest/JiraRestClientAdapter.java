@@ -111,9 +111,32 @@ public class JiraRestClientAdapter {
 	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache) {
 		this(url, cache);
 
+//		TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
+//			public X509Certificate[] getAcceptedIssuers() {
+//				return new X509Certificate[] {};
+//			}
+//
+//			public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+//			}
+//
+//			public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+//			}
+//		} };
+
 //		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
 //		this.restClient = restFactory.createWithBasicHttpAuthentication(new URI(url), userName, password);
 		try {
+//			final SSLContext context = SSLContext.getInstance("SSL");
+//			context.init(null, trustAll, new SecureRandom());
+//
+//			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+//
+//			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+//				public boolean verify(String s, javax.net.ssl.SSLSession sslSession) {
+//					return true;
+//				}
+//			});
+
 			restClient = new JerseyJiraRestClientFactory().create(new URI(url), new BasicHttpAuthenticationHandler(
 					userName, password) {
 				@Override
@@ -129,6 +152,14 @@ public class JiraRestClientAdapter {
 						}
 
 					}
+
+//					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+//							new HTTPSProperties(new HostnameVerifier() {
+//								public boolean verify(String s, SSLSession sslSession) {
+//									return false;
+//								}
+//
+//							}, context));
 				}
 			});
 
@@ -140,10 +171,32 @@ public class JiraRestClientAdapter {
 								"http://" + address.getHostName() + ":" + address.getPort()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
+//			HttpClient httpClient = restClient.getTransportClient().getClientHandler().getHttpClient();
+//			X509HostnameVerifier hostnameVerifier = new AllowAllHostnameVerifier();
+//			SSLSocketFactory sslSf = new SSLSocketFactory(trustStrategy, hostnameVerifier);
+//			Scheme https = new Scheme("https", 443, sslSf);
+//			SchemeRegistry schemeRegistry = new SchemeRegistry();
+//			schemeRegistry.register(https);
+
+//			httpClient.getHttpConnectionManager().getParams();
+//			restClient.getTransportClient()
+//					.getProperties()
+//					.put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(new HostnameVerifier() {
+//						public boolean verify(String s, SSLSession sslSession) {
+//							return false;
+//						}
+//
+//					}, context));
+
 		} catch (URISyntaxException e) {
 			// we should never get here as Mylyn constructs URI first and fails if it is incorrect
 			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
 		}
+//		catch (NoSuchAlgorithmException e) {
+//			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+//		} catch (KeyManagementException e) {
+//			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+//		}
 	}
 
 	public void addComment(final String issueKey, final String comment) throws JiraException {
