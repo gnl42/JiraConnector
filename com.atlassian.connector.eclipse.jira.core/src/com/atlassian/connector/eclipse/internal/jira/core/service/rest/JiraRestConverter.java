@@ -242,9 +242,9 @@ public class JiraRestConverter {
 			jiraIssue.setComponents(convertComponents(issue.getComponents()));
 		}
 
-		Object env = issue.getField(JiraRestFields.ENVIRONMENT).getValue();
-		if (env != null) {
-			jiraIssue.setEnvironment(env.toString());
+		Field env = issue.getField(JiraRestFields.ENVIRONMENT);
+		if (env != null && env.getValue() != null) {
+			jiraIssue.setEnvironment(env.getValue().toString());
 		} else {
 			// hack: empty value is necessary to display environment field in the issue editor
 			jiraIssue.setEnvironment(""); //$NON-NLS-1$
