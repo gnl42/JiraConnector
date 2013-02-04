@@ -12,17 +12,17 @@
 
 package com.atlassian.connector.eclipse.internal.jira.ui;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
-import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
-import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
+import java.util.StringTokenizer;
 
 import org.eclipse.mylyn.internal.tasks.core.AbstractSearchHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 
-import java.util.StringTokenizer;
+import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
+import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
+import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
  * Stack Trace duplicate detector
@@ -43,7 +43,7 @@ public class JiraSearchHandler extends AbstractSearchHandler {
 	@Override
 	public boolean queryForText(TaskRepository taskRepository, IRepositoryQuery query, TaskData taskData,
 			String searchString) {
-		final String preparedSearchString = prepareSearchString(searchString);
+		final String preparedSearchString = prepareJqlSearchString(searchString);
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(preparedSearchString, false, true, false, true));
 		JiraUtil.setQuery(taskRepository, query, filter);
@@ -74,4 +74,34 @@ public class JiraSearchHandler extends AbstractSearchHandler {
 		return sb.toString();
 	}
 
+	public static String prepareJqlSearchString(String input) {
+
+		StringBuilder sb = new StringBuilder(MAX_LENGTH);
+
+		StringTokenizer t = new StringTokenizer(input, "\n\t"); //$NON-NLS-1$
+
+		while (t.hasMoreTokens() && sb.length() < MAX_LENGTH - 50) {
+			int remaining = MAX_LENGTH - sb.length();
+
+			if (sb.length() > 0) {
+				sb.append("*"); //$NON-NLS-1$
+			}
+
+			String token = t.nextToken();
+
+			if (token.length() > remaining) {
+				sb.append(token.substring(0, remaining));
+				sb.append("*"); //$NON-NLS-1$
+			} else {
+				sb.append(token);
+			}
+		}
+
+		sb.insert(0, "\\\""); //$NON-NLS-1$
+		sb.append("\\\""); //$NON-NLS-1$
+
+		String output = sb.toString().replaceAll("([():])", "\\\\\\\\$1"); //$NON-NLS-1$//$NON-NLS-2$
+
+		return output;
+	}
 }

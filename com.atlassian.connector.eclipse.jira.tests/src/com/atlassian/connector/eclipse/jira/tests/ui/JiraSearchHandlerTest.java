@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.jira.tests.ui;
 
-import com.atlassian.connector.eclipse.internal.jira.ui.JiraSearchHandler;
-
 import junit.framework.TestCase;
+
+import com.atlassian.connector.eclipse.internal.jira.ui.JiraSearchHandler;
 
 public class JiraSearchHandlerTest extends TestCase {
 
@@ -88,4 +88,13 @@ public class JiraSearchHandlerTest extends TestCase {
 		assertEquals(expectedQuery, JiraSearchHandler.prepareSearchString(stackTrace));
 	}
 
+	public void testPepareJqlSearchString() {
+		String input = "java.lang.RuntimeException: Please update repository configuration\n"
+				+ "\tat com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.getPriorityByName(JiraClientCache.java:159)";
+
+		String expected = "\\\"java.lang.RuntimeException\\\\: Please update repository configuration*"
+				+ "at com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.getPriorityByName\\\\(JiraClientCache.java\\\\:159\\\\)\\\"";
+
+		assertEquals(expected, JiraSearchHandler.prepareJqlSearchString(input));
+	}
 }
