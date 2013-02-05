@@ -657,7 +657,9 @@ public class JiraRestConverter {
 		List<Version> outVersions = new ArrayList<Version>();
 
 		for (com.atlassian.jira.rest.client.domain.Version version : versions) {
-			outVersions.add(convert(version));
+			if (!version.isArchived()) {
+				outVersions.add(convert(version));
+			}
 		}
 
 		return outVersions.toArray(new Version[outVersions.size()]);
