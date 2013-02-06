@@ -87,6 +87,8 @@ public class Messages extends NLS {
 
 	public static String JiraAttribute_Votes;
 
+	public static String JiraAttribute_Labels;
+
 	public static String JiraCorePlugin_JIRA_description;
 
 	public static String JiraRepositoryConnector_Getting_changed_tasks;

@@ -282,6 +282,10 @@ public class JiraRestConverter {
 
 		jiraIssue.setRank(getRankFromIssue(issue));
 
+		if (issue.getLabels() != null) {
+			jiraIssue.setLabels(issue.getLabels().toArray(new String[issue.getLabels().size()]));
+		}
+
 		return jiraIssue;
 	}
 

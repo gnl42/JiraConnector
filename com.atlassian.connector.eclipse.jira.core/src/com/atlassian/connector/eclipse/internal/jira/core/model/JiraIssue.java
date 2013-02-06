@@ -112,6 +112,8 @@ public class JiraIssue implements Serializable {
 
 	private Integer rank = null;
 
+	private String[] labels = new String[0];
+
 	public String getId() {
 		return id;
 	}
@@ -579,6 +581,14 @@ public class JiraIssue implements Serializable {
 
 	public void setEditableFields(IssueField[] editableFields) {
 		this.editableFields = editableFields;
+	}
+
+	public void setLabels(String[] strings) {
+		this.labels = strings;
+	}
+
+	public String[] getLabels() {
+		return labels;
 	}
 
 }

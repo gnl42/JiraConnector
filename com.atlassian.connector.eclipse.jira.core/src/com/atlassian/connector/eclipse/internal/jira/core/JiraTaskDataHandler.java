@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -324,6 +325,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+		createAttribute(data, JiraAttribute.LABELS);
 
 //		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_MYLYN_ACTIVITY_DELTA);
 
@@ -514,6 +516,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			setAttributeValue(data, JiraAttribute.VOTES, Integer.toString(jiraIssue.getVotes()));
 		} else {
 			removeAttribute(data, JiraAttribute.VOTES);
+		}
+
+		if (jiraIssue.getLabels().length > 0) {
+			setAttributeValue(data, JiraAttribute.LABELS, StringUtils.join(jiraIssue.getLabels(), ", ")); //$NON-NLS-1$
 		}
 
 		addAttributeValue(data, JiraAttribute.PROJECT_ROLES, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
