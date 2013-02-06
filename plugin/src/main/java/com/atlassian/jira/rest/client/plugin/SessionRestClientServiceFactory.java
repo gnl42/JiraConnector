@@ -29,6 +29,6 @@ public final class SessionRestClientServiceFactory extends AbstractRestClientSer
     @Override
     protected SessionRestClient getService(URI baseUri, HttpClient httpClient)
     {
-        return new AsynchronousSessionRestClient(baseUri, httpClient);
+        return new AsynchronousSessionRestClient(URI.create("/"), httpClient);
     }
 }
