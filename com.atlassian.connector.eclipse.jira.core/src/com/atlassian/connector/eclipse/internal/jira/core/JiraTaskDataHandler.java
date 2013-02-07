@@ -526,7 +526,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		addComments(data, jiraIssue, client);
 		addAttachments(data, jiraIssue, client);
-		addCustomFields(data, jiraIssue);
+
+		addEditableCustomFields(data, jiraIssue);
+
+		addCustomFieldsValues(data, jiraIssue);
 
 		addWorklog(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 
@@ -535,6 +538,38 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		Map<String, List<AllowedValue>> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData,
 				forceCache, monitor);
 		updateProperties(data, editableKeys);
+
+	}
+
+	private void addEditableCustomFields(TaskData data, JiraIssue jiraIssue) {
+		IssueField[] editableAttributes = jiraIssue.getEditableFields();
+		if (editableAttributes != null) {
+			for (IssueField field : editableAttributes) {
+				if (field.getId().startsWith("customfield")) { //$NON-NLS-1$
+					String mappedKey = mapCommonAttributeKey(field.getId());
+
+					if (!data.getRoot().getAttributes().containsKey(mappedKey)) {
+
+						String name = field.getName() + ":"; //$NON-NLS-1$
+						String kind = JiraAttribute.valueById(mappedKey).getKind();
+						String type = field.getType();
+						String taskType = JiraFieldType.fromKey(type).getTaskType();
+						if (taskType == null && type != null && type.startsWith(IJiraConstants.JIRA_TOOLKIT_PREFIX)) {
+							taskType = TaskAttribute.TYPE_SHORT_TEXT;
+
+						}
+
+						TaskAttribute attribute = data.getRoot().createAttribute(mappedKey);
+						attribute.getMetaData().defaults() //
+								.setKind(kind)
+								.setLabel(name)
+								.setReadOnly(false)
+								.setType(taskType)
+								.putValue(IJiraConstants.META_TYPE, type);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -613,25 +648,29 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private void addCustomFields(TaskData data, JiraIssue jiraIssue) {
+	private void addCustomFieldsValues(TaskData data, JiraIssue jiraIssue) {
 		for (CustomField field : jiraIssue.getCustomFields()) {
 			String mappedKey = mapCommonAttributeKey(field.getId());
-			String name = field.getName() + ":"; //$NON-NLS-1$
-			String kind = JiraAttribute.valueById(mappedKey).getKind();
-			String type = field.getKey();
-			String taskType = JiraFieldType.fromKey(type).getTaskType();
-			if (taskType == null && type != null && type.startsWith(IJiraConstants.JIRA_TOOLKIT_PREFIX)) {
-				taskType = TaskAttribute.TYPE_SHORT_TEXT;
+//			String name = field.getName() + ":"; //$NON-NLS-1$
+//			String kind = JiraAttribute.valueById(mappedKey).getKind();
+//			String type = field.getKey();
+//			String taskType = JiraFieldType.fromKey(type).getTaskType();
 
-			}
+//			if (taskType == null && type != null && type.startsWith(IJiraConstants.JIRA_TOOLKIT_PREFIX)) {
+//				taskType = TaskAttribute.TYPE_SHORT_TEXT;
+//
+//			}
 
-			TaskAttribute attribute = data.getRoot().createAttribute(mappedKey);
-			attribute.getMetaData().defaults() //
-					.setKind(kind)
-					.setLabel(name)
-					.setReadOnly(field.isReadOnly())
-					.setType(taskType)
-					.putValue(IJiraConstants.META_TYPE, type);
+//			TaskAttribute attribute = data.getRoot().createAttribute(mappedKey);
+
+			TaskAttribute attribute = data.getRoot().getAttributes().get(mappedKey);
+
+//			attribute.getMetaData().defaults() //
+//					.setKind(kind)
+//					.setLabel(name)
+//					.setReadOnly(field.isReadOnly())
+//					.setType(taskType)
+//					.putValue(IJiraConstants.META_TYPE, type);
 			for (String value : field.getValues()) {
 				attribute.addValue(value);
 			}
@@ -704,8 +743,17 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				if (editable && attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
 					List<AllowedValue> allowedValues = editableKeys.get(attribute.getId().toLowerCase());
 
-					if (allowedValues != null) {
-//						attribute.putOption(CustomField.NONE_ALLOWED_VALUE, "None");
+					if (allowedValues != null && allowedValues.size() > 0) {
+//						attribute.getMetaData().getValue("type");
+						if (TaskAttribute.TYPE_SINGLE_SELECT.equals(attribute.getMetaData().getType())) {
+							// add "None" option for select and radio buttons
+							attribute.putOption(CustomField.NONE_ALLOWED_VALUE, "None"); //$NON-NLS-1$
+							// set "None" as selected option if there is no value selected
+							if (attribute.getValues().size() == 0) {
+								attribute.addValue(CustomField.NONE_ALLOWED_VALUE);
+							}
+						}
+
 						for (AllowedValue allowedValue : allowedValues) {
 							attribute.putOption(allowedValue.getValue(), allowedValue.getValue());
 						}

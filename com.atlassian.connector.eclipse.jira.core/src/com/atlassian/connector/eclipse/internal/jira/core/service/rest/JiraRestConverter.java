@@ -412,6 +412,19 @@ public class JiraRestConverter {
 								editableField.setAllowedValues(allowedValues);
 							}
 
+							JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
+
+							if (schema != null) {
+
+								String longTypeCustom = JsonParseUtil.getOptionalString(schema, "custom");
+								String longTypeSystem = JsonParseUtil.getOptionalString(schema, "system");
+
+								if (longTypeCustom != null) {
+									editableField.setType(longTypeCustom);
+								} else if (longTypeSystem != null) {
+									editableField.setType(longTypeSystem);
+								}
+							}
 							editableFields.add(editableField);
 
 						} else {
@@ -984,8 +997,10 @@ public class JiraRestConverter {
 		case SELECT:
 		case RADIOBUTTONS:
 			if (customField.getValues().size() > 0) {
-				String value = CustomField.NONE_ALLOWED_VALUE.equals(customField.getValues().get(0)) ? ""
-						: customField.getValues().get(0);
+				if (CustomField.NONE_ALLOWED_VALUE.equals(customField.getValues().get(0))) {
+					return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with("id", "-1"));
+				}
+				String value = customField.getValues().get(0);
 				return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with("value", value));
 			}
 			break;

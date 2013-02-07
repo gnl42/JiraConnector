@@ -55,6 +55,10 @@ public class IssueField implements Serializable {
 		this.type = type;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
