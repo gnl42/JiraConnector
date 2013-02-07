@@ -615,6 +615,6 @@ public class JiraRestClientAdapter {
 			}
 		}
 
-		throw new JiraException("Cannot retrieve security levels metadata."); //$NON-NLS-1$
+		return new SecurityLevel[0];
 	}
 }
