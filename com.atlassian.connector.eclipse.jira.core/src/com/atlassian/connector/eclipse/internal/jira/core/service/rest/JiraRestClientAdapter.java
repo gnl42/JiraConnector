@@ -403,7 +403,8 @@ public class JiraRestClientAdapter {
 				.setComponents(JiraRestConverter.convert(issue.getComponents()))
 				.setDescription(issue.getDescription());
 
-		if (issue.getAssignee() != null) {
+		// Mylyn sets -1 as a value of empty assignee
+		if (issue.getAssignee() != null && !issue.getAssignee().equals("-1")) { //$NON-NLS-1$
 			issueInputBuilder.setAssignee(new BasicUser(null, issue.getAssignee(), null));
 		}
 
@@ -411,7 +412,7 @@ public class JiraRestClientAdapter {
 			issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
 		}
 
-		if (issue.getFixVersions() != null) {
+		if (issue.getFixVersions() != null && issue.getFixVersions().length > 0) {
 			issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
 		}
 
