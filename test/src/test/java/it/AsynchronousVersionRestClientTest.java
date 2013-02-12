@@ -219,7 +219,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 				getLastPathSegment(fakeVersionUri) + " does not exist.", Response.Status.BAD_REQUEST);
 		// @todo fix when bug JRA-25044 is fixed
 		assertInvalidMoveToVersion(version.getSelf(), TestUtil.toUri("http://localhost/version/fdsa34323"), null,
-				"Could not find version for id '-1'", Response.Status.NOT_FOUND);
+				"Could not find version for id 'fdsa34323'", Response.Status.NOT_FOUND);
 		assertInvalidMoveToVersion(version.getSelf(), null, fakeVersionUri2, "The affects version with id " +
 				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
 		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, fakeVersionUri2, "The affects version with id " +
