@@ -16,6 +16,8 @@
 
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
 import static com.google.common.collect.Iterables.toArray;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
@@ -198,12 +201,69 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 		assertThat(client.getProjectClient().getProject("TST").claim().getVersions(), IsEmptyIterable.<Version>emptyIterable());
 	}
 
-
+    @JiraBuildNumberDependent(value = BN_JIRA_6, condition = LongCondition.LESS_THAN)
 	@Test
-	public void testDeleteAndMoveVersion() {
+	public void testDeleteAndMoveVersionBefore6_0() {
 		if (!isJira4x4OrNewer()) {
 			return;
 		}
+		final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
+		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
+		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
+
+		final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), "1");
+
+		final Version version = Iterables.getOnlyElement(issue.getFixVersions());
+		final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
+		final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
+		// @todo expected error code should be rather NOT FOUND in all cases below - see JRA-25045
+		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, null, "The fix version with id " +
+				getLastPathSegment(fakeVersionUri) + " does not exist.", Response.Status.BAD_REQUEST);
+		// @todo fix when bug JRA-25044 is fixed
+		assertInvalidMoveToVersion(version.getSelf(), TestUtil.toUri("http://localhost/version/fdsa34323"), null,
+				"Could not find version for id '-1'", Response.Status.NOT_FOUND);
+		assertInvalidMoveToVersion(version.getSelf(), null, fakeVersionUri2, "The affects version with id " +
+				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
+		assertInvalidMoveToVersion(version.getSelf(), fakeVersionUri, fakeVersionUri2, "The affects version with id " +
+				getLastPathSegment(fakeVersionUri2) + " does not exist.", Response.Status.BAD_REQUEST);
+
+		assertEquals(1, client.getVersionRestClient().getNumUnresolvedIssues(version.getSelf()).claim().intValue());
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient()
+				.getVersionRelatedIssuesCount(version.getSelf()).claim());
+		assertEquals(new VersionRelatedIssuesCount(version.getSelf(), 1, 1), client.getVersionRestClient()
+				.getVersionRelatedIssuesCount(version.getSelf()).claim());
+
+		// now removing the first version
+		client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf()).claim();
+		final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2").claim();
+		assertThat(Iterables.transform(issueAfterVerRemoval
+				.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
+		assertThat(Iterables.transform(issueAfterVerRemoval
+				.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
+		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+				.getVersions(), new VersionToNameMapper()),
+				containsInAnyOrder("1"));
+
+		TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "You cannot move the issues to the version being deleted.", new Runnable() {
+			@Override
+			public void run() {
+				client.getVersionRestClient().removeVersion(version1.getSelf(), version1.getSelf(), version1.getSelf()).claim();
+			}
+		});
+
+		// now removing the other version
+		client.getVersionRestClient().removeVersion(version1.getSelf(), null, null).claim();
+		final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2").claim();
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable
+				.<String>emptyIterable());
+		assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable
+				.<String>emptyIterable());
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_6)
+	@Test
+	public void testDeleteAndMoveVersion() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
 		assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
 		assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
