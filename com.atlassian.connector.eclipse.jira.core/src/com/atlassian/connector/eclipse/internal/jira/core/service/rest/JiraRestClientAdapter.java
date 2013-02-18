@@ -518,7 +518,10 @@ public class JiraRestClientAdapter {
 				changedIssue.getAssignee())));
 
 		for (CustomField customField : changedIssue.getCustomFields()) {
-			fields.add(JiraRestConverter.convert(customField));
+			FieldInput field = JiraRestConverter.convert(customField);
+			if (field != null) {
+				fields.add(field);
+			}
 		}
 
 		call(new Callable<Void>() {

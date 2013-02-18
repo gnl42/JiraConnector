@@ -1021,8 +1021,10 @@ public class JiraRestConverter {
 //			break;
 		default:
 			// not supported custom field
+			return null;
 		}
 
+		// custom field with no value (send null to clear)
 		return new FieldInput(customField.getId(), null);
 	}
 }
