@@ -512,7 +512,8 @@ public class JiraRestClientAdapter {
 
 		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
 		fields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
-		fields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription()));
+		fields.add(new FieldInput(JiraRestFields.DESCRIPTION,
+				changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
 
 		fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
 				changedIssue.getAssignee())));
