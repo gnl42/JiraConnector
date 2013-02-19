@@ -424,12 +424,14 @@ public class JiraRestClientAdapter {
 
 		issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
 
-		Map<String, Object> map = ImmutableMap.<String, Object> builder()
-				.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
-				.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
-				.build();
-		issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING,
-				new ComplexIssueInputFieldValue(map)));
+		if (issue.getEstimate() != 0) {
+			Map<String, Object> map = ImmutableMap.<String, Object> builder()
+					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
+					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
+					.build();
+			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING,
+					new ComplexIssueInputFieldValue(map)));
+		}
 
 		if (issue.getSecurityLevel() != null) {
 			issueInputBuilder.setFieldValue(JiraRestFields.SECURITY,
@@ -471,18 +473,20 @@ public class JiraRestClientAdapter {
 		}
 		fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
-		// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
-		long originalEstimate = changedIssue.getEstimate() / 60;
-		if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+		if (issue.getTimeTracking() != null && issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+
+			// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
+			long originalEstimate = changedIssue.getEstimate() / 60;
+
 			originalEstimate = issue.getTimeTracking().getOriginalEstimateMinutes();
+
+			Map<String, Object> map = ImmutableMap.<String, Object> builder()
+					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(originalEstimate))
+					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(changedIssue.getEstimate() / 60))
+					.build();
+
+			fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 		}
-
-		Map<String, Object> map = ImmutableMap.<String, Object> builder()
-				.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(originalEstimate))
-				.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(changedIssue.getEstimate() / 60))
-				.build();
-
-		fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 
 		List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
 		for (Version version : changedIssue.getReportedVersions()) {
