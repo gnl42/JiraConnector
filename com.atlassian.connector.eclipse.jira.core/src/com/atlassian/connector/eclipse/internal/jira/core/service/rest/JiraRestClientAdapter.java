@@ -473,12 +473,13 @@ public class JiraRestClientAdapter {
 		}
 		fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
-		if (issue.getTimeTracking() != null && issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+		if (issue.getTimeTracking() != null) {
 
 			// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
 			long originalEstimate = changedIssue.getEstimate() / 60;
-
-			originalEstimate = issue.getTimeTracking().getOriginalEstimateMinutes();
+			if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+				originalEstimate = issue.getTimeTracking().getOriginalEstimateMinutes();
+			}
 
 			Map<String, Object> map = ImmutableMap.<String, Object> builder()
 					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(originalEstimate))
