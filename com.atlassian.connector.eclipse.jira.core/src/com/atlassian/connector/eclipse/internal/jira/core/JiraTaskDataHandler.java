@@ -671,8 +671,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 //					.setReadOnly(field.isReadOnly())
 //					.setType(taskType)
 //					.putValue(IJiraConstants.META_TYPE, type);
-			for (String value : field.getValues()) {
-				attribute.addValue(value);
+			if (attribute != null) {
+				for (String value : field.getValues()) {
+					attribute.addValue(value);
+				}
 			}
 		}
 	}
