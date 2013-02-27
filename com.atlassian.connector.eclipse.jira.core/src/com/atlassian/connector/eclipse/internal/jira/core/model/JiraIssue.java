@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.atlassian.jira.rest.client.domain.Issue;
+
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -113,6 +115,8 @@ public class JiraIssue implements Serializable {
 	private Integer rank = null;
 
 	private String[] labels = new String[0];
+
+	private Issue rawIssue;
 
 	public String getId() {
 		return id;
@@ -589,6 +593,14 @@ public class JiraIssue implements Serializable {
 
 	public String[] getLabels() {
 		return labels;
+	}
+
+	public void setRawIssue(Issue rawIssue) {
+		this.rawIssue = rawIssue;
+	}
+
+	public Issue getRawIssue() {
+		return rawIssue;
 	}
 
 }

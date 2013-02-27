@@ -114,8 +114,7 @@ public class JiraRestConverter {
 	}
 
 	private static Resolution convert(com.atlassian.jira.rest.client.domain.Resolution resolution) {
-		// TODO rest change first argument to real ID if available
-		return new Resolution(resolution.getName(), resolution.getName(), resolution.getDescription(), null);
+		return new Resolution(resolution.getId().toString(), resolution.getName(), resolution.getDescription(), null);
 	}
 
 	public static Priority[] convertPriorities(Iterable<com.atlassian.jira.rest.client.domain.Priority> allPriorities) {
@@ -144,6 +143,8 @@ public class JiraRestConverter {
 			throws JiraException {
 		JiraIssue jiraIssue = new JiraIssue();
 
+		jiraIssue.setRawIssue(issue);
+
 		jiraIssue.setCustomFields(getCustomFieldsFromIssue(issue));
 		jiraIssue.setEditableFields(getEditableFieldsFromIssue(issue));
 
@@ -169,7 +170,7 @@ public class JiraRestConverter {
 		}
 
 		if (issue.getPriority() != null) {
-			jiraIssue.setPriority(cache.getPriorityByName(issue.getPriority().getName()));
+			jiraIssue.setPriority(cache.getPriorityById(issue.getPriority().getId().toString()));
 		} else if (cache.getPriorities().length > 0) {
 			jiraIssue.setPriority(cache.getPriorities()[0]);
 		} else {
@@ -178,7 +179,7 @@ public class JiraRestConverter {
 					"Found issue with empty priority: {0}", issue.getKey())));
 		}
 
-		jiraIssue.setStatus(cache.getStatusByName(issue.getStatus().getName()));
+		jiraIssue.setStatus(cache.getStatusById(issue.getStatus().getId().toString()));
 
 		BasicUser assignee = issue.getAssignee();
 		if (assignee != null) {
@@ -191,8 +192,9 @@ public class JiraRestConverter {
 			jiraIssue.setReporterName(issue.getReporter().getDisplayName());
 		}
 
-		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionByName(issue.getResolution()
-				.getName()));
+		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionById(issue.getResolution()
+				.getId()
+				.toString()));
 
 		if (issue.getTimeTracking() != null) {
 			if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {

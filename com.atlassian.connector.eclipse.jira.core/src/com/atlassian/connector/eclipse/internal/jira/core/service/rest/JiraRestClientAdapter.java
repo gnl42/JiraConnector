@@ -20,6 +20,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -353,6 +355,9 @@ public class JiraRestClientAdapter {
 				String[] values = issue.getFieldValues(transitionField.getName());
 				if (values.length > 0 && transitionField.getName().equals(JiraRestFields.SUMMARY)) {
 					fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
+				} else if (values.length > 0 && transitionField.getName().equals(JiraRestFields.RESOLUTION)) {
+					fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
+							JiraRestFields.ID, values[0])));
 				} else if (values.length > 0) {
 					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
 							JiraRestFields.NAME, values[0])));
@@ -457,7 +462,12 @@ public class JiraRestClientAdapter {
 	}
 
 	public void updateIssue(JiraIssue changedIssue) throws JiraException {
-		final Issue issue = getIssue(changedIssue.getKey());
+		final JiraIssue fullIssue = getIssueByKeyOrId(changedIssue.getKey(),
+				new org.eclipse.core.runtime.NullProgressMonitor());
+
+		final Issue issue = fullIssue.getRawIssue();
+
+		Collection<IssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
 
 		final List<FieldInput> fields = new ArrayList<FieldInput>();
 
@@ -466,12 +476,13 @@ public class JiraRestClientAdapter {
 		fields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getPriority().getId())));
 
-		// TODO rest: how to clear due date?
-		String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
-		if (changedIssue.getDue() == null) {
-			date = null;
+		if (editableFields.contains(new IssueField(JiraRestFields.DUEDATE, ""))) { //$NON-NLS-1$
+			String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
+			if (changedIssue.getDue() == null) {
+				date = null;
+			}
+			fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 		}
-		fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
 		if (issue.getTimeTracking() != null) {
 
@@ -495,11 +506,13 @@ public class JiraRestClientAdapter {
 		}
 		fields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
 
-		List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
-		for (Version version : changedIssue.getFixVersions()) {
-			fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
+		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, ""))) { //$NON-NLS-1$
+			List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
+			for (Version version : changedIssue.getFixVersions()) {
+				fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
+			}
+			fields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
 		}
-		fields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
 
 		List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
 		for (Component component : changedIssue.getComponents()) {
@@ -520,8 +533,10 @@ public class JiraRestClientAdapter {
 		fields.add(new FieldInput(JiraRestFields.DESCRIPTION,
 				changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
 
-		fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
-				changedIssue.getAssignee())));
+		if (!"-1".equals(changedIssue.getAssignee())) { //$NON-NLS-1$
+			fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
+					changedIssue.getAssignee())));
+		}
 
 		for (CustomField customField : changedIssue.getCustomFields()) {
 			FieldInput field = JiraRestConverter.convert(customField);

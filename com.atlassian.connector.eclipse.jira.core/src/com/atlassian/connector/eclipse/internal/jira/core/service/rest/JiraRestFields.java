@@ -56,4 +56,6 @@ public class JiraRestFields {
 
 	public static final String SUMMARY = "summary"; //$NON-NLS-1$
 
+	public static final String RESOLUTION = "resolution"; //$NON-NLS-1$
+
 }

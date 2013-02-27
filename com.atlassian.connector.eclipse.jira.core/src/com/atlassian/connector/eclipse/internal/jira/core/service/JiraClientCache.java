@@ -16,11 +16,8 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 
-import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraStatus;
 import com.atlassian.connector.eclipse.internal.jira.core.model.JiraVersion;
@@ -51,10 +48,6 @@ public class JiraClientCache {
 
 	public JiraStatus getStatusById(String id) {
 		return data.statusesById.get(id);
-	}
-
-	public JiraStatus getStatusByName(String name) {
-		return data.statusesByName.get(name);
 	}
 
 	public JiraStatus[] getStatuses() {
@@ -146,28 +139,13 @@ public class JiraClientCache {
 
 		data.priorities = jiraClient.getPriorities(monitor);
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
-		data.prioritiesByName = new HashMap<String, Priority>(data.priorities.length);
 		for (Priority priority : data.priorities) {
 			data.prioritiesById.put(priority.getId(), priority);
-			data.prioritiesByName.put(priority.getName(), priority);
 		}
 	}
 
 	public Priority getPriorityById(String id) {
 		return data.prioritiesById.get(id);
-	}
-
-	public Priority getPriorityByName(String name) {
-		if (data.prioritiesByName == null) {
-			TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
-					jiraClient.getLocation().getUrl());
-
-			String repo = (repository != null ? repository.getRepositoryLabel() : jiraClient.getLocation().getUrl());
-
-			throw new RuntimeException(NLS.bind("{0} for [{1}]", //$NON-NLS-1$
-					Messages.JiraClientCache_Update_repository_configuration, repo));
-		}
-		return data.prioritiesByName.get(name);
 	}
 
 	public Priority[] getPriorities() {
@@ -236,6 +214,14 @@ public class JiraClientCache {
 		return data.resolutionsById.get(id);
 	}
 
+	/**
+	 * For tests only
+	 * 
+	 * @deprecated
+	 * @param name
+	 * @return
+	 */
+	@Deprecated
 	public Resolution getResolutionByName(String name) {
 		return data.resolutionsByName.get(name);
 	}
