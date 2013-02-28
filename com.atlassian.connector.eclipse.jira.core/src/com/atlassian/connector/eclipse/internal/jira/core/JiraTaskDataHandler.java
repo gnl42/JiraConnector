@@ -37,7 +37,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
@@ -175,20 +174,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private JiraIssue getJiraIssue(JiraClient client, String taskId, String repositoryUrl, IProgressMonitor monitor) //
-			throws CoreException, JiraException {
-		try {
+			throws JiraException {
+//		try {
 //			int id = Integer.parseInt(taskId);
-			// TODO consider keeping a cache of id -> key in the JIRA core plug-in
-			ITask task = TasksUiPlugin.getTaskList().getTask(repositoryUrl, taskId);
+		// TODO consider keeping a cache of id -> key in the JIRA core plug-in
+//			ITask task = TasksUiPlugin.getTaskList().getTask(repositoryUrl, taskId);
 
-			if (task != null) {
-				return client.getIssueByKey(task.getTaskKey(), monitor);
-			} else {
-				return client.getIssueById(taskId, monitor);
-			}
-		} catch (NumberFormatException e) {
-			return client.getIssueByKey(taskId, monitor);
-		}
+//			if (task != null) {
+//				return client.getIssueByKey(task.getTaskKey(), monitor);
+//			} else {
+		return client.getIssueById(taskId, monitor);
+//			}
+//		} catch (NumberFormatException e) {
+//			return client.getIssueByKey(taskId, monitor);
+//		}
 	}
 
 	public TaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
