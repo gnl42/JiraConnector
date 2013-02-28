@@ -574,7 +574,7 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage().substring(index), e);
 			} else if (e.getMessage().contains(HTTP_302)) {
 				int index = e.getMessage().indexOf(HTTP_302);
-				throw new JiraException(e.getMessage().substring(index) + ". Https might be required."); //$NON-NLS-1$
+				throw new JiraException(e.getMessage().substring(index) + ". Https might be required.", e); //$NON-NLS-1$
 			} else if (e.getMessage().contains(HTTP_404)) {
 				throw new JiraServiceUnavailableException(e);
 			} else if (e.getMessage().contains("java.lang.NullPointerException")) {
@@ -582,7 +582,7 @@ public class JiraRestClientAdapter {
 			} else {
 
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
-				throw new JiraException(e.getMessage());
+				throw new JiraException(e.getMessage(), e);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
