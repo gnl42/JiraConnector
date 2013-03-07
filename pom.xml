@@ -40,7 +40,7 @@
         <jira.version>5.2</jira.version>
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-        <remotable.plugins.version>0.6.9</remotable.plugins.version>
+        <remotable.plugins.version>0.7.0</remotable.plugins.version>
         <jdkLevel>1.6</jdkLevel>
         <jersey.client.version>1.5</jersey.client.version>
         <joda.time.version>1.6</joda.time.version>
