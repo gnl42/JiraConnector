@@ -112,7 +112,9 @@
                     <productDataVersion>${jira.data.version}</productDataVersion>
                     <instructions>
                         <Export-Package>com.atlassian.jira.rest.client.api*</Export-Package>
+                        <!-- ARA-336: not relying on Sisu until we find the fix.
                         <Atlassian-Plugin-Key>${project.groupId}.${project.artifactId}</Atlassian-Plugin-Key>
+                        -->
                         <Import-Package>
                             com.atlassian.plugin.remotable*;version="${remotable.plugins.api.version}",
                             org.joda.time*;version="${joda.time.version}",
