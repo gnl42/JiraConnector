@@ -116,6 +116,7 @@
                         <Atlassian-Plugin-Key>${project.groupId}.${project.artifactId}</Atlassian-Plugin-Key>
                         -->
                         <Import-Package>
+                            com.atlassian.plugin.remotable*;version="${remotable.plugins.api.version}",
                             org.joda.time*;version="${joda.time.version}",
                             *;resolution:=optional
                         </Import-Package>
