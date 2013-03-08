@@ -122,11 +122,11 @@ public abstract class AbstractAsynchronousRestClient {
 	protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final ResponseHandler<T> responseHandler) {
 		final Function<Response, ? extends T> transformFunction = toFunction(responseHandler);
 
-		return responsePromise.<T>transform()
+		return new DelegatingPromise<T>(responsePromise.<T>transform()
 				.ok(transformFunction)
 				.created(transformFunction)
 				.others(AbstractAsynchronousRestClient.<T>errorFunction())
-				.toPromise();
+				.toPromise());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -144,12 +144,12 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final Promise<Void> call(final ResponsePromise responsePromise) {
-		return responsePromise.<Void>transform()
+		return new DelegatingPromise<Void>(responsePromise.<Void>transform()
 				.ok(constant((Void) null))
 				.created(constant((Void) null))
 				.noContent(constant((Void) null))
 				.others(AbstractAsynchronousRestClient.<Void>errorFunction())
-				.toPromise();
+				.toPromise());
 	}
 
 	protected HttpClient client() {

@@ -38,8 +38,8 @@ public class ErrorCollection {
 
 	public ErrorCollection(@Nullable final Integer status, final Collection<String> errorMessages, final Map<String, String> errors) {
 		this.status = status;
-		this.errors = errors;
-		this.errorMessages = errorMessages;
+		this.errors = ImmutableMap.copyOf(errors);
+		this.errorMessages = ImmutableList.copyOf(errorMessages);
 	}
 
 	public ErrorCollection(final String errorMessage) {

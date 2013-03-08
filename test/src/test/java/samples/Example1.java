@@ -32,6 +32,7 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -48,61 +49,66 @@ public class Example1 {
 	private static URI jiraServerUri = URI.create("http://localhost:2990/jira");
 	private static boolean quiet = false;
 
-	public static void main(String[] args) throws URISyntaxException, JSONException {
+	public static void main(String[] args) throws URISyntaxException, JSONException, IOException {
 		parseArgs(args);
 
 		final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 		final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
-		final int buildNumber = restClient.getMetadataClient().getServerInfo().claim().getBuildNumber();
+		try {
+			final int buildNumber = restClient.getMetadataClient().getServerInfo().claim().getBuildNumber();
 
-		// first let's get and print all visible projects (only jira4.3+)
-		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-			final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
-			for (BasicProject project : allProjects) {
-				println(project);
+			// first let's get and print all visible projects (only jira4.3+)
+			if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
+				final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
+				for (BasicProject project : allProjects) {
+					println(project);
+				}
 			}
-		}
 
-		// let's now print all issues matching a JQL string (here: all assigned issues)
-		if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-			final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").claim();
-			for (BasicIssue issue : searchResult.getIssues()) {
-				println(issue.getKey());
+			// let's now print all issues matching a JQL string (here: all assigned issues)
+			if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
+				final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee1 is not EMPTY").claim();
+				for (BasicIssue issue : searchResult.getIssues()) {
+					println(issue.getKey());
+				}
 			}
+
+			final Issue issue = restClient.getIssueClient().getIssue("TST-7").claim();
+
+			println(issue);
+
+			// now let's vote for it
+			restClient.getIssueClient().vote(issue.getVotesUri()).claim();
+
+			// now let's watch it
+			final BasicWatchers watchers = issue.getWatchers();
+			if (watchers != null) {
+				restClient.getIssueClient().watch(watchers.getSelf()).claim();
+			}
+
+			// now let's start progress on this issue
+			final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
+			final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
+			restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
+					.claim();
+
+			// and now let's resolve it as Incomplete
+			final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
+			final Collection<FieldInput> fieldInputs;
+
+			// Starting from JIRA 5, fields are handled in different way -
+			if (buildNumber > ServerVersionConstants.BN_JIRA_5) {
+				fieldInputs = Arrays.asList(new FieldInput("resolution", ComplexIssueInputFieldValue.with("name", "Incomplete")));
+			} else {
+				fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
+			}
+			final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment
+					.valueOf("My comment"));
+			restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
 		}
-
-		final Issue issue = restClient.getIssueClient().getIssue("TST-7").claim();
-
-		println(issue);
-
-		// now let's vote for it
-		restClient.getIssueClient().vote(issue.getVotesUri()).claim();
-
-		// now let's watch it
-		final BasicWatchers watchers = issue.getWatchers();
-		if (watchers != null) {
-			restClient.getIssueClient().watch(watchers.getSelf()).claim();
+		finally {
+			restClient.close();
 		}
-
-		// now let's start progress on this issue
-		final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
-		final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
-		restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
-				.claim();
-
-		// and now let's resolve it as Incomplete
-		final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
-		final Collection<FieldInput> fieldInputs;
-
-		// Starting from JIRA 5, fields are handled in different way -
-		if (buildNumber > ServerVersionConstants.BN_JIRA_5) {
-			fieldInputs = Arrays.asList(new FieldInput("resolution", ComplexIssueInputFieldValue.with("name", "Incomplete")));
-		} else {
-			fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
-		}
-		final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment
-				.valueOf("My comment"));
-		restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
 	}
 
 	private static void println(Object o) {

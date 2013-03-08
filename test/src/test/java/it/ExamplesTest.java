@@ -11,6 +11,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.junit.Test;
 import samples.Example1;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 
 	@Test
-	public void testExample1() throws URISyntaxException, JSONException {
+	public void testExample1() throws URISyntaxException, JSONException, IOException {
 		// -- run the example
 		Example1.main(new String[]{environmentData.getBaseUrl().toString(), "-q"});
 
