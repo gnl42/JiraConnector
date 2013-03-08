@@ -198,8 +198,13 @@ public class MonitorCorePlugin extends Plugin {
 		IEclipsePreferences prefs = getPreferenceStore();
 		String uid = prefs.get(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, null);
 		if (uid == null) {
-			prefs.put(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, UUID.randomUUID().toString());
-			uid = prefs.get(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, null);
+			uid = UUID.randomUUID().toString();
+			prefs.put(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, uid);
+			try {
+				prefs.flush();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
 		}
 		return uid;
 	}
