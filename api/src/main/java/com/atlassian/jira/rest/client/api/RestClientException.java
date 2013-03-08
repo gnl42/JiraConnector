@@ -35,7 +35,7 @@ public class RestClientException extends RuntimeException {
 	private final Collection<ErrorCollection> errorCollections;
 
 	public RestClientException(final RestClientException exception) {
-		super(exception);
+		super(exception.getMessage(), exception);
 		this.statusCode = exception.getStatusCode();
 		this.errorCollections = exception.errorCollections;
 	}
