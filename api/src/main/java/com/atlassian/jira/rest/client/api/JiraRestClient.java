@@ -16,6 +16,9 @@
 
 package com.atlassian.jira.rest.client.api;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  * Main access point to REST com.atlassian.jira.rest.client.api.
  * As there are many types resources exposed by JIRA REST API, various resources are grouped into clusters
@@ -23,7 +26,7 @@ package com.atlassian.jira.rest.client.api;
  *
  * @since v0.1
  */
-public interface JiraRestClient {
+public interface JiraRestClient extends Closeable {
 	/**
 	 * @return com.atlassian.jira.rest.client.api for performing operations on selected issue
 	 */
@@ -75,5 +78,5 @@ public interface JiraRestClient {
 	 *
 	 * @throws Exception
 	 */
-	void destroy() throws Exception;
+	void close() throws IOException;
 }

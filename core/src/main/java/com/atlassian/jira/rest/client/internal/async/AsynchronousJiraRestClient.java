@@ -15,10 +15,10 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.*;
 
 import javax.ws.rs.core.UriBuilder;
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -100,8 +100,12 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	}
 
 	@Override
-	public void destroy() throws Exception {
-		httpClient.destroy();
+	public void close() throws IOException {
+		try {
+			httpClient.destroy();
+		} catch (Exception e) {
+			throw (e instanceof IOException) ? ((IOException) e) : new IOException(e);
+		}
 	}
 }
 

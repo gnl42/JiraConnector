@@ -98,7 +98,7 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 			// on not supported version of JIRA (example: run only on JIRA6 against JIRA5). In this case
 			// we don't create a client in beforeMethod.
 			if (client != null) {
-				client.destroy();
+				client.close();
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -39,8 +39,7 @@ import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.AddressableEntityMatchers;
 import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import org.hamcrest.collection.IsIterableContainingInOrder;
@@ -59,7 +58,8 @@ import static org.junit.Assert.*;
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestClientTest {
 
-	public static final String REQUIRED_ISSUE_FIELDS = "summary,issuetype,created,updated,project,status";
+	public static final Set<String> REQUIRED_ISSUE_FIELDS = ImmutableSet.of("summary", "issuetype", "created", "updated",
+			"project", "status");
 
 	@Test
 	public void testJqlSearch() {
@@ -144,17 +144,21 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
 	@Test
 	public void testVeryLongJqlWhichWillBePost() {
-		final String coreJql = "summary ~ fsdsfdfds";
-		StringBuilder sb = new StringBuilder(coreJql);
-		for (int i = 0; i < 500; i++) {
-			sb.append(" and (reporter is not empty)"); // building very long JQL query
-		}
-		sb.append(" or summary is not empty"); // so that effectively all issues are returned;
-		final SearchResult searchResultForNull = client.getSearchClient().searchJql(sb.toString(), 3, 6, null).claim();
+		final String longJql = generateVeryLongJql() + " or summary is not empty"; // so that effectively all issues are returned;
+		final SearchResult searchResultForNull = client.getSearchClient().searchJql(longJql, 3, 6, null).claim();
 		assertEquals(11, searchResultForNull.getTotal());
 		assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
 		assertEquals(6, searchResultForNull.getStartIndex());
 		assertEquals(3, searchResultForNull.getMaxResults());
+	}
+
+	private String generateVeryLongJql() {
+		final String coreJql = "(reporter is not empty OR reporter is empty)";
+		StringBuilder sb = new StringBuilder(coreJql);
+		for (int i = 0; i < 500; i++) {
+			sb.append(" and ").append(coreJql);
+		}
+		return sb.toString();
 	}
 
 	@Test
@@ -205,7 +209,17 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
 	@Test
 	public void jqlSearchWithAllFieldsRequestedShouldReturnIssueWithAllFields() throws Exception {
-		final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-2", null, null, "*all").claim();
+		jqlSearchWithAllFieldsImpl("key=TST-2");
+	}
+
+	@Test
+	public void jqlSearchUsingPostWithAllFieldsRequestedShouldReturnIssueWithAllFields() throws Exception {
+		jqlSearchWithAllFieldsImpl(generateVeryLongJql() + "and key=TST-2");
+	}
+
+	private void jqlSearchWithAllFieldsImpl(String jql) {
+		final ImmutableSet<String> fields = ImmutableSet.of("*all");
+		final SearchResult searchResult = client.getSearchClient().searchJql(jql, null, null, fields).claim();
 		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
 
 		assertEquals("TST-2", issue.getKey());
@@ -294,21 +308,20 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
 	/**
 	 * If this test fails, then maybe we accept missing field in issue parser? If yes, then we need to update
-	 * javadoc for {@link SearchRestClient#searchJql(String, Integer, Integer, String)}
+	 * javadoc for {@link SearchRestClient#searchJql(String, Integer, Integer, Set)}
 	 */
 	@Test
 	public void jqlSearchWithoutOneOfRequiredFieldsShouldCauseParserFailure() {
-		final Set<String> requiredFields = Sets.newHashSet(Splitter.on(",").split(REQUIRED_ISSUE_FIELDS));
 		final SearchRestClient searchClient = client.getSearchClient();
 
-		for (final String missingField : requiredFields) {
-			final Set<String> fieldsToRetrieve = Sets.difference(requiredFields, Sets.newHashSet(missingField));
+		for (final String missingField : REQUIRED_ISSUE_FIELDS) {
+			final Set<String> fieldsToRetrieve = Sets.difference(REQUIRED_ISSUE_FIELDS, Sets.newHashSet(missingField));
 
 			try {
-				searchClient.searchJql(null, 1, 0, Joiner.on(",").join(fieldsToRetrieve)).claim();
+				searchClient.searchJql(null, 1, 0, fieldsToRetrieve).claim();
 				throw new java.lang.AssertionError(String.format(
 						"The above statement should throw exception. fieldsToRetrieve = %s, fields = %s, requiredFields = %s",
-						missingField, fieldsToRetrieve, requiredFields));
+						missingField, fieldsToRetrieve, REQUIRED_ISSUE_FIELDS));
 			} catch (RestClientException e) {
 				final String expectedMessage = String.format(
 						"org.codehaus.jettison.json.JSONException: JSONObject[\"%s\"] not found.", missingField);

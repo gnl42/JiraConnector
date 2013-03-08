@@ -22,6 +22,7 @@ import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
 import java.net.URI;
+import java.util.Set;
 
 /**
  * The client handling search REST resource
@@ -50,7 +51,7 @@ public interface SearchRestClient {
 	 *                   startAt=5 and maxResults=3 the results will include matching issues with index 5, 6 and 7.
 	 *                   For startAt = 0 and maxResults=3 the issues returned are from position 0, 1 and 2.
 	 *                   When null is given, the default startAt is used (0).
-	 * @param fields     comma separated list of fields which should be retrieved. You can specify *all for all fields
+	 * @param fields     set of fields which should be retrieved. You can specify *all for all fields
 	 *                   or *navigable (which is the default value, used when null is given) which will cause to include only
 	 *                   navigable fields in the result. To ignore the specific field you can use "-" before the field's name.
 	 *                   Note that the following fields: summary, issuetype, created, updated, project and status are
@@ -58,7 +59,7 @@ public interface SearchRestClient {
 	 * @return issues matching given JQL query
 	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL query, etc.)
 	 */
-	Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable String fields);
+	Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields);
 
 	/**
 	 * Retrieves list of your favourite filters.
