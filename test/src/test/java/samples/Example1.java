@@ -67,7 +67,7 @@ public class Example1 {
 
 			// let's now print all issues matching a JQL string (here: all assigned issues)
 			if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-				final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee1 is not EMPTY").claim();
+				final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").claim();
 				for (BasicIssue issue : searchResult.getIssues()) {
 					println(issue.getKey());
 				}
