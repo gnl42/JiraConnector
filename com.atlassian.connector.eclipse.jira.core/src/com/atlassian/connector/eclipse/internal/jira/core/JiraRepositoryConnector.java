@@ -335,6 +335,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		int index = url.indexOf(ISSUE_URL_PREFIX);
 		if (index != -1) {
 			String taskId = url.substring(index + ISSUE_URL_PREFIX.length());
+
+			// strip query string
+			int index2 = taskId.indexOf("?"); //$NON-NLS-1$
+			if (index2 != -1) {
+				taskId = taskId.substring(0, index2);
+			}
+
 			if (taskId.contains("-")) { //$NON-NLS-1$
 				return taskId;
 			}
