@@ -400,11 +400,13 @@ public class JiraRestClientAdapter {
 //
 //		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
 //				new NullProgressMonitor());
-		if (issue.getProject() == null || issue.getProject().getKey() == null || issue.getProject().getKey().isEmpty()) {
+		if (issue.getProject() == null || issue.getProject().getKey() == null
+				|| StringUtils.isEmpty(issue.getProject().getKey())) {
 			throw new JiraException("Project must be set."); //$NON-NLS-1$
-		} else if (issue.getSummary() == null || issue.getSummary().isEmpty()) {
+		} else if (issue.getSummary() == null || StringUtils.isEmpty(issue.getSummary())) {
 			throw new JiraException("Summary must be set."); //$NON-NLS-1$
-		} else if (issue.getType() == null || issue.getType().getId() == null || issue.getType().getId().isEmpty()) {
+		} else if (issue.getType() == null || issue.getType().getId() == null
+				|| StringUtils.isEmpty(issue.getType().getId())) {
 			throw new JiraException("Issue type must be set."); //$NON-NLS-1$
 		}
 
