@@ -400,9 +400,24 @@ public class JiraRestClientAdapter {
 //
 //		Iterable<CimProject> createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
 //				new NullProgressMonitor());
+		if (issue.getProject() == null || issue.getProject().getKey() == null || issue.getProject().getKey().isEmpty()) {
+			throw new JiraException("Project must be set."); //$NON-NLS-1$
+		} else if (issue.getSummary() == null || issue.getSummary().isEmpty()) {
+			throw new JiraException("Summary must be set."); //$NON-NLS-1$
+		} else if (issue.getType() == null || issue.getType().getId() == null || issue.getType().getId().isEmpty()) {
+			throw new JiraException("Issue type must be set."); //$NON-NLS-1$
+		}
 
-		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(),
-				Long.parseLong(issue.getType().getId()), issue.getSummary());
+		long issueTypeId;
+
+		try {
+			issueTypeId = Long.parseLong(issue.getType().getId());
+		} catch (NumberFormatException e) {
+			throw new JiraException("Incorrect issue type.", e); //$NON-NLS-1$
+		}
+
+		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(), issueTypeId,
+				issue.getSummary());
 
 		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()))
 				.setComponents(JiraRestConverter.convert(issue.getComponents()))
