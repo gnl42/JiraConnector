@@ -25,8 +25,13 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.WebUtil;
 
 import java.util.HashMap;
@@ -37,6 +42,7 @@ import java.util.Map;
  * 
  * @author Shawn Minto
  * @author Wojciech Seliga
+ * @author Jacek Jaroczynski
  */
 public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
@@ -94,7 +100,20 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location,
 				new NullProgressMonitor());
 		httpClient.setHostConfiguration(hostConfiguration);
-		httpClient.getParams().setAuthenticationPreemptive(true);
+
+		AuthenticationCredentials proxyCredentials = location.getCredentials(AuthenticationType.PROXY);
+
+		// check for domain name slash \ in the proxy user
+		if (proxyCredentials != null && proxyCredentials.getUserName() != null
+				&& proxyCredentials.getUserName().contains("\\")) {
+			// NTLM proxy detected - disable preemptive auth (httpClient limitation - preemptive auth does not work with NTLM)
+			httpClient.getParams().setAuthenticationPreemptive(false);
+			StatusHandler.log(new Status(IStatus.INFO, AtlassianCorePlugin.PLUGIN_ID,
+					"NTLM proxy detected. Preemptive authentication disabled."));
+		} else {
+			httpClient.getParams().setAuthenticationPreemptive(true);
+		}
+
 	}
 
 	@Override
