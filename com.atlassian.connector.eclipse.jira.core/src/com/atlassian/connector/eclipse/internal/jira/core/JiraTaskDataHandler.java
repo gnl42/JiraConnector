@@ -706,7 +706,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				IssueField[] editableAttributes = jiraIssue.getEditableFields();
 				if (editableAttributes != null && editableAttributes.length > 0) {
 					for (IssueField field : editableAttributes) {
-						// TODO rest temporary all custom fields are read only
 //							if (!field.getId().startsWith("customfield")) {
 						editableKeys.put(mapCommonAttributeKey(field.getId()), field.getAlloweValues());
 					}

@@ -480,6 +480,7 @@ public class JiraRestConverter {
 			case TEXTFIELD:
 			case TEXTAREA:
 			case URL:
+			case EPIC_LABEL:
 				values = ImmutableList.of(field.getValue().toString());
 				break;
 			case DATE:
@@ -927,6 +928,7 @@ public class JiraRestConverter {
 		case TEXTFIELD:
 		case TEXTAREA:
 		case URL:
+		case EPIC_LABEL:
 			if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 				return new FieldInput(customField.getId(), customField.getValues().get(0));
 			}

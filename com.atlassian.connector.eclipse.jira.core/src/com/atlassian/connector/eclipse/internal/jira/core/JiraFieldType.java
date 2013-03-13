@@ -106,7 +106,9 @@ public enum JiraFieldType {
 
 	USERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", TaskAttribute.TYPE_PERSON), //$NON-NLS-1$
 
-	VERSION("com.atlassian.jira.plugin.system.customfieldtypes:version"); //$NON-NLS-1$
+	VERSION("com.atlassian.jira.plugin.system.customfieldtypes:version"), //$NON-NLS-1$
+
+	EPIC_LABEL("com.pyxis.greenhopper.jira:gh-epic-label", TaskAttribute.TYPE_SHORT_TEXT); //$NON-NLS-1$
 
 	public static JiraFieldType fromKey(String key) {
 		if (key != null) {

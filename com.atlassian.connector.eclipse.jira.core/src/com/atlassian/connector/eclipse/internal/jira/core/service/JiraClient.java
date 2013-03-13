@@ -476,8 +476,6 @@ public class JiraClient {
 	 */
 //	public IssueField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 //		JiraCorePlugin.getMonitoring().logJob("getEditableAttributes", null); //$NON-NLS-1$
-//		// TODO rest https://studio.atlassian.com/browse/JRJC-105
-//
 //		return soapClient.getEditableAttributes(issueKey, monitor);
 //	}
 
@@ -510,7 +508,6 @@ public class JiraClient {
 		JiraCorePlugin.getMonitoring().logJob("getIssueByUrl", null); //$NON-NLS-1$
 
 		try {
-			// TODO rest retrieve/show custom fields
 			return getRestClient().getIssueByKeyOrId(issueId, monitor);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
