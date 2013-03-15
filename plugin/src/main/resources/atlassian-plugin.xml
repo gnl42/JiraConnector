@@ -5,12 +5,12 @@
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
     </plugin-info>
 
-    <plugin-permission key="read_users_and_groups" name="Read Users and Groups"
+    <plugin-permission key="read_users_and_groups" name="Read Users and Groups" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraReadUsersAndGroupsScope">
         <description>View users and groups</description>
     </plugin-permission>
 
-    <plugin-permission key="browse_projects" name="Browse Projects"
+    <plugin-permission key="browse_projects" name="Browse Projects" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.BrowseProjectsScope">
         <description>
             Permission to browse projects, search issues, and view individual issues (except issues that have been
@@ -18,7 +18,7 @@
         </description>
     </plugin-permission>
 
-    <plugin-permission key="create_issues" name="Create Issues"
+    <plugin-permission key="create_issues" name="Create Issues" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraCreateIssuesScope">
         <description>
             Permission to create issues in the project. (Note that the Create Attachments
@@ -27,7 +27,7 @@
         </description>
     </plugin-permission>
 
-    <plugin-permission key="edit_issues" name="Edit Issues"
+    <plugin-permission key="edit_issues" name="Edit Issues" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraEditIssuesScope">
         <description>
             Permission to edit issues (excluding the 'Due Date' field - see the Schedule
@@ -37,7 +37,7 @@
         </description>
     </plugin-permission>
 
-    <plugin-permission key="resolve_issues" name="Resolve Issues"
+    <plugin-permission key="resolve_issues" name="Resolve Issues" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraResolveIssuesScope">
         <description>
             Permission to resolve and reopen issues. This also includes the ability to set
@@ -45,14 +45,14 @@
         </description>
     </plugin-permission>
 
-    <plugin-permission key="read_metadata" name="Read Metadata"
+    <plugin-permission key="read_metadata" name="Read Metadata" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraReadMetadataScope">
         <description>
             Permission to read JIRA metadata.
         </description>
     </plugin-permission>
 
-    <plugin-permission key="read_user_session_data" name="Read User Session Data"
+    <plugin-permission key="read_user_session_data" name="Read User Session Data" application="jira"
                        class="com.atlassian.jira.rest.client.plugin.scope.JiraReadUserSessionData">
         <description>
             Permission to read JIRA user's session data.
