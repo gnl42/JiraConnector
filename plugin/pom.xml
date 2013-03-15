@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -30,6 +31,12 @@
             <groupId>com.atlassian.plugins</groupId>
             <artifactId>remotable-plugins-api</artifactId>
             <version>${remotable.plugins.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-schema</artifactId>
+            <version>3.0.0-m5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -78,7 +85,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-        <groupId>com.atlassian.httpclient</groupId>
+            <groupId>com.atlassian.httpclient</groupId>
             <artifactId>atlassian-httpclient-spi</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -114,6 +121,7 @@
                         <Export-Package>com.atlassian.jira.rest.client.api*</Export-Package>
                         <Atlassian-Plugin-Key>${project.groupId}.${project.artifactId}</Atlassian-Plugin-Key>
                         <Import-Package>
+                            com.atlassian.plugin.schema*;version="2.10",
                             com.atlassian.plugin.remotable*;version="${remotable.plugins.version}",
                             org.joda.time*;version="${joda.time.version}",
                             *;resolution:=optional
