@@ -421,9 +421,8 @@ public class JiraRestClientAdapter {
 		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(), issueTypeId,
 				issue.getSummary());
 
-		issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()))
-				.setComponents(JiraRestConverter.convert(issue.getComponents()))
-				.setDescription(issue.getDescription());
+		issueInputBuilder.setComponents(JiraRestConverter.convert(issue.getComponents())).setDescription(
+				issue.getDescription());
 
 		// Mylyn sets -1 as a value of empty assignee
 		if (issue.getAssignee() != null && !issue.getAssignee().equals("-1")) { //$NON-NLS-1$
@@ -432,6 +431,10 @@ public class JiraRestClientAdapter {
 
 		if (issue.getDue() != null) {
 			issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
+		}
+
+		if (issue.getReportedVersions() != null && issue.getReportedVersions().length > 0) {
+			issueInputBuilder.setAffectedVersions(JiraRestConverter.convert(issue.getReportedVersions()));
 		}
 
 		if (issue.getFixVersions() != null && issue.getFixVersions().length > 0) {
@@ -517,11 +520,13 @@ public class JiraRestClientAdapter {
 			fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 		}
 
-		List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
-		for (Version version : changedIssue.getReportedVersions()) {
-			reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
+		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, ""))) { //$NON-NLS-1$
+			List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
+			for (Version version : changedIssue.getReportedVersions()) {
+				reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
+			}
+			fields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
 		}
-		fields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
 
 		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, ""))) { //$NON-NLS-1$
 			List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
