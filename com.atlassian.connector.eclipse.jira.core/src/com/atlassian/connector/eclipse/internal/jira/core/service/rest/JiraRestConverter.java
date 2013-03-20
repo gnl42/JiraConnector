@@ -639,8 +639,20 @@ public class JiraRestConverter {
 	private static Comment convert(com.atlassian.jira.rest.client.domain.Comment comment) {
 		Comment outComment = new Comment();
 
-		outComment.setAuthor(comment.getAuthor().getName());
-		outComment.setAuthorDisplayName(comment.getAuthor().getDisplayName());
+		BasicUser author = comment.getAuthor();
+
+		if (author != null && author.getName() != null) {
+			outComment.setAuthor(author.getName());
+		} else {
+			outComment.setAuthor("unknown"); //$NON-NLS-1$
+		}
+
+		if (author != null && author.getDisplayName() != null) {
+			outComment.setAuthorDisplayName(author.getDisplayName());
+		} else {
+			outComment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
+		}
+
 		outComment.setComment(comment.getBody());
 		outComment.setCreated(comment.getCreationDate().toDate());
 		outComment.setMarkupDetected(false);
