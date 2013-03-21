@@ -520,7 +520,7 @@ public class JiraRestClientAdapter {
 			fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 		}
 
-		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, ""))) { //$NON-NLS-1$
+		if (editableFields.contains(new IssueField(JiraRestFields.VERSIONS, ""))) { //$NON-NLS-1$
 			List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
 			for (Version version : changedIssue.getReportedVersions()) {
 				reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
