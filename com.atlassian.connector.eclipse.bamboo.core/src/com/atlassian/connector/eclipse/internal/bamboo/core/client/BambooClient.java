@@ -15,6 +15,7 @@ import com.atlassian.connector.commons.api.BambooServerFacade2;
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.connector.eclipse.internal.bamboo.core.PlanBranches;
 import com.atlassian.connector.eclipse.internal.core.client.AbstractConnectorClient;
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -81,7 +82,9 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2, B
 					IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving builds");
 				return server.getSubscribedPlansResults(serverCfg, BambooUtil.getSubscribedPlans(taskRepository),
-						BambooUtil.isUseFavourites(taskRepository), 0);
+						BambooUtil.isUseFavourites(taskRepository),
+						!BambooUtil.getPlanBranches(taskRepository).equals(PlanBranches.NO),
+						BambooUtil.getPlanBranches(taskRepository).equals(PlanBranches.MINE), 0);
 			}
 
 		}, promptForCredentials);

@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.connector.eclipse.internal.bamboo.core.PlanBranches;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
@@ -48,6 +49,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -64,6 +66,7 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  * @author thomas
+ * @author Jacek Jaroczynski
  */
 public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
@@ -148,6 +151,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private Collection<BambooPlan> allPlans;
 
+	private Combo btnPlanBranches;
+
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
 		setNeedsHttpAuth(true);
@@ -168,6 +173,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		}
 
 		BambooUtil.setUseFavourites(repository, btnUseFavourites.getSelection());
+		BambooUtil.setPlanBranches(repository, PlanBranches.from(btnPlanBranches.getText()));
 
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
@@ -243,30 +249,6 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		buttonLayout.fill = true;
 		buttonComposite.setLayout(buttonLayout);
 
-//		Button selectFavorites = new Button(buttonComposite, SWT.PUSH);
-//		selectFavorites.setText("&Favourites");
-//		selectFavorites.addSelectionListener(new SelectionAdapter() {
-//			@SuppressWarnings("unchecked")
-//			@Override
-//			public void widgetSelected(SelectionEvent event) {
-//				Object input = planViewer.getInput();
-//				// if there are no plans, let's call validate first
-//				if (!(input instanceof Collection<?>)) {
-//					validateSettings();
-//				}
-//				input = planViewer.getInput();
-//				if (input instanceof Collection<?>) {
-//					List<BambooPlan> favorites = new ArrayList<BambooPlan>();
-//					for (BambooPlan plan : (Collection<BambooPlan>) input) {
-//						if (plan.isFavourite()) {
-//							favorites.add(plan);
-//						}
-//					}
-//					planViewer.setCheckedElements(favorites.toArray());
-//				}
-//			}
-//		});
-
 		selectAllButton = new Button(buttonComposite, SWT.PUSH);
 		selectAllButton.setText("&Select All");
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
@@ -302,6 +284,12 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			}
 		});
 
+		btnPlanBranches = new Combo(composite, SWT.READ_ONLY);
+		btnPlanBranches.setItems(PlanBranches.stringValues());
+		btnPlanBranches.select(0);
+		// TODO jacek: add label "Show Plan Branches"
+		// TODO jacek: add tooltip with explanation if "my branches" is over: http://www.java2s.com/Code/Java/Swing-Components/ToolTipComboBoxExample.htm
+
 		btnUseFavourites.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -317,6 +305,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			btnUseFavourites.setSelection(true);
 			favouritesSelected(true);
 		}
+
+		btnPlanBranches.select(BambooUtil.getPlanBranches(repository).ordinal());
 	}
 
 	private void favouritesSelected(boolean enabled) {
@@ -324,6 +314,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		selectAllButton.setEnabled(!enabled);
 		deselectAllButton.setEnabled(!enabled);
 		refreshButton.setEnabled(!enabled);
+//		btnPlanBranches.setEnabled(!enabled);
 	}
 
 	private void setCachedPlanInput() {

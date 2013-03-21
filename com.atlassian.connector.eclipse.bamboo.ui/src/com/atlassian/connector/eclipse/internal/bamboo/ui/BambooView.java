@@ -83,16 +83,19 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  */
 public class BambooView extends ViewPart {
 
@@ -147,11 +150,35 @@ public class BambooView extends ViewPart {
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			return new Object[0];
+
+			List<EclipseBambooBuild> children = new ArrayList<EclipseBambooBuild>(builds.size());
+
+			if (parentElement instanceof EclipseBambooBuild) {
+				EclipseBambooBuild build = (EclipseBambooBuild) parentElement;
+
+				for (EclipseBambooBuild b : builds) {
+					if (build.getBuild().getPlanKey().equals(b.getBuild().getMasterPlanKey())) {
+						children.add(b);
+					}
+				}
+
+			}
+
+			return children.toArray();
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return builds.toArray();
+
+			List<EclipseBambooBuild> ret = new ArrayList<EclipseBambooBuild>(builds.size());
+
+			// select and return top level builds
+			for (EclipseBambooBuild build : builds) {
+				if (build.getBuild().getMasterPlanKey() == null || build.getBuild().getMasterPlanKey().length() == 0) {
+					ret.add(build);
+				}
+			}
+
+			return ret.toArray();
 		}
 
 		public Object getParent(Object element) {
@@ -159,6 +186,16 @@ public class BambooView extends ViewPart {
 		}
 
 		public boolean hasChildren(Object element) {
+			if (element instanceof EclipseBambooBuild) {
+				EclipseBambooBuild build = (EclipseBambooBuild) element;
+
+				for (EclipseBambooBuild b : builds) {
+					if (build.getBuild().getPlanKey().equals(b.getBuild().getMasterPlanKey())) {
+						return true;
+					}
+				}
+
+			}
 			return false;
 		}
 

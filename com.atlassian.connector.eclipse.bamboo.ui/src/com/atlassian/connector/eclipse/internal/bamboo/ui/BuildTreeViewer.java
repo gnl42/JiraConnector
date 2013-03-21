@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -28,6 +29,10 @@ import org.eclipse.ui.progress.UIJob;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * 
+ * @author Jacek Jaroczynski
+ */
 public class BuildTreeViewer extends TreeViewer {
 
 	private volatile boolean disposed = false;
@@ -96,9 +101,17 @@ public class BuildTreeViewer extends TreeViewer {
 	}
 
 	public void setBuilds(Collection<EclipseBambooBuild> builds) {
-		Collection<BambooBuild> selectedBuilds = getSelectedBuilds();
+//		Collection<BambooBuild> selectedBuilds = getSelectedBuilds();
+
+		Object[] expandedElements = super.getExpandedElements();
+		TreePath[] expandedTreePaths = super.getExpandedTreePaths();
+
 		super.setInput(builds);
-		restoreSelectionByBuild(selectedBuilds);
+
+		super.setExpandedElements(expandedElements);
+		super.setExpandedTreePaths(expandedTreePaths);
+
+//		restoreSelectionByBuild(selectedBuilds);
 	}
 
 	private Collection<BambooBuild> getSelectedBuilds() {

@@ -135,4 +135,14 @@ public class MockBambooBuild implements BambooBuild {
 	public PlanState getPlanState() {
 		return null;
 	}
+
+	public String getProjectKey() {
+		// ignore
+		return null;
+	}
+
+	public String getMasterPlanKey() {
+		// ignore
+		return null;
+	}
 }

@@ -276,12 +276,12 @@ public final class BuildPlanManager {
 	@Nullable
 	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
 		try {
-			return new BambooBuildInfo(oldBuild.getPlanKey(), oldBuild.getPlanName(), oldBuild.getServer(),
-					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(), oldBuild.getNumber(),
-					oldBuild.getStatus(), oldBuild.getPlanState(), oldBuild.getReason(), oldBuild.getStartDate(), null,
-					null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
-					newBuild.getErrorMessage(), oldBuild.getException(), oldBuild.getRelativeBuildDate(),
-					oldBuild.getDurationDescription(), oldBuild.getCommiters());
+			return new BambooBuildInfo(oldBuild.getPlanKey(), oldBuild.getPlanName(), oldBuild.getMasterPlanKey(),
+					oldBuild.getServer(), oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(),
+					oldBuild.getNumber(), oldBuild.getStatus(), oldBuild.getPlanState(), oldBuild.getReason(),
+					oldBuild.getStartDate(), null, null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(),
+					oldBuild.getCompletionDate(), newBuild.getErrorMessage(), oldBuild.getException(),
+					oldBuild.getRelativeBuildDate(), oldBuild.getDurationDescription(), oldBuild.getCommiters());
 		} catch (UnsupportedOperationException e) {
 			return null;
 		}

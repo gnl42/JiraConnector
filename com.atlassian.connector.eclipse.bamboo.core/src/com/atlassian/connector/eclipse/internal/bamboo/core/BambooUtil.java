@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
  * Provides utility methods for Bamboo.
  * 
  * @author Shawn Minto
+ * @author Jacek Jaroczynski
  */
 public final class BambooUtil {
 
@@ -34,6 +35,8 @@ public final class BambooUtil {
 	private static final String KEY_SUBSCRIBED_PLANS = "com.atlassian.connector.eclipse.bamboo.subscribedPlans";
 
 	public static final String KEY_USE_FAVOURITES = "com.atlassian.connector.eclipse.bamboo.useFavourites";
+
+	private static final String KEY_PLAN_BRANCHES = "com.atlassian.connector.eclipse.bamboo.planBranches";;
 
 	private BambooUtil() {
 	}
@@ -124,5 +127,13 @@ public final class BambooUtil {
 
 	public static void setUseFavourites(TaskRepository taskRepository, boolean useFavourite) {
 		taskRepository.setProperty(BambooUtil.KEY_USE_FAVOURITES, Boolean.toString(useFavourite));
+	}
+
+	public static void setPlanBranches(TaskRepository taskRepository, PlanBranches value) {
+		taskRepository.setProperty(BambooUtil.KEY_PLAN_BRANCHES, value.getText());
+	}
+
+	public static PlanBranches getPlanBranches(TaskRepository taskRepository) {
+		return PlanBranches.from(taskRepository.getProperty(BambooUtil.KEY_PLAN_BRANCHES));
 	}
 }
