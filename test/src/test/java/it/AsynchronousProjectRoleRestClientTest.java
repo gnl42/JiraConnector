@@ -34,6 +34,7 @@ import org.junit.rules.ExpectedException;
 
 import java.net.URI;
 
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.buildUserAvatarUri;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -58,7 +59,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		assertEquals("jira-users", actor.getDisplayName());
 		assertEquals("atlassian-group-role-actor", actor.getType());
 		assertEquals("jira-users", actor.getName());
-		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals(actor.getAvatarUri(), buildUserAvatarUri(null, 10083L, "16x16"));
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -73,7 +74,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		assertEquals("Administrator", actor.getDisplayName());
 		assertEquals("atlassian-user-role-actor", actor.getType());
 		assertEquals("admin", actor.getName());
-		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), actor.getAvatarUri());
+		assertEquals(actor.getAvatarUri(), buildUserAvatarUri("admin", 10054L, "16x16"));
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -99,7 +100,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		assertEquals("jira-users", actor.getDisplayName());
 		assertEquals("atlassian-group-role-actor", actor.getType());
 		assertEquals("jira-users", actor.getName());
-		assertEquals(jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"), actor.getAvatarUri());
+		assertEquals(actor.getAvatarUri(), buildUserAvatarUri(null, 10083L, "16x16"));
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
@@ -121,20 +122,16 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		assertThat(projectRolesWithoutSelf, containsInAnyOrder(
 				new ProjectRole(10000l, null, "Users", "A project role that represents users in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(10062l, "jira-users", "atlassian-group-role-actor", "jira-users",
-										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"))
+								new RoleActor(10062l, "jira-users", "atlassian-group-role-actor", "jira-users", buildUserAvatarUri(null, 10083L, "16x16"))
 						)),
 				new ProjectRole(10001l, null, "Developers", "A project role that represents developers in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(10061l, "jira-developers", "atlassian-group-role-actor", "jira-developers",
-										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083")),
-								new RoleActor(10063l, "My Test User", "atlassian-user-role-actor", "user",
-										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10082"))
+								new RoleActor(10061l, "jira-developers", "atlassian-group-role-actor", "jira-developers", buildUserAvatarUri(null, 10083L, "16x16")),
+								new RoleActor(10063l, "My Test User", "atlassian-user-role-actor", "user", buildUserAvatarUri(null, 10082L, "16x16"))
 						)),
 				new ProjectRole(10002l, null, "Administrators", "A project role that represents administrators in a project",
 						ImmutableList.<RoleActor>of(
-								new RoleActor(10060l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators",
-										jiraUri.resolve("/jira/secure/useravatar?size=small&avatarId=10083"))
+								new RoleActor(10060l, "jira-administrators", "atlassian-group-role-actor", "jira-administrators", buildUserAvatarUri(null, 10083L, "16x16"))
 						))
 		));
 
@@ -151,5 +148,4 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		exception.expectMessage("Can not retrieve a role actor for a null project role.");
 		client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l).claim();
 	}
-
 }

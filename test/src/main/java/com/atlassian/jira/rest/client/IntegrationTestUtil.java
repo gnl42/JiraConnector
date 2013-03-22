@@ -23,10 +23,13 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.StringUtils;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public class IntegrationTestUtil {
 	public static final User USER_ADMIN_FULL;
@@ -52,22 +55,32 @@ public class IntegrationTestUtil {
 	private static final String URI_INTERFIX_FOR_USER;
 
 	public static final String GROUP_JIRA_ADMINISTRATORS = "jira-administrators";
+	public static final int CURRENT_BUILD_NUMBER;
+	public static final ImmutableMap<String, String> AVATAR_SIZE_TO_NAME_MAP;
 
 	static {
 		try {
 			final com.atlassian.jira.rest.client.api.JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
 			final com.atlassian.jira.rest.client.api.JiraRestClient client = clientFactory.create(environmentData.getBaseUrl()
 					.toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
-			TESTING_JIRA_5_OR_NEWER =
-					client.getMetadataClient().getServerInfo().claim().getBuildNumber() > ServerVersionConstants.BN_JIRA_5;
+			CURRENT_BUILD_NUMBER = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
+			TESTING_JIRA_5_OR_NEWER = CURRENT_BUILD_NUMBER > ServerVersionConstants.BN_JIRA_5;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";
 
-			USER1_FULL = new User(getUserUri("wseliga"), "wseliga", "Wojciech Seliga", "wojciech.seliga@spartez.com", null, ImmutableMap
-					.of(
-							"16x16", resolveURI("secure/useravatar?size=small&avatarId=10082"),
-							"48x48", resolveURI("secure/useravatar?avatarId=10082")
-					), null);
+			// avatar size names (changed in JIRA 6.0)
+			if (CURRENT_BUILD_NUMBER >= 6060) {
+				AVATAR_SIZE_TO_NAME_MAP = ImmutableMap.<String, String>builder().put("16x16", "xsmall")
+						.put("24x24", "small").put("32x32", "medium").put("48x48", "").put("64x64", "xlarge")
+						.put("96x96", "xxlarge").put("128x128", "xxxlarge").put("192x192", "xxlarge%402x")
+						.put("256x256", "xxxlarge%402x").build();
+			}
+			else {
+				AVATAR_SIZE_TO_NAME_MAP = ImmutableMap.of("16x16", "small", "48x48", "");
+			}
+
+			// users
+			USER1_FULL = new User(getUserUri("wseliga"), "wseliga", "Wojciech Seliga", "wojciech.seliga@spartez.com", null, buildUserAvatarUris(null, 10082L), null);
 			USER1 = new BasicUser(USER1_FULL.getSelf(), USER1_FULL.getName(), USER1_FULL.getDisplayName());
 			USER1_LATEST = new BasicUser(getLatestUserUri("wseliga"), "wseliga", "Wojciech Seliga");
 
@@ -78,17 +91,41 @@ public class IntegrationTestUtil {
 			USER_SLASH_LATEST = new BasicUser(getLatestUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
 
 
-			USER_ADMIN_FULL = new User(getUserUri("admin"), "admin", "Administrator", "wojciech.seliga@spartez.com", null, ImmutableMap
-					.of(
-							"16x16", resolveURI("secure/useravatar?size=small&ownerId=admin&avatarId=10054"),
-							"48x48", resolveURI("secure/useravatar?ownerId=admin&avatarId=10054")
-					), null);
+			USER_ADMIN_FULL = new User(getUserUri("admin"), "admin", "Administrator", "wojciech.seliga@spartez.com", null, buildUserAvatarUris("admin", 10054L), null);
 			USER_ADMIN = new BasicUser(USER_ADMIN_FULL.getSelf(), USER_ADMIN_FULL.getName(), USER_ADMIN_FULL.getDisplayName());
 			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	public static URI buildUserAvatarUri(@Nullable String userName, Long avatarId, String size) {
+		// secure/useravatar?size=small&ownerId=admin&avatarId=10054
+		final StringBuilder sb = new StringBuilder("secure/useravatar?");
+
+		// optional size name
+		final String sizeName = AVATAR_SIZE_TO_NAME_MAP.get(size);
+		if (StringUtils.isNotBlank(sizeName)) {
+			sb.append("size=").append(sizeName).append("&");
+		}
+
+		// Optional user name
+		if (StringUtils.isNotBlank(userName)) {
+			sb.append("ownerId=").append(userName).append("&");
+		}
+
+		// avatar Id
+		sb.append("avatarId=").append(avatarId);
+		return resolveURI(sb.toString());
+	}
+
+	private static Map<String, URI> buildUserAvatarUris(String user, Long avatarId) {
+		final ImmutableMap.Builder<String, URI> builder = ImmutableMap.builder();
+		for (String size : AVATAR_SIZE_TO_NAME_MAP.keySet()) {
+			builder.put(size, buildUserAvatarUri(user, avatarId, size));
+		}
+		return builder.build();
 	}
 
 	private static URI getUserUri(String username) throws URISyntaxException {
