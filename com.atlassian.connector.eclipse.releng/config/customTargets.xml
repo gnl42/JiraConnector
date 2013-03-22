@@ -88,10 +88,12 @@
 			<arg value="${buildDirectory}/../../../connector-commons" />
 		</exec>
 			
+		<!--
 		<exec executable="hg" failonerror="true" dir="${buildDirectory}/../../../connector-commons">
 			<arg value="update" />
 			<arg value="before-jira-rest" />
 		</exec>
+		-->
 
 		<echo message="Fetching connector-commons done" />
 
