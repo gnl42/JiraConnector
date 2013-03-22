@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.RowDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -45,6 +46,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -52,6 +54,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import java.net.MalformedURLException;
@@ -152,6 +155,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	private Collection<BambooPlan> allPlans;
 
 	private Combo btnPlanBranches;
+
+	private Label planBranchesExplanationLabel;
 
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
@@ -284,11 +289,48 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			}
 		});
 
-		btnPlanBranches = new Combo(composite, SWT.READ_ONLY);
+		Composite planBranchesComposite = new Composite(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(planBranchesComposite);
+		RowLayout planBranchesLayout = new RowLayout(SWT.HORIZONTAL);
+		planBranchesComposite.setLayout(planBranchesLayout);
+
+		// labelComposite is used only to correctly position label
+		Composite labelComposite = new Composite(planBranchesComposite, SWT.NONE);
+		RowDataFactory.swtDefaults().applyTo(labelComposite);
+		RowLayout labelLayout = new RowLayout();
+		labelLayout.marginLeft = 0;
+		labelComposite.setLayout(labelLayout);
+
+		Label planBranchesLabel = new Label(labelComposite, SWT.NONE);
+		planBranchesLabel.setText("Show Plan Branches: ");
+
+		btnPlanBranches = new Combo(planBranchesComposite, SWT.READ_ONLY);
 		btnPlanBranches.setItems(PlanBranches.stringValues());
 		btnPlanBranches.select(0);
-		// TODO jacek: add label "Show Plan Branches"
-		// TODO jacek: add tooltip with explanation if "my branches" is over: http://www.java2s.com/Code/Java/Swing-Components/ToolTipComboBoxExample.htm
+
+		// labelComposite is used only to correctly position label
+		Composite labelComposite2 = new Composite(planBranchesComposite, SWT.NONE);
+		RowDataFactory.swtDefaults().applyTo(labelComposite);
+		RowLayout labelLayout2 = new RowLayout();
+		labelComposite2.setLayout(labelLayout2);
+
+		planBranchesExplanationLabel = new Label(labelComposite2, SWT.NONE);
+		planBranchesExplanationLabel.setText(" (shows only branches where I am the last commiter)");
+		planBranchesExplanationLabel.setVisible(false);
+
+		btnPlanBranches.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				if (PlanBranches.values()[btnPlanBranches.getSelectionIndex()] == PlanBranches.MINE) {
+					planBranchesExplanationLabel.setVisible(true);
+				} else {
+					planBranchesExplanationLabel.setVisible(false);
+				}
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
 
 		btnUseFavourites.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -306,7 +348,11 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			favouritesSelected(true);
 		}
 
-		btnPlanBranches.select(BambooUtil.getPlanBranches(repository).ordinal());
+		PlanBranches planBranches = BambooUtil.getPlanBranches(repository);
+		btnPlanBranches.select(planBranches.ordinal());
+		if (planBranches == PlanBranches.MINE) {
+			planBranchesExplanationLabel.setVisible(true);
+		}
 	}
 
 	private void favouritesSelected(boolean enabled) {
@@ -314,7 +360,6 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		selectAllButton.setEnabled(!enabled);
 		deselectAllButton.setEnabled(!enabled);
 		refreshButton.setEnabled(!enabled);
-//		btnPlanBranches.setEnabled(!enabled);
 	}
 
 	private void setCachedPlanInput() {
