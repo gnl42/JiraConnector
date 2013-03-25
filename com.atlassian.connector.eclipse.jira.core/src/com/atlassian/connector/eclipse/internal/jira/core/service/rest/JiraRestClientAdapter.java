@@ -99,6 +99,8 @@ public class JiraRestClientAdapter {
 
 	private static final String ILLEGAL_ARGUMENT_EXCEPTION = "java.lang.IllegalArgumentException:"; //$NON-NLS-1$
 
+	private static final String NULL_POINTER_EXCEPTION = "java.lang.NullPointerException"; //$NON-NLS-1$
+
 	private JiraRestClient restClient;
 
 	private final JiraClientCache cache;
@@ -421,8 +423,13 @@ public class JiraRestClientAdapter {
 		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(issue.getProject().getKey(), issueTypeId,
 				issue.getSummary());
 
-		issueInputBuilder.setComponents(JiraRestConverter.convert(issue.getComponents())).setDescription(
-				issue.getDescription());
+		if (issue.getComponents() != null && issue.getComponents().length > 0) {
+			issueInputBuilder.setComponents(JiraRestConverter.convert(issue.getComponents()));
+		}
+
+		if (!StringUtils.isEmpty(issue.getDescription())) {
+			issueInputBuilder.setDescription(issue.getDescription());
+		}
 
 		// Mylyn sets -1 as a value of empty assignee
 		if (issue.getAssignee() != null && !issue.getAssignee().equals("-1")) { //$NON-NLS-1$
@@ -447,7 +454,9 @@ public class JiraRestClientAdapter {
 		issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()),
 				issue.getPriority().getName()));
 
-		issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
+		if (!StringUtils.isEmpty(issue.getEnvironment())) {
+			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
+		}
 
 		if (issue.getEstimate() != 0) {
 			Map<String, Object> map = ImmutableMap.<String, Object> builder()
@@ -489,19 +498,19 @@ public class JiraRestClientAdapter {
 
 		Collection<IssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
 
-		final List<FieldInput> fields = new ArrayList<FieldInput>();
+		final List<FieldInput> updateFields = new ArrayList<FieldInput>();
 
-		fields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+		updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getType().getId())));
-		fields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
+		updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getPriority().getId())));
 
-		if (editableFields.contains(new IssueField(JiraRestFields.DUEDATE, ""))) { //$NON-NLS-1$
+		if (editableFields.contains(new IssueField(JiraRestFields.DUEDATE, null))) {
 			String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
 			if (changedIssue.getDue() == null) {
 				date = null;
 			}
-			fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
+			updateFields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 		}
 
 		if (issue.getTimeTracking() != null) {
@@ -517,60 +526,70 @@ public class JiraRestClientAdapter {
 					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(changedIssue.getEstimate() / 60))
 					.build();
 
-			fields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
+			updateFields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
 		}
 
-		if (editableFields.contains(new IssueField(JiraRestFields.VERSIONS, ""))) { //$NON-NLS-1$
+		if (editableFields.contains(new IssueField(JiraRestFields.VERSIONS, null))) {
 			List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
 			for (Version version : changedIssue.getReportedVersions()) {
 				reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
 			}
-			fields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
+			updateFields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
 		}
 
-		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, ""))) { //$NON-NLS-1$
+		if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, null))) {
 			List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
 			for (Version version : changedIssue.getFixVersions()) {
 				fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
 			}
-			fields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
+			updateFields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
 		}
 
-		List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
-		for (Component component : changedIssue.getComponents()) {
-			components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
+		if (editableFields.contains(new IssueField(JiraRestFields.COMPONENTS, null))) {
+			List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
+			for (Component component : changedIssue.getComponents()) {
+				components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
+			}
+			updateFields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
 		}
-		fields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
 
 		if (changedIssue.getSecurityLevel() != null) {
 			// security level value "-1" clears security level
-			fields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
-					changedIssue.getSecurityLevel().getId())));
+			updateFields.add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(
+					JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
 		} else {
 			// do not clear security level as it might be not available on the screen
 		}
 
-		fields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
-		fields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
-		fields.add(new FieldInput(JiraRestFields.DESCRIPTION,
-				changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
+		if (editableFields.contains(new IssueField(JiraRestFields.ENVIRONMENT, null))) {
+			updateFields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
+		}
+
+		if (editableFields.contains(new IssueField(JiraRestFields.SUMMARY, null))) {
+			updateFields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
+		}
+
+		if (editableFields.contains(new IssueField(JiraRestFields.DESCRIPTION, null))) {
+			updateFields.add(new FieldInput(JiraRestFields.DESCRIPTION,
+					changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
+		}
 
 		if (!"-1".equals(changedIssue.getAssignee())) { //$NON-NLS-1$
-			fields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
-					changedIssue.getAssignee())));
+			updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(
+					JiraRestFields.NAME, changedIssue.getAssignee())));
 		}
 
 		for (CustomField customField : changedIssue.getCustomFields()) {
 			FieldInput field = JiraRestConverter.convert(customField);
 			if (field != null) {
-				fields.add(field);
+				updateFields.add(field);
 			}
 		}
 
 		call(new Callable<Void>() {
 
 			public Void call() throws Exception {
-				restClient.getIssueClient().update(issue, fields, new NullProgressMonitor());
+				restClient.getIssueClient().update(issue, updateFields, new NullProgressMonitor());
 				return null;
 			}
 		});
@@ -599,7 +618,7 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage().substring(index) + ". Https might be required.", e); //$NON-NLS-1$
 			} else if (e.getMessage().contains(HTTP_404)) {
 				throw new JiraServiceUnavailableException(e);
-			} else if (e.getMessage().contains("java.lang.NullPointerException")) {
+			} else if (e.getMessage().contains(NULL_POINTER_EXCEPTION)) {
 				throw new RuntimeException(e);
 			} else {
 
