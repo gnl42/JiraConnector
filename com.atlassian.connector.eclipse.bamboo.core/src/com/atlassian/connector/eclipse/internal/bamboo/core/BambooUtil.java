@@ -134,6 +134,9 @@ public final class BambooUtil {
 	}
 
 	public static PlanBranches getPlanBranches(TaskRepository taskRepository) {
+		if (taskRepository == null) {
+			return PlanBranches.NO;
+		}
 		return PlanBranches.from(taskRepository.getProperty(BambooUtil.KEY_PLAN_BRANCHES));
 	}
 }
