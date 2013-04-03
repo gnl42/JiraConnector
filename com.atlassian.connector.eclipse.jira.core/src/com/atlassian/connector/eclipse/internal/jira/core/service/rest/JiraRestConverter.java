@@ -813,7 +813,8 @@ public class JiraRestConverter {
 
 		worklogInputBuilder.setComment(jiraWorklog.getComment());
 		worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
-		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
+//		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
+		worklogInputBuilder.setTimeSpent(String.valueOf(jiraWorklog.getTimeSpent() / 60) + "m"); //$NON-NLS-1$
 //		worklogInputBuilder.setAuthor(new )
 
 		return worklogInputBuilder.build();
