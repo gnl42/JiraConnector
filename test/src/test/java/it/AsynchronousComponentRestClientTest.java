@@ -47,7 +47,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 		final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).claim();
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
-		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getLead());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getLead());
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 		assertEquals("Component A", component.getName());
 		assertEquals("this is some description of component A", component.getDescription());
 		assertEquals(Long.valueOf(10000), component.getId());
-		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getLead());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getLead());
 	}
 
 	@Test
@@ -210,10 +210,10 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 		final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
 		final Component component = client.getComponentClient().createComponent("TST", componentInput).claim();
 		assertNotNull(component.getAssigneeInfo());
-		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getAssigneeInfo().getAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getAssigneeInfo().getAssignee());
 		assertEquals(AssigneeType.COMPONENT_LEAD, component.getAssigneeInfo().getAssigneeType());
 		assertTrue(component.getAssigneeInfo().isAssigneeTypeValid());
-		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component.getAssigneeInfo().getRealAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getAssigneeInfo().getRealAssignee());
 		assertEquals(AssigneeType.COMPONENT_LEAD, component.getAssigneeInfo().getRealAssigneeType());
 
 		final ComponentInput componentInput2 = new ComponentInput("my component name2", "a description", IntegrationTestUtil.USER1
@@ -223,7 +223,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 		assertNull(component2.getAssigneeInfo().getAssignee());
 		assertEquals(AssigneeType.UNASSIGNED, component2.getAssigneeInfo().getAssigneeType());
 		assertFalse(component2.getAssigneeInfo().isAssigneeTypeValid());
-		assertEquals(IntegrationTestUtil.USER_ADMIN_LATEST, component2.getAssigneeInfo().getRealAssignee());
+		assertEquals(IntegrationTestUtil.USER_ADMIN_60, component2.getAssigneeInfo().getRealAssignee());
 		assertEquals(AssigneeType.PROJECT_DEFAULT, component2.getAssigneeInfo().getRealAssigneeType());
 	}
 
@@ -245,14 +245,14 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 		final String newDescription = "updated description";
 		adjustedComponent = new Component(component.getSelf(), component
-				.getId(), newName, newDescription, IntegrationTestUtil.USER1_LATEST, component.getAssigneeInfo());
+				.getId(), newName, newDescription, IntegrationTestUtil.USER1_60, component.getAssigneeInfo());
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent
-				.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1.getName(), null)).claim();
+				.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1_60.getName(), null)).claim();
 		assertEquals(adjustedComponent, updatedComponent);
 
 		adjustedComponent = new Component(component.getSelf(), component
-				.getId(), newName, newDescription, IntegrationTestUtil.USER1_LATEST,
-				new Component.AssigneeInfo(IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1_LATEST, AssigneeType.COMPONENT_LEAD, true));
+				.getId(), newName, newDescription, IntegrationTestUtil.USER1_60,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER1_60, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER1_60, AssigneeType.COMPONENT_LEAD, true));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent
 				.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1
@@ -262,8 +262,8 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 		// now with non-assignable assignee (thus we are inheriting assignee from project settings and component-level settings are ignored)
 		adjustedComponent = new Component(component.getSelf(), component
-				.getId(), newName, newDescription, IntegrationTestUtil.USER2_LATEST,
-				new Component.AssigneeInfo(IntegrationTestUtil.USER2_LATEST, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN_LATEST, AssigneeType.PROJECT_DEFAULT, false));
+				.getId(), newName, newDescription, IntegrationTestUtil.USER2_60,
+				new Component.AssigneeInfo(IntegrationTestUtil.USER2_60, AssigneeType.COMPONENT_LEAD, IntegrationTestUtil.USER_ADMIN_60, AssigneeType.PROJECT_DEFAULT, false));
 
 		updatedComponent = client.getComponentClient().updateComponent(basicComponent
 				.getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER2

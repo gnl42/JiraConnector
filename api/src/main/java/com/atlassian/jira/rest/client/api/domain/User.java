@@ -119,13 +119,11 @@ public class User extends BasicUser {
 	}
 
 	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("emailAddress", emailAddress).
+	protected Objects.ToStringHelper getToStringHelper() {
+		return super.getToStringHelper().add("emailAddress", emailAddress).
 				add("avatarUris", avatarUris).
 				add("groups", groups).
-				add("timezone", timezone).
-				toString();
+				add("timezone", timezone);
 	}
 
 }

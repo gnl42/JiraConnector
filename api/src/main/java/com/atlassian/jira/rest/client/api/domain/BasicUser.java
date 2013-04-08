@@ -46,10 +46,9 @@ public class BasicUser extends AddressableNamedEntity {
 	}
 
 	@Override
-	public String toString() {
+	protected Objects.ToStringHelper getToStringHelper() {
 		return super.getToStringHelper()
-				.add("displayName", displayName)
-				.toString();
+				.add("displayName", displayName);
 	}
 
 	@Override

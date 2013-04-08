@@ -30,42 +30,42 @@ import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
-import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN_LATEST;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_ADMIN_60;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static org.junit.Assert.*;
 
 @RestoreOnce("jira-dump-with-filters.xml")
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
-
+	
 	public static final Filter FILTER_10000 = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,
 			"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
 			resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
-			USER_ADMIN_LATEST, true);
+			USER_ADMIN_60, true);
 
 	public static final Filter FILTER_10001 = new Filter(resolveURI("rest/api/latest/filter/10001"), 10001L,
 			"Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10001"),
 			resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
-			USER_ADMIN_LATEST, false);
+			USER_ADMIN_60, false);
 
 	public static final Filter FILTER_10002 = new Filter(resolveURI("rest/api/latest/filter/10002"), 10002L,
 			"All new features! (shared with everyone)", "This filter returns all issues of type \"New Fature\".", "issuetype = \"New Feature\"",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10002"),
 			resolveURI("rest/api/latest/search?jql=issuetype+%3D+%22New+Feature%22"),
-			USER_ADMIN_LATEST, true);
+			USER_ADMIN_60, true);
 
 	public static final Filter FILTER_10003 = new Filter(resolveURI("rest/api/latest/filter/10003"), 10003L,
 			"Resolved bugs", "For testing shares.", "issuetype = Bug AND status = Resolved",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10003"),
 			resolveURI("rest/api/latest/search?jql=issuetype+%3D+Bug+AND+status+%3D+Resolved"),
-			USER_ADMIN_LATEST, true);
+			USER_ADMIN_60, true);
 
 	public static final Filter FILTER_10004 = new Filter(resolveURI("rest/api/latest/filter/10004"), 10004L,
 			"All in project Test", "For testing subscriptions.", "project = TST",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10004"),
 			resolveURI("rest/api/latest/search?jql=project+%3D+TST"),
-			USER_ADMIN_LATEST, true);
+			USER_ADMIN_60, true);
 
 
 	@Rule

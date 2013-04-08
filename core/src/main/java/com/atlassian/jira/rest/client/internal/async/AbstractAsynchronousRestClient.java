@@ -64,7 +64,7 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final <T> Promise<T> getAndParse(final URI uri, final JsonParser<?, T> parser) {
-		return callAndParse(client.newRequest(uri).get(), parser);
+		return callAndParse(client.newRequest(uri).setAccept("application/json").get(), parser);
 	}
 
 	protected final <I, T> Promise<T> postAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator,

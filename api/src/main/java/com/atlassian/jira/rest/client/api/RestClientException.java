@@ -83,4 +83,12 @@ public class RestClientException extends RuntimeException {
 	public Optional<Integer> getStatusCode() {
 		return statusCode;
 	}
+
+	@Override
+	public String toString() {
+		return "RestClientException{" +
+				"statusCode=" + statusCode +
+				", errorCollections=" + errorCollections +
+				'}';
+	}
 }

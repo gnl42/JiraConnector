@@ -42,10 +42,27 @@ public class IntegrationTestUtil {
 	public static final BasicUser USER2_LATEST;
 	public static final BasicUser USER_SLASH;
 	public static final BasicUser USER_SLASH_LATEST;
+	/**
+	 * User representation with /latest/ before 6.0 and /2/ since 6.0
+	 */
+	public static final BasicUser USER1_60;
+	/**
+	 * User representation with /latest/ before 6.0 and /2/ since 6.0
+	 */
+	public static final BasicUser USER2_60;
+	/**
+	 * User representation with /latest/ before 6.0 and /2/ since 6.0
+	 */
+	public static final BasicUser USER_ADMIN_60;
+	/**
+	 * User representation with /latest/ before 6.0 and /2/ since 6.0
+	 */
+	public static final BasicUser USER_SLASH_60;
 
 	public static final String ROLE_ADMINISTRATORS = "Administrators";
 
 	public static final boolean TESTING_JIRA_5_OR_NEWER;
+	public static final boolean TESTING_JIRA_6_OR_NEWER;
 	public static final int START_PROGRESS_TRANSITION_ID = 4;
 	public static final int STOP_PROGRESS_TRANSITION_ID = 301;
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
@@ -65,6 +82,7 @@ public class IntegrationTestUtil {
 					.toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
 			CURRENT_BUILD_NUMBER = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
 			TESTING_JIRA_5_OR_NEWER = CURRENT_BUILD_NUMBER > ServerVersionConstants.BN_JIRA_5;
+			TESTING_JIRA_6_OR_NEWER = CURRENT_BUILD_NUMBER > ServerVersionConstants.BN_JIRA_6;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
 			URI_INTERFIX_FOR_USER = TESTING_JIRA_5_OR_NEWER ? "2" : "latest";
 
@@ -83,17 +101,21 @@ public class IntegrationTestUtil {
 			USER1_FULL = new User(getUserUri("wseliga"), "wseliga", "Wojciech Seliga", "wojciech.seliga@spartez.com", null, buildUserAvatarUris(null, 10082L), null);
 			USER1 = new BasicUser(USER1_FULL.getSelf(), USER1_FULL.getName(), USER1_FULL.getDisplayName());
 			USER1_LATEST = new BasicUser(getLatestUserUri("wseliga"), "wseliga", "Wojciech Seliga");
+			USER1_60 = TESTING_JIRA_6_OR_NEWER ? USER1 : USER1_LATEST;
 
 			USER2 = new BasicUser(getUserUri("user"), "user", "My Test User");
 			USER2_LATEST = new BasicUser(getLatestUserUri("user"), "user", "My Test User");
+			USER2_60 = TESTING_JIRA_6_OR_NEWER ? USER2 : USER2_LATEST;
 
 			USER_SLASH = new BasicUser(getUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
 			USER_SLASH_LATEST = new BasicUser(getLatestUserUri("a/user/with/slash"), "a/user/with/slash", "A User with / in its username");
+			USER_SLASH_60 = TESTING_JIRA_6_OR_NEWER ? USER_SLASH : USER_SLASH_LATEST;
 
 
 			USER_ADMIN_FULL = new User(getUserUri("admin"), "admin", "Administrator", "wojciech.seliga@spartez.com", null, buildUserAvatarUris("admin", 10054L), null);
 			USER_ADMIN = new BasicUser(USER_ADMIN_FULL.getSelf(), USER_ADMIN_FULL.getName(), USER_ADMIN_FULL.getDisplayName());
 			USER_ADMIN_LATEST = new BasicUser(getLatestUserUri("admin"), "admin", "Administrator");
+			USER_ADMIN_60 = TESTING_JIRA_6_OR_NEWER ? USER_ADMIN : USER_ADMIN_LATEST;
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
@@ -120,7 +142,7 @@ public class IntegrationTestUtil {
 		return resolveURI(sb.toString());
 	}
 
-	private static Map<String, URI> buildUserAvatarUris(String user, Long avatarId) {
+	public static Map<String, URI> buildUserAvatarUris(@Nullable String user, Long avatarId) {
 		final ImmutableMap.Builder<String, URI> builder = ImmutableMap.builder();
 		for (String size : AVATAR_SIZE_TO_NAME_MAP.keySet()) {
 			builder.put(size, buildUserAvatarUri(user, avatarId, size));
