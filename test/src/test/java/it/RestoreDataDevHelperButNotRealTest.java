@@ -20,4 +20,11 @@ public class RestoreDataDevHelperButNotRealTest extends NimbleFuncTestCase {
 	public void restoreDataWithFilters() throws Exception {
 		// do nothing, just restore
 	}
+
+	@Ignore // test disabled on CI, enable before use
+	@Restore("jira-dump-creating-issue-tests.xml")
+	@Test
+	public void restoreDataForCreatingIssueTests() throws Exception {
+		// do nothing, just restore
+	}
 }

@@ -24,6 +24,7 @@ import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
@@ -70,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
 import static com.google.common.collect.Iterables.toArray;
@@ -97,7 +99,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Bug");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -194,7 +196,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Sub-task");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -274,7 +276,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Sub-task");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -373,7 +375,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Sub-task");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -484,7 +486,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Sub-task");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
 		// grab the first component
 		final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
@@ -558,7 +560,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		// select project and issue
 		assertEquals(1, Iterables.size(metadataProjects));
 		final CimProject project = metadataProjects.iterator().next();
-		final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Bug");
 
 		// build issue input
 		final String summary = "My new issue!";
@@ -756,6 +758,35 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		final IssueInput issueInput = new IssueInputBuilder("RST", 1L/*, "Issue created by testCreateIssueWithoutBrowseProjectPermission"*/)
 				.build();
 		issueClient.createIssue(issueInput).claim();
+	}
+
+	@JiraBuildNumberDependent(BN_JIRA_6)
+	@Test
+	public void testCreateMetaShouldReturnIssueTypeInFieldsListEvenIfIssueTypeIsNotOnCreateIssueScreen() {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Iterable<CimProject> cimProjects = issueClient.getCreateIssueMetadata(
+				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
+
+		final CimProject testProject = findEntityByName(cimProjects, "Project With Create Issue Screen Without Issue Type");
+
+		for (CimIssueType cimIssueType : testProject.getIssueTypes()) {
+			final CimFieldInfo issueType = cimIssueType.getField(IssueFieldId.ISSUE_TYPE_FIELD);
+			final String assertMessageIssueTypeNotPresent = String.format(
+					"Issue type is missing for project %s (%s) and issue type %s (%s)!",
+					testProject.getName(), testProject.getKey(), cimIssueType.getName(), cimIssueType.getId());
+			assertNotNull(assertMessageIssueTypeNotPresent, issueType);
+
+			// check the allowed values
+			final Iterable<Object> allowedValues = issueType.getAllowedValues();
+			final String assertMessageAllowedValuesSizeNotMatch = String.format(
+					"We expected exactly one allowed value - the issue type %s (%s) for project  %s (%s)",
+					testProject.getName(), testProject.getKey(), cimIssueType.getName(), cimIssueType.getId());
+			assertEquals(assertMessageAllowedValuesSizeNotMatch, 1, Iterables.size(allowedValues));
+
+			//noinspection unchecked
+			final BasicIssueType firstAllowedValue = (BasicIssueType) Iterables.getOnlyElement(allowedValues);
+			assertEquals(firstAllowedValue.getId(), cimIssueType.getId());
+		}
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)
