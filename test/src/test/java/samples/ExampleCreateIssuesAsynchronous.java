@@ -25,12 +25,13 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+
+import static com.google.common.collect.Iterables.transform;
 
 /**
  * This example shows how to create many issues using asynchronous API.
@@ -58,7 +59,7 @@ public class ExampleCreateIssuesAsynchronous {
 			}
 
 			System.out.println("Collecting responses...");
-			final Iterable<BasicIssue> createdIssues = Iterables.transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
+			final Iterable<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
 				@Override
 				public BasicIssue apply(Promise<BasicIssue> promise) {
 					return promise.claim();
