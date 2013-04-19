@@ -89,9 +89,7 @@ public class IntegrationTestUtil {
 			// avatar size names (changed in JIRA 6.0)
 			if (CURRENT_BUILD_NUMBER >= 6060) {
 				AVATAR_SIZE_TO_NAME_MAP = ImmutableMap.<String, String>builder().put("16x16", "xsmall")
-						.put("24x24", "small").put("32x32", "medium").put("48x48", "").put("64x64", "xlarge")
-						.put("96x96", "xxlarge").put("128x128", "xxxlarge").put("192x192", "xxlarge%402x")
-						.put("256x256", "xxxlarge%402x").build();
+						.put("24x24", "small").put("32x32", "medium").put("48x48", "").build();
 			}
 			else {
 				AVATAR_SIZE_TO_NAME_MAP = ImmutableMap.of("16x16", "small", "48x48", "");
