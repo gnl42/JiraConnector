@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.collect.Iterables.transform;
 
@@ -46,8 +46,8 @@ public class ExampleCreateIssuesAsynchronous {
 		final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 		final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
 
-		final ArrayList<Promise<BasicIssue>> promises = Lists.newArrayList();
 		try {
+			final List<Promise<BasicIssue>> promises = Lists.newArrayList();
 			final IssueRestClient issueClient = restClient.getIssueClient();
 
 			System.out.println("Sending issue creation requests...");
