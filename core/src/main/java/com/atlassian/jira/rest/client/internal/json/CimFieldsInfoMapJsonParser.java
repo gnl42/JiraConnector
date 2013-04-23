@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Atlassian
+ * Copyright (C) 2012-2013 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,8 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		put("priority", new BasicPriorityJsonParser());
 		put("customFieldOption", new CustomFieldOptionJsonParser());
 		put("component", new BasicComponentJsonParser());
+		put("resolution", new BasicResolutionJsonParser());
+		put("securitylevel", new SecurityLevelJsonParser());
 	}};
 
 	@Override
@@ -85,7 +87,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 			return Collections.emptyList();
 		}
 
-		JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
+		final JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
 		if (allowedValuesJsonParser != null) {
 			JSONArray valuesToParse;
 			// fixes for JRADEV-12999
@@ -105,8 +107,8 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 			return GenericJsonArrayParser.create(allowedValuesJsonParser).parse(valuesToParse);
 		} else {
 			// fallback - just return collection of JSONObjects
-			int itemsLength = allowedValues.length();
-			List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
+			final int itemsLength = allowedValues.length();
+			final List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
 			for (int i = 0; i < itemsLength; i++) {
 				res.add(allowedValues.get(i));
 			}
@@ -115,7 +117,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 	}
 
 	private Set<StandardOperation> parseOperations(JSONArray operations) throws JSONException {
-		int operationsCount = operations.length();
+		final int operationsCount = operations.length();
 		final Set<StandardOperation> res = Sets.newHashSetWithExpectedSize(operationsCount);
 		for (int i = 0; i < operationsCount; i++) {
 			String opName = operations.getString(i);
@@ -125,6 +127,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		return res;
 	}
 
+	@Nullable
 	private JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
 		final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
 				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
@@ -141,7 +144,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 		@SuppressWarnings("unchecked")
 		final JsonObjectParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
 		if (jsonParser == null) {
-			throw new JSONException("Cannot find parser for field witch schema: " + fieldSchema);
+			return null;
 		} else {
 			return jsonParser;
 		}
