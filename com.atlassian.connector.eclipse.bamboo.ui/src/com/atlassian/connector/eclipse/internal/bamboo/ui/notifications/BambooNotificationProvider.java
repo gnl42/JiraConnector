@@ -19,6 +19,7 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.mylyn.commons.notifications.ui.AbstractUiNotification;
 import org.eclipse.mylyn.internal.tasks.ui.ITaskListNotificationProvider;
+import org.eclipse.mylyn.internal.tasks.ui.TaskListNotificationManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -37,7 +38,8 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 	public BambooNotificationProvider() {
 		BambooCorePlugin.getBuildPlanManager().addBuildsChangedListener(this);
 		notifications = new HashSet<BambooNotification>();
-		TasksUiPlugin.getTaskListNotificationManager().addNotificationProvider(this);
+		TaskListNotificationManager taskListNotificationManager = TasksUiPlugin.getTaskListNotificationManager();
+		taskListNotificationManager.addNotificationProvider(this);
 	}
 
 	public void dispose() {

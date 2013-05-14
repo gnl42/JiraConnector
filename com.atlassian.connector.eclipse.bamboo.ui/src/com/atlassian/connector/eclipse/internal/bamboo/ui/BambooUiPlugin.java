@@ -105,7 +105,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 		};
 		repositoryListener = new ActivateBambooViewIfNeededRepositoryListener();
 		repositoryManager.addListener(repositoryListener);
-		job.schedule();
+		job.schedule(10000L);
 	}
 
 	/*
