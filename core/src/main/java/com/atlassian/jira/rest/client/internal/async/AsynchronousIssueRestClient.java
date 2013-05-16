@@ -293,14 +293,14 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
 	@Override
 	public Promise<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
-		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.defaultCharset());
 		entity.addPart(FILE_BODY_TYPE, new InputStreamBody(inputStream, filename));
 		return postAttachments(attachmentsUri, entity);
 	}
 
 	@Override
 	public Promise<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
-		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.defaultCharset());
 		for (final AttachmentInput attachmentInput : attachments) {
 			entity.addPart(FILE_BODY_TYPE, new InputStreamBody(attachmentInput.getInputStream(), attachmentInput.getFilename()));
 		}

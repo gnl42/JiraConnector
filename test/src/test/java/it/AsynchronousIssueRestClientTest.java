@@ -69,6 +69,9 @@ import static org.junit.Assert.*;
 @Restore(DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestClientTest {
 
+	public static final String UTF8_FILE_BODY = "File body encoded in utf8: Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR";
+	public static final String UTF8_FILE_NAME = "utf8 file name Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR";
+
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {
 		final double newValue = 123.45;
@@ -573,6 +576,25 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 	}
 
 	@Test
+	public void testAddAttachmentWithUtf8InNameAndBody() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-3").claim();
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(UTF8_FILE_BODY.getBytes("UTF-8"));
+		issueClient.addAttachment(issue.getAttachmentsUri(), byteArrayInputStream, UTF8_FILE_NAME).claim();
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-3").claim();
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(1, Iterables.size(attachments));
+		final Attachment attachment = attachments.iterator().next();
+		assertThat(attachment.getFilename(), equalTo(UTF8_FILE_NAME));
+
+		assertTrue(IOUtils.contentEquals(new ByteArrayInputStream(UTF8_FILE_BODY.getBytes("UTF-8")),
+				issueClient.getAttachment(attachment.getContentUri()).claim()));
+	}
+
+	@Test
 	// TODO: implement
 	public void testAddAttachments() throws IOException {
 		if (!doesJiraSupportAddingAttachment()) {
@@ -599,6 +621,38 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 			matcher.find();
 			final String interfix = matcher.group(1);
 			assertTrue(IOUtils.contentEquals(new ByteArrayInputStream(("content-of-the-file-" + interfix).getBytes("UTF-8")),
+					issueClient.getAttachment(attachment.getContentUri()).claim()));
+
+		}
+	}
+
+	@Test
+	public void testAddAttachmentsWithUtf8InNameAndBody() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-4").claim();
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		final AttachmentInput[] attachmentInputs = new AttachmentInput[3];
+		final String[] names = new String[3];
+		final String[] contents = new String[3];
+		for (int i = 0; i < 3; i++) {
+			names[i] = UTF8_FILE_NAME + "-" + i + ".txt";
+			contents[i] = "content-of-the-file-" + i + " with some utf8: " + UTF8_FILE_BODY;
+			attachmentInputs[i] = new AttachmentInput(names[i], new ByteArrayInputStream(contents[i].getBytes("UTF-8")));
+		}
+		issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).claim();
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-4").claim();
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(3, Iterables.size(attachments));
+		Pattern pattern = Pattern.compile(".*-(\\d)\\.txt");
+		for (Attachment attachment : attachments) {
+			assertTrue(pattern.matcher(attachment.getFilename()).matches());
+			final Matcher matcher = pattern.matcher(attachment.getFilename());
+			matcher.find();
+			final int attachmentNum = Integer.parseInt(matcher.group(1));
+			assertThat(attachment.getFilename(), equalTo(names[attachmentNum]));
+			assertTrue(IOUtils.contentEquals(new ByteArrayInputStream((contents[attachmentNum]).getBytes("UTF-8")),
 					issueClient.getAttachment(attachment.getContentUri()).claim()));
 
 		}
@@ -634,10 +688,10 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		final Issue issue = issueClient.getIssue("TST-5").claim();
 		assertFalse(issue.getAttachments().iterator().hasNext());
 
-		final File tempFile = File.createTempFile("Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR", ".txt");
+		final File tempFile = File.createTempFile(UTF8_FILE_NAME, ".txt");
 		tempFile.deleteOnExit();
 		FileWriter writer = new FileWriter(tempFile);
-		writer.write("Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR");
+		writer.write(UTF8_FILE_BODY);
 		writer.close();
 		issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
 
