@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -308,7 +309,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
 	@Override
 	public Promise<Void> addAttachments(final URI attachmentsUri, final File... files) {
-		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, Charset.defaultCharset());
 		for (final File file : files) {
 			entity.addPart(FILE_BODY_TYPE, new FileBody(file));
 		}

@@ -57,6 +57,7 @@ import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.TestUtil.assertExpectedErrorCollection;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -625,6 +626,28 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertEquals(1, Iterables.size(attachments));
 		assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
 				issueClient.getAttachment(attachments.iterator().next().getContentUri()).claim()));
+	}
+
+	@Test
+	public void testAddFileAttachmentWithUtf8InNameAndBody() throws IOException {
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Issue issue = issueClient.getIssue("TST-5").claim();
+		assertFalse(issue.getAttachments().iterator().hasNext());
+
+		final File tempFile = File.createTempFile("Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR", ".txt");
+		tempFile.deleteOnExit();
+		FileWriter writer = new FileWriter(tempFile);
+		writer.write("Kaźń i żółtość będą! | ὕαλον ϕαγεῖν δύναμαι· τοῦτο οὔ με βλάπτει Би шил идэй чадна, надад хортой биш., or 2πR");
+		writer.close();
+		issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
+
+		final Issue issueWithAttachments = issueClient.getIssue("TST-5").claim();
+		final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
+		assertEquals(1, Iterables.size(attachments));
+		final Attachment firstAttachment = attachments.iterator().next();
+		assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
+				issueClient.getAttachment(firstAttachment.getContentUri()).claim()));
+		assertThat(firstAttachment.getFilename(), equalTo(tempFile.getName()));
 	}
 
 	private void setUserLanguageToEnUk() {
