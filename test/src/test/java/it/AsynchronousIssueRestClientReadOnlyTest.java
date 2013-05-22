@@ -21,7 +21,6 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
-import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -38,18 +37,24 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.getUserUri;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
 @SuppressWarnings("ConstantConditions") // To ignore "May produce NPE" warnings
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+@RestoreOnce("jira-dump-with-comment-and-worklog-from-removed-user.xml")
 public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
+
+	private static final String REMOVED_USER_NAME = "removed_user";
+	private static final String ISSUE_KEY_WITH_REMOVED_USER_DATA = "ANONEDIT-1";
 
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
@@ -305,5 +310,26 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertFalse(issueType.getFields().isEmpty());
 		}
+	}
+
+	@Test
+	public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
+		final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+		final Worklog worklog = issue.getWorklogs().iterator().next();
+		assertNotNull(worklog);
+		final BasicUser author = worklog.getAuthor();
+		assertNotNull(author);
+		assertThat(author.getName(), equalTo(REMOVED_USER_NAME));
+		assertTrue("expected incomplete self uri", author.isSelfUriIncomplete());
+	}
+
+	@Test
+	public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
+		final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+		final Comment comment = issue.getComments().iterator().next();
+		assertNotNull(comment);
+		final BasicUser author = comment.getAuthor();
+		assertNotNull(author);
+		assertEquals(getUserUri(REMOVED_USER_NAME), author.getSelf());
 	}
 }

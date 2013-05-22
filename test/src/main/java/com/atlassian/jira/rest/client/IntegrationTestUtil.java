@@ -148,9 +148,13 @@ public class IntegrationTestUtil {
 		return builder.build();
 	}
 
-	private static URI getUserUri(String username) throws URISyntaxException {
-		return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
-				URI_INTERFIX_FOR_USER + "/user").queryParam("username", username).build();
+	public static URI getUserUri(String username) {
+		try {
+			return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
+					URI_INTERFIX_FOR_USER + "/user").queryParam("username", username).build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static URI getLatestUserUri(String username) throws URISyntaxException {

@@ -84,9 +84,9 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>5.0</jira.version>
-                <jira.data.version>5.0</jira.data.version>
-                <jira.test-lib.version>5.0</jira.test-lib.version>
+                <jira.version>5.0.7</jira.version>
+				<jira.data.version>${jira.version}</jira.data.version>
+				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
 				<testkit.version>5.0.24</testkit.version>
 			</properties>
 			<dependencies>
@@ -117,9 +117,9 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>5.1</jira.version>
-                <jira.data.version>5.1</jira.data.version>
-                <jira.test-lib.version>5.1</jira.test-lib.version>
+                <jira.version>5.1.7</jira.version>
+				<jira.data.version>${jira.version}</jira.data.version>
+				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
 				<testkit.version>5.0.24</testkit.version>
             </properties>
 			<dependencies>
@@ -150,9 +150,9 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>5.2</jira.version>
-                <jira.data.version>5.2</jira.data.version>
-                <jira.test-lib.version>5.2</jira.test-lib.version>
+                <jira.version>5.2.8</jira.version>
+				<jira.data.version>${jira.version}</jira.data.version>
+				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
         </profile>
         <profile>
@@ -166,6 +166,17 @@
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
         </profile>
+		<profile>
+			<id>jira-6.1</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<jira.version>6.1-SNAPSHOT</jira.version>
+				<jira.data.version>${jira.version}</jira.data.version>
+				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
+			</properties>
+		</profile>
         <profile>
             <id>releaseProfile</id>
             <properties>

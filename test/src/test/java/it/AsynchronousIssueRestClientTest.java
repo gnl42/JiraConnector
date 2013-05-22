@@ -21,7 +21,6 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.api.Callback;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AttachmentInput;
@@ -29,7 +28,6 @@ import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
-import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -726,60 +724,6 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		if (fallbackToChangeByValue) {
 			userProfile.changeUserLanguage(name);
 		}
-	}
-
-	private void addUserThenExecuteCallbackAndRemoveUser(String username, Callback executeAsNewUser) {
-		setUserLanguageToEnUk();
-		administration.usersAndGroups().addUser(username, username, username, username + "@localhost");
-		navigation.login(username);
-		executeAsNewUser.execute();
-		navigation.login("admin");
-		administration.usersAndGroups().deleteUser(username);
-	}
-
-	@Test
-	public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
-		final String issueKey = "ANONEDIT-1";
-		final String testUser = "testusertoremove";
-
-		addUserThenExecuteCallbackAndRemoveUser(testUser, new Callback() {
-			@Override
-			public void execute() {
-				navigation.issue().logWork(issueKey, "3m");
-			}
-		});
-
-		// test worklog author
-		final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
-		final Worklog worklog = issue.getWorklogs().iterator().next();
-		assertNotNull(worklog);
-		final BasicUser author = worklog.getAuthor();
-		assertNotNull(author);
-		assertTrue(author.isSelfUriIncomplete());
-	}
-
-	// this test will give us HTTP ERROR 500 on JIRA 4.2 and 4.3.4
-	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
-	@Test
-	public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
-		final String issueKey = "ANONEDIT-1";
-		final String testUser = "testusertoremove";
-
-		addUserThenExecuteCallbackAndRemoveUser(testUser, new Callback() {
-			@Override
-			public void execute() {
-				navigation.issue().addComment(issueKey, "Comment");
-			}
-		});
-
-		// Test comment author
-		final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
-		final Comment comment = issue.getComments().iterator().next();
-		assertNotNull(comment);
-		final BasicUser author = comment.getAuthor();
-		assertNotNull(author);
-		assertEquals(resolveURI("rest/api/" + (isJira5xOrNewer() ? "2" : "latest") + "/user?username=" + testUser), author
-				.getSelf());
 	}
 
 	@Test
