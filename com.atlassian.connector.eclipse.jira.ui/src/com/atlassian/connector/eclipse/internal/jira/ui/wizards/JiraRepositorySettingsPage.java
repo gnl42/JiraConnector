@@ -546,6 +546,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
 						JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
 			} catch (Exception e) {
+				StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, e.getMessage(), e));
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
 
