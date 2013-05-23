@@ -24,12 +24,12 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-	<!--<distributionManagement>-->
-		<!--<site>-->
-			<!--<id>atlassian-documentation</id>-->
-			<!--<url>scp://docs-fe.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>-->
-		<!--</site>-->
-	<!--</distributionManagement>-->
+	<distributionManagement>
+		<site>
+			<id>atlassian-documentation</id>
+			<url>scp://docs-fe.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+		</site>
+	</distributionManagement>
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
