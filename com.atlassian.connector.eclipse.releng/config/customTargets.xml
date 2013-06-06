@@ -97,20 +97,20 @@
 
 		<echo message="Fetching connector-commons done" />
 
-<!--		
-		<echo message="Fetching Mylyn Docs (wiki packages)" />
-		
-		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x" />
+		<echo message="Fetching Mylyn" />
+		<delete dir="${buildDirectory}/../../../mylyn" />
+		<mkdir dir="${buildDirectory}/../../../mylyn" />
+		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons" />
+					
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
-			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
-			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x" />
+			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.commons.git" />
+			<arg value="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons" />
 		</exec>
-		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_7_m_3_6_x">
+		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons">
 			<arg value="checkout" />
-			<arg value="refs/remotes/origin/e_3_7_m_3_6_x" />
+			<arg value="refs/remotes/origin/e_3_8_m_3_8_x" />
 		</exec>
--->
 
 <!--		
 		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />

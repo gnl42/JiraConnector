@@ -30,37 +30,80 @@ feature@org.eclipse.mylyn.experimental_sdk_feature=COPY,@buildDirectory@/../../.
 
 
 !******* PLUGINS **********
-plugin@org.eclipse.mylyn=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn
+!plugin@org.eclipse.mylyn=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn
+plugin@org.eclipse.mylyn=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn
+
 plugin@org.eclipse.mylyn.bugzilla.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.bugzilla.core
+
 plugin@org.eclipse.mylyn.bugzilla.ide=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.bugzilla.ide
-plugin@org.eclipse.mylyn.bugzilla.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.bugzilla.ui
-plugin@org.eclipse.mylyn.commons.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.core
-plugin@org.eclipse.mylyn.commons.identity.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.identity.core
-plugin@org.eclipse.mylyn.commons.net=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.net
-plugin@org.eclipse.mylyn.commons.notifications.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.ui
-plugin@org.eclipse.mylyn.commons.notifications.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.core
-plugin@org.eclipse.mylyn.commons.notifications.feed=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.feed
-plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
-plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.xmlrpc
-plugin@org.eclipse.mylyn.commons.repositories.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories.core
-plugin@org.eclipse.mylyn.commons.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.ui
-plugin@org.eclipse.mylyn.commons.screenshots=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.screenshots
+
+!plugin@org.eclipse.mylyn.commons.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.core
+plugin@org.eclipse.mylyn.commons.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.core
+
+!plugin@org.eclipse.mylyn.commons.identity.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.identity.core
+plugin@org.eclipse.mylyn.commons.identity.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.identity.core
+
+!plugin@org.eclipse.mylyn.commons.net=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.net
+plugin@org.eclipse.mylyn.commons.net=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.net
+
+!plugin@org.eclipse.mylyn.commons.notifications.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.ui
+plugin@org.eclipse.mylyn.commons.notifications.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.ui
+
+!plugin@org.eclipse.mylyn.commons.notifications.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.core
+plugin@org.eclipse.mylyn.commons.notifications.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.core
+
+!plugin@org.eclipse.mylyn.commons.notifications.feed=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.feed
+plugin@org.eclipse.mylyn.commons.notifications.feed=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.feed
+
+!plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
+plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
+
+!plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.xmlrpc
+plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.xmlrpc
+
+!plugin@org.eclipse.mylyn.commons.repositories.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories.core
+plugin@org.eclipse.mylyn.commons.repositories.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories.core
+
+!plugin@org.eclipse.mylyn.commons.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.ui
+plugin@org.eclipse.mylyn.commons.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.ui
+
+!plugin@org.eclipse.mylyn.commons.screenshots=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.screenshots
+plugin@org.eclipse.mylyn.commons.screenshots=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.screenshots
+
 plugin@org.eclipse.mylyn.commons.repositories.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories.ui
+plugin@org.eclipse.mylyn.commons.repositories.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.repositories.ui
+
 !plugin@org.eclipse.mylyn.commons.team=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.team
-plugin@org.eclipse.mylyn.commons.workbench=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.workbench
+
+!plugin@org.eclipse.mylyn.commons.workbench=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.workbench
+plugin@org.eclipse.mylyn.commons.workbench=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.workbench
+
 !plugin@org.eclipse.mylyn.compatibility=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/zArchive/org.eclipse.mylyn.compatibility
-plugin@org.eclipse.mylyn.context.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.context.core
+
+!plugin@org.eclipse.mylyn.discovery.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.core
+plugin@org.eclipse.mylyn.discovery.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.core
+
+!plugin@org.eclipse.mylyn.discovery.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.ui
+plugin@org.eclipse.mylyn.discovery.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.ui
+
+!plugin@org.eclipse.mylyn.monitor.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.core
+plugin@org.eclipse.mylyn.monitor.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.core
+
+!plugin@org.eclipse.mylyn.monitor.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.ui
+plugin@org.eclipse.mylyn.monitor.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.ui
+
+!plugin@org.eclipse.mylyn.context.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.context.core
+plugin@org.eclipse.mylyn.context.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.context, org.eclipse.mylyn.context.core
+
 plugin@org.eclipse.mylyn.context.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.context.ui
-plugin@org.eclipse.mylyn.discovery.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.core
-plugin@org.eclipse.mylyn.discovery.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.discovery.ui
 !plugin@org.eclipse.mylyn.help.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn, org.eclipse.mylyn.help.ui
 plugin@org.eclipse.mylyn.ide.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.ide.ui
 plugin@org.eclipse.mylyn.ide.ant=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.ide.ant
 plugin@org.eclipse.mylyn.java.tasks=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.java.tasks
 plugin@org.eclipse.mylyn.java.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.java.ui
-plugin@org.eclipse.mylyn.monitor.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.core
+
 plugin@org.eclipse.mylyn.monitor.reports=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.monitor.reports
-plugin@org.eclipse.mylyn.monitor.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.monitor.ui
+
 !plugin@org.eclipse.mylyn.monitor.usage=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.incubator/org.eclipse.mylyn.monitor.usage
 plugin@org.eclipse.mylyn.monitor.usage=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.monitor.usage
 plugin@org.eclipse.mylyn.pde.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.pde.ui
