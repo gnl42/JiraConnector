@@ -91,8 +91,8 @@ plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../../mylyn/mast
 !plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.commons.tests
 !plugin@org.eclipse.mylyn.commons.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.commons/org.eclipse.mylyn.commons.tests
 
-!plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
-plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
+!plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
 
 !plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/org.eclipse.mylyn.java.tests
 !plugin@org.eclipse.mylyn.java.tests=e_3_6_m_3_4_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/mylyn,,org.eclipse.mylyn.contexts/org.eclipse.mylyn.java.tests
