@@ -102,6 +102,7 @@
 		<mkdir dir="${buildDirectory}/../../../mylyn" />
 		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons" />
 		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.context" />
+		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.tasks" />
 					
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
@@ -122,20 +123,17 @@
 			<arg value="checkout" />
 			<arg value="refs/remotes/origin/e_3_8_m_3_8_x" />
 		</exec>
-
-<!--		
-		<delete dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />
+		
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
-			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.docs.git" />
-			<arg value="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x" />
+			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.tasks.git" />
+			<arg value="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.tasks" />
 		</exec>
-		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../org.eclipse.mylyn.docs_e_3_6_m_3_4_x">
+		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.tasks">
 			<arg value="checkout" />
-			<arg value="refs/remotes/origin/e_3_6_m_3_4_x" />
+			<arg value="refs/remotes/origin/e_3_8_m_3_8_x" />
 		</exec>
--->
-		
+
 	</target>
 
 	<!-- ===================================================================== -->

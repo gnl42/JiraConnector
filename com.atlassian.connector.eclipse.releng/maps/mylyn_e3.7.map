@@ -135,10 +135,19 @@ plugin@org.eclipse.mylyn.pde.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse
 
 plugin@org.eclipse.mylyn.sandbox.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.sandbox.ui
 plugin@org.eclipse.mylyn.sandbox.dev=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.sandbox.dev
-plugin@org.eclipse.mylyn.tasks.bugs=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.bugs
-plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
-plugin@org.eclipse.mylyn.tasks.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.ui
-plugin@org.eclipse.mylyn.tasks.search=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.search
+
+!plugin@org.eclipse.mylyn.tasks.bugs=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.bugs
+plugin@org.eclipse.mylyn.tasks.bugs=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.bugs
+
+!plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
+plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
+
+!plugin@org.eclipse.mylyn.tasks.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.ui
+plugin@org.eclipse.mylyn.tasks.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.ui
+
+!plugin@org.eclipse.mylyn.tasks.search=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.search
+plugin@org.eclipse.mylyn.tasks.search=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.search
+
 plugin@org.eclipse.mylyn.team.cvs=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.team.cvs
 
 !plugin@org.eclipse.mylyn.team.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.team.ui
@@ -166,10 +175,11 @@ plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../../mylyn/mas
 !plugin@org.eclipse.mylyn.xplanner.ui=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.ui
 
 
-plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tests.util
+!plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tests.util
+plugin@org.eclipse.mylyn.tests.util=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tests.util
 
 !plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
-plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
+plugin@org.eclipse.mylyn.commons.tests=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.tests
 
 plugin@org.eclipse.mylyn.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn, org.eclipse.mylyn.tests
 plugin@org.eclipse.mylyn.bugzilla.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.bugzilla.tests
@@ -189,7 +199,10 @@ plugin@org.eclipse.mylyn.monitor.tests=COPY,@buildDirectory@/../../../../mylyn/m
 plugin@org.eclipse.mylyn.resources.tests=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.context, org.eclipse.mylyn.resources.tests
 
 plugin@org.eclipse.mylyn.sandbox.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.sandbox.tests
-plugin@org.eclipse.mylyn.tasks.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.tests
+
+!plugin@org.eclipse.mylyn.tasks.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.tests
+plugin@org.eclipse.mylyn.tasks.tests=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.tests
+
 plugin@org.eclipse.mylyn.team.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.context, org.eclipse.mylyn.team.tests
 
 plugin@org.eclipse.mylyn.trac.tests=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.trac.tests
