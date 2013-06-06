@@ -158,19 +158,46 @@ plugin@org.eclipse.mylyn.trac.ui=COPY,@buildDirectory@/../../../../mylyn/master/
 plugin@org.eclipse.mylyn.trac.wiki=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.trac.wiki
 !plugin@org.eclipse.mylyn.web.ui=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/zArchive/org.eclipse.mylyn.web.ui
 plugin@org.eclipse.mylyn.web.tasks=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.incubator, org.eclipse.mylyn.web.tasks
-plugin@org.eclipse.mylyn.wikitext.confluence.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.core
-plugin@org.eclipse.mylyn.wikitext.confluence.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.ui
-plugin@org.eclipse.mylyn.wikitext.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.core
-plugin@org.eclipse.mylyn.wikitext.mediawiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.core
-plugin@org.eclipse.mylyn.wikitext.mediawiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.ui
-plugin@org.eclipse.mylyn.wikitext.tasks.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tasks.ui
-plugin@org.eclipse.mylyn.wikitext.textile.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.core
-plugin@org.eclipse.mylyn.wikitext.textile.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.ui
-plugin@org.eclipse.mylyn.wikitext.tracwiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.core
-plugin@org.eclipse.mylyn.wikitext.tracwiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.ui
-plugin@org.eclipse.mylyn.wikitext.twiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.core
-plugin@org.eclipse.mylyn.wikitext.twiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.ui
-plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.ui
+
+!plugin@org.eclipse.mylyn.wikitext.confluence.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.core
+plugin@org.eclipse.mylyn.wikitext.confluence.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.core
+
+!plugin@org.eclipse.mylyn.wikitext.confluence.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.ui
+plugin@org.eclipse.mylyn.wikitext.confluence.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.confluence.ui
+
+!plugin@org.eclipse.mylyn.wikitext.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.core
+plugin@org.eclipse.mylyn.wikitext.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.core
+
+!plugin@org.eclipse.mylyn.wikitext.mediawiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.core
+plugin@org.eclipse.mylyn.wikitext.mediawiki.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.core
+
+!plugin@org.eclipse.mylyn.wikitext.mediawiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.ui
+plugin@org.eclipse.mylyn.wikitext.mediawiki.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.mediawiki.ui
+
+!plugin@org.eclipse.mylyn.wikitext.tasks.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tasks.ui
+plugin@org.eclipse.mylyn.wikitext.tasks.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tasks.ui
+
+!plugin@org.eclipse.mylyn.wikitext.textile.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.core
+plugin@org.eclipse.mylyn.wikitext.textile.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.core
+
+!plugin@org.eclipse.mylyn.wikitext.textile.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.ui
+plugin@org.eclipse.mylyn.wikitext.textile.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.textile.ui
+
+!plugin@org.eclipse.mylyn.wikitext.tracwiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.core
+plugin@org.eclipse.mylyn.wikitext.tracwiki.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.core
+
+!plugin@org.eclipse.mylyn.wikitext.tracwiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.ui
+plugin@org.eclipse.mylyn.wikitext.tracwiki.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.tracwiki.ui
+
+!plugin@org.eclipse.mylyn.wikitext.twiki.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.core
+plugin@org.eclipse.mylyn.wikitext.twiki.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.core
+
+!plugin@org.eclipse.mylyn.wikitext.twiki.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.ui
+plugin@org.eclipse.mylyn.wikitext.twiki.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.twiki.ui
+
+!plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.ui
+plugin@org.eclipse.mylyn.wikitext.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.docs, org.eclipse.mylyn.wikitext.ui
+
 !plugin@org.eclipse.mylyn.xplanner.core=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.core
 !plugin@org.eclipse.mylyn.xplanner.ui=e_3_7_m_3_6_x,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.mylyn/sandbox/org.eclipse.mylyn.xplanner.ui
 
