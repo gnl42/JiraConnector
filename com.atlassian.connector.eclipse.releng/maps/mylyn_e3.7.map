@@ -140,7 +140,7 @@ plugin@org.eclipse.mylyn.sandbox.dev=COPY,@buildDirectory@/../../../../mylyn/mas
 plugin@org.eclipse.mylyn.tasks.bugs=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.bugs
 
 !plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
-plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
+plugin@org.eclipse.mylyn.tasks.core=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.core
 
 !plugin@org.eclipse.mylyn.tasks.ui=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.ui
 plugin@org.eclipse.mylyn.tasks.ui=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.tasks, org.eclipse.mylyn.tasks.ui
