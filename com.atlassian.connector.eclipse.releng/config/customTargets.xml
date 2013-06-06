@@ -101,6 +101,7 @@
 		<delete dir="${buildDirectory}/../../../mylyn" />
 		<mkdir dir="${buildDirectory}/../../../mylyn" />
 		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons" />
+		<mkdir dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.context" />
 					
 		<exec executable="git" failonerror="true">
 			<arg value="clone" />
@@ -108,6 +109,16 @@
 			<arg value="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons" />
 		</exec>
 		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.commons">
+			<arg value="checkout" />
+			<arg value="refs/remotes/origin/e_3_8_m_3_8_x" />
+		</exec>
+		
+		<exec executable="git" failonerror="true">
+			<arg value="clone" />
+			<arg value="git://git.eclipse.org/gitroot/mylyn/org.eclipse.mylyn.context.git" />
+			<arg value="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.context" />
+		</exec>
+		<exec executable="git" failonerror="true" dir="${buildDirectory}/../../../mylyn/org.eclipse.mylyn.context">
 			<arg value="checkout" />
 			<arg value="refs/remotes/origin/e_3_8_m_3_8_x" />
 		</exec>
