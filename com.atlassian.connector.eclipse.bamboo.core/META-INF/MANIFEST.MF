@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Bamboo Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.core;singleton:=true
-Bundle-Version: 3.2.1.qualifier
+Bundle-Version: 3.2.2.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
