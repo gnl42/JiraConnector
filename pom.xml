@@ -27,7 +27,7 @@
 	<distributionManagement>
 		<site>
 			<id>atlassian-documentation</id>
-			<url>scp://docs-fe.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+			<url>scp://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
 		</site>
 	</distributionManagement>
     <scm>
