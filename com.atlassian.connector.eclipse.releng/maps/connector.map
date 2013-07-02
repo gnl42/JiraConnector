@@ -57,6 +57,7 @@ plugin@com.sun.jersey=COPY,@buildDirectory@/../../../,com.sun.jersey
 plugin@com.atlassian.jira.rest.client=COPY,@buildDirectory@/../../../,com.atlassian.jira.rest.client
 plugin@org.codehaus.jettison=COPY,@buildDirectory@/../../../,org.codehaus.jettison
 plugin@com.google.guava=COPY,@buildDirectory@/../../../,com.google.guava
+plugin@org.mortbay.jetty=COPY,@buildDirectory@/../../../,org.mortbay.jetty
 
 
 plugin@com.atlassian.connector.commons=COPY,@buildDirectory@/../../../,connector-commons/com.atlassian.connector.commons

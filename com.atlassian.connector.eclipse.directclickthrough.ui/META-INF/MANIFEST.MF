@@ -19,9 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.tasks.core,
  javax.servlet;bundle-version="[2.5.0,3.0.0)",
- org.mortbay.jetty.server,
- org.mortbay.jetty.util,
- com.atlassian.connector.eclipse.core
+ com.atlassian.connector.eclipse.core,
+ org.mortbay.jetty;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet,
  javax.servlet.http
