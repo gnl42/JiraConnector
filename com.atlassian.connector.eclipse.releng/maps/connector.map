@@ -81,6 +81,8 @@ plugin@org.joda.time=GET,file://@buildDirectory@/../../../bundles/org.joda.time_
 plugin@org.jdom_jaxen=GET,file://@buildDirectory@/../../../bundles/org.jdom_jaxen_1.0.0.20081203-1100.jar
 plugin@org.jetbrains.annotations=GET,file://@buildDirectory@/../../../bundles/org.jetbrains.annotations_7.0.2.v20081216-1400.jar
 plugin@com.perforce.p4java=GET,file://@buildDirectory@/../../../bundles/com.perforce.p4java_2009.2.234487.jar
+plugin@org.mortbay.jetty.server=GET,file://@buildDirectory@/../../../bundles/org.mortbay.jetty.server_6.1.23.v201004211559.jar
+plugin@org.mortbay.jetty.util=GET,file://@buildDirectory@/../../../bundles/org.mortbay.jetty.util_6.1.23.v201004211559.jar
 
 !**************************************************
 ! Mylyn's plugins that are required during release
