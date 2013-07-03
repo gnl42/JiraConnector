@@ -53,8 +53,6 @@
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.mylyn.tasks.core"/>
       <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
-      <import plugin="org.mortbay.jetty.server"/>
-      <import plugin="org.mortbay.jetty.util"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="javax.servlet.jsp"/>
       <import plugin="org.eclipse.core.filesystem"/>
@@ -75,20 +73,6 @@
 
    <plugin
          id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mortbay.jetty.server"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.mortbay.jetty.util"
          download-size="0"
          install-size="0"
          version="0.0.0"

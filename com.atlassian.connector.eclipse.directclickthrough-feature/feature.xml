@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.directclickthrough"
       label="%featureName"
-      version="3.2.1.qualifier"
+      version="3.2.2.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 
@@ -33,8 +33,6 @@
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.mylyn.tasks.core"/>
       <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
-      <import plugin="org.mortbay.jetty.server"/>
-      <import plugin="org.mortbay.jetty.util"/>
       <import plugin="com.atlassian.connector.eclipse.core"/>
    </requires>
 
@@ -44,5 +42,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.mortbay.jetty"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
