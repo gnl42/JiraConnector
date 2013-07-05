@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -342,7 +344,14 @@ public class JiraRestClientAdapter {
 
 	public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
 
-		return JiraRestConverter.convertTransitions(restClient.getIssueClient().getTransitions(getIssue(issueKey),
+		URI transitionUri = UriBuilder.fromUri(url).path("/rest/api/latest") //$NON-NLS-1$
+				.path("issue") //$NON-NLS-1$
+				.path(issueKey)
+				.path("transitions") //$NON-NLS-1$
+				.queryParam("expand", "transitions.fields") //$NON-NLS-1$ //$NON-NLS-2$
+				.build();
+
+		return JiraRestConverter.convertTransitions(restClient.getIssueClient().getTransitions(transitionUri,
 				new NullProgressMonitor()));
 	}
 
