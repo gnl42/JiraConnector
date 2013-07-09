@@ -99,6 +99,9 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 					});
 					setStatus(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 							"Wrong credentials or you've been locked out from remote API."));
+				} else if (e.getMessage().contains("Server returned malformed response")) {
+					setStatus(new Status(e.getStatus().getSeverity(), e.getStatus().getPlugin(), e.getStatus()
+							.getMessage() + ". Server behind proxy?"));
 				} else {
 					setStatus(e.getStatus());
 				}
