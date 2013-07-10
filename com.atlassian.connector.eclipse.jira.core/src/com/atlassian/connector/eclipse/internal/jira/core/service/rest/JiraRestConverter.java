@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.jira.core.service.rest;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -702,10 +703,12 @@ public class JiraRestConverter {
 		List<Version> outVersions = new ArrayList<Version>();
 
 		for (com.atlassian.jira.rest.client.domain.Version version : versions) {
-			if (!version.isArchived()) {
-				outVersions.add(convert(version));
-			}
+//			if (!version.isArchived()) {
+			outVersions.add(convert(version));
+//			}
 		}
+
+		Collections.reverse(outVersions);
 
 		return outVersions.toArray(new Version[outVersions.size()]);
 	}

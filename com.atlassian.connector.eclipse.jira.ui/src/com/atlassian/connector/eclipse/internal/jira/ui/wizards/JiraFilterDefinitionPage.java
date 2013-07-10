@@ -1402,11 +1402,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 					Set<Version> releasedVersions = new LinkedHashSet<Version>();
 					Set<Version> unreleasedVersions = new LinkedHashSet<Version>();
-
 					for (Project project : projects) {
 						if (project != null && project.hasDetails()) {
-							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
-							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
+							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
+							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
 						}
 					}
 
@@ -1489,8 +1488,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 					for (Project project : projects) {
 						if (project != null && project.hasDetails()) {
-							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
-							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
+							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
+							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
 						}
 					}
 

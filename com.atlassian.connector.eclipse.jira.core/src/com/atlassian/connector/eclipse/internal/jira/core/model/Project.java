@@ -147,24 +147,28 @@ public class Project implements Serializable {
 		this.versions = versions;
 	}
 
-	public Version[] getReleasedVersions() {
+	public Version[] getReleasedVersions(boolean includeArchived) {
 		List<Version> releasedVersions = new ArrayList<Version>();
 
 		for (Version version : this.versions) {
 			if (version.isReleased()) {
-				releasedVersions.add(version);
+				if (!version.isArchived() || includeArchived) {
+					releasedVersions.add(version);
+				}
 			}
 		}
 
 		return releasedVersions.toArray(new Version[releasedVersions.size()]);
 	}
 
-	public Version[] getUnreleasedVersions() {
+	public Version[] getUnreleasedVersions(boolean includeArchived) {
 		List<Version> unreleasedVersions = new ArrayList<Version>();
 
 		for (Version version : this.versions) {
 			if (!version.isReleased()) {
-				unreleasedVersions.add(version);
+				if (!version.isArchived() || includeArchived) {
+					unreleasedVersions.add(version);
+				}
 			}
 		}
 

@@ -146,12 +146,16 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 							return options;
 						} else if (JiraAttribute.AFFECTSVERSIONS.id().equals(attribute.getId())) {
 							for (Version version : project.getVersions()) {
-								options.put(version.getId(), version.getName());
+								if (!version.isArchived() || attribute.getValues().contains(version.getId())) {
+									options.put(version.getId(), version.getName());
+								}
 							}
 							return options;
 						} else if (JiraAttribute.FIXVERSIONS.id().equals(attribute.getId())) {
 							for (Version version : project.getVersions()) {
-								options.put(version.getId(), version.getName());
+								if (!version.isArchived() || attribute.getValues().contains(version.getId())) {
+									options.put(version.getId(), version.getName());
+								}
 							}
 							return options;
 						} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
