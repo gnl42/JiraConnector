@@ -1,4 +1,5 @@
 {
+   "expand": "projectKeys",
    "self":"http://localhost:8090/jira/rest/api/latest/project/TST",
    "key":"TST",
    "description":"This is my description here.\r\nAnother line.",

@@ -31,6 +31,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
 
 public class ProjectJsonParser implements JsonObjectParser<Project> {
 
@@ -39,9 +40,14 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final BasicProjectRoleJsonParser basicProjectRoleJsonParser = new BasicProjectRoleJsonParser();
 
-    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
-        final String expando = json.getString("expand");
-        return Splitter.on(',').split(expando);
+    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException
+    {
+        if (json.has("expand")) {
+            final String expando = json.getString("expand");
+            return Splitter.on(',').split(expando);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
 	@Override

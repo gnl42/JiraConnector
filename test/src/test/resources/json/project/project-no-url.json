@@ -1,4 +1,4 @@
-{"self":"http://192.168.157.5:2990/jira/rest/api/latest/project/MYT","key":"MYT","lead":{
+{"expand": "projectKeys","self":"http://192.168.157.5:2990/jira/rest/api/latest/project/MYT","key":"MYT","lead":{
 	"self":"http://192.168.157.5:2990/jira/rest/api/latest/user?username=wseliga",
 	"name":"wseliga",
 	"displayName":"wseliga"
