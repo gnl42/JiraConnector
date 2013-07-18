@@ -12,9 +12,10 @@ public class IssueUpdateJsonGenerator implements JsonGenerator<Iterable<FieldInp
 		final JSONObject fields = new JSONObject();
 		if (fieldInputs != null) {
 			for (final FieldInput field : fieldInputs) {
-				if (field.getValue() != null) {
-					fields.put(field.getId(), generator.generateFieldValueForJson(field.getValue()));
-				}
+				final Object fieldValue = (field.getValue() == null) ? JSONObject.NULL
+						: generator.generateFieldValueForJson(field.getValue());
+
+				fields.put(field.getId(), fieldValue);
 			}
 		}
 		return fields;

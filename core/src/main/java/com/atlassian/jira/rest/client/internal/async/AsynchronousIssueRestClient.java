@@ -225,7 +225,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 				}
 			}
 			final Iterable<FieldInput> fields = transitionInput.getFields();
-			JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
+			final JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
 			if (fieldsJs.keys().hasNext()) {
 				jsonObject.put("fields", fieldsJs);
 			}
