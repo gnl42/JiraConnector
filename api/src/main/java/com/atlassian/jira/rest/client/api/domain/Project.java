@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.atlassian.jira.rest.client.api.ExpandableResource;
 import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
 
@@ -29,7 +30,10 @@ import java.util.Collection;
  *
  * @since v0.1
  */
-public class Project extends BasicProject {
+public class Project extends BasicProject implements ExpandableResource {
+
+    @Nullable
+    private final Iterable<String> expandos;
 	@Nullable
 	private final String description;
 	private final BasicUser lead;
@@ -40,11 +44,12 @@ public class Project extends BasicProject {
 	private final OptionalIterable<IssueType> issueTypes;
 	private final Collection<BasicProjectRole> projectRoles;
 
-	public Project(URI self, String key, String name, String description, BasicUser lead, URI uri,
-			Collection<Version> versions, Collection<BasicComponent> components,
-			OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
+	public Project(final Iterable<String> expandos, URI self, String key, String name, String description, BasicUser lead, URI uri,
+            Collection<Version> versions, Collection<BasicComponent> components,
+            OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
 		super(self, key, name);
-		this.description = description;
+        this.expandos = expandos;
+        this.description = description;
 		this.lead = lead;
 		this.uri = uri;
 		this.versions = versions;
@@ -105,6 +110,12 @@ public class Project extends BasicProject {
 	public Iterable<BasicProjectRole> getProjectRoles() {
 		return projectRoles;
 	}
+
+    @Override
+    public Iterable<String> getExpandos()
+    {
+        return expandos;
+    }
 
 	/**
 	 * {@inheritDoc}

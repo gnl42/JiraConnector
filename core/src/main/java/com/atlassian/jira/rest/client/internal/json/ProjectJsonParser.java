@@ -23,6 +23,7 @@ import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.api.domain.Version;
+import com.google.common.base.Splitter;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -38,10 +39,16 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final BasicProjectRoleJsonParser basicProjectRoleJsonParser = new BasicProjectRoleJsonParser();
 
+    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
+        final String expando = json.getString("expand");
+        return Splitter.on(',').split(expando);
+    }
+
 	@Override
 	public Project parse(JSONObject json) throws JSONException {
-		URI self = JsonParseUtil.getSelfUri(json);
-		final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
+        URI self = JsonParseUtil.getSelfUri(json);
+        final Iterable<String> expandos = parseExpandos(json);
+        final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		final String key = json.getString("key");
 		final String name = JsonParseUtil.getOptionalString(json, "name");
 		final String urlStr = JsonParseUtil.getOptionalString(json, "url");
@@ -62,7 +69,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 		final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
 		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
 				.getOptionalJsonObject(json, "roles"));
-		return new Project(self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
+        return new Project(expandos, self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
 	}
 
 
