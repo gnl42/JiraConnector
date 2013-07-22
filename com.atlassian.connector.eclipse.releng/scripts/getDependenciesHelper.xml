@@ -77,8 +77,7 @@
 	</target>
 
 	<!-- helper methods -->
-	<target name="downloadFile">
-		<delete file="${downloadsDir}/${theFile}" />
+	<target name="downloadFile" unless="theZipExists">
 		<echo message="Downloading file from ${theURL} to ${downloadsDir}/${theFile}"/>
 		<get src="${theURL}" dest="${downloadsDir}/${theFile}" usetimestamp="true"/>
 		<touch file="${downloadsDir}/${theFile}"/>
