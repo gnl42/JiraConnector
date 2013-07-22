@@ -192,8 +192,8 @@
 
 		<echo message="/var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp" />
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}"
-					command="touch /var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp"/>
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+					command="touch /var/www/domains/atlassian.com/update/htdocs/${publish.path}/${publish.name}.tmp"/>
 		
 		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 		
