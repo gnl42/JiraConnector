@@ -83,6 +83,10 @@
 		<touch file="${downloadsDir}/${theFile}"/>
 	</target>
 	<target name="unzipFile" unless="isUnpacked" if="isAZip"><unzip src="${theFile}" dest="${theDir}" overwrite="true" /></target>
-	<target name="untarFile" unless="isUnpacked" if="isATar"><untar src="${theFile}" dest="${theDir}" overwrite="true" compression="gzip"/></target>
+	<target name="untarFile" unless="isUnpacked" if="isATar">
+		<echo>${theFile}</echo>
+		<echo>${theDir}</echo>
+		<untar src="${theFile}" dest="${theDir}" overwrite="true" compression="gzip"/>
+	</target>
 	<target name="unpackJar" unless="isUnpacked" if="jarExists"><unjar src="${theJar}" dest="${theDir}" overwrite="true"/></target>
 </project>
