@@ -190,7 +190,23 @@
 		<property name="publish.name" value="e${build.target}" />
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
 
+		<echo message="/var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp" />
+		
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}"
+					command="touch /var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp"/>
+		
 		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		
+		<!--
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}"
+			command="rm -rf /var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp"/>
+		-->
+		
+		<!--
+		<exec executable="scp" >
+			<arg value="${prefs.file}" />		
+		</exec>
+		-->
 
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset dir="${build.home}/${build.target}/site/" />
