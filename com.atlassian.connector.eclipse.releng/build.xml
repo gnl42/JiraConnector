@@ -204,12 +204,9 @@
 		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
 			command="rm -rf ${publish.local.path}/${publish.name}.tmp"/>
 		
-		
-		<!--
 		<scp todir="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp">
 		    <fileset dir="${build.home}/${build.target}/site/" />
 		</scp>
-		-->
 		
 		<!--
 		<exec executable="scp" >
