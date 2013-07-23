@@ -252,12 +252,16 @@
 		<!--<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 		
 		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
-					command="cp ${publish.local.path}/${publish.name}-site-all.zip ${publish.local.path}/${version}/${publish.name}-site-all.zip" />
+			command="cp ${publish.local.path}/${publish.name}-site-all.zip ${publish.local.path}/${version}/${publish.name}-site-all.zip" />
 		<!--<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />-->
 
-		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+			command="rm -rf ${publish.local.path}/${version}/${publish.name}"/>
+		<!--<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+			command="cp -R ${publish.local.path}/${publish.name} ${publish.local.path}/${version}/${publish.name}" />
+		<!--<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />-->
 	</target>
 
 	<target name="init-3.3">
