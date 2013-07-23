@@ -220,10 +220,15 @@
 		</exec>
 		-->
 		
-
+		<!--
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset dir="${build.home}/${build.target}/site/" />
 		</davput>
+		-->
+		
+		<scp file="${build.home}/${build.target}/${publish.name}-site-all.zip" 
+			remoteTofile="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}-site-all.zip.tmp" 
+			trust="yes" />
 
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset file="${build.home}/${build.target}/${publish.name}-site-all.zip" />
