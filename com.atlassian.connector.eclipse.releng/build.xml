@@ -189,24 +189,35 @@
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
 		<property name="publish.name" value="e${build.target}" />
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
+		<property name="publish.local.path" value="/var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}"/>
 
-		<echo message="/var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp" />
+		<echo message="Working in ${publish.local.path}" />
 		
 		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
-					command="touch /var/www/domains/atlassian.com/update/htdocs/${publish.path}/${publish.name}.tmp"/>
+					command="touch ${publish.local.path}/${publish.name}.tmp"/>
 		
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />		
 		
 		<!--
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}"
-			command="rm -rf /var/www/domains/atlassian.com/update/htdocs/atlassian-eclipse-plugin/${publish.path}/${publish.name}.tmp"/>
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+			command="rm -rf ${publish.local.path}/${publish.name}.tmp"/>
+		-->
+		
+		<!--
+		<scp todir="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp">
+		    <fileset dir="${build.home}/${build.target}/site/" />
+		</scp>
 		-->
 		
 		<!--
 		<exec executable="scp" >
-			<arg value="${prefs.file}" />		
+			<arg value="-p" />		
+			<arg value="-r" />		
+			<arg value="${build.home}/${build.target}/site/" />		
+			<arg value="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp" />		
 		</exec>
 		-->
+		
 
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}.tmp/" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
 			<fileset dir="${build.home}/${build.target}/site/" />
