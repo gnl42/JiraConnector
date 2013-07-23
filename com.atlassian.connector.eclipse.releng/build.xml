@@ -237,9 +237,15 @@
 							command="mv -f ${publish.local.path}/${publish.name}.tmp ${publish.local.path}/${publish.name}"/>
 		<!-- <davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" /> -->
 
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+							command="rm -rf ${publish.local.path}/${publish.name}-site-all.zip"/>
 		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}"/-->
-		<davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" />
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+									command="mv -f ${publish.local.path}/${publish.name}-site-all.zip.tmp ${publish.local.path}/${publish.name}-site-all.zip"/>
+		<!-- <davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" /> -->
+		
+		<!--<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 
 		<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />
