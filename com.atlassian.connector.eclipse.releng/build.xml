@@ -247,8 +247,13 @@
 		
 		<!--<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 
-		<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
-		<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+			command="mkdir -p ${publish.local.path}/${version}" />
+		<!--<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
+		
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+					command="cp ${publish.local.path}/${publish.name}-site-all.zip ${publish.local.path}/${version}/${publish.name}-site-all.zip" />
+		<!--<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />-->
 
 		<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 
