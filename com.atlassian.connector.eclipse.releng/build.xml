@@ -196,12 +196,14 @@
 		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
 					command="touch ${publish.local.path}/${publish.name}.tmp"/>
 		
-		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />		
-		
 		<!--
+		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
+		-->		
+		
+		
 		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
 			command="rm -rf ${publish.local.path}/${publish.name}.tmp"/>
-		-->
+		
 		
 		<!--
 		<scp todir="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp">
