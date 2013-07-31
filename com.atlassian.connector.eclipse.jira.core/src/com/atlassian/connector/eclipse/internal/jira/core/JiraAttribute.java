@@ -18,6 +18,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  */
 public enum JiraAttribute {
 
