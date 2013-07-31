@@ -50,6 +50,7 @@ import com.atlassian.connector.eclipse.internal.jira.ui.actions.StartWorkEditorT
 /**
  * @author Steffen Pingel
  * @author Wojciech Seliga
+ * @author Jacek Jaroczynski
  */
 @SuppressWarnings("restriction")
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {

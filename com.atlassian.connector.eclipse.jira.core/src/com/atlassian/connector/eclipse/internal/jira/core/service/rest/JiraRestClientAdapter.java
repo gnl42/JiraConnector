@@ -81,6 +81,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
+/**
+ * @author Jacek Jaroczynski
+ */
 public class JiraRestClientAdapter {
 
 	private static final SimpleDateFormat REST_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
@@ -499,7 +502,7 @@ public class JiraRestClientAdapter {
 		});
 	}
 
-	public void updateIssue(JiraIssue changedIssue) throws JiraException {
+	public void updateIssue(JiraIssue changedIssue, boolean updateEstimate) throws JiraException {
 		final JiraIssue fullIssue = getIssueByKeyOrId(changedIssue.getKey(),
 				new org.eclipse.core.runtime.NullProgressMonitor());
 
@@ -522,20 +525,52 @@ public class JiraRestClientAdapter {
 			updateFields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 		}
 
-		if (issue.getTimeTracking() != null) {
+		// if time tracking is enabled and estimate changed
+		if (issue.getTimeTracking() != null && updateEstimate) {
 
-			// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
-			long originalEstimate = changedIssue.getEstimate() / 60;
-			if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
-				originalEstimate = issue.getTimeTracking().getOriginalEstimateMinutes();
+			Long currentEstimateInSeconds = changedIssue.getEstimate();
+			Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
+
+			String outputOriginalEstimateInMinutes = null;
+			String outputRemainingEstimateInMinutes = null;
+
+			// estimate has been cleaned
+			if (currentEstimateInSeconds == null && previousEstimateInMinutes != null) {
+
+				// set estimate (remaining estimate) to original estimate (the same way as JIRA UI does)
+				if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+					outputRemainingEstimateInMinutes = outputOriginalEstimateInMinutes = String.valueOf(issue.getTimeTracking()
+							.getOriginalEstimateMinutes());
+				} else {
+					StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+							"Remaining Estimate is set but Original Estimate is null?")); //$NON-NLS-1$
+				}
+
+			} // estimate has been set up or changed 
+			else if ((currentEstimateInSeconds != null && previousEstimateInMinutes == null)
+					|| (currentEstimateInSeconds != null && previousEstimateInMinutes != null && (currentEstimateInSeconds / 60) != previousEstimateInMinutes)) {
+
+				outputRemainingEstimateInMinutes = String.valueOf(currentEstimateInSeconds / 60);
+
+				// we must set original estimate explicitly otherwise it is overwritten by remaining estimate (REST bug) 
+				outputOriginalEstimateInMinutes = outputRemainingEstimateInMinutes;
+				if (issue.getTimeTracking().getOriginalEstimateMinutes() != null
+						&& issue.getTimeTracking().getOriginalEstimateMinutes() != 0) {
+					// preserve original estimate
+					outputOriginalEstimateInMinutes = String.valueOf(issue.getTimeTracking()
+							.getOriginalEstimateMinutes());
+				}
 			}
 
-			Map<String, Object> map = ImmutableMap.<String, Object> builder()
-					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(originalEstimate) + "m") //$NON-NLS-1$
-					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(changedIssue.getEstimate() / 60) + "m") //$NON-NLS-1$
-					.build();
+			if (outputOriginalEstimateInMinutes != null && outputRemainingEstimateInMinutes != null) {
 
-			updateFields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
+				Map<String, Object> map = ImmutableMap.<String, Object> builder()
+						.put(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m") //$NON-NLS-1$
+						.put(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m") //$NON-NLS-1$
+						.build();
+
+				updateFields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
+			}
 		}
 
 		if (editableFields.contains(new IssueField(JiraRestFields.VERSIONS, null))) {
@@ -627,6 +662,8 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage().substring(index) + ". Https might be required.", e); //$NON-NLS-1$
 			} else if (e.getMessage().contains(HTTP_404)) {
 				throw new JiraServiceUnavailableException(e);
+			} else if (e.getMessage().contains("is not supported in Legacy Mode")) { //$NON-NLS-1$
+				throw new JiraException(e.getMessage() + " Please disable time tracking \"Legacy Mode\" in JIRA.", e); //$NON-NLS-1$
 			} else if (e.getMessage().contains(NULL_POINTER_EXCEPTION)) {
 				throw new RuntimeException(e);
 			} else {

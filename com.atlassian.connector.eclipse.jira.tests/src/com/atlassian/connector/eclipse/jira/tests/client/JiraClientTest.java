@@ -191,7 +191,7 @@ public class JiraClientTest extends TestCase {
 
 		issue.setAssignee("nonexistantuser");
 		try {
-			client.updateIssue(issue, "comment", null);
+			client.updateIssue(issue, "comment", true, null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 			assertThat(
@@ -393,7 +393,7 @@ public class JiraClientTest extends TestCase {
 		assertEquals(summary, issue.getSummary());
 
 		issue.setDescription(issue.getDescription());
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 	}
@@ -410,7 +410,7 @@ public class JiraClientTest extends TestCase {
 
 		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueChanged");
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("testUpdateIssueChanged", issue.getSummary());
 		assertNotNull(issue.getUpdated());
@@ -421,7 +421,7 @@ public class JiraClientTest extends TestCase {
 		// change privilege level
 		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 		try {
-			client.updateIssue(issue, "", null);
+			client.updateIssue(issue, "", true, null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}
@@ -432,7 +432,7 @@ public class JiraClientTest extends TestCase {
 		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
-			client.updateIssue(issue, "", null);
+			client.updateIssue(issue, "", true, null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}
@@ -450,7 +450,7 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC", null);
+		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
@@ -480,7 +480,7 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
@@ -494,7 +494,7 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 	}
@@ -507,7 +507,7 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
@@ -609,10 +609,10 @@ public class JiraClientTest extends TestCase {
 	public void testAddWorkLog() throws Exception {
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 		issue.setEstimate(1200);
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 
-		assertEquals(1200, issue.getEstimate());
+		assertEquals(Long.valueOf(1200), issue.getEstimate());
 
 		JiraWorkLog worklog1 = new JiraWorkLog();
 		worklog1.setAdjustEstimate(AdjustEstimateMethod.LEAVE);
@@ -623,10 +623,10 @@ public class JiraClientTest extends TestCase {
 
 		client.addWorkLog(issue.getKey(), worklog1, null);
 		JiraWorkLog receivedWorklog = client.getIssueByKey(issue.getKey(), null).getWorklogs()[0];
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 
-		assertEquals(1200, issue.getEstimate());
+		assertEquals(Long.valueOf(1200), issue.getEstimate());
 		assertEquals("comment", receivedWorklog.getComment());
 		assertEquals(120, receivedWorklog.getTimeSpent());
 		assertEquals(time, receivedWorklog.getStartDate());
@@ -642,7 +642,7 @@ public class JiraClientTest extends TestCase {
 		receivedWorklog = client.getIssueByKey(issue.getKey(), null).getWorklogs()[1];
 		issue = client.getIssueByKey(issue.getKey(), null);
 
-		assertEquals(1200 - 240, issue.getEstimate());
+		assertEquals(Long.valueOf(1200 - 240), issue.getEstimate());
 		assertEquals("comment2", receivedWorklog.getComment());
 		assertEquals(240, receivedWorklog.getTimeSpent());
 		assertEquals(time, receivedWorklog.getStartDate());

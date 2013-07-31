@@ -25,18 +25,25 @@ import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  */
 public class JiraEditorUtil {
 
 	private static final String DECORATOR_KEY = "DECORATOR"; //$NON-NLS-1$
 
-	public static void setTimeSpentDecorator(Text toDecorate, boolean isZeroValid, TaskRepository repository) {
+	public static void setTimeSpentDecorator(Text toDecorate, boolean isZeroValid, TaskRepository repository,
+			boolean isEmptyValid) {
 		boolean invalid = false;
-		try {
-			long amount = JiraUtil.getTimeFormat(repository).parse(toDecorate.getText());
-			invalid = isZeroValid ? amount < 0 : amount < 1;
-		} catch (ParseException e) {
-			invalid = true;
+
+		if (isEmptyValid == true && (toDecorate.getText() == null || toDecorate.getText().length() == 0)) {
+			invalid = false;
+		} else {
+			try {
+				long amount = JiraUtil.getTimeFormat(repository).parse(toDecorate.getText());
+				invalid = isZeroValid ? amount < 0 : amount < 1;
+			} catch (ParseException e) {
+				invalid = true;
+			}
 		}
 
 		showTimeSpentDecorator(toDecorate, repository, invalid);

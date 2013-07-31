@@ -758,12 +758,13 @@ public class JiraClient {
 		return getBaseUrl();
 	}
 
-	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+	public void updateIssue(JiraIssue issue, String comment, boolean updateEstimate, IProgressMonitor monitor)
+			throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("updateIssue", null); //$NON-NLS-1$
 //		soapClient.updateIssue(issue, monitor);
 
 		try {
-			getRestClient().updateIssue(issue);
+			getRestClient().updateIssue(issue, updateEstimate);
 		} catch (RestClientException e) {
 			throw new JiraException(e);
 		}

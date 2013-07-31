@@ -75,6 +75,7 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraUiUtil;
 /**
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  */
 @SuppressWarnings("restriction")
 public class WorkLogPart extends AbstractTaskEditorPart {
@@ -504,7 +505,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		} catch (ParseException e) {
 			//ignore
 		}
-		JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, getTaskEditorPage().getTaskRepository());
+		JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, getTaskEditorPage().getTaskRepository(), false);
 	}
 
 	class LogWorkDoneAction extends Action {

@@ -27,6 +27,7 @@ import com.atlassian.jira.rest.client.domain.Issue;
  * @author Brock Janiczak
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Jacek Jaroczynski
  */
 public class JiraIssue implements Serializable {
 
@@ -82,9 +83,9 @@ public class JiraIssue implements Serializable {
 
 	private Comment[] comments = new Comment[0];
 
-	private long initialEstimate;
+	private Long initialEstimate;
 
-	private long estimate;
+	private Long estimate;
 
 	private long actual;
 
@@ -311,7 +312,7 @@ public class JiraIssue implements Serializable {
 		this.actual = actual;
 	}
 
-	public long getInitialEstimate() {
+	public Long getInitialEstimate() {
 		return this.initialEstimate;
 	}
 
@@ -319,7 +320,7 @@ public class JiraIssue implements Serializable {
 		this.initialEstimate = initialEstimate;
 	}
 
-	public long getEstimate() {
+	public Long getEstimate() {
 		return this.estimate;
 	}
 

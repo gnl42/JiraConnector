@@ -472,8 +472,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			removeAttribute(data, JiraAttribute.TYPE);
 		}
 
-		// if no time was logged initial estimate and estimate are the same value, only include estimate in this case
-		if (jiraIssue.getActual() > 0) {
+		// if no time was logged initial estimate and estimate should be the same value (but does not have to)
+		// show initial estimate if it is not equal to remaining estimate
+		if (jiraIssue.getInitialEstimate() != null && !jiraIssue.getInitialEstimate().equals(jiraIssue.getEstimate())) {
 			setAttributeValue(data, JiraAttribute.INITIAL_ESTIMATE, jiraIssue.getInitialEstimate() + ""); //$NON-NLS-1$
 		} else {
 			removeAttribute(data, JiraAttribute.INITIAL_ESTIMATE);
@@ -1216,7 +1217,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 							&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null
 							&& !changeIds.equals(Collections.singleton(TaskAttribute.COMMENT_NEW))
 							&& !(STOP_PROGRESS_OPERATION.equals(operationId) && changeIds.equals(Collections.singleton(TaskAttribute.OPERATION)))) {
-						client.updateIssue(issue, newComment, monitor);
+						client.updateIssue(issue, newComment, changeIds.contains(JiraAttribute.ESTIMATE.id()), monitor);
 						handled = true;
 					}
 

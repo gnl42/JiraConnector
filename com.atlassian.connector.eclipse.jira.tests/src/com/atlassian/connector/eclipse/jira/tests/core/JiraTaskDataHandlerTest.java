@@ -67,6 +67,7 @@ import com.atlassian.connector.eclipse.jira.tests.util.MockJiraClientFactory;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  * @author Thomas Ehrnhoefer
+ * @author Jacek Jaroczynski
  */
 public class JiraTaskDataHandlerTest extends TestCase {
 
@@ -127,7 +128,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		Component component = issue.getProject().getComponents()[0];
 		issue.setComponents(new Component[] { component });
 		issue = client.createIssue(issue, null);
-		assertEquals(600, issue.getInitialEstimate());
+		assertTrue(new Long(600).equals(issue.getInitialEstimate()));
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
 		client.addCommentToIssue(issue.getKey(), commentText, null);
@@ -154,7 +155,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		Component component = issue.getProject().getComponents()[0];
 		issue.setComponents(new Component[] { component });
 		issue = client.createIssue(issue, null);
-		assertEquals(600, issue.getInitialEstimate());
+		assertTrue(new Long(600).equals(issue.getInitialEstimate()));
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
 		client.addCommentToIssue(issue.getKey(), commentText, null);
@@ -405,7 +406,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		SecurityLevel securityLevel = new SecurityLevel();
 		securityLevel.setId(SECURITY_LEVEL_DEVELOPERS);
 		issue.setSecurityLevel(securityLevel);
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
@@ -520,7 +521,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("3", operations.get(3).getValue());
 
 		issue.setSummary("changed");
-		client.updateIssue(issue, "", null);
+		client.updateIssue(issue, "", true, null);
 		newTaskData.getRoot().removeAttribute(operations.get(0).getId());
 
 		// make sure cached operations are used
@@ -802,10 +803,10 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		String summary = issue.getSummary();
 		issue.setDescription("descr");
 		issue.setPriority(new Priority(Priority.MINOR_ID));
-		client.updateIssue(issue, "comment1", new NullProgressMonitor());
+		client.updateIssue(issue, "comment1", true, new NullProgressMonitor());
 		// make sure comments are created in the right order
 		Thread.sleep(750);
-		client.updateIssue(issue, "comment2", new NullProgressMonitor());
+		client.updateIssue(issue, "comment2", true, new NullProgressMonitor());
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertEquals(summary, task.getSummary());
 		assertEquals(false, task.isCompleted());

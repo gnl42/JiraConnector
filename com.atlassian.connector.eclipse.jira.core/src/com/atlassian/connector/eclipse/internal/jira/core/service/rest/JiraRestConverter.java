@@ -153,6 +153,10 @@ public class JiraRestConverter {
 		jiraIssue.setProject(project);
 		if (project != null && !project.hasDetails()) {
 			cache.refreshProjectDetails(project, monitor);
+		} else if (project == null) {
+			throw new JiraException(NLS.bind(
+					"Project with key {0} not found in local cache. Please refresh repository configuration.", //$NON-NLS-1$
+					issue.getProject().getKey()));
 		}
 
 		jiraIssue.setId(issue.getId().toString());

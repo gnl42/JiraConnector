@@ -141,7 +141,7 @@ public class MockJiraRestClientAdapter extends JiraRestClientAdapter {
 	}
 
 	@Override
-	public void updateIssue(JiraIssue changedIssue) throws JiraException {
+	public void updateIssue(JiraIssue changedIssue, boolean updateEstimate) throws JiraException {
 		// ignore
 	}
 

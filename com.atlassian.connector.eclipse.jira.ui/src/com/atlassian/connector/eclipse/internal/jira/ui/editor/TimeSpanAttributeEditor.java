@@ -72,11 +72,15 @@ public class TimeSpanAttributeEditor extends AbstractAttributeEditor {
 
 	public void setValue(String text) {
 		try {
-			getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
+			if (text != null && text.length() > 0) {
+				getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
+			} else {
+				getAttributeMapper().setLongValue(getTaskAttribute(), null);
+			}
 			attributeChanged();
 		} catch (ParseException e) {
 			//ignore
 		}
-		JiraEditorUtil.setTimeSpentDecorator(this.text, true, getModel().getTaskRepository());
+		JiraEditorUtil.setTimeSpentDecorator(this.text, true, getModel().getTaskRepository(), true);
 	}
 }
