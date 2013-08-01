@@ -86,6 +86,14 @@ public interface IssueRestClient {
 	Promise<Issue> getIssue(String issueKey, Iterable<Expandos> expand);
 
 	/**
+	 * Deletes issue with given issueKey
+	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @return Void
+	 * @since 2.0
+	 */
+	Promise<Void> deleteIssue(String issueKey);
+
+	/**
 	 * Retrieves complete information (if the caller has permission) about watchers for selected issue.
 	 *
 	 * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>

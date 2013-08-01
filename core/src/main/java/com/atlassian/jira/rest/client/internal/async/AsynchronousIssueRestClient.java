@@ -151,6 +151,11 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 	}
 
 	@Override
+	public Promise<Void> deleteIssue(final String issueKey) {
+		return delete(UriBuilder.fromUri(baseUri).path("issue").path(issueKey).build());
+	}
+
+	@Override
 	public Promise<Watchers> getWatchers(final URI watchersUri) {
 		return getAndParse(watchersUri, watchersParser);
 	}

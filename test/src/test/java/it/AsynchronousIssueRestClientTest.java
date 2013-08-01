@@ -22,6 +22,7 @@ import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
@@ -35,7 +36,9 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
@@ -55,6 +58,7 @@ import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.TestUtil.assertExpectedErrorCollection;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
+import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -66,6 +70,9 @@ import static org.junit.Assert.*;
 @SuppressWarnings("ConstantConditions")
 @Restore(DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	public static final String UTF8_FILE_BODY = "File body encoded in utf8: Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
 	public static final String UTF8_FILE_NAME = "utf8 file name Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
@@ -117,6 +124,50 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 				Comment.valueOf("My test comment"))).claim();
 		final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
 		assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(expectedValue));
+	}
+
+	@Test
+	public void testDeleteIssue() {
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// verify that issue exist
+		final String issueKey = "TST-1";
+		final Issue issue = issueClient.getIssue(issueKey).claim();
+		assertEquals(issueKey, issue.getKey());
+
+		// delete issue
+		issueClient.deleteIssue(issueKey).claim();
+
+		// verify
+		assertThatIssueNotExists(issueKey);
+	}
+
+	@Test
+	public void testDeleteIssueWhenNoSuchIssue() {
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// verify that issue exist
+		final String issueKey = "TST-999";
+		assertThatIssueNotExists(issueKey);
+
+		// delete issue should thrown 404
+		expectedException.expect(rceWithSingleError(404, "Issue Does Not Exist"));
+		issueClient.deleteIssue(issueKey).claim();
+	}
+
+	@Test
+	public void testDeleteIssueWithoutDeletePermission() {
+		setAnonymousMode();
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// verify that issue doesn't exist
+		final String issueKey = "ANONEDIT-2";
+		final Issue issue = issueClient.getIssue(issueKey).claim();
+		assertEquals(issueKey, issue.getKey());
+
+		// delete issue should thrown 401
+		expectedException.expect(rceWithSingleError(401, "You do not have permission to delete issues in this project."));
+		issueClient.deleteIssue(issueKey).claim();
 	}
 
 	@Test
@@ -800,4 +851,12 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
 	}
 
+	private void assertThatIssueNotExists(String issueKey) {
+		try {
+			final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+			fail("It looks that issue exists, and it should not be here! issue = " + issue);
+		} catch (RestClientException ex) {
+			assertThat(ex, rceWithSingleError(404, "Issue Does Not Exist"));
+		}
+	}
 }
