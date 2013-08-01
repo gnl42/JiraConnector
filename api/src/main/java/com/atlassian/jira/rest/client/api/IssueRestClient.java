@@ -86,12 +86,16 @@ public interface IssueRestClient {
 	Promise<Issue> getIssue(String issueKey, Iterable<Expandos> expand);
 
 	/**
-	 * Deletes issue with given issueKey
+	 * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to delete issue with subtasks. If issue have
+	 * subtasks and {@code deleteSubtasks} is set to false, then issue won't be deleted.
+	 *
 	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @param deleteSubtasks Determines if subtask of issue should be also deleted. If false, and issue has subtasks, then it
+	 *                       won't be deleted.
 	 * @return Void
 	 * @since 2.0
 	 */
-	Promise<Void> deleteIssue(String issueKey);
+	Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks);
 
 	/**
 	 * Retrieves complete information (if the caller has permission) about watchers for selected issue.

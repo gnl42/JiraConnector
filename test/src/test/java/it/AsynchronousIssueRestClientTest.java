@@ -21,18 +21,23 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
+import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -46,8 +51,11 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,9 +64,11 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.*;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.TestUtil.assertExpectedErrorCollection;
+import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.*;
 import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
+import static com.google.common.collect.Iterables.toArray;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -136,10 +146,46 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertEquals(issueKey, issue.getKey());
 
 		// delete issue
-		issueClient.deleteIssue(issueKey).claim();
+		issueClient.deleteIssue(issueKey, false).claim();
 
 		// verify
 		assertThatIssueNotExists(issueKey);
+	}
+
+	@Test
+	public void testDeleteIssueWithSubtasks() {
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// verify that issue exist and create subtask
+		final String issueKey = "TST-1";
+		final Issue issue = issueClient.getIssue(issueKey).claim();
+		assertEquals(issueKey, issue.getKey());
+		final BasicIssue subtask = addSubtaskToIssue(issue);
+		System.out.println(subtask);
+
+		// delete issue
+		issueClient.deleteIssue(issueKey, true).claim();
+
+		// verify
+		assertThatIssueNotExists(issueKey);
+		assertThatIssueNotExists(subtask.getKey());
+	}
+
+	@Test
+	public void testDeleteIssueWithSubtasksWhenDeleteSubtasksIsFalse() {
+		final IssueRestClient issueClient = client.getIssueClient();
+
+		// verify that issue exist and create subtask
+		final String issueKey = "TST-1";
+		final Issue issue = issueClient.getIssue(issueKey).claim();
+		assertEquals(issueKey, issue.getKey());
+		BasicIssue subtask = addSubtaskToIssue(issue);
+		System.out.println(subtask);
+
+		// delete issue
+		expectedException.expect(rceWithSingleError(400, String.format("The issue '%s' has subtasks.  "
+				+ "You must specify the 'deleteSubtasks' parameter to delete this issue and all its subtasks.", issueKey)));
+		issueClient.deleteIssue(issueKey, false).claim();
 	}
 
 	@Test
@@ -152,7 +198,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 		// delete issue should thrown 404
 		expectedException.expect(rceWithSingleError(404, "Issue Does Not Exist"));
-		issueClient.deleteIssue(issueKey).claim();
+		issueClient.deleteIssue(issueKey, false).claim();
 	}
 
 	@Test
@@ -167,7 +213,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 		// delete issue should thrown 401
 		expectedException.expect(rceWithSingleError(401, "You do not have permission to delete issues in this project."));
-		issueClient.deleteIssue(issueKey).claim();
+		issueClient.deleteIssue(issueKey, false).claim();
 	}
 
 	@Test
@@ -858,5 +904,33 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		} catch (RestClientException ex) {
 			assertThat(ex, rceWithSingleError(404, "Issue Does Not Exist"));
 		}
+	}
+
+	private BasicIssue addSubtaskToIssue(final Issue issue) {
+		// collect CreateIssueMetadata for project with key TST
+		final IssueRestClient issueClient = client.getIssueClient();
+		final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+				new GetCreateIssueMetadataOptionsBuilder().withProjectKeys(issue.getProject().getKey())
+						.withExpandedIssueTypesFields().build()).claim();
+
+		// select project and issue
+		assertEquals(1, Iterables.size(metadataProjects));
+		final CimProject project = metadataProjects.iterator().next();
+		final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
+
+		// build issue input
+		final String summary = "Some subtask";
+		final String description = "Some description for substask";
+
+		// prepare IssueInput
+		final IssueInputBuilder issueInputBuilder = new IssueInputBuilder(project, issueType, summary)
+				.setDescription(description)
+				.setFieldValue("parent", ComplexIssueInputFieldValue.with("key", issue.getKey()));
+
+		// create
+		final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).claim();
+		assertNotNull(basicCreatedIssue.getKey());
+
+		return basicCreatedIssue;
 	}
 }

@@ -151,8 +151,9 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 	}
 
 	@Override
-	public Promise<Void> deleteIssue(final String issueKey) {
-		return delete(UriBuilder.fromUri(baseUri).path("issue").path(issueKey).build());
+	public Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) {
+		return delete(UriBuilder.fromUri(baseUri).path("issue").path(issueKey)
+				.queryParam("deleteSubtasks", deleteSubtasks).build());
 	}
 
 	@Override

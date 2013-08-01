@@ -1,12 +1,12 @@
 package com.atlassian.jira.rest.client.test.matchers;
 
-import com.atlassian.jira.functest.framework.matchers.IterableMatchers;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.ImmutableList;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 /**
  * Matchers for RestClientException
@@ -22,8 +22,8 @@ public class RestClientExceptionMatchers {
 			public boolean matches(final Object item) {
 				if (item instanceof RestClientException) {
 					final RestClientException ex = (RestClientException) item;
-					final org.hamcrest.Matcher<Iterable<String>> errorMessageMatcher = IterableMatchers
-							.containsFirst(expectedErrorMessage);
+					final Matcher<Iterable<? extends String>> errorMessageMatcher = Matchers
+							.contains(expectedErrorMessage);
 					return ex.getStatusCode().get().equals(statusCode)
 							&& ex.getErrorCollections().size() == 1
 							&& errorMessageMatcher.matches(ex.getErrorCollections().iterator().next().getErrorMessages());
