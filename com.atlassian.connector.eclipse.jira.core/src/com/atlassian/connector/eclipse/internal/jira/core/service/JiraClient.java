@@ -47,6 +47,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueColl
 import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
 import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.domain.SessionInfo;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
@@ -605,6 +606,18 @@ public class JiraClient {
 //		return soapClient.getResolutions(monitor);
 	}
 
+	public SessionInfo getSessionInfo(IProgressMonitor monitor) throws JiraException {
+
+		// TODO add some aspect logging here
+		JiraCorePlugin.getMonitoring().logJob("getAuthInfo", null); //$NON-NLS-1$
+
+		try {
+			return getRestClient().getSessionInfo();
+		} catch (RestClientException e) {
+			throw new JiraException(e);
+		}
+	}
+
 	public ServerInfo getServerInfo(final IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getServerInfo", null); //$NON-NLS-1$
 
@@ -854,4 +867,5 @@ public class JiraClient {
 	public SimpleDateFormat getDateFormat() {
 		return JiraRestClientAdapter.getDateFormat();
 	}
+
 }

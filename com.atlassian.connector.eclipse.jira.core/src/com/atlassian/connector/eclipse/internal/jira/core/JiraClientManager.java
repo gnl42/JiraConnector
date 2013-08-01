@@ -152,6 +152,9 @@ public class JiraClientManager {
 	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
 		JiraClient client = createClient(location, configuration);
+
+		client.getSessionInfo(monitor);
+
 		return client.getServerInfo(monitor);
 	}
 

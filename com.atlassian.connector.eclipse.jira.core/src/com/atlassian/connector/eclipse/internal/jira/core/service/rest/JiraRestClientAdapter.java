@@ -72,6 +72,7 @@ import com.atlassian.jira.rest.client.domain.CimIssueType;
 import com.atlassian.jira.rest.client.domain.CimProject;
 import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.SessionInfo;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
@@ -343,6 +344,15 @@ public class JiraRestClientAdapter {
 						.getServerInfo(new NullProgressMonitor()));
 			}
 		});
+	}
+
+	public SessionInfo getSessionInfo() throws JiraException {
+		return call(new Callable<SessionInfo>() {
+			public SessionInfo call() {
+				return restClient.getMetadataClient().getSessionInfo(new NullProgressMonitor());
+			}
+		});
+
 	}
 
 	public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
@@ -729,4 +739,5 @@ public class JiraRestClientAdapter {
 
 		return new SecurityLevel[0];
 	}
+
 }
