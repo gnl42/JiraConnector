@@ -379,7 +379,8 @@ public class JiraRestClientAdapter {
 				String[] values = issue.getFieldValues(transitionField.getName());
 				if (values.length > 0 && transitionField.getName().equals(JiraRestFields.SUMMARY)) {
 					fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
-				} else if (values.length > 0 && transitionField.getName().equals(JiraRestFields.RESOLUTION)) {
+				} else if (values.length > 0 && (transitionField.getName().equals(JiraRestFields.RESOLUTION))
+						|| transitionField.getName().equals(JiraRestFields.ISSUETYPE)) {
 					fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
 							JiraRestFields.ID, values[0])));
 				} else if (values.length > 0) {
