@@ -1243,7 +1243,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			} catch (JiraException e) {
 				IStatus status = JiraCorePlugin.toStatus(repository, e);
-				trace(status);
+				StatusHandler.log(status);
 				throw new CoreException(status);
 			}
 		} finally {
