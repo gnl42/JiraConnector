@@ -481,7 +481,7 @@ public class JiraRestClientAdapter {
 			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
 		}
 
-		if (issue.getEstimate() != 0) {
+		if (issue.getEstimate() != null) {
 			Map<String, Object> map = ImmutableMap.<String, Object> builder()
 					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
 					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
