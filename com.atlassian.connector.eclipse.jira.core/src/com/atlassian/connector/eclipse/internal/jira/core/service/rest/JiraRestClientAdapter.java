@@ -384,8 +384,20 @@ public class JiraRestClientAdapter {
 					fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
 							JiraRestFields.ID, values[0])));
 				} else if (values.length > 0) {
-					fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
-							JiraRestFields.NAME, values[0])));
+					if (transitionField.getType() != null && transitionField.getType().equals("array")) { //$NON-NLS-1$
+
+						List<ComplexIssueInputFieldValue> array = new ArrayList<ComplexIssueInputFieldValue>();
+
+						for (String value : values) {
+							array.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, value));
+						}
+
+						fields.add(new FieldInput(transitionField.getId(), array));
+
+					} else {
+						fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
+								JiraRestFields.NAME, values[0])));
+					}
 				} else {
 					throw new JiraException(NLS.bind("Field {0} is required for transition {1}",
 							transitionField.getName(), transitionKey));
