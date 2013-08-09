@@ -71,5 +71,4 @@ public class ExampleCreateIssuesAsynchronous {
 			restClient.close();
 		}
 	}
-
 }
