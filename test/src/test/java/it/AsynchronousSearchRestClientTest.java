@@ -16,6 +16,8 @@
 
 package it;
 
+import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -49,9 +51,12 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import static com.atlassian.jira.nimblefunctests.annotation.LongCondition.LESS_THAN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6_1;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -171,8 +176,19 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		});
 	}
 
+	@JiraBuildNumberDependent(value = BN_JIRA_6_1, condition = LESS_THAN)
+	@Test
+	public void jqlSearchShouldReturnIssueWithDetailsBefore6_1() throws InvocationTargetException, IllegalAccessException {
+		jqlSearchShouldReturnIssueWithDetails("rest/api/2/project/TST");
+	}
+
+	@JiraBuildNumberDependent(value = BN_JIRA_6_1)
 	@Test
 	public void jqlSearchShouldReturnIssueWithDetails() throws InvocationTargetException, IllegalAccessException {
+		jqlSearchShouldReturnIssueWithDetails("rest/api/2/project/TST");
+	}
+
+	private void jqlSearchShouldReturnIssueWithDetails(String projectSelf) {
 		final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").claim();
 		final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
 
@@ -201,7 +217,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals(toDateTime("2010-09-22T18:06:32.000"), issue.getCreationDate());
 		assertEquals(IntegrationTestUtil.USER1_FULL, issue.getReporter());
 		assertEquals(IntegrationTestUtil.USER_ADMIN_FULL, issue.getAssignee());
-		assertEquals(new BasicProject(resolveURI("rest/api/2/project/TST"), "TST", "Test Project"), issue.getProject());
+		assertEquals(new BasicProject(resolveURI(projectSelf), "TST", "Test Project"), issue.getProject());
 		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
 		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
 		assertEquals(new BasicIssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false), issue.getIssueType());
