@@ -185,7 +185,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 	@JiraBuildNumberDependent(value = BN_JIRA_6_1)
 	@Test
 	public void jqlSearchShouldReturnIssueWithDetails() throws InvocationTargetException, IllegalAccessException {
-		jqlSearchShouldReturnIssueWithDetails("rest/api/2/project/TST");
+		jqlSearchShouldReturnIssueWithDetails("rest/api/2/project/10000");
 	}
 
 	private void jqlSearchShouldReturnIssueWithDetails(String projectSelf) {
