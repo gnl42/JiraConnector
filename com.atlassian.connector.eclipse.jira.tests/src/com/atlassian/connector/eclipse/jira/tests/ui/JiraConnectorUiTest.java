@@ -91,8 +91,9 @@ public class JiraConnectorUiTest extends TestCase {
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://mylyn.eclipse.org");
 		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "456");
 		task.setTaskKey("ABC-123");
-		assertEquals("http://mylyn.eclipse.org/browse/ABC-123?page=history", connectorUi.getTaskHistoryUrl(repository,
-				task));
+		assertEquals(
+				"http://mylyn.eclipse.org/browse/ABC-123?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel",
+				connectorUi.getTaskHistoryUrl(repository, task));
 	}
 
 }

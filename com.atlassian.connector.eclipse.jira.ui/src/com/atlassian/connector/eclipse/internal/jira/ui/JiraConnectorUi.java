@@ -213,7 +213,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	@Override
 	public String getTaskHistoryUrl(TaskRepository taskRepository, ITask task) {
 		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
-				+ "?page=history"; //$NON-NLS-1$
+				+ "?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel"; //$NON-NLS-1$
 	}
 
 	public static String getTaskWorkLogUrl(TaskRepository taskRepository, ITask task) {
