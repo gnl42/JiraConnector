@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
 
 @RestoreOnce("jira-dump-with-filters.xml")
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
-	
+
 	public static final Filter FILTER_10000 = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,
 			"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
 			resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
