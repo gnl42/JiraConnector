@@ -157,8 +157,7 @@ public class JiraClient {
 		return restClient;
 	}
 
-	private static JiraRestClientAdapter createRestClient(final AbstractWebLocation location,
-			final JiraClientCache cache) {
+	private JiraRestClientAdapter createRestClient(final AbstractWebLocation location, final JiraClientCache cache) {
 		Proxy proxy = null;
 		final String baseUrl = location.getUrl();
 		if (baseUrl.matches(URL_REGEXP_HTTPS)) {
@@ -177,7 +176,8 @@ public class JiraClient {
 			password = credentials.getPassword();
 		}
 
-		return new JiraRestClientAdapter(baseUrl, username, password, proxy, cache);
+		return new JiraRestClientAdapter(baseUrl, username, password, proxy, cache,
+				localConfiguration.getFollowRedirects());
 	}
 
 //	public void addCommentToIssue(String issueKey, Comment comment, IProgressMonitor monitor) throws JiraException {

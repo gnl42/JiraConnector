@@ -373,7 +373,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		if (localeCombo.getSelectionIndex() != -1) {
 			configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
 		}
-		configuration.setFollowRedirects(followRedirectsButton.getSelection());
 
 		JiraUtil.setConfiguration(repository, configuration);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
@@ -428,6 +427,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	public TaskRepository applyToValidate(TaskRepository repository) {
 		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
 		super.applyTo(repository);
+
+		JiraUtil.setFollowRedirects(repository, followRedirectsButton.getSelection());
+
 		return repository;
 	}
 

@@ -80,6 +80,7 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
@@ -113,13 +114,17 @@ public class JiraRestClientAdapter {
 
 	private final String url;
 
-	public JiraRestClientAdapter(String url, JiraClientCache cache) {
+	private final boolean followRedirects;
+
+	public JiraRestClientAdapter(String url, JiraClientCache cache, boolean followRedirects) {
 		this.url = url;
 		this.cache = cache;
+		this.followRedirects = followRedirects;
 	}
 
-	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache) {
-		this(url, cache);
+	public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy,
+			JiraClientCache cache, final boolean followRedirects) {
+		this(url, cache, followRedirects);
 
 //		TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
 //			public X509Certificate[] getAcceptedIssuers() {
@@ -161,6 +166,10 @@ public class JiraRestClientAdapter {
 									address.getPort(), authProxy.getUserName(), authProxy.getPassword());
 						}
 
+					}
+
+					if (followRedirects) {
+						config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 					}
 
 //					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
@@ -689,6 +698,9 @@ public class JiraRestClientAdapter {
 				throw new JiraException(e.getMessage() + " Please disable time tracking \"Legacy Mode\" in JIRA.", e); //$NON-NLS-1$
 			} else if (e.getMessage().contains(NULL_POINTER_EXCEPTION)) {
 				throw new RuntimeException(e);
+			} else if (e.getMessage().contains("Client response status: 301") && !followRedirects) { //$NON-NLS-1$
+				throw new JiraException(
+						"Client response status: 301. Please enable 'Follow redirects' checkbox for task repository.", e); //$NON-NLS-1$
 			} else {
 
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 

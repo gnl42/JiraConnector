@@ -359,7 +359,10 @@ public class JiraUtil {
 
 	public static void setUseServerTimeTrackingSettings(TaskRepository repository, boolean selection) {
 		repository.setProperty(TIME_TRACKING_SERVER_SETTINGS, String.valueOf(selection));
+	}
 
+	public static void setFollowRedirects(TaskRepository repository, boolean selection) {
+		repository.setProperty(FOLLOW_REDIRECTS_KEY, Boolean.toString(selection));
 	}
 
 	public static Date stringToDate(String dateString) {
@@ -445,7 +448,6 @@ public class JiraUtil {
 		} else {
 			repository.setProperty(LOCALE_KEY, configuration.getLocale().toString());
 		}
-		repository.setProperty(FOLLOW_REDIRECTS_KEY, Boolean.toString(configuration.getFollowRedirects()));
 	}
 
 	public static boolean isCustomDateTimeAttribute(TaskAttribute attribute) {

@@ -37,7 +37,7 @@ import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestC
 public class MockJiraRestClientAdapter extends JiraRestClientAdapter {
 
 	public MockJiraRestClientAdapter(String url, JiraClientCache cache) {
-		super(url, cache);
+		super(url, cache, true);
 	}
 
 	@Override
