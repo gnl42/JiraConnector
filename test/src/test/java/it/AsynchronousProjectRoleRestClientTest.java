@@ -16,6 +16,7 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
@@ -28,6 +29,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -103,9 +109,19 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		assertEquals(actor.getAvatarUri(), buildUserAvatarUri(null, 10083L, "16x16"));
 	}
 
-	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
+	@JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_1, condition = LongCondition.LESS_THAN)
+	@Test
+	public void testGetAllRolesForProjectBefore6_1() {
+		testGetAllRolesForProject(ANONYMOUS_PROJECT_KEY);
+	}
+
+	@JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_1)
 	@Test
 	public void testGetAllRolesForProject() {
+		testGetAllRolesForProject("10020");
+	}
+
+	private void testGetAllRolesForProject(String projectIdOrKey) {
 		final Project anonymousProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
 		final Iterable<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf())
 				.claim();
@@ -135,9 +151,25 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 						))
 		));
 
-		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10000")));
-		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10001")));
-		assertNotNull(Iterables.find(projectRoles, new EntityHelper.AddressEndsWithPredicate("project/ANNON/role/10002")));
+		//noinspection unchecked
+		Assert.assertThat(projectRoles, Matchers.containsInAnyOrder(
+				addressEndsWith("project/" + projectIdOrKey + "/role/10000"),
+				addressEndsWith("project/" + projectIdOrKey + "/role/10001"),
+				addressEndsWith("project/" + projectIdOrKey + "/role/10002")));
+	}
+
+	private Matcher<ProjectRole> addressEndsWith(final String addressEnding) {
+		return new BaseMatcher<ProjectRole>() {
+			@Override
+			public boolean matches(Object o) {
+				return o instanceof ProjectRole && new EntityHelper.AddressEndsWithPredicate(addressEnding).apply((ProjectRole) o);
+			}
+
+			@Override
+			public void describeTo(Description description) {
+				description.appendText("ProjectRole with self address ending with " + addressEnding);
+			}
+		};
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
