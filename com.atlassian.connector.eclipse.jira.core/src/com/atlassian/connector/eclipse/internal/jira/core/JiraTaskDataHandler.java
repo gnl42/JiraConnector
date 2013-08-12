@@ -1515,7 +1515,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attribute.getId().substring(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX.length());
 				String type = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-				CustomField field = new CustomField(id, type, "", attribute.getValues()); //$NON-NLS-1$
+				String name = attribute.getMetaData()
+						.getLabel()
+						.substring(0, attribute.getMetaData().getLabel().length() - 1);
+				CustomField field = new CustomField(id, type, name, attribute.getValues());
 				customFields.add(field);
 			}
 		}

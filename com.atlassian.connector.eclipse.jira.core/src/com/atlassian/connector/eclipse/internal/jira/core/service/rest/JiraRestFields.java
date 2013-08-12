@@ -18,6 +18,8 @@ public class JiraRestFields {
 
 	static final String NAME = "name"; //$NON-NLS-1$
 
+	static final String VALUE = "value"; //$NON-NLS-1$
+
 	static final String ASSIGNEE = "assignee"; //$NON-NLS-1$
 
 	static final String DESCRIPTION = "description"; //$NON-NLS-1$

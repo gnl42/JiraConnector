@@ -80,6 +80,7 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
@@ -163,6 +164,8 @@ public class JiraRestClientAdapter {
 
 					}
 
+					config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+
 //					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
 //							new HTTPSProperties(new HostnameVerifier() {
 //								public boolean verify(String s, SSLSession sslSession) {
@@ -180,6 +183,12 @@ public class JiraRestClientAdapter {
 						.put(ApacheHttpClientConfig.PROPERTY_PROXY_URI,
 								"http://" + address.getHostName() + ":" + address.getPort()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+
+			restClient.getTransportClient()
+					.getClientHandler()
+					.getHttpClient()
+					.getParams()
+					.setParameter("http.protocol.handle-redirects", true);
 
 //			HttpClient httpClient = restClient.getTransportClient().getClientHandler().getHttpClient();
 //			X509HostnameVerifier hostnameVerifier = new AllowAllHostnameVerifier();
@@ -375,16 +384,23 @@ public class JiraRestClientAdapter {
 
 		List<FieldInput> fields = new ArrayList<FieldInput>();
 		for (IssueField transitionField : transitionFields) {
+
 			if (transitionField.isRequired()) {
+
 				String[] values = issue.getFieldValues(transitionField.getName());
-				if (values.length > 0 && transitionField.getName().equals(JiraRestFields.SUMMARY)) {
-					fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
-				} else if (values.length > 0 && (transitionField.getName().equals(JiraRestFields.RESOLUTION))
-						|| transitionField.getName().equals(JiraRestFields.ISSUETYPE)) {
-					fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
-							JiraRestFields.ID, values[0])));
-				} else if (values.length > 0) {
-					if (transitionField.getType() != null && transitionField.getType().equals("array")) { //$NON-NLS-1$
+
+				if (values.length > 0) {
+					if (transitionField.getName().equals(JiraRestFields.SUMMARY)) {
+
+						fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
+
+					} else if (transitionField.getName().equals(JiraRestFields.RESOLUTION)
+							|| transitionField.getName().equals(JiraRestFields.ISSUETYPE)) {
+
+						fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
+								JiraRestFields.ID, values[0])));
+
+					} else if (transitionField.getType() != null && transitionField.getType().equals("array")) { //$NON-NLS-1$
 
 						List<ComplexIssueInputFieldValue> array = new ArrayList<ComplexIssueInputFieldValue>();
 
@@ -394,13 +410,27 @@ public class JiraRestClientAdapter {
 
 						fields.add(new FieldInput(transitionField.getId(), array));
 
+					} else if (transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
+
+						CustomField customField = issue.getCustomFieldById(transitionField.getId());
+
+						FieldInput field = JiraRestConverter.convert(customField);
+						if (field != null) {
+							fields.add(field);
+						}
 					} else {
 						fields.add(new FieldInput(transitionField.getName(), ComplexIssueInputFieldValue.with(
 								JiraRestFields.NAME, values[0])));
 					}
 				} else {
-					throw new JiraException(NLS.bind("Field {0} is required for transition {1}",
-							transitionField.getName(), transitionKey));
+					String name = transitionField.getName();
+
+					if (name.startsWith("customfield_")) { //$NON-NLS-1$
+						name = issue.getCustomFieldById(transitionField.getId()).getName();
+					}
+					// TODO retrieve field display name
+					throw new JiraException(NLS.bind("Field \"{0}\" is required for transition {1}", //$NON-NLS-1$
+							name, transitionKey));
 				}
 			}
 		}

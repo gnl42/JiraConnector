@@ -149,6 +149,8 @@ public class JiraRestConverter {
 		jiraIssue.setCustomFields(getCustomFieldsFromIssue(issue));
 		jiraIssue.setEditableFields(getEditableFieldsFromIssue(issue));
 
+//		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
+
 		Project project = cache.getProjectByKey(issue.getProject().getKey());
 		jiraIssue.setProject(project);
 		if (project != null && !project.hasDetails()) {
@@ -295,6 +297,19 @@ public class JiraRestConverter {
 
 		return jiraIssue;
 	}
+
+//	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
+//		Map<String, IssueField> editableFieldsMap = new HashMap<String, IssueField>(editableFields.length + 1, 1);
+//
+//		// transform editable fields into HasMap
+//		for (IssueField editableField : editableFields) {
+//			editableFieldsMap.put(editableField.getId(), editableField);
+//		}
+//
+//		for (CustomField customField : customFields) {
+//			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
+//		}
+//	}
 
 	private static CustomField[] getCustomFieldsFromIssue(Issue issue) {
 		JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
