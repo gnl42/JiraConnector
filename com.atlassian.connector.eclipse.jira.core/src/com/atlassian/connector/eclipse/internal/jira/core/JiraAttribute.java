@@ -103,7 +103,7 @@ public enum JiraAttribute {
 
 	VOTES(IJiraConstants.ATTRIBUTE_VOTES, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Votes, true, true),
 
-	LABELS(IJiraConstants.ATTRIBUTE_LABELS, JiraFieldType.LABELS, Messages.JiraAttribute_Labels, false, true),
+	LABELS(IJiraConstants.ATTRIBUTE_LABELS, JiraFieldType.LABELS, Messages.JiraAttribute_Labels, false, false),
 
 	RANK(TaskAttribute.RANK, JiraFieldType.RANK, Messages.JiraAttribute_unknown, true, true);
 

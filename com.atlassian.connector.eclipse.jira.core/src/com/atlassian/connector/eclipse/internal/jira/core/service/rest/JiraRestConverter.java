@@ -527,7 +527,7 @@ public class JiraRestConverter {
 				values = JiraRestCustomFieldsParser.parseMultiSelect(field);
 				break;
 			case LABELSS:
-				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), " ")); //$NON-NLS-1$
 				readonly = true;
 				break;
 			case GROUPPICKER:
@@ -1062,15 +1062,17 @@ public class JiraRestConverter {
 //			if (customField.getValues().size() > 0) {
 			List<ComplexIssueInputFieldValue> values = new ArrayList<ComplexIssueInputFieldValue>();
 			for (String value : customField.getValues()) {
-				values.add(ComplexIssueInputFieldValue.with("value", value));
+				values.add(ComplexIssueInputFieldValue.with("value", value)); //$NON-NLS-1$
 			}
 
 			return new FieldInput(customField.getId(), values);
 //			}
 
-//		case LABELSS:
-			// no support for edit
-//			break;
+		case LABELSS:
+			if (customField.getValues().size() > 0) {
+				return new FieldInput(customField.getId(), customField.getValues());
+			}
+			break;
 		default:
 			// not supported custom field
 			return null;

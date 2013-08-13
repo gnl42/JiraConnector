@@ -482,6 +482,10 @@ public class JiraIssue implements Serializable {
 			}
 		} else if ("timetracking".equals(field)) { //$NON-NLS-1$
 			return new String[] { Long.toString(getEstimate() / 60) + "m" }; //$NON-NLS-1$
+		} else if ("labels".equals(field)) { //$NON-NLS-1$
+			return getLabels();
+		} else if ("security".equals(field)) { //$NON-NLS-1$
+			return new String[] { getSecurityLevel().getId() };
 		}
 
 		// TODO add other fields

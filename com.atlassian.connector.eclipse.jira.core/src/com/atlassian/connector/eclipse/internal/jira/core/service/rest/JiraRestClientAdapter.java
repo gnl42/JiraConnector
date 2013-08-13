@@ -389,18 +389,26 @@ public class JiraRestClientAdapter {
 
 				String[] values = issue.getFieldValues(transitionField.getName());
 
-				if (values.length > 0) {
-					if (transitionField.getName().equals(JiraRestFields.SUMMARY)) {
+				if (values != null && values.length > 0) {
+					if (transitionField.getName().equals(JiraRestFields.SUMMARY)
+							|| transitionField.getName().equals(JiraRestFields.DESCRIPTION)) {
 
-						fields.add(new FieldInput(JiraRestFields.SUMMARY, values[0]));
+						fields.add(new FieldInput(transitionField.getName(), values[0]));
+
+					} else if (transitionField.getName().equals(JiraRestFields.LABELS)) {
+
+						fields.add(new FieldInput(transitionField.getName(), Arrays.asList(values)));
 
 					} else if (transitionField.getName().equals(JiraRestFields.RESOLUTION)
-							|| transitionField.getName().equals(JiraRestFields.ISSUETYPE)) {
+							|| transitionField.getName().equals(JiraRestFields.ISSUETYPE)
+							|| transitionField.getName().equals(JiraRestFields.PRIORITY)
+							|| transitionField.getName().equals(JiraRestFields.SECURITY)) {
 
 						fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(
 								JiraRestFields.ID, values[0])));
 
-					} else if (transitionField.getType() != null && transitionField.getType().equals("array")) { //$NON-NLS-1$
+					} else if (transitionField.getType() != null
+							&& transitionField.getType().equals("array") && !transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$ //$NON-NLS-2$
 
 						List<ComplexIssueInputFieldValue> array = new ArrayList<ComplexIssueInputFieldValue>();
 
@@ -424,13 +432,18 @@ public class JiraRestClientAdapter {
 					}
 				} else {
 					String name = transitionField.getName();
+					String message = "Field \"{0}\" is required for transition id \"{1}\""; //$NON-NLS-1$
 
 					if (name.startsWith("customfield_")) { //$NON-NLS-1$
-						name = issue.getCustomFieldById(transitionField.getId()).getName();
+						CustomField customField = issue.getCustomFieldById(transitionField.getId());
+						if (customField != null) {
+							name = customField.getName();
+						} else {
+							message += " but is not present on the Issue Edit screen."; //$NON-NLS-1$
+						}
 					}
-					// TODO retrieve field display name
-					throw new JiraException(NLS.bind("Field \"{0}\" is required for transition {1}", //$NON-NLS-1$
-							name, transitionKey));
+					// TODO retrieve transition name
+					throw new JiraException(NLS.bind(message, name, transitionKey));
 				}
 			}
 		}
@@ -674,6 +687,10 @@ public class JiraRestClientAdapter {
 		if (!"-1".equals(changedIssue.getAssignee())) { //$NON-NLS-1$
 			updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(
 					JiraRestFields.NAME, changedIssue.getAssignee())));
+		}
+
+		if (editableFields.contains(new IssueField(JiraRestFields.LABELS, null))) {
+			updateFields.add(new FieldInput(JiraRestFields.LABELS, Arrays.asList(changedIssue.getLabels())));
 		}
 
 		for (CustomField customField : changedIssue.getCustomFields()) {
