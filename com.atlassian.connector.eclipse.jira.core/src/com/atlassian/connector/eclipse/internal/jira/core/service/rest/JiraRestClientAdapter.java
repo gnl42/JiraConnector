@@ -391,7 +391,8 @@ public class JiraRestClientAdapter {
 
 				if (values != null && values.length > 0) {
 					if (transitionField.getName().equals(JiraRestFields.SUMMARY)
-							|| transitionField.getName().equals(JiraRestFields.DESCRIPTION)) {
+							|| transitionField.getName().equals(JiraRestFields.DESCRIPTION)
+							|| transitionField.getName().equals(JiraRestFields.ENVIRONMENT)) {
 
 						fields.add(new FieldInput(transitionField.getName(), values[0]));
 
