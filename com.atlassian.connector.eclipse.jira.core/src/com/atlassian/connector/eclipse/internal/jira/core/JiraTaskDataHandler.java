@@ -519,7 +519,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		if (jiraIssue.getLabels().length > 0) {
-			setAttributeValue(data, JiraAttribute.LABELS, StringUtils.join(jiraIssue.getLabels(), ", ")); //$NON-NLS-1$
+			setAttributeValue(data, JiraAttribute.LABELS, StringUtils.join(jiraIssue.getLabels(), " ")); //$NON-NLS-1$
 		}
 
 		addAttributeValue(data, JiraAttribute.PROJECT_ROLES, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
@@ -1515,7 +1515,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attribute.getId().substring(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX.length());
 				String type = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-				CustomField field = new CustomField(id, type, "", attribute.getValues()); //$NON-NLS-1$
+				String name = attribute.getMetaData()
+						.getLabel()
+						.substring(0, attribute.getMetaData().getLabel().length() - 1);
+				CustomField field = new CustomField(id, type, name, attribute.getValues());
 				customFields.add(field);
 			}
 		}
@@ -1524,6 +1527,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		String resolutionId = getAttributeValue(taskData, JiraAttribute.RESOLUTION);
 		if (resolutionId != null) {
 			issue.setResolution(new Resolution(resolutionId, resolutionId));
+		}
+
+		String labels = getAttributeValue(taskData, JiraAttribute.LABELS);
+		if (labels != null) {
+			issue.setLabels(StringUtils.split(labels));
 		}
 
 		return issue;
@@ -1756,6 +1764,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return JiraAttribute.ESTIMATE.id();
 		} else if ("duedate".equals(key)) { //$NON-NLS-1$
 			return JiraAttribute.DUE_DATE.id();
+		} else if ("labels".equals(key)) {
+			return JiraAttribute.LABELS.id();
 		}
 		if (key.startsWith("issueLink")) { //$NON-NLS-1$
 			return IJiraConstants.ATTRIBUTE_LINK_PREFIX + key;

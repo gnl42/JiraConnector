@@ -149,6 +149,8 @@ public class JiraRestConverter {
 		jiraIssue.setCustomFields(getCustomFieldsFromIssue(issue));
 		jiraIssue.setEditableFields(getEditableFieldsFromIssue(issue));
 
+//		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
+
 		Project project = cache.getProjectByKey(issue.getProject().getKey());
 		jiraIssue.setProject(project);
 		if (project != null && !project.hasDetails()) {
@@ -295,6 +297,19 @@ public class JiraRestConverter {
 
 		return jiraIssue;
 	}
+
+//	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
+//		Map<String, IssueField> editableFieldsMap = new HashMap<String, IssueField>(editableFields.length + 1, 1);
+//
+//		// transform editable fields into HasMap
+//		for (IssueField editableField : editableFields) {
+//			editableFieldsMap.put(editableField.getId(), editableField);
+//		}
+//
+//		for (CustomField customField : customFields) {
+//			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
+//		}
+//	}
 
 	private static CustomField[] getCustomFieldsFromIssue(Issue issue) {
 		JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
@@ -512,7 +527,7 @@ public class JiraRestConverter {
 				values = JiraRestCustomFieldsParser.parseMultiSelect(field);
 				break;
 			case LABELSS:
-				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), ", ")); //$NON-NLS-1$
+				values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), " ")); //$NON-NLS-1$
 				readonly = true;
 				break;
 			case GROUPPICKER:
@@ -1047,15 +1062,17 @@ public class JiraRestConverter {
 //			if (customField.getValues().size() > 0) {
 			List<ComplexIssueInputFieldValue> values = new ArrayList<ComplexIssueInputFieldValue>();
 			for (String value : customField.getValues()) {
-				values.add(ComplexIssueInputFieldValue.with("value", value));
+				values.add(ComplexIssueInputFieldValue.with("value", value)); //$NON-NLS-1$
 			}
 
 			return new FieldInput(customField.getId(), values);
 //			}
 
-//		case LABELSS:
-			// no support for edit
-//			break;
+		case LABELSS:
+			if (customField.getValues().size() > 0) {
+				return new FieldInput(customField.getId(), customField.getValues());
+			}
+			break;
 		default:
 			// not supported custom field
 			return null;
