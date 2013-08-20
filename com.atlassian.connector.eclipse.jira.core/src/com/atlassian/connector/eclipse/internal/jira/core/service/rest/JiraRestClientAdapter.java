@@ -80,7 +80,6 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
@@ -168,9 +167,12 @@ public class JiraRestClientAdapter {
 
 					}
 
-					if (followRedirects) {
-						config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-					}
+//					if (followRedirects) {
+//						config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+//					}
+
+					// timeout
+//					ApacheHttpClientConfig.PROPERTY_READ_TIMEOUT;
 
 //					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
 //							new HTTPSProperties(new HostnameVerifier() {
@@ -180,7 +182,7 @@ public class JiraRestClientAdapter {
 //
 //							}, context));
 				}
-			});
+			}, followRedirects);
 
 			if (proxy != null) {
 				final InetSocketAddress address = (InetSocketAddress) proxy.address();
