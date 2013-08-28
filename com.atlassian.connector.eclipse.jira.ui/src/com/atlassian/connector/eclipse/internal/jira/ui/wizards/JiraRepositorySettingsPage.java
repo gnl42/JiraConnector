@@ -41,7 +41,6 @@ import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -532,7 +531,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 						INVALID_REPOSITORY_URL, null));
 			}
 
-			AbstractWebLocation location = new TaskRepositoryLocationFactory().createWebLocation(repository);
+			AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
 			JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
 			try {
 				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);

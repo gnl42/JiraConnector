@@ -20,7 +20,6 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivityListener;
 import org.eclipse.mylyn.tasks.core.TaskActivityAdapter;
-import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -93,7 +92,8 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		instance = this;
-		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
+		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new JiraTaskRepositoryLocationUiFactory(),
+				false);
 		TasksUi.getRepositoryManager().addListener(JiraClientFactory.getDefault());
 
 		if (!getPreferenceStore().getBoolean(IJiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
