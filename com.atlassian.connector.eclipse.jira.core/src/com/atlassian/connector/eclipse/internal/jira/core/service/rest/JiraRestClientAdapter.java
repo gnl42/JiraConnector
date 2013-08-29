@@ -80,12 +80,19 @@ import com.atlassian.jira.rest.client.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 /**
  * @author Jacek Jaroczynski
  */
 public class JiraRestClientAdapter {
+
+	private static final Integer TIMEOUT_IN_MS = new Integer(60 * 1000); // one minute
+
+	private static final String CONNECT_TIMEOUT_EXCEPTION = "org.apache.commons.httpclient.ConnectTimeoutException"; //$NON-NLS-1$
+
+	private static final String SOCKET_TIMEOUT_EXCEPTION = "java.net.SocketTimeoutException"; //$NON-NLS-1$
 
 	private static final SimpleDateFormat REST_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
 
@@ -172,7 +179,8 @@ public class JiraRestClientAdapter {
 //					}
 
 					// timeout
-//					ApacheHttpClientConfig.PROPERTY_READ_TIMEOUT;
+					config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_IN_MS);
+					config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_IN_MS);
 
 //					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
 //							new HTTPSProperties(new HostnameVerifier() {
@@ -742,6 +750,12 @@ public class JiraRestClientAdapter {
 			} else if (e.getMessage().contains("Client response status: 301") && !followRedirects) { //$NON-NLS-1$
 				throw new JiraException(
 						"Client response status: 301. Please enable 'Follow redirects' checkbox for task repository.", e); //$NON-NLS-1$
+			} else if (e.getMessage().contains(SOCKET_TIMEOUT_EXCEPTION)) {
+				int index = e.getMessage().indexOf(SOCKET_TIMEOUT_EXCEPTION);
+				throw new JiraException(e.getMessage().substring(index), e);
+			} else if (e.getMessage().contains(CONNECT_TIMEOUT_EXCEPTION)) {
+				int index = e.getMessage().indexOf(CONNECT_TIMEOUT_EXCEPTION);
+				throw new JiraException(e.getMessage().substring(index), e);
 			} else {
 
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
