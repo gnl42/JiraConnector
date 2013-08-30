@@ -132,9 +132,9 @@ public class JiraRestClientAdapter {
 			JiraClientCache cache, final boolean followRedirects) {
 		this(url, cache, followRedirects);
 
-//		TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
+//		final TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
 //			public X509Certificate[] getAcceptedIssuers() {
-//				return new X509Certificate[] {};
+//				return null;
 //			}
 //
 //			public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
@@ -144,12 +144,8 @@ public class JiraRestClientAdapter {
 //			}
 //		} };
 
-//		JerseyJiraRestClientFactory restFactory = new JerseyJiraRestClientFactory();
-//		this.restClient = restFactory.createWithBasicHttpAuthentication(new URI(url), userName, password);
 		try {
-//			final SSLContext context = SSLContext.getInstance("SSL");
-//			context.init(null, trustAll, new SecureRandom());
-//
+
 //			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
 //
 //			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
@@ -174,21 +170,31 @@ public class JiraRestClientAdapter {
 
 					}
 
-//					if (followRedirects) {
-//						config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-//					}
-
 					// timeout
 					config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_IN_MS);
 					config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_IN_MS);
 
-//					config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-//							new HTTPSProperties(new HostnameVerifier() {
-//								public boolean verify(String s, SSLSession sslSession) {
-//									return false;
-//								}
+//					SSLContext context;
+//					try {
+//						context = SSLContext.getInstance("SSL");
+//						context.init(null, trustAll, new SecureRandom());
 //
-//							}, context));
+//						config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+//								new HTTPSProperties(new HostnameVerifier() {
+//									public boolean verify(String s, SSLSession sslSession) {
+//										return false;
+//									}
+//
+//								}, context));
+//
+//					} catch (NoSuchAlgorithmException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					} catch (KeyManagementException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+
 				}
 			}, followRedirects);
 
@@ -221,11 +227,6 @@ public class JiraRestClientAdapter {
 			// we should never get here as Mylyn constructs URI first and fails if it is incorrect
 			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
 		}
-//		catch (NoSuchAlgorithmException e) {
-//			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
-//		} catch (KeyManagementException e) {
-//			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
-//		}
 	}
 
 	public void addComment(final String issueKey, final String comment) throws JiraException {
