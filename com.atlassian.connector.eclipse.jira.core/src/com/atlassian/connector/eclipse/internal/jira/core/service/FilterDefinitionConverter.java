@@ -69,6 +69,8 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.filter.StatusFil
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.UserInGroupFilter;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.VersionFilter;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
@@ -396,7 +398,13 @@ public class FilterDefinitionConverter {
 		final FilterDataExtractor jqlFilter = new JQLFilterDataExtractor();
 
 		// project
-		addJqlInExpression(searchParams, jiraField.PROJECT(), jqlFilter.extractProjects(filter.getProjectFilter()));
+		addJqlInExpression(searchParams, jiraField.PROJECT(), Collections2.transform(
+				jqlFilter.extractProjects(filter.getProjectFilter()), new Function<String, String>() {
+					public String apply(String arg) {
+						// quote every project key with quotation marks (avoid hitting JQL reserved word, e.g. TRANS)
+						return "\"" + arg + "\""; //$NON-NLS-1$//$NON-NLS-2$
+					}
+				}));
 
 		// component
 		addJqlInExpression(searchParams, jiraField.COMPONENT(),
