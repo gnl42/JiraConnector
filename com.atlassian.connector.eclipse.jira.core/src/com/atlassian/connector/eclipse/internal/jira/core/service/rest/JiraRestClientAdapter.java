@@ -550,8 +550,8 @@ public class JiraRestClientAdapter {
 
 		if (issue.getEstimate() != null) {
 			Map<String, Object> map = ImmutableMap.<String, Object> builder()
-					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
-					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60))
+					.put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
+					.put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
 					.build();
 			issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING,
 					new ComplexIssueInputFieldValue(map)));
