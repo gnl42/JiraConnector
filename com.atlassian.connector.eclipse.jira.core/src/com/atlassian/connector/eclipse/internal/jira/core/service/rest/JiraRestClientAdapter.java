@@ -88,7 +88,9 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
  */
 public class JiraRestClientAdapter {
 
-	private static final Integer TIMEOUT_IN_MS = new Integer(60 * 1000); // one minute
+	private static final Integer TIMEOUT_CONNECTION_IN_MS = new Integer(60 * 1000); // one minute
+
+	private static final Integer TIMEOUT_READ_IN_MS = new Integer(10 * 60 * 1000); // ten minutes
 
 	private static final String CONNECT_TIMEOUT_EXCEPTION = "org.apache.commons.httpclient.ConnectTimeoutException"; //$NON-NLS-1$
 
@@ -171,8 +173,8 @@ public class JiraRestClientAdapter {
 					}
 
 					// timeout
-					config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_IN_MS);
-					config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_IN_MS);
+					config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_CONNECTION_IN_MS);
+					config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_READ_IN_MS);
 
 //					SSLContext context;
 //					try {
