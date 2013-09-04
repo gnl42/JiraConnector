@@ -615,7 +615,9 @@ public class JiraRestConverter {
 //		outWorklog.setRoleLevelId(worklog.get);
 		outWorklog.setStartDate(worklog.getStartDate().toDate());
 		outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
-		outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
+		if (worklog.getUpdateAuthor() != null) {
+			outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
+		}
 		outWorklog.setUpdated(worklog.getUpdateDate().toDate());
 
 		return outWorklog;
