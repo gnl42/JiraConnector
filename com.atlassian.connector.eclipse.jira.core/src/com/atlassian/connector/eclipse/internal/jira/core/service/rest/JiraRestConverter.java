@@ -604,8 +604,9 @@ public class JiraRestConverter {
 	private static JiraWorkLog convert(Worklog worklog) {
 		JiraWorkLog outWorklog = new JiraWorkLog();
 
-//		outWorklog.setAdjustEstimate(worklog.get);
-		outWorklog.setAuthor(worklog.getAuthor().getDisplayName());
+		if (worklog.getAuthor() != null) {
+			outWorklog.setAuthor(worklog.getAuthor().getDisplayName());
+		}
 		outWorklog.setComment(worklog.getComment());
 		outWorklog.setCreated(worklog.getCreationDate().toDate());
 //		outWorklog.setGroupLevel(worklog.get)
