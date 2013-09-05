@@ -223,7 +223,7 @@ public class FilterDefinitionConverterTest extends TestCase {
 	}
 
 	private String calcExpectedJql(String datetime, String date) {
-		return "project in (PROJECTZERO,PROJECTONE) "
+		return "project in (\"PROJECTZERO\",\"PROJECTONE\") "
 				+ "AND component in (comp0,comp1) "
 				+ "AND fixVersion in (releasedVersions(),\"ver0 name\",\"ver0 name\") "
 				+ "AND affectedVersion in (unreleasedVersions(),\"ver1 name\",\"ver2 name\") "
