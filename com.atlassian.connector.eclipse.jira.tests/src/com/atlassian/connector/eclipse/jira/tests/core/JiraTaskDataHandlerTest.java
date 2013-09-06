@@ -258,6 +258,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		attribute.setValue(dueDate);
 		attribute = taskData.getRoot().createAttribute(dataHandler.mapCommonAttributeKey(customFieldId));
 		attribute.addValue("foo");
+		attribute.getMetaData().setLabel("foo");
 		taskData.getRoot().getAttribute(TaskAttribute.COMMENT_NEW).addValue("add comment");
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
 
