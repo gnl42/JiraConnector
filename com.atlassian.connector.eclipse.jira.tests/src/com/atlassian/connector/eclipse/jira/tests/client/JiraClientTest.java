@@ -657,6 +657,9 @@ public class JiraClientTest extends TestCase {
 
 	public void testProjectSecurityLevelAccessible() throws Exception {
 		Project project = client.getCache().getProjectById("10050");
+		if (!project.hasDetails()) {
+			client.getCache().refreshProjectDetails(project, null);
+		}
 		assertNotNull(project.getSecurityLevels());
 	}
 }
