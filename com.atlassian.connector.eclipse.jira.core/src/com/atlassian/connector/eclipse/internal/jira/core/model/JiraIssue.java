@@ -442,7 +442,7 @@ public class JiraIssue implements Serializable {
 			return new String[] { reporter };
 		} else if ("issuetype".equals(field)) { //$NON-NLS-1$
 			if (type != null) {
-				return new String[] { type.getName() };
+				return new String[] { type.getId() };
 			}
 		} else if ("priority".equals(field)) { //$NON-NLS-1$
 			if (priority != null) {
