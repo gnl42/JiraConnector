@@ -21,6 +21,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.tests.util,
  org.apache.axis;bundle-version="1.4.0",
  org.eclipse.mylyn.commons.tests,
+ org.eclipse.mylyn.commons.soap,
  com.google.guava;bundle-version="13.0.0",
  org.joda.time;bundle-version="1.6.0"
 Export-Package: com.atlassian.connector.eclipse.jira.tests;x-friends:="com.atlassian.connector.eclipse.tests",
