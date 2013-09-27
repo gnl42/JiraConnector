@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.api;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.util.concurrent.Promise;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -46,4 +47,9 @@ public interface UserRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<User> getUser(URI userUri);
+
+    Promise<Iterable<User>> findUsers(String username);
+
+    Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive, @Nullable Boolean includeInactive);
+
 }
