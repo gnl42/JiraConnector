@@ -192,6 +192,8 @@
 		<property name="publish.local.path" value="/var/www/domains/atlassian.com/update/htdocs/${publish.path}"/>
 
 		<echo message="Working in ${publish.local.path}" />
+		<echo message="SCP key path is ${scp.key.path}" />
+		<echo message="Bamboo build working directory is ${bamboo.build.working.directory}" />
 		
 		<!-- <sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
 					command="touch ${publish.local.path}/${publish.name}.tmp"/> -->
