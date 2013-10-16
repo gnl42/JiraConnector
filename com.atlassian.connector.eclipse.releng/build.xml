@@ -221,7 +221,7 @@
 		</davput>
 		-->
 		
-		<scp file="${build.home}/${build.target}/${publish.name}-site-all.zip" keyfile="${scp.key.path}" 
+		<scp file="${build.home}/${build.target}/${publish.name}-site-all.zip" keyfile="${scp.key.path}" passphrase=" "
 			remoteTofile="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}-site-all.zip.tmp" 
 			trust="yes" />
 		<!--
