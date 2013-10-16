@@ -191,21 +191,20 @@
 		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}" />
 		<property name="publish.local.path" value="/var/www/domains/atlassian.com/update/htdocs/${publish.path}"/>
 
-		<echo message="Working in ${publish.local.path}" />
 		<echo message="SCP key path is ${scp.key.path}" />
-		<echo message="Bamboo build working directory is ${bamboo.build.working.directory}" />
+		<echo message="Working remotely in ${publish.local.path}" />
 		
 		<!-- <sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
 					command="touch ${publish.local.path}/${publish.name}.tmp"/> -->
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 					command="rm -rf ${publish.local.path}/${publish.name}.tmp"/>
 		<!--
 		<davdelete url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />
 		-->		
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}"  keyfile="${scp.key.path}" trust="yes"
 					command="mkdir ${publish.local.path}/${publish.name}.tmp"/>
-		<scp todir="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp" trust="yes">
+		<scp todir="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp" trust="yes" keyfile="${scp.key.path}">
 		    <fileset dir="${build.home}/${build.target}/site" />
 		</scp>
 		<!--
@@ -222,8 +221,8 @@
 		</davput>
 		-->
 		
-		<scp file="${build.home}/${build.target}/${publish.name}-site-all.zip" 
-			remoteTofile="${build.publish.user}:${build.publish.passphrase}@${build.publish.host}:${publish.local.path}/${publish.name}-site-all.zip.tmp" 
+		<scp file="${build.home}/${build.target}/${publish.name}-site-all.zip" keyfile="${scp.key.path}" 
+			remoteTofile="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}-site-all.zip.tmp" 
 			trust="yes" />
 		<!--
 		<davput url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" verbose="true" lock="false" overwrite="true">
@@ -231,37 +230,37 @@
 		</davput>
 		-->
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 					command="rm -rf ${publish.local.path}/${publish.name}"/>
 		<!-- <davdelete url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" /> -->
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 							command="mv -f ${publish.local.path}/${publish.name}.tmp ${publish.local.path}/${publish.name}"/>
 		<!-- <davmove url="${build.publish.host}/${publish.path}/${publish.name}.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${publish.name}" overwrite="true" /> -->
 
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 							command="rm -rf ${publish.local.path}/${publish.name}-site-all.zip"/>
 		<!--davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}"/-->
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 									command="mv -f ${publish.local.path}/${publish.name}-site-all.zip.tmp ${publish.local.path}/${publish.name}-site-all.zip"/>
 		<!-- <davmove url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" /> -->
 		
 		<!--<davdelete url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip.tmp" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 			command="mkdir -p ${publish.local.path}/${version}" />
 		<!--<mkcol url="${build.publish.host}/${publish.path}/${version}" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 		
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 			command="cp ${publish.local.path}/${publish.name}-site-all.zip ${publish.local.path}/${version}/${publish.name}-site-all.zip" />
 		<!--<davcopy url="${build.publish.host}/${publish.path}/${publish.name}-site-all.zip" userid="${build.publish.user}" password="${build.publish.passphrase}" overwrite="true" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}-site-all.zip" />-->
 
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 			command="rm -rf ${publish.local.path}/${version}/${publish.name}"/>
 		<!--<davdelete url="${build.publish.host}/${publish.path}/${version}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" />-->
 
-		<sshexec host="${build.publish.host}" username="${build.publish.user}" password="${build.publish.passphrase}" trust="yes"
+		<sshexec host="${build.publish.host}" username="${build.publish.user}" keyfile="${scp.key.path}" trust="yes"
 			command="cp -R ${publish.local.path}/${publish.name} ${publish.local.path}/${version}/${publish.name}" />
 		<!--<davcopy url="${build.publish.host}/${publish.path}/${publish.name}" userid="${build.publish.user}" password="${build.publish.passphrase}" destination="${build.publish.host}/${publish.path}/${version}/${publish.name}" overwrite="true" />-->
 	</target>
