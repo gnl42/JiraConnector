@@ -204,7 +204,7 @@
 		
 		<sshexec host="${build.publish.host}" username="${build.publish.user}"  keyfile="${scp.key.path}" trust="yes"
 					command="mkdir ${publish.local.path}/${publish.name}.tmp"/>
-		<scp todir="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp" trust="yes" keyfile="${scp.key.path}">
+		<scp todir="${build.publish.user}@${build.publish.host}:${publish.local.path}/${publish.name}.tmp" trust="yes" keyfile="${scp.key.path}" passphrase=" ">
 		    <fileset dir="${build.home}/${build.target}/site" />
 		</scp>
 		<!--
