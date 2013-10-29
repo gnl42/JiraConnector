@@ -137,7 +137,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		ITask task = JiraTestUtil.createTask(repository, taskData.getTaskId());
 		List<ITaskComment> comments = JiraTestUtil.getTaskComments(task);
 		assertEquals(1, comments.size());
-		assertEquals(commentText, comments.get(0).getText());
+		assertEquals(commentText, comments.get(0).getText().replaceAll("\r\n", "\n"));
 		assertEquals("600", taskData.getRoot().getAttribute(JiraAttribute.ESTIMATE.id()).getValue());
 		assertEquals(component.getId(), taskData.getRoot().getAttribute(JiraAttribute.COMPONENTS.id()).getValue());
 	}
@@ -167,7 +167,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		ITask task = JiraTestUtil.createTask(repository, taskData.getTaskId());
 		List<ITaskComment> comments = JiraTestUtil.getTaskComments(task);
 		assertEquals(1, comments.size());
-		assertEquals(commentText, comments.get(0).getText());
+		assertEquals(commentText, comments.get(0).getText().replaceAll("\r\n", "\n"));
 		assertEquals("600", taskData.getRoot().getAttribute(JiraAttribute.ESTIMATE.id()).getValue());
 		assertEquals(component.getId(), taskData.getRoot().getAttribute(JiraAttribute.COMPONENTS.id()).getValue());
 		assertTrue(client.getCache().getProjectById(issue.getProject().getId()).hasDetails());
