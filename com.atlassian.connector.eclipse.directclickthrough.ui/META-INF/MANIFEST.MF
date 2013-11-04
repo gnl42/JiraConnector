@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Direct Click Through UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.directclickthrough.ui;singleton:=true
-Bundle-Version: 3.2.2.qualifier
+Bundle-Version: 3.2.3.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
