@@ -18,6 +18,7 @@ package it;
 
 import com.atlassian.jira.functest.framework.UserProfile;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
+import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -51,8 +52,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.annotation.Nullable;
-import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,6 +65,8 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
+import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE;
@@ -86,7 +87,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
@@ -586,18 +593,25 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 						Comment.createWithGroupLevel("my body", "somefakegroup"))).claim();
 			}
 		});
-
-
-		setUser2();
-		assertErrorCode(Response.Status.UNAUTHORIZED, "No Link Issue Permission for issue 'TST-7'", new Runnable() {
-			@Override
-			public void run() {
-				client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", null)).claim();
-			}
-		});
-
 	}
 
+    @JiraBuildNumberDependent(condition = LongCondition.LESS_THAN, value = 6211)
+    @Test
+    public void testLinkIssuesWithInvalidParamsBeforeUpgradeTask6211() {
+        setUser2();
+        assertErrorCode(Response.Status.UNAUTHORIZED, "No Link Issue Permission for issue 'TST-7'", new Runnable() {
+            @Override
+            public void run() {
+                client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", null)).claim();
+            }
+        });
+    }
+
+    @JiraBuildNumberDependent(6211)
+    @Test
+    public void testLinkIssuesForUserRoleLevelAfterUpgradeTask6211() {
+        testLinkIssuesImpl(Comment.createWithRoleLevel("A comment about linking", "Users"));
+    }
 
 	private void testLinkIssuesImpl(@Nullable Comment commentInput) {
 		final IssueRestClient issueClient = client.getIssueClient();
