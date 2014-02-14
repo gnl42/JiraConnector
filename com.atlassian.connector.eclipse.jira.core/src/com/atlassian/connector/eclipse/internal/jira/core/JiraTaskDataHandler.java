@@ -77,12 +77,8 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.User;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraInsufficientPermissionException;
-import com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
-import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
-import com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteIssue;
 
 /**
  * @author Mik Kersten
@@ -533,8 +529,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		addWorklog(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 
-		updateMarkup(data, jiraIssue, client, oldTaskData, forceCache, monitor);
-
 		Map<String, List<AllowedValue>> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData,
 				forceCache, monitor);
 		updateProperties(data, editableKeys);
@@ -854,131 +848,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return new String(chars, 0, len);
 		} catch (IOException e) {
 			return text;
-		}
-	}
-
-	/**
-	 * Replaces the values in fields that are suspected to contain rendered markup with the source values retrieved
-	 * through SOAP.
-	 * 
-	 * @param forceCache
-	 */
-	private void updateMarkup(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
-			boolean forceCache, IProgressMonitor monitor) throws JiraException {
-		if (!jiraIssue.isMarkupDetected()) {
-			return;
-		}
-		if (useCachedData(jiraIssue, oldTaskData, forceCache)) {
-			if (oldTaskData == null) {
-				// caching forced but no information available
-				data.setPartial(true);
-				return;
-			}
-
-			// use cached information
-			if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
-				setAttributeValue(data, JiraAttribute.DESCRIPTION,
-						getAttributeValue(oldTaskData, JiraAttribute.DESCRIPTION));
-			}
-			if (data.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ENVIRONMENT) != null) {
-				setAttributeValue(data, JiraAttribute.ENVIRONMENT,
-						getAttributeValue(oldTaskData, JiraAttribute.ENVIRONMENT));
-			}
-			for (CustomField field : jiraIssue.getCustomFields()) {
-				if (field.isMarkupDetected()) {
-					String attributeId = mapCommonAttributeKey(field.getId());
-					TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(attributeId);
-					if (oldAttribute != null) {
-						TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-						attribute.setValues(oldAttribute.getValues());
-					}
-				}
-			}
-			int i = 1;
-			for (Comment comment : jiraIssue.getComments()) {
-				if (comment.isMarkupDetected()) {
-					String attributeId = TaskAttribute.PREFIX_COMMENT + i;
-					TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(attributeId);
-					if (oldAttribute != null) {
-						TaskCommentMapper oldComment = TaskCommentMapper.createFrom(oldAttribute);
-						TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-						TaskCommentMapper newComment = TaskCommentMapper.createFrom(attribute);
-						newComment.setText(oldComment.getText());
-						newComment.applyTo(attribute);
-					}
-				}
-				i++;
-			}
-			return;
-		}
-
-		// consider preserving HTML 
-		try {
-			RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey(), monitor);
-			if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
-				if (remoteIssue.getDescription() == null) {
-					setAttributeValue(data, JiraAttribute.DESCRIPTION, ""); //$NON-NLS-1$
-				} else {
-					setAttributeValue(data, JiraAttribute.DESCRIPTION, remoteIssue.getDescription());
-				}
-			}
-			if (data.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ENVIRONMENT) != null) {
-				if (remoteIssue.getEnvironment() == null) {
-					setAttributeValue(data, JiraAttribute.ENVIRONMENT, ""); //$NON-NLS-1$
-				} else {
-					setAttributeValue(data, JiraAttribute.ENVIRONMENT, remoteIssue.getEnvironment());
-				}
-			}
-			RemoteCustomFieldValue[] fields = remoteIssue.getCustomFieldValues();
-			for (CustomField field : jiraIssue.getCustomFields()) {
-				if (field.isMarkupDetected()) {
-					innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
-						if (field.getId().equals(remoteField.getCustomfieldId())) {
-							String attributeId = mapCommonAttributeKey(field.getId());
-							TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-							if (attribute != null) {
-								attribute.setValues(Arrays.asList(remoteField.getValues()));
-							}
-							break innerLoop;
-						}
-					}
-				}
-			}
-		} catch (JiraInsufficientPermissionException e) {
-			// ignore
-			trace(e);
-		}
-		boolean retrieveComments = false;
-		for (Comment comment : jiraIssue.getComments()) {
-			if (comment.isMarkupDetected()) {
-				retrieveComments = true;
-			}
-		}
-		if (retrieveComments) {
-			try {
-				Comment[] remoteComments = client.getSoapClient().getComments(jiraIssue.getKey(), monitor);
-				int i = 1;
-				for (Comment remoteComment : remoteComments) {
-					String attributeId = TaskAttribute.PREFIX_COMMENT + i;
-					TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-					if (attribute != null) {
-						TaskCommentMapper comment = TaskCommentMapper.createFrom(attribute);
-						comment.setText(remoteComment.getComment());
-						comment.applyTo(attribute);
-					}
-					i++;
-				}
-			} catch (JiraInsufficientPermissionException e) {
-				// ignore
-				trace(e);
-			} catch (JiraServiceUnavailableException e) {
-				if ("Invalid element in com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans.RemoteComment - level".equals(e.getMessage())) { //$NON-NLS-1$
-					// XXX ignore, see bug 260614
-					trace(e);
-				} else {
-					throw e;
-				}
-			}
 		}
 	}
 

@@ -45,7 +45,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.ServerInfo;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import com.atlassian.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import com.atlassian.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
-import com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient;
 import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.SessionInfo;
 
@@ -109,8 +108,6 @@ public class JiraClient {
 
 	private final AbstractWebLocation location;
 
-	private final JiraSoapClient soapClient;
-
 	private JiraLocalConfiguration localConfiguration;
 
 //	private final JiraWebSession webSession;
@@ -129,7 +126,6 @@ public class JiraClient {
 //		this.webSession = new JiraWebSession(this);
 //		this.webClient = new JiraWebClient(this, webSession);
 //		this.rssClient = new JiraRssClient(this, webSession);
-		this.soapClient = new JiraSoapClient(this);
 		this.restClient = restClient;
 
 	}
@@ -332,7 +328,8 @@ public class JiraClient {
 	// only for tests purposes
 	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("deleteIssue", null); //$NON-NLS-1$
-		soapClient.deleteIssue(issue.getKey(), monitor);
+//		soapClient.deleteIssue(issue.getKey(), monitor);
+		restClient.deleteIssue(issue.getKey(), monitor);
 
 		// TODO rest: https://studio.atlassian.com/browse/JRJC-86
 	}
@@ -640,10 +637,6 @@ public class JiraClient {
 		}
 	}
 
-	public JiraSoapClient getSoapClient() {
-		return soapClient;
-	}
-
 	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
 		JiraCorePlugin.getMonitoring().logJob("getStatuses", null); //$NON-NLS-1$
 
@@ -720,8 +713,10 @@ public class JiraClient {
 	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
 	 */
 	public void logout(IProgressMonitor monitor) throws JiraException {
-		JiraCorePlugin.getMonitoring().logJob("logout", null); //$NON-NLS-1$
-		soapClient.logout(monitor);
+//		JiraCorePlugin.getMonitoring().logJob("logout", null); //$NON-NLS-1$
+//		soapClient.logout(monitor);
+
+		// Nothing to do here as our REST client is stateless 
 	}
 
 //	public void quickSearch(String searchString, IssueCollector collector, IProgressMonitor monitor)
@@ -839,7 +834,7 @@ public class JiraClient {
 
 	public synchronized void purgeSession() {
 //		webSession.purgeSession();
-		soapClient.purgeSession();
+//		soapClient.purgeSession();
 		restClient = createRestClient(location, cache);
 	}
 

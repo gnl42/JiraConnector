@@ -823,4 +823,13 @@ public class JiraRestClientAdapter {
 		return new SecurityLevel[0];
 	}
 
+	public void deleteIssue(final String key, IProgressMonitor monitor) throws JiraException {
+		call(new Callable<Void>() {
+			public Void call() {
+				restClient.getIssueClient().removeIssue(key, true, new NullProgressMonitor());
+				return null;
+			}
+		});
+	}
+
 }

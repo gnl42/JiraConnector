@@ -154,6 +154,10 @@ public class JiraWorkLog implements Serializable {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * @param timeSpent
+	 *            seconds
+	 */
 	public void setTimeSpent(long timeSpent) {
 		this.timeSpent = timeSpent;
 	}

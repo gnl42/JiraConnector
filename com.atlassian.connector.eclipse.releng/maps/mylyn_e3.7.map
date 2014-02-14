@@ -56,7 +56,7 @@ plugin@org.eclipse.mylyn.commons.notifications.core=COPY,@buildDirectory@/../../
 plugin@org.eclipse.mylyn.commons.notifications.feed=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.notifications.feed
 
 !plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
-plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
+!plugin@org.eclipse.mylyn.commons.soap=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.soap
 
 !plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../../mylyn/master/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.xmlrpc
 plugin@org.eclipse.mylyn.commons.xmlrpc=COPY,@buildDirectory@/../../../mylyn/org.eclipse.mylyn.commons, org.eclipse.mylyn.commons.xmlrpc
