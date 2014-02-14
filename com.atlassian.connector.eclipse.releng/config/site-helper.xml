@@ -47,7 +47,6 @@
 
 		<!-- axis -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.axis">
-			<include name="javax.activation*.jar"/>
 			<include name="javax.mail*.jar"/>
 			<include name="javax.servlet*.jar"/>
 			<include name="javax.wsdl*.jar"/>
