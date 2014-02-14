@@ -427,13 +427,13 @@ plugin@org.apache.commons.cli,1.0.0=GET,http://archive.eclipse.org/tools/orbit/d
 
 plugin@org.apache.commons.cli.source,1.0.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.cli.source_1.0.0.v20080604-1500.jar
 
-plugin@org.apache.commons.codec,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec_1.3.0.v20100518-1140.jar
-
+!plugin@org.apache.commons.codec,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec_1.3.0.v20100518-1140.jar
 plugin@org.apache.commons.codec,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec_1.2.0.v20100518-1135.jar
+plugin@org.apache.commons.codec,1.3.0=GET,http://www.eclipse.org/downloads/download.php?r=1&file=/tools/orbit/downloads/drops/R20110523182458/repository/plugins/org.apache.commons.codec_1.3.0.v201101211617.jar
 
 plugin@org.apache.commons.codec.source,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec.source_1.2.0.v20100518-1135.jar
-
-plugin@org.apache.commons.codec.source,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec.source_1.3.0.v20100518-1140.jar
+!plugin@org.apache.commons.codec.source,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.codec.source_1.3.0.v20100518-1140.jar
+plugin@org.apache.commons.codec.source,1.3.0=GET,http://www.eclipse.org/downloads/download.php?r=1&file=/tools/orbit/downloads/drops/R20110523182458/repository/plugins/org.apache.commons.codec.source_1.3.0.v201101211617.jar
 
 plugin@org.apache.commons.collections,3.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.collections_3.2.0.v201005080500.jar
 
