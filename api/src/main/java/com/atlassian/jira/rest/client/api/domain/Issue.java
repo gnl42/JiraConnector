@@ -221,11 +221,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getAttachmentsUri() {
-        return UriUtil.path(getSelf(), "attachments");
+		return UriUtil.path(getSelf(), "attachments");
 	}
 
 	public URI getWorklogUri() {
-        return UriUtil.path(getSelf(), "worklog");
+		return UriUtil.path(getSelf(), "worklog");
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getVotesUri() {
-        return UriUtil.path(getSelf(), "votes");
+		return UriUtil.path(getSelf(), "votes");
 	}
 
 
