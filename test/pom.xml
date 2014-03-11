@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.atlassian.jira</groupId>
         <artifactId>jira-rest-java-client-parent</artifactId>
@@ -11,9 +12,9 @@
     <name>JIRA REST Java Client - Tests</name>
     <description>Tests of JIRA REST Java Client.</description>
 
-	<properties>
-		<plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
-	</properties>
+    <properties>
+        <plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -65,7 +66,7 @@
                     <groupId>com.sun.jersey</groupId>
                     <artifactId>jersey-server</artifactId>
                 </exclusion>
-				<exclusion>
+                <exclusion>
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
                 </exclusion>
@@ -85,31 +86,31 @@
             </activation>
             <properties>
                 <jira.version>5.0.7</jira.version>
-				<jira.data.version>${jira.version}</jira.data.version>
-				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
-				<testkit.version>5.0.24</testkit.version>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.atlassian.jira</groupId>
-					<artifactId>jira-func-tests</artifactId>
-					<version>${jira.test-lib.version}</version>
-					<exclusions>
-						<exclusion>
-							<groupId>com.sun.jersey</groupId>
-							<artifactId>jersey-server</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>com.sun.jersey.contribs</groupId>
-							<artifactId>jersey-apache-client</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>javax.jms</groupId>
-							<artifactId>jms</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-			</dependencies>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+                <testkit.version>5.0.24</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>com.sun.jersey</groupId>
+                            <artifactId>jersey-server</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>com.sun.jersey.contribs</groupId>
+                            <artifactId>jersey-apache-client</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.jms</groupId>
+                            <artifactId>jms</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>jira-5.1</id>
@@ -118,31 +119,31 @@
             </activation>
             <properties>
                 <jira.version>5.1.7</jira.version>
-				<jira.data.version>${jira.version}</jira.data.version>
-				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
-				<testkit.version>5.0.24</testkit.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+                <testkit.version>5.0.24</testkit.version>
             </properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.atlassian.jira</groupId>
-					<artifactId>jira-func-tests</artifactId>
-					<version>${jira.test-lib.version}</version>
-					<exclusions>
-						<exclusion>
-							<groupId>com.sun.jersey</groupId>
-							<artifactId>jersey-server</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>com.sun.jersey.contribs</groupId>
-							<artifactId>jersey-apache-client</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>javax.jms</groupId>
-							<artifactId>jms</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-			</dependencies>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>com.sun.jersey</groupId>
+                            <artifactId>jersey-server</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>com.sun.jersey.contribs</groupId>
+                            <artifactId>jersey-apache-client</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.jms</groupId>
+                            <artifactId>jms</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>jira-5.2</id>
@@ -151,8 +152,8 @@
             </activation>
             <properties>
                 <jira.version>5.2.8</jira.version>
-				<jira.data.version>${jira.version}</jira.data.version>
-				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
         </profile>
         <profile>
@@ -166,17 +167,39 @@
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
         </profile>
-		<profile>
-			<id>jira-6.1</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<jira.version>6.1-SNAPSHOT</jira.version>
-				<jira.data.version>${jira.version}</jira.data.version>
-				<jira.test-lib.version>${jira.version}</jira.test-lib.version>
-			</properties>
-		</profile>
+        <profile>
+            <id>jira-6.1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.1.7</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.2</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.2</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.3</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.3-SNAPSHOT</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
         <profile>
             <id>releaseProfile</id>
             <properties>
