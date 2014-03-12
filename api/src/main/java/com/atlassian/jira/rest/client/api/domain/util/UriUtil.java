@@ -21,8 +21,8 @@ import java.net.URI;
 public class UriUtil {
 
 	public static URI path(final URI uri, final String path) {
-		String uriString = uri.toString();
-		StringBuilder sb = new StringBuilder(uriString);
+		final String uriString = uri.toString();
+        final StringBuilder sb = new StringBuilder(uriString);
 		if (!uriString.endsWith("/")) {
 			sb.append('/');
 		}
