@@ -22,7 +22,7 @@ public class UriUtil {
 
 	public static URI path(final URI uri, final String path) {
 		final String uriString = uri.toString();
-        final StringBuilder sb = new StringBuilder(uriString);
+		final StringBuilder sb = new StringBuilder(uriString);
 		if (!uriString.endsWith("/")) {
 			sb.append('/');
 		}
