@@ -17,11 +17,11 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.ExpandableResource;
+import com.atlassian.jira.rest.client.api.domain.util.UriUtil;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
@@ -221,11 +221,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getAttachmentsUri() {
-		return UriBuilder.fromUri(getSelf()).path("attachments").build();
+		return UriUtil.path(getSelf(), "attachments");
 	}
 
 	public URI getWorklogUri() {
-		return UriBuilder.fromUri(getSelf()).path("worklog").build();
+		return UriUtil.path(getSelf(), "worklog");
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getCommentsUri() {
-		return UriBuilder.fromUri(getSelf()).path("comment").build();
+		return UriUtil.path(getSelf(), "comment");
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getVotesUri() {
-		return UriBuilder.fromUri(getSelf()).path("votes").build();
+		return UriUtil.path(getSelf(), "votes");
 	}
 
 
