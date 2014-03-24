@@ -1062,13 +1062,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 
 					// if only adv workflow do not do the standard workflow
-					if (!handled && changeIds.contains(TaskAttribute.OPERATION)) {
+					if (!handled && changeIds.contains(TaskAttribute.OPERATION) && !LEAVE_OPERATION.equals(operationId)) {
 						Set<String> anythingElse = new HashSet<String>(changeIds);
 						anythingElse.removeAll(Arrays.asList(TaskAttribute.OPERATION, TaskAttribute.COMMENT_NEW,
 								TaskAttribute.RESOLUTION));
 						if (anythingElse.size() == 0) {
 							// no more changes, so that's a adv workflow operation
-							client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
+							client.advanceIssueWorkflow(issue, operationId, null, monitor);
+							if (newComment != null && newComment.length() > 0) {
+								client.addCommentToIssue(issue.getKey(), newComment, monitor);
+							}
 							handled = true;
 							advWorkflowHandled = true;
 						}
