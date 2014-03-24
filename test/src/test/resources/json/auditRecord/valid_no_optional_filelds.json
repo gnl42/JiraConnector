@@ -1,0 +1,18 @@
+{
+    "id":10003,
+    "summary":"User added to group",
+    "created":1395674708606,
+    "category":"group management",
+    "objectItem":{
+        "name":"jira-developers",
+        "typeName":"GROUP"
+    },
+
+    "associatedItems":[
+        {
+            "name":"admin",
+            "typeName":"USER"
+        }
+    ]
+
+}

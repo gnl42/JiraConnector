@@ -1,0 +1,40 @@
+{
+    "id":10003,
+    "summary":"User added to group",
+    "remoteAddr":"127.0.0.1",
+    "created":1395674708606,
+    "category":"group management",
+    "objectItem":{
+        "name":"jira-developers",
+        "typeName":"GROUP"
+    },
+
+    "associatedItems":[
+        {
+            "id":"admin",
+            "name":"admin",
+            "typeName":"USER",
+            "parentId":"1",
+            "parentName":"JIRA Internal Directory"
+        }
+    ],
+
+    "values":[
+        {
+            "fieldName":"Username",
+            "changedTo":"admin"
+        },
+        {
+            "fieldName":"Full Name",
+            "changedTo":"administrator"
+        },
+        {
+            "fieldName":"Email",
+            "changedTo":"admin@local.com"
+        },
+        {
+            "fieldName":"Active / Inactive",
+            "changedTo":"Active"
+        }
+    ]
+}
