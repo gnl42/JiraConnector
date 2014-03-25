@@ -46,21 +46,21 @@ public class AuditRecordJsonParserTest {
         assertThat(records.getChangedValues(), notNullValue());
 
         final Iterator<AuditChangedValue> iterator = records.getChangedValues().iterator();
-        AuditChangedValue valueItem1 = iterator.next();
+        final AuditChangedValue valueItem1 = iterator.next();
         assertThat(valueItem1.getFieldName(), is("Username"));
         assertThat(valueItem1.getChangedFrom(), nullValue());
         assertThat(valueItem1.getChangedTo(), is("admin"));
 
-        AuditChangedValue valueItem2 = iterator.next();
+        final AuditChangedValue valueItem2 = iterator.next();
         assertThat(valueItem2.getFieldName(), is("Full Name"));
         assertThat(valueItem2.getChangedFrom(), is("administrator"));
         assertThat(valueItem2.getChangedTo(), is("admin"));
 
-        AuditChangedValue valueItem3 = iterator.next();
+        final AuditChangedValue valueItem3 = iterator.next();
         assertThat(valueItem3.getFieldName(), is("Email"));
         assertThat(valueItem3.getChangedTo(), is("admin@local.com"));
 
-        AuditChangedValue valueItem4 = iterator.next();
+        final AuditChangedValue valueItem4 = iterator.next();
         assertThat(valueItem4.getFieldName(), is("Active / Inactive"));
         assertThat(valueItem4.getChangedTo(), is("Active"));
     }
