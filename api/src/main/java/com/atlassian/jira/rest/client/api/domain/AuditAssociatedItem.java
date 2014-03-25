@@ -35,6 +35,31 @@ public class AuditAssociatedItem {
         this.parentName = parentName;
     }
 
+    @Nullable
+    public String getId() {
+        return id;
+    }
+
+    @Nonnull
+    public String getName() {
+        return name;
+    }
+
+    @Nonnull
+    public String getTypeName() {
+        return typeName;
+    }
+
+    @Nullable
+    public String getParentId() {
+        return parentId;
+    }
+
+    @Nullable
+    public String getParentName() {
+        return parentName;
+    }
+
     protected Objects.ToStringHelper getToStringHelper() {
         return Objects.toStringHelper(this).
                 add("id", id).

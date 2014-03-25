@@ -27,6 +27,21 @@ public class AuditChangedValue {
         this.changedFrom = changedFrom;
     }
 
+    @Nonnull
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    @Nullable
+    public String getChangedTo() {
+        return changedTo;
+    }
+
+    @Nullable
+    public String getChangedFrom() {
+        return changedFrom;
+    }
+
     protected Objects.ToStringHelper getToStringHelper() {
         return Objects.toStringHelper(this).
                 add("fieldName", fieldName).
