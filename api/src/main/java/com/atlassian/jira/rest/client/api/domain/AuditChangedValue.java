@@ -6,13 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TODO: Document this class / interface here
+ * Represents a value that has changed in object related to Audit Record.
  *
  * @since v2.0
  */
 public class AuditChangedValue {
 
-    @Nonnull
     private final String fieldName;
 
     @Nullable
@@ -21,13 +20,12 @@ public class AuditChangedValue {
     @Nullable
     private final String changedFrom;
 
-    public AuditChangedValue(String fieldName, String changedTo, String changedFrom) {
+    public AuditChangedValue(final String fieldName, @Nullable final String changedTo, @Nullable final String changedFrom) {
         this.fieldName = fieldName;
         this.changedTo = changedTo;
         this.changedFrom = changedFrom;
     }
 
-    @Nonnull
     public String getFieldName() {
         return fieldName;
     }
@@ -50,9 +48,9 @@ public class AuditChangedValue {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o instanceof AuditChangedValue) {
-            AuditChangedValue that = (AuditChangedValue) o;
+            final AuditChangedValue that = (AuditChangedValue) o;
             return  Objects.equal(this.fieldName, that.fieldName)
                     && Objects.equal(this.changedFrom, that.changedFrom)
                     && Objects.equal(this.changedTo, that.changedTo);

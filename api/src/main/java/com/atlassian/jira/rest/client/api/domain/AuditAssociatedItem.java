@@ -6,7 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TODO: Document this class / interface here
+ * Item that can be associated with Audit Record.
+ * Represents additional information about item related to record like user, group or schema.
  *
  * @since v2.0
  */
@@ -15,10 +16,8 @@ public class AuditAssociatedItem {
     @Nullable
     private final String id;
 
-    @Nonnull
     private final String name;
 
-    @Nonnull
     private final String typeName;
 
     @Nullable

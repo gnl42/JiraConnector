@@ -1,37 +1,41 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.atlassian.util.concurrent.Nullable;
 import com.google.common.base.Objects;
 
-import javax.annotation.Nonnull;
-
 /**
- * TODO: Document this class / interface here
+ * Represents record from JIRA Audit Log.
  *
  * @since v2.0
  */
 public class AuditRecord {
 
-    @Nonnull
     private final Long id;
 
-    @Nonnull
     private final String summary;
 
-    @Nonnull
     private final Long created;
 
-    @Nonnull
     private final String category;
 
+    @Nullable
     private final String remoteAddress;
+
+    @Nullable
     private final AuditAssociatedItem objectItem;
+
+    @Nullable
     private final OptionalIterable<AuditAssociatedItem> associatedItem;
+
+    @Nullable
     private final OptionalIterable<AuditChangedValue> changedValues;
 
-    public AuditRecord(@Nonnull final Long id, @Nonnull final String summary, final String remoteAddress, @Nonnull final Long created,
-                       @Nonnull final String category, final AuditAssociatedItem objectItem,
-                       final OptionalIterable<AuditAssociatedItem> associatedItem, final OptionalIterable<AuditChangedValue> changedValues) {
+    public AuditRecord( final Long id,  final String summary, @Nullable final String remoteAddress,
+                        final Long created, final String category,
+                        @Nullable final AuditAssociatedItem objectItem,
+                        @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
+                        @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
         this.id = id;
         this.summary = summary;
         this.remoteAddress = remoteAddress;
@@ -42,22 +46,18 @@ public class AuditRecord {
         this.changedValues = changedValues;
     }
 
-    @Nonnull
     public Long getId() {
         return id;
     }
 
-    @Nonnull
     public String getSummary() {
         return summary;
     }
 
-    @Nonnull
     public Long getCreated() {
         return created;
     }
 
-    @Nonnull
     public String getCategory() {
         return category;
     }

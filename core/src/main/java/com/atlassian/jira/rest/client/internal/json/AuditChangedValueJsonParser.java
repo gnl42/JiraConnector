@@ -5,14 +5,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
- * TODO: Document this class / interface here
- *
  * @since v2.0
  */
 public class AuditChangedValueJsonParser implements JsonObjectParser<AuditChangedValue> {
 
     @Override
-    public AuditChangedValue parse(JSONObject json) throws JSONException {
+    public AuditChangedValue parse(final JSONObject json) throws JSONException {
         final String fieldName = json.getString("fieldName");
         final String changedFrom = JsonParseUtil.getOptionalString(json, "changedFrom");
         final String changedTo = JsonParseUtil.getOptionalString(json, "changedTo");

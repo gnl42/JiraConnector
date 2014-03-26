@@ -4,22 +4,13 @@ import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.annotation.Nullable;
-
 /**
- * TODO: Document this class / interface here
- *
  * @since v2.0
  */
 public class AuditAssociatedItemJsonParser implements JsonObjectParser<AuditAssociatedItem> {
 
     @Override
-    @Nullable
-    public AuditAssociatedItem parse(JSONObject json) throws JSONException {
-
-        if (json == null) {
-            return null;
-        }
+    public AuditAssociatedItem parse(final JSONObject json) throws JSONException {
 
         final String id = JsonParseUtil.getOptionalString(json, "id");
         final String name = json.getString("name");

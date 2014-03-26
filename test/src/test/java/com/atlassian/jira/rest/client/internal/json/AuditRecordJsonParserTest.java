@@ -22,20 +22,17 @@ public class AuditRecordJsonParserTest {
     @Test
     public void testParseValidResponse() throws Exception {
         final AuditRecord records = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/auditRecord/valid.json"));
-        assertThat(records, notNullValue());
         assertThat(records.getSummary(), is("User added to group"));
         assertThat(records.getRemoteAddress(), is("127.0.0.1"));
         assertThat(records.getCreated(), is(1395674708606L));
         assertThat(records.getCategory(), is("group management"));
 
-        assertThat(records.getObjectItem(), notNullValue());
         assertThat(records.getObjectItem().getId(), nullValue());
         assertThat(records.getObjectItem().getName(), is("jira-developers"));
         assertThat(records.getObjectItem().getTypeName(), is("GROUP"));
         assertThat(records.getObjectItem().getParentId(), nullValue());
         assertThat(records.getObjectItem().getParentName(), nullValue());
 
-        assertThat(records.getAssociatedItem(), notNullValue());
         final AuditAssociatedItem item = records.getAssociatedItem().iterator().next();
         assertThat(item.getId(), is("admin"));
         assertThat(item.getName(), is("admin"));
@@ -68,20 +65,17 @@ public class AuditRecordJsonParserTest {
     @Test
     public void testParseResponseWithoutSomeOptionalFields() throws Exception {
         final AuditRecord records = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/auditRecord/valid_no_optional_filelds.json"));
-        assertThat(records, notNullValue());
         assertThat(records.getSummary(), is("User added to group"));
         assertThat(records.getRemoteAddress(), nullValue());
         assertThat(records.getCreated(), is(1395674708606L));
         assertThat(records.getCategory(), is("group management"));
 
-        assertThat(records.getObjectItem(), notNullValue());
         assertThat(records.getObjectItem().getId(), nullValue());
         assertThat(records.getObjectItem().getName(), is("jira-developers"));
         assertThat(records.getObjectItem().getTypeName(), is("GROUP"));
         assertThat(records.getObjectItem().getParentId(), nullValue());
         assertThat(records.getObjectItem().getParentName(), nullValue());
 
-        assertThat(records.getAssociatedItem(), notNullValue());
         final AuditAssociatedItem item = records.getAssociatedItem().iterator().next();
         assertThat(item.getName(), is("admin"));
         assertThat(item.getTypeName(), is("USER"));

@@ -266,7 +266,16 @@ public class JsonParseUtil {
 		return res.toString();
 	}
 
-	@SuppressWarnings("unused")
+	@Nullable
+	public static <T> T getOptionalJsonObject(final JSONObject jsonObject, final String attributeName, final JsonObjectParser<T> jsonParser) throws JSONException {
+		final JSONObject res = jsonObject.optJSONObject(attributeName);
+		if (res == JSONObject.NULL || res == null) {
+			return null;
+		}
+		return jsonParser.parse(res);
+	}
+
+    @SuppressWarnings("unused")
 	@Nullable
 	public static JSONObject getOptionalJsonObject(final JSONObject jsonObject, final String attributeName) {
 		final JSONObject res = jsonObject.optJSONObject(attributeName);
