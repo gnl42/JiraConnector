@@ -1,41 +1,65 @@
 {
-    "id":10003,
-    "summary":"User added to group",
-    "remoteAddr":"127.0.0.1",
-    "created":1395674708606,
-    "category":"group management",
-    "objectItem":{
-        "name":"jira-developers",
-        "typeName":"GROUP"
-    },
+    "records" : [
+        {
+        "id":10003,
+        "summary":"User added to group",
+        "remoteAddr":"127.0.0.1",
+        "authorKey":"admin",
+        "created":1395674708606,
+        "category":"group management",
+        "objectItem":{
+            "name":"jira-developers",
+            "typeName":"GROUP"
+        },
 
-    "associatedItems":[
-        {
-            "id":"admin",
-            "name":"admin",
-            "typeName":"USER",
-            "parentId":"1",
-            "parentName":"JIRA Internal Directory"
-        }
-    ],
+        "associatedItems":[
+            {
+                "id":"admin",
+                "name":"admin",
+                "typeName":"USER",
+                "parentId":"1",
+                "parentName":"JIRA Internal Directory"
+            }
+        ],
 
-    "values":[
-        {
-            "fieldName":"Username",
-            "changedTo":"admin"
+        "values":[
+            {
+                "fieldName":"Username",
+                "changedTo":"admin"
+            },
+            {
+                "fieldName":"Full Name",
+                "changedFrom":"administrator",
+                "changedTo":"admin"
+            },
+            {
+                "fieldName":"Email",
+                "changedTo":"admin@local.com"
+            },
+            {
+                "fieldName":"Active / Inactive",
+                "changedTo":"Active"
+            }
+            ]
         },
         {
-            "fieldName":"Full Name",
-            "changedFrom":"administrator",
-            "changedTo":"admin"
-        },
-        {
-            "fieldName":"Email",
-            "changedTo":"admin@local.com"
-        },
-        {
-            "fieldName":"Active / Inactive",
-            "changedTo":"Active"
+            "id":10003,
+            "summary":"User added to group",
+            "authorKey":"admin",
+            "created":1395674708606,
+            "category":"group management",
+            "objectItem":{
+                "name":"jira-developers",
+                "typeName":"GROUP"
+            },
+
+            "associatedItems":[
+                {
+                    "name":"admin",
+                    "typeName":"USER"
+                }
+            ]
+
         }
     ]
 }

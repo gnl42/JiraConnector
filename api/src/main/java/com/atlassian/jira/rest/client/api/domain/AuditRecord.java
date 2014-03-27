@@ -19,6 +19,8 @@ public class AuditRecord {
 
     private final String category;
 
+    private final String authorKey;
+
     @Nullable
     private final String remoteAddress;
 
@@ -31,16 +33,17 @@ public class AuditRecord {
     @Nullable
     private final OptionalIterable<AuditChangedValue> changedValues;
 
-    public AuditRecord( final Long id,  final String summary, @Nullable final String remoteAddress,
-                        final Long created, final String category,
-                        @Nullable final AuditAssociatedItem objectItem,
-                        @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
-                        @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
+    public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
+                       final Long created, final String category,final String authorKey,
+                       @Nullable final AuditAssociatedItem objectItem,
+                       @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
+                       @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
         this.id = id;
         this.summary = summary;
         this.remoteAddress = remoteAddress;
         this.created = created;
         this.category = category;
+        this.authorKey = authorKey;
         this.objectItem = objectItem;
         this.associatedItem = associatedItem;
         this.changedValues = changedValues;
@@ -66,6 +69,10 @@ public class AuditRecord {
         return remoteAddress;
     }
 
+    public String getAuthorKey() {
+        return authorKey;
+    }
+
     public AuditAssociatedItem getObjectItem() {
         return objectItem;
     }
@@ -85,6 +92,7 @@ public class AuditRecord {
                 add("remoteAddress", remoteAddress).
                 add("created", created).
                 add("category", category).
+                add("authorKey", authorKey).
                 add("objectItem", objectItem).
                 add("associatedItem", associatedItem).
                 add("changedValues", changedValues);
@@ -99,6 +107,7 @@ public class AuditRecord {
                     && Objects.equal(this.remoteAddress, that.remoteAddress)
                     && Objects.equal(this.created, that.created)
                     && Objects.equal(this.category, that.category)
+                    && Objects.equal(this.authorKey, that.authorKey)
                     && Objects.equal(this.objectItem, that.objectItem)
                     && Objects.equal(this.associatedItem, that.associatedItem)
                     && Objects.equal(this.changedValues, that.changedValues);
@@ -108,7 +117,7 @@ public class AuditRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, summary, remoteAddress, created, category, objectItem, associatedItem, changedValues);
+        return Objects.hashCode(id, summary, remoteAddress, created, category, authorKey, objectItem, associatedItem, changedValues);
     }
 
 }

@@ -73,6 +73,11 @@ public interface JiraRestClient extends Closeable {
 	 */
 	ProjectRolesRestClient getProjectRolesRestClient();
 
+    /**
+     * @return the com.atlassian.jira.rest.client.api for auditing records
+     */
+    AuditRestClient getAuditRestClient();
+
 	/**
 	 * Destroys this instance of JIRA Rest Client.
 	 *
