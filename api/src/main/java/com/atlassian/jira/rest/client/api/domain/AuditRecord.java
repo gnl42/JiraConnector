@@ -77,7 +77,7 @@ public class AuditRecord {
         return objectItem;
     }
 
-    public OptionalIterable<AuditAssociatedItem> getAssociatedItem() {
+    public OptionalIterable<AuditAssociatedItem> getAssociatedItems() {
         return associatedItem;
     }
 

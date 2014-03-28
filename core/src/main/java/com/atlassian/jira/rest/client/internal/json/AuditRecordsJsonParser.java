@@ -29,7 +29,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<Iterable<AuditRe
             final Long created = json.getLong("created");
             final String category = json.getString("category");
             final String authorKey = json.getString("authorKey");
-            final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddr");
+            final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
             final AuditAssociatedItem objectItem = JsonParseUtil.getOptionalJsonObject(json, "objectItem", associatedItemJsonParser);
             final OptionalIterable<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);
             final OptionalIterable<AuditChangedValue> changedValues = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("values"), changedValueJsonParser);

@@ -36,7 +36,7 @@ public class AuditRecordsJsonParserTest {
         assertThat(firstRecord.getObjectItem().getParentId(), nullValue());
         assertThat(firstRecord.getObjectItem().getParentName(), nullValue());
 
-        final AuditAssociatedItem firstItem = firstRecord.getAssociatedItem().iterator().next();
+        final AuditAssociatedItem firstItem = firstRecord.getAssociatedItems().iterator().next();
         assertThat(firstItem.getId(), is("admin"));
         assertThat(firstItem.getName(), is("admin"));
         assertThat(firstItem.getTypeName(), is("USER"));
@@ -78,7 +78,7 @@ public class AuditRecordsJsonParserTest {
         assertThat(secondRecord.getObjectItem().getParentId(), nullValue());
         assertThat(secondRecord.getObjectItem().getParentName(), nullValue());
 
-        final AuditAssociatedItem secondItem = secondRecord.getAssociatedItem().iterator().next();
+        final AuditAssociatedItem secondItem = secondRecord.getAssociatedItems().iterator().next();
         assertThat(secondItem.getName(), is("admin"));
         assertThat(secondItem.getTypeName(), is("USER"));
         assertThat(secondItem.getId(),  nullValue());

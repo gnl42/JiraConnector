@@ -14,6 +14,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -52,7 +53,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(record.getAuthorKey(), is("admin"));
         assertThat(record.getObjectItem().getTypeName(), is("PROJECT_COMPONENT"));
 
-        final Iterator<AuditAssociatedItem> itemIterator = record.getAssociatedItem().iterator();
+        final Iterator<AuditAssociatedItem> itemIterator = record.getAssociatedItems().iterator();
         final AuditAssociatedItem item1 = itemIterator.next();
         assertThat(item1.getName(), is("Test Project"));
         assertThat(item1.getTypeName(), is("PROJECT"));
@@ -82,10 +83,20 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
-    public void testAddRecord() {
-        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("USER_MANAGEMENT", "Adding new event").build());
+    public void testAddSimpleRecord() {
+        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
         final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(null).claim();
         assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(4));
+
+        AuditRecord record = Iterables.get(auditRecords, 0);
+        assertThat(record.getSummary(), is("Adding new event"));
+        assertThat(record.getCategory(), is("user management"));
+        assertThat(record.getObjectItem(), IsNull.nullValue());
+        assertThat(record.getAssociatedItems().isSupported(), is(false));
+        assertThat(record.getAuthorKey(), is("admin"));
+        assertThat(record.getChangedValues().isSupported(), is(false));
+        assertThat(record.getRemoteAddress(), IsNull.notNullValue());
+        assertThat(record.getCreated(), IsNull.notNullValue());
 
     }
 }
