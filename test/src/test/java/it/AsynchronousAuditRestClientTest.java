@@ -6,12 +6,14 @@ import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecord;
 import com.atlassian.jira.rest.client.api.domain.Component;
+import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -24,7 +26,7 @@ import static org.junit.Assert.assertThat;
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestClientTest {
 
-    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecords() {
 
@@ -71,10 +73,19 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(value2.getChangedTo(), is("Project Default"));
     }
 
-    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithParams() {
         final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
         assertThat(Iterables.size(auditRecords), is(2));
+    }
+
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void testAddRecord() {
+        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("USER_MANAGEMENT", "Adding new event").build());
+        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(null).claim();
+        assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(4));
+
     }
 }
