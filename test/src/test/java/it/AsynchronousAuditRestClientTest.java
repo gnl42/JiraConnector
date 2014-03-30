@@ -5,6 +5,7 @@ import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecord;
+import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import com.atlassian.jira.rest.client.api.domain.Component;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
@@ -34,16 +35,12 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final Component component = client.getComponentClient().createComponent("TST", new ComponentInput("New TST Component", null, null, null)).claim();
         assertNotNull(component);
 
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
-        final Iterable<AuditRecord> filterResult = Iterables.filter(auditRecords, new Predicate<AuditRecord>() {
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
+        final Iterable<AuditRecord> filterResult = Iterables.filter(auditRecordsData.getRecords(), new Predicate<AuditRecord>() {
             @Override
             public boolean apply(final AuditRecord input) {
-                if (input.getSummary().equals("Project component created") &&
-                        input.getObjectItem().getName().equals("New TST Component")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return input.getSummary().equals("Project component created") &&
+                        input.getObjectItem().getName().equals("New TST Component");
             }
         });
 
@@ -77,30 +74,30 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
     @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithOffset() {
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
-        assertThat(Iterables.size(auditRecords), is(2));
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(2));
 
-        final AuditRecord record = auditRecords.iterator().next();
+        final AuditRecord record = auditRecordsData.getRecords().iterator().next();
         assertThat(record.getId(), is(10001L));
     }
 
     @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithLimit() {
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
-        assertThat(Iterables.size(auditRecords), is(1));
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(1));
 
-        final AuditRecord record = auditRecords.iterator().next();
+        final AuditRecord record = auditRecordsData.getRecords().iterator().next();
         assertThat(record.getId(), is(10002L));
     }
 
     @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithFilter() {
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, "reporter", null, null)).claim();
-        assertThat(Iterables.size(auditRecords), is(1));
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, "reporter", null, null)).claim();
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(1));
 
-        final AuditRecord record = auditRecords.iterator().next();
+        final AuditRecord record = auditRecordsData.getRecords().iterator().next();
         assertThat(record.getId(), is(10001L));
     }
 
@@ -109,10 +106,10 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
     @Test
     public void testAddSimpleRecord() {
         client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(null).claim();
-        assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(4));
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(null).claim();
+        assertThat(auditRecordsData.getRecords(), IsIterableWithSize.<AuditRecord>iterableWithSize(4));
 
-        AuditRecord record = Iterables.get(auditRecords, 0);
+        AuditRecord record = Iterables.get(auditRecordsData.getRecords(), 0);
         assertThat(record.getSummary(), is("Adding new event"));
         assertThat(record.getCategory(), is("user management"));
         assertThat(record.getObjectItem(), IsNull.nullValue());

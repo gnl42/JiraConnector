@@ -2,15 +2,14 @@ package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.AuditRestClient;
-import com.atlassian.jira.rest.client.api.domain.AuditRecord;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordInput;
+import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.internal.json.AuditRecordsJsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.AuditRecordInputJsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
@@ -25,12 +24,11 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
 
     protected AsynchronousAuditRestClient(final HttpClient client, final URI baseUri) {
         super(client);
-
         this.baseUri = baseUri;
     }
 
     @Override
-    public Promise<Iterable<AuditRecord>> getAuditRecords(@Nullable final AuditRecordSearchInput input) {
+    public Promise<AuditRecordsData> getAuditRecords(final AuditRecordSearchInput input) {
         return getAndParse(createSearchPathFromInput(
                 input == null ? new AuditRecordSearchInput(null, null, null, null, null) : input), auditRecordsParser);
     }
@@ -42,7 +40,7 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public void addAuditRecord(@Nonnull AuditRecordInput record) {
+    public void addAuditRecord(@Nonnull final AuditRecordInput record) {
         post(createPathBuilder().build(), record, new AuditRecordInputJsonGenerator()).claim();
     }
 
