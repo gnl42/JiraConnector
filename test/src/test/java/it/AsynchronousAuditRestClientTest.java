@@ -73,8 +73,15 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
 
     @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
     @Test
-    public void testGetRecordsWithParams() {
+    public void testGetRecordsWithOffset() {
         final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
         assertThat(Iterables.size(auditRecords), is(2));
+    }
+
+    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void testGetRecordsWithLimit() {
+        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
+        assertThat(Iterables.size(auditRecords), is(1));
     }
 }
