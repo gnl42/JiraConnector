@@ -74,13 +74,37 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(value2.getChangedTo(), is("Project Default"));
     }
 
-    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
     @Test
-    public void testGetRecordsWithParams() {
+    public void testGetRecordsWithOffset() {
         final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
         assertThat(Iterables.size(auditRecords), is(2));
+
+        final AuditRecord record = auditRecords.iterator().next();
+        assertThat(record.getId(), is(10001L));
     }
 
+    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void testGetRecordsWithLimit() {
+        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
+        assertThat(Iterables.size(auditRecords), is(1));
+
+        final AuditRecord record = auditRecords.iterator().next();
+        assertThat(record.getId(), is(10002L));
+    }
+
+    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void testGetRecordsWithFilter() {
+        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, "reporter", null, null)).claim();
+        assertThat(Iterables.size(auditRecords), is(1));
+
+        final AuditRecord record = auditRecords.iterator().next();
+        assertThat(record.getId(), is(10001L));
+    }
+
+    //this test should be fired last as it adds new record on "top" of log and will change environment for tests related to limit and offset
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testAddSimpleRecord() {
