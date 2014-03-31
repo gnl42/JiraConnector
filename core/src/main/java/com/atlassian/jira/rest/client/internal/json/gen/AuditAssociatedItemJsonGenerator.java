@@ -12,6 +12,7 @@ public class AuditAssociatedItemJsonGenerator implements JsonGenerator<AuditAsso
     @Override
     public JSONObject generate(AuditAssociatedItem bean) throws JSONException {
         return new JSONObject()
+                .put("id", bean.getId())
                 .put("name", bean.getName())
                 .put("typeName", bean.getTypeName())
                 .put("parentId", bean.getParentId())

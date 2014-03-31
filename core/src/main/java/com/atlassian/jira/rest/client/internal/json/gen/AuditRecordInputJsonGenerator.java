@@ -21,8 +21,8 @@ public class AuditRecordInputJsonGenerator implements JsonGenerator<AuditRecordI
                 .put("category", bean.getCategory())
                 .put("summary", bean.getSummary())
                 .put("objectItem", bean.getObjectItem() != null ? associatedItemJsonGenerator.generate(bean.getObjectItem()) : null)
-                .put("associatedItems", generateAssociatedItems(bean.getAssociatedItems()));
-//                .put("changedValues", generateChangedValues(bean.getChangedValues()));
+                .put("associatedItems", generateAssociatedItems(bean.getAssociatedItems()))
+                .put("changedValues", generateChangedValues(bean.getChangedValues()));
     }
 
     private JSONArray generateChangedValues(@Nullable Iterable<AuditChangedValue> changedValues) throws JSONException {

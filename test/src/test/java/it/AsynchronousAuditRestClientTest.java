@@ -2,17 +2,14 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
-import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
-import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
-import com.atlassian.jira.rest.client.api.domain.AuditRecord;
-import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
-import com.atlassian.jira.rest.client.api.domain.Component;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsNull;
@@ -21,6 +18,8 @@ import org.junit.Test;
 import java.util.Iterator;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -71,7 +70,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(value2.getChangedTo(), is("Project Default"));
     }
 
-    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithOffset() {
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
@@ -81,7 +80,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(record.getId(), is(10001L));
     }
 
-    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithLimit() {
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
@@ -91,7 +90,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(record.getId(), is(10002L));
     }
 
-    @JiraBuildNumberDependent(value = ServerVersionConstants.BN_JIRA_6_3)
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithFilter() {
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, "reporter", null, null)).claim();
@@ -101,23 +100,62 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(record.getId(), is(10001L));
     }
 
-    //this test should be fired last as it adds new record on "top" of log and will change environment for tests related to limit and offset
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testAddSimpleRecord() {
-        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(null).claim();
-        assertThat(auditRecordsData.getRecords(), IsIterableWithSize.<AuditRecord>iterableWithSize(4));
+        ImmutableList<AuditAssociatedItem> items = ImmutableList.of(
+                new AuditAssociatedItem("", "admin", "USER", null, null),
+                new AuditAssociatedItem("123", "Internal item", "PROJECT", null, ""));
+        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Event with associated items")
+                .setAssociatedItems(items)
+                .build());
 
-        AuditRecord record = Iterables.get(auditRecordsData.getRecords(), 0);
+        ImmutableList<AuditChangedValue> changedValues = ImmutableList.of(new AuditChangedValue("Test", "to", "from"));
+        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Event with changed values")
+                .setChangedValues(changedValues)
+                .build());
+
+        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
+
+        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(null).claim().getRecords();
+        assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(6));
+
+        AuditRecord record = Iterables.get(auditRecords, 0);
         assertThat(record.getSummary(), is("Adding new event"));
         assertThat(record.getCategory(), is("user management"));
-        assertThat(record.getObjectItem(), IsNull.nullValue());
+        assertThat(record.getObjectItem(), nullValue());
         assertThat(record.getAssociatedItems().isSupported(), is(false));
         assertThat(record.getAuthorKey(), is("admin"));
-        assertThat(record.getChangedValues().isSupported(), is(false));
-        assertThat(record.getRemoteAddress(), IsNull.notNullValue());
-        assertThat(record.getCreated(), IsNull.notNullValue());
+        assertThat(record.getChangedValues(), IsIterableWithSize.<AuditChangedValue>iterableWithSize(0));
+        assertThat(record.getRemoteAddress(), notNullValue());
+        assertThat(record.getCreated(), notNullValue());
 
+        record = Iterables.get(auditRecords, 1);
+        assertThat(record.getSummary(), is("Event with changed values"));
+        assertThat(record.getAssociatedItems().isSupported(), is(false));
+        assertThat(record.getChangedValues(), IsIterableWithSize.<AuditChangedValue>iterableWithSize(1));
+        AuditChangedValue value = Iterables.get(record.getChangedValues(), 0);
+        assertThat(value.getChangedFrom(), is("from"));
+        assertThat(value.getChangedTo(), is("to"));
+        assertThat(value.getFieldName(), is("Test"));
+
+        record = Iterables.get(auditRecords, 2);
+        assertThat(record.getSummary(), is("Event with associated items"));
+        assertThat(record.getAssociatedItems(), IsIterableWithSize.<AuditAssociatedItem>iterableWithSize(2));
+        assertThat(record.getChangedValues(), IsIterableWithSize.<AuditChangedValue>iterableWithSize(0));
+
+        AuditAssociatedItem item = Iterables.get(record.getAssociatedItems(), 0);
+        assertThat(item.getId(), nullValue());
+        assertThat(item.getName(), is("admin"));
+        assertThat(item.getParentId(), nullValue());
+        assertThat(item.getParentName(), nullValue());
+        assertThat(item.getTypeName(), is("USER"));
+
+        item = Iterables.get(record.getAssociatedItems(), 1);
+        assertThat(item.getId(), is("123"));
+        assertThat(item.getName(), is("Internal item"));
+        assertThat(item.getParentId(), nullValue());
+        assertThat(item.getParentName(), nullValue());
+        assertThat(item.getTypeName(), is("PROJECT"));
     }
 }
