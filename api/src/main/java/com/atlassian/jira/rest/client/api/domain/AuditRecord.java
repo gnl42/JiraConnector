@@ -3,6 +3,7 @@ package com.atlassian.jira.rest.client.api.domain;
 import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.atlassian.util.concurrent.Nullable;
 import com.google.common.base.Objects;
+import org.joda.time.DateTime;
 
 /**
  * Represents record from JIRA Audit Log.
@@ -15,7 +16,7 @@ public class AuditRecord {
 
     private final String summary;
 
-    private final Long created;
+    private final DateTime created;
 
     private final String category;
 
@@ -34,7 +35,7 @@ public class AuditRecord {
     private final OptionalIterable<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
-                       final Long created, final String category,final String authorKey,
+                       final DateTime created, final String category,final String authorKey,
                        @Nullable final AuditAssociatedItem objectItem,
                        @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
                        @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
@@ -57,7 +58,7 @@ public class AuditRecord {
         return summary;
     }
 
-    public Long getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 

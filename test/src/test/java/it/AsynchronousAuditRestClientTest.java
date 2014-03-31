@@ -11,6 +11,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsNull;
 import org.junit.Test;
@@ -48,6 +49,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final AuditRecord record = iterator.next();
         assertThat(record.getAuthorKey(), is("admin"));
         assertThat(record.getObjectItem().getTypeName(), is("PROJECT_COMPONENT"));
+        assertThat(record.getCreated(), is(Matchers.notNullValue()));
 
         final Iterator<AuditAssociatedItem> itemIterator = record.getAssociatedItems().iterator();
         final AuditAssociatedItem item1 = itemIterator.next();

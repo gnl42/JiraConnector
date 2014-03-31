@@ -7,12 +7,16 @@ import com.atlassian.jira.rest.client.api.domain.AuditRecord;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @since v2.0
  */
 public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData> {
 
+    public static final DateTimeFormatter ISO_DATE_TIME_FORMAT = ISODateTimeFormat.dateTime();
     private final AuditAssociatedItemJsonParser associatedItemJsonParser = new AuditAssociatedItemJsonParser();
     private final AuditChangedValueJsonParser changedValueJsonParser = new AuditChangedValueJsonParser();
     private final SingleAuditRecordJsonParser singleAuditRecordJsonParser = new SingleAuditRecordJsonParser();
@@ -32,7 +36,9 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
         public AuditRecord parse(final JSONObject json) throws JSONException {
             final Long id =  json.getLong("id");
             final String summary = json.getString("summary");
-            final Long created = json.getLong("created");
+
+            final String createdString = json.getString("created");
+            final DateTime created = ISO_DATE_TIME_FORMAT.parseDateTime(createdString);
             final String category = json.getString("category");
             final String authorKey = json.getString("authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
@@ -42,5 +48,6 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
 
             return new AuditRecord(id, summary, remoteAddress, created, category, authorKey, objectItem, associatedItem, changedValues);
         }
+
     }
 }
