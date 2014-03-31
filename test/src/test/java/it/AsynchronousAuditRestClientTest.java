@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
-import org.hamcrest.core.IsNull;
 import org.junit.Test;
 
 import java.util.Iterator;
