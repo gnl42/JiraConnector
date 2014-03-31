@@ -5,9 +5,9 @@ import org.joda.time.DateTime;
 import javax.annotation.Nullable;
 
 /**
- * Input data for storing audit records
+ * Input data for searching audit records
  *
- * @since v2.1.0
+ * @since v2.0.0
  */
 public class AuditRecordSearchInput {
 
