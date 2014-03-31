@@ -3,6 +3,7 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecord;
+import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -21,8 +22,13 @@ public class AuditRecordsJsonParserTest {
 
     @Test
     public void testParseValidResponse() throws Exception {
-        final Iterable<AuditRecord> records = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/auditRecord/valid.json"));
-        final Iterator<AuditRecord> recordsIterator = records.iterator();
+        final AuditRecordsData auditRecordsData = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/auditRecord/valid.json"));
+
+        assertThat(auditRecordsData.getOffset(), is(0));
+        assertThat(auditRecordsData.getLimit(), is(1000));
+        assertThat(auditRecordsData.getTotal(), is(2));
+
+        final Iterator<AuditRecord> recordsIterator = auditRecordsData.getRecords().iterator();
         final AuditRecord firstRecord = recordsIterator.next();
         assertThat(firstRecord.getSummary(), is("User added to group"));
         assertThat(firstRecord.getRemoteAddress(), is("127.0.0.1"));
@@ -36,7 +42,7 @@ public class AuditRecordsJsonParserTest {
         assertThat(firstRecord.getObjectItem().getParentId(), nullValue());
         assertThat(firstRecord.getObjectItem().getParentName(), nullValue());
 
-        final AuditAssociatedItem firstItem = firstRecord.getAssociatedItem().iterator().next();
+        final AuditAssociatedItem firstItem = firstRecord.getAssociatedItems().iterator().next();
         assertThat(firstItem.getId(), is("admin"));
         assertThat(firstItem.getName(), is("admin"));
         assertThat(firstItem.getTypeName(), is("USER"));
@@ -68,7 +74,7 @@ public class AuditRecordsJsonParserTest {
         final AuditRecord secondRecord = recordsIterator.next();
         assertThat(secondRecord.getSummary(), is("User added to group"));
         assertThat(secondRecord.getRemoteAddress(), nullValue());
-        assertThat(secondRecord.getCreated(), is(1395674708606L));
+        assertThat(secondRecord.getCreated(), is(1395674708600L));
         assertThat(secondRecord.getCategory(), is("group management"));
         assertThat(secondRecord.getAuthorKey(), is("admin"));
 
@@ -78,7 +84,7 @@ public class AuditRecordsJsonParserTest {
         assertThat(secondRecord.getObjectItem().getParentId(), nullValue());
         assertThat(secondRecord.getObjectItem().getParentName(), nullValue());
 
-        final AuditAssociatedItem secondItem = secondRecord.getAssociatedItem().iterator().next();
+        final AuditAssociatedItem secondItem = secondRecord.getAssociatedItems().iterator().next();
         assertThat(secondItem.getName(), is("admin"));
         assertThat(secondItem.getTypeName(), is("USER"));
         assertThat(secondItem.getId(),  nullValue());

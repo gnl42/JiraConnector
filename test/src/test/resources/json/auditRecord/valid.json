@@ -1,9 +1,12 @@
 {
+    "offset": 0,
+    "limit": 1000,
+    "total": 2,
     "records" : [
         {
         "id":10003,
         "summary":"User added to group",
-        "remoteAddr":"127.0.0.1",
+        "remoteAddress":"127.0.0.1",
         "authorKey":"admin",
         "created":1395674708606,
         "category":"group management",
@@ -43,10 +46,10 @@
             ]
         },
         {
-            "id":10003,
+            "id":10002,
             "summary":"User added to group",
             "authorKey":"admin",
-            "created":1395674708606,
+            "created":1395674708600,
             "category":"group management",
             "objectItem":{
                 "name":"jira-developers",
