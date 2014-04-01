@@ -11,10 +11,16 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
+import org.joda.time.*;
 import org.junit.Test;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 
 import static org.hamcrest.core.Is.is;
@@ -158,5 +164,77 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(item.getParentId(), nullValue());
         assertThat(item.getParentName(), nullValue());
         assertThat(item.getTypeName(), is("PROJECT"));
+    }
+
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void shouldReturnNoRecordsWhenFilteringForTomorrow() {
+        final DateTime tomorrow = new DateMidnight().plus(Period.days(1)).toDateTime();
+
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).claim();
+
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(0));
+    }
+
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void shouldReturnAllRecordsWhenFilteringToLatestCreationDate() {
+        final AuditRecord latestCreatedRecord = getLatestCreatedRecord();
+        final DateTime latestCreatedDate = latestCreatedRecord.getCreated();
+
+        // when
+        final AuditRecordSearchInput toLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, null, latestCreatedDate);
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(toLatestSearchCriteria).claim();
+
+        // then
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(3));
+    }
+
+    @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
+    @Test
+    public void shouldReturnLatestItemWhenFilteringFromLatestCreationDate() {
+        final AuditRecord latestCreatedRecord = getLatestCreatedRecord();
+        final DateTime latestCreatedDate = latestCreatedRecord.getCreated();
+        final DateTime latestCreatedDateInStrangeTimezone = latestCreatedDate.toDateTime(DateTimeZone.forOffsetHours(-5));
+
+        // when
+        final AuditRecordSearchInput fromLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, latestCreatedDateInStrangeTimezone, null);
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(fromLatestSearchCriteria).claim();
+
+        // then
+        assertThat(auditRecordsData.getRecords(), Matchers.contains(auditRecordWithId(latestCreatedRecord.getId())));
+        assertThat(Iterables.size(auditRecordsData.getRecords()), is(Matchers.greaterThanOrEqualTo(1)));
+    }
+
+    private Matcher<AuditRecord> auditRecordWithId(final Long expectedId) {
+        return new BaseMatcher<AuditRecord>() {
+            @Override
+            public boolean matches(Object o) {
+                AuditRecord current = (AuditRecord)o;
+                return current.getId().equals(expectedId);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Contains item with id: "+expectedId);
+            }
+        };
+    }
+
+    private AuditRecord getLatestCreatedRecord() {
+        final AuditRecordsData allAuditRecordData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
+
+        final Ordering<AuditRecord> createdTimeAscendingOrdering = new Ordering<AuditRecord>() {
+            @Override
+            public int compare(@Nullable AuditRecord left, @Nullable AuditRecord right) {
+                final DateTime leftCreatedTime = left.getCreated();
+                final DateTime rightCreatedTime = right.getCreated();
+
+                return leftCreatedTime.compareTo(rightCreatedTime);
+            }
+        };
+        final AuditRecord latestAuditRecord = createdTimeAscendingOrdering.max(allAuditRecordData.getRecords());
+
+        return latestAuditRecord;
     }
 }
