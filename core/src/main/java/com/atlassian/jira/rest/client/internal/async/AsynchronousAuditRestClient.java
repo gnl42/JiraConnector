@@ -6,7 +6,7 @@ import com.atlassian.jira.rest.client.api.domain.AuditRecordInput;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.internal.json.AuditRecordsJsonParser;
-import com.atlassian.jira.rest.client.internal.json.Dates;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.gen.AuditRecordInputJsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 
@@ -61,13 +61,19 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
         }
 
         if (input.getFrom() != null) {
-            uriBuilder.queryParam(("from"), Dates.asISODateTimeString(input.getFrom()));
+            final String fromIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getFrom());
+            uriBuilder.queryParam(("from"), fromIsoString);
         }
 
         if (input.getTo() != null) {
-            uriBuilder.queryParam(("to"), Dates.asISODateTimeString(input.getTo()));
+            final String toIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getTo());
+            uriBuilder.queryParam(("to"), toIsoString);
         }
 
-        return uriBuilder.build();
+        try {
+            return uriBuilder.build();
+        } catch( RuntimeException x ) {
+            throw x;
+        }
     }
 }

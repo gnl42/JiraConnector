@@ -16,7 +16,6 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData> {
 
-    public static final DateTimeFormatter ISO_DATE_TIME_FORMAT = ISODateTimeFormat.dateTime();
     private final AuditAssociatedItemJsonParser associatedItemJsonParser = new AuditAssociatedItemJsonParser();
     private final AuditChangedValueJsonParser changedValueJsonParser = new AuditChangedValueJsonParser();
     private final SingleAuditRecordJsonParser singleAuditRecordJsonParser = new SingleAuditRecordJsonParser();
@@ -38,7 +37,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
             final String summary = json.getString("summary");
 
             final String createdString = json.getString("created");
-            final DateTime created = ISO_DATE_TIME_FORMAT.parseDateTime(createdString);
+            final DateTime created = JsonParseUtil.parseDateTime(json, "created");
             final String category = json.getString("category");
             final String authorKey = json.getString("authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
