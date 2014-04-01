@@ -9,7 +9,6 @@ import com.atlassian.jira.rest.client.internal.json.AuditRecordsJsonParser;
 import com.atlassian.jira.rest.client.internal.json.Dates;
 import com.atlassian.jira.rest.client.internal.json.gen.AuditRecordInputJsonGenerator;
 import com.atlassian.util.concurrent.Promise;
-import org.joda.time.format.ISODateTimeFormat;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.UriBuilder;
@@ -61,7 +60,6 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
             uriBuilder.queryParam(("filter"), input.getTextFilter());
         }
 
-        ISODateTimeFormat.dateTime();
         if (input.getFrom() != null) {
             uriBuilder.queryParam(("from"), Dates.asISODateTimeString(input.getFrom()));
         }
