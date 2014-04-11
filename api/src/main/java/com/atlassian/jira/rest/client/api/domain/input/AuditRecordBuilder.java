@@ -22,27 +22,27 @@ public class AuditRecordBuilder {
     List<AuditChangedValue> values;
     List<AuditAssociatedItem> associatedItems;
 
-    public AuditRecordBuilder(String category, String summary) {
+    public AuditRecordBuilder(final String category, final String summary) {
         this.category = category;
         this.summary = summary;
     }
 
-    public AuditRecordBuilder setObject(AuditAssociatedItem objectItem) {
+    public AuditRecordBuilder setObject(final AuditAssociatedItem objectItem) {
         this.objectItem = objectItem;
         return this;
     }
 
-    public AuditRecordBuilder setObject(@Nullable String id, String name, String typeName) {
+    public AuditRecordBuilder setObject(@Nullable final String id, final String name, final String typeName) {
         this.objectItem = new AuditAssociatedItem(id, name, typeName, null, null);
         return this;
     }
 
-    public AuditRecordBuilder setChangedValues(Iterable<AuditChangedValue> values) {
+    public AuditRecordBuilder setChangedValues(final Iterable<AuditChangedValue> values) {
         this.values = ImmutableList.copyOf(values);
         return this;
     }
 
-    public AuditRecordBuilder setAssociatedItems(Iterable<AuditAssociatedItem> associatedItems) {
+    public AuditRecordBuilder setAssociatedItems(final Iterable<AuditAssociatedItem> associatedItems) {
         this.associatedItems = ImmutableList.copyOf(associatedItems);
         return this;
     }

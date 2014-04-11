@@ -10,6 +10,7 @@
         "authorKey":"admin",
         "created":"1994-11-05T13:15:30.111+0000",
         "category":"group management",
+        "eventSource" : "Connect plugin",
         "objectItem":{
             "name":"jira-developers",
             "typeName":"GROUP"
@@ -51,6 +52,7 @@
             "authorKey":"admin",
             "created":"1994-11-05T13:15:30.111+0000",
             "category":"group management",
+            "eventSource" : "Other connect plugin",
             "objectItem":{
                 "name":"jira-developers",
                 "typeName":"GROUP"

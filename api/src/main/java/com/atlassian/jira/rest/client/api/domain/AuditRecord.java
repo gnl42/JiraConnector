@@ -20,6 +20,8 @@ public class AuditRecord {
 
     private final String category;
 
+    private final String eventSource;
+
     private final String authorKey;
 
     @Nullable
@@ -35,7 +37,7 @@ public class AuditRecord {
     private final OptionalIterable<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
-                       final DateTime created, final String category,final String authorKey,
+                       final DateTime created, final String category, String eventSource, final String authorKey,
                        @Nullable final AuditAssociatedItem objectItem,
                        @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
                        @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
@@ -44,6 +46,7 @@ public class AuditRecord {
         this.remoteAddress = remoteAddress;
         this.created = created;
         this.category = category;
+        this.eventSource = eventSource;
         this.authorKey = authorKey;
         this.objectItem = objectItem;
         this.associatedItem = associatedItem;
@@ -64,6 +67,10 @@ public class AuditRecord {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getEventSource() {
+        return eventSource;
     }
 
     public String getRemoteAddress() {

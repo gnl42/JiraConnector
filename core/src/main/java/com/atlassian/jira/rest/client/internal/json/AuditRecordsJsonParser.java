@@ -8,8 +8,6 @@ import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @since v2.0
@@ -39,13 +37,14 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
             final String createdString = json.getString("created");
             final DateTime created = JsonParseUtil.parseDateTime(json, "created");
             final String category = json.getString("category");
+            final String eventSource = json.getString("eventSource");
             final String authorKey = json.getString("authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
             final AuditAssociatedItem objectItem = JsonParseUtil.getOptionalJsonObject(json, "objectItem", associatedItemJsonParser);
             final OptionalIterable<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);
             final OptionalIterable<AuditChangedValue> changedValues = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("changedValues"), changedValueJsonParser);
 
-            return new AuditRecord(id, summary, remoteAddress, created, category, authorKey, objectItem, associatedItem, changedValues);
+            return new AuditRecord(id, summary, remoteAddress, created, category, eventSource, authorKey, objectItem, associatedItem, changedValues);
         }
 
     }

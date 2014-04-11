@@ -39,6 +39,7 @@ public class AuditRecordsJsonParserTest {
 
         assertThat(firstRecord.getCreated().toInstant(), is(SAMPLE_DATE));
         assertThat(firstRecord.getCategory(), is("group management"));
+        assertThat(firstRecord.getEventSource(), is("Connect plugin"));
         assertThat(firstRecord.getAuthorKey(), is("admin"));
 
         assertThat(firstRecord.getObjectItem().getId(), nullValue());
@@ -81,6 +82,7 @@ public class AuditRecordsJsonParserTest {
         assertThat(secondRecord.getRemoteAddress(), nullValue());
         assertThat(secondRecord.getCreated().toInstant(), is(SAMPLE_DATE));
         assertThat(secondRecord.getCategory(), is("group management"));
+        assertThat(secondRecord.getEventSource(), is("Other connect plugin"));
         assertThat(secondRecord.getAuthorKey(), is("admin"));
 
         assertThat(secondRecord.getObjectItem().getId(), nullValue());
