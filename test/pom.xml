@@ -69,6 +69,10 @@
                     <groupId>javax.jms</groupId>
                     <artifactId>jms</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.collections</groupId>
+                    <artifactId>google-collections</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -107,6 +111,10 @@
                             <groupId>javax.jms</groupId>
                             <artifactId>jms</artifactId>
                         </exclusion>
+                        <exclusion>
+                            <groupId>com.google.collections</groupId>
+                            <artifactId>google-collections</artifactId>
+                        </exclusion>
                     </exclusions>
                 </dependency>
             </dependencies>
@@ -139,6 +147,10 @@
                         <exclusion>
                             <groupId>javax.jms</groupId>
                             <artifactId>jms</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>com.google.collections</groupId>
+                            <artifactId>google-collections</artifactId>
                         </exclusion>
                     </exclusions>
                 </dependency>
