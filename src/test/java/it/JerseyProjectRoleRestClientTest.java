@@ -82,8 +82,8 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY, pm);
 		setAnonymousMode();
 		exception.expect(RestClientException.class);
-		exception.expectMessage("com.sun.jersey.api.client.UniformInterfaceException: Client response status: 404");
-		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l, pm);
+		exception.expectMessage("You cannot edit the configuration of this project.");
+		client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l, pm);
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
