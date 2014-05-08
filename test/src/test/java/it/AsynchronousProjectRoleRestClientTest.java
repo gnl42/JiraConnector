@@ -89,8 +89,8 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).claim();
 		setAnonymousMode();
 		exception.expect(RestClientException.class);
-		exception.expectMessage("404");
-		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l).claim();
+		exception.expectMessage(String.format("No project could be found with key '%s'", RESTRICTED_PROJECT_KEY));
+		client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).claim();
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
