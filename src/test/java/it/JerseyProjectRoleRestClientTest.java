@@ -82,7 +82,12 @@ public class JerseyProjectRoleRestClientTest extends AbstractJerseyRestClientTes
 		final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY, pm);
 		setAnonymousMode();
 		exception.expect(RestClientException.class);
-		exception.expectMessage("You cannot edit the configuration of this project.");
+		if (isJira5xOrNewer()) {
+			exception.expectMessage(String.format("No project could be found with key '%s'", RESTRICTED_PROJECT_KEY));
+		}
+		else {
+			exception.expectMessage("You cannot edit the configuration of this project.");
+		}
 		client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l, pm);
 	}
 
