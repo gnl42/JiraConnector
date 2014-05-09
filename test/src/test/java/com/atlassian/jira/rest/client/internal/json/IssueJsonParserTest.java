@@ -51,7 +51,7 @@ public class IssueJsonParserTest {
 		assertEquals("my description", issue.getDescription());
 		assertEquals(Long.valueOf(10010), issue.getId());
 
-		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", "Test Project");
+		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", 10000L, "Test Project");
 		assertEquals(expectedProject, issue.getProject());
 
 		assertEquals("Major", issue.getPriority().getName());

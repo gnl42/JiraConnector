@@ -499,7 +499,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		if (isJira5xOrNewer()) {
 			expectedErrorMessage = "The user \"" + USER2_USERNAME + "\" does not have permission to view this issue."
 					+ " This user will not be added to the watch list.";
-		} else if (isJira4x3OrNewer()) {
+		} else if (isJira43xOrNewer()) {
 			expectedErrorMessage = "User '" + ADMIN_USERNAME + "' is not allowed to add watchers to issue '" + issueKey + "'";
 		} else {
 			expectedErrorMessage = "com.sun.jersey.api.client.UniformInterfaceException: Client response status: 401";

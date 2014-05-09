@@ -44,10 +44,10 @@ public class Project extends BasicProject implements ExpandableResource {
 	private final OptionalIterable<IssueType> issueTypes;
 	private final Collection<BasicProjectRole> projectRoles;
 
-	public Project(final Iterable<String> expandos, URI self, String key, String name, String description, BasicUser lead, URI uri,
+	public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
             Collection<Version> versions, Collection<BasicComponent> components,
             OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
-		super(self, key, name);
+		super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;
 		this.lead = lead;

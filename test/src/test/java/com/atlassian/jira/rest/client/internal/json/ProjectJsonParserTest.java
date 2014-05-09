@@ -46,6 +46,7 @@ public class ProjectJsonParserTest {
 		assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, project.getLead());
 		Assert.assertEquals("http://example.com", project.getUri().toString());
 		Assert.assertEquals("TST", project.getKey());
+		Assert.assertEquals(Long.valueOf(10000), project.getId());
 		Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder
 				.containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
@@ -54,6 +55,13 @@ public class ProjectJsonParserTest {
 		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
 		Assert.assertFalse(issueTypes.isSupported());
 		Assert.assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
+	}
+
+	@Test
+	public void testParseWithoutId() throws Exception {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/valid-without-id.json"));
+		Assert.assertEquals("TST", project.getKey());
+		Assert.assertNull(project.getId());
 	}
 
 	@Test

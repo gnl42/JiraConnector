@@ -68,6 +68,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
 	public void testGetProject() throws URISyntaxException {
 		final Project project = client.getProjectClient().getProject("TST").claim();
 		assertEquals("TST", project.getKey());
+		assertEquals(Long.valueOf(10000), project.getId());
 		assertEquals(IntegrationTestUtil.USER_ADMIN_60, project.getLead());
 		assertEquals(2, Iterables.size(project.getVersions()));
 		assertEquals(2, Iterables.size(project.getComponents()));

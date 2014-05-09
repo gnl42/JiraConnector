@@ -56,6 +56,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
         final Iterable<String> expandos = parseExpandos(json);
         final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
 		final String key = json.getString("key");
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
 		final String name = JsonParseUtil.getOptionalString(json, "name");
 		final String urlStr = JsonParseUtil.getOptionalString(json, "url");
 		URI uri;
@@ -75,7 +76,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
 		final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
 		final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
 				.getOptionalJsonObject(json, "roles"));
-        return new Project(expandos, self, key, name, description, lead, uri, versions, components, issueTypes, projectRoles);
+        return new Project(expandos, self, key, id, name, description, lead, uri, versions, components, issueTypes, projectRoles);
 	}
 
 

@@ -173,7 +173,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>6.0-SNAPSHOT</jira.version>
+                <jira.version>6.0.8</jira.version>
                 <jira.data.version>${jira.version}</jira.data.version>
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
