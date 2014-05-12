@@ -109,7 +109,7 @@ public class SearchResultJsonParserTest {
 		assertEquals(TestConstants.USER1, issue.getReporter());
 		assertEquals(TestConstants.USER_ADMIN, issue.getAssignee());
 
-		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", "Test Project");
+		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", 10000L, "Test Project");
 		assertEquals(expectedProject, issue.getProject());
 
 		final BasicVotes expectedVotes = new BasicVotes(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/votes"), 0, false);

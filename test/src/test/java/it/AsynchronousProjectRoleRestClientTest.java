@@ -41,6 +41,7 @@ import org.junit.rules.ExpectedException;
 import java.net.URI;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.buildUserAvatarUri;
+import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -89,8 +90,14 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 		final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).claim();
 		setAnonymousMode();
 		exception.expect(RestClientException.class);
-		exception.expectMessage("404");
-		client.getProjectRolesRestClient().getRole(restrictedProject.getUri(), 10000l).claim();
+		if (isJira61xOrNewer()) {
+			final String expectedError = String.format("No project could be found with id '%s'.", restrictedProject.getId());
+			exception.expect(rceWithSingleError(404, expectedError));
+		}
+		else {
+			exception.expectMessage(String.format("No project could be found with key '%s'", RESTRICTED_PROJECT_KEY));
+		}
+		client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).claim();
 	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)

@@ -22,12 +22,22 @@ import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class BasicProjectsJsonParserTest {
 
+	private static final BasicProject TST_PROJECT_WITHOUT_ID = new BasicProject(TestUtil
+			.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", null, "Test Project");
+
 	private static final BasicProject TST_PROJECT = new BasicProject(TestUtil
-			.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", "Test Project");
+			.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), "TST", 10000L, "Test Project");
+
+	@Test
+	public void testParseWithoutProjectId() throws Exception {
+		BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
+
+		final Iterable<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects-without-id.json"));
+		Assert.assertEquals(3, Iterables.size(project));
+		Assert.assertEquals(TST_PROJECT_WITHOUT_ID, Iterables.get(project, 0));
+	}
 
 	@Test
 	public void testParse() throws Exception {

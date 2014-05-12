@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.atlassian.jira</groupId>
         <artifactId>jira-rest-java-client-parent</artifactId>
-        <version>2.0.0-m27-SNAPSHOT</version>
+        <version>2.0.0-m28-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.atlassian.jira</groupId>
@@ -173,7 +173,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>6.0-SNAPSHOT</jira.version>
+                <jira.version>6.0.8</jira.version>
                 <jira.data.version>${jira.version}</jira.data.version>
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
