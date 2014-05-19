@@ -34,7 +34,7 @@ public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronou
 		final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions("TST-1").claim();
 
 		// then
-		Permission worklogDeleteOwn = permissions.getPermission("WORKLOG_DELETE_OWN");
+		final Permission worklogDeleteOwn = permissions.getPermission("WORKLOG_DELETE_OWN");
 		assertThat(worklogDeleteOwn, notNullValue());
 		assertThat(worklogDeleteOwn.getId(), is(42));
 		assertThat(worklogDeleteOwn.getKey(), is("WORKLOG_DELETE_OWN"));

@@ -28,7 +28,7 @@ public class Permissions {
 	public static final String WORK_ISSUE = "WORK_ISSUE";
 	private final Map<String, Permission> permissionMap;
 
-	public Permissions(Iterable<Permission> permissions) {
+	public Permissions(final Iterable<Permission> permissions) {
 		this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
 	}
 
@@ -36,13 +36,13 @@ public class Permissions {
 		return permissionMap;
 	}
 
-	public boolean havePermission(String permissionKey) {
-		Permission permission = getPermission(permissionKey);
+	public boolean havePermission(final String permissionKey) {
+		final Permission permission = getPermission(permissionKey);
 		return (permission != null && permission.havePermission());
 	}
 
 	@Nullable
-	public Permission getPermission(String permissionKey) {
+	public Permission getPermission(final String permissionKey) {
 		return permissionMap.get(permissionKey);
 	}
 

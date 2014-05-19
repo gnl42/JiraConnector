@@ -21,7 +21,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class PermissionJsonParser implements JsonObjectParser<Permission> {
 	@Override
-	public Permission parse(JSONObject json) throws JSONException {
+	public Permission parse(final JSONObject json) throws JSONException {
 		final Integer id = json.getInt("id");
 		final String key = json.getString("key");
 		final String name = json.getString("name");

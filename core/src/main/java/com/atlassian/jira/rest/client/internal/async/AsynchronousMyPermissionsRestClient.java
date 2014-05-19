@@ -29,14 +29,14 @@ public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRes
 	private final URI baseUri;
 	private final PermissionsJsonParser permissionsJsonParser = new PermissionsJsonParser();
 
-	protected AsynchronousMyPermissionsRestClient(URI baseUri, HttpClient client) {
+	protected AsynchronousMyPermissionsRestClient(final URI baseUri, final HttpClient client) {
 		super(client);
 		this.baseUri = baseUri;
 	}
 
 	@Override
-	public Promise<Permissions> getMyPermissions(Object... issueOrProjectKeyOrIds) {
-		UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
+	public Promise<Permissions> getMyPermissions(final Object... issueOrProjectKeyOrIds) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
 		for (Object issueOrProjectKeyOrId : issueOrProjectKeyOrIds) {
 			uriBuilder.queryParam(issueOrProjectKeyOrId.toString(), "");
 		}

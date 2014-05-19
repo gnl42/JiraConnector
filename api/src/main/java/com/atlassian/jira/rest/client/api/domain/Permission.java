@@ -30,7 +30,8 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 	private final String description;
 	private final boolean havePermission;
 
-	public Permission(Integer id, String key, String name, @Nullable String description, boolean havePermission) {
+	public Permission(final Integer id, final String key, final String name, @Nullable final String description,
+			final boolean havePermission) {
 		this.id = id;
 		this.key = key;
 		this.name = name;
@@ -99,7 +100,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 
 	public static final Function<Permission, String> TO_KEY = new Function<Permission, String>() {
 		@Override
-		public String apply(Permission input) {
+		public String apply(final Permission input) {
 			return input.getKey();
 		}
 	};
