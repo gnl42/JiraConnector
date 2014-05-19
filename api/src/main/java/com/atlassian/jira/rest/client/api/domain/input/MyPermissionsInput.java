@@ -82,14 +82,35 @@ public class MyPermissionsInput {
 	/**
 	 * Creates permissions context with project defined by key
 	 */
-	public static MyPermissionsInput withProjectKey(final String projectKey) {
+	public static MyPermissionsInput withProject(final String projectKey) {
 		return new MyPermissionsInput(projectKey, null, null, null);
+	}
+
+	/**
+	 * Creates permissions context with project defined by id
+	 */
+	public static MyPermissionsInput withProject(final int projectId) {
+		return new MyPermissionsInput(null, projectId, null, null);
 	}
 
 	/**
 	 * Creates permissions context with issue defined by key
 	 */
-	public static MyPermissionsInput withIssueKey(final String issueKey) {
+	public static MyPermissionsInput withIssue(final String issueKey) {
 		return new MyPermissionsInput(null, null, issueKey, null);
+	}
+
+	/**
+	 * Creates permissions context with issue defined by id
+	 */
+	public static MyPermissionsInput withIssue(final int issueId) {
+		return new MyPermissionsInput(null, null, null, issueId);
+	}
+
+	/**
+	 * Creates permissions context for any project or issue
+	 */
+	public static MyPermissionsInput withAny() {
+		return null;
 	}
 }

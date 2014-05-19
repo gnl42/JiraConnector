@@ -16,33 +16,59 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
-import com.atlassian.jira.rest.client.api.domain.Permission;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Permissions;
 import com.atlassian.jira.rest.client.api.domain.input.MyPermissionsInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronousRestClientTest {
 
+	@Override
+	public void beforeMethod() {
+		super.beforeMethod();
+
+		setUser1(); // set non-admin user
+	}
+
 	@Test
-	public void testGetMyPermissions() throws Exception {
+	public void testHavePermission() throws Exception {
+		testWorkIssuePermission(MyPermissionsInput.withIssue("TST-1"), true);
+		testWorkIssuePermission(MyPermissionsInput.withIssue(10000), true); // TST-1
+		testWorkIssuePermission(MyPermissionsInput.withProject("TST"), true);
+		testWorkIssuePermission(MyPermissionsInput.withProject(10000), true); // TST
+		testWorkIssuePermission(MyPermissionsInput.withIssue("RST-1"), false);
+		testWorkIssuePermission(MyPermissionsInput.withIssue(10060), false); // RST-1
+		testWorkIssuePermission(MyPermissionsInput.withProject("RST"), false);
+		testWorkIssuePermission(MyPermissionsInput.withProject(10010), false); // RST
+		testWorkIssuePermission(MyPermissionsInput.withAny(), true); // any = permission from TST
+	}
+
+	@Test
+	public void testNonExisting() throws Exception {
+		testError(MyPermissionsInput.withIssue("NONEXISTING-1"), 404);
+		testError(MyPermissionsInput.withProject("NONEXISTINGPROJECT"), 404);
+	}
+
+	private void testWorkIssuePermission(MyPermissionsInput permissionsInput, boolean expectedPermission) {
 		// when
-		final Permissions permissions = client.getMyPermissionsRestClient()
-				.getMyPermissions(MyPermissionsInput.withIssueKey("TST-1"))
-				.claim();
+		final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
 
 		// then
-		final Permission worklogDeleteOwn = permissions.getPermission("WORKLOG_DELETE_OWN");
-		assertThat(worklogDeleteOwn, notNullValue());
-		assertThat(worklogDeleteOwn.getId(), is(42));
-		assertThat(worklogDeleteOwn.getKey(), is("WORKLOG_DELETE_OWN"));
-		assertThat(worklogDeleteOwn.getName(), is("Delete Own Worklogs"));
-		assertThat(worklogDeleteOwn.getDescription(), is("Ability to delete own worklogs made on issues."));
-		assertThat(worklogDeleteOwn.havePermission(), is(true));
+		assertThat("Context " + permissionsInput, permissions.havePermission(Permissions.WORK_ISSUE), is(expectedPermission));
+	}
+
+	private void testError(MyPermissionsInput permissionsInput, int expectedStatus) {
+		try {
+			client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
+			fail("rest client should fail for input " + permissionsInput);
+		} catch (RestClientException e) {
+			assertThat("Context " + permissionsInput, e.getStatusCode(), is(Optional.of(expectedStatus)));
+		}
 	}
 }
