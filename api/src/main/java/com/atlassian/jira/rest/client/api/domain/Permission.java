@@ -23,14 +23,14 @@ import com.google.common.base.Objects;
 import javax.annotation.Nullable;
 
 public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
-	private final Integer id;
+	private final int id;
 	private final String key;
 	private final String name;
 	@Nullable
 	private final String description;
 	private final boolean havePermission;
 
-	public Permission(final Integer id, final String key, final String name, @Nullable final String description,
+	public Permission(final int id, final String key, final String name, @Nullable final String description,
 			final boolean havePermission) {
 		this.id = id;
 		this.key = key;
@@ -82,7 +82,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 		Permission that = (Permission) o;
 
 		if (havePermission != that.havePermission) return false;
-		if (!id.equals(that.id)) return false;
+		if (id != that.id) return false;
 		if (!key.equals(that.key)) return false;
 		if (!name.equals(that.name)) return false;
 
@@ -91,7 +91,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 
 	@Override
 	public int hashCode() {
-		int result = id.hashCode();
+		int result = id;
 		result = 31 * result + key.hashCode();
 		result = 31 * result + name.hashCode();
 		result = 31 * result + (havePermission ? 1 : 0);
