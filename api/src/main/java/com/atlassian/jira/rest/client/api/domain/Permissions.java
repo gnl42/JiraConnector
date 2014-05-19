@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2014 Atlassian
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.google.common.base.Objects;
@@ -8,52 +23,52 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 public class Permissions {
-    /**
-     * Permission key for ability to log work done against an issue. Only useful if Time Tracking is turned on.
-     */
-    public static final String WORK_ISSUE = "WORK_ISSUE";
-    private final Map<String, Permission> permissionMap;
+	/**
+	 * Permission key for ability to log work done against an issue. Only useful if Time Tracking is turned on.
+	 */
+	public static final String WORK_ISSUE = "WORK_ISSUE";
+	private final Map<String, Permission> permissionMap;
 
-    public Permissions(@Nonnull Iterable<Permission> permissions) {
-        this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
-    }
+	public Permissions(@Nonnull Iterable<Permission> permissions) {
+		this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
+	}
 
-    @Nonnull
-    public Map<String, Permission> getPermissionMap() {
-        return permissionMap;
-    }
+	@Nonnull
+	public Map<String, Permission> getPermissionMap() {
+		return permissionMap;
+	}
 
-    public boolean havePermission(String permissionKey) {
-        Permission permission = getPermission(permissionKey);
-        return (permission != null && permission.havePermission());
-    }
+	public boolean havePermission(String permissionKey) {
+		Permission permission = getPermission(permissionKey);
+		return (permission != null && permission.havePermission());
+	}
 
-    @Nullable
-    public Permission getPermission(String permissionKey) {
-        return permissionMap.get(permissionKey);
-    }
+	@Nullable
+	public Permission getPermission(String permissionKey) {
+		return permissionMap.get(permissionKey);
+	}
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("permissionMap", permissionMap)
-                .toString();
-    }
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("permissionMap", permissionMap)
+				.toString();
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-        Permissions that = (Permissions) o;
+		Permissions that = (Permissions) o;
 
-        if (!permissionMap.equals(that.permissionMap)) return false;
+		if (!permissionMap.equals(that.permissionMap)) return false;
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        return permissionMap.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return permissionMap.hashCode();
+	}
 }

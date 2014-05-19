@@ -37,7 +37,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	private final SearchRestClient searchRestClient;
 	private final VersionRestClient versionRestClient;
 	private final ProjectRolesRestClient projectRolesRestClient;
-    private final MyPermissionsRestClient myPermissionsRestClient;
+	private final MyPermissionsRestClient myPermissionsRestClient;
 	private final DisposableHttpClient httpClient;
 
 	public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
@@ -53,7 +53,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
 		versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
 		projectRolesRestClient = new AsynchronousProjectRolesRestClient(serverUri, httpClient);
-        myPermissionsRestClient = new AsynchronousMyPermissionsRestClient(baseUri, httpClient);
+		myPermissionsRestClient = new AsynchronousMyPermissionsRestClient(baseUri, httpClient);
 	}
 
 	@Override
@@ -101,12 +101,12 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		return projectRolesRestClient;
 	}
 
-    @Override
-    public MyPermissionsRestClient getMyPermissionsRestClient() {
-        return myPermissionsRestClient;
-    }
+	@Override
+	public MyPermissionsRestClient getMyPermissionsRestClient() {
+		return myPermissionsRestClient;
+	}
 
-    @Override
+	@Override
 	public void close() throws IOException {
 		try {
 			httpClient.destroy();
