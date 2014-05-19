@@ -20,19 +20,17 @@ import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
-	@Nonnull
 	private final Integer id;
-	@Nonnull
 	private final String key;
-	@Nonnull
 	private final String name;
+	@Nullable
 	private final String description;
 	private final boolean havePermission;
 
-	public Permission(@Nonnull Integer id, @Nonnull String key, @Nonnull String name, String description, boolean havePermission) {
+	public Permission(Integer id, String key, String name, @Nullable String description, boolean havePermission) {
 		this.id = id;
 		this.key = key;
 		this.name = name;
@@ -40,21 +38,19 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 		this.havePermission = havePermission;
 	}
 
-	@Nonnull
 	public Integer getId() {
 		return id;
 	}
 
-	@Nonnull
 	public String getKey() {
 		return key;
 	}
 
-	@Nonnull
 	public String getName() {
 		return name;
 	}
 
+	@Nullable
 	public String getDescription() {
 		return description;
 	}

@@ -18,7 +18,6 @@ package com.atlassian.jira.rest.client.api.domain;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
@@ -29,11 +28,10 @@ public class Permissions {
 	public static final String WORK_ISSUE = "WORK_ISSUE";
 	private final Map<String, Permission> permissionMap;
 
-	public Permissions(@Nonnull Iterable<Permission> permissions) {
+	public Permissions(Iterable<Permission> permissions) {
 		this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
 	}
 
-	@Nonnull
 	public Map<String, Permission> getPermissionMap() {
 		return permissionMap;
 	}
