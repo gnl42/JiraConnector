@@ -55,14 +55,11 @@ public class Permissions {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Permissions that = (Permissions) o;
-
-		if (!permissionMap.equals(that.permissionMap)) return false;
-
-		return true;
+		if (o instanceof Permissions) {
+			Permissions that = (Permissions) o;
+			return Objects.equal(permissionMap, that.permissionMap);
+		}
+		return false;
 	}
 
 	@Override

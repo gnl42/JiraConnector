@@ -76,26 +76,20 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Permission that = (Permission) o;
-
-		if (havePermission != that.havePermission) return false;
-		if (id != that.id) return false;
-		if (!key.equals(that.key)) return false;
-		if (!name.equals(that.name)) return false;
-
-		return true;
+		if (o instanceof Permission) {
+			Permission that = (Permission) o;
+			return id == that.id
+					&& Objects.equal(key, that.key)
+					&& Objects.equal(name, that.name)
+					&& Objects.equal(description, that.description)
+					&& havePermission == that.havePermission;
+		}
+		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		result = 31 * result + key.hashCode();
-		result = 31 * result + name.hashCode();
-		result = 31 * result + (havePermission ? 1 : 0);
-		return result;
+		return Objects.hashCode(id, key, name, description, havePermission);
 	}
 
 	public static final Function<Permission, String> TO_KEY = new Function<Permission, String>() {
