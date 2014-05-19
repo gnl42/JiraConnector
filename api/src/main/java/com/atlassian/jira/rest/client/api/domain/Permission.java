@@ -39,6 +39,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 		this.havePermission = havePermission;
 	}
 
+	@Override
 	public Integer getId() {
 		return id;
 	}
@@ -47,6 +48,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 		return key;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

@@ -18,6 +18,7 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.api.domain.Permission;
 import com.atlassian.jira.rest.client.api.domain.Permissions;
+import com.atlassian.jira.rest.client.api.domain.input.MyPermissionsInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.junit.Test;
 
@@ -31,7 +32,9 @@ public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronou
 	@Test
 	public void testGetMyPermissions() throws Exception {
 		// when
-		final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions("TST-1").claim();
+		final Permissions permissions = client.getMyPermissionsRestClient()
+				.getMyPermissions(MyPermissionsInput.withIssueKey("TST-1"))
+				.claim();
 
 		// then
 		final Permission worklogDeleteOwn = permissions.getPermission("WORKLOG_DELETE_OWN");

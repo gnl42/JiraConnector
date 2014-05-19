@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.internal.async;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.MyPermissionsRestClient;
 import com.atlassian.jira.rest.client.api.domain.Permissions;
+import com.atlassian.jira.rest.client.api.domain.input.MyPermissionsInput;
 import com.atlassian.jira.rest.client.internal.json.PermissionsJsonParser;
 import com.atlassian.util.concurrent.Promise;
 
@@ -35,11 +36,27 @@ public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRes
 	}
 
 	@Override
-	public Promise<Permissions> getMyPermissions(final Object... issueOrProjectKeyOrIds) {
+	public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
-		for (Object issueOrProjectKeyOrId : issueOrProjectKeyOrIds) {
-			uriBuilder.queryParam(issueOrProjectKeyOrId.toString(), "");
-		}
+		addContextParams(uriBuilder, permissionInput);
 		return getAndParse(uriBuilder.build(), permissionsJsonParser);
+	}
+
+	private UriBuilder addContextParams(UriBuilder uriBuilder, MyPermissionsInput permissionInput) {
+		if (permissionInput != null) {
+			if (permissionInput.getProjectKey() != null) {
+				uriBuilder.queryParam("projectKey", permissionInput.getProjectKey());
+			}
+			if (permissionInput.getProjectId() != null) {
+				uriBuilder.queryParam("projectId", permissionInput.getProjectId());
+			}
+			if (permissionInput.getIssueKey() != null) {
+				uriBuilder.queryParam("issueKey", permissionInput.getIssueKey());
+			}
+			if (permissionInput.getIssueId() != null) {
+				uriBuilder.queryParam("issueId", permissionInput.getIssueId());
+			}
+		}
+		return uriBuilder;
 	}
 }
