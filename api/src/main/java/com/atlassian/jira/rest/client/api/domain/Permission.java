@@ -23,7 +23,7 @@ import com.google.common.base.Objects;
 import javax.annotation.Nullable;
 
 public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
-	private final int id;
+	private final Integer id;
 	private final String key;
 	private final String name;
 	@Nullable
