@@ -31,6 +31,6 @@ public class StatusJsonParser implements JsonObjectParser<Status> {
 	public Status parse(JSONObject json) throws JSONException {
 		final BasicStatus basicStatus = basicStatusJsonParser.parse(json);
 		return new Status(basicStatus.getSelf(), basicStatus.getId(), basicStatus.getName(),
-                basicStatus.getDescription(), basicStatus.getIconUrl());
+				basicStatus.getDescription(), basicStatus.getIconUrl());
 	}
 }

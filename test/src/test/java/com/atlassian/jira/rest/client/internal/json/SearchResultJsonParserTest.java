@@ -116,7 +116,7 @@ public class SearchResultJsonParserTest {
 		assertEquals(expectedVotes, issue.getVotes());
 
 		final BasicWatchers expectedWatchers = new BasicWatchers(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/watchers"), false, 0);
-		assertEquals(expectedWatchers, issue .getWatchers());
+		assertEquals(expectedWatchers, issue.getWatchers());
 
 		final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false);
 		assertEquals(expectedIssueType, issue.getIssueType());

@@ -26,16 +26,17 @@ import java.net.URI;
  */
 public class Status extends BasicStatus {
 	public Status(URI self, @Nullable final Long id, final String name,
-                  @Nullable final String description, @Nullable final URI iconUrl) {
+				  @Nullable final String description, @Nullable final URI iconUrl) {
 		super(self, id, name, description, iconUrl);
 	}
 
-    /**
-     * Backward compatible constructor
-     * @deprecated
-     */
-    @Deprecated
-    public Status(URI self, final String name, final String description, final URI iconUrl) {
-        this(self, null, name, description, iconUrl);
-    }
+	/**
+	 * Backward compatible constructor
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
+	public Status(URI self, final String name, final String description, final URI iconUrl) {
+		this(self, null, name, description, iconUrl);
+	}
 }

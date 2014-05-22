@@ -28,66 +28,70 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicStatus extends AddressableNamedEntity implements IdentifiableEntity<Long> {
-    @Nullable private final Long id;
-    @Nullable private final String description;
-    @Nullable private final URI iconUrl;
+	@Nullable
+	private final Long id;
+	@Nullable
+	private final String description;
+	@Nullable
+	private final URI iconUrl;
 
 	public BasicStatus(URI self, @Nullable final Long id, final String name,
-                       @Nullable final String description, @Nullable final URI iconUrl) {
+					   @Nullable final String description, @Nullable final URI iconUrl) {
 		super(self, name);
-        this.id = id;
-        this.description = description;
-        this.iconUrl = iconUrl;
+		this.id = id;
+		this.description = description;
+		this.iconUrl = iconUrl;
 	}
 
-    /**
-     * Backward compatible constructor
-     * @deprecated
-     */
-    @Deprecated
-    public BasicStatus(URI self, final String name) {
-        this(self, null, name, null, null);
-    }
+	/**
+	 * Backward compatible constructor
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
+	public BasicStatus(URI self, final String name) {
+		this(self, null, name, null, null);
+	}
 
-    @Override
-    public String toString() {
-        return getToStringHelper().
-                add("id", id).
-                add("description", description).
-                add("iconUrl", iconUrl).
-                toString();
-    }
+	@Override
+	public String toString() {
+		return getToStringHelper().
+				add("id", id).
+				add("description", description).
+				add("iconUrl", iconUrl).
+				toString();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicStatus) {
-            BasicStatus that = (BasicStatus) obj;
-            return super.equals(obj)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.iconUrl, that.iconUrl);
-        }
-        return false;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicStatus) {
+			BasicStatus that = (BasicStatus) obj;
+			return super.equals(obj)
+					&& Objects.equal(this.id, that.id)
+					&& Objects.equal(this.description, that.description)
+					&& Objects.equal(this.iconUrl, that.iconUrl);
+		}
+		return false;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, description, iconUrl);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), id, description, iconUrl);
+	}
 
-    @Override
-    @Nullable
-    public Long getId() {
-        return id;
-    }
+	@Override
+	@Nullable
+	public Long getId() {
+		return id;
+	}
 
-    @Nullable
-    public String getDescription() {
-        return description;
-    }
+	@Nullable
+	public String getDescription() {
+		return description;
+	}
 
-    @Nullable
-    public URI getIconUrl() {
-        return iconUrl;
-    }
+	@Nullable
+	public URI getIconUrl() {
+		return iconUrl;
+	}
 }

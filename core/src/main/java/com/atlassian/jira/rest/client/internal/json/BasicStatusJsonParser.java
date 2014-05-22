@@ -26,10 +26,10 @@ public class BasicStatusJsonParser implements JsonObjectParser<BasicStatus> {
 	@Override
 	public BasicStatus parse(JSONObject json) throws JSONException {
 		final URI self = JsonParseUtil.getSelfUri(json);
-        final Long id = JsonParseUtil.getOptionalLong(json, "id");
-        final String name = json.getString("name");
-        final String description = JsonParseUtil.getOptionalString(json, "description");
-        final URI iconUrl = JsonParseUtil.parseOptionalURI(json, "iconUrl");
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		final String name = json.getString("name");
+		final String description = JsonParseUtil.getOptionalString(json, "description");
+		final URI iconUrl = JsonParseUtil.parseOptionalURI(json, "iconUrl");
 		return new BasicStatus(self, id, name, description, iconUrl);
 	}
 }
