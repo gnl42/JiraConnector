@@ -16,18 +16,29 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.BasicResolution;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static com.atlassian.jira.rest.client.TestUtil.toUri;
+
 public class BasicResolutionJsonParserTest {
 	@Test
-	public void testParse() throws Exception {
+	public void testParseOptionalFields() throws Exception {
 		final BasicResolutionJsonParser parser = new BasicResolutionJsonParser();
 		final BasicResolution basicresolution = parser.parse(ResourceUtil
 				.getJsonObjectFromResource("/json/resolution/valid.json"));
-		Assert.assertEquals(new BasicResolution(TestUtil
-				.toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), "Incomplete"), basicresolution);
+		Assert.assertEquals(new BasicResolution(
+				toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), null, "Incomplete", null), basicresolution);
+	}
+
+	@Test
+	public void testParseAllFields() throws Exception {
+		final BasicResolutionJsonParser parser = new BasicResolutionJsonParser();
+		final BasicResolution basicresolution = parser.parse(ResourceUtil
+				.getJsonObjectFromResource("/json/resolution/complete.json"));
+		Assert.assertEquals(new BasicResolution(
+				toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), 4L, "Incomplete",
+				"The problem is not completely described."), basicresolution);
 	}
 }

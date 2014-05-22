@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.Objects;
-
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -26,36 +25,18 @@ import java.net.URI;
  * @since v0.1
  */
 public class Resolution extends BasicResolution {
-	private final String description;
 
+	public Resolution(URI self, @Nullable final Long id, String name, String description) {
+		super(self, id, name, description);
+	}
+
+	/**
+	 * Backward compatible constructor
+	 *
+	 * @deprecated
+	 */
 	public Resolution(URI self, String name, String description) {
-		super(self, name);
-		this.description = description;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public String toString() {
-		return getToStringHelper().
-				add("description", description).
-				toString();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Resolution) {
-			Resolution that = (Resolution) obj;
-			return super.equals(obj) && Objects.equal(this.description, that.description);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description);
+		this(self, null, name, description);
 	}
 
 }

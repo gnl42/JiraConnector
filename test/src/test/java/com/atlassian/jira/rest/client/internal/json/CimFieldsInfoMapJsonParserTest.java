@@ -72,11 +72,11 @@ public class CimFieldsInfoMapJsonParserTest {
 		);
 
 		assertThat(fieldsInfo.get("resolution").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), "Fixed"),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), "Won't Fix"),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), "Duplicate"),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/4"), "Incomplete"),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/5"), "Cannot Reproduce")
+				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), 1L, "Fixed", null),
+				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), 2L, "Won't Fix", null),
+				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), 3L, "Duplicate", null),
+				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/4"), 4L, "Incomplete", null),
+				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/5"), 5L, "Cannot Reproduce", null)
 		));
 	}
 

@@ -27,7 +27,7 @@ public class ResolutionJsonParserTest {
 	public void testParse() throws Exception {
 		final ResolutionJsonParser parser = new ResolutionJsonParser();
 		final Resolution resolution = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/resolution/complete.json"));
-		Assert.assertEquals(new Resolution(toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), "Incomplete",
+		Assert.assertEquals(new Resolution(toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), 4L, "Incomplete",
 				"The problem is not completely described."), resolution);
 	}
 }

@@ -25,19 +25,19 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
 public class BasicStatusJsonParserTest {
 	@Test
-	public void testParseOldFields() throws JSONException {
+	public void testParseOptionalFields() throws JSONException {
 		final BasicStatusJsonParser parser = new BasicStatusJsonParser();
 		final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
 		Assert.assertEquals(new BasicStatus(
-                toUri("http://localhost:8090/jira/rest/api/latest/status/1"), null, "Open", null, null), basicStatus);
+				toUri("http://localhost:8090/jira/rest/api/latest/status/1"), null, "Open", null, null), basicStatus);
 	}
 
-    @Test
-    public void testParseAllFields() throws JSONException {
-        final BasicStatusJsonParser parser = new BasicStatusJsonParser();
-        final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/complete.json"));
-        Assert.assertEquals(new BasicStatus(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
-                1L, "Open", "The issue is open and ready for the assignee to start work on it.",
-                toUri("http://localhost:8090/jira/images/icons/status_open.gif")), basicStatus);
-    }
+	@Test
+	public void testParseAllFields() throws JSONException {
+		final BasicStatusJsonParser parser = new BasicStatusJsonParser();
+		final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/complete.json"));
+		Assert.assertEquals(new BasicStatus(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
+				1L, "Open", "The issue is open and ready for the assignee to start work on it.",
+				toUri("http://localhost:8090/jira/images/icons/status_open.gif")), basicStatus);
+	}
 }

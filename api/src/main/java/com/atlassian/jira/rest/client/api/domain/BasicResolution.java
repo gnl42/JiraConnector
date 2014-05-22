@@ -16,6 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
+import com.google.common.base.Objects;
+
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -23,9 +27,58 @@ import java.net.URI;
  *
  * @since v0.1
  */
-public class BasicResolution extends AddressableNamedEntity {
+public class BasicResolution extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+	@Nullable
+	private final Long id;
+	@Nullable
+	private final String description;
 
-	public BasicResolution(URI self, String name) {
+	public BasicResolution(final URI self, @Nullable final Long id, final String name, final String description) {
 		super(self, name);
+		this.id = id;
+		this.description = description;
+	}
+
+	/**
+	 * Backward compatible constructor
+	 *
+	 * @deprecated
+	 */
+	public BasicResolution(URI self, String name) {
+		this(self, null, name, null);
+	}
+
+	@Nullable
+	public Long getId() {
+		return id;
+	}
+
+	@Nullable
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public String toString() {
+		return getToStringHelper().
+				add("id", id).
+				add("description", description).
+				toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BasicResolution) {
+			BasicResolution that = (BasicResolution) obj;
+			return super.equals(obj)
+					&& Objects.equal(this.id, that.id)
+					&& Objects.equal(this.description, that.description);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), id, description);
 	}
 }
