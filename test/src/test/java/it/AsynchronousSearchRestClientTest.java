@@ -196,7 +196,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals("A task where someone will vote", issue.getSummary());
 		assertNull(issue.getDescription()); // by default search doesn't retrieve description
 		assertEquals(new BasicPriority(resolveURI("rest/api/2/priority/3"), 3L, "Major"), issue.getPriority());
-		assertEquals(new BasicStatus(resolveURI("rest/api/2/status/1"), "Open"), issue.getStatus());
+		assertEquals(new BasicStatus(resolveURI("rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", resolveURI("http://localhost:2990/jira/images/icons/statuses/open.png")), issue.getStatus());
 		assertEmptyIterable(issue.getComments());  // not expanded by default
 		assertEmptyIterable(issue.getComponents());
 		assertEmptyIterable(issue.getWorklogs());
