@@ -43,6 +43,7 @@ import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import org.hamcrest.beans.HasPropertyWithValue;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
@@ -55,6 +56,11 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6_1;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -196,7 +202,15 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals("A task where someone will vote", issue.getSummary());
 		assertNull(issue.getDescription()); // by default search doesn't retrieve description
 		assertEquals(new BasicPriority(resolveURI("rest/api/2/priority/3"), 3L, "Major"), issue.getPriority());
-		assertEquals(new BasicStatus(resolveURI("rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", resolveURI("http://localhost:2990/jira/images/icons/statuses/open.png")), issue.getStatus());
+		assertThat(issue.getStatus(), allOf(
+				hasProperty("self", is(resolveURI("rest/api/2/status/1"))),
+				hasProperty("id", is(1L)),
+				hasProperty("name", is("Open")),
+				hasProperty("description", is("The issue is open and ready for the assignee to start work on it.")),
+				anyOf(
+						hasProperty("iconUrl", is(resolveURI("images/icons/statuses/open.png"))), // Jira >= 5.2
+						hasProperty("iconUrl", is(resolveURI("images/icons/status_open.gif"))) // Jira < 5.2
+				)));
 		assertEmptyIterable(issue.getComments());  // not expanded by default
 		assertEmptyIterable(issue.getComponents());
 		assertEmptyIterable(issue.getWorklogs());
