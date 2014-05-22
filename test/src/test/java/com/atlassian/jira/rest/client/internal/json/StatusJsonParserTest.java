@@ -27,7 +27,7 @@ public class StatusJsonParserTest {
 		final StatusJsonParser parser = new StatusJsonParser();
 		final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/complete.json"));
 		Assert.assertEquals(new Status(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
-				"Open", "The issue is open and ready for the assignee to start work on it.",
+				1L, "Open", "The issue is open and ready for the assignee to start work on it.",
 				TestUtil.toUri("http://localhost:8090/jira/images/icons/status_open.gif")), status);
 	}
 }

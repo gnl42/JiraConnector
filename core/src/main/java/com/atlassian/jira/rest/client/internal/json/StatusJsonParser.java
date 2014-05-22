@@ -21,8 +21,6 @@ import com.atlassian.jira.rest.client.api.domain.Status;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.net.URI;
-
 /**
  * @since v0.1
  */
@@ -32,8 +30,7 @@ public class StatusJsonParser implements JsonObjectParser<Status> {
 	@Override
 	public Status parse(JSONObject json) throws JSONException {
 		final BasicStatus basicStatus = basicStatusJsonParser.parse(json);
-		final String description = json.getString("description");
-		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Status(basicStatus.getSelf(), basicStatus.getName(), description, iconUri);
+		return new Status(basicStatus.getSelf(), basicStatus.getId(), basicStatus.getName(),
+                basicStatus.getDescription(), basicStatus.getIconUrl());
 	}
 }

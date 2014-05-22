@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.Objects;
-
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -26,44 +25,17 @@ import java.net.URI;
  * @since v0.1
  */
 public class Status extends BasicStatus {
-	private final String description;
-	private final URI iconUrl;
-
-	public Status(URI self, String name, String description, URI iconUrl) {
-		super(self, name);
-		this.description = description;
-		this.iconUrl = iconUrl;
+	public Status(URI self, @Nullable final Long id, final String name,
+                  @Nullable final String description, @Nullable final URI iconUrl) {
+		super(self, id, name, description, iconUrl);
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public URI getIconUrl() {
-		return iconUrl;
-	}
-
-	@Override
-	public String toString() {
-		return getToStringHelper().
-				add("description", description).
-				add("iconUrl", iconUrl).
-				toString();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Status) {
-			Status that = (Status) obj;
-			return super.equals(obj) && Objects.equal(this.description, that.description)
-					&& Objects.equal(this.iconUrl, that.iconUrl);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, iconUrl);
-	}
-
+    /**
+     * Backward compatible constructor
+     * @deprecated
+     */
+    @Deprecated
+    public Status(URI self, final String name, final String description, final URI iconUrl) {
+        this(self, null, name, description, iconUrl);
+    }
 }
