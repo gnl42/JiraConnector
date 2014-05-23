@@ -1,0 +1,24 @@
+{
+	"id": "opsbar-transitions",
+	"weight": 20,
+	"links": [
+		{
+			"id": "action_id_4",
+			"styleClass": "issueaction-workflow-transition",
+			"label": "Start Progress",
+			"title": "Start work on the issue",
+			"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+			"weight": 10
+		}
+	],
+	"groups": [
+		{
+			"header": {
+				"id": "opsbar-transitions_more",
+				"label": "Workflow"
+			},
+			"links": [],
+			"groups": []
+		}
+	]
+}
