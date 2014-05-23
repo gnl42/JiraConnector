@@ -31,6 +31,6 @@ public class ResolutionJsonParser implements JsonObjectParser<Resolution> {
 	public Resolution parse(JSONObject json) throws JSONException {
 		final BasicResolution basicResolution = basicResolutionJsonParser.parse(json);
 		return new Resolution(basicResolution.getSelf(), basicResolution.getId(), basicResolution.getName(),
-                basicResolution.getDescription());
+				basicResolution.getDescription());
 	}
 }

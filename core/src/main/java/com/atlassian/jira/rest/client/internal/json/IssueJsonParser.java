@@ -23,7 +23,6 @@ import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicResolution;
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
@@ -32,6 +31,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.Status;
 import com.atlassian.jira.rest.client.api.domain.Subtask;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.atlassian.jira.rest.client.api.domain.User;
@@ -93,7 +93,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
-	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
+	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 	private final JsonObjectParser<BasicWatchers> watchersJsonParser = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
@@ -238,7 +238,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		Collection<Subtask> subtasks = parseOptionalArray(s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
 		final BasicVotes votes = getOptionalNestedField(s, VOTES_FIELD.id, votesJsonParser);
-		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_FIELD.id));
+		final Status status = statusJsonParser.parse(getFieldUnisex(s, STATUS_FIELD.id));
 
 		final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
 		final Collection<Version> affectedVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);

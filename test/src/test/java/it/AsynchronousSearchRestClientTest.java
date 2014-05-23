@@ -25,7 +25,6 @@ import com.atlassian.jira.rest.client.api.SearchRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.Comment;
@@ -43,7 +42,6 @@ import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import org.hamcrest.beans.HasPropertyWithValue;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
@@ -60,7 +58,6 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
