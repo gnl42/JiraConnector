@@ -34,7 +34,7 @@ import java.util.Set;
 public class Issue extends BasicIssue implements ExpandableResource {
 
 	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, Status status,
-			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+			String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
@@ -86,7 +86,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final User reporter;
 	private final User assignee;
 	@Nullable
-	private final BasicResolution resolution;
+	private final Resolution resolution;
 	private final Collection<IssueField> issueFields;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -308,7 +308,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 
 	@Nullable
-	public BasicResolution getResolution() {
+	public Resolution getResolution() {
 		return resolution;
 	}
 

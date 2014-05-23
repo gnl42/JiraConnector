@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicResolution;
 import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.SecurityLevel;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
@@ -72,11 +72,11 @@ public class CimFieldsInfoMapJsonParserTest {
 		);
 
 		assertThat(fieldsInfo.get("resolution").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), 1L, "Fixed", null),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), 2L, "Won't Fix", null),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), 3L, "Duplicate", null),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/4"), 4L, "Incomplete", null),
-				new BasicResolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/5"), 5L, "Cannot Reproduce", null)
+				new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), 1L, "Fixed", null),
+				new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), 2L, "Won't Fix", null),
+				new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), 3L, "Duplicate", null),
+				new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/4"), 4L, "Incomplete", null),
+				new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/5"), 5L, "Cannot Reproduce", null)
 		));
 	}
 

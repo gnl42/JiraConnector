@@ -22,7 +22,6 @@ import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.BasicResolution;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
@@ -31,6 +30,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import com.atlassian.jira.rest.client.api.domain.Subtask;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
@@ -102,7 +102,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
-	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
+	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 	private final UserJsonParser userJsonParser = new UserJsonParser();
 	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
 	private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
@@ -227,7 +227,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
 		final BasicPriority priority = getOptionalNestedField(s, PRIORITY_FIELD.id, priorityJsonParser);
-		final BasicResolution resolution = getOptionalNestedField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
+		final Resolution resolution = getOptionalNestedField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
 		final User assignee = getOptionalNestedField(s, ASSIGNEE_FIELD.id, userJsonParser);
 		final User reporter = getOptionalNestedField(s, REPORTER_FIELD.id, userJsonParser);
 

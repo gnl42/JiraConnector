@@ -138,7 +138,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId())).claim();
 
 		final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2").claim();
-		final BasicResolution basicResolution = resolvedIssue.getResolution();
+		final Resolution basicResolution = resolvedIssue.getResolution();
 		assertNotNull(basicResolution);
 
 		final Resolution resolution = client.getMetadataClient().getResolution(basicResolution.getSelf()).claim();
