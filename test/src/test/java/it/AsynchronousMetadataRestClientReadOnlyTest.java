@@ -89,7 +89,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetStatus() {
-		final com.atlassian.jira.rest.client.api.domain.Status basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
+		final Status basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).claim();
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
 		assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("open.png")));
@@ -98,7 +98,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetStatusNonExisting() throws Exception {
-		final com.atlassian.jira.rest.client.api.domain.Status status = client.getIssueClient().getIssue("TST-1").claim().getStatus();
+		final Status status = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The status with id '" +
 				TestUtil.getLastPathSegment(status.getSelf()) + "fake" +
 				"' does not exist", new Runnable() {
