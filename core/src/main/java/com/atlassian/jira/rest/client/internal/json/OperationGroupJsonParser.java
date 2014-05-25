@@ -17,12 +17,12 @@ public class OperationGroupJsonParser implements JsonObjectParser<OperationGroup
 
 	@Override
 	public OperationGroup parse(JSONObject json) throws JSONException {
-		String id = JsonParseUtil.getOptionalString(json, "id");
-		Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
-		Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);
-		JSONObject headerJson = JsonParseUtil.getOptionalJsonObject(json, "header");
-		OperationHeader header = headerJson != null ? headerJsonParser.parse(headerJson) : null;
-		Integer weight = JsonParseUtil.parseOptionInteger(json, "weight");
+		final String id = JsonParseUtil.getOptionalString(json, "id");
+		final Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
+		final Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);
+		final JSONObject headerJson = JsonParseUtil.getOptionalJsonObject(json, "header");
+		final OperationHeader header = headerJson != null ? headerJsonParser.parse(headerJson) : null;
+		final Integer weight = JsonParseUtil.parseOptionInteger(json, "weight");
 		return new OperationGroup(id, links, groups, header, weight);
 	}
 }

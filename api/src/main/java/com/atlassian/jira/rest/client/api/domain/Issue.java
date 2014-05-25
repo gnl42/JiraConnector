@@ -26,6 +26,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 
+import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
+
 /**
  * Single JIRA issue
  *
@@ -41,7 +43,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
+			Set<String> labels) {
 		super(self, key, id);
 		this.summary = summary;
 		this.project = project;
@@ -70,6 +73,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.timeTracking = timeTracking;
 		this.subtasks = subtasks;
 		this.changelog = changelog;
+		this.operations = operations;
 		this.labels = labels;
 	}
 
@@ -114,6 +118,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Collection<Subtask> subtasks;
 	@Nullable
 	private final Collection<ChangelogGroup> changelog;
+	@Nullable
+	private final Operations operations;
 	private final Set<String> labels;
 
 	public BasicStatus getStatus() {
@@ -302,6 +308,19 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return changelog;
 	}
 
+	/**
+	 * Returns operations available/allowed for issues retrieved with {@link Expandos#OPERATIONS} expanded.
+	 *
+	 * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS} has not been expanded or
+	 * REST API on the server side does not serve this information (pre-5.0)
+	 * @see com.atlassian.jira.rest.client.api.IssueRestClient#getIssue(String, Iterable)
+	 * @since com.atlassian.jira.rest.client.api 2.0, server 5.0
+	 */
+	@Nullable
+	public Operations getOperations() {
+		return operations;
+	}
+
 	public URI getVotesUri() {
 		return UriUtil.path(getSelf(), "votes");
 	}
@@ -361,6 +380,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("watchers", watchers).
 				add("timeTracking", timeTracking).
 				add("changelog", changelog).
+				add("operations", operations).
 				add("labels", labels);
 	}
 }

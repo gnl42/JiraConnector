@@ -16,8 +16,19 @@
 
 package com.atlassian.jira.rest.client.api;
 
-import com.atlassian.jira.rest.client.api.domain.*;
-import com.atlassian.jira.rest.client.api.domain.input.*;
+import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
+import com.atlassian.jira.rest.client.api.domain.CimProject;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.Votes;
+import com.atlassian.jira.rest.client.api.domain.Watchers;
+import com.atlassian.jira.rest.client.api.domain.input.AttachmentInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
+import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
+import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.annotations.Beta;
 
@@ -274,7 +285,7 @@ public interface IssueRestClient {
 	 * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable)}
 	 */
 	public enum Expandos {
-		CHANGELOG("changelog"), SCHEMA("schema"), NAMES("names"), TRANSITIONS("transitions");
+		CHANGELOG("changelog"), OPERATIONS("operations"), SCHEMA("schema"), NAMES("names"), TRANSITIONS("transitions");
 
 		private final String value;
 

@@ -6,7 +6,12 @@ import com.google.common.collect.Iterables;
 import javax.annotation.Nullable;
 import java.util.Collections;
 
-public class OperationGroup {
+/**
+ * Represents operations group
+ *
+ * @since 2.0
+ */
+public class OperationGroup implements Operation {
 	@Nullable private final String id;
 	@Nullable private final OperationHeader header;
 	private final Iterable<OperationLink> links;
@@ -26,6 +31,35 @@ public class OperationGroup {
 	@Nullable
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public <T> T accept(OperationVisitor<T> visitor) {
+		T result = visitor.visit(this);
+		if (result != null) {
+			return result;
+		}
+		if (header != null) {
+			result = visitor.visit(header);
+			if (result != null) {
+				return result;
+			}
+		}
+		result = accept(links, visitor);
+		if (result != null) {
+			return result;
+		}
+		return accept(groups, visitor);
+	}
+
+	static <T> T accept(Iterable<? extends Operation> operations, OperationVisitor<T> visitor) {
+		for (Operation operation : operations) {
+			T result = operation.accept(visitor);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 
 	@Nullable

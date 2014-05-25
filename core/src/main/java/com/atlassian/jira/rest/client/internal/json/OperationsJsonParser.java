@@ -1,6 +1,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.OperationGroup;
+import com.atlassian.jira.rest.client.api.domain.Operations;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -11,7 +12,7 @@ public class OperationsJsonParser implements JsonObjectParser<Operations> {
 
 	@Override
 	public Operations parse(JSONObject json) throws JSONException {
-		Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
+		final Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
 		return new Operations(linkGroups);
 	}
 }

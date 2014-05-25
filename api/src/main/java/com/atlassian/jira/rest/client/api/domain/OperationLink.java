@@ -3,19 +3,23 @@ package com.atlassian.jira.rest.client.api.domain;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
 
-public class OperationLink {
-	private final String id;
-	private final String styleClass;
+/**
+ * Represents operations link
+ *
+ * @since 2.0
+ */
+public class OperationLink implements Operation {
+	@Nullable private final String id;
+	@Nullable private final String styleClass;
 	private final String label;
-	private final String title;
-	private final URI href;
-	private final Integer weight;
+	@Nullable private final String title;
+	private final String href;
+	@Nullable private final Integer weight;
 	@Nullable private final String iconClass;
 
-	public OperationLink(final String id, final String styleClass, final String label, final String title,
-			final java.net.URI href, final Integer weight, @Nullable final String iconClass) {
+	public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title,
+			final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
 		this.id = id;
 		this.styleClass = styleClass;
 		this.iconClass = iconClass;
@@ -25,10 +29,18 @@ public class OperationLink {
 		this.weight = weight;
 	}
 
+	@Nullable
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
+	public <T> T accept(OperationVisitor<T> visitor) {
+		return visitor.visit(this);
+	}
+
+	@Nullable
 	public String getStyleClass() {
 		return styleClass;
 	}
@@ -37,14 +49,16 @@ public class OperationLink {
 		return label;
 	}
 
+	@Nullable
 	public String getTitle() {
 		return title;
 	}
 
-	public URI getHref() {
+	public String getHref() {
 		return href;
 	}
 
+	@Nullable
 	public Integer getWeight() {
 		return weight;
 	}

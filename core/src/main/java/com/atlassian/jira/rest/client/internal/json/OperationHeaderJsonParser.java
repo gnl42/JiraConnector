@@ -7,8 +7,10 @@ import org.codehaus.jettison.json.JSONObject;
 public class OperationHeaderJsonParser implements JsonObjectParser<OperationHeader> {
 	@Override
 	public OperationHeader parse(JSONObject json) throws JSONException {
-		final String id = json.getString("id");
+		final String id = JsonParseUtil.getOptionalString(json, "id");
 		final String label = json.getString("label");
-		return new OperationHeader(id, label);
+		final String title = JsonParseUtil.getOptionalString(json, "title");
+		final String iconClass = JsonParseUtil.getOptionalString(json, "iconClass");
+		return new OperationHeader(id, label, title, iconClass);
 	}
 }

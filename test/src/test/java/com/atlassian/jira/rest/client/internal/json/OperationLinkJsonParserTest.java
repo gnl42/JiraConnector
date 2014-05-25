@@ -1,6 +1,5 @@
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.OperationLink;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matcher;
@@ -14,16 +13,14 @@ public class OperationLinkJsonParserTest {
 	public void testParseFull() throws Exception {
 		test("/json/operationLink/valid.json", is(new OperationLink("comment-issue",
 				"issueaction-comment-issue add-issue-comment", "Comment", "Comment on this issue",
-				TestUtil.toUri("/secure/AddComment!default.jspa?id=10100"), 10,
-				"aui-icon aui-icon-small aui-iconfont-comment icon-comment")));
+				"/secure/AddComment!default.jspa?id=10100", 10, "aui-icon aui-icon-small aui-iconfont-comment icon-comment")));
 	}
 
 	@Test
 	public void testParsePartial() throws Exception {
 		test("/json/operationLink/partial.json", is(new OperationLink("comment-issue",
 				"issueaction-comment-issue add-issue-comment", "Comment", "Comment on this issue",
-				TestUtil.toUri("/secure/AddComment!default.jspa?id=10100"), 10,
-				null)));
+				"/secure/AddComment!default.jspa?id=10100", 10, null)));
 	}
 
 	private void test(String resourcePath, Matcher<OperationLink> expected) throws JSONException {
