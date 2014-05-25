@@ -20,8 +20,9 @@ public class OperationGroupJsonParser implements JsonObjectParser<OperationGroup
 		String id = JsonParseUtil.getOptionalString(json, "id");
 		Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
 		Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);
-		OperationHeader header = json.has("header") ? headerJsonParser.parse(json.getJSONObject("header")) : null;
-		Integer weight = json.has("weight") ? json.getInt("weight") : null;
+		JSONObject headerJson = JsonParseUtil.getOptionalJsonObject(json, "header");
+		OperationHeader header = headerJson != null ? headerJsonParser.parse(headerJson) : null;
+		Integer weight = JsonParseUtil.parseOptionInteger(json, "weight");
 		return new OperationGroup(id, links, groups, header, weight);
 	}
 }
