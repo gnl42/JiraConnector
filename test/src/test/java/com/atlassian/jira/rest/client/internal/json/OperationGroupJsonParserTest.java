@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.api.domain.OperationLink;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -30,21 +31,20 @@ public class OperationGroupJsonParserTest {
 
 	@Test
 	public void testParse() throws Exception {
+		// given
 		OperationGroupJsonParser parser = new OperationGroupJsonParser();
+
+		// when
 		OperationGroup actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/operationGroup/valid.json"));
-		assertThat(actual, is(new OperationGroup(
-				"opsbar-transitions",
-				Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
-						"Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
-						10, null)),
-				Collections.singleton(new OperationGroup(
-						null,
-						Collections.<OperationLink>emptyList(),
-						Collections.<OperationGroup>emptyList(),
-						new OperationHeader("opsbar-transitions_more", "Workflow", null, null),
-						null)),
-				null,
-				20
-				)));
+
+		// then
+		String id = "opsbar-transitions";
+		Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+				"Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+				10, null));
+		Set<OperationGroup> groups = Collections.singleton(new OperationGroup(null, null, null,
+				new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
+		int weight = 20;
+		assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));
 	}
 }

@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class OperationLinkJsonParser implements JsonObjectParser<OperationLink> {
 	@Override
-	public OperationLink parse(JSONObject json) throws JSONException {
+	public OperationLink parse(final JSONObject json) throws JSONException {
 		final String id = JsonParseUtil.getOptionalString(json, "id");
 		final String styleClass = JsonParseUtil.getOptionalString(json, "styleClass");
 		final String label = json.getString("label");

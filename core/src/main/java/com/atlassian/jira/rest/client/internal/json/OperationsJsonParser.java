@@ -27,7 +27,7 @@ public class OperationsJsonParser implements JsonObjectParser<Operations> {
 	private final JsonObjectParser<OperationGroup> groupParser = new OperationGroupJsonParser();
 
 	@Override
-	public Operations parse(JSONObject json) throws JSONException {
+	public Operations parse(final JSONObject json) throws JSONException {
 		final Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
 		return new Operations(linkGroups);
 	}
