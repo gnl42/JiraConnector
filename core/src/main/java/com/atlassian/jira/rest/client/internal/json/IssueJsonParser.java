@@ -230,7 +230,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
 		final BasicPriority priority = getOptionalNestedField(issueJson, PRIORITY_FIELD.id, priorityJsonParser);
-		final BasicResolution resolution = getOptionalNestedField(issueJson, RESOLUTION_FIELD.id, resolutionJsonParser);
+		final Resolution resolution = getOptionalNestedField(issueJson, RESOLUTION_FIELD.id, resolutionJsonParser);
 		final User assignee = getOptionalNestedField(issueJson, ASSIGNEE_FIELD.id, userJsonParser);
 		final User reporter = getOptionalNestedField(issueJson, REPORTER_FIELD.id, userJsonParser);
 
@@ -241,7 +241,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		Collection<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
 		final BasicVotes votes = getOptionalNestedField(issueJson, VOTES_FIELD.id, votesJsonParser);
-		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
+		final Status status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
 
 		final Collection<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
 		final Collection<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
