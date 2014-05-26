@@ -27,19 +27,19 @@ import static org.junit.Assert.*;
 public class OperationLinkJsonParserTest {
 	@Test
 	public void testParseFull() throws Exception {
-		test("/json/operationLink/valid.json", is(new OperationLink("comment-issue",
+		testParseResource("/json/operationLink/valid.json", is(new OperationLink("comment-issue",
 				"issueaction-comment-issue add-issue-comment", "Comment", "Comment on this issue",
 				"/secure/AddComment!default.jspa?id=10100", 10, "aui-icon aui-icon-small aui-iconfont-comment icon-comment")));
 	}
 
 	@Test
 	public void testParsePartial() throws Exception {
-		test("/json/operationLink/partial.json", is(new OperationLink("comment-issue",
+		testParseResource("/json/operationLink/partial.json", is(new OperationLink("comment-issue",
 				"issueaction-comment-issue add-issue-comment", "Comment", "Comment on this issue",
 				"/secure/AddComment!default.jspa?id=10100", 10, null)));
 	}
 
-	private void test(String resourcePath, Matcher<OperationLink> expected) throws JSONException {
+	private void testParseResource(String resourcePath, Matcher<OperationLink> expected) throws JSONException {
 		OperationLinkJsonParser parser = new OperationLinkJsonParser();
 		OperationLink actual = parser.parse(ResourceUtil.getJsonObjectFromResource(resourcePath));
 		assertThat(actual, expected);
