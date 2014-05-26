@@ -62,6 +62,12 @@ public class JsonParseUtil {
 		}
 	}
 
+	public static <T> T parseOptionalJsonObject(final JSONObject json, final String attributeName, final JsonObjectParser<T> jsonParser)
+			throws JSONException {
+		JSONObject attributeObject = getOptionalJsonObject(json, attributeName);
+		return attributeObject != null ? jsonParser.parse(attributeObject) : null;
+	}
+
 	@SuppressWarnings("UnusedDeclaration")
 	public static <T> ExpandableProperty<T> parseExpandableProperty(final JSONObject json, final JsonObjectParser<T> expandablePropertyBuilder)
 			throws JSONException {

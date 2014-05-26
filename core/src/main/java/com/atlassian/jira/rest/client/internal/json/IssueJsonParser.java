@@ -83,6 +83,7 @@ import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WATCHER_FIE
 import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WORKLOGS_FIELD;
 import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WORKLOG_FIELD;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
+import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.parseOptionalJsonObject;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
 
@@ -275,8 +276,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(
 				issueJson, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
-		final JSONObject operationsJson = issueJson.optJSONObject("operations");
-		final Operations operations = operationsJson != null ? operationsJsonParser.parse(operationsJson) : null;
+		final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
 
 		return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status,
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
