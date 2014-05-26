@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 
@@ -39,8 +40,8 @@ public class OperationGroup implements Operation {
 			@Nullable final Integer weight) {
 		this.id = id;
 		this.header = header;
-		this.links = links != null ? links : Collections.<OperationLink>emptyList();
-		this.groups = groups != null ? groups : Collections.<OperationGroup>emptyList();
+		this.links = new OptionalIterable<OperationLink>(links);
+		this.groups = new OptionalIterable<OperationGroup>(groups);
 		this.weight = weight;
 	}
 
@@ -54,23 +55,16 @@ public class OperationGroup implements Operation {
 	public <T> T accept(OperationVisitor<T> visitor) {
 		T result = visitor.visit(this);
 		if (result != null) {
-			return result;
+			return null;
 		}
-		if (header != null) {
-			result = visitor.visit(header);
-			if (result != null) {
-				return result;
-			}
-		}
-		result = accept(links, visitor);
-		if (result != null) {
-			return result;
-		}
-		return accept(groups, visitor);
+		final Iterable<Operation> operations = Iterables.concat(
+				header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
+				links, groups);
+		return accept(operations, visitor);
 	}
 
 	@Nullable
-	static <T> T accept(Iterable<? extends Operation> operations, OperationVisitor<T> visitor) {
+	static <T> T accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
 		for (Operation operation : operations) {
 			T result = operation.accept(visitor);
 			if (result != null) {
