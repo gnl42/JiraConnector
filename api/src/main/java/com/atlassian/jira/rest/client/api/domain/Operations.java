@@ -17,11 +17,10 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
-
-import javax.annotation.Nullable;
-import java.util.Collections;
 
 /**
  * Represents operations returned for expand {@link IssueRestClient.Expandos#OPERATIONS}
@@ -32,26 +31,24 @@ public class Operations {
 	private final Iterable<OperationGroup> linkGroups;
 
 	public Operations(final Iterable<OperationGroup> linkGroups) {
-		this.linkGroups = Objects.firstNonNull(linkGroups, Collections.<OperationGroup>emptyList());
+		this.linkGroups = new OptionalIterable<OperationGroup>(linkGroups);
 	}
 
 	public Iterable<OperationGroup> getLinkGroups() {
 		return linkGroups;
 	}
 
-	@Nullable
-	public <T> T accept(OperationVisitor<T> visitor) {
+	public <T> Optional<T> accept(OperationVisitor<T> visitor) {
 		return OperationGroup.accept(getLinkGroups(), visitor);
 	}
 
-	@Nullable
 	public Operation getOperationById(final String operationId) {
 		return accept(new OperationVisitor<Operation>() {
 			@Override
-			public Operation visit(Operation operation) {
-				return operationId.equals(operation.getId()) ? operation : null;
+			public Optional<Operation> visit(Operation operation) {
+				return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>absent();
 			}
-		});
+		}).orNull();
 	}
 
 	@Override

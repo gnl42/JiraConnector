@@ -16,6 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.Optional;
+
 import javax.annotation.Nullable;
 
 public interface Operation {
@@ -25,13 +27,13 @@ public interface Operation {
 	@Nullable String getId();
 
 	/**
-	 * Traverse the operation elements to visit them. Traversal will stop on first non null value returned from
-	 * the visitor.
+	 * Traverse through operation elements to visit them. Traversal will stop on first non absent value
+	 * returned from the visitor.
 	 *
 	 * @param visitor Visitor to visit operation element
 	 * @param <T> Visiting result type
-	 * @return Value returned from visitor.
+	 * @return Value returned from the visitor.
 	 */
-	@Nullable <T> T accept(OperationVisitor<T> visitor);
+	<T> Optional<T> accept(OperationVisitor<T> visitor);
 
 }

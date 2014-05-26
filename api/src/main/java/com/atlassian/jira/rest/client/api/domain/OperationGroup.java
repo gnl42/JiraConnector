@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import javax.annotation.Nullable;
@@ -50,11 +51,10 @@ public class OperationGroup implements Operation {
 		return id;
 	}
 
-	@Nullable
 	@Override
-	public <T> T accept(final OperationVisitor<T> visitor) {
-		final T result = visitor.visit(this);
-		if (result != null) {
+	public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
+		final Optional<T> result = visitor.visit(this);
+		if (result.isPresent()) {
 			return result;
 		} else {
 			final Iterable<Operation> operations = Iterables.concat(
@@ -64,15 +64,14 @@ public class OperationGroup implements Operation {
 		}
 	}
 
-	@Nullable
-	static <T> T accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
+	static <T> Optional<T> accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
 		for (Operation operation : operations) {
-			T result = operation.accept(visitor);
-			if (result != null) {
+			Optional<T> result = operation.accept(visitor);
+			if (result.isPresent()) {
 				return result;
 			}
 		}
-		return null;
+		return Optional.absent();
 	}
 
 	@Nullable

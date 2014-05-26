@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 
 import javax.annotation.Nullable;
 
@@ -52,7 +53,7 @@ public class OperationLink implements Operation {
 	}
 
 	@Override
-	public <T> T accept(final OperationVisitor<T> visitor) {
+	public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
 
