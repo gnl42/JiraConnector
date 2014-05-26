@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,30 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
-import com.atlassian.jira.rest.client.api.domain.*;
+import com.atlassian.jira.rest.client.api.domain.Attachment;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.api.domain.BasicPriority;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
+import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
+import com.atlassian.jira.rest.client.api.domain.ChangelogItem;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
+import com.atlassian.jira.rest.client.api.domain.FieldType;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.api.domain.OperationGroup;
+import com.atlassian.jira.rest.client.api.domain.OperationHeader;
+import com.atlassian.jira.rest.client.api.domain.OperationLink;
+import com.atlassian.jira.rest.client.api.domain.Operations;
+import com.atlassian.jira.rest.client.api.domain.Subtask;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
@@ -29,15 +52,16 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTimeFromIsoDate;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
@@ -365,6 +389,25 @@ public class IssueJsonParserTest {
 	public void testParseIssueWithoutLabelsForJira5x0() throws JSONException {
 		final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
 		assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
+	}
+
+	@Test
+	public void testParseIssueWithOperations() throws JSONException {
+		final Issue issue = parseIssue("/json/issue/valid-5.0-with-operations.json");
+		assertThat(issue.getOperations(), is(new Operations(Collections.singleton(new OperationGroup(
+				"opsbar-transitions",
+				Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+						"Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+						10, null)),
+				Collections.singleton(new OperationGroup(
+						null,
+						Collections.<OperationLink>emptyList(),
+						Collections.<OperationGroup>emptyList(),
+						new OperationHeader("opsbar-transitions_more", "Workflow", null, null),
+						null)),
+				null,
+				20
+		)))));
 	}
 
 }

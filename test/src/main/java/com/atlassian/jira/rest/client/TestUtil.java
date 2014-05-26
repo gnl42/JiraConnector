@@ -17,6 +17,8 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.OperationGroup;
+import com.atlassian.jira.rest.client.api.domain.OperationLink;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.Iterators;
@@ -33,6 +35,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 
 import static com.google.common.collect.Iterators.getOnlyElement;
 
@@ -40,6 +43,8 @@ public class TestUtil {
 	private static DateTimeFormatter universalDateTimeParser = ISODateTimeFormat.dateTimeParser();
 	private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.date();
+	public static Iterable<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
+	public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
 	public static URI toUri(String str) {
 		return UriBuilder.fromUri(str).build();
