@@ -52,15 +52,16 @@ public class OperationGroup implements Operation {
 
 	@Nullable
 	@Override
-	public <T> T accept(OperationVisitor<T> visitor) {
-		T result = visitor.visit(this);
+	public <T> T accept(final OperationVisitor<T> visitor) {
+		final T result = visitor.visit(this);
 		if (result != null) {
-			return null;
+			return result;
+		} else {
+			final Iterable<Operation> operations = Iterables.concat(
+					header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
+					links, groups);
+			return accept(operations, visitor);
 		}
-		final Iterable<Operation> operations = Iterables.concat(
-				header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
-				links, groups);
-		return accept(operations, visitor);
 	}
 
 	@Nullable
@@ -118,8 +119,8 @@ public class OperationGroup implements Operation {
 		return Objects.toStringHelper(this)
 				.add("id", id)
 				.add("header", header)
-				.add("links", links)
-				.add("groups", groups)
+				.add("links", Iterables.toString(links))
+				.add("groups", Iterables.toString(groups))
 				.add("weight", weight)
 				.toString();
 	}

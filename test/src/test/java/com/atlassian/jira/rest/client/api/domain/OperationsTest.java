@@ -29,11 +29,11 @@ import static org.junit.Assert.*;
 public class OperationsTest {
 
 	@Test
-	public void testGetOperationById() throws Exception {
+	public void testGetLinkById() throws Exception {
 		Operations operations = new Operations(Collections.singleton(new OperationGroup(
 				null,
 				Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
-				Collections.<OperationGroup>emptyList(),
+				null,
 				null,
 				null
 		)));
@@ -43,6 +43,63 @@ public class OperationsTest {
 		assertThat(operation, allOf(
 						instanceOf(OperationLink.class),
 						hasProperty("id", is("action_id_4"))
+				)
+		);
+	}
+
+	@Test
+	public void testGetSelfGroupById() throws Exception {
+		Operations operations = new Operations(Collections.singleton(new OperationGroup(
+				"group_self",
+				null,
+				null,
+				null,
+				null
+		)));
+
+		Operation operation = operations.getOperationById("group_self");
+
+		assertThat(operation, allOf(
+						instanceOf(OperationGroup.class),
+						hasProperty("id", is("group_self"))
+				)
+		);
+	}
+
+	@Test
+	public void testGetGroupById() throws Exception {
+		Operations operations = new Operations(Collections.singleton(new OperationGroup(
+				null,
+				null,
+				Collections.singleton(new OperationGroup("group_5", null, null, null, null)),
+				null,
+				null
+		)));
+
+		Operation operation = operations.getOperationById("group_5");
+
+		assertThat(operation, allOf(
+						instanceOf(OperationGroup.class),
+						hasProperty("id", is("group_5"))
+				)
+		);
+	}
+
+	@Test
+	public void testGetHeaderById() throws Exception {
+		Operations operations = new Operations(Collections.singleton(new OperationGroup(
+				null,
+				null,
+				null,
+				new OperationHeader("header_6", "header_6", null, null),
+				null
+		)));
+
+		Operation operation = operations.getOperationById("header_6");
+
+		assertThat(operation, allOf(
+						instanceOf(OperationHeader.class),
+						hasProperty("id", is("header_6"))
 				)
 		);
 	}

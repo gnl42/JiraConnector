@@ -45,7 +45,7 @@ public class OperationHeader implements Operation {
 	}
 
 	@Override
-	public <T> T accept(OperationVisitor<T> visitor) {
+	public <T> T accept(final OperationVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
 
