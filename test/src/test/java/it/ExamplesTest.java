@@ -43,7 +43,7 @@ public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 		assertEquals(1, watchers.getNumWatchers());
 
 		// resolution
-		final BasicResolution resolution = issue.getResolution();
+		final Resolution resolution = issue.getResolution();
 		assertNotNull(resolution);
 		assertEquals("Incomplete", resolution.getName());
 

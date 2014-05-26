@@ -35,8 +35,8 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, BasicStatus status,
-			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, Status status,
+			String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
@@ -77,7 +77,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.labels = labels;
 	}
 
-	private final BasicStatus status;
+	private final Status status;
 	private final BasicIssueType issueType;
 	private final BasicProject project;
 	private final URI transitionsUri;
@@ -90,7 +90,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final User reporter;
 	private final User assignee;
 	@Nullable
-	private final BasicResolution resolution;
+	private final Resolution resolution;
 	private final Collection<IssueField> issueFields;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -122,7 +122,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Operations operations;
 	private final Set<String> labels;
 
-	public BasicStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
@@ -327,7 +327,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 
 
 	@Nullable
-	public BasicResolution getResolution() {
+	public Resolution getResolution() {
 		return resolution;
 	}
 

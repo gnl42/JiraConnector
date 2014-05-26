@@ -182,6 +182,7 @@
 		"status":{
 			"self":"http://localhost:2990/jira/rest/api/latest/status/1",
 			"iconUrl":"http://localhost:2990/jira/images/icons/status_open.gif",
+			"description":"The issue is open and ready for the assignee to start work on it.",
 			"name":"Open",
 			"id":"1"
 		},
