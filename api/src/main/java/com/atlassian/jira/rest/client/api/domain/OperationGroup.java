@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -36,13 +35,13 @@ public class OperationGroup implements Operation {
 	private final Iterable<OperationGroup> groups;
 	@Nullable private final Integer weight;
 
-	public OperationGroup(@Nullable final String id, @Nullable final Iterable<OperationLink> links,
-			@Nullable final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
+	public OperationGroup(@Nullable final String id, final Iterable<OperationLink> links,
+			final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
 			@Nullable final Integer weight) {
 		this.id = id;
 		this.header = header;
-		this.links = new OptionalIterable<OperationLink>(links);
-		this.groups = new OptionalIterable<OperationGroup>(groups);
+		this.links = links;
+		this.groups = groups;
 		this.weight = weight;
 	}
 

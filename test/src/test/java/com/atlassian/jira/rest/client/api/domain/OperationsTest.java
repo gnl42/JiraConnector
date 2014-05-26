@@ -20,6 +20,8 @@ import org.junit.Test;
 
 import java.util.Collections;
 
+import static com.atlassian.jira.rest.client.TestUtil.EMPTY_GROUPS;
+import static com.atlassian.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
@@ -33,7 +35,7 @@ public class OperationsTest {
 		Operations operations = new Operations(Collections.singleton(new OperationGroup(
 				null,
 				Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
-				null,
+				EMPTY_GROUPS,
 				null,
 				null
 		)));
@@ -51,8 +53,8 @@ public class OperationsTest {
 	public void testGetSelfGroupById() throws Exception {
 		Operations operations = new Operations(Collections.singleton(new OperationGroup(
 				"group_self",
-				null,
-				null,
+				EMPTY_LINKS,
+				EMPTY_GROUPS,
 				null,
 				null
 		)));
@@ -70,8 +72,8 @@ public class OperationsTest {
 	public void testGetGroupById() throws Exception {
 		Operations operations = new Operations(Collections.singleton(new OperationGroup(
 				null,
-				null,
-				Collections.singleton(new OperationGroup("group_5", null, null, null, null)),
+				EMPTY_LINKS,
+				Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
 				null,
 				null
 		)));
@@ -89,8 +91,8 @@ public class OperationsTest {
 	public void testGetHeaderById() throws Exception {
 		Operations operations = new Operations(Collections.singleton(new OperationGroup(
 				null,
-				null,
-				null,
+				EMPTY_LINKS,
+				EMPTY_GROUPS,
 				new OperationHeader("header_6", "header_6", null, null),
 				null
 		)));

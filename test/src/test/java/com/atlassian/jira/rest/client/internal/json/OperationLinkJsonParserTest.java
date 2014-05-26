@@ -34,9 +34,8 @@ public class OperationLinkJsonParserTest {
 
 	@Test
 	public void testParsePartial() throws Exception {
-		testParseResource("/json/operationLink/partial.json", is(new OperationLink("comment-issue",
-				"issueaction-comment-issue add-issue-comment", "Comment", "Comment on this issue",
-				"/secure/AddComment!default.jspa?id=10100", 10, null)));
+		testParseResource("/json/operationLink/with-label-href-only.json", is(new OperationLink(null,
+				null, "Comment", null, "/secure/AddComment!default.jspa?id=10100", null, null)));
 	}
 
 	private void testParseResource(String resourcePath, Matcher<OperationLink> expected) throws JSONException {

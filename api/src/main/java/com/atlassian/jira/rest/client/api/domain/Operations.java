@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.atlassian.jira.rest.client.api.OptionalIterable;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -31,7 +30,7 @@ public class Operations {
 	private final Iterable<OperationGroup> linkGroups;
 
 	public Operations(final Iterable<OperationGroup> linkGroups) {
-		this.linkGroups = new OptionalIterable<OperationGroup>(linkGroups);
+		this.linkGroups = linkGroups;
 	}
 
 	public Iterable<OperationGroup> getLinkGroups() {
