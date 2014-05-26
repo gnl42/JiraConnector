@@ -89,7 +89,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetStatus() {
-		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
+		final Status basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).claim();
 		assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
 		assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("open.png")));
@@ -98,13 +98,13 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetStatusNonExisting() throws Exception {
-		final BasicStatus basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
+		final Status status = client.getIssueClient().getIssue("TST-1").claim().getStatus();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The status with id '" +
-				TestUtil.getLastPathSegment(basicStatus.getSelf()) + "fake" +
+				TestUtil.getLastPathSegment(status.getSelf()) + "fake" +
 				"' does not exist", new Runnable() {
 			@Override
 			public void run() {
-				client.getMetadataClient().getStatus(TestUtil.toUri(basicStatus.getSelf() + "fake")).claim();
+				client.getMetadataClient().getStatus(TestUtil.toUri(status.getSelf() + "fake")).claim();
 			}
 		});
 	}
@@ -138,7 +138,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId())).claim();
 
 		final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2").claim();
-		final BasicResolution basicResolution = resolvedIssue.getResolution();
+		final Resolution basicResolution = resolvedIssue.getResolution();
 		assertNotNull(basicResolution);
 
 		final Resolution resolution = client.getMetadataClient().getResolution(basicResolution.getSelf()).claim();

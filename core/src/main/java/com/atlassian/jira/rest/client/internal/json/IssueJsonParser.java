@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.BasicResolution;
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
@@ -32,6 +30,9 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
+import com.atlassian.jira.rest.client.api.domain.Status;
+import com.atlassian.jira.rest.client.api.domain.Operations;
 import com.atlassian.jira.rest.client.api.domain.Subtask;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.atlassian.jira.rest.client.api.domain.User;
@@ -82,6 +83,7 @@ import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WATCHER_FIE
 import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WORKLOGS_FIELD;
 import static com.atlassian.jira.rest.client.api.domain.IssueFieldId.WORKLOG_FIELD;
 import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
+import static com.atlassian.jira.rest.client.internal.json.JsonParseUtil.parseOptionalJsonObject;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
 
@@ -93,7 +95,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicIssueJsonParser basicIssueJsonParser = new BasicIssueJsonParser();
 	private final IssueLinkJsonParserV5 issueLinkJsonParserV5 = new IssueLinkJsonParserV5();
 	private final BasicVotesJsonParser votesJsonParser = new BasicVotesJsonParser();
-	private final BasicStatusJsonParser statusJsonParser = new BasicStatusJsonParser();
+	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
 	private final JsonObjectParser<BasicWatchers> watchersJsonParser = WatchersJsonParserBuilder.createBasicWatchersParser();
 	private final VersionJsonParser versionJsonParser = new VersionJsonParser();
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
@@ -102,10 +104,11 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
-	private final BasicResolutionJsonParser resolutionJsonParser = new BasicResolutionJsonParser();
+	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
 	private final UserJsonParser userJsonParser = new UserJsonParser();
 	private final SubtaskJsonParser subtaskJsonParser = new SubtaskJsonParser();
 	private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
+	private final OperationsJsonParser operationsJsonParser = new OperationsJsonParser();
 	private final JsonWeakParserForString jsonWeakParserForString = new JsonWeakParserForString();
 
 	private static final String FIELDS = "fields";
@@ -205,59 +208,59 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	}
 
 	@Override
-	public Issue parse(final JSONObject s) throws JSONException {
-		final BasicIssue basicIssue = basicIssueJsonParser.parse(s);
-		final Iterable<String> expandos = parseExpandos(s);
-		final JSONObject jsonFields = s.getJSONObject(FIELDS);
+	public Issue parse(final JSONObject issueJson) throws JSONException {
+		final BasicIssue basicIssue = basicIssueJsonParser.parse(issueJson);
+		final Iterable<String> expandos = parseExpandos(issueJson);
+		final JSONObject jsonFields = issueJson.getJSONObject(FIELDS);
 		final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
 		final Collection<Comment> comments = (commentsJson == null) ? Collections.<Comment>emptyList()
 				: parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
 
-		final String summary = getFieldStringValue(s, SUMMARY_FIELD.id);
-		final String description = getOptionalFieldStringUnisex(s, DESCRIPTION_FIELD.id);
+		final String summary = getFieldStringValue(issueJson, SUMMARY_FIELD.id);
+		final String description = getOptionalFieldStringUnisex(issueJson, DESCRIPTION_FIELD.id);
 
-		final Collection<Attachment> attachments = parseOptionalArray(s, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
-		final Collection<IssueField> fields = parseFields(s);
+		final Collection<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
+		final Collection<IssueField> fields = parseFields(issueJson);
 
-		final BasicIssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(s, ISSUE_TYPE_FIELD.id));
-		final DateTime creationDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, CREATED_FIELD.id));
-		final DateTime updateDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(s, UPDATED_FIELD.id));
+		final BasicIssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(issueJson, ISSUE_TYPE_FIELD.id));
+		final DateTime creationDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(issueJson, CREATED_FIELD.id));
+		final DateTime updateDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(issueJson, UPDATED_FIELD.id));
 
-		final String dueDateString = getOptionalFieldStringUnisex(s, DUE_DATE_FIELD.id);
+		final String dueDateString = getOptionalFieldStringUnisex(issueJson, DUE_DATE_FIELD.id);
 		final DateTime dueDate = dueDateString == null ? null : JsonParseUtil.parseDateTimeOrDate(dueDateString);
 
-		final BasicPriority priority = getOptionalNestedField(s, PRIORITY_FIELD.id, priorityJsonParser);
-		final BasicResolution resolution = getOptionalNestedField(s, RESOLUTION_FIELD.id, resolutionJsonParser);
-		final User assignee = getOptionalNestedField(s, ASSIGNEE_FIELD.id, userJsonParser);
-		final User reporter = getOptionalNestedField(s, REPORTER_FIELD.id, userJsonParser);
+		final BasicPriority priority = getOptionalNestedField(issueJson, PRIORITY_FIELD.id, priorityJsonParser);
+		final Resolution resolution = getOptionalNestedField(issueJson, RESOLUTION_FIELD.id, resolutionJsonParser);
+		final User assignee = getOptionalNestedField(issueJson, ASSIGNEE_FIELD.id, userJsonParser);
+		final User reporter = getOptionalNestedField(issueJson, REPORTER_FIELD.id, userJsonParser);
 
-		final BasicProject project = projectJsonParser.parse(getFieldUnisex(s, PROJECT_FIELD.id));
+		final BasicProject project = projectJsonParser.parse(getFieldUnisex(issueJson, PROJECT_FIELD.id));
 		final Collection<IssueLink> issueLinks;
-		issueLinks = parseOptionalArray(s, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
+		issueLinks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
 
-		Collection<Subtask> subtasks = parseOptionalArray(s, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
+		Collection<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
-		final BasicVotes votes = getOptionalNestedField(s, VOTES_FIELD.id, votesJsonParser);
-		final BasicStatus status = statusJsonParser.parse(getFieldUnisex(s, STATUS_FIELD.id));
+		final BasicVotes votes = getOptionalNestedField(issueJson, VOTES_FIELD.id, votesJsonParser);
+		final Status status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
 
-		final Collection<Version> fixVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
-		final Collection<Version> affectedVersions = parseOptionalArray(s, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
-		final Collection<BasicComponent> components = parseOptionalArray(s, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
+		final Collection<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
+		final Collection<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
+		final Collection<BasicComponent> components = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
 		final Collection<Worklog> worklogs;
 		final URI selfUri = basicIssue.getSelf();
 
 		final String transitionsUriString;
-		if (s.has(IssueFieldId.TRANSITIONS_FIELD.id)) {
-			Object transitionsObj = s.get(IssueFieldId.TRANSITIONS_FIELD.id);
+		if (issueJson.has(IssueFieldId.TRANSITIONS_FIELD.id)) {
+			Object transitionsObj = issueJson.get(IssueFieldId.TRANSITIONS_FIELD.id);
 			transitionsUriString = (transitionsObj instanceof String) ? (String) transitionsObj : null;
 		} else {
-			transitionsUriString = getOptionalFieldStringUnisex(s, IssueFieldId.TRANSITIONS_FIELD.id);
+			transitionsUriString = getOptionalFieldStringUnisex(issueJson, IssueFieldId.TRANSITIONS_FIELD.id);
 		}
 		final URI transitionsUri = parseTransisionsUri(transitionsUriString, selfUri);
 
-		if (JsonParseUtil.getNestedOptionalObject(s, FIELDS, WORKLOG_FIELD.id) != null) {
-			worklogs = parseOptionalArray(s,
+		if (JsonParseUtil.getNestedOptionalObject(issueJson, FIELDS, WORKLOG_FIELD.id) != null) {
+			worklogs = parseOptionalArray(issueJson,
 					new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(selfUri)),
 					FIELDS, WORKLOG_FIELD.id, WORKLOGS_FIELD.id);
 		} else {
@@ -265,19 +268,21 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		}
 
 
-		final BasicWatchers watchers = getOptionalNestedField(s, WATCHER_FIELD.id, watchersJsonParser);
-		final TimeTracking timeTracking = getOptionalNestedField(s, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
+		final BasicWatchers watchers = getOptionalNestedField(issueJson, WATCHER_FIELD.id, watchersJsonParser);
+		final TimeTracking timeTracking = getOptionalNestedField(issueJson, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
 		final Set<String> labels = Sets
-				.newHashSet(parseOptionalArrayNotNullable(s, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
+				.newHashSet(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
 		final Collection<ChangelogGroup> changelog = parseOptionalArray(
-				s, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
+				issueJson, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
+		final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
+
 		return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status,
 				description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
 				dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
 				transitionsUri, issueLinks,
-				votes, worklogs, watchers, expandos, subtasks, changelog, labels);
+				votes, worklogs, watchers, expandos, subtasks, changelog, operations, labels);
 	}
 
 	private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) {

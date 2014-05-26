@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Atlassian
+ * Copyright (C) 2012-2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,23 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
-import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.atlassian.jira.rest.client.api.domain.*;
+import com.atlassian.jira.rest.client.api.domain.Attachment;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
+import com.atlassian.jira.rest.client.api.domain.ChangelogItem;
+import com.atlassian.jira.rest.client.api.domain.CimIssueType;
+import com.atlassian.jira.rest.client.api.domain.CimProject;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.FieldType;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.OperationLink;
+import com.atlassian.jira.rest.client.api.domain.Operations;
+import com.atlassian.jira.rest.client.api.domain.TimeTracking;
+import com.atlassian.jira.rest.client.api.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.Votes;
+import com.atlassian.jira.rest.client.api.domain.Watchers;
+import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -39,12 +54,18 @@ import java.util.List;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.getUserUri;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
+import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGELOG;
+import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
@@ -138,9 +159,9 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		// test for changelog
 		assertNull(issue.getChangelog());
 
-		final Issue issueWithChangelog = client.getIssueClient().getIssue("TST-2", EnumSet.of(IssueRestClient.Expandos.CHANGELOG))
+		final Issue issueWithChangelogAndOperations = client.getIssueClient().getIssue("TST-2", EnumSet.of(CHANGELOG, OPERATIONS))
 				.claim();
-		final Iterable<ChangelogGroup> changelog = issueWithChangelog.getChangelog();
+		final Iterable<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
 		if (isJira5xOrNewer()) {
 			assertNotNull(changelog);
 			final ChangelogGroup chg1 = Iterables.get(changelog, 18);
@@ -164,6 +185,15 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 					new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
 			);
 			assertEquals(expected, chg2.getItems());
+		}
+		final Operations operations = issueWithChangelogAndOperations.getOperations();
+		if (isJira5xOrNewer()) {
+			assertThat(operations, notNullValue());
+			assertThat(operations.getOperationById("log-work"), allOf(
+							instanceOf(OperationLink.class),
+							hasProperty("id", is("log-work"))
+					)
+			);
 		}
 	}
 

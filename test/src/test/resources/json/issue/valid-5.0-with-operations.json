@@ -182,11 +182,10 @@
 		"status":{
 			"self":"http://localhost:2990/jira/rest/api/latest/status/1",
 			"iconUrl":"http://localhost:2990/jira/images/icons/status_open.gif",
-			"description":"The issue is open and ready for the assignee to start work on it.",
 			"name":"Open",
+            "description":"The issue is open and ready for the assignee to start work on it.",
 			"id":"1"
 		},
-		"labels":[],
 		"assignee":{
 			"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
 			"name":"admin",
@@ -574,5 +573,31 @@
 	},
 	"transitions":"http://localhost:2990/jira/rest/api/latest/issue/TST-1/transitions",
 	"editmeta":"TODO",
-	"changelog":"TODO"
+	"changelog":"TODO",
+	"operations" : {
+		"linkGroups": [{
+			"id": "opsbar-transitions",
+			"weight": 20,
+			"links": [
+				{
+					"id": "action_id_4",
+					"styleClass": "issueaction-workflow-transition",
+					"label": "Start Progress",
+					"title": "Start work on the issue",
+					"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+					"weight": 10
+				}
+			],
+			"groups": [
+				{
+					"header": {
+						"id": "opsbar-transitions_more",
+						"label": "Workflow"
+					},
+					"links": [],
+					"groups": []
+				}
+			]
+		}]
+	}
 }

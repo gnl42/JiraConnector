@@ -19,11 +19,11 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
+import com.atlassian.jira.rest.client.api.domain.Status;
 import com.google.common.collect.Iterables;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Rule;
@@ -87,7 +87,7 @@ public class SearchResultJsonParserTest {
 		final BasicPriority expectedPriority = new BasicPriority(toUri("http://localhost:8090/jira/rest/api/2/priority/3"), 3L, "Major");
 		assertEquals(expectedPriority, issue.getPriority());
 
-		final BasicStatus expectedStatus = new BasicStatus(toUri("http://localhost:8090/jira/rest/api/2/status/1"), "Open");
+		final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"));
 		assertEquals(expectedStatus, issue.getStatus());
 
 		assertEmptyIterable(issue.getComments());
@@ -116,7 +116,7 @@ public class SearchResultJsonParserTest {
 		assertEquals(expectedVotes, issue.getVotes());
 
 		final BasicWatchers expectedWatchers = new BasicWatchers(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/watchers"), false, 0);
-		assertEquals(expectedWatchers, issue .getWatchers());
+		assertEquals(expectedWatchers, issue.getWatchers());
 
 		final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false);
 		assertEquals(expectedIssueType, issue.getIssueType());
