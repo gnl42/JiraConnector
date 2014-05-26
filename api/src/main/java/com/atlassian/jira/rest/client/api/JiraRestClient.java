@@ -54,7 +54,7 @@ public interface JiraRestClient extends Closeable {
 
 	/**
 	 * @return the com.atlassian.jira.rest.client.api handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
-	 *         priorities)
+	 * priorities)
 	 */
 	MetadataRestClient getMetadataClient();
 
@@ -72,6 +72,11 @@ public interface JiraRestClient extends Closeable {
 	 * @return the com.atlassian.jira.rest.client.api for project roles.
 	 */
 	ProjectRolesRestClient getProjectRolesRestClient();
+
+	/**
+	 * @return the com.atlassian.jira.rest.client.api for my permissions.
+	 */
+	MyPermissionsRestClient getMyPermissionsRestClient();
 
 	/**
 	 * Destroys this instance of JIRA Rest Client.
