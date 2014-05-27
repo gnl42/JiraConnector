@@ -22,6 +22,7 @@ import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
@@ -103,7 +104,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertThat(status.getId(), is(1L));
 		assertThat(status.getName(), is("Open"));
 		assertThat(status.getDescription(), is("The issue is open and ready for the assignee to start work on it."));
-		assertThat(status.getIconUrl().toString(), Matchers.endsWith("open.png"));
+		assertThat(status.getIconUrl().toString(), RegularExpressionMatcher.matchesRegexp(".*open\\.(png|gif)$"));
 	}
 
 	@Test
