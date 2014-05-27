@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.api.domain.Attachment;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
@@ -61,7 +60,11 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
@@ -243,7 +246,7 @@ public class IssueJsonParserTest {
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 		assertThat(Iterables.transform(issue
-				.getComponents(), new BasicComponentNameExtractionFunction()), containsInAnyOrder("Component A", "Component B"));
+				.getComponents(), EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder("Component A", "Component B"));
 		assertEquals(2, Iterables.size(issue.getWorklogs()));
 		assertEquals(1, issue.getWatchers().getNumWatchers());
 		assertFalse(issue.getWatchers().isWatching());
