@@ -31,7 +31,6 @@ import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
-import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.atlassian.jira.rest.client.api.domain.Version;
@@ -53,14 +52,16 @@ import static com.atlassian.jira.nimblefunctests.annotation.LongCondition.LESS_T
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
-import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6_1;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestClientTest {
@@ -230,7 +231,16 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals(new BasicProject(resolveURI(projectSelf), "TST", 10000L, "Test Project"), issue.getProject());
 		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
 		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
-		assertEquals(new IssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", toUri("http://localhost:2990/jira/images/icons/issuetypes/task.png")), issue.getIssueType());
+		assertThat(issue.getIssueType(), notNullValue());
+		assertThat(issue.getIssueType().getSelf(), is(resolveURI("rest/api/2/issuetype/3")));
+		assertThat(issue.getIssueType().getId(), is(3L));
+		assertThat(issue.getIssueType().getName(), is("Task"));
+		assertThat(issue.getIssueType().isSubtask(), is(false));
+		assertThat(issue.getIssueType().getDescription(), is("A task that needs to be done."));
+		assertThat(issue.getIssueType().getIconUri(), anyOf(
+				is(resolveURI("images/icons/issuetypes/task.png")),
+				is(resolveURI("images/icons/task.gif"))
+		));
 	}
 
 	@Test
