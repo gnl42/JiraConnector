@@ -54,21 +54,21 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetIssueTypeNonExisting() throws Exception {
-		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
+		final IssueType issueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The issue type with id '" +
-				TestUtil.getLastPathSegment(basicIssueType.getSelf()) + "fake" +
+				TestUtil.getLastPathSegment(issueType.getSelf()) + "fake" +
 				"' does not exist", new Runnable() {
 			@Override
 			public void run() {
-				client.getMetadataClient().getIssueType(TestUtil.toUri(basicIssueType.getSelf() + "fake")).claim();
+				client.getMetadataClient().getIssueType(TestUtil.toUri(issueType.getSelf() + "fake")).claim();
 			}
 		});
 	}
 
 	@Test
 	public void testGetIssueType() {
-		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
-		final IssueType issueType = client.getMetadataClient().getIssueType(basicIssueType.getSelf()).claim();
+		final IssueType getIssueIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
+		final IssueType issueType = client.getMetadataClient().getIssueType(getIssueIssueType.getSelf()).claim();
 		assertEquals("Bug", issueType.getName());
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;

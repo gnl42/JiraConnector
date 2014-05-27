@@ -46,7 +46,7 @@ public class IssueInputBuilder {
 		setIssueTypeId(issueTypeId);
 	}
 
-	public IssueInputBuilder(BasicProject project, BasicIssueType issueType) {
+	public IssueInputBuilder(BasicProject project, IssueType issueType) {
 		setProject(project);
 		setIssueType(issueType);
 	}
@@ -58,7 +58,7 @@ public class IssueInputBuilder {
 	}
 
 	@SuppressWarnings("unused")
-	public IssueInputBuilder(BasicProject project, BasicIssueType issueType, String summary) {
+	public IssueInputBuilder(BasicProject project, IssueType issueType, String summary) {
 		this(project, issueType);
 		setSummary(summary);
 	}
@@ -82,7 +82,7 @@ public class IssueInputBuilder {
 		));
 	}
 
-	public IssueInputBuilder setIssueType(BasicIssueType issueType) {
+	public IssueInputBuilder setIssueType(IssueType issueType) {
 		return setIssueTypeId(issueType.getId());
 	}
 
