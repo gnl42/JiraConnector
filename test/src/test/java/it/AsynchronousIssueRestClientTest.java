@@ -37,6 +37,7 @@ import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.input.AttachmentInput;
 import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
@@ -45,6 +46,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -65,6 +67,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 
@@ -234,6 +237,17 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		// delete issue should thrown 401
 		expectedException.expect(rceWithSingleError(401, "You do not have permission to delete issues in this project."));
 		issueClient.deleteIssue(issueKey, false).claim();
+	}
+	
+	@Test
+	public void testShouldUpdateField() {
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
+		final double newValue = 123;
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
+		client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).claim();
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 	}
 
 	@Test
