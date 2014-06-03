@@ -18,12 +18,12 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
-import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.AssigneeType;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.Component;
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
@@ -35,7 +35,12 @@ import javax.ws.rs.core.Response;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_4;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRestClientTest {
@@ -331,7 +336,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 	private void assertProjectHasComponents(String... names) {
 		assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim().getComponents(),
-				new BasicComponentNameExtractionFunction()), containsInAnyOrder(names));
+				EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder(names));
 	}
 
 }
