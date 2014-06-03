@@ -84,7 +84,9 @@ public class IssueJsonParserTest {
 		assertEquals(toDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
 		assertEquals(null, issue.getDueDate());
 
-		final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:8090/jira/images/icons/bug.gif"));
+		final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L,
+				"Bug", false, "A problem which impairs or prevents the functions of the product.",
+				toUri("http://localhost:8090/jira/images/icons/bug.gif"));
 		assertEquals(expectedIssueType, issue.getIssueType());
 
 		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());

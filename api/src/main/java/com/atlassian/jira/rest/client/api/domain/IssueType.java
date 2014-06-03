@@ -21,7 +21,6 @@ import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.Objects;
 
-import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -31,14 +30,13 @@ import java.net.URI;
  */
 public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEntity<Long> {
 	private final URI self;
-	@Nullable
 	private final Long id;
 	private final String name;
 	private final boolean isSubtask;
 	private final String description;
 	private final URI iconUri;
 
-	public IssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri) {
+	public IssueType(URI self, Long id, String name, boolean isSubtask, String description, URI iconUri) {
 		this.self = self;
 		this.id = id;
 		this.name = name;
@@ -47,11 +45,12 @@ public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEn
 		this.iconUri = iconUri;
 	}
 
-	@Nullable
+	@Override
 	public Long getId() {
 		return id;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

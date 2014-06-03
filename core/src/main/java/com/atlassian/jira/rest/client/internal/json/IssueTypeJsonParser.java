@@ -26,7 +26,7 @@ public class IssueTypeJsonParser implements JsonObjectParser<IssueType> {
 	@Override
 	public IssueType parse(JSONObject json) throws JSONException {
 		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		final long id = json.getLong("id");
 		final String name = json.getString("name");
 		final boolean isSubtask = json.getBoolean("subtask");
 		final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
