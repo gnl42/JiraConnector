@@ -35,7 +35,7 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, Status status,
+	public Issue(String summary, URI self, String key, Long id, BasicProject project, IssueType issueType, Status status,
 			String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
@@ -78,7 +78,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	private final Status status;
-	private final BasicIssueType issueType;
+	private final IssueType issueType;
 	private final BasicProject project;
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
@@ -215,7 +215,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	/**
 	 * @return issue type
 	 */
-	public BasicIssueType getIssueType() {
+	public IssueType getIssueType() {
 		return issueType;
 	}
 

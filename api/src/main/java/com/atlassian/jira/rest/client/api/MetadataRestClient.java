@@ -74,6 +74,14 @@ public interface MetadataRestClient {
 	Promise<Status> getStatus(URI uri);
 
 	/**
+	 * Retrieves lists of available statuses with complete information about them
+	 *
+	 * @return Lists of complete information about available statuses
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+	 */
+	Promise<Iterable<Status>> getStatuses();
+
+	/**
 	 * Retrieves from the server complete information about selected priority
 	 *
 	 * @param uri URI for the priority resource

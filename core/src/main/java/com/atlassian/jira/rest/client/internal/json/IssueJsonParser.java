@@ -19,7 +19,6 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.api.domain.Attachment;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
@@ -30,6 +29,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import com.atlassian.jira.rest.client.api.domain.Operations;
@@ -101,7 +101,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 	private final BasicComponentJsonParser basicComponentJsonParser = new BasicComponentJsonParser();
 	private final AttachmentJsonParser attachmentJsonParser = new AttachmentJsonParser();
 	private final CommentJsonParser commentJsonParser = new CommentJsonParser();
-	private final BasicIssueTypeJsonParser issueTypeJsonParser = new BasicIssueTypeJsonParser();
+	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final BasicProjectJsonParser projectJsonParser = new BasicProjectJsonParser();
 	private final BasicPriorityJsonParser priorityJsonParser = new BasicPriorityJsonParser();
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
@@ -222,7 +222,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 		final Collection<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
 		final Collection<IssueField> fields = parseFields(issueJson);
 
-		final BasicIssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(issueJson, ISSUE_TYPE_FIELD.id));
+		final IssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(issueJson, ISSUE_TYPE_FIELD.id));
 		final DateTime creationDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(issueJson, CREATED_FIELD.id));
 		final DateTime updateDate = JsonParseUtil.parseDateTime(getFieldStringUnisex(issueJson, UPDATED_FIELD.id));
 

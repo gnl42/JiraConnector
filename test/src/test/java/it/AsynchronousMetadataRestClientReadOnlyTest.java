@@ -22,15 +22,21 @@ import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 
+import java.util.Map;
+
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.*;
@@ -54,21 +60,21 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetIssueTypeNonExisting() throws Exception {
-		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
+		final IssueType issueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
 		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The issue type with id '" +
-				TestUtil.getLastPathSegment(basicIssueType.getSelf()) + "fake" +
+				TestUtil.getLastPathSegment(issueType.getSelf()) + "fake" +
 				"' does not exist", new Runnable() {
 			@Override
 			public void run() {
-				client.getMetadataClient().getIssueType(TestUtil.toUri(basicIssueType.getSelf() + "fake")).claim();
+				client.getMetadataClient().getIssueType(TestUtil.toUri(issueType.getSelf() + "fake")).claim();
 			}
 		});
 	}
 
 	@Test
 	public void testGetIssueType() {
-		final BasicIssueType basicIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
-		final IssueType issueType = client.getMetadataClient().getIssueType(basicIssueType.getSelf()).claim();
+		final IssueType getIssueIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
+		final IssueType issueType = client.getMetadataClient().getIssueType(getIssueIssueType.getSelf()).claim();
 		assertEquals("Bug", issueType.getName());
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
@@ -85,6 +91,20 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("Duplicate", issueType.getName());
 		assertEquals("is duplicated by", issueType.getInward());
 		assertEquals("duplicates", issueType.getOutward());
+	}
+
+	@Test
+	public void testGetStatuses() {
+		final Iterable<Status> statuses = client.getMetadataClient().getStatuses().claim();
+		final Map<String, Status> statusMap = Maps.uniqueIndex(statuses, EntityHelper.GET_ENTITY_NAME_FUNCTION);
+		assertThat(statusMap.keySet(), containsInAnyOrder("Open", "In Progress", "Reopened", "Resolved", "Closed"));
+
+		final Status status = statusMap.get("Open");
+		assertThat(status.getSelf().toString(), Matchers.endsWith("status/1"));
+		assertThat(status.getId(), is(1L));
+		assertThat(status.getName(), is("Open"));
+		assertThat(status.getDescription(), is("The issue is open and ready for the assignee to start work on it."));
+		assertThat(status.getIconUrl().toString(), RegularExpressionMatcher.matchesRegexp(".*open\\.(png|gif)$"));
 	}
 
 	@Test
