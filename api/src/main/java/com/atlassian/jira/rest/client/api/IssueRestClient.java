@@ -55,17 +55,17 @@ public interface IssueRestClient {
 	 */
 	Promise<BasicIssue> createIssue(IssueInput issue);
 
-    /**
-     * Update an existing issue.
-     *
-     * @param issueKey issue key (like TST-1, or JRA-9)
-     * @param issue populated with fields to set (no other verbs) in issue
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
-     * @return Void
-     * @since 2.0
-     * @since com.atlassian.jira.rest.client.api 1.0, server 5.0
-     */
-    Promise<Void> updateIssue(String issueKey, IssueInput issue);
+	/**
+	 * Update an existing issue.
+	 *
+	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @param issue populated with fields to set (no other verbs) in issue
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @return Void
+	 * @since 2.0
+	 * @since com.atlassian.jira.rest.client.api 1.0, server 5.0
+	 */
+	Promise<Void> updateIssue(String issueKey, IssueInput issue);
 
 	/**
 	 * Retrieves CreateIssueMetadata with specified filters.
