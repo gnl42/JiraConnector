@@ -116,7 +116,7 @@ public class CreateIssueMetadataJsonParserTest {
 		Assert.assertThat(cf1001.getOperations(), IsIterableContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
 
 		// check allowed values types
-		assertAllowedValuesOfType(issueTypeFields.get("issuetype").getAllowedValues(), BasicIssueType.class);
+		assertAllowedValuesOfType(issueTypeFields.get("issuetype").getAllowedValues(), IssueType.class);
 		assertAllowedValuesOfType(issueTypeFields.get("priority").getAllowedValues(), BasicPriority.class);
 		assertAllowedValuesOfType(issueTypeFields.get("customfield_10001").getAllowedValues(), CustomFieldOption.class);
 		assertAllowedValuesOfType(issueTypeFields.get("project").getAllowedValues(), BasicProject.class);

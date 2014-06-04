@@ -22,7 +22,6 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.SearchRestClient;
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
@@ -58,8 +57,11 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestClientTest {
@@ -229,7 +231,16 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertEquals(new BasicProject(resolveURI(projectSelf), "TST", 10000L, "Test Project"), issue.getProject());
 		assertEquals(new BasicVotes(resolveURI("rest/api/2/issue/TST-7/votes"), 0, false), issue.getVotes());
 		assertEquals(new BasicWatchers(resolveURI("rest/api/2/issue/TST-7/watchers"), false, 0), issue.getWatchers());
-		assertEquals(new BasicIssueType(resolveURI("rest/api/2/issuetype/3"), 3L, "Task", false), issue.getIssueType());
+		assertThat(issue.getIssueType(), notNullValue());
+		assertThat(issue.getIssueType().getSelf(), is(resolveURI("rest/api/2/issuetype/3")));
+		assertThat(issue.getIssueType().getId(), is(3L));
+		assertThat(issue.getIssueType().getName(), is("Task"));
+		assertThat(issue.getIssueType().isSubtask(), is(false));
+		assertThat(issue.getIssueType().getDescription(), is("A task that needs to be done."));
+		assertThat(issue.getIssueType().getIconUri(), anyOf(
+				is(resolveURI("images/icons/issuetypes/task.png")),
+				is(resolveURI("images/icons/task.gif"))
+		));
 	}
 
 	@Test
