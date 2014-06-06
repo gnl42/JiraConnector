@@ -31,6 +31,7 @@ import com.atlassian.jira.rest.client.api.domain.CimIssueType;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
 import com.atlassian.jira.rest.client.api.domain.Transition;
@@ -75,6 +76,7 @@ import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMF
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_TYPE_V5;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER;
+import static com.atlassian.jira.rest.client.IntegrationTestUtil.TEXT_CUSTOMFIELD_ID;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER2;
 import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.TestUtil.assertExpectedErrorCollection;
@@ -238,9 +240,9 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		expectedException.expect(rceWithSingleError(401, "You do not have permission to delete issues in this project."));
 		issueClient.deleteIssue(issueKey, false).claim();
 	}
-	
+
 	@Test
-	public void testShouldUpdateField() {
+	public void testUpdateField() {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 		final double newValue = 123;
@@ -250,6 +252,50 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
 	}
 
+	@Test
+	public void testUpdateMultipleFields() {
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
+		final double newNumericValue = 123;
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newNumericValue);
+		String newTextValue = "my new text";
+		final FieldInput description = new FieldInput(TEXT_CUSTOMFIELD_ID, newTextValue);
+		
+		client.getIssueClient().updateIssue(issue.getKey(), 
+				IssueInput.createWithFields(fieldInput, description)).claim();
+		final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+		assertNotNull(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID));
+		assertEquals(newNumericValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
+		assertNotNull(changedIssue.getField(TEXT_CUSTOMFIELD_ID));
+		assertEquals(newTextValue, changedIssue.getField(TEXT_CUSTOMFIELD_ID).getValue());
+	}
+
+	@Test
+	public void testUpdateIssueWithInvalidAdditionalField() {
+		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+		final String fieldId = "invalidField";
+
+		expectedException.expect(RestClientException.class);
+		expectedException.expectMessage(String
+				.format("Field '%s' cannot be set. It is not on the appropriate screen, or unknown.", fieldId));
+		final FieldInput fieldInput = new FieldInput(fieldId, "who cares?");
+		client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).claim();
+		assertNull("shoudn't get here");
+	}
+
+	@Test
+	public void testUpdateIssueWithoutPermissions() {
+		setUser2();
+
+		expectedException.expect(RestClientException.class);
+		expectedException.expectMessage(String
+				.format("Field '%s' cannot be set. It is not on the appropriate screen, or unknown.", NUMERIC_CUSTOMFIELD_ID));
+		final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, 1.23d);
+		client.getIssueClient().updateIssue("TST-1", IssueInput.createWithFields(fieldInput)).claim();
+
+		assertNull("shoudn't get here");
+	}
+	
 	@Test
 	public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
