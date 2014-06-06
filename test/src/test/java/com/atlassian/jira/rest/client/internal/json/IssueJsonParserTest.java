@@ -16,10 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.BasicComponentNameExtractionFunction;
 import com.atlassian.jira.rest.client.api.domain.Attachment;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
@@ -33,6 +31,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.atlassian.jira.rest.client.api.domain.IssueLink;
 import com.atlassian.jira.rest.client.api.domain.IssueLinkType;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.OperationGroup;
 import com.atlassian.jira.rest.client.api.domain.OperationHeader;
 import com.atlassian.jira.rest.client.api.domain.OperationLink;
@@ -61,7 +60,11 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
@@ -84,7 +87,9 @@ public class IssueJsonParserTest {
 		assertEquals(toDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
 		assertEquals(null, issue.getDueDate());
 
-		final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L, "Bug", false);
+		final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L,
+				"Bug", false, "A problem which impairs or prevents the functions of the product.",
+				toUri("http://localhost:8090/jira/images/icons/bug.gif"));
 		assertEquals(expectedIssueType, issue.getIssueType());
 
 		assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
@@ -243,7 +248,7 @@ public class IssueJsonParserTest {
 		assertEquals(1, Iterables.size(issue.getIssueLinks()));
 		assertEquals(1.457, issue.getField("customfield_10000").getValue());
 		assertThat(Iterables.transform(issue
-				.getComponents(), new BasicComponentNameExtractionFunction()), containsInAnyOrder("Component A", "Component B"));
+				.getComponents(), EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder("Component A", "Component B"));
 		assertEquals(2, Iterables.size(issue.getWorklogs()));
 		assertEquals(1, issue.getWatchers().getNumWatchers());
 		assertFalse(issue.getWatchers().isWatching());

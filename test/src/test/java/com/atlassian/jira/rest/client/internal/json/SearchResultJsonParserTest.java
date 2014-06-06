@@ -16,12 +16,12 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicVotes;
 import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import com.google.common.collect.Iterables;
@@ -30,14 +30,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityById;
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
-import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
 import static com.atlassian.jira.rest.client.test.matchers.IssueMatchers.issuesWithKeys;
 import static com.atlassian.jira.rest.client.test.matchers.SearchResultMatchers.searchResultWithParamsAndIssueCount;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class SearchResultJsonParserTest {
 
@@ -118,7 +120,7 @@ public class SearchResultJsonParserTest {
 		final BasicWatchers expectedWatchers = new BasicWatchers(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/watchers"), false, 0);
 		assertEquals(expectedWatchers, issue.getWatchers());
 
-		final BasicIssueType expectedIssueType = new BasicIssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false);
+		final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", toUri("http://localhost:8090/jira/images/icons/task.gif"));
 		assertEquals(expectedIssueType, issue.getIssueType());
 	}
 
