@@ -450,12 +450,13 @@ plugin@org.apache.commons.fileupload,1.2.0=GET,http://archive.eclipse.org/tools/
 plugin@org.apache.commons.fileupload.source,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.fileupload.source_1.2.0.v20080604-1500.jar
 
 plugin@org.apache.commons.httpclient,3.0.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.httpclient_3.0.1.v201005080501.jar
-
-plugin@org.apache.commons.httpclient,3.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.httpclient_3.1.0.v201005080502.jar
-
 plugin@org.apache.commons.httpclient.source,3.0.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.httpclient.source_3.0.1.v201005080501.jar
 
+plugin@org.apache.commons.httpclient,3.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.httpclient_3.1.0.v201005080502.jar
 plugin@org.apache.commons.httpclient.source,3.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.httpclient.source_3.1.0.v201005080502.jar
+
+plugin@org.apache.commons.httpclient,3.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/plugins/org.apache.commons.httpclient_3.1.0.v201012070820.jar
+plugin@org.apache.commons.httpclient.source,3.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/plugins/org.apache.commons.httpclient.source_3.1.0.v201012070820.jar
 
 plugin@org.apache.commons.io,1.4.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.io_1.4.0.v20081110-1000.jar
 
