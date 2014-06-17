@@ -698,9 +698,11 @@ public class JiraRestClientAdapter {
 					changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
 		}
 
-		if (!"-1".equals(changedIssue.getAssignee())) { //$NON-NLS-1$
-			updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(
-					JiraRestFields.NAME, changedIssue.getAssignee())));
+		if (editableFields.contains(new IssueField(JiraRestFields.ASSIGNEE, null))) {
+			if (!"-1".equals(changedIssue.getAssignee())) { //$NON-NLS-1$
+				updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(
+						JiraRestFields.NAME, changedIssue.getAssignee())));
+			}
 		}
 
 		if (editableFields.contains(new IssueField(JiraRestFields.LABELS, null))) {
