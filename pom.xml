@@ -49,7 +49,7 @@
         <findbugs.version>1.3.7</findbugs.version>
         <atlassian.httpclient.version>0.13.2</atlassian.httpclient.version>
         <atlassian.concurrent.version>2.4.0-M9</atlassian.concurrent.version>
-        <amps.version>4.2.1</amps.version>
+        <amps.version>4.1.1</amps.version>
         <testkit.version>5.2-m29</testkit.version>
     </properties>
     <modules>
