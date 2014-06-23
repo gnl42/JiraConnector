@@ -120,7 +120,4 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <amps.version>4.2.18</amps.version>
-    </properties>
 </project>
