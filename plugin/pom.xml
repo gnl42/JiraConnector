@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.atlassian.jira</groupId>
         <artifactId>jira-rest-java-client-parent</artifactId>
         <version>2.0.0-m31-SNAPSHOT</version>
     </parent>
-
     <artifactId>jira-rest-java-client-plugin</artifactId>
     <packaging>atlassian-plugin</packaging>
-
     <name>JIRA REST Java Client - Plugin</name>
     <description>JIRA REST Java Client bundled as a plugin.</description>
-
     <dependencies>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
@@ -56,7 +53,6 @@
             <version>${joda.time.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -104,13 +100,12 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-amps-plugin</artifactId>
-                <version>4.1</version>
+                <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <product>jira</product>
@@ -119,15 +114,13 @@
                     <instructions>
                         <Export-Package>com.atlassian.jira.rest.client.api*</Export-Package>
                         <Atlassian-Plugin-Key>${project.groupId}.${project.artifactId}</Atlassian-Plugin-Key>
-                        <Import-Package>
-                            com.atlassian.plugin.schema*;version="2.10",
-                            com.atlassian.plugin.remotable*;version="${remotable.plugins.version}",
-                            org.joda.time*;version="${joda.time.version}",
-                            *;resolution:=optional
-                        </Import-Package>
+                        <Import-Package>com.atlassian.plugin.schema*;version="2.10", com.atlassian.plugin.remotable*;version="${remotable.plugins.version}", org.joda.time*;version="${joda.time.version}", *;resolution:=optional</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <amps.version>4.2.18</amps.version>
+    </properties>
 </project>
