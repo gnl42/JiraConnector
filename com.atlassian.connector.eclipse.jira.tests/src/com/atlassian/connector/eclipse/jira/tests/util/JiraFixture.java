@@ -44,7 +44,7 @@ public class JiraFixture extends TestFixture {
 //	public static JiraFixture SNAPSHOT = new JiraFixture(getServerUrl("jira-enterprise-snapshot"), //
 //			"4.4-SNAPSHOT", "649", "Enterprise");
 	public static JiraFixture SNAPSHOT = new JiraFixture(getServerUrl("jira-enterprise-snapshot"), //
-			"6.2.6-SNAPSHOT", "6264", "Enterprise");
+			"6.2.8-SNAPSHOT", "6266", "Enterprise");
 
 	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0, SNAPSHOT };
 
