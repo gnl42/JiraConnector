@@ -139,7 +139,7 @@
 		<condition property="build.publish.location" value="-e33" else="-e3x">
 			<equals arg1="${build.target}" arg2="3.3" />
 		</condition>
-		<condition property="build.publish.name.suffix" value="3.3" else="3.6">
+		<condition property="build.publish.name.suffix" value="3.3" else="3.7 and later">
 			<equals arg1="${build.target}" arg2="3.3" />
 		</condition>
 
