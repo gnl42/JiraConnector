@@ -556,7 +556,7 @@ public class JiraRestConverter {
 		return null;
 	}
 
-	private static Integer getRankFromIssue(Issue issue) {
+	private static Long getRankFromIssue(Issue issue) {
 		JSONObject schemaFields = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(),
 				IssueRestClient.Expandos.SCHEMA.getFieldName());
 
@@ -572,7 +572,7 @@ public class JiraRestConverter {
 
 						if (JiraAttribute.RANK.getType().getKey().equals(longType)) {
 							try {
-								return Integer.valueOf(field.getValue().toString());
+								return Long.valueOf(field.getValue().toString());
 							} catch (NumberFormatException e) {
 								StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
 										JiraCorePlugin.ID_PLUGIN, NLS.bind(

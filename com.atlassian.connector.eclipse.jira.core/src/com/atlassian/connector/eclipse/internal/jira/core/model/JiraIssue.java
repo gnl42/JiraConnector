@@ -111,7 +111,7 @@ public class JiraIssue implements Serializable {
 
 	private URI self;
 
-	private Integer rank = null;
+	private Long rank = null;
 
 	private String[] labels = new String[0];
 
@@ -579,11 +579,11 @@ public class JiraIssue implements Serializable {
 		this.worklogs = worklogs;
 	}
 
-	public void setRank(Integer rank) {
+	public void setRank(Long rank) {
 		this.rank = rank;
 	}
 
-	public Integer getRank() {
+	public Long getRank() {
 		return this.rank;
 	}
 
