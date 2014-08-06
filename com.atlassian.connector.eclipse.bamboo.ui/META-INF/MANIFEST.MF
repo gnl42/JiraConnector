@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Bamboo UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.ui;singleton:=true
-Bundle-Version: 3.2.3.qualifier
+Bundle-Version: 3.2.4.qualifier
 Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions,
