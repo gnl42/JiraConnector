@@ -594,8 +594,10 @@ public class JiraRestClientAdapter {
 
 		updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getType().getId())));
-		updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
-				changedIssue.getPriority().getId())));
+		if (editableFields.contains(new IssueField(JiraRestFields.PRIORITY, null))) {
+			updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(
+					JiraRestFields.ID, changedIssue.getPriority().getId())));
+		}
 
 		if (editableFields.contains(new IssueField(JiraRestFields.DUEDATE, null))) {
 			String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
