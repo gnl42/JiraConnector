@@ -409,6 +409,13 @@ public class JiraRestClientAdapter {
 
 						fields.add(new FieldInput(transitionField.getName(), values[0]));
 
+					} else if (transitionField.getName().equals(JiraRestFields.DUEDATE)) {
+						String date = new DateTime(issue.getDue()).toString(JiraRestFields.DATE_FORMAT);
+						if (values[0] == null) {
+							date = null;
+						}
+						fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
+
 					} else if (transitionField.getName().equals(JiraRestFields.LABELS)) {
 
 						fields.add(new FieldInput(transitionField.getName(), Arrays.asList(values)));
