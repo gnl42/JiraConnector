@@ -24,7 +24,6 @@
       <import plugin="org.apache.commons.lang" version="2.3.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.0.4" match="greaterOrEqual"/>
       <import plugin="org.apache.ws.commons.util" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.axis" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.xmlrpc" version="3.0.0" match="compatible"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
       <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
@@ -89,13 +88,6 @@
 
    <plugin
          id="org.jetbrains.annotations"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.axis"
          download-size="0"
          install-size="0"
          version="0.0.0"

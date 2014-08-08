@@ -23,7 +23,6 @@
    </url>
 
    <requires>
-      <import plugin="org.apache.axis"/>
       <import plugin="javax.xml.rpc"/>
       <import plugin="org.apache.commons.logging"/>
       <import plugin="org.apache.commons.io"/>

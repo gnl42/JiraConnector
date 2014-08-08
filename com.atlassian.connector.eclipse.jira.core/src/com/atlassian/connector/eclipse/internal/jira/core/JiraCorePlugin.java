@@ -13,11 +13,7 @@
 package com.atlassian.connector.eclipse.internal.jira.core;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.apache.axis.AxisEngine;
-import org.apache.axis.AxisProperties;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -58,9 +54,6 @@ public class JiraCorePlugin extends Plugin {
 	public JiraCorePlugin() {
 		super();
 		plugin = this;
-
-		// disable Axis attachment support, see bug 197819
-		AxisProperties.setProperty(AxisEngine.PROP_ATTACHMENT_IMPLEMENTATION, "org.eclipse.mylyn.does.not.exist"); //$NON-NLS-1$
 	}
 
 	/**
@@ -78,11 +71,6 @@ public class JiraCorePlugin extends Plugin {
 			throw new IllegalStateException("Already initialized"); //$NON-NLS-1$
 		}
 		initialized = true;
-
-		// Turn off logging for the Attachment check. We don't want or need soap
-		// with attachments
-		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils"); //$NON-NLS-1$
-		logger.setLevel(Level.SEVERE);
 
 		clientManager = new JiraClientManager(serverCacheDirectory);
 		clientManager.start();
