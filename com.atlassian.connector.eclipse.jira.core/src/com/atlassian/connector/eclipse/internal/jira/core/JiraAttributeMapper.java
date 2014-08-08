@@ -12,10 +12,12 @@
 package com.atlassian.connector.eclipse.internal.jira.core;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -29,7 +31,6 @@ import com.atlassian.connector.eclipse.internal.jira.core.model.Project;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Resolution;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Version;
 import com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient;
-import com.atlassian.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
 import com.atlassian.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
@@ -68,7 +69,8 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 	@Override
 	public void setDateValue(TaskAttribute attribute, Date date) {
 		if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
-			attribute.setValue(date != null ? JiraRssHandler.getDateTimeFormat().format(date) : "");
+			attribute.setValue(date != null ? new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US).format(date) //$NON-NLS-1$
+					: ""); //$NON-NLS-1$
 		} else {
 			super.setDateValue(attribute, date);
 		}
