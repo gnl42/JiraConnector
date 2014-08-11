@@ -16,6 +16,8 @@ import junit.framework.TestSuite;
 
 import com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest;
 import com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest;
+import com.atlassian.connector.eclipse.jira.tests.client.JiraRssHandlerTest;
+import com.atlassian.connector.eclipse.jira.tests.client.JiraWebClientTest;
 import com.atlassian.connector.eclipse.jira.tests.core.FilterDefinitionConverterTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraClientCacheTest;
 import com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest;
@@ -38,6 +40,7 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(JiraTimeFormatTest.class);
 		suite.addTestSuite(JiraClientOfflineTest.class);
 		suite.addTestSuite(FilterDefinitionConverterTest.class);
+		suite.addTestSuite(JiraRssHandlerTest.class);
 		suite.addTestSuite(JiraVersionTest.class);
 		suite.addTestSuite(JiraClientCacheTest.class);
 		suite.addTestSuite(WdhmUtilTest.class);
@@ -50,6 +53,7 @@ public class AllJiraHeadlessStandaloneTests {
 		for (JiraFixture fixture : new JiraFixture[] { JiraFixture.DEFAULT }) {
 			fixture.createSuite(suite);
 			fixture.add(JiraClientTest.class);
+			fixture.add(JiraWebClientTest.class);
 			fixture.done();
 		}
 		return suite;

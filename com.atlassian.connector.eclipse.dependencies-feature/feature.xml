@@ -27,6 +27,7 @@
       <import plugin="org.apache.axis" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.xmlrpc" version="3.0.0" match="compatible"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
+      <import plugin="javax.xml.soap" version="1.2.0" match="compatible"/>
       <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
       <import plugin="com.sun.syndication" version="0.9.0" match="compatible"/>
       <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
@@ -110,6 +111,14 @@
 
    <plugin
          id="org.apache.ws.commons.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+
+   <plugin
+         id="javax.xml.soap"
          download-size="0"
          install-size="0"
          version="0.0.0"
