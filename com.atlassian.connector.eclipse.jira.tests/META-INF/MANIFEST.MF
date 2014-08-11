@@ -19,6 +19,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.tasks.search,
  org.eclipse.mylyn.tests.util,
+ org.apache.axis;bundle-version="1.4.0",
  org.eclipse.mylyn.commons.tests,
  com.google.guava;bundle-version="13.0.0",
  org.joda.time;bundle-version="1.6.0"

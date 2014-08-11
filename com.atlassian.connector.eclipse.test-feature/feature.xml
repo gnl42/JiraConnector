@@ -61,6 +61,7 @@
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.jdt.junit"/>
       <import plugin="org.eclipse.search"/>
+      <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
