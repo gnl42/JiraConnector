@@ -6,7 +6,6 @@
         <version>2.0.0-m31-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-test</artifactId>
     <name>JIRA REST Java Client - Tests</name>
     <description>Tests of JIRA REST Java Client.</description>
