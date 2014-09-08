@@ -61,7 +61,7 @@ public class WorklogInputJsonGeneratorTest {
 		final WorklogInput worklogInput = new WorklogInput(
 				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), ADMIN, USER, "my first work",
-				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, null);
+				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 43, null);
 
 		Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
 				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
@@ -72,7 +72,7 @@ public class WorklogInputJsonGeneratorTest {
 		final WorklogInput worklogInput = new WorklogInput(
 				toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
 				toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), null, null, "my first work",
-				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
+				JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 247, Visibility.group("some-group"));
 
 		Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
 				ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));

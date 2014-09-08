@@ -61,6 +61,7 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
 		setAnonymousMode();
 		try {
 			testAddWorklogImpl(ISSUE_KEY, createDefaulWorklogInputBuilder());
+			fail("error expected, no permissions");
 		} catch (RestClientException ex) {
 			final ErrorCollection errors = Iterators.getOnlyElement(ex.getErrorCollections().iterator());
 			assertThat(errors.getErrorMessages(),

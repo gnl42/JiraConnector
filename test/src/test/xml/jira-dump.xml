@@ -203,7 +203,7 @@ ___ Application Properties _________________
      jira.thumbnail.maxwidth                       : 200
      jira.timetracking.copy.comment.to.work.desc.on.transition : true
      jira.timetracking.days.per.week               : 5
-     jira.timetracking.default.unit                : MINUTE
+     jira.timetracking.default.unit                : DAY
      jira.timetracking.estimates.legacy.behaviour  : false
      jira.timetracking.format                      : pretty
      jira.timetracking.hours.per.day               : 8
@@ -1223,7 +1223,7 @@ The format of this is ' *w *d *h *m ' (representing weeks, days, hours and minut
 Examples: 4d, 5h 30m, 60m and 3w.]]></value>
 	</OSPropertyString>
 	<OSPropertyString id="10038" value="pretty"/>
-	<OSPropertyString id="10039" value="MINUTE"/>
+	<OSPropertyString id="10039" value="DAY"/>
 	<OSPropertyString id="10040" value="5"/>
 	<OSPropertyString id="10041" value="8"/>
 	<OSPropertyString id="10042" value="This value can not be changed after work has begun on the issue."/>
