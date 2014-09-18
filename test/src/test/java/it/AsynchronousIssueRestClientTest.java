@@ -384,9 +384,14 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
-        client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
-        assertEquals(0, issue.getVotes().getVotes());
+		assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.",
+				new Runnable() {
+					@Override
+					public void run() {
+						client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
+					}
+				});
+
 
 		issue = client.getIssueClient().getIssue(issueKey).claim();
 		assertFalse(issue.getVotes().hasVoted());
