@@ -26,9 +26,9 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.ws.rs.core.UriBuilder;
 
 public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestCase {
 
@@ -89,6 +89,10 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 	protected boolean isJira4x3OrNewer() {
 		return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
 	}
+
+    protected boolean isJira6_3_7_OrNewer() {
+        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_3_7;
+    }
 
 	@Override
 	public void afterMethod() {
