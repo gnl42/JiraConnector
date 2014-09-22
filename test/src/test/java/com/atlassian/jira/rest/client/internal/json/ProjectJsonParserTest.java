@@ -73,29 +73,6 @@ public class ProjectJsonParserTest {
 	}
 
 	@Test
-	public void testParseProjectInJira4x4() throws JSONException, URISyntaxException {
-		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
-		Assert.assertEquals("TST", project.getKey()); //2010-08-25
-		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
-				.toInstant());
-		Assert.assertEquals("Test Project", project.getName());
-		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
-		Assert.assertTrue(issueTypes.isSupported());
-		Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/4"), null, "Improvement", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/5"), null, "Sub-task", true, null, null)
-		));
-	}
-
-	@Test
 	public void testParseProjectInJira5x0() throws JSONException, URISyntaxException {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
 		Assert.assertEquals("TST", project.getKey());

@@ -66,6 +66,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.NUMERIC_CUSTOMFIELD_ID;
@@ -384,14 +385,22 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		assertFalse(issue.getVotes().hasVoted());
 		assertEquals(0, issue.getVotes().getVotes());
 		final Issue finalIssue = issue;
-		assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.",
-				new Runnable() {
-					@Override
-					public void run() {
-						client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
-					}
-				});
-
+        if (isJira6_3_7_OrNewer())
+        {
+            client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
+            issue = client.getIssueClient().getIssue(issueKey).claim();
+            assertEquals(0, issue.getVotes().getVotes());
+        }
+        else
+        {
+            assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.",
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
+                        }
+                    });
+        }
 
 		issue = client.getIssueClient().getIssue(issueKey).claim();
 		assertFalse(issue.getVotes().hasVoted());

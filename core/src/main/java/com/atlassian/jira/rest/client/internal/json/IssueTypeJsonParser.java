@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -24,15 +23,15 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class IssueTypeJsonParser implements JsonObjectParser<IssueType> {
-	private final BasicIssueTypeJsonParser basicIssueTypeJsonParser = new BasicIssueTypeJsonParser();
-
 	@Override
 	public IssueType parse(JSONObject json) throws JSONException {
-		final BasicIssueType basicIssueType = basicIssueTypeJsonParser.parse(json);
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final long id = json.getLong("id");
+		final String name = json.getString("name");
+		final boolean isSubtask = json.getBoolean("subtask");
 		final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
 		final URI iconUri = iconUrl == null ? null : JsonParseUtil.parseURI(iconUrl);
 		final String description = JsonParseUtil.getOptionalString(json, "description");
-		return new IssueType(basicIssueType.getSelf(), basicIssueType.getId(), basicIssueType.getName(), basicIssueType
-				.isSubtask(), description, iconUri);
+		return new IssueType(selfUri, id, name, isSubtask, description, iconUri);
 	}
 }

@@ -1,0 +1,70 @@
+{
+    "offset": 0,
+    "limit": 1000,
+    "total": 2,
+    "records" : [
+        {
+        "id":10003,
+        "summary":"User added to group",
+        "remoteAddress":"127.0.0.1",
+        "authorKey":"admin",
+        "created":"1994-11-05T13:15:30.111+0000",
+        "category":"group management",
+        "eventSource" : "Connect plugin",
+        "objectItem":{
+            "name":"jira-developers",
+            "typeName":"GROUP"
+        },
+
+        "associatedItems":[
+            {
+                "id":"admin",
+                "name":"admin",
+                "typeName":"USER",
+                "parentId":"1",
+                "parentName":"JIRA Internal Directory"
+            }
+        ],
+
+        "changedValues":[
+            {
+                "fieldName":"Username",
+                "changedTo":"admin"
+            },
+            {
+                "fieldName":"Full Name",
+                "changedFrom":"administrator",
+                "changedTo":"admin"
+            },
+            {
+                "fieldName":"Email",
+                "changedTo":"admin@local.com"
+            },
+            {
+                "fieldName":"Active / Inactive",
+                "changedTo":"Active"
+            }
+            ]
+        },
+        {
+            "id":10002,
+            "summary":"User added to group",
+            "authorKey":"admin",
+            "created":"1994-11-05T13:15:30.111+0000",
+            "category":"group management",
+            "eventSource" : "Other connect plugin",
+            "objectItem":{
+                "name":"jira-developers",
+                "typeName":"GROUP"
+            },
+
+            "associatedItems":[
+                {
+                    "name":"admin",
+                    "typeName":"USER"
+                }
+            ]
+
+        }
+    ]
+}

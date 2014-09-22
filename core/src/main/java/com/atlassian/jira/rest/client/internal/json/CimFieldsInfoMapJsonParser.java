@@ -48,11 +48,11 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 	protected final Map<String, JsonObjectParser> registeredAllowedValueParsers = new HashMap<String, JsonObjectParser>() {{
 		put("project", new BasicProjectJsonParser());
 		put("version", new VersionJsonParser());
-		put("issuetype", new BasicIssueTypeJsonParser());
+		put("issuetype", new IssueTypeJsonParser());
 		put("priority", new BasicPriorityJsonParser());
 		put("customFieldOption", new CustomFieldOptionJsonParser());
 		put("component", new BasicComponentJsonParser());
-		put("resolution", new BasicResolutionJsonParser());
+		put("resolution", new ResolutionJsonParser());
 		put("securitylevel", new SecurityLevelJsonParser());
 	}};
 

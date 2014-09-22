@@ -44,7 +44,7 @@ public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
 				.put("self", worklogInput.getSelf())
 				.put("comment", worklogInput.getComment())
 				.put("started", dateTimeFormatter.print(worklogInput.getStartDate()))
-				.put("timeSpent", worklogInput.getMinutesSpent());
+				.put("timeSpent", worklogInput.getMinutesSpent() + "m");
 
 		putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);
 		putGeneratedIfNotNull("author", worklogInput.getAuthor(), res, basicUserJsonGenerator);

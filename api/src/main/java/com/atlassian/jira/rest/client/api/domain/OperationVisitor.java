@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,22 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import java.net.URI;
+import com.google.common.base.Optional;
 
 /**
- * Basic information (served together with the issue) about current resolution.
+ * Interface visit operation elements
  *
- * @since v0.1
+ * @since 2.0
+ * @see Operations#accept(OperationVisitor)
+ * @see Operation#accept(OperationVisitor)
  */
-public class BasicResolution extends AddressableNamedEntity {
-
-	public BasicResolution(URI self, String name) {
-		super(self, name);
-	}
+public interface OperationVisitor<T> {
+	/**
+	 * Visits operation element
+	 *
+	 * @param operation operation element to be visited
+	 * @return Present value means "I've found a value let's finish visiting".
+	 * 		If absent traversal through operation elements will be continued.
+	 */
+	Optional<T> visit(Operation operation);
 }

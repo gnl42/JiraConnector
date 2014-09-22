@@ -45,4 +45,9 @@ public class OptionalIterable<T> implements Iterable<T> {
 	public boolean isSupported() {
 		return iterable != null;
 	}
+
+    @Override
+    public String toString() {
+        return isSupported() ? iterable.toString() : Collections.emptyList().toString();
+    }
 }

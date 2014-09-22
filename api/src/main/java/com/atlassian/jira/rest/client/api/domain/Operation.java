@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,24 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import java.net.URI;
+import com.google.common.base.Optional;
 
-/**
- * Basic information about a JIRA issue status
- *
- * @since v0.1
- */
-public class BasicStatus extends AddressableNamedEntity {
+import javax.annotation.Nullable;
 
-	public BasicStatus(URI self, String name) {
-		super(self, name);
-	}
+public interface Operation {
+	/**
+	 * @return Operation id. May be null.
+	 */
+	@Nullable String getId();
+
+	/**
+	 * Traverse through operation elements to visit them. Traversal will stop on first non absent value
+	 * returned from the visitor.
+	 *
+	 * @param visitor Visitor to visit operation element
+	 * @param <T> Visiting result type
+	 * @return Value returned from the visitor.
+	 */
+	<T> Optional<T> accept(OperationVisitor<T> visitor);
 
 }

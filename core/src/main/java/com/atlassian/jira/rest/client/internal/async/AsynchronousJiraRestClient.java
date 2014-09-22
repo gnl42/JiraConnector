@@ -39,8 +39,9 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 	private final ProjectRolesRestClient projectRolesRestClient;
 	private final MyPermissionsRestClient myPermissionsRestClient;
 	private final DisposableHttpClient httpClient;
+    private final AuditRestClient auditRestClient;
 
-	public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
+    public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
 		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 
 		this.httpClient = httpClient;
@@ -54,7 +55,8 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
 		projectRolesRestClient = new AsynchronousProjectRolesRestClient(serverUri, httpClient);
 		myPermissionsRestClient = new AsynchronousMyPermissionsRestClient(baseUri, httpClient);
-	}
+        auditRestClient = new AsynchronousAuditRestClient(httpClient, baseUri);
+    }
 
 	@Override
 	public IssueRestClient getIssueClient() {
@@ -106,7 +108,12 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
 		return myPermissionsRestClient;
 	}
 
-	@Override
+    @Override
+    public AuditRestClient getAuditRestClient() {
+        return auditRestClient;
+    }
+
+    @Override
 	public void close() throws IOException {
 		try {
 			httpClient.destroy();

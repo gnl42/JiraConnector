@@ -24,7 +24,6 @@ import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
@@ -35,6 +34,7 @@ import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Subtask;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.atlassian.jira.rest.client.api.domain.User;
@@ -78,7 +78,12 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.google.common.collect.Iterables.toArray;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
@@ -785,7 +790,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 			assertEquals(assertMessageAllowedValuesSizeNotMatch, 1, Iterables.size(allowedValues));
 
 			//noinspection unchecked
-			final BasicIssueType firstAllowedValue = (BasicIssueType) Iterables.getOnlyElement(allowedValues);
+			final IssueType firstAllowedValue = (IssueType) Iterables.getOnlyElement(allowedValues);
 			assertEquals(firstAllowedValue.getId(), cimIssueType.getId());
 		}
 	}

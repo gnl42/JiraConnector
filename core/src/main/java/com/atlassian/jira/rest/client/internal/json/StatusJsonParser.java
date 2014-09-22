@@ -16,24 +16,20 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.net.URI;
 
-/**
- * @since v0.1
- */
 public class StatusJsonParser implements JsonObjectParser<Status> {
-	private final BasicStatusJsonParser basicStatusJsonParser = new BasicStatusJsonParser();
-
 	@Override
 	public Status parse(JSONObject json) throws JSONException {
-		final BasicStatus basicStatus = basicStatusJsonParser.parse(json);
+		final URI self = JsonParseUtil.getSelfUri(json);
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		final String name = json.getString("name");
 		final String description = json.getString("description");
-		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Status(basicStatus.getSelf(), basicStatus.getName(), description, iconUri);
+		final URI iconUrl = JsonParseUtil.parseURI(json.getString("iconUrl"));
+		return new Status(self, id, name, description, iconUrl);
 	}
 }
