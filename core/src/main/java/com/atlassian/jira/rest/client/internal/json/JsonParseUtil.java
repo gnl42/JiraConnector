@@ -62,6 +62,12 @@ public class JsonParseUtil {
 		}
 	}
 
+	public static <T> T parseOptionalJsonObject(final JSONObject json, final String attributeName, final JsonObjectParser<T> jsonParser)
+			throws JSONException {
+		JSONObject attributeObject = getOptionalJsonObject(json, attributeName);
+		return attributeObject != null ? jsonParser.parse(attributeObject) : null;
+	}
+
 	@SuppressWarnings("UnusedDeclaration")
 	public static <T> ExpandableProperty<T> parseExpandableProperty(final JSONObject json, final JsonObjectParser<T> expandablePropertyBuilder)
 			throws JSONException {
@@ -266,7 +272,16 @@ public class JsonParseUtil {
 		return res.toString();
 	}
 
-	@SuppressWarnings("unused")
+	@Nullable
+	public static <T> T getOptionalJsonObject(final JSONObject jsonObject, final String attributeName, final JsonObjectParser<T> jsonParser) throws JSONException {
+		final JSONObject res = jsonObject.optJSONObject(attributeName);
+		if (res == JSONObject.NULL || res == null) {
+			return null;
+		}
+		return jsonParser.parse(res);
+	}
+
+    @SuppressWarnings("unused")
 	@Nullable
 	public static JSONObject getOptionalJsonObject(final JSONObject jsonObject, final String attributeName) {
 		final JSONObject res = jsonObject.optJSONObject(attributeName);

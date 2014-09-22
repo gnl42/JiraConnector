@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,17 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.api.domain.OperationHeader;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.net.URI;
-
-/**
- * @since v0.1
- */
-public class BasicIssueTypeJsonParser implements JsonObjectParser<BasicIssueType> {
+public class OperationHeaderJsonParser implements JsonObjectParser<OperationHeader> {
 	@Override
-	public BasicIssueType parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
-		final String name = json.getString("name");
-		final boolean isSubtask = json.getBoolean("subtask");
-		return new BasicIssueType(selfUri, id, name, isSubtask);
+	public OperationHeader parse(final JSONObject json) throws JSONException {
+		final String id = JsonParseUtil.getOptionalString(json, "id");
+		final String label = json.getString("label");
+		final String title = JsonParseUtil.getOptionalString(json, "title");
+		final String iconClass = JsonParseUtil.getOptionalString(json, "iconClass");
+		return new OperationHeader(id, label, title, iconClass);
 	}
 }

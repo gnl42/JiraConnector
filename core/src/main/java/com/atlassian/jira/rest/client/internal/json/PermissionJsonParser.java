@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
+import com.atlassian.jira.rest.client.api.domain.Permission;
 import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.codehaus.jettison.json.JSONObject;
 
-public class BasicStatusJsonParserTest {
-	@Test
-	public void testParse() throws JSONException {
-		final BasicStatusJsonParser parser = new BasicStatusJsonParser();
-		final BasicStatus basicStatus = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
-		Assert.assertEquals(new BasicStatus(TestUtil
-				.toUri("http://localhost:8090/jira/rest/api/latest/status/1"), "Open"), basicStatus);
+public class PermissionJsonParser implements JsonObjectParser<Permission> {
+	@Override
+	public Permission parse(final JSONObject json) throws JSONException {
+		final Integer id = json.getInt("id");
+		final String key = json.getString("key");
+		final String name = json.getString("name");
+		final String description = json.getString("description");
+		final boolean havePermission = json.getBoolean("havePermission");
+		return new Permission(id, key, name, description, havePermission);
 	}
 }

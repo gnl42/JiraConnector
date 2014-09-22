@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2010-2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,16 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.ExpandableResource;
+import com.atlassian.jira.rest.client.api.domain.util.UriUtil;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
+
+import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
 
 /**
  * Single JIRA issue
@@ -33,15 +35,16 @@ import java.util.Set;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
-	public Issue(String summary, URI self, String key, Long id, BasicProject project, BasicIssueType issueType, BasicStatus status,
-			String description, @Nullable BasicPriority priority, @Nullable BasicResolution resolution, Collection<Attachment> attachments,
+	public Issue(String summary, URI self, String key, Long id, BasicProject project, IssueType issueType, Status status,
+			String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
 			@Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
 			Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
 			@Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
 			@Nullable URI transitionsUri,
 			@Nullable Collection<IssueLink> issueLinks,
 			BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, Set<String> labels) {
+			@Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
+			Set<String> labels) {
 		super(self, key, id);
 		this.summary = summary;
 		this.project = project;
@@ -70,11 +73,12 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		this.timeTracking = timeTracking;
 		this.subtasks = subtasks;
 		this.changelog = changelog;
+		this.operations = operations;
 		this.labels = labels;
 	}
 
-	private final BasicStatus status;
-	private final BasicIssueType issueType;
+	private final Status status;
+	private final IssueType issueType;
 	private final BasicProject project;
 	private final URI transitionsUri;
 	private final Iterable<String> expandos;
@@ -86,7 +90,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final User reporter;
 	private final User assignee;
 	@Nullable
-	private final BasicResolution resolution;
+	private final Resolution resolution;
 	private final Collection<IssueField> issueFields;
 	private final DateTime creationDate;
 	private final DateTime updateDate;
@@ -114,9 +118,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	private final Collection<Subtask> subtasks;
 	@Nullable
 	private final Collection<ChangelogGroup> changelog;
+	@Nullable
+	private final Operations operations;
 	private final Set<String> labels;
 
-	public BasicStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
@@ -209,7 +215,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	/**
 	 * @return issue type
 	 */
-	public BasicIssueType getIssueType() {
+	public IssueType getIssueType() {
 		return issueType;
 	}
 
@@ -221,11 +227,11 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getAttachmentsUri() {
-		return UriBuilder.fromUri(getSelf()).path("attachments").build();
+		return UriUtil.path(getSelf(), "attachments");
 	}
 
 	public URI getWorklogUri() {
-		return UriBuilder.fromUri(getSelf()).path("worklog").build();
+		return UriUtil.path(getSelf(), "worklog");
 	}
 
 	/**
@@ -236,7 +242,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 	}
 
 	public URI getCommentsUri() {
-		return UriBuilder.fromUri(getSelf()).path("comment").build();
+		return UriUtil.path(getSelf(), "comment");
 	}
 
 	/**
@@ -302,13 +308,26 @@ public class Issue extends BasicIssue implements ExpandableResource {
 		return changelog;
 	}
 
+	/**
+	 * Returns operations available/allowed for issues retrieved with {@link Expandos#OPERATIONS} expanded.
+	 *
+	 * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS} has not been expanded or
+	 * REST API on the server side does not serve this information (pre-5.0)
+	 * @see com.atlassian.jira.rest.client.api.IssueRestClient#getIssue(String, Iterable)
+	 * @since com.atlassian.jira.rest.client.api 2.0, server 5.0
+	 */
+	@Nullable
+	public Operations getOperations() {
+		return operations;
+	}
+
 	public URI getVotesUri() {
-		return UriBuilder.fromUri(getSelf()).path("votes").build();
+		return UriUtil.path(getSelf(), "votes");
 	}
 
 
 	@Nullable
-	public BasicResolution getResolution() {
+	public Resolution getResolution() {
 		return resolution;
 	}
 
@@ -361,6 +380,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
 				add("watchers", watchers).
 				add("timeTracking", timeTracking).
 				add("changelog", changelog).
+				add("operations", operations).
 				add("labels", labels);
 	}
 }

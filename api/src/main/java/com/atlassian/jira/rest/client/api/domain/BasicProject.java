@@ -32,11 +32,14 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 	private final URI self;
 	private final String key;
 	@Nullable
+	private final Long id;
+	@Nullable
 	private final String name;
 
-	public BasicProject(URI self, String key, String name) {
+	public BasicProject(final URI self, final String key, @Nullable final Long id, final @Nullable String name) {
 		this.self = self;
 		this.key = key;
+		this.id = id;
 		this.name = name;
 	}
 
@@ -54,6 +57,11 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 		return name;
 	}
 
+	@Nullable
+	public Long getId() {
+		return id;
+	}
+
 	@Override
 	public String toString() {
 		return getToStringHelper().toString();
@@ -63,6 +71,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 		return Objects.toStringHelper(this).
 				add("self", self).
 				add("key", key).
+				add("id", id).
 				add("name", name);
 	}
 
@@ -72,6 +81,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 			BasicProject that = (BasicProject) obj;
 			return Objects.equal(this.self, that.self)
 					&& Objects.equal(this.name, that.name)
+					&& Objects.equal(this.id, that.id)
 					&& Objects.equal(this.key, that.key);
 		}
 		return false;
@@ -79,7 +89,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(self, name, key);
+		return Objects.hashCode(self, name, id, key);
 	}
 
 }

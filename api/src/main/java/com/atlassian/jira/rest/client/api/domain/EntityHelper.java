@@ -39,13 +39,15 @@ public class EntityHelper {
 		}
 	};
 
+	public static Function<NamedEntity, String> GET_ENTITY_NAME_FUNCTION = new Function<NamedEntity, String>() {
+		@Override
+		public String apply(NamedEntity entity) {
+			return entity.getName();
+		}
+	};
+
 	public static Iterable<String> toNamesList(Iterable<? extends NamedEntity> items) {
-		return Iterables.transform(items, new Function<NamedEntity, String>() {
-			@Override
-			public String apply(NamedEntity from) {
-				return from.getName();
-			}
-		});
+		return Iterables.transform(items, GET_ENTITY_NAME_FUNCTION);
 	}
 
 	public static Iterable<String> toFileNamesList(Iterable<? extends Attachment> attachments) {

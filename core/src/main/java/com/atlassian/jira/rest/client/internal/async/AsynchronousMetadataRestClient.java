@@ -36,6 +36,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
 	private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
 	private final GenericJsonArrayParser<IssueType> issueTypesJsonParser = GenericJsonArrayParser.create(issueTypeJsonParser);
 	private final StatusJsonParser statusJsonParser = new StatusJsonParser();
+	private final GenericJsonArrayParser<Status> statusesJsonParser = GenericJsonArrayParser.create(statusJsonParser);
 	private final PriorityJsonParser priorityJsonParser = new PriorityJsonParser();
 	private final GenericJsonArrayParser<Priority> prioritiesJsonParser = GenericJsonArrayParser.create(priorityJsonParser);
 	private final ResolutionJsonParser resolutionJsonParser = new ResolutionJsonParser();
@@ -70,6 +71,12 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
 	@Override
 	public Promise<Status> getStatus(URI uri) {
 		return getAndParse(uri, statusJsonParser);
+	}
+
+	@Override
+	public Promise<Iterable<Status>> getStatuses() {
+		final URI uri = UriBuilder.fromUri(baseUri).path("status").build();
+		return getAndParse(uri, statusesJsonParser);
 	}
 
 	@Override

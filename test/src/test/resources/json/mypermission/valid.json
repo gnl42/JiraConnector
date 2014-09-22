@@ -1,0 +1,275 @@
+{"permissions": {
+	"EDIT_ISSUE": {
+		"id": "12",
+		"key": "EDIT_ISSUE",
+		"name": "Edit Issues",
+		"description": "Ability to edit issues.",
+		"havePermission": true
+	},
+	"VIEW_VERSION_CONTROL": {
+		"id": "29",
+		"key": "VIEW_VERSION_CONTROL",
+		"name": "View Development Tools",
+		"description": "Allows users to view development-related information on the view issue screen, like commits, reviews and build information.",
+		"havePermission": true
+	},
+	"CLOSE_ISSUE": {
+		"id": "18",
+		"key": "CLOSE_ISSUE",
+		"name": "Close Issues",
+		"description": "Ability to close issues. Often useful where your developers resolve issues, and a QA department closes them.",
+		"havePermission": true
+	},
+	"CREATE_SHARED_OBJECTS": {
+		"id": "22",
+		"key": "CREATE_SHARED_OBJECTS",
+		"name": "Create Shared Objects",
+		"description": "Ability to share dashboards and filters with other users, groups and roles.",
+		"havePermission": true
+	},
+	"VIEW_VOTERS_AND_WATCHERS": {
+		"id": "31",
+		"key": "VIEW_VOTERS_AND_WATCHERS",
+		"name": "View Voters and Watchers",
+		"description": "Ability to view the voters and watchers of an issue.",
+		"havePermission": true
+	},
+	"WORKLOG_DELETE_OWN": {
+		"id": "42",
+		"key": "WORKLOG_DELETE_OWN",
+		"name": "Delete Own Worklogs",
+		"description": "Ability to delete own worklogs made on issues.",
+		"havePermission": false
+	},
+	"WORKLOG_EDIT_OWN": {
+		"id": "40",
+		"key": "WORKLOG_EDIT_OWN",
+		"name": "Edit Own Worklogs",
+		"description": "Ability to edit own worklogs made on issues.",
+		"havePermission": true
+	},
+	"LINK_ISSUE": {
+		"id": "21",
+		"key": "LINK_ISSUE",
+		"name": "Link Issues",
+		"description": "Ability to link issues together and create linked issues. Only useful if issue linking is turned on.",
+		"havePermission": true
+	},
+	"BROWSE": {
+		"id": "10",
+		"key": "BROWSE",
+		"name": "Browse Projects",
+		"description": "Ability to browse projects and the issues within them.",
+		"havePermission": true
+	},
+	"DELETE_ISSUE": {
+		"id": "16",
+		"key": "DELETE_ISSUE",
+		"name": "Delete Issues",
+		"description": "Ability to delete issues.",
+		"havePermission": true
+	},
+	"CREATE_ISSUE": {
+		"id": "11",
+		"key": "CREATE_ISSUE",
+		"name": "Create Issues",
+		"description": "Ability to create issues.",
+		"havePermission": true
+	},
+	"COMMENT_DELETE_ALL": {
+		"id": "36",
+		"key": "COMMENT_DELETE_ALL",
+		"name": "Delete All Comments",
+		"description": "Ability to delete all comments made on issues.",
+		"havePermission": true
+	},
+	"MANAGE_WATCHER_LIST": {
+		"id": "32",
+		"key": "MANAGE_WATCHER_LIST",
+		"name": "Manage Watchers",
+		"description": "Ability to manage the watchers of an issue.",
+		"havePermission": true
+	},
+	"ASSIGN_ISSUE": {
+		"id": "13",
+		"key": "ASSIGN_ISSUE",
+		"name": "Assign Issues",
+		"description": "Ability to assign issues to other people.",
+		"havePermission": true
+	},
+	"ATTACHMENT_DELETE_OWN": {
+		"id": "39",
+		"key": "ATTACHMENT_DELETE_OWN",
+		"name": "Delete Own Attachments",
+		"description": "Users with this permission may delete own attachments.",
+		"havePermission": true
+	},
+	"TRANSITION_ISSUE": {
+		"id": "46",
+		"key": "TRANSITION_ISSUE",
+		"name": "Transition Issues",
+		"description": "Ability to transition issues.",
+		"havePermission": true
+	},
+	"SET_ISSUE_SECURITY": {
+		"id": "26",
+		"key": "SET_ISSUE_SECURITY",
+		"name": "Set Issue Security",
+		"description": "Ability to set the level of security on an issue so that only people in that security level can see the issue.",
+		"havePermission": true
+	},
+	"MANAGE_GROUP_FILTER_SUBSCRIPTIONS": {
+		"id": "24",
+		"key": "MANAGE_GROUP_FILTER_SUBSCRIPTIONS",
+		"name": "Manage Group Filter Subscriptions",
+		"description": "Ability to manage (create and delete) group filter subscriptions.",
+		"havePermission": true
+	},
+	"MOVE_ISSUE": {
+		"id": "25",
+		"key": "MOVE_ISSUE",
+		"name": "Move Issues",
+		"description": "Ability to move issues between projects or between workflows of the same project (if applicable). Note the user can only move issues to a project he or she has the create permission for.",
+		"havePermission": true
+	},
+	"CREATE_ATTACHMENT": {
+		"id": "19",
+		"key": "CREATE_ATTACHMENT",
+		"name": "Create Attachments",
+		"description": "Users with this permission may create attachments.",
+		"havePermission": true
+	},
+	"SCHEDULE_ISSUE": {
+		"id": "28",
+		"key": "SCHEDULE_ISSUE",
+		"name": "Schedule Issues",
+		"description": "Ability to view or edit an issue's due date.",
+		"havePermission": true
+	},
+	"ADMINISTER": {
+		"id": "0",
+		"key": "ADMINISTER",
+		"name": "JIRA Administrators",
+		"description": "Ability to perform most administration functions (excluding Import & Export, SMTP Configuration, etc.).",
+		"havePermission": false
+	},
+	"ATTACHMENT_DELETE_ALL": {
+		"id": "38",
+		"key": "ATTACHMENT_DELETE_ALL",
+		"name": "Delete All Attachments",
+		"description": "Users with this permission may delete all attachments.",
+		"havePermission": true
+	},
+	"BULK_CHANGE": {
+		"id": "33",
+		"key": "BULK_CHANGE",
+		"name": "Bulk Change",
+		"description": "Ability to modify a collection of issues at once. For example, resolve multiple issues in one step.",
+		"havePermission": true
+	},
+	"WORKLOG_EDIT_ALL": {
+		"id": "41",
+		"key": "WORKLOG_EDIT_ALL",
+		"name": "Edit All Worklogs",
+		"description": "Ability to edit all worklogs made on issues.",
+		"havePermission": true
+	},
+	"VIEW_WORKFLOW_READONLY": {
+		"id": "45",
+		"key": "VIEW_WORKFLOW_READONLY",
+		"name": "View Read-Only Workflow",
+		"description": "admin.permissions.descriptions.VIEW_WORKFLOW_READONLY",
+		"havePermission": true
+	},
+	"WORK_ISSUE": {
+		"id": "20",
+		"key": "WORK_ISSUE",
+		"name": "Work On Issues",
+		"description": "Ability to log work done against an issue. Only useful if Time Tracking is turned on.",
+		"havePermission": true
+	},
+	"PROJECT_ADMIN": {
+		"id": "23",
+		"key": "PROJECT_ADMIN",
+		"name": "Administer Projects",
+		"description": "Ability to administer a project in JIRA.",
+		"havePermission": true
+	},
+	"SYSTEM_ADMIN": {
+		"id": "44",
+		"key": "SYSTEM_ADMIN",
+		"name": "JIRA System Administrators",
+		"description": "Ability to perform all administration functions. There must be at least one group with this permission.",
+		"havePermission": false
+	},
+	"WORKLOG_DELETE_ALL": {
+		"id": "43",
+		"key": "WORKLOG_DELETE_ALL",
+		"name": "Delete All Worklogs",
+		"description": "Ability to delete all worklogs made on issues.",
+		"havePermission": true
+	},
+	"ASSIGNABLE_USER": {
+		"id": "17",
+		"key": "ASSIGNABLE_USER",
+		"name": "Assignable User",
+		"description": "Users with this permission may be assigned to issues.",
+		"havePermission": true
+	},
+	"USER_PICKER": {
+		"id": "27",
+		"key": "USER_PICKER",
+		"name": "Browse Users",
+		"description": "Ability to select a user or group from a popup window as well as the ability to use the 'share' issues feature. Users with this permission will also be able to see names of all users and groups in the system.",
+		"havePermission": true
+	},
+	"COMMENT_EDIT_OWN": {
+		"id": "35",
+		"key": "COMMENT_EDIT_OWN",
+		"name": "Edit Own Comments",
+		"description": "Ability to edit own comments made on issues.",
+		"havePermission": true
+	},
+	"USE": {
+		"id": "1",
+		"key": "USE",
+		"name": "JIRA Users",
+		"description": "Ability to log in to JIRA. They are a 'user'.  Any new users created will automatically join these groups, unless those groups have JIRA System Administrators or JIRA Administrators permissions.",
+		"havePermission": true
+	},
+	"COMMENT_DELETE_OWN": {
+		"id": "37",
+		"key": "COMMENT_DELETE_OWN",
+		"name": "Delete Own Comments",
+		"description": "Ability to delete own comments made on issues.",
+		"havePermission": true
+	},
+	"COMMENT_EDIT_ALL": {
+		"id": "34",
+		"key": "COMMENT_EDIT_ALL",
+		"name": "Edit All Comments",
+		"description": "Ability to edit all comments made on issues.",
+		"havePermission": true
+	},
+	"MODIFY_REPORTER": {
+		"id": "30",
+		"key": "MODIFY_REPORTER",
+		"name": "Modify Reporter",
+		"description": "Ability to modify the reporter when creating or editing an issue.",
+		"havePermission": true
+	},
+	"COMMENT_ISSUE": {
+		"id": "15",
+		"key": "COMMENT_ISSUE",
+		"name": "Add Comments",
+		"description": "Ability to comment on issues.",
+		"havePermission": true
+	},
+	"RESOLVE_ISSUE": {
+		"id": "14",
+		"key": "RESOLVE_ISSUE",
+		"name": "Resolve Issues",
+		"description": "Ability to resolve and reopen issues. This includes the ability to set a fix version.",
+		"havePermission": true
+	}
+}}

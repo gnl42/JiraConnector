@@ -16,21 +16,22 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicResolution;
 import com.atlassian.jira.rest.client.api.domain.Resolution;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.net.URI;
 
 /**
  * @since v0.1
  */
 public class ResolutionJsonParser implements JsonObjectParser<Resolution> {
-	private final BasicResolutionJsonParser basicResolutionJsonParser = new BasicResolutionJsonParser();
-
 	@Override
 	public Resolution parse(JSONObject json) throws JSONException {
-		final BasicResolution basicResolution = basicResolutionJsonParser.parse(json);
-		final String description = json.getString("description");
-		return new Resolution(basicResolution.getSelf(), basicResolution.getName(), description);
+		final String name = json.getString("name");
+		final URI selfUri = JsonParseUtil.getSelfUri(json);
+		final Long id = JsonParseUtil.getOptionalLong(json, "id");
+		final String description = JsonParseUtil.getOptionalString(json, "description");
+		return new Resolution(selfUri, id, name, description);
 	}
 }

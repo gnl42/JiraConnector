@@ -46,6 +46,7 @@ public class ProjectJsonParserTest {
 		assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, project.getLead());
 		Assert.assertEquals("http://example.com", project.getUri().toString());
 		Assert.assertEquals("TST", project.getKey());
+		Assert.assertEquals(Long.valueOf(10000), project.getId());
 		Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder
 				.containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
 		Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
@@ -57,34 +58,18 @@ public class ProjectJsonParserTest {
 	}
 
 	@Test
+	public void testParseWithoutId() throws Exception {
+		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/valid-without-id.json"));
+		Assert.assertEquals("TST", project.getKey());
+		Assert.assertNull(project.getId());
+	}
+
+	@Test
 	public void testParseProjectWithNoUrl() throws JSONException {
 		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-no-url.json"));
 		Assert.assertEquals("MYT", project.getKey());
 		Assert.assertNull(project.getUri());
 		Assert.assertNull(project.getDescription());
-	}
-
-	@Test
-	public void testParseProjectInJira4x4() throws JSONException, URISyntaxException {
-		final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-4-4.json"));
-		Assert.assertEquals("TST", project.getKey()); //2010-08-25
-		Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
-				.toInstant());
-		Assert.assertEquals("Test Project", project.getName());
-		final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
-		Assert.assertTrue(issueTypes.isSupported());
-		Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/1"), null, "Bug", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/2"), null, "New Feature", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/3"), null, "Task", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/4"), null, "Improvement", false, null, null),
-				new IssueType(TestUtil
-						.toUri("http://localhost:2990/jira/rest/api/latest/issueType/5"), null, "Sub-task", true, null, null)
-		));
 	}
 
 	@Test

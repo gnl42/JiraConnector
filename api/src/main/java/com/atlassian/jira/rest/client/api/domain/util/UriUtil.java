@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.atlassian.jira.rest.client;
+package com.atlassian.jira.rest.client.api.domain.util;
 
-import com.atlassian.jira.rest.client.api.domain.BasicComponent;
-import com.google.common.base.Function;
+import java.net.URI;
 
-public class BasicComponentNameExtractionFunction implements Function<BasicComponent, String> {
-	@Override
-	public String apply(BasicComponent from) {
-		return from.getName();
+public class UriUtil {
+
+	public static URI path(final URI uri, final String path) {
+		final String uriString = uri.toString();
+		final StringBuilder sb = new StringBuilder(uriString);
+		if (!uriString.endsWith("/")) {
+			sb.append('/');
+		}
+		sb.append(path.startsWith("/") ? path.substring(1) : path);
+		return URI.create(sb.toString());
 	}
 }

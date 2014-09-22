@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Atlassian
+ * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,19 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicStatus;
+import com.atlassian.jira.rest.client.api.domain.OperationGroup;
+import com.atlassian.jira.rest.client.api.domain.Operations;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.net.URI;
+import java.util.Collection;
 
-public class BasicStatusJsonParser implements JsonObjectParser<BasicStatus> {
+public class OperationsJsonParser implements JsonObjectParser<Operations> {
+	private final JsonObjectParser<OperationGroup> groupParser = new OperationGroupJsonParser();
+
 	@Override
-	public BasicStatus parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final String name = json.getString("name");
-		return new BasicStatus(self, name);
+	public Operations parse(final JSONObject json) throws JSONException {
+		final Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
+		return new Operations(linkGroups);
 	}
 }
