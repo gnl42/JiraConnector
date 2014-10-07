@@ -61,9 +61,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 	@Test
 	public void testGetIssueTypeNonExisting() throws Exception {
 		final IssueType issueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
-		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The issue type with id '" +
-				TestUtil.getLastPathSegment(issueType.getSelf()) + "fake" +
-				"' does not exist", new Runnable() {
+		TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "Given issue type does not exist", new Runnable() {
 			@Override
 			public void run() {
 				client.getMetadataClient().getIssueType(TestUtil.toUri(issueType.getSelf() + "fake")).claim();
