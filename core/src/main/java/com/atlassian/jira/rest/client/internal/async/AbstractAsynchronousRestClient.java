@@ -15,6 +15,8 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.httpclient.api.DefaultResponseTransformation;
+import com.atlassian.httpclient.api.ResponseTransformation;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
@@ -122,11 +124,12 @@ public abstract class AbstractAsynchronousRestClient {
 	protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final ResponseHandler<T> responseHandler) {
 		final Function<Response, ? extends T> transformFunction = toFunction(responseHandler);
 
-		return new DelegatingPromise<T>(responsePromise.<T>transform()
+		final ResponseTransformation<T> responseTransformation = DefaultResponseTransformation.<T>builder()
 				.ok(transformFunction)
 				.created(transformFunction)
 				.others(AbstractAsynchronousRestClient.<T>errorFunction())
-				.toPromise());
+				.build();
+		return new DelegatingPromise<T>(responsePromise.transform(responseTransformation));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -144,12 +147,13 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final Promise<Void> call(final ResponsePromise responsePromise) {
-		return new DelegatingPromise<Void>(responsePromise.<Void>transform()
+		final ResponseTransformation<Void> responseTransformation = DefaultResponseTransformation.<Void>builder()
 				.ok(constant((Void) null))
 				.created(constant((Void) null))
 				.noContent(constant((Void) null))
 				.others(AbstractAsynchronousRestClient.<Void>errorFunction())
-				.toPromise());
+				.build();
+		return new DelegatingPromise<Void>(responsePromise.transform(responseTransformation));
 	}
 
 	protected HttpClient client() {
