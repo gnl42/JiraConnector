@@ -25,14 +25,12 @@ import java.util.Properties;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClientFactory;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Request;
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
 import com.atlassian.sal.api.executor.ThreadLocalContextManager;
-import com.atlassian.util.concurrent.Effect;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,20 +61,7 @@ public class AsynchronousHttpClientFactory {
 
 	private ThreadLocalContextManager getThreadLocalContextManager()
 	{
-		return new ThreadLocalContextManager()
-        {
-            @Override
-            public Object getThreadLocalContext()
-            { return null; }
-
-            @Override
-            public void setThreadLocalContext(final Object o)
-            {}
-
-            @Override
-            public void clearThreadLocalContext()
-            {}
-        };
+		return new NoOpThreadLocalContextManager();
 	}
 
 	public DisposableHttpClient createClient(final HttpClient client) {

@@ -16,6 +16,7 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.DefaultResponseTransformation;
+import com.atlassian.httpclient.api.Request;
 import com.atlassian.httpclient.api.ResponseTransformation;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
@@ -71,9 +72,9 @@ public abstract class AbstractAsynchronousRestClient {
 
 	protected final <I, T> Promise<T> postAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator,
 			final JsonObjectParser<T> parser) {
-		final ResponsePromise responsePromise = client.newRequest(uri)
-				.setEntity(toEntity(jsonGenerator, entity))
-				.post();
+		final Request.Builder builder = client.newRequest(uri);
+		final Request.Builder builderAfterSetEntity = builder.setEntity(toEntity(jsonGenerator, entity));
+		final ResponsePromise responsePromise = builderAfterSetEntity.post();
 		return callAndParse(responsePromise, parser);
 	}
 

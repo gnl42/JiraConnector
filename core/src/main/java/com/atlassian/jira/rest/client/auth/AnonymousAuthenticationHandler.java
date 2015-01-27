@@ -28,6 +28,8 @@ public class AnonymousAuthenticationHandler implements AuthenticationHandler {
 
 	@Override
 	public Request.Builder configure(Request.Builder request) {
+		//TODO: remove this
+		System.out.println("Using anonymous");
 		return request;
 	}
 
