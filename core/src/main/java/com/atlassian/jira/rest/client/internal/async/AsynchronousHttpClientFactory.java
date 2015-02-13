@@ -116,8 +116,7 @@ public class AsynchronousHttpClientFactory {
 		@Override
 		public String getBaseUrl(final UrlMode urlMode)
 		{
-			//TODO: implement this
-			throw new UnsupportedOperationException("Not implemented");
+            return baseUrl;
 		}
 
 		@Override

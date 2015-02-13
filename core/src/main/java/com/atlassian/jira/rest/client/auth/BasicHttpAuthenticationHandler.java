@@ -41,8 +41,6 @@ public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
 
 	@Override
 	public Request.Builder configure(final Request.Builder request) {
-		//TODO: remove this
-		System.out.println("Using credentials: Username:{"+username+"} Password: {"+password+"}");
 		return request.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
 	}
 
