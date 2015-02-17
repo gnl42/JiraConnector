@@ -5,7 +5,7 @@ import com.atlassian.sal.api.executor.ThreadLocalContextManager;
 /**
 * No operation ThreadLocalContextManager.
 *
-* @since v6.4
+* @since v3.0
 */
 public class NoOpThreadLocalContextManager implements ThreadLocalContextManager
 {
