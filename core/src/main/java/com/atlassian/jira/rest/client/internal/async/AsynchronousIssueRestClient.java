@@ -97,6 +97,12 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 	}
 
 	@Override
+	public Promise<Void> updateIssue(final String issueKey, final IssueInput issue ) {
+		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue").path(issueKey);
+		return put(uriBuilder.build(), issue, new IssueInputJsonGenerator());
+	}
+
+	@Override
 	public Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/bulk");
 
