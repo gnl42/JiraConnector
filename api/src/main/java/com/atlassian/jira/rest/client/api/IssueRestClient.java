@@ -59,11 +59,10 @@ public interface IssueRestClient {
 	 * Update an existing issue.
 	 *
 	 * @param issueKey issue key (like TST-1, or JRA-9)
-	 * @param issue populated with fields to set (no other verbs) in issue
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @param issue    populated with fields to set (no other verbs) in issue
 	 * @return Void
-	 * @since 2.0
-	 * @since com.atlassian.jira.rest.client.api 1.0, server 5.0
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since com.atlassian.jira.rest.client.api 3.0, server 5.0
 	 */
 	Promise<Void> updateIssue(String issueKey, IssueInput issue);
 

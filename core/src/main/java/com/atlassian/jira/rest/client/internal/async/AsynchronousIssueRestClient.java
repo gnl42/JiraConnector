@@ -97,7 +97,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 	}
 
 	@Override
-	public Promise<Void> updateIssue(final String issueKey, final IssueInput issue ) {
+	public Promise<Void> updateIssue(final String issueKey, final IssueInput issue) {
 		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue").path(issueKey);
 		return put(uriBuilder.build(), issue, new IssueInputJsonGenerator());
 	}
