@@ -140,82 +140,82 @@ public class JiraRestConverter {
 		return outPriority;
 	}
 
-	public static JiraIssue convertIssue(Issue issue, JiraClientCache cache, String url, IProgressMonitor monitor)
+	public static JiraIssue convertIssue(Issue rawIssue, JiraClientCache cache, String url, IProgressMonitor monitor)
 			throws JiraException {
-		JiraIssue jiraIssue = new JiraIssue();
+		JiraIssue issue = new JiraIssue();
 
-		jiraIssue.setRawIssue(issue);
+		issue.setRawIssue(rawIssue);
 
-		jiraIssue.setCustomFields(getCustomFieldsFromIssue(issue));
-		jiraIssue.setEditableFields(getEditableFieldsFromIssue(issue));
+		issue.setCustomFields(getCustomFieldsFromIssue(rawIssue));
+		issue.setEditableFields(getEditableFieldsFromIssue(rawIssue));
 
 //		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
 
-		Project project = cache.getProjectByKey(issue.getProject().getKey());
-		jiraIssue.setProject(project);
+		Project project = cache.getProjectByKey(rawIssue.getProject().getKey());
+		issue.setProject(project);
 		if (project != null && !project.hasDetails()) {
 			cache.refreshProjectDetails(project, monitor);
 		} else if (project == null) {
 			throw new JiraException(NLS.bind(
 					"Project with key {0} not found in local cache. Please refresh repository configuration.", //$NON-NLS-1$
-					issue.getProject().getKey()));
+					rawIssue.getProject().getKey()));
 		}
 
-		jiraIssue.setId(issue.getId().toString());
-		jiraIssue.setSelf(issue.getSelf());
-		jiraIssue.setKey(issue.getKey());
-		jiraIssue.setSummary(issue.getSummary());
-		jiraIssue.setDescription(issue.getDescription());
+		issue.setId(rawIssue.getId().toString());
+		issue.setSelf(rawIssue.getSelf());
+		issue.setKey(rawIssue.getKey());
+		issue.setSummary(rawIssue.getSummary());
+		issue.setDescription(rawIssue.getDescription());
 
-		if (issue.getIssueType().isSubtask()) {
-			Object parent = issue.getField(JiraRestFields.PARENT).getValue();
+		if (rawIssue.getIssueType().isSubtask()) {
+			Object parent = rawIssue.getField(JiraRestFields.PARENT).getValue();
 			if (parent instanceof JSONObject) {
-				jiraIssue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.KEY));
-				jiraIssue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.ID));
+				issue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.KEY));
+				issue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.ID));
 			}
 
 		}
 
-		if (issue.getPriority() != null) {
-			jiraIssue.setPriority(cache.getPriorityById(issue.getPriority().getId().toString()));
+		if (rawIssue.getPriority() != null) {
+			issue.setPriority(cache.getPriorityById(rawIssue.getPriority().getId().toString()));
 		} else if (cache.getPriorities().length > 0) {
-			jiraIssue.setPriority(cache.getPriorities()[0]);
+			issue.setPriority(cache.getPriorities()[0]);
 		} else {
-			jiraIssue.setPriority(null);
+			issue.setPriority(null);
 			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, NLS.bind(
-					"Found issue with empty priority: {0}", issue.getKey())));
+					"Found issue with empty priority: {0}", rawIssue.getKey())));
 		}
 
-		jiraIssue.setStatus(cache.getStatusById(issue.getStatus().getId().toString()));
+		issue.setStatus(cache.getStatusById(rawIssue.getStatus().getId().toString()));
 
-		BasicUser assignee = issue.getAssignee();
+		BasicUser assignee = rawIssue.getAssignee();
 		if (assignee != null) {
-			jiraIssue.setAssignee(assignee.getName());
-			jiraIssue.setAssigneeName(assignee.getDisplayName());
+			issue.setAssignee(assignee.getName());
+			issue.setAssigneeName(assignee.getDisplayName());
 		}
 
-		if (issue.getReporter() != null) {
-			jiraIssue.setReporter(issue.getReporter().getName());
-			jiraIssue.setReporterName(issue.getReporter().getDisplayName());
+		if (rawIssue.getReporter() != null) {
+			issue.setReporter(rawIssue.getReporter().getName());
+			issue.setReporterName(rawIssue.getReporter().getDisplayName());
 		}
 
-		jiraIssue.setResolution(issue.getResolution() == null ? null : cache.getResolutionById(issue.getResolution()
+		issue.setResolution(rawIssue.getResolution() == null ? null : cache.getResolutionById(rawIssue.getResolution()
 				.getId()
 				.toString()));
 
-		if (issue.getTimeTracking() != null) {
-			if (issue.getTimeTracking().getOriginalEstimateMinutes() != null) {
-				jiraIssue.setInitialEstimate(issue.getTimeTracking().getOriginalEstimateMinutes() * 60);
+		if (rawIssue.getTimeTracking() != null) {
+			if (rawIssue.getTimeTracking().getOriginalEstimateMinutes() != null) {
+				issue.setInitialEstimate(rawIssue.getTimeTracking().getOriginalEstimateMinutes() * 60);
 			}
-			if (issue.getTimeTracking().getRemainingEstimateMinutes() != null) {
-				jiraIssue.setEstimate(issue.getTimeTracking().getRemainingEstimateMinutes() * 60);
+			if (rawIssue.getTimeTracking().getRemainingEstimateMinutes() != null) {
+				issue.setEstimate(rawIssue.getTimeTracking().getRemainingEstimateMinutes() * 60);
 			}
-			if (issue.getTimeTracking().getTimeSpentMinutes() != null) {
-				jiraIssue.setActual(issue.getTimeTracking().getTimeSpentMinutes() * 60);
+			if (rawIssue.getTimeTracking().getTimeSpentMinutes() != null) {
+				issue.setActual(rawIssue.getTimeTracking().getTimeSpentMinutes() * 60);
 			}
 		}
 
-		Field security = issue.getField(JiraRestFields.SECURITY);
+		Field security = rawIssue.getField(JiraRestFields.SECURITY);
 		if (security != null && security.getValue() != null && security.getValue() instanceof JSONObject) {
 			JSONObject json = (JSONObject) security.getValue();
 
@@ -225,77 +225,82 @@ public class JiraRestConverter {
 
 				SecurityLevel securityLevel = new SecurityLevel(id, name);
 
-				jiraIssue.setSecurityLevel(securityLevel);
+				issue.setSecurityLevel(securityLevel);
 			} catch (JSONException e) {
 				throw new JiraException(e);
 			}
 		}
 
-		jiraIssue.setCreated(issue.getCreationDate().toDate());
-		jiraIssue.setUpdated(issue.getUpdateDate().toDate());
+		issue.setCreated(rawIssue.getCreationDate().toDate());
+		issue.setUpdated(rawIssue.getUpdateDate().toDate());
 
-		if (project != null && project.getIssueTypeById(issue.getIssueType().getId().toString()) != null) {
-			jiraIssue.setType(project.getIssueTypeById(issue.getIssueType().getId().toString()));
+		if (project != null && project.getIssueTypeById(rawIssue.getIssueType().getId().toString()) != null) {
+			issue.setType(project.getIssueTypeById(rawIssue.getIssueType().getId().toString()));
 		} else {
-			jiraIssue.setType(cache.getIssueTypeById(issue.getIssueType().getId().toString()));
+			issue.setType(cache.getIssueTypeById(rawIssue.getIssueType().getId().toString()));
 		}
 
-		if (issue.getSubtasks() != null) {
-			jiraIssue.setSubtasks(convert(issue.getSubtasks()));
+		if (rawIssue.getSubtasks() != null) {
+			issue.setSubtasks(convert(rawIssue.getSubtasks()));
 		}
 
-		jiraIssue.setType(convert(issue.getIssueType()));
-		jiraIssue.setUrl(url + "/browse/" + issue.getKey()); //$NON-NLS-1$
+		issue.setType(convert(rawIssue.getIssueType()));
+		issue.setUrl(url + "/browse/" + rawIssue.getKey()); //$NON-NLS-1$
 
-		if (issue.getComponents() != null) {
-			jiraIssue.setComponents(convertComponents(issue.getComponents()));
+		if (rawIssue.getComponents() != null) {
+			issue.setComponents(convertComponents(rawIssue.getComponents()));
 		}
 
-		Field env = issue.getField(JiraRestFields.ENVIRONMENT);
+		Field env = rawIssue.getField(JiraRestFields.ENVIRONMENT);
 		if (env != null && env.getValue() != null) {
-			jiraIssue.setEnvironment(env.getValue().toString());
+			issue.setEnvironment(env.getValue().toString());
 		} else {
 			// hack: empty value is necessary to display environment field in the issue editor
-			jiraIssue.setEnvironment(""); //$NON-NLS-1$
+			issue.setEnvironment(""); //$NON-NLS-1$
 		}
 
-		if (issue.getAffectedVersions() != null) {
-			jiraIssue.setReportedVersions(convertVersions(issue.getAffectedVersions()));
+		if (rawIssue.getAffectedVersions() != null) {
+			issue.setReportedVersions(convertVersions(rawIssue.getAffectedVersions()));
 		}
-		if (issue.getFixVersions() != null) {
-			jiraIssue.setFixVersions(convertVersions(issue.getFixVersions()));
+		if (rawIssue.getFixVersions() != null) {
+			issue.setFixVersions(convertVersions(rawIssue.getFixVersions()));
 		}
 
-		DateTime dueDate = issue.getDueDate();
+		if (isVersionMissingInProjectCache(rawIssue.getAffectedVersions(), rawIssue.getFixVersions(),
+				cache.getProjectByKey(rawIssue.getProject().getKey()), monitor)) {
+			cache.refreshProjectDetails(issue.getProject(), monitor);
+		}
+
+		DateTime dueDate = rawIssue.getDueDate();
 		if (dueDate != null) {
-			jiraIssue.setDue(dueDate.toDate());
+			issue.setDue(dueDate.toDate());
 		} else {
-			jiraIssue.setDue(null);
+			issue.setDue(null);
 		}
 
-		if (issue.getIssueLinks() != null) {
-			jiraIssue.setIssueLinks(convertIssueLinks(issue.getIssueLinks()));
+		if (rawIssue.getIssueLinks() != null) {
+			issue.setIssueLinks(convertIssueLinks(rawIssue.getIssueLinks()));
 		}
 
-		if (issue.getComments() != null) {
-			jiraIssue.setComments(convertComments(issue.getComments()));
+		if (rawIssue.getComments() != null) {
+			issue.setComments(convertComments(rawIssue.getComments()));
 		}
 
-		if (issue.getAttachments() != null) {
-			jiraIssue.setAttachments(convertAttachments(issue.getAttachments()));
+		if (rawIssue.getAttachments() != null) {
+			issue.setAttachments(convertAttachments(rawIssue.getAttachments()));
 		}
 
-		if (issue.getWorklogs() != null) {
-			jiraIssue.setWorklogs(convertWorklogs(issue.getWorklogs()));
+		if (rawIssue.getWorklogs() != null) {
+			issue.setWorklogs(convertWorklogs(rawIssue.getWorklogs()));
 		}
 
-		jiraIssue.setRank(getRankFromIssue(issue));
+		issue.setRank(getRankFromIssue(rawIssue));
 
-		if (issue.getLabels() != null) {
-			jiraIssue.setLabels(issue.getLabels().toArray(new String[issue.getLabels().size()]));
+		if (rawIssue.getLabels() != null) {
+			issue.setLabels(rawIssue.getLabels().toArray(new String[rawIssue.getLabels().size()]));
 		}
 
-		return jiraIssue;
+		return issue;
 	}
 
 //	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
@@ -310,6 +315,27 @@ public class JiraRestConverter {
 //			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
 //		}
 //	}
+
+	private static boolean isVersionMissingInProjectCache(
+			Iterable<com.atlassian.jira.rest.client.domain.Version> affectedVersions,
+			Iterable<com.atlassian.jira.rest.client.domain.Version> fixVersions, Project project,
+			IProgressMonitor monitor) {
+
+		for (com.atlassian.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
+			if (project.getVersion(affectedVersion.getName()) == null) {
+				return true;
+			}
+		}
+
+		for (com.atlassian.jira.rest.client.domain.Version fixVersion : fixVersions) {
+			if (project.getVersion(fixVersion.getName()) == null) {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
 
 	private static CustomField[] getCustomFieldsFromIssue(Issue issue) {
 		JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
