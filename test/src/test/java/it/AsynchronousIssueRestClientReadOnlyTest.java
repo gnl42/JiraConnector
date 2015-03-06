@@ -196,20 +196,15 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	}
 
     private Iterable<String> getExpectedExpands() {
-        if (!isJira5xOrNewer()) {
-            return ImmutableList.of("html");
-        }
-
-        final ImmutableList<String> expandSinceJira5 =
+        final ImmutableList<String> expandForJira5 =
                 ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog");
-        if (!isJira6_4_OrNewer()) {
-            return expandSinceJira5;
+        if (isJira6_4_OrNewer()) {
+            return ImmutableList.<String>builder()
+                    .addAll(expandForJira5)
+                    .add("versionedRepresentations")
+                    .build();
         }
-
-        return ImmutableList.<String>builder()
-                .addAll(expandSinceJira5)
-                .add("versionedRepresentations")
-                .build();
+        return expandForJira5;
     }
 
     @Test
