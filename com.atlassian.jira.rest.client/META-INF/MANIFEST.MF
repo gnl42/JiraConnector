@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Jira Rest Java Client
 Bundle-SymbolicName: com.atlassian.jira.rest.client
 Bundle-Version: 3.2.3.qualifier
-Bundle-ClassPath: jira-rest-java-client-1.1-ide-m07.jar
+Bundle-ClassPath: jira-rest-java-client-1.1-ide-m08.jar
 Export-Package: com.atlassian.jira.rest.client,
  com.atlassian.jira.rest.client.auth,
  com.atlassian.jira.rest.client.domain,
