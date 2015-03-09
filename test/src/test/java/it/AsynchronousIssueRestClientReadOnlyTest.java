@@ -138,9 +138,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 
 		assertEquals(3, Iterables.size(issue.getComments()));
-		final Iterable<String> expectedExpandos = isJira5xOrNewer()
-				? ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog")
-				: ImmutableList.of("html");
+		final Iterable<String> expectedExpandos = getExpectedExpands();
 		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
@@ -197,7 +195,19 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		}
 	}
 
-	@Test
+    private Iterable<String> getExpectedExpands() {
+        final ImmutableList<String> expandForJira5 =
+                ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog");
+        if (isJira6_4_OrNewer()) {
+            return ImmutableList.<String>builder()
+                    .addAll(expandForJira5)
+                    .add("versionedRepresentations")
+                    .build();
+        }
+        return expandForJira5;
+    }
+
+    @Test
 	public void testGetIssueWithNonTrivialComments() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
 		final Iterable<Comment> comments = issue.getComments();
