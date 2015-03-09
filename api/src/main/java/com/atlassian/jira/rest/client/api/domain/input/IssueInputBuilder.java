@@ -41,6 +41,13 @@ public class IssueInputBuilder {
 
 	private Map<String, FieldInput> fields = Maps.newHashMap();
 
+	/**
+	 * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember to fill required fields for the target
+	 * issue action.
+	 */
+	public IssueInputBuilder() {
+	}
+
 	public IssueInputBuilder(String projectKey, Long issueTypeId) {
 		setProjectKey(projectKey);
 		setIssueTypeId(issueTypeId);

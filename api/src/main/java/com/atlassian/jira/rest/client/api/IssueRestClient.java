@@ -56,6 +56,17 @@ public interface IssueRestClient {
 	Promise<BasicIssue> createIssue(IssueInput issue);
 
 	/**
+	 * Update an existing issue.
+	 *
+	 * @param issueKey issue key (like TST-1, or JRA-9)
+	 * @param issue    populated with fields to set (no other verbs) in issue
+	 * @return Void
+	 * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+	 * @since com.atlassian.jira.rest.client.api 3.0, server 5.0
+	 */
+	Promise<Void> updateIssue(String issueKey, IssueInput issue);
+
+	/**
 	 * Retrieves CreateIssueMetadata with specified filters.
 	 *
 	 * @param options optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.

@@ -114,6 +114,13 @@ public abstract class AbstractAsynchronousRestClient {
 		return callAndParse(responsePromise, parser);
 	}
 
+	protected final <T> Promise<Void> put(final URI uri, final T entity, final JsonGenerator<T> jsonGenerator) {
+		final ResponsePromise responsePromise = client.newRequest(uri)
+				.setEntity(toEntity(jsonGenerator, entity))
+				.put();
+		return call(responsePromise);
+	}
+
 	protected final Promise<Void> delete(final URI uri) {
 		final ResponsePromise responsePromise = client.newRequest(uri).delete();
 		return call(responsePromise);
