@@ -39,6 +39,8 @@ import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
@@ -58,12 +60,7 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGE
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.google.common.collect.Iterables.toArray;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -138,8 +135,12 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 
 		assertEquals(3, Iterables.size(issue.getComments()));
-		final Iterable<String> expectedExpandos = getExpectedExpands();
-		assertThat(ImmutableList.copyOf(issue.getExpandos()), containsInAnyOrder(toArray(expectedExpandos, String.class)));
+
+        final String[] expandosForJira5 = {"renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog"};
+        final String[] expandosForJira6_4 = toArray(Lists.asList("versionedRepresentations", expandosForJira5), String.class);
+
+        // here is anyOf matcher because "versionedRepresentations" was introduced in the middle of v6.4
+		assertThat(issue.getExpandos(), anyOf(containsInAnyOrder(expandosForJira5), containsInAnyOrder(expandosForJira6_4)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
 		assertTrue(Iterables.size(issue.getFields()) > 0);
 
@@ -194,18 +195,6 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			);
 		}
 	}
-
-    private Iterable<String> getExpectedExpands() {
-        final ImmutableList<String> expandForJira5 =
-                ImmutableList.of("renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog");
-        if (isJira6_4_OrNewer()) {
-            return ImmutableList.<String>builder()
-                    .addAll(expandForJira5)
-                    .add("versionedRepresentations")
-                    .build();
-        }
-        return expandForJira5;
-    }
 
     @Test
 	public void testGetIssueWithNonTrivialComments() {
