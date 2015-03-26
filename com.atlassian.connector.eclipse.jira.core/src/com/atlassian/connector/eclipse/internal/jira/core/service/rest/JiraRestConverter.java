@@ -321,15 +321,19 @@ public class JiraRestConverter {
 			Iterable<com.atlassian.jira.rest.client.domain.Version> fixVersions, Project project,
 			IProgressMonitor monitor) {
 
-		for (com.atlassian.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
-			if (project.getVersion(affectedVersion.getName()) == null) {
-				return true;
+		if (affectedVersions != null) {
+			for (com.atlassian.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
+				if (project.getVersion(affectedVersion.getName()) == null) {
+					return true;
+				}
 			}
 		}
 
-		for (com.atlassian.jira.rest.client.domain.Version fixVersion : fixVersions) {
-			if (project.getVersion(fixVersion.getName()) == null) {
-				return true;
+		if (fixVersions != null) {
+			for (com.atlassian.jira.rest.client.domain.Version fixVersion : fixVersions) {
+				if (project.getVersion(fixVersion.getName()) == null) {
+					return true;
+				}
 			}
 		}
 
