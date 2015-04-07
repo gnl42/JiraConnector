@@ -100,32 +100,37 @@ public class AsynchronousHttpClientFactory {
 	 * These properties are used to present JRJC as a User-Agent during http requests.
 	 */
 	@SuppressWarnings("deprecation")
-	private static class RestClientApplicationProperties implements ApplicationProperties {
+	private static class RestClientApplicationProperties implements ApplicationProperties
+	{
 
 		private final String baseUrl;
 
-		private RestClientApplicationProperties(URI jiraURI) {
+		private RestClientApplicationProperties(URI jiraURI)
+		{
 			this.baseUrl = jiraURI.getPath();
 		}
 
 		@Override
-		public String getBaseUrl() {
+		public String getBaseUrl()
+		{
 			return baseUrl;
 		}
 
 		@Override
 		public String getBaseUrl(final UrlMode urlMode)
 		{
-            return baseUrl;
+			return baseUrl;
 		}
 
 		@Override
-		public String getDisplayName() {
+		public String getDisplayName()
+		{
 			return "Atlassian JIRA Rest Java Client";
 		}
 
 		@Override
-		public String getVersion() {
+		public String getVersion()
+		{
 			return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-com.atlassian.jira.rest.client");
 		}
 
