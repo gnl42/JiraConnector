@@ -40,8 +40,8 @@ public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	@Override
-	public Request.Builder configure(final Request.Builder request) {
-		return request.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
+	public void configure(final Request request) {
+		request.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
 	}
 
 	private String encodeCredentials() {

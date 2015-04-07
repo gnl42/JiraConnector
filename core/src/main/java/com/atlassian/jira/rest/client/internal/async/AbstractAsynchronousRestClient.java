@@ -15,9 +15,6 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.httpclient.api.DefaultResponseTransformation;
-import com.atlassian.httpclient.api.Request;
-import com.atlassian.httpclient.api.ResponseTransformation;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
@@ -72,9 +69,9 @@ public abstract class AbstractAsynchronousRestClient {
 
 	protected final <I, T> Promise<T> postAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator,
 			final JsonObjectParser<T> parser) {
-		final Request.Builder builder = client.newRequest(uri);
-		final Request.Builder builderAfterSetEntity = builder.setEntity(toEntity(jsonGenerator, entity));
-		final ResponsePromise responsePromise = builderAfterSetEntity.post();
+		final ResponsePromise responsePromise = client.newRequest(uri)
+				.setEntity(toEntity(jsonGenerator, entity))
+				.post();
 		return callAndParse(responsePromise, parser);
 	}
 
@@ -132,12 +129,11 @@ public abstract class AbstractAsynchronousRestClient {
 	protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final ResponseHandler<T> responseHandler) {
 		final Function<Response, ? extends T> transformFunction = toFunction(responseHandler);
 
-		final ResponseTransformation<T> responseTransformation = DefaultResponseTransformation.<T>builder()
+		return new DelegatingPromise<T>(responsePromise.<T>transform()
 				.ok(transformFunction)
 				.created(transformFunction)
 				.others(AbstractAsynchronousRestClient.<T>errorFunction())
-				.build();
-		return new DelegatingPromise<T>(responsePromise.transform(responseTransformation));
+				.toPromise());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,13 +151,12 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final Promise<Void> call(final ResponsePromise responsePromise) {
-		final ResponseTransformation<Void> responseTransformation = DefaultResponseTransformation.<Void>builder()
+		return new DelegatingPromise<Void>(responsePromise.<Void>transform()
 				.ok(constant((Void) null))
 				.created(constant((Void) null))
 				.noContent(constant((Void) null))
 				.others(AbstractAsynchronousRestClient.<Void>errorFunction())
-				.build();
-		return new DelegatingPromise<Void>(responsePromise.transform(responseTransformation));
+				.toPromise());
 	}
 
 	protected HttpClient client() {
