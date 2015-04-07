@@ -31,6 +31,6 @@ import com.atlassian.httpclient.api.Request;
  */
 public interface AuthenticationHandler {
 
-	Request.Builder configure(final Request.Builder request);
+	void configure(final Request request);
 
 }

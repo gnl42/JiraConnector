@@ -15,25 +15,24 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.event.api.EventPublisher;
+import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClient;
+import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.Request;
+import com.atlassian.httpclient.api.factory.HttpClientOptions;
+import com.atlassian.httpclient.spi.ThreadLocalContextManagers;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
+import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.util.concurrent.Effect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.Properties;
-
-import com.atlassian.event.api.EventPublisher;
-import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClientFactory;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
-import com.atlassian.jira.rest.client.api.AuthenticationHandler;
-import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
-import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.UrlMode;
-import com.atlassian.sal.api.executor.ThreadLocalContextManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Factory for asynchronous http clients.
@@ -45,27 +44,26 @@ public class AsynchronousHttpClientFactory {
 	@SuppressWarnings("unchecked")
 	public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
 		final HttpClientOptions options = new HttpClientOptions();
-		final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(
-				new NoOpEventPublisher(),
+		options.setRequestPreparer(new Effect<Request>() {
+			@Override
+			public void apply(final Request request) {
+				authenticationHandler.configure(request);
+			}
+		});
+		final DefaultHttpClient defaultHttpClient = new DefaultHttpClient(new NoOpEventPublisher(),
 				new RestClientApplicationProperties(serverUri),
-				getThreadLocalContextManager());
-		final HttpClient httpClient = defaultHttpClientFactory.create(options);
+				ThreadLocalContextManagers.noop(), options);
+		return new AtlassianHttpClientDecorator(defaultHttpClient) {
 
-		return new AtlassianHttpClientDecorator(httpClient, authenticationHandler) {
 			@Override
 			public void destroy() throws Exception {
-				defaultHttpClientFactory.dispose(httpClient);
+				defaultHttpClient.destroy();
 			}
 		};
 	}
 
-	private ThreadLocalContextManager getThreadLocalContextManager()
-	{
-		return new NoOpThreadLocalContextManager();
-	}
-
 	public DisposableHttpClient createClient(final HttpClient client) {
-		return new AtlassianHttpClientDecorator(client, new AnonymousAuthenticationHandler()) {
+		return new AtlassianHttpClientDecorator(client) {
 
 			@Override
 			public void destroy() throws Exception {
@@ -100,37 +98,26 @@ public class AsynchronousHttpClientFactory {
 	 * These properties are used to present JRJC as a User-Agent during http requests.
 	 */
 	@SuppressWarnings("deprecation")
-	private static class RestClientApplicationProperties implements ApplicationProperties
-	{
+	private static class RestClientApplicationProperties implements ApplicationProperties {
 
 		private final String baseUrl;
 
-		private RestClientApplicationProperties(URI jiraURI)
-		{
+		private RestClientApplicationProperties(URI jiraURI) {
 			this.baseUrl = jiraURI.getPath();
 		}
 
 		@Override
-		public String getBaseUrl()
-		{
+		public String getBaseUrl() {
 			return baseUrl;
 		}
 
 		@Override
-		public String getBaseUrl(final UrlMode urlMode)
-		{
-			return baseUrl;
-		}
-
-		@Override
-		public String getDisplayName()
-		{
+		public String getDisplayName() {
 			return "Atlassian JIRA Rest Java Client";
 		}
 
 		@Override
-		public String getVersion()
-		{
+		public String getVersion() {
 			return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-com.atlassian.jira.rest.client");
 		}
 
