@@ -68,6 +68,7 @@ public class IntegrationTestUtil {
 	public static final String NUMERIC_CUSTOMFIELD_ID = "customfield_10000";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:float";
 	public static final String NUMERIC_CUSTOMFIELD_TYPE_V5 = "number";
+	public static final String TEXT_CUSTOMFIELD_ID = "customfield_10011";
 	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
 	private static final String URI_INTERFIX_FOR_USER;
 
