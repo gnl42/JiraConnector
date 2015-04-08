@@ -202,8 +202,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(fromLatestSearchCriteria).claim();
 
         // then
-        assertThat(auditRecordsData.getRecords(), Matchers.contains(auditRecordWithId(latestCreatedRecord.getId())));
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(Matchers.greaterThanOrEqualTo(1)));
+        assertThat(auditRecordsData.getRecords(), Matchers.hasItem(auditRecordWithId(latestCreatedRecord.getId())));
     }
 
     private Matcher<AuditRecord> auditRecordWithId(final Long expectedId) {
