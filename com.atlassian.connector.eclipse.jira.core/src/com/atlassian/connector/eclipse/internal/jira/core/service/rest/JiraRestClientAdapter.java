@@ -775,8 +775,10 @@ public class JiraRestClientAdapter {
 			} else if (e.getMessage().contains(CONNECT_TIMEOUT_EXCEPTION)) {
 				int index = e.getMessage().indexOf(CONNECT_TIMEOUT_EXCEPTION);
 				throw new JiraException(e.getMessage().substring(index), e);
+			} else if (e.getMessage().contains("unable to find valid certification path")) { //$NON-NLS-1$
+				throw new JiraException(
+						"Connection failed. JIRA self-signed certificates are not supported.\nFor workaround see https://ecosystem.atlassian.net/browse/PLE-1430", e); //$NON-NLS-1$
 			} else {
-
 				// use "e.getMessage()" as an argument instead of "e" so it fits error window (mainly TaskRepository dialog) 
 				throw new JiraException(e.getMessage(), e);
 			}
