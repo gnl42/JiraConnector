@@ -173,7 +173,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
 
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).claim();
 
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(0));
+        assertThat(auditRecordsData.getRecords(), Matchers.<AuditRecord>emptyIterable());
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
@@ -187,7 +187,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(toLatestSearchCriteria).claim();
 
         // then
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(3));
+        assertThat(auditRecordsData.getRecords(), Matchers.<AuditRecord>iterableWithSize(3));
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
@@ -202,8 +202,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(fromLatestSearchCriteria).claim();
 
         // then
-        assertThat(auditRecordsData.getRecords(), Matchers.contains(auditRecordWithId(latestCreatedRecord.getId())));
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(Matchers.greaterThanOrEqualTo(1)));
+        assertThat(auditRecordsData.getRecords(), Matchers.<AuditRecord>hasItem(auditRecordWithId(latestCreatedRecord.getId())));
     }
 
     private Matcher<AuditRecord> auditRecordWithId(final Long expectedId) {
