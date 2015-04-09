@@ -77,7 +77,7 @@ import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.domain.input.TransitionInput;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -156,25 +156,26 @@ public class JiraRestClientAdapter {
 //				}
 //			});
 
-			restClient = new JerseyJiraRestClientFactory().create(new URI(url), new BasicHttpAuthenticationHandler(
-					userName, password) {
-				@Override
-				public void configure(ApacheHttpClientConfig config) {
-					super.configure(config);
-					if (proxy != null) {
-						InetSocketAddress address = (InetSocketAddress) proxy.address();
-						if (proxy instanceof AuthenticatedProxy) {
-							AuthenticatedProxy authProxy = (AuthenticatedProxy) proxy;
+			restClient = new JerseyJiraRestClientBuilder().header("User-Agent", "Atlassian Connector for Eclipse") //$NON-NLS-1$ //$NON-NLS-2$
+					.queryParam("requestSource", "eclipse-ide-connector") //$NON-NLS-1$//$NON-NLS-2$
+					.create(new URI(url), new BasicHttpAuthenticationHandler(userName, password) {
+						@Override
+						public void configure(ApacheHttpClientConfig config) {
+							super.configure(config);
+							if (proxy != null) {
+								InetSocketAddress address = (InetSocketAddress) proxy.address();
+								if (proxy instanceof AuthenticatedProxy) {
+									AuthenticatedProxy authProxy = (AuthenticatedProxy) proxy;
 
-							config.getState().setProxyCredentials(AuthScope.ANY_REALM, address.getHostName(),
-									address.getPort(), authProxy.getUserName(), authProxy.getPassword());
-						}
+									config.getState().setProxyCredentials(AuthScope.ANY_REALM, address.getHostName(),
+											address.getPort(), authProxy.getUserName(), authProxy.getPassword());
+								}
 
-					}
+							}
 
-					// timeout
-					config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_CONNECTION_IN_MS);
-					config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_READ_IN_MS);
+							// timeout
+							config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, TIMEOUT_CONNECTION_IN_MS);
+							config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, TIMEOUT_READ_IN_MS);
 
 //					SSLContext context;
 //					try {
@@ -197,8 +198,8 @@ public class JiraRestClientAdapter {
 //						e.printStackTrace();
 //					}
 
-				}
-			}, followRedirects);
+						}
+					}, followRedirects);
 
 			if (proxy != null) {
 				final InetSocketAddress address = (InetSocketAddress) proxy.address();
@@ -601,7 +602,8 @@ public class JiraRestClientAdapter {
 
 		updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
 				changedIssue.getType().getId())));
-		if (editableFields.contains(new IssueField(JiraRestFields.PRIORITY, null))) {
+		if (editableFields.contains(new IssueField(JiraRestFields.PRIORITY, null))
+				&& changedIssue.getPriority() != null) {
 			updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(
 					JiraRestFields.ID, changedIssue.getPriority().getId())));
 		}
