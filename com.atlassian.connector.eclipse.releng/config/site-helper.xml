@@ -28,6 +28,9 @@
 			<param name="bundle" value="javax.xml.rpc"/>
 		</antcall>
 		<antcall target="orbit-pack-helper">
+			<param name="bundle" value="javax.xml.soap"/>
+		</antcall>
+		<antcall target="orbit-pack-helper">
 			<param name="bundle" value="org.apache.axis"/>
 		</antcall>
 		<antcall target="orbit-pack-helper">
@@ -47,6 +50,7 @@
 			<include name="javax.servlet*.jar"/>
 			<include name="javax.wsdl*.jar"/>
 			<include name="javax.xml.rpc*.jar"/>
+			<include name="javax.xml.soap*.jar"/>
 			<include name="org.apache.axis*.jar"/>
 			<include name="org.apache.commons.discovery*.jar"/>
 			<include name="org.apache.commons.logging*.jar"/>
