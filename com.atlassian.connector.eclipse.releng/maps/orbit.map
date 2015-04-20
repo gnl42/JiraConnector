@@ -243,10 +243,11 @@ plugin@javax.xml.bind.source,2.2.0=GET,http://archive.eclipse.org/tools/orbit/do
 plugin@javax.xml.rpc,1.1.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.rpc_1.1.0.v201005080400.zip,unpack=true
 
 !plugin@javax.xml.soap,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.2.0.v201005080501.zip,unpack=true
-plugin@javax.xml.soap,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.2.0.v201005080501.zip,unpack=true
+!plugin@javax.xml.soap,1.2.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.2.0.v201005080501.zip,unpack=true
 
 !plugin@javax.xml.soap,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.3.0.v201005080502.zip,unpack=true
-plugin@javax.xml.soap,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.3.0.v201005080502.zip,unpack=true
+!plugin@javax.xml.soap,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.soap_1.3.0.v201005080502.zip,unpack=true
+plugin@javax.xml.soap,1.3.0=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/plugins/javax.xml.soap_1.3.0.v201105210645.jar,unpack=true
 
 plugin@javax.xml.stream,1.0.1=GET,http://archive.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.xml.stream_1.0.1.v201004272200.jar
 
