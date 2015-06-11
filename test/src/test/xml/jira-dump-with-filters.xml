@@ -1848,7 +1848,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <QRTZCronTriggers id="10000" trigger="10000" cronExpression="0 0 1 ? * *"/>
     <QRTZCronTriggers id="10001" trigger="10001" cronExpression="0 0 1 ? * 4,6,1"/>
     <QRTZCronTriggers id="10002" trigger="10002" cronExpression="0 0 1 7 * ?"/>
-    <QRTZCronTriggers id="10003" trigger="10003" cronExpression="0/5 15 8 ? * 6#2 2007-3014"/>
+    <QRTZCronTriggers id="10003" trigger="10003" cronExpression="0/5 15 8 ? * 6#2 2007-2299"/>
     <QRTZJobDetails id="10000" jobName="SEND_SUBSCRIPTION" jobGroup="SEND_SUBSCRIPTION" className="com.atlassian.jira.issue.subscription.SendFilterJob" isDurable="true" isStateful="false" requestsRecovery="false"/>
     <QRTZTriggers id="10000" triggerName="SUBSCRIPTION_10000" triggerGroup="SEND_SUBSCRIPTION" job="10000" nextFire="2012-12-14 01:00:00.0" triggerState="WAITING" triggerType="CRON" startTime="2012-12-13 09:30:26.0" misfireInstr="0"/>
     <QRTZTriggers id="10001" triggerName="SUBSCRIPTION_10001" triggerGroup="SEND_SUBSCRIPTION" job="10000" nextFire="2012-12-14 01:00:00.0" triggerState="WAITING" triggerType="CRON" startTime="2012-12-13 09:30:48.0" misfireInstr="0"/>
