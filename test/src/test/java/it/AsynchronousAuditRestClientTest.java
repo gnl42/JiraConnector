@@ -2,15 +2,18 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.api.AuditRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -22,7 +25,10 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.List;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -31,7 +37,7 @@ import static org.junit.Assert.assertThat;
 
 
 @Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
-public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestClientTest {
+public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestClientTest {
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
@@ -72,7 +78,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         assertThat(value1.getFieldName(), is("Name"));
         assertThat(value1.getChangedTo(), is("New TST Component"));
 
-         final AuditChangedValue value2 = valuesIterator.next();
+        final AuditChangedValue value2 = valuesIterator.next();
         assertThat(value2.getFieldName(), is("Default Assignee"));
         assertThat(value2.getChangedTo(), is("Project Default"));
     }
@@ -80,21 +86,35 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithOffset() {
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(1, null, null, null, null)).claim();
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(2));
+        // given
+        final AuditRecordsData firstPageOfRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
 
-        final AuditRecord record = auditRecordsData.getRecords().iterator().next();
-        assertThat(record.getId(), is(10001L));
+        // when
+        final int offset = 1;
+        final AuditRecordsData offsetedAuditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(offset, null, null, null, null)).claim();
+
+        // then
+        final List<AuditRecord> offsetedAuditRecords = Lists.newArrayList(offsetedAuditRecordsData.getRecords());
+        final List<AuditRecord> allAuditRecords = Lists.newArrayList(firstPageOfRecords.getRecords());
+        assertThat(offsetedAuditRecords, hasSize(allAuditRecords.size() - offset));
+        assertThat(offsetedAuditRecords.get(0), auditRecordWithId(allAuditRecords.get(offset).getId()));
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testGetRecordsWithLimit() {
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, 1, null, null, null)).claim();
-        assertThat(Iterables.size(auditRecordsData.getRecords()), is(1));
+        // given
+        final AuditRecordsData firstPageOfRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
 
-        final AuditRecord record = auditRecordsData.getRecords().iterator().next();
-        assertThat(record.getId(), is(10002L));
+        // when
+        final int limit = 1;
+        final AuditRecordsData limitedAuditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, limit, null, null, null)).claim();
+
+        // then
+        final List<AuditRecord> limitedAuditRecords = Lists.newArrayList(limitedAuditRecordsData.getRecords());
+        assertThat(limitedAuditRecords, hasSize(limit));
+        final AuditRecord record = limitedAuditRecords.get(0);
+        assertThat(record, auditRecordWithId(Iterables.get(firstPageOfRecords.getRecords(), 0).getId()));
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
@@ -110,23 +130,35 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void testAddSimpleRecord() {
+        // given
+        final AuditRestClient auditRestClient = client.getAuditRestClient();
+
         ImmutableList<AuditAssociatedItem> items = ImmutableList.of(
                 new AuditAssociatedItem("", "admin", "USER", null, null),
                 new AuditAssociatedItem("123", "Internal item", "PROJECT", null, ""));
-        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Event with associated items")
-                .setAssociatedItems(items)
-                .build());
+        auditRestClient
+                .addAuditRecord(new AuditRecordBuilder("user management", "Event with associated items")
+                        .setAssociatedItems(items)
+                        .build());
 
         ImmutableList<AuditChangedValue> changedValues = ImmutableList.of(new AuditChangedValue("Test", "to", "from"));
-        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Event with changed values")
-                .setChangedValues(changedValues)
-                .build());
+        auditRestClient
+                .addAuditRecord(new AuditRecordBuilder("user management", "Event with changed values")
+                        .setChangedValues(changedValues)
+                        .build());
 
-        client.getAuditRestClient().addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
+        auditRestClient
+                .addAuditRecord(new AuditRecordBuilder("user management", "Adding new event").build());
+        final int numberOfAddedRecords = 3;
 
-        final Iterable<AuditRecord> auditRecords = client.getAuditRestClient().getAuditRecords(null).claim().getRecords();
-        assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(6));
+        // when
+        final Iterable<AuditRecord> auditRecords = auditRestClient.
+                getAuditRecords(new AuditRecordSearchInput(null, numberOfAddedRecords, null, null, null))
+                .claim()
+                .getRecords();
 
+        // then
+        assertThat(auditRecords, IsIterableWithSize.<AuditRecord>iterableWithSize(numberOfAddedRecords));
         AuditRecord record = Iterables.get(auditRecords, 0);
         assertThat(record.getSummary(), is("Adding new event"));
         assertThat(record.getCategory(), is("user management"));
@@ -179,7 +211,9 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test
     public void shouldReturnAllRecordsWhenFilteringToLatestCreationDate() {
-        final AuditRecord latestCreatedRecord = getLatestCreatedRecord();
+        // given
+        final AuditRecordsData firstPageOfRecords = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
+        final AuditRecord latestCreatedRecord = getLatestCreatedRecord(firstPageOfRecords);
         final DateTime latestCreatedDate = latestCreatedRecord.getCreated();
 
         // when
@@ -187,7 +221,7 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(toLatestSearchCriteria).claim();
 
         // then
-        assertThat(auditRecordsData.getRecords(), Matchers.<AuditRecord>iterableWithSize(3));
+        assertThat(auditRecordsData.getRecords(), hasSameIdsAs(firstPageOfRecords.getRecords()));
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
@@ -209,20 +243,34 @@ public class AsynchronousAuditRestClientTest  extends AbstractAsynchronousRestCl
         return new BaseMatcher<AuditRecord>() {
             @Override
             public boolean matches(Object o) {
-                AuditRecord current = (AuditRecord)o;
+                AuditRecord current = (AuditRecord) o;
                 return current.getId().equals(expectedId);
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Contains item with id: "+expectedId);
+                description.appendText("Contains item with id: " + expectedId);
             }
         };
+    }
+
+    private Matcher<Iterable<? extends AuditRecord>> hasSameIdsAs(final Iterable<AuditRecord> auditLogRecords) {
+        final List<Matcher<? super AuditRecord>> existingIdsMatchers = Lists.newArrayList(Iterables.transform(auditLogRecords, new Function<AuditRecord, Matcher<? super AuditRecord>>() {
+            @Override
+            public Matcher<AuditRecord> apply(final AuditRecord auditRecord) {
+                return auditRecordWithId(auditRecord.getId());
+            }
+        }));
+        return contains(existingIdsMatchers);
     }
 
     private AuditRecord getLatestCreatedRecord() {
         final AuditRecordsData allAuditRecordData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null)).claim();
 
+        return getLatestCreatedRecord(allAuditRecordData);
+    }
+
+    private AuditRecord getLatestCreatedRecord(final AuditRecordsData allAuditRecordData) {
         final Ordering<AuditRecord> createdTimeAscendingOrdering = new Ordering<AuditRecord>() {
             @Override
             public int compare(@Nullable AuditRecord left, @Nullable AuditRecord right) {
