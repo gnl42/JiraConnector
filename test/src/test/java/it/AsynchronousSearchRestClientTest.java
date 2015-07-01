@@ -237,11 +237,12 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 		assertThat(issue.getIssueType().getName(), is("Task"));
 		assertThat(issue.getIssueType().isSubtask(), is(false));
 		assertThat(issue.getIssueType().getDescription(), is("A task that needs to be done."));
-		assertThat(issue.getIssueType().getIconUri(), anyOf(
-				is(resolveURI("images/icons/issuetypes/task.png")),
-				is(resolveURI("images/icons/task.gif"))
-		));
-	}
+        assertThat(issue.getIssueType().getIconUri(), anyOf(
+                is(resolveURI("images/icons/issuetypes/task.png")),
+                is(resolveURI("images/icons/task.gif")),
+                is(resolveURI("secure/viewavatar?size=xsmall&avatarId=10178&avatarType=issuetype"))
+        ));
+    }
 
 	@Test
 	public void jqlSearchWithAllFieldsRequestedShouldReturnIssueWithAllFields() throws Exception {
