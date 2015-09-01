@@ -38,7 +38,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
             final DateTime created = JsonParseUtil.parseDateTime(json, "created");
             final String category = json.getString("category");
             final String eventSource = json.getString("eventSource");
-            final String authorKey = json.getString("authorKey");
+            final String authorKey = JsonParseUtil.getOptionalString(json, "authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
             final AuditAssociatedItem objectItem = JsonParseUtil.getOptionalJsonObject(json, "objectItem", associatedItemJsonParser);
             final OptionalIterable<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);

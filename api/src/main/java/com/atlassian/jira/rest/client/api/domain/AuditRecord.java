@@ -1,9 +1,11 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.OptionalIterable;
-import com.atlassian.util.concurrent.Nullable;
+
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
+
+import javax.annotation.Nullable;
 
 /**
  * Represents record from JIRA Audit Log.
@@ -22,6 +24,7 @@ public class AuditRecord {
 
     private final String eventSource;
 
+    @Nullable
     private final String authorKey;
 
     @Nullable
@@ -30,17 +33,16 @@ public class AuditRecord {
     @Nullable
     private final AuditAssociatedItem objectItem;
 
-    @Nullable
     private final OptionalIterable<AuditAssociatedItem> associatedItem;
 
-    @Nullable
     private final OptionalIterable<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
-                       final DateTime created, final String category, String eventSource, final String authorKey,
+                       final DateTime created, final String category, String eventSource,
+                       @Nullable final String authorKey,
                        @Nullable final AuditAssociatedItem objectItem,
-                       @Nullable final OptionalIterable<AuditAssociatedItem> associatedItem,
-                       @Nullable final OptionalIterable<AuditChangedValue> changedValues) {
+                       final OptionalIterable<AuditAssociatedItem> associatedItem,
+                       final OptionalIterable<AuditChangedValue> changedValues) {
         this.id = id;
         this.summary = summary;
         this.remoteAddress = remoteAddress;
@@ -73,14 +75,17 @@ public class AuditRecord {
         return eventSource;
     }
 
+    @Nullable
     public String getRemoteAddress() {
         return remoteAddress;
     }
 
+    @Nullable
     public String getAuthorKey() {
         return authorKey;
     }
 
+    @Nullable
     public AuditAssociatedItem getObjectItem() {
         return objectItem;
     }

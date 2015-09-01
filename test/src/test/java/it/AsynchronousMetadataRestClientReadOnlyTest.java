@@ -77,7 +77,10 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
-		assertThat(issueType.getIconUri().toString(), Matchers.anyOf(endsWith("bug.png"), endsWith("bug.gif")));
+		assertThat(issueType.getIconUri().toString(), Matchers.anyOf(
+                endsWith("bug.png"),
+                endsWith("bug.gif"),
+                endsWith("viewavatar?size=xsmall&avatarId=10163&avatarType=issuetype")));
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_4_3)
