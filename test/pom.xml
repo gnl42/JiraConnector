@@ -205,7 +205,29 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>6.3-SNAPSHOT</jira.version>
+                <jira.version>6.3.15</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.4</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.4.5</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.5</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.5-SNAPSHOT</jira.version>
                 <jira.data.version>${jira.version}</jira.data.version>
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
@@ -232,6 +254,7 @@
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-jira-plugin</artifactId>
                 <version>${amps.version}</version>
+                <extensions>true</extensions>
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
