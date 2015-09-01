@@ -244,6 +244,17 @@
             </properties>
         </profile>
         <profile>
+            <id>jira-7.1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.1.0-SNAPSHOT</jira.version>
+                <amps.version>5.0.16</amps.version>
+                <testkit.version>7.0.34</testkit.version>
+            </properties>
+        </profile>
+        <profile>
             <id>releaseProfile</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
