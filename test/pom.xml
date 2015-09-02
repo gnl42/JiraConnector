@@ -82,80 +82,6 @@
     </dependencies>
     <profiles>
         <profile>
-            <id>jira-5.0</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <jira.version>5.0.7</jira.version>
-                <jira.data.version>${jira.version}</jira.data.version>
-                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-                <testkit.version>5.0.24</testkit.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>com.atlassian.jira</groupId>
-                    <artifactId>jira-func-tests</artifactId>
-                    <version>${jira.test-lib.version}</version>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>com.sun.jersey</groupId>
-                            <artifactId>jersey-server</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.sun.jersey.contribs</groupId>
-                            <artifactId>jersey-apache-client</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>javax.jms</groupId>
-                            <artifactId>jms</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.google.collections</groupId>
-                            <artifactId>google-collections</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>jira-5.1</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <jira.version>5.1.7</jira.version>
-                <jira.data.version>${jira.version}</jira.data.version>
-                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-                <testkit.version>5.0.24</testkit.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>com.atlassian.jira</groupId>
-                    <artifactId>jira-func-tests</artifactId>
-                    <version>${jira.test-lib.version}</version>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>com.sun.jersey</groupId>
-                            <artifactId>jersey-server</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.sun.jersey.contribs</groupId>
-                            <artifactId>jersey-apache-client</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>javax.jms</groupId>
-                            <artifactId>jms</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.google.collections</groupId>
-                            <artifactId>google-collections</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>jira-5.2</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -205,7 +131,29 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>6.3-SNAPSHOT</jira.version>
+                <jira.version>6.3.15</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.4</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.4.5</jira.version>
+                <jira.data.version>${jira.version}</jira.data.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-6.5</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>6.5-SNAPSHOT</jira.version>
                 <jira.data.version>${jira.version}</jira.data.version>
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
             </properties>
@@ -217,6 +165,17 @@
             </activation>
             <properties>
                 <jira.version>7.0.0-SNAPSHOT</jira.version>
+                <amps.version>5.0.16</amps.version>
+                <testkit.version>7.0.34</testkit.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jira-7.1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.1.0-SNAPSHOT</jira.version>
                 <amps.version>5.0.16</amps.version>
                 <testkit.version>7.0.34</testkit.version>
             </properties>
@@ -243,6 +202,7 @@
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-jira-plugin</artifactId>
                 <version>${amps.version}</version>
+                <extensions>true</extensions>
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
