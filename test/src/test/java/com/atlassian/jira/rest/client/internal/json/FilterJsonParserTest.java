@@ -17,12 +17,13 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.Filter;
-import junit.framework.Assert;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER_ADMIN_BASIC_LATEST;
 
@@ -31,45 +32,65 @@ public class FilterJsonParserTest {
 	@Test
 	public void testParseWithoutShares() throws Exception {
 		final Filter actual = parseFilter("/json/filter/valid-no-shares.json");
-		final Filter expected = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
+		final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
 				"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
 				USER_ADMIN_BASIC_LATEST, true);
-		Assert.assertEquals(expected, actual);
+		final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
+				"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
+				toUri("http://localhost:8090/jira/secure/issues/?filter=10000"),
+				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
+				USER_ADMIN_BASIC_LATEST, true);
+		assertThat(actual, anyOf(is(expectedOld), is(expectedNew)));
 	}
 
 	@Test
 	public void testParseWithShares() throws Exception {
 		final Filter actual = parseFilter("/json/filter/valid-with-shares.json");
-		final Filter expected = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10003"), 10003L,
+		final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10003"), 10003L,
 				"Resolved bugs", "For testing shares.", "issuetype = Bug AND status = Resolved",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10003"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=issuetype+%3D+Bug+AND+status+%3D+Resolved"),
 				USER_ADMIN_BASIC_LATEST, true);
-		Assert.assertEquals(expected, actual);
+		final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10003"), 10003L,
+				"Resolved bugs", "For testing shares.", "issuetype = Bug AND status = Resolved",
+				toUri("http://localhost:8090/jira/secure/issues/?filter=10003"),
+				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=issuetype+%3D+Bug+AND+status+%3D+Resolved"),
+				USER_ADMIN_BASIC_LATEST, true);
+		assertThat(actual, anyOf(is(expectedOld), is(expectedNew)));
 	}
 
 	@Test
 	public void testParseNotFavourite() throws Exception {
 		final Filter actual = parseFilter("/json/filter/valid-not-favourite.json");
-		final Filter expected = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
+		final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
 				"Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10001"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
 				USER_ADMIN_BASIC_LATEST, false);
-		Assert.assertEquals(expected, actual);
+		final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
+				"Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
+				toUri("http://localhost:8090/jira/issues/?filter=10001"),
+				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
+				USER_ADMIN_BASIC_LATEST, false);
+		assertThat(actual, anyOf(is(expectedOld), is(expectedNew)));
 	}
 
 	@Test
 	public void testParseWitSubscriptionsBugJRA30958() throws Exception {
 		final Filter actual = parseFilter("/json/filter/valid-with-subscriptions-bug-JRA-30958-subscription-have-no-elements.json");
-		final Filter expected = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10004"), 10004L,
+		final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10004"), 10004L,
 				"All in project Test", "For testing subscriptions.", "project = TST",
 				toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10004"),
 				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST"),
 				USER_ADMIN_BASIC_LATEST, true);
-		Assert.assertEquals(expected, actual);
+		final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10004"), 10004L,
+				"All in project Test", "For testing subscriptions.", "project = TST",
+				toUri("http://localhost:8090/jira/issues/?filter=10004"),
+				toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST"),
+				USER_ADMIN_BASIC_LATEST, true);
+		assertThat(actual, anyOf(is(expectedOld), is(expectedNew)));
 	}
 
 	private Filter parseFilter(String resourcePath) throws JSONException {
