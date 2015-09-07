@@ -144,7 +144,8 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertThat(priority.getIconUri().toString(),
 				Matchers.anyOf(
 						endsWith("images/icons/priority_major.gif"),
-						endsWith("images/icons/priorities/major.png"))
+						endsWith("images/icons/priorities/major.png"),
+						endsWith("images/icons/priorities/major.svg"))
 		);
 
 	}
