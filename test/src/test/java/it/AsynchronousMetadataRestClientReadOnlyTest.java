@@ -183,7 +183,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 				new Field("issuetype", "Issue Type", FieldType.JIRA, true, true, true,
 						new FieldSchema("issuetype", null, "issuetype", null, null)),
 				new Field("votes", "Votes", FieldType.JIRA, false, true, false,
-						new FieldSchema("array", "votes", "votes", null, null)),
+						new FieldSchema("votes", null, "votes", null, null)),
 				new Field("components", "Component/s", FieldType.JIRA, true, true, true,
 						new FieldSchema("array", "component", "components", null, null)),
 				new Field("aggregatetimespent", "Σ Time Spent", FieldType.JIRA, false, true, false,
