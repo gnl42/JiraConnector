@@ -925,14 +925,16 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 	@Test
 	public void testFetchingIssueWithAnonymousComment() {
 		setUserLanguageToEnUk();
-		administration.permissionSchemes().scheme("Anonymous Permission Scheme").grantPermissionToGroup(15, "");
-		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+		final String commentText = "my nice comment";
+		final String issueKey = "ANONEDIT-1";
+
 		navigation.logout();
-		navigation.issue().addComment("ANNON-1", "my nice comment");
-		final Issue issue = client.getIssueClient().getIssue("ANNON-1").claim();
+		navigation.issue().addComment(issueKey, commentText);
+
+		final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
 		assertEquals(1, Iterables.size(issue.getComments()));
 		final Comment comment = issue.getComments().iterator().next();
-		assertEquals("my nice comment", comment.getBody());
+		assertEquals(commentText, comment.getBody());
 		if (isJira5xOrNewer()) {
 			assertNotNull(comment.getId());
 		} else {
@@ -940,7 +942,6 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 		}
 		assertNull(comment.getAuthor());
 		assertNull(comment.getUpdateAuthor());
-
 	}
 
 	@Test
