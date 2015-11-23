@@ -3,3 +3,6 @@ Please see project documentation at https://ecosystem.atlassian.net/wiki/display
 In order to start JIRA please execute atlas-debug from test directory.
 
 If you want contribute to project feel free to send pull request (preferably with tests ;)).
+
+IMPORTANT: please do not touch the rest_api_guard branch - master is being auto-merged to that branch
+so there is no need to do any changes there (doing so will cause conflicts).

@@ -19,7 +19,19 @@ package it;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.api.domain.*;
+import com.atlassian.jira.rest.client.api.domain.BasicPriority;
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
+import com.atlassian.jira.rest.client.api.domain.Field;
+import com.atlassian.jira.rest.client.api.domain.FieldSchema;
+import com.atlassian.jira.rest.client.api.domain.FieldType;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.IssuelinksType;
+import com.atlassian.jira.rest.client.api.domain.Priority;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
+import com.atlassian.jira.rest.client.api.domain.Status;
+import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
@@ -29,9 +41,8 @@ import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response;
-
 import java.util.Map;
+import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -39,14 +50,18 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
-@SuppressWarnings("ConstantConditions")
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
+@SuppressWarnings ("ConstantConditions")
+@RestoreOnce (TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
 
 	@Test
@@ -78,12 +93,12 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		Long expectedId = isJira5xOrNewer() ? 1L : null;
 		assertEquals(expectedId, issueType.getId());
 		assertThat(issueType.getIconUri().toString(), Matchers.anyOf(
-                endsWith("bug.png"),
-                endsWith("bug.gif"),
-                endsWith("viewavatar?size=xsmall&avatarId=10163&avatarType=issuetype")));
+				endsWith("bug.png"),
+				endsWith("bug.gif"),
+				endsWith("viewavatar?size=xsmall&avatarId=10163&avatarType=issuetype")));
 	}
 
-	@JiraBuildNumberDependent(BN_JIRA_4_3)
+	@JiraBuildNumberDependent (BN_JIRA_4_3)
 	@Test
 	public void testGetIssueTypes() {
 		final Iterable<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes().claim();
@@ -144,9 +159,9 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 		assertThat(priority.getIconUri().toString(),
 				Matchers.anyOf(
 						endsWith("images/icons/priority_major.gif"),
-						endsWith("images/icons/priorities/major.png"))
+						endsWith("images/icons/priorities/major.png"),
+						endsWith("images/icons/priorities/major.svg"))
 		);
-
 	}
 
 	@Test
@@ -170,6 +185,12 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
 	@Test
 	public void testGetAllFieldsAtOnce() {
+
+		// the declared schema of "votes" field has been corrected in JIRA 7.1
+		Field votesField = isJira7_1_OrNewer() ?
+				new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("votes", null, "votes", null, null)) :
+				new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("array", "votes", "votes", null, null));
+
 		final Iterable<Field> fields = client.getMetadataClient().getFields().claim();
 		assertThat(fields, hasItems(
 				new Field("progress", "Progress", FieldType.JIRA, false, true, false,
@@ -181,19 +202,18 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 				new Field("issuekey", "Key", FieldType.JIRA, false, true, false, null),
 				new Field("issuetype", "Issue Type", FieldType.JIRA, true, true, true,
 						new FieldSchema("issuetype", null, "issuetype", null, null)),
-				new Field("votes", "Votes", FieldType.JIRA, false, true, false,
-						new FieldSchema("array", "votes", "votes", null, null)),
+				votesField,
 				new Field("components", "Component/s", FieldType.JIRA, true, true, true,
 						new FieldSchema("array", "component", "components", null, null)),
 				new Field("aggregatetimespent", "Σ Time Spent", FieldType.JIRA, false, true, false,
 						new FieldSchema("number", null, "aggregatetimespent", null, null)),
 				new Field("thumbnail", "Images", FieldType.JIRA, false, true, false, null),
 				new Field("customfield_10000", "My Number Field New", FieldType.CUSTOM, true, true, true,
-					new FieldSchema("number", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:float", 10000l)),
+						new FieldSchema("number", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:float", 10000l)),
 				new Field("customfield_10011", "project2", FieldType.CUSTOM, true, true, true,
-					new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:textarea", 10011l)),
+						new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:textarea", 10011l)),
 				new Field("workratio", "Work Ratio", FieldType.JIRA, false, true, true,
-					new FieldSchema("number", null, "workratio", null, null))
+						new FieldSchema("number", null, "workratio", null, null))
 		));
 	}
 }
