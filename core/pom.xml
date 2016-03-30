@@ -34,24 +34,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.atlassian.sal</groupId>
-            <artifactId>sal-api</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.event</groupId>
-            <artifactId>atlassian-event</artifactId>
-            <version>2.3.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.atlassian.httpclient</groupId>
-            <artifactId>atlassian-httpclient-plugin</artifactId>
+            <artifactId>atlassian-httpclient-apache-httpcomponents</artifactId>
             <version>${atlassian.httpclient.version}</version>
         </dependency>
         <dependency>

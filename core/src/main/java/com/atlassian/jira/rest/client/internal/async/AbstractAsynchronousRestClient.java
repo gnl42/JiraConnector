@@ -15,17 +15,16 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.httpclient.api.EntityBuilder;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Response;
-import com.atlassian.httpclient.api.ResponsePromise;
-import com.atlassian.httpclient.api.ResponseTransformation;
-import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
+import com.atlassian.httpclient.api.EntityBuilder;
+import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.Response;
+import com.atlassian.httpclient.api.ResponsePromise;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;
@@ -128,24 +127,13 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final ResponseHandler<T> responseHandler) {
-		final Function<Response, T> transformFunction = toFunction(responseHandler);
+		final Function<Response, ? extends T> transformFunction = toFunction(responseHandler);
 
-		return new DelegatingPromise<T>(responsePromise.transform(new ResponseTransformation<T>() {
-			@Override
-			public Function<Throwable, ? extends T> getFailFunction() {
-				return AbstractAsynchronousRestClient.errorFunction();
-			}
-
-			@Override
-			public Function<Response, T> getSuccessFunctions() {
-				return transformFunction;
-			}
-
-			@Override
-			public Promise<T> apply(ResponsePromise responsePromise) {
-				return responsePromise.transform(this);
-			}
-		}));
+		return new DelegatingPromise<T>(responsePromise.<T>transform()
+				.ok(transformFunction)
+				.created(transformFunction)
+				.others(AbstractAsynchronousRestClient.<T>errorFunction())
+				.toPromise());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -163,39 +151,34 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final Promise<Void> call(final ResponsePromise responsePromise) {
-		return new DelegatingPromise<Void>(responsePromise.transform(new ResponseTransformation<Void>() {
-			@Override
-			public Function<Throwable, ? extends Void> getFailFunction() {
-				return AbstractAsynchronousRestClient.errorFunction();
-			}
-
-			@Override
-			public Function<Response, Void> getSuccessFunctions() {
-				return constant((Void) null);
-			}
-
-			@Override
-			public Promise<Void> apply(ResponsePromise responsePromise) {
-				return responsePromise.transform(this);
-			}
-		}));
-
+		return new DelegatingPromise<Void>(responsePromise.<Void>transform()
+				.ok(constant((Void) null))
+				.created(constant((Void) null))
+				.noContent(constant((Void) null))
+				.others(AbstractAsynchronousRestClient.<Void>errorFunction())
+				.toPromise());
 	}
 
 	protected HttpClient client() {
 		return client;
 	}
 
-	private static <T> Function<Throwable, ? extends T> errorFunction() {
-		return new Function<Throwable, T>() {
+	private static <T> Function<Response, T> errorFunction() {
+		return new Function<Response, T>() {
 			@Override
-			public T apply(Throwable t) {
-				throw new RestClientException(t);
+			public T apply(Response response) {
+				try {
+					final String body = response.getEntity();
+					final Collection<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
+					throw new RestClientException(errorMessages, response.getStatusCode());
+				} catch (JSONException e) {
+					throw new RestClientException(e, response.getStatusCode());
+				}
 			}
 		};
 	}
 
-	private static <T> Function<Response, T> toFunction(final ResponseHandler<T> responseHandler) {
+	private static <T> Function<Response, ? extends T> toFunction(final ResponseHandler<T> responseHandler) {
 		return new Function<Response, T>() {
 			@Override
 			public T apply(@Nullable Response input) {

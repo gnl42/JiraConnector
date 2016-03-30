@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.atlassian.httpclient</groupId>
             <artifactId>atlassian-httpclient-api</artifactId>
-            <version>${atlassian.httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>

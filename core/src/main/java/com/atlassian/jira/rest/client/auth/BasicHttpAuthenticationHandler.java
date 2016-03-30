@@ -17,11 +17,8 @@
 package com.atlassian.jira.rest.client.auth;
 
 import com.atlassian.httpclient.api.Request;
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import org.apache.commons.codec.binary.Base64;
-
-import java.util.AbstractMap;
 
 /**
  * Handler for HTTP basic authentication.
@@ -31,6 +28,9 @@ import java.util.AbstractMap;
  * @since v0.1
  */
 public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
+
+	private static final String AUTHORIZATION_HEADER = "Authorization";
+
 	private final String username;
 	private final String password;
 
@@ -40,7 +40,13 @@ public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	@Override
-	public void configure(final HttpClientOptions options) {
-		options.setBasicAuthCredentials(new AbstractMap.SimpleEntry<String, String>(username, password));
+	public void configure(final Request request) {
+		request.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
 	}
+
+	private String encodeCredentials() {
+		byte[] credentials = (username + ':' + password).getBytes();
+		return new String(Base64.encodeBase64(credentials));
+	}
+
 }

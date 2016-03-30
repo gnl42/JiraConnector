@@ -17,7 +17,6 @@
 package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.httpclient.api.Request;
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
 /**
  * Interface for classes which authenticate the requests. The configure method is invoked during each request.
@@ -32,6 +31,6 @@ import com.atlassian.httpclient.api.factory.HttpClientOptions;
  */
 public interface AuthenticationHandler {
 
-	void configure(final HttpClientOptions options);
+	void configure(final Request request);
 
 }
