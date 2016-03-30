@@ -47,7 +47,7 @@
         <!-- IMPORTANT: keep synchronized with JIRA -->
         <guava.version>10.0.1</guava.version>
         <findbugs.version>1.3.7</findbugs.version>
-        <atlassian.httpclient.version>0.13.2</atlassian.httpclient.version>
+        <atlassian.httpclient.version>0.23.0</atlassian.httpclient.version>
         <atlassian.concurrent.version>2.4.0-M9</atlassian.concurrent.version>
         <amps.version>5.1.11</amps.version>
         <testkit.version>5.2-m29</testkit.version>
@@ -76,17 +76,7 @@
             </dependency>
             <dependency>
                 <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-api</artifactId>
-                <version>${atlassian.httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-spi</artifactId>
-                <version>${atlassian.httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-apache-httpcomponents</artifactId>
+                <artifactId>atlassian-httpclient-plugin</artifactId>
                 <version>${atlassian.httpclient.version}</version>
             </dependency>
             <dependency>

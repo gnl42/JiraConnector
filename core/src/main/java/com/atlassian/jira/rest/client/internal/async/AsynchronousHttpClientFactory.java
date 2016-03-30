@@ -16,22 +16,23 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.event.api.EventPublisher;
-import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClient;
+import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClientFactory;
 import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Request;
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
-import com.atlassian.httpclient.spi.ThreadLocalContextManagers;
 import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.util.concurrent.Effect;
+import com.atlassian.sal.api.UrlMode;
+import com.atlassian.sal.api.executor.ThreadLocalContextManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -44,26 +45,34 @@ public class AsynchronousHttpClientFactory {
 	@SuppressWarnings("unchecked")
 	public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
 		final HttpClientOptions options = new HttpClientOptions();
-		options.setRequestPreparer(new Effect<Request>() {
-			@Override
-			public void apply(final Request request) {
-				authenticationHandler.configure(request);
-			}
-		});
-		final DefaultHttpClient defaultHttpClient = new DefaultHttpClient(new NoOpEventPublisher(),
-				new RestClientApplicationProperties(serverUri),
-				ThreadLocalContextManagers.noop(), options);
-		return new AtlassianHttpClientDecorator(defaultHttpClient) {
 
+		final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
+				new RestClientApplicationProperties(serverUri),
+				new ThreadLocalContextManager() {
+					@Override
+					public Object getThreadLocalContext() {
+						return null;
+					}
+
+					@Override
+					public void setThreadLocalContext(Object context) {}
+
+					@Override
+					public void clearThreadLocalContext() {}
+				});
+
+		final HttpClient httpClient = defaultHttpClientFactory.create(options);
+
+		return new AtlassianHttpClientDecorator(httpClient, Optional.of(authenticationHandler)) {
 			@Override
 			public void destroy() throws Exception {
-				defaultHttpClient.destroy();
+				defaultHttpClientFactory.dispose(httpClient);
 			}
 		};
 	}
 
 	public DisposableHttpClient createClient(final HttpClient client) {
-		return new AtlassianHttpClientDecorator(client) {
+		return new AtlassianHttpClientDecorator(client, Optional.<AuthenticationHandler>empty()) {
 
 			@Override
 			public void destroy() throws Exception {
@@ -111,22 +120,41 @@ public class AsynchronousHttpClientFactory {
 			return baseUrl;
 		}
 
+		/**
+		 * We'll always have an absolute URL as a client.
+		 */
+		@Nonnull
+		@Override
+		public String getBaseUrl(UrlMode urlMode) {
+			return baseUrl;
+		}
+
+		@Nonnull
 		@Override
 		public String getDisplayName() {
 			return "Atlassian JIRA Rest Java Client";
 		}
 
+		@Nonnull
+		@Override
+		public String getPlatformId() {
+			return ApplicationProperties.PLATFORM_JIRA;
+		}
+
+		@Nonnull
 		@Override
 		public String getVersion() {
 			return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-com.atlassian.jira.rest.client");
 		}
 
+		@Nonnull
 		@Override
 		public Date getBuildDate() {
 			// TODO implement using MavenUtils, JRJC-123
 			throw new UnsupportedOperationException();
 		}
 
+		@Nonnull
 		@Override
 		public String getBuildNumber() {
 			// TODO implement using MavenUtils, JRJC-123

@@ -2,8 +2,12 @@ package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Request;
+import com.atlassian.httpclient.api.ResponsePromise;
+import com.atlassian.httpclient.api.ResponseTransformation;
+import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -12,32 +16,60 @@ import java.util.regex.Pattern;
 public abstract class AtlassianHttpClientDecorator implements DisposableHttpClient {
 
 	private final HttpClient httpClient;
+	private final Optional<AuthenticationHandler> authenticationHandler;
 
-	public AtlassianHttpClientDecorator(HttpClient httpClient) {
+	public AtlassianHttpClientDecorator(HttpClient httpClient, Optional<AuthenticationHandler> authenticationHandler) {
 		this.httpClient = httpClient;
+		this.authenticationHandler = authenticationHandler;
 	}
 
 	public void flushCacheByUriPattern(Pattern urlPattern) {
 		httpClient.flushCacheByUriPattern(urlPattern);
 	}
 
-	public Request newRequest() {
-		return httpClient.newRequest();
+	public Request.Builder newRequest() {
+		final Request.Builder builder = httpClient.newRequest();
+		configureAuthentication(builder);
+		return builder;
 	}
 
-	public Request newRequest(URI uri) {
-		return httpClient.newRequest(uri);
+	public Request.Builder newRequest(URI uri) {
+		final Request.Builder builder = httpClient.newRequest(uri);
+		configureAuthentication(builder);
+		return builder;
 	}
 
-	public Request newRequest(URI uri, String contentType, String entity) {
-		return httpClient.newRequest(uri, contentType, entity);
+	public Request.Builder newRequest(URI uri, String contentType, String entity) {
+		final Request.Builder builder = httpClient.newRequest(uri, contentType, entity);
+		configureAuthentication(builder);
+		return builder;
 	}
 
-	public Request newRequest(String uri) {
-		return httpClient.newRequest(uri);
+	public Request.Builder newRequest(String uri) {
+		final Request.Builder builder = httpClient.newRequest(uri);
+		configureAuthentication(builder);
+		return builder;
 	}
 
-	public Request newRequest(String uri, String contentType, String entity) {
-		return httpClient.newRequest(uri, contentType, entity);
+	public Request.Builder newRequest(String uri, String contentType, String entity) {
+		final Request.Builder builder = httpClient.newRequest(uri, contentType, entity);
+		configureAuthentication(builder);
+		return builder;
+	}
+
+	private void configureAuthentication(Request.Builder builder) {
+		if(authenticationHandler.isPresent()) {
+			authenticationHandler.get().configure(builder);
+		}
+	}
+
+	@Override
+	public <A> ResponseTransformation.Builder<A> transformation() {
+		return httpClient.transformation();
+	}
+
+	@Override
+	public ResponsePromise execute(Request request) {
+		return httpClient.execute(request);
 	}
 }
