@@ -7,7 +7,6 @@ import com.atlassian.httpclient.api.ResponseTransformation;
 import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -16,9 +15,9 @@ import java.util.regex.Pattern;
 public abstract class AtlassianHttpClientDecorator implements DisposableHttpClient {
 
 	private final HttpClient httpClient;
-	private final Optional<AuthenticationHandler> authenticationHandler;
+	private final AuthenticationHandler authenticationHandler;
 
-	public AtlassianHttpClientDecorator(HttpClient httpClient, Optional<AuthenticationHandler> authenticationHandler) {
+	public AtlassianHttpClientDecorator(HttpClient httpClient, AuthenticationHandler authenticationHandler) {
 		this.httpClient = httpClient;
 		this.authenticationHandler = authenticationHandler;
 	}
@@ -58,8 +57,8 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
 	}
 
 	private void configureAuthentication(Request.Builder builder) {
-		if(authenticationHandler.isPresent()) {
-			authenticationHandler.get().configure(builder);
+		if(authenticationHandler != null) {
+			authenticationHandler.configure(builder);
 		}
 	}
 

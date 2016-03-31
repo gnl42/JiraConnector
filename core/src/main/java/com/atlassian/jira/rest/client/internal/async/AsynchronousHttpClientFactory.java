@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -63,7 +62,7 @@ public class AsynchronousHttpClientFactory {
 
 		final HttpClient httpClient = defaultHttpClientFactory.create(options);
 
-		return new AtlassianHttpClientDecorator(httpClient, Optional.of(authenticationHandler)) {
+		return new AtlassianHttpClientDecorator(httpClient, authenticationHandler) {
 			@Override
 			public void destroy() throws Exception {
 				defaultHttpClientFactory.dispose(httpClient);
@@ -72,7 +71,7 @@ public class AsynchronousHttpClientFactory {
 	}
 
 	public DisposableHttpClient createClient(final HttpClient client) {
-		return new AtlassianHttpClientDecorator(client, Optional.<AuthenticationHandler>empty()) {
+		return new AtlassianHttpClientDecorator(client, null) {
 
 			@Override
 			public void destroy() throws Exception {
