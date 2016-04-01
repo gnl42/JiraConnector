@@ -15,16 +15,18 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.httpclient.api.DefaultResponseTransformation;
+import com.atlassian.httpclient.api.EntityBuilder;
+import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.Response;
+import com.atlassian.httpclient.api.ResponsePromise;
+import com.atlassian.httpclient.api.ResponseTransformation;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.JsonParser;
-import com.atlassian.httpclient.api.EntityBuilder;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Response;
-import com.atlassian.httpclient.api.ResponsePromise;
-import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;
@@ -127,13 +129,13 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final ResponseHandler<T> responseHandler) {
-		final Function<Response, ? extends T> transformFunction = toFunction(responseHandler);
-
-		return new DelegatingPromise<T>(responsePromise.<T>transform()
+		final Function<Response, T> transformFunction = toFunction(responseHandler);
+		final ResponseTransformation<Object> responseTransformation = DefaultResponseTransformation.builder()
 				.ok(transformFunction)
 				.created(transformFunction)
-				.others(AbstractAsynchronousRestClient.<T>errorFunction())
-				.toPromise());
+				.others(AbstractAsynchronousRestClient.errorFunction())
+				.build();
+		return new DelegatingPromise(responsePromise.transform(responseTransformation));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -151,12 +153,13 @@ public abstract class AbstractAsynchronousRestClient {
 	}
 
 	protected final Promise<Void> call(final ResponsePromise responsePromise) {
-		return new DelegatingPromise<Void>(responsePromise.<Void>transform()
+		final ResponseTransformation<Object> responseTransformation = DefaultResponseTransformation.builder()
 				.ok(constant((Void) null))
 				.created(constant((Void) null))
 				.noContent(constant((Void) null))
-				.others(AbstractAsynchronousRestClient.<Void>errorFunction())
-				.toPromise());
+				.others(AbstractAsynchronousRestClient.errorFunction())
+				.build();
+		return new DelegatingPromise(responsePromise.transform(responseTransformation));
 	}
 
 	protected HttpClient client() {
@@ -178,7 +181,7 @@ public abstract class AbstractAsynchronousRestClient {
 		};
 	}
 
-	private static <T> Function<Response, ? extends T> toFunction(final ResponseHandler<T> responseHandler) {
+	private static <T> Function<Response, T> toFunction(final ResponseHandler<T> responseHandler) {
 		return new Function<Response, T>() {
 			@Override
 			public T apply(@Nullable Response input) {
