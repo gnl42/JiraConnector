@@ -126,6 +126,9 @@
                 <version>2.7</version>
                 <configuration>
                     <excludePackageNames>com.atlassian.jira.rest.client.internal.*</excludePackageNames>
+                    <!-- We should fix our javadocs and remove the line below. Please see
+                         https://ecosystem.atlassian.net/browse/JRJC-216 -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
         </plugins>
