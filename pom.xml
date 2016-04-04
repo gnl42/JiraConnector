@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-parent</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>JIRA REST Java Client</name>
     <description>Java library which allows to easily talk to any JIRA 5.0+ instance.</description>
