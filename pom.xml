@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-parent</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0</version>
     <packaging>pom</packaging>
     <name>JIRA REST Java Client</name>
     <description>Java library which allows to easily talk to any JIRA 5.0+ instance.</description>
@@ -34,7 +34,8 @@
         <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
         <url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
-    </scm>
+      <tag>jira-rest-java-client-parent-4.0.0</tag>
+  </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jira.version>5.2.8</jira.version>
