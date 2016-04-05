@@ -169,7 +169,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>7.1.0-SNAPSHOT</jira.version>
+                <jira.version>7.1.2</jira.version>
                 <amps.version>5.0.16</amps.version>
                 <testkit.version>7.0.34</testkit.version>
             </properties>
