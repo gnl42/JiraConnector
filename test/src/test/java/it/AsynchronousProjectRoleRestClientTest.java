@@ -184,7 +184,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 	public void testGetProjectRoleWithRoleKeyErrorCode() {
 		final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
 		exception.expect(RestClientException.class);
-		exception.expectMessage("Can not retrieve a role actor for a null project role.");
+		exception.expectMessage("We don't seem to be able to find the role you're trying to use. Check it still exists and try again.");
 		client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l).claim();
 	}
 }
