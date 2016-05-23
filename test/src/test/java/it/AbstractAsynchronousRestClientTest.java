@@ -106,6 +106,10 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 		return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_1;
 	}
 
+	protected boolean isJira7_2_OrNewer() {
+		return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_2;
+	}
+
 	@Override
 	public void afterMethod() {
 		try {
