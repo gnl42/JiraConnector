@@ -194,6 +194,26 @@
             </dependencies>
         </profile>
         <profile>
+            <id>jira-cloud</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.2.0-SNAPSHOT</jira.version>
+                <jira.test-lib.version>${jira.version}</jira.test-lib.version>
+                <amps.version>5.1.18</amps.version>
+                <testkit.version>7.2.0</testkit.version>
+                <test.data.path>cloud/</test.data.path>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>releaseProfile</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
