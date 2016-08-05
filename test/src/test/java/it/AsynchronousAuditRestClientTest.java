@@ -1,7 +1,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.api.AuditRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
@@ -9,6 +8,8 @@ import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -21,6 +22,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.joda.time.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -35,9 +37,13 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestClientTest {
+
+    @Before
+    public void setup() {
+        Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+        backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+    }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test

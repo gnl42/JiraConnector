@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
@@ -28,10 +27,13 @@ import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.api.domain.input.WorklogInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -43,11 +45,16 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronousRestClientTest {
 
 	public static final String ISSUE_KEY = "TST-5";
 	public static final String ISSUE_KEY_ANONYMOUS = "ANONEDIT-2";
+
+	@Before
+	public void setup() {
+		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test

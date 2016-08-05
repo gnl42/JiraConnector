@@ -1,13 +1,15 @@
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 import samples.Example1;
 
@@ -19,8 +21,13 @@ import static org.junit.Assert.assertNotNull;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class ExamplesTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+	}
 
 	@Test
 	public void testExample1() throws URISyntaxException, JSONException, IOException {

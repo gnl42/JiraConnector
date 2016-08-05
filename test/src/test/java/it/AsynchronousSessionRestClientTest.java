@@ -16,14 +16,16 @@
 
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.Session;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
@@ -32,10 +34,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	private final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
+
+	@Before
+	public void setup() {
+		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+	}
 
 	@Test
 	public void testValidSession() {

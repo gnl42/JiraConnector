@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
@@ -35,10 +34,13 @@ import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -61,8 +63,13 @@ import static org.junit.Assert.assertTrue;
  */
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings ("ConstantConditions")
-@RestoreOnce (TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+	}
 
 	@Test
 	public void testGetServerInfo() throws Exception {

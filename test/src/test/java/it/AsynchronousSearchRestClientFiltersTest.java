@@ -16,15 +16,18 @@
 
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Filter;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.atlassian.jira.util.lang.Pair;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,8 +41,13 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-@RestoreOnce("jira-dump-with-filters.xml")
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+		backdoor.restoreDataFromResource(TestConstants.JIRA_DUMP_WITH_FILTERS_FILE);
+	}
 
 	public static final Filter FILTER_10000_OLD = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,
 			"Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
