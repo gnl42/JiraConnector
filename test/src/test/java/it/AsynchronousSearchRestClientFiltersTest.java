@@ -16,13 +16,12 @@
 
 package it;
 
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Filter;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.atlassian.jira.util.lang.Pair;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -43,10 +42,14 @@ import static org.junit.Assert.*;
 
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
 
+	private boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.JIRA_DUMP_WITH_FILTERS_FILE);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_WITH_FILTERS_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	public static final Filter FILTER_10000_OLD = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,

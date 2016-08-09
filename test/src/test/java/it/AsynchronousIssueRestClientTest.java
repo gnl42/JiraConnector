@@ -42,8 +42,6 @@ import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -85,7 +83,6 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
-import static com.atlassian.jira.rest.client.internal.json.TestConstants.DEFAULT_JIRA_DUMP_FILE;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_USERNAME;
 import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
@@ -108,8 +105,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
 	}
 
 	@Test

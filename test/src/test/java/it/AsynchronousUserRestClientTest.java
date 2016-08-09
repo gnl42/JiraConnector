@@ -23,8 +23,6 @@ import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.ImmutableList;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Before;
@@ -40,10 +38,14 @@ import static org.junit.Assert.*;
 
 public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClientTest {
 
+	private boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	@Test

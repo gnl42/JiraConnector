@@ -1,10 +1,9 @@
 package it;
 
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -25,8 +24,7 @@ public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
 	}
 
 	@Test

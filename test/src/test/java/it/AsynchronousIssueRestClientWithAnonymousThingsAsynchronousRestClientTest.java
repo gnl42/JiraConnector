@@ -15,10 +15,9 @@
  */
 package it;
 
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +28,7 @@ public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClien
 
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.JIRA_DUMP_UNASSIGNED_FILE);
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_UNASSIGNED_FILE, administration);
 	}
 
 	@Test

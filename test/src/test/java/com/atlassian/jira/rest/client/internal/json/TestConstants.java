@@ -79,15 +79,11 @@ public class TestConstants {
 	public static final BasicComponent BCOMPONENT_B = new BasicComponent(toUri("http://localhost:8090/jira/rest/api/latest/component/10001"),
 			10001L, "Component B", "another description");
 
-	public static final String DEFAULT_JIRA_DUMP_FILE = getTestDataLocation("jira-dump.xml");
-	public static final String DATA_FOR_UNIT_TESTS_FILE = getTestDataLocation("data-for-unit-tests.xml");
-	public static final String EXPORT_FOR_HISTORY_TESTS_FILE = getTestDataLocation("export-for-history-tests.xml");
-	public static final String JIRA_DUMP_CREATING_ISSUE_TESTS_FILE = getTestDataLocation("jira-dump-creating-issue-tests.xml");
-	public static final String JIRA_DUMP_UNASSIGNED_FILE = getTestDataLocation("jira-dump-unassigned.xml");
-	public static final String JIRA_DUMP_WITH_COMMENT_AND_WORKLOG_FROM_REMOVED_USER_FILE = getTestDataLocation("jira-dump-with-comment-and-worklog-from-removed-user.xml");
-	public static final String JIRA_DUMP_WITH_FILTERS_FILE = getTestDataLocation("jira-dump-with-filters.xml");
-
-	private static String getTestDataLocation(final String fileName) {
-		return System.getProperty("test.data.path", "") + fileName;
-	}
+	public static final String DEFAULT_JIRA_DUMP_FILE = "jira-dump.xml";
+	public static final String DATA_FOR_UNIT_TESTS_FILE = "data-for-unit-tests.xml";
+	public static final String EXPORT_FOR_HISTORY_TESTS_FILE = "export-for-history-tests.xml";
+	public static final String JIRA_DUMP_CREATING_ISSUE_TESTS_FILE = "jira-dump-creating-issue-tests.xml";
+	public static final String JIRA_DUMP_UNASSIGNED_FILE = "jira-dump-unassigned.xml";
+	public static final String JIRA_DUMP_WITH_COMMENT_AND_WORKLOG_FROM_REMOVED_USER_FILE = "jira-dump-with-comment-and-worklog-from-removed-user.xml";
+	public static final String JIRA_DUMP_WITH_FILTERS_FILE = "jira-dump-with-filters.xml";
 }

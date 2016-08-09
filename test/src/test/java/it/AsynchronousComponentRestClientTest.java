@@ -26,8 +26,6 @@ import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.Iterables;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,8 +46,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
 	}
 
 	@Test

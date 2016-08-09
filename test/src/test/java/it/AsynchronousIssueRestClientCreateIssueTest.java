@@ -45,8 +45,6 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -96,10 +94,14 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
+	private boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.JIRA_DUMP_CREATING_ISSUE_TESTS_FILE);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_CREATING_ISSUE_TESTS_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)

@@ -16,11 +16,13 @@
 
 package com.atlassian.jira.rest.client;
 
+import com.atlassian.jira.functest.framework.Administration;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.atlassian.jira.testkit.client.Backdoor;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
@@ -71,6 +73,7 @@ public class IntegrationTestUtil {
 	public static final String TEXT_CUSTOMFIELD_ID = "customfield_10011";
 	private static final LocalTestEnvironmentData environmentData = new LocalTestEnvironmentData();
 	private static final String URI_INTERFIX_FOR_USER;
+	private static final Backdoor backdoor = new Backdoor(environmentData);
 
 	public static final String GROUP_JIRA_ADMINISTRATORS = "jira-administrators";
 	public static final int CURRENT_BUILD_NUMBER;
@@ -180,4 +183,8 @@ public class IntegrationTestUtil {
 		return resolveURI(TestUtil.toUri(relativeUri));
 	}
 
+	public static void restoreAppropriateJiraData(String filename, Administration administration) {
+		String pathtoFile = administration.getBuildNumber() >= 70107 ? "cloud/" + filename : filename;
+		backdoor.restoreDataFromResource(pathtoFile);
+	}
 }

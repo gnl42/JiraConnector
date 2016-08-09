@@ -37,8 +37,6 @@ import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.AddressableEntityMatchers;
 import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
-import com.atlassian.jira.testkit.client.Backdoor;
-import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -70,10 +68,14 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 	public static final Set<String> REQUIRED_ISSUE_FIELDS = ImmutableSet.of("summary", "issuetype", "created", "updated",
 			"project", "status");
 
+	private boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
-		backdoor.restoreDataFromResource(TestConstants.DEFAULT_JIRA_DUMP_FILE);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	@Test
