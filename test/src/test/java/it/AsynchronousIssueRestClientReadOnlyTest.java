@@ -16,7 +16,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.api.domain.Attachment;
@@ -36,13 +35,14 @@ import com.atlassian.jira.rest.client.api.domain.Visibility;
 import com.atlassian.jira.rest.client.api.domain.Votes;
 import com.atlassian.jira.rest.client.api.domain.Watchers;
 import com.atlassian.jira.rest.client.api.domain.Worklog;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -68,7 +68,6 @@ import static org.junit.Assert.*;
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
 @SuppressWarnings("ConstantConditions") // To ignore "May produce NPE" warnings
-@RestoreOnce("jira-dump-with-comment-and-worklog-from-removed-user.xml")
 public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
 
 	private static final String REMOVED_USER_NAME = "removed_user";
@@ -76,6 +75,16 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_WITH_COMMENT_AND_WORKLOG_FROM_REMOVED_USER_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Test
 	public void testGetWatchers() throws Exception {

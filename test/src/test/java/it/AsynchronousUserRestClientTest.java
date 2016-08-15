@@ -18,7 +18,6 @@ package it;
 
 import com.atlassian.jira.functest.framework.admin.GeneralConfiguration;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
@@ -26,6 +25,7 @@ import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableList;
 import org.codehaus.jettison.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -36,8 +36,17 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.junit.Assert.*;
 
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Test
 	public void testGetUser() throws JSONException {

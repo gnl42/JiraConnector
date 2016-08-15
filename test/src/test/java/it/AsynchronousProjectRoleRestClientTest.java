@@ -17,7 +17,7 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.Project;
@@ -34,6 +34,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -45,14 +46,23 @@ import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMa
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	private static final String ANONYMOUS_PROJECT_KEY = "ANNON";
 	private static final String RESTRICTED_PROJECT_KEY = "RST";
 
+	private boolean alreadyRestored;
+
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
 	@Test

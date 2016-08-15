@@ -15,15 +15,21 @@
  */
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@Restore("jira-dump-unassigned.xml")
 public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_UNASSIGNED_FILE, administration);
+	}
 
 	@Test
 	public void testGetUnassignedIssue() throws Exception {

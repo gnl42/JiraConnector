@@ -18,7 +18,6 @@ package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
@@ -33,6 +32,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.hamcrest.collection.IsEmptyIterable;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -45,8 +45,12 @@ import static com.google.common.collect.Iterables.toArray;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+	}
 
 	@Test
 	public void testCreateAndUpdateVersion() throws Exception {

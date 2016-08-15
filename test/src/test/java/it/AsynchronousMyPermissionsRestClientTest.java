@@ -15,19 +15,29 @@
  */
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Permissions;
 import com.atlassian.jira.rest.client.api.domain.input.MyPermissionsInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Optional;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronousRestClientTest {
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Override
 	public void beforeMethod() {

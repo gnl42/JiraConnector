@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.Comment;
@@ -27,6 +26,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,8 +38,17 @@ import static org.junit.Assert.assertFalse;
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
  */
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronousRestClientTest {
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Test
 	@JiraBuildNumberDependent(BN_JIRA_5)

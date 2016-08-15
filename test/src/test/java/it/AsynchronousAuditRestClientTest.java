@@ -1,7 +1,7 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.AuditRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordBuilder;
@@ -21,6 +21,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.joda.time.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -35,9 +36,12 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestClientTest {
+
+    @Before
+    public void setup() {
+        IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+    }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
     @Test

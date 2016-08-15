@@ -16,7 +16,7 @@
 
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
@@ -24,6 +24,7 @@ import com.atlassian.jira.rest.client.api.domain.Session;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
@@ -32,10 +33,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	private final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
+
+	@Before
+	public void setup() {
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+	}
 
 	@Test
 	public void testValidSession() {

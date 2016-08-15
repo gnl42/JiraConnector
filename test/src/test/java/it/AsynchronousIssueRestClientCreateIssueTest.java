@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
@@ -45,6 +44,7 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -59,6 +59,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -88,11 +89,20 @@ import static org.junit.Assert.fail;
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
 // Restore data only once as we just creates issues here - tests doesn't change any settings and doesn't rely on other issues
-@RestoreOnce("jira-dump-creating-issue-tests.xml")
 public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchronousRestClientTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_CREATING_ISSUE_TESTS_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@JiraBuildNumberDependent(BN_JIRA_5)
 	@Test

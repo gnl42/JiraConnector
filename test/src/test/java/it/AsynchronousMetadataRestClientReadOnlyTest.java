@@ -17,7 +17,7 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
@@ -39,6 +39,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -61,8 +62,17 @@ import static org.junit.Assert.assertTrue;
  */
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings ("ConstantConditions")
-@RestoreOnce (TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Test
 	public void testGetServerInfo() throws Exception {

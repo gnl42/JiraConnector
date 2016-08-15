@@ -19,7 +19,6 @@ package it;
 import com.atlassian.jira.functest.framework.UserProfile;
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.nimblefunctests.annotation.LongCondition;
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
@@ -42,6 +41,7 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -49,6 +49,7 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -82,7 +83,6 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
-import static com.atlassian.jira.rest.client.internal.json.TestConstants.DEFAULT_JIRA_DUMP_FILE;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER1_USERNAME;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.USER2_USERNAME;
 import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
@@ -95,7 +95,6 @@ import static org.junit.Assert.*;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
-@Restore(DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	@Rule
@@ -103,6 +102,11 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 	public static final String UTF8_FILE_BODY = "File body encoded in utf8: Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
 	public static final String UTF8_FILE_NAME = "utf8 file name Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
+
+	@Before
+	public void setup() {
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+	}
 
 	@Test
 	public void testTransitionWithNumericCustomFieldPolishLocale() throws Exception {

@@ -17,7 +17,6 @@
 package it;
 
 import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
-import com.atlassian.jira.nimblefunctests.annotation.RestoreOnce;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.RestClientException;
@@ -42,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import org.hamcrest.collection.IsIterableContainingInOrder;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -63,11 +63,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-@RestoreOnce(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestClientTest {
 
 	public static final Set<String> REQUIRED_ISSUE_FIELDS = ImmutableSet.of("summary", "issuetype", "created", "updated",
 			"project", "status");
+
+	private boolean alreadyRestored;
+
+	@Before
+	public void setup() {
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
+	}
 
 	@Test
 	public void testJqlSearch() {

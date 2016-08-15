@@ -1,6 +1,6 @@
 package it;
 
-import com.atlassian.jira.nimblefunctests.annotation.Restore;
+import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
+import org.junit.Before;
 import org.junit.Test;
 import samples.Example1;
 
@@ -19,8 +20,12 @@ import static org.junit.Assert.assertNotNull;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
-@Restore(TestConstants.DEFAULT_JIRA_DUMP_FILE)
 public class ExamplesTest extends AbstractAsynchronousRestClientTest {
+
+	@Before
+	public void setup() {
+		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+	}
 
 	@Test
 	public void testExample1() throws URISyntaxException, JSONException, IOException {
