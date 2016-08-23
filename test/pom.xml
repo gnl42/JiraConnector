@@ -203,6 +203,7 @@
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
                 <amps.version>5.1.18</amps.version>
                 <testkit.version>1000.1.7</testkit.version>
+                <postgres.docker.image>docker.atlassian.io/armata/postgres/8.4/jira/7.2</postgres.docker.image>
             </properties>
             <dependencies>
                 <dependency>
@@ -210,7 +211,84 @@
                     <artifactId>jira-func-tests-legacy</artifactId>
                     <version>${jira.test-lib.version}</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1208</version>
+                </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-jira-plugin</artifactId>
+                        <version>${amps.version}</version>
+                        <configuration>
+                            <libArtifacts>
+                                <libArtifact>
+                                    <groupId>org.postgresql</groupId>
+                                    <artifactId>postgresql</artifactId>
+                                    <version>9.4.1208</version>
+                                </libArtifact>
+                            </libArtifacts>
+
+                            <systemPropertyVariables>
+                                <PG_DB_ROLE>jira</PG_DB_ROLE>
+                                <PG_DB_HOST>${docker.host.address}</PG_DB_HOST>
+                                <PG_DB_NAME>jira</PG_DB_NAME>
+                                <PG_DB_PASSWORD>jira</PG_DB_PASSWORD>
+                                <PG_DB_PORT>${database.port}</PG_DB_PORT>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.14.2</version>
+
+                        <configuration>
+                            <images>
+                                <image>
+                                    <alias>postgres-db</alias>
+                                    <name>${postgres.docker.image}</name>
+                                    <run>
+                                        <env>
+                                            <POSTGRES_USER>jirauser</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>jirauser</POSTGRES_PASSWORD>
+                                            <POSTGRES_DB>postgres</POSTGRES_DB>
+                                        </env>
+                                        <ports>
+                                            <port>database.port:5432</port>
+                                        </ports>
+                                        <wait>
+                                            <time>30000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                    <goal>remove</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>releaseProfile</id>
