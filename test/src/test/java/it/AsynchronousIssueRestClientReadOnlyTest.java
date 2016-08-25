@@ -51,7 +51,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.List;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.getUserUri;
@@ -60,9 +59,21 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGE
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.google.common.collect.Iterables.toArray;
-import static org.hamcrest.Matchers.*;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Those tests mustn't change anything on server side, as jira is restored only once
@@ -133,6 +144,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testGetIssue() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		assertEquals("TST-1", issue.getKey());
@@ -177,8 +189,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			assertEquals("Administrator", chg1.getAuthor().getDisplayName());
 			assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
 
-			assertEquals(Collections
-					.singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
+			assertEquals(singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
 					.getItems());
 
 			final ChangelogGroup chg2 = Iterables.get(changelog, 20);
@@ -186,13 +197,14 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			assertEquals("Administrator", chg2.getAuthor().getDisplayName());
 			assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
-			final List<ChangelogItem> expected = ImmutableList.of(
+			final Iterable<ChangelogItem> expected = ImmutableList.of(
 					new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
 					new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
 					new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
 					new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
 			);
-			assertEquals(expected, chg2.getItems());
+			// there is not guarantee for the order of the items
+			assertThat(singletonList(chg2.getItems()), containsInAnyOrder(expected));
 		}
 		final Operations operations = issueWithChangelogAndOperations.getOperations();
 		if (isJira5xOrNewer()) {
