@@ -37,9 +37,9 @@ import com.atlassian.jira.rest.client.api.domain.Watchers;
 import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
@@ -197,14 +197,14 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 			assertEquals("Administrator", chg2.getAuthor().getDisplayName());
 			assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
-			final Iterable<ChangelogItem> expected = ImmutableList.of(
+			// there is not guarantee for the order of the items
+			Matcher<Iterable<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(
 					new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
 					new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
 					new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
 					new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
 			);
-			// there is not guarantee for the order of the items
-			assertThat(singletonList(chg2.getItems()), containsInAnyOrder(expected));
+			assertThat(chg2.getItems(), historyItemsMatcher);
 		}
 		final Operations operations = issueWithChangelogAndOperations.getOperations();
 		if (isJira5xOrNewer()) {
