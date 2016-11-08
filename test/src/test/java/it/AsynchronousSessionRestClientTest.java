@@ -37,9 +37,14 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
 
 	private final JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
 
+	private static boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	@Test

@@ -51,7 +51,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 	private static final String ANONYMOUS_PROJECT_KEY = "ANNON";
 	private static final String RESTRICTED_PROJECT_KEY = "RST";
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();

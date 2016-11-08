@@ -40,7 +40,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronousRestClientTest {
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

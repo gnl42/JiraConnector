@@ -26,9 +26,14 @@ import static org.junit.Assert.assertNull;
 
 public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClientTest extends AbstractAsynchronousRestClientTest {
 
+	private static boolean alreadyRestored;
+
 	@Before
 	public void setup() {
-		IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_UNASSIGNED_FILE, administration);
+		if (!alreadyRestored) {
+			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_UNASSIGNED_FILE, administration);
+			alreadyRestored = true;
+		}
 	}
 
 	@Test

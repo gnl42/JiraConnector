@@ -64,7 +64,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings ("ConstantConditions")
 public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

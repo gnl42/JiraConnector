@@ -38,9 +38,14 @@ import static org.junit.Assert.assertThat;
 
 public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestClientTest {
 
+    private static boolean alreadyRestored;
+
     @Before
     public void setup() {
-        IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+        if (!alreadyRestored) {
+            IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+            alreadyRestored = true;
+        }
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_6_3)
