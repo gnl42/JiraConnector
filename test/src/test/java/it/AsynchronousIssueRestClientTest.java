@@ -914,7 +914,6 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 	@Test
 	public void testFetchingUnassignedIssue() {
-		navigation.login(ADMIN_USERNAME, ADMIN_PASSWORD);
 		administration.generalConfiguration().setAllowUnassignedIssues(true);
 		assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").claim().getAssignee());
 
@@ -929,7 +928,6 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 	@Test
 	public void testFetchingIssueWithAnonymousComment() {
-		navigation.login(ADMIN_USERNAME, ADMIN_PASSWORD);
 		setUserLanguageToEnUk();
 		final String commentText = "my nice comment";
 		final String issueKey = "ANONEDIT-1";

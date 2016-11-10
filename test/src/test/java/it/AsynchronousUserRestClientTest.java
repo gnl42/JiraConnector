@@ -45,7 +45,6 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
 	public void setup() {
 		if (!alreadyRestored) {
 			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
-			navigation.login(ADMIN_USERNAME, ADMIN_PASSWORD);
 			alreadyRestored = true;
 		}
 	}
