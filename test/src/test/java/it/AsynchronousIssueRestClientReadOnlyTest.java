@@ -87,7 +87,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	// no timezone here, as JIRA does not store timezone information in its dump file
 	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

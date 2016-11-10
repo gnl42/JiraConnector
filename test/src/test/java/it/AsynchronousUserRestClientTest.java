@@ -33,12 +33,13 @@ import javax.ws.rs.core.Response;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER_SLASH_60;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
 import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.junit.Assert.*;
 
 public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClientTest {
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

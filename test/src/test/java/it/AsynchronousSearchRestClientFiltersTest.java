@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 
 public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronousRestClientTest {
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

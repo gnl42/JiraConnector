@@ -68,7 +68,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 	public static final Set<String> REQUIRED_ISSUE_FIELDS = ImmutableSet.of("summary", "issuetype", "created", "updated",
 			"project", "status");
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

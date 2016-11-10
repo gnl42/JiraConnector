@@ -94,7 +94,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

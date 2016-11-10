@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 
 public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronousRestClientTest {
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {

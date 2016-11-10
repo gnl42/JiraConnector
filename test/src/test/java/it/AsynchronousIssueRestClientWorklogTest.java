@@ -41,6 +41,8 @@ import java.util.Set;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_PASSWORD;
+import static com.atlassian.jira.rest.client.internal.json.TestConstants.ADMIN_USERNAME;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -49,7 +51,7 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
 	public static final String ISSUE_KEY = "TST-5";
 	public static final String ISSUE_KEY_ANONYMOUS = "ANONEDIT-2";
 
-	private boolean alreadyRestored;
+	private static boolean alreadyRestored;
 
 	@Before
 	public void setup() {
