@@ -783,7 +783,6 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
 
 		final CimProject testProject = findEntityByName(cimProjects, "Project With Create Issue Screen Without Issue Type");
-		//assertThat(testProject.getIssueTypes(), IsIterableWithSize.<CimIssueType>iterableWithSize(5));
 		for (CimIssueType cimIssueType : testProject.getIssueTypes()) {
 			final CimFieldInfo issueType = cimIssueType.getField(IssueFieldId.ISSUE_TYPE_FIELD);
 			final String assertMessageIssueTypeNotPresent = String.format(

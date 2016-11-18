@@ -64,7 +64,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -330,7 +330,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		});
 
 		assertEquals(project.getName(), "Anonymous Editable Project");
-		assertThat(size(project.getIssueTypes()), greaterThan(5));
+		assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
 
 		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertTrue(issueType.getFields().isEmpty());
@@ -357,7 +357,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		});
 
 		assertEquals(project.getName(), "Test Project");
-		assertThat(size(project.getIssueTypes()), greaterThan(5));
+		assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
 
 		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertFalse(issueType.getFields().isEmpty());
