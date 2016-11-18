@@ -58,11 +58,13 @@ import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGELOG;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static com.google.common.collect.Iterables.size;
 import static com.google.common.collect.Iterables.toArray;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -155,7 +157,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 
-		assertEquals(3, Iterables.size(issue.getComments()));
+		assertEquals(3, size(issue.getComments()));
 
         final String[] expandosForJira5 = {"renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog"};
         final String[] expandosForJira6_4 = toArray(Lists.asList("versionedRepresentations", expandosForJira5), String.class);
@@ -163,9 +165,9 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         // here is anyOf matcher because "versionedRepresentations" was introduced in the middle of v6.4
 		assertThat(issue.getExpandos(), anyOf(containsInAnyOrder(expandosForJira5), containsInAnyOrder(expandosForJira6_4)));
 		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
-		assertTrue(Iterables.size(issue.getFields()) > 0);
+		assertTrue(size(issue.getFields()) > 0);
 
-		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Iterables.size(issue.getAttachments()));
+		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, size(issue.getAttachments()));
 		final Iterable<Attachment> items = issue.getAttachments();
 		assertNotNull(items);
 		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
@@ -221,7 +223,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	public void testGetIssueWithNonTrivialComments() {
 		final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
 		final Iterable<Comment> comments = issue.getComments();
-		assertEquals(3, Iterables.size(comments));
+		assertEquals(3, size(comments));
 		final Comment c1 = Iterables.get(comments, 0);
 		assertEquals(Visibility.role("Administrators"), c1.getVisibility());
 
@@ -280,7 +282,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 	public void testGetTransitions() throws Exception {
 		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
 		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
-		assertEquals(4, Iterables.size(transitions));
+		assertEquals(4, size(transitions));
 		assertTrue(Iterables
 				.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
 						.<Transition.Field>emptyList())));
@@ -294,7 +296,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
 				.claim();
 
-		assertEquals(4, Iterables.size(metadataProjects));
+		assertEquals(4, size(metadataProjects));
 
 		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
@@ -318,7 +320,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 				.getIssueClient()
 				.getCreateIssueMetadata(null).claim();
 
-		assertEquals(4, Iterables.size(metadataProjects));
+		assertEquals(4, size(metadataProjects));
 
 		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
@@ -328,7 +330,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		});
 
 		assertEquals(project.getName(), "Anonymous Editable Project");
-		assertEquals(5, Iterables.size(project.getIssueTypes()));
+		assertThat(size(project.getIssueTypes()), greaterThan(5));
 
 		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertTrue(issueType.getFields().isEmpty());
@@ -345,7 +347,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 						.build())
 				.claim();
 
-		assertEquals(2, Iterables.size(metadataProjects));
+		assertEquals(2, size(metadataProjects));
 
 		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
 			@Override
@@ -355,7 +357,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 		});
 
 		assertEquals(project.getName(), "Test Project");
-		assertEquals(5, Iterables.size(project.getIssueTypes()));
+		assertThat(size(project.getIssueTypes()), greaterThan(5));
 
 		for (CimIssueType issueType : project.getIssueTypes()) {
 			assertFalse(issueType.getFields().isEmpty());
