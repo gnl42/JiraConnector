@@ -57,6 +57,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -76,6 +77,7 @@ import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityB
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
 import static com.google.common.collect.Iterables.toArray;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -783,6 +785,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 				new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
 
 		final CimProject testProject = findEntityByName(cimProjects, "Project With Create Issue Screen Without Issue Type");
+		assertThat(testProject.getIssueTypes(), IsIterableWithSize.<CimIssueType>iterableWithSize(greaterThanOrEqualTo(5)));
 		for (CimIssueType cimIssueType : testProject.getIssueTypes()) {
 			final CimFieldInfo issueType = cimIssueType.getField(IssueFieldId.ISSUE_TYPE_FIELD);
 			final String assertMessageIssueTypeNotPresent = String.format(
