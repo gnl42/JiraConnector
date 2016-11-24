@@ -366,7 +366,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 		final ResponsePromise responsePromise = client()
 				.newRequest(attachmentsUri)
 				.setEntity(new MultiPartEntityBuilder(multipartEntity))
-				.setHeader("X-Atlassian-Token", "no-check")
+				.setHeader("X-Atlassian-Token", "nocheck")
 				.post();
 		return call(responsePromise);
 	}
