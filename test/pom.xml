@@ -203,7 +203,7 @@
                 <jira.test-lib.version>${jira.version}</jira.test-lib.version>
                 <amps.version>5.1.18</amps.version>
                 <testkit.version>1000.1.7</testkit.version>
-                <postgres.docker.image>docker.atlassian.io/armata/postgres/8.4/jira/7.2</postgres.docker.image>
+                <postgres.docker.image>docker.atlassian.io/jira-cloud/postgres-ci:9.5</postgres.docker.image>
             </properties>
             <dependencies>
                 <dependency>

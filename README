@@ -18,7 +18,7 @@ To run integrations tests manually, you need to set up JIRA with a running insta
 
 To start a pre-setup postgres run
 
-docker run -p 5434:5432 docker.atlassian.io/armata/postgres/8.4/jira/1000
+docker run -p 5434:5432 docker.atlassian.io/jira-cloud/postgres-ci:9.5
 
 and then in another terminal
 
