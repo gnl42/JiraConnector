@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client;
 
 import com.atlassian.jira.functest.framework.Administration;
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
@@ -84,7 +85,19 @@ public class IntegrationTestUtil {
 			final com.atlassian.jira.rest.client.api.JiraRestClientFactory clientFactory = new AsynchronousJiraRestClientFactory();
 			final com.atlassian.jira.rest.client.api.JiraRestClient client = clientFactory.create(environmentData.getBaseUrl()
 					.toURI(), new BasicHttpAuthenticationHandler("admin", "admin"));
-			CURRENT_BUILD_NUMBER = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
+
+			int determinedBuildNumber;
+			try {
+				determinedBuildNumber = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
+			} catch (RestClientException e) {
+				// the client failed to receive the build number, defaulting to recent cloud version:
+				// we should not log here as it's a static blog and that could screw log instance access
+				// Issue: https://jdog.jira-dev.com/browse/JDEV-37921
+				determinedBuildNumber = 100029;
+			}
+
+			CURRENT_BUILD_NUMBER = determinedBuildNumber;
+
 			TESTING_JIRA_5_OR_NEWER = CURRENT_BUILD_NUMBER > ServerVersionConstants.BN_JIRA_5;
 			TESTING_JIRA_6_OR_NEWER = CURRENT_BUILD_NUMBER > ServerVersionConstants.BN_JIRA_6;
 			// remove it when https://jdog.atlassian.com/browse/JRADEV-7691 is fixed
