@@ -91,6 +91,8 @@ public class IntegrationTestUtil {
 				determinedBuildNumber = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
 			} catch (RestClientException e) {
 				// the client failed to receive the build number, defaulting to recent cloud version:
+				// we should not log here as it's a static blog and that could screw log instance access
+				// Issue: https://jdog.jira-dev.com/browse/JDEV-37921
 				determinedBuildNumber = 100029;
 			}
 
