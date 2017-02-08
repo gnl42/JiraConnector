@@ -89,7 +89,7 @@ public class IntegrationTestUtil {
 			int determinedBuildNumber;
 			try {
 				determinedBuildNumber = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
-			} catch(RestClientException e) {
+			} catch (RestClientException e) {
 				// the client failed to receive the build number, defaulting to recent cloud version:
 				determinedBuildNumber = 100029;
 			}
