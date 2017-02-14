@@ -42,7 +42,7 @@
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
         <remotable.plugins.version>0.8.2</remotable.plugins.version>
-        <jdkLevel>1.6</jdkLevel>
+        <jdkLevel>1.8</jdkLevel>
         <jersey.client.version>1.5</jersey.client.version>
         <joda.time.version>1.6</joda.time.version>
         <!-- IMPORTANT: keep synchronized with JIRA -->
@@ -53,6 +53,8 @@
         <amps.version>5.1.11</amps.version>
         <testkit.version>5.2-m29</testkit.version>
         <fugue.version>1.1</fugue.version>
+        <jwt.version>1.6.1</jwt.version>
+        <apache.commons.version>2.6</apache.commons.version>
     </properties>
     <modules>
         <module>api</module>
@@ -96,6 +98,21 @@
                         <artifactId>httpcore</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.jwt</groupId>
+                <artifactId>jwt-api</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.atlassian.jwt</groupId>
+                <artifactId>jwt-core</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${apache.commons.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

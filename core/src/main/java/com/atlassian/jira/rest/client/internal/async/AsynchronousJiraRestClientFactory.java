@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
+import com.atlassian.jira.rest.client.auth.JwtAuthenticationHandler;
 
 import java.net.URI;
 
@@ -40,6 +41,11 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 	@Override
 	public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) {
 		return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
+	}
+
+	@Override
+	public JiraRestClient createWithJwtAuthentication(final URI serverUri, final String username, final String password) {
+		return create(serverUri, new JwtAuthenticationHandler(username, password));
 	}
 
 	@Override
