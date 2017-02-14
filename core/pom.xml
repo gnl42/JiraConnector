@@ -78,6 +78,11 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.atlassian.fugue</groupId>
+            <artifactId>fugue</artifactId>
+        </dependency>
+
         <!-- tests dependencies -->
     </dependencies>
 </project>

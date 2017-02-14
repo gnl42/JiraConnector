@@ -45,7 +45,7 @@ public class JwtAuthenticationHandler implements AuthenticationHandler {
             long issuedAt = System.currentTimeMillis() / 1000L;
             long expiresAt = issuedAt + 180L;
 
-            final String method = (request.getMethod() != null) ? request.getMethod().name().toUpperCase() : "GET";
+            final String method = request.getMethod().name().toUpperCase();
             final String path = request.getUri().getPath();
             final String contextPath = "/";
 

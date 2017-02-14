@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.internal.async;
 
+import com.atlassian.httpclient.apache.httpcomponents.DefaultRequest;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Request;
 import com.atlassian.httpclient.api.ResponsePromise;
@@ -27,39 +28,35 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
 	}
 
 	public Request.Builder newRequest() {
-		final Request.Builder builder = httpClient.newRequest();
-		configureAuthentication(builder);
-		return builder;
+		return new AuthenticatedRequestBuilder();
 	}
 
 	public Request.Builder newRequest(URI uri) {
-		final Request.Builder builder = httpClient.newRequest(uri);
-		configureAuthentication(builder);
+		final Request.Builder builder = new AuthenticatedRequestBuilder();
+		builder.setUri(uri);
 		return builder;
 	}
 
 	public Request.Builder newRequest(URI uri, String contentType, String entity) {
-		final Request.Builder builder = httpClient.newRequest(uri, contentType, entity);
-		configureAuthentication(builder);
+		final Request.Builder builder = new AuthenticatedRequestBuilder();
+		builder.setUri(uri);
+		builder.setContentType(contentType);
+		builder.setEntity(entity);
 		return builder;
 	}
 
 	public Request.Builder newRequest(String uri) {
-		final Request.Builder builder = httpClient.newRequest(uri);
-		configureAuthentication(builder);
+		final Request.Builder builder = new AuthenticatedRequestBuilder();
+		builder.setUri(URI.create(uri));
 		return builder;
 	}
 
 	public Request.Builder newRequest(String uri, String contentType, String entity) {
-		final Request.Builder builder = httpClient.newRequest(uri, contentType, entity);
-		configureAuthentication(builder);
+		final Request.Builder builder = new AuthenticatedRequestBuilder();
+		builder.setUri(URI.create(uri));
+		builder.setContentType(contentType);
+		builder.setEntity(entity);
 		return builder;
-	}
-
-	private void configureAuthentication(Request.Builder builder) {
-		if(authenticationHandler != null) {
-			authenticationHandler.configure(builder);
-		}
 	}
 
 	@Override
@@ -70,5 +67,20 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
 	@Override
 	public ResponsePromise execute(Request request) {
 		return httpClient.execute(request);
+	}
+
+	private class AuthenticatedRequestBuilder extends DefaultRequest.DefaultRequestBuilder {
+		public AuthenticatedRequestBuilder() {
+			super(httpClient);
+		}
+
+		@Override
+		public ResponsePromise execute(Request.Method method) {
+			if(authenticationHandler != null) {
+				this.setMethod(method);
+				authenticationHandler.configure(this);
+			}
+			return super.execute(method);
+		}
 	}
 }

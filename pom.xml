@@ -114,6 +114,11 @@
                 <artifactId>commons-lang</artifactId>
                 <version>${apache.commons.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.atlassian.fugue</groupId>
+                <artifactId>fugue</artifactId>
+                <version>${fugue.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
