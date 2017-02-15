@@ -36,7 +36,7 @@ public class IssueInput {
 	private final List<PropertyInput> properties;
 
 	public static IssueInput createWithFields(FieldInput... fields) {
-		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<>());
+		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<PropertyInput>());
 	}
 
 	public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {

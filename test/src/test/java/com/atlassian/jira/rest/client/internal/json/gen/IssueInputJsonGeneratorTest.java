@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
+import com.atlassian.jira.rest.client.api.domain.input.PropertyInput;
 import com.atlassian.jira.rest.client.test.matchers.JSONObjectMatcher;
 import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
@@ -49,6 +50,8 @@ public class IssueInputJsonGeneratorTest {
 				)))
 		);
 
+		issueInput.getProperties().add(new PropertyInput("testKey", "{\"testValue\" : \"foo\"}"));
+
 		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/valid.json");
 		final JSONObject actual = generator.generate(issueInput);
 		Assert.assertThat(expected, JSONObjectMatcher.isEqual(actual));
@@ -57,7 +60,7 @@ public class IssueInputJsonGeneratorTest {
 	@Test
 	public void testGenerateWithEmptyInput() throws Exception {
 		final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
-		final IssueInput issueInput = new IssueInput(Maps.<String, FieldInput>newHashMap(), new ArrayList<>());
+		final IssueInput issueInput = new IssueInput(Maps.<String, FieldInput>newHashMap(), new ArrayList<PropertyInput>());
 
 		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
 		final JSONObject actual = generator.generate(issueInput);

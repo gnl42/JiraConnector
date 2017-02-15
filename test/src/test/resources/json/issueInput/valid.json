@@ -12,5 +12,10 @@
 			}
 		}
 	},
-	"properties": []
+	"properties": [
+		{
+			"key" : "testKey",
+			"value" : {"testValue":"foo"}
+		}
+	]
 }

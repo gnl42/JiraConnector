@@ -50,21 +50,21 @@ public class JwtAuthenticationHandler implements AuthenticationHandler {
             final String contextPath = "/";
 
             final List<NameValuePair> params = URLEncodedUtils.parse(new URI(request.getUri().toString()), "UTF-8");
-            final Map<String, String[]> paramMap = new HashMap<>();
-            params.forEach(nameValuePair -> {
+            final Map<String, String[]> paramMap = new HashMap<String, String[]>();
+
+            for (final NameValuePair nameValuePair : params) {
                 final String name = nameValuePair.getName();
                 final String value = nameValuePair.getValue();
-                paramMap.compute(name, (k, v) -> {
-                    if (v == null) {
-                        return new String[]{value};
-                    }
-                    else {
-                        final String[] array = Arrays.copyOf(v, v.length+1);
-                        array[v.length+1] = value;
-                        return array;
-                    }
-                });
-            });
+
+                String[] array = new String[] { value};
+                if(paramMap.containsKey(name)) {
+                    final String[] currentValues = paramMap.get(name);
+                    final int newLength = currentValues.length + 1;
+                    array = Arrays.copyOf(currentValues, newLength);
+                    array[newLength] = value;
+                }
+                paramMap.put(name, array);
+            }
 
             final JwtJsonBuilder jwtBuilder = new JsonSmartJwtJsonBuilder()
                     .issuedAt(issuedAt)
@@ -78,7 +78,11 @@ public class JwtAuthenticationHandler implements AuthenticationHandler {
             final String jwtbuilt = jwtBuilder.build();
             return jwtWriterFactory.macSigningWriter(SigningAlgorithm.HS256, secret).jsonToJwt(jwtbuilt);
         }
-        catch (UnsupportedEncodingException | NoSuchAlgorithmException | URISyntaxException e) {
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 

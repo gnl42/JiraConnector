@@ -42,7 +42,7 @@ public class IssueInputBuilder {
 			.registerTransformer(new BaseValueTransformer());
 
 	private Map<String, FieldInput> fields = Maps.newHashMap();
-	private final List<PropertyInput> properties = new ArrayList<>();
+	private final List<PropertyInput> properties = new ArrayList<PropertyInput>();
 
 	/**
 	 * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember to fill required fields for the target
