@@ -18,6 +18,8 @@ package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
+import com.atlassian.jira.rest.client.api.domain.input.PropertyInput;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -31,7 +33,7 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
 	private final ComplexIssueInputFieldValueJsonGenerator complexIssueInputFieldValueJsonGenerator = new ComplexIssueInputFieldValueJsonGenerator();
 
 	@Override
-	public JSONObject generate(IssueInput issue) throws JSONException {
+	public JSONObject generate(final IssueInput issue) throws JSONException {
 		final JSONObject jsonObject = new JSONObject();
 		final JSONObject fields = new JSONObject();
 
@@ -45,6 +47,18 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
 		}
 
 		jsonObject.put("fields", fields);
+
+		// Add entity properties
+		final JSONArray entityProperties = new JSONArray();
+		for(final PropertyInput p : issue.getProperties()) {
+			final JSONObject property  = new JSONObject();
+			property.put("key", p.getKey());
+			property.put("value", new JSONObject(p.getValue()));
+			entityProperties.put(property);
+		}
+		jsonObject.put("properties", entityProperties);
+
 		return jsonObject;
 	}
+
 }

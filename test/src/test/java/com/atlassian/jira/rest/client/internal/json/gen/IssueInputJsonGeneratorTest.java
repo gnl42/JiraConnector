@@ -27,6 +27,8 @@ import org.codehaus.jettison.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
  * @since v1.0
  */
@@ -55,7 +57,7 @@ public class IssueInputJsonGeneratorTest {
 	@Test
 	public void testGenerateWithEmptyInput() throws Exception {
 		final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
-		final IssueInput issueInput = new IssueInput(Maps.<String, FieldInput>newHashMap());
+		final IssueInput issueInput = new IssueInput(Maps.<String, FieldInput>newHashMap(), new ArrayList<>());
 
 		final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
 		final JSONObject actual = generator.generate(issueInput);

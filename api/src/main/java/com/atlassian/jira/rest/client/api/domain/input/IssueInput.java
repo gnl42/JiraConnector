@@ -21,6 +21,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,17 +33,23 @@ import java.util.Map;
 public class IssueInput {
 
 	private final Map<String, FieldInput> fields;
+	private final List<PropertyInput> properties;
 
 	public static IssueInput createWithFields(FieldInput... fields) {
-		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION));
+		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<>());
 	}
 
-	public IssueInput(Map<String, FieldInput> fields) {
+	public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {
 		this.fields = fields;
+		this.properties = properties;
 	}
 
 	public Map<String, FieldInput> getFields() {
 		return fields;
+	}
+
+	public List<PropertyInput> getProperties() {
+		return properties;
 	}
 
 	@SuppressWarnings("unused")
@@ -53,6 +61,7 @@ public class IssueInput {
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("fields", fields)
+				.add("properties", properties)
 				.toString();
 	}
 }
