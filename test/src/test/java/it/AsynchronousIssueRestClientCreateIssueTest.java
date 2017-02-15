@@ -42,6 +42,7 @@ import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldVal
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
+import com.atlassian.jira.rest.client.api.domain.input.PropertyInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
@@ -645,7 +646,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		final IssueInput issueInput = new IssueInput(ImmutableMap.of(
 				"summary", new FieldInput("summary", "Summary"),
 				"issuetype", new FieldInput("issuetype", ComplexIssueInputFieldValue.with("id", "1"))
-		), new ArrayList<>());
+		), ImmutableList.of( new PropertyInput("foo", "bar")));
 		issueClient.createIssue(issueInput).claim();
 	}
 

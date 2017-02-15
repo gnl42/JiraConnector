@@ -50,11 +50,14 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
 
 		// Add entity properties
 		final JSONArray entityProperties = new JSONArray();
-		for(final PropertyInput p : issue.getProperties()) {
-			final JSONObject property  = new JSONObject();
-			property.put("key", p.getKey());
-			property.put("value", new JSONObject(p.getValue()));
-			entityProperties.put(property);
+		if (issue != null && issue.getProperties() != null) {
+
+			for(final PropertyInput p : issue.getProperties()) {
+				final JSONObject property  = new JSONObject();
+				property.put("key", p.getKey());
+				property.put("value", new JSONObject(p.getValue()));
+				entityProperties.put(property);
+			}
 		}
 		jsonObject.put("properties", entityProperties);
 
