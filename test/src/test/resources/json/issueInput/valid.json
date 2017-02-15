@@ -11,5 +11,11 @@
 				"test":"id"
 			}
 		}
-	}
+	},
+	"properties": [
+		{
+			"key" : "testKey",
+			"value" : {"testValue":"foo"}
+		}
+	]
 }

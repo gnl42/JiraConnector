@@ -64,6 +64,5 @@
             <artifactId>httpmime</artifactId>
         </dependency>
 
-        <!-- tests dependencies -->
     </dependencies>
 </project>

@@ -43,6 +43,11 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 	}
 
 	@Override
+	public JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+		return create(serverUri, authenticationHandler);
+	}
+
+	@Override
 	public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
 		final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
 		return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);

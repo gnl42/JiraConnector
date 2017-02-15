@@ -18,7 +18,6 @@
         <dependency>
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>${fugue.version}</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.jira</groupId>

@@ -25,6 +25,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +42,7 @@ public class IssueInputBuilder {
 			.registerTransformer(new BaseValueTransformer());
 
 	private Map<String, FieldInput> fields = Maps.newHashMap();
+	private final List<PropertyInput> properties = new ArrayList<PropertyInput>();
 
 	/**
 	 * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember to fill required fields for the target
@@ -147,7 +150,7 @@ public class IssueInputBuilder {
 	}
 
 	public IssueInput build() {
-		return new IssueInput(fields);
+		return new IssueInput(fields, properties);
 	}
 
 	@SuppressWarnings("unused")
@@ -198,6 +201,11 @@ public class IssueInputBuilder {
 
 	public IssueInputBuilder setReporterName(String reporterName) {
 		return setFieldInput(new FieldInput(IssueFieldId.REPORTER_FIELD, ComplexIssueInputFieldValue.with("name", reporterName)));
+	}
+
+	public IssueInputBuilder addProperty(final String key, final String value) {
+		properties.add(new PropertyInput(key, value));
+		return this;
 	}
 
 	/**

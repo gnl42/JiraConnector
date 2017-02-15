@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.jira.rest.client.api.domain.Authentication;
 
 import java.net.URI;
 
@@ -44,6 +45,15 @@ public interface JiraRestClientFactory {
 	 * @param password  - password of the user used to log in to JIRA.
 	 */
 	JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password);
+
+	/**
+	 * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will call the provided
+	 * authentication handler prior to making requests.
+	 *
+	 * @param serverUri - URI or JIRA instance.
+	 * @param authenticationHandler  - Authentication handler.
+	 */
+	JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler);
 
 	/**
 	 * Creates an instance of JiraRestClient with given Atlassian HttpClient.
