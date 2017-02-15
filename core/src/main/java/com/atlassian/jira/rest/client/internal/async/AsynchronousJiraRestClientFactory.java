@@ -44,8 +44,8 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 	}
 
 	@Override
-	public JiraRestClient createWithJwtAuthentication(final URI serverUri, final String username, final String password) {
-		return create(serverUri, new JwtAuthenticationHandler(username, password));
+	public JiraRestClient createWithJwtAuthentication(final URI serverUri, final String key, final String secret) {
+		return create(serverUri, new JwtAuthenticationHandler(key, secret));
 	}
 
 	@Override
