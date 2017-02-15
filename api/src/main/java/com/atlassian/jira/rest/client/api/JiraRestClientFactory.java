@@ -46,12 +46,12 @@ public interface JiraRestClientFactory {
 	JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password);
 
 	/**
-	 * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will conduct a
-	 * jwt authentication for given key and secret.
+	 * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will add an
+	 * appropriate JWT authentication header for the given key and secret.
 	 *
 	 * @param serverUri - URI or JIRA instance.
-	 * @param key  - key of the connect addon
-	 * @param secret  - secret of the connect addon
+	 * @param key  - JWT key
+	 * @param secret  - JWT secret
 	 */
 	JiraRestClient createWithJwtAuthentication(final URI serverUri, final String key, final String secret);
 
