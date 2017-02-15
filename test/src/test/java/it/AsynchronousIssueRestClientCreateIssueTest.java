@@ -646,7 +646,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 		final IssueInput issueInput = new IssueInput(ImmutableMap.of(
 				"summary", new FieldInput("summary", "Summary"),
 				"issuetype", new FieldInput("issuetype", ComplexIssueInputFieldValue.with("id", "1"))
-		), ImmutableList.of( new PropertyInput("foo", "bar")));
+		), ImmutableList.of( new PropertyInput("testKey", "{\"testValue\" : \"foo\"}")));
 		issueClient.createIssue(issueInput).claim();
 	}
 
