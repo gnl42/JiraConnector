@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.jira.rest.client.api.domain.Authentication;
 
 import java.net.URI;
 
@@ -46,14 +47,13 @@ public interface JiraRestClientFactory {
 	JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password);
 
 	/**
-	 * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will add an
-	 * appropriate JWT authentication header for the given key and secret.
+	 * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will call the provided
+	 * authentication handler prior to making requests.
 	 *
 	 * @param serverUri - URI or JIRA instance.
-	 * @param key  - JWT key
-	 * @param secret  - JWT secret
+	 * @param authenticationHandler  - Authentication handler.
 	 */
-	JiraRestClient createWithJwtAuthentication(final URI serverUri, final String key, final String secret);
+	JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler);
 
 	/**
 	 * Creates an instance of JiraRestClient with given Atlassian HttpClient.

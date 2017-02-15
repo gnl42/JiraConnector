@@ -53,7 +53,6 @@
         <amps.version>5.1.11</amps.version>
         <testkit.version>5.2-m29</testkit.version>
         <fugue.version>1.1</fugue.version>
-        <jwt.version>1.6.1</jwt.version>
         <apache.commons.version>2.6</apache.commons.version>
     </properties>
     <modules>
@@ -98,21 +97,6 @@
                         <artifactId>httpcore</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.jwt</groupId>
-                <artifactId>jwt-api</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.jwt</groupId>
-                <artifactId>jwt-core</artifactId>
-                <version>${jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${apache.commons.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.atlassian.fugue</groupId>
