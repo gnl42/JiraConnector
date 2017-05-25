@@ -203,7 +203,7 @@
                 <amps.version>5.1.18</amps.version>
                 <testkit.version>1000.1.7</testkit.version>
                 <postgres.docker.image>docker.atlassian.io/jira-cloud/postgres-ci:9.5</postgres.docker.image>
-                <postgres.docker.wait.log.regex>PostgreSQL init process complete</postgres.docker.wait.log.regex>
+                <postgres.docker.wait.log.regex>database system is ready to accept connections</postgres.docker.wait.log.regex>
                 <postgres.docker.wait.timeout>600000</postgres.docker.wait.timeout>
             </properties>
             <dependencies>
