@@ -2263,7 +2263,7 @@ Examples: 4d, 5h 30m, 60m and 3w.]]></value>
     <OSPropertyString id="10083" value="1"/>
     <OSPropertyString id="10084" value="0"/>
     <OSPropertyString id="10362" value="text"/>
-    <OSPropertyString id="10366" value="pl_PL"/>
+    <OSPropertyString id="10366" value="en_UK"/>
     <OSPropertyString id="10443" value="Service Provider Token Remover"/>
     <OSPropertyString id="10450" value="b6b48b2829824b869586ac216d119363"/>
     <OSPropertyString id="10480" value="1"/>
