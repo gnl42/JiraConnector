@@ -17,17 +17,14 @@
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
             <artifactId>atlassian-util-concurrent</artifactId>
-            <version>${atlassian.concurrent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.httpclient</groupId>
             <artifactId>atlassian-httpclient-api</artifactId>
-            <version>${atlassian.httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>${joda.time.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

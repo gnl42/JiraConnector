@@ -1,8 +1,8 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.OptionalIterable;
-import com.atlassian.util.concurrent.Nullable;
 import com.google.common.base.Objects;
+
+import javax.annotation.Nullable;
 
 /**
  * Represents record from JIRA Audit Log.

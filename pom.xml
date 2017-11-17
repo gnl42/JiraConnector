@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.atlassian.pom</groupId>
         <artifactId>public-pom</artifactId>
-        <version>3.0.90</version>
+        <version>5.0.8</version>
     </parent>
     <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-parent</artifactId>
@@ -34,26 +34,21 @@
         <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
         <url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <properties>
+        <platform.version>3.1.7</platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>5.2.8</jira.version>
+        <jira.version>7.1.10</jira.version>
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-        <remotable.plugins.version>0.8.2</remotable.plugins.version>
-        <jdkLevel>1.6</jdkLevel>
-        <jersey.client.version>1.5</jersey.client.version>
-        <joda.time.version>1.6</joda.time.version>
-        <!-- IMPORTANT: keep synchronized with JIRA -->
-        <guava.version>18.0</guava.version>
-        <findbugs.version>1.3.7</findbugs.version>
-        <atlassian.httpclient.version>0.23.0</atlassian.httpclient.version>
-        <atlassian.concurrent.version>2.4.2</atlassian.concurrent.version>
-        <amps.version>5.1.11</amps.version>
-        <testkit.version>5.2-m29</testkit.version>
-        <fugue.version>1.1</fugue.version>
-        <apache.commons.version>2.6</apache.commons.version>
+        <jersey.client.version>1.19</jersey.client.version>
+        <joda.time.version>2.9.9</joda.time.version>
+        <atlassian.httpclient.version>1.0.0</atlassian.httpclient.version>
+        <httpclient.version>4.5.3</httpclient.version>
+        <httpcore.version>4.4.8</httpcore.version>
+        <amps.version>6.3.7</amps.version>
+        <testkit.version>7.1.9</testkit.version>
     </properties>
     <modules>
         <module>api</module>
@@ -63,14 +58,51 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${findbugs.version}</version>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>platform</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>third-party</artifactId>
+                <version>${platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore-nio</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda.time.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey</groupId>
@@ -84,46 +116,31 @@
             </dependency>
             <dependency>
                 <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-plugin</artifactId>
+                <artifactId>atlassian-httpclient-api</artifactId>
                 <version>${atlassian.httpclient.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>4.1.2</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>com.atlassian.httpclient</groupId>
+                <artifactId>atlassian-httpclient-library</artifactId>
+                <version>${atlassian.httpclient.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.atlassian.fugue</groupId>
-                <artifactId>fugue</artifactId>
-                <version>${fugue.version}</version>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <!-- somehow maven fails for me on this. This is used by the AMPS plugin, and can be removed once
-                     https://extranet.atlassian.com/jira/browse/BUILDENG-2663 is fixed, by upgrading the parent pom -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.12</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
     <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
                 <configuration>
                     <excludePackageNames>com.atlassian.jira.rest.client.internal.*</excludePackageNames>
                 </configuration>
