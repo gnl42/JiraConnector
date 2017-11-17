@@ -31,7 +31,7 @@ import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
