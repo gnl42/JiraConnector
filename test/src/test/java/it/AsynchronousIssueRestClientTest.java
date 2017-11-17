@@ -90,7 +90,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
@@ -101,7 +107,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 	public ExpectedException expectedException = ExpectedException.none();
 
 	public static final String UTF8_FILE_BODY = "File body encoded in utf8: Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
-	public static final String UTF8_FILE_NAME = "utf8 file name Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! | \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
+	public static final String UTF8_FILE_NAME = "utf8 file name Ka\u017a\u0144 i \u017c\u00f3\u0142to\u015b\u0107 b\u0119d\u0105! \u1f55\u03b1\u03bb\u03bf\u03bd \u03d5\u03b1\u03b3\u03b5\u1fd6\u03bd \u03b4\u1f7b\u03bd\u03b1\u03bc\u03b1\u03b9\u0387 \u03c4\u03bf\u1fe6\u03c4\u03bf \u03bf\u1f54 \u03bc\u03b5 \u03b2\u03bb\u1f71\u03c0\u03c4\u03b5\u03b9 \u0411\u0438 \u0448\u0438\u043b \u0438\u0434\u044d\u0439 \u0447\u0430\u0434\u043d\u0430, \u043d\u0430\u0434\u0430\u0434 \u0445\u043e\u0440\u0442\u043e\u0439 \u0431\u0438\u0448., or 2\u03c0R";
 
 	@Before
 	public void setup() {

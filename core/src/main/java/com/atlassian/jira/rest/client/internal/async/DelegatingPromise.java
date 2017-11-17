@@ -48,7 +48,8 @@ public class DelegatingPromise<T> implements Promise<T> {
 		}
 	}
 
-	public Promise<T> done(Effect<T> e) {
+	@Override
+	public Promise<T> done(Effect<? super T> e) {
 		return delegate.done(e);
 	}
 
@@ -57,22 +58,27 @@ public class DelegatingPromise<T> implements Promise<T> {
 		return delegate.fail(e);
 	}
 
-	public Promise<T> then(FutureCallback<T> callback) {
+	@Override
+	public Promise<T> then(FutureCallback<? super T> callback) {
 		return delegate.then(callback);
 	}
 
+	@Override
 	public <B> Promise<B> map(Function<? super T, ? extends B> function) {
 		return delegate.map(function);
 	}
 
-	public <B> Promise<B> flatMap(Function<? super T, Promise<B>> function) {
+	@Override
+	public <B> Promise<B> flatMap(Function<? super T, ? extends Promise<? extends B>> function) {
 		return delegate.flatMap(function);
 	}
 
+	@Override
 	public Promise<T> recover(Function<Throwable, ? extends T> handleThrowable) {
 		return delegate.recover(handleThrowable);
 	}
 
+	@Override
 	public <B> Promise<B> fold(Function<Throwable, ? extends B> handleThrowable, Function<? super T, ? extends B> function) {
 		return delegate.fold(handleThrowable, function);
 	}

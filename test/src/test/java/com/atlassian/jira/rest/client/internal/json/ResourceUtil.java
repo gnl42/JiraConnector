@@ -52,7 +52,7 @@ public class ResourceUtil {
 			if (is == null) {
 				throw new IOException("Cannot open resource [" + resourcePath + "]");
 			}
-			s = IOUtils.toString(is);
+			s = IOUtils.toString(is, "UTF-8");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
