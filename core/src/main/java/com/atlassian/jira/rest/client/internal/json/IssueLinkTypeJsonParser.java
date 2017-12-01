@@ -21,22 +21,22 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class IssueLinkTypeJsonParser implements JsonObjectParser<IssueLinkType> {
-	private static final String KEY_DIRECTION = "direction";
+    private static final String KEY_DIRECTION = "direction";
 
-	@Override
-	public IssueLinkType parse(JSONObject json) throws JSONException {
-		final String name = json.getString("name");
-		final String description = json.getString("description");
-		final String dirStr = json.getString(KEY_DIRECTION);
-		final IssueLinkType.Direction direction;
-		if ("OUTBOUND".equals(dirStr)) {
-			direction = IssueLinkType.Direction.OUTBOUND;
-		} else if ("INBOUND".equals(dirStr)) {
-			direction = IssueLinkType.Direction.INBOUND;
-		} else {
-			throw new JSONException("Invalid value of " + KEY_DIRECTION + " key: [" + dirStr + "]");
-		}
-		return new IssueLinkType(name, description, direction);
-	}
+    @Override
+    public IssueLinkType parse(JSONObject json) throws JSONException {
+        final String name = json.getString("name");
+        final String description = json.getString("description");
+        final String dirStr = json.getString(KEY_DIRECTION);
+        final IssueLinkType.Direction direction;
+        if ("OUTBOUND".equals(dirStr)) {
+            direction = IssueLinkType.Direction.OUTBOUND;
+        } else if ("INBOUND".equals(dirStr)) {
+            direction = IssueLinkType.Direction.INBOUND;
+        } else {
+            throw new JSONException("Invalid value of " + KEY_DIRECTION + " key: [" + dirStr + "]");
+        }
+        return new IssueLinkType(name, description, direction);
+    }
 }
 

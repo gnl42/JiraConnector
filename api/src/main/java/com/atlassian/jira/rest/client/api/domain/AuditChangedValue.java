@@ -2,7 +2,6 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.google.common.base.Objects;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -51,7 +50,7 @@ public class AuditChangedValue {
     public boolean equals(final Object o) {
         if (o instanceof AuditChangedValue) {
             final AuditChangedValue that = (AuditChangedValue) o;
-            return  Objects.equal(this.fieldName, that.fieldName)
+            return Objects.equal(this.fieldName, that.fieldName)
                     && Objects.equal(this.changedFrom, that.changedFrom)
                     && Objects.equal(this.changedTo, that.changedTo);
         }

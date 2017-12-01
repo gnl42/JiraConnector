@@ -27,51 +27,51 @@ import java.net.URI;
  * @since v0.1
  */
 public class Priority extends BasicPriority {
-	private final String statusColor;
-	private final String description;
-	private final URI iconUrl;
+    private final String statusColor;
+    private final String description;
+    private final URI iconUrl;
 
-	public Priority(URI self, @Nullable Long id, String name, String statusColor, String description, URI iconUri) {
-		super(self, id, name);
-		this.statusColor = statusColor;
-		this.description = description;
-		this.iconUrl = iconUri;
-	}
+    public Priority(URI self, @Nullable Long id, String name, String statusColor, String description, URI iconUri) {
+        super(self, id, name);
+        this.statusColor = statusColor;
+        this.description = description;
+        this.iconUrl = iconUri;
+    }
 
-	public String getStatusColor() {
-		return statusColor;
-	}
+    public String getStatusColor() {
+        return statusColor;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public URI getIconUri() {
-		return iconUrl;
-	}
+    public URI getIconUri() {
+        return iconUrl;
+    }
 
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().
-				add("description", description).
-				add("statusColor", statusColor).
-				add("iconUrl", iconUrl);
-	}
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().
+                add("description", description).
+                add("statusColor", statusColor).
+                add("iconUrl", iconUrl);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Priority) {
-			Priority that = (Priority) obj;
-			return super.equals(obj) && Objects.equal(this.description, that.description)
-					&& Objects.equal(this.statusColor, that.statusColor)
-					&& Objects.equal(this.iconUrl, that.iconUrl);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Priority) {
+            Priority that = (Priority) obj;
+            return super.equals(obj) && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.statusColor, that.statusColor)
+                    && Objects.equal(this.iconUrl, that.iconUrl);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, statusColor, iconUrl);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), description, statusColor, iconUrl);
+    }
 
 }

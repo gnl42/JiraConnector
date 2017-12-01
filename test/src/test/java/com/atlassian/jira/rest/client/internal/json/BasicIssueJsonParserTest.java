@@ -24,12 +24,12 @@ import static org.junit.Assert.assertEquals;
 
 public class BasicIssueJsonParserTest {
 
-	@Test
-	public void testParse() throws Exception {
-		BasicIssueJsonParser parser = new BasicIssueJsonParser();
-		final BasicIssue actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/basicIssue/valid.json"));
-		final BasicIssue expected = new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), "TST-7", 10040l);
-		assertEquals(expected, actual);
-	}
+    @Test
+    public void testParse() throws Exception {
+        BasicIssueJsonParser parser = new BasicIssueJsonParser();
+        final BasicIssue actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/basicIssue/valid.json"));
+        final BasicIssue expected = new BasicIssue(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), "TST-7", 10040l);
+        assertEquals(expected, actual);
+    }
 
 }

@@ -25,30 +25,30 @@ import java.net.URI;
 
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 
-	private final URI baseJiraUri;
+    private final URI baseJiraUri;
 
-	public RoleActorJsonParser(URI baseJiraUri) {
-		this.baseJiraUri = baseJiraUri;
-	}
+    public RoleActorJsonParser(URI baseJiraUri) {
+        this.baseJiraUri = baseJiraUri;
+    }
 
-	@Override
-	public RoleActor parse(final JSONObject json) throws JSONException {
-		// Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned for an admin role actor.
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
-		final String displayName = json.getString("displayName");
-		final String type = json.getString("type");
-		final String name = json.getString("name");
-		return new RoleActor(id, displayName, type, name, parseAvatarUrl(json));
-	}
+    @Override
+    public RoleActor parse(final JSONObject json) throws JSONException {
+        // Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned for an admin role actor.
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        final String displayName = json.getString("displayName");
+        final String type = json.getString("type");
+        final String name = json.getString("name");
+        return new RoleActor(id, displayName, type, name, parseAvatarUrl(json));
+    }
 
-	private URI parseAvatarUrl(final JSONObject json) {
-		final String pathToAvatar = JsonParseUtil.getOptionalString(json, "avatarUrl");
-		if (pathToAvatar != null) {
-			final URI avatarUri = UriBuilder.fromUri(pathToAvatar).build();
-			return avatarUri.isAbsolute() ? avatarUri : baseJiraUri.resolve(pathToAvatar);
-		} else {
-			return null;
-		}
-	}
+    private URI parseAvatarUrl(final JSONObject json) {
+        final String pathToAvatar = JsonParseUtil.getOptionalString(json, "avatarUrl");
+        if (pathToAvatar != null) {
+            final URI avatarUri = UriBuilder.fromUri(pathToAvatar).build();
+            return avatarUri.isAbsolute() ? avatarUri : baseJiraUri.resolve(pathToAvatar);
+        } else {
+            return null;
+        }
+    }
 
 }

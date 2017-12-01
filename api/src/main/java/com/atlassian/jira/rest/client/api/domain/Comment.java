@@ -29,116 +29,116 @@ import java.net.URI;
  * @since v0.1
  */
 public class Comment implements AddressableEntity {
-	private final URI self;
-	@Nullable
-	private final Long id;
-	@Nullable
-	private final BasicUser author;
-	@Nullable
-	private final BasicUser updateAuthor;
-	private final DateTime creationDate;
-	private final DateTime updateDate;
-	private final String body;
-	@Nullable
-	private final Visibility visibility;
+    private final URI self;
+    @Nullable
+    private final Long id;
+    @Nullable
+    private final BasicUser author;
+    @Nullable
+    private final BasicUser updateAuthor;
+    private final DateTime creationDate;
+    private final DateTime updateDate;
+    private final String body;
+    @Nullable
+    private final Visibility visibility;
 
-	public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility, @Nullable Long id) {
-		this.author = author;
-		this.updateAuthor = updateAuthor;
-		this.creationDate = creationDate;
-		this.updateDate = updateDate;
-		this.body = body;
-		this.self = self;
-		this.visibility = visibility;
-		this.id = id;
-	}
+    public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility, @Nullable Long id) {
+        this.author = author;
+        this.updateAuthor = updateAuthor;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
+        this.body = body;
+        this.self = self;
+        this.visibility = visibility;
+        this.id = id;
+    }
 
-	public static Comment valueOf(String body) {
-		return new Comment(null, body, null, null, null, null, null, null);
-	}
+    public static Comment valueOf(String body) {
+        return new Comment(null, body, null, null, null, null, null, null);
+    }
 
-	public static Comment createWithRoleLevel(String body, String roleLevel) {
-		return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel), null);
-	}
+    public static Comment createWithRoleLevel(String body, String roleLevel) {
+        return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel), null);
+    }
 
-	public static Comment createWithGroupLevel(String body, String groupLevel) {
-		return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel), null);
-	}
+    public static Comment createWithGroupLevel(String body, String groupLevel) {
+        return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel), null);
+    }
 
-	public boolean wasUpdated() {
-		return updateDate.isAfter(creationDate);
-	}
+    public boolean wasUpdated() {
+        return updateDate.isAfter(creationDate);
+    }
 
-	public String getBody() {
-		return body;
-	}
+    public String getBody() {
+        return body;
+    }
 
-	@Nullable
-	public Long getId() {
-		return id;
-	}
+    @Nullable
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	@Nullable
-	public BasicUser getAuthor() {
-		return author;
-	}
+    @Nullable
+    public BasicUser getAuthor() {
+        return author;
+    }
 
-	@Nullable
-	public BasicUser getUpdateAuthor() {
-		return updateAuthor;
-	}
+    @Nullable
+    public BasicUser getUpdateAuthor() {
+        return updateAuthor;
+    }
 
-	public DateTime getCreationDate() {
-		return creationDate;
-	}
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
 
-	public DateTime getUpdateDate() {
-		return updateDate;
-	}
+    public DateTime getUpdateDate() {
+        return updateDate;
+    }
 
-	@Nullable
-	public Visibility getVisibility() {
-		return visibility;
-	}
+    @Nullable
+    public Visibility getVisibility() {
+        return visibility;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("self", self)
-				.add("id", id)
-				.add("body", body)
-				.add("author", author)
-				.add("updateAuthor", updateAuthor)
-				.add("creationDate", creationDate)
-				.add("visibility", visibility)
-				.add("updateDate", updateDate).toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("self", self)
+                .add("id", id)
+                .add("body", body)
+                .add("author", author)
+                .add("updateAuthor", updateAuthor)
+                .add("creationDate", creationDate)
+                .add("visibility", visibility)
+                .add("updateDate", updateDate).toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Comment) {
-			Comment that = (Comment) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.body, that.body)
-					&& Objects.equal(this.author, that.author)
-					&& Objects.equal(this.updateAuthor, that.updateAuthor)
-					&& Objects.equal(this.creationDate, that.creationDate)
-					&& Objects.equal(this.updateDate, that.updateDate)
-					&& Objects.equal(this.visibility, that.visibility)
-					&& Objects.equal(this.body, that.body);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Comment) {
+            Comment that = (Comment) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.body, that.body)
+                    && Objects.equal(this.author, that.author)
+                    && Objects.equal(this.updateAuthor, that.updateAuthor)
+                    && Objects.equal(this.creationDate, that.creationDate)
+                    && Objects.equal(this.updateDate, that.updateDate)
+                    && Objects.equal(this.visibility, that.visibility)
+                    && Objects.equal(this.body, that.body);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, id, body, author, updateAuthor, creationDate, updateDate, visibility);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, id, body, author, updateAuthor, creationDate, updateDate, visibility);
+    }
 
 }

@@ -23,11 +23,11 @@ import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonO
 import static org.junit.Assert.assertEquals;
 
 public class VisibilityJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		VisibilityJsonParser parser = new VisibilityJsonParser();
-		assertEquals(Visibility.group("jira-users"), parser.parse(getJsonObjectFromResource("/json/visibility/group.json")));
-		assertEquals(Visibility.role("Developers"), parser.parse(getJsonObjectFromResource("/json/visibility/role.json")));
+    @Test
+    public void testParse() throws Exception {
+        VisibilityJsonParser parser = new VisibilityJsonParser();
+        assertEquals(Visibility.group("jira-users"), parser.parse(getJsonObjectFromResource("/json/visibility/group.json")));
+        assertEquals(Visibility.role("Developers"), parser.parse(getJsonObjectFromResource("/json/visibility/role.json")));
 
-	}
+    }
 }

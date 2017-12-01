@@ -27,26 +27,26 @@ import java.util.Set;
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class OperationGroupJsonParserTest {
 
-	@Test
-	public void testParse() throws Exception {
-		// given
-		OperationGroupJsonParser parser = new OperationGroupJsonParser();
+    @Test
+    public void testParse() throws Exception {
+        // given
+        OperationGroupJsonParser parser = new OperationGroupJsonParser();
 
-		// when
-		OperationGroup actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/operationGroup/valid.json"));
+        // when
+        OperationGroup actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/operationGroup/valid.json"));
 
-		// then
-		String id = "opsbar-transitions";
-		Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
-				"Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
-				10, null));
-		Set<OperationGroup> groups = Collections.singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
-				new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
-		int weight = 20;
-		assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));
-	}
+        // then
+        String id = "opsbar-transitions";
+        Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+                "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+                10, null));
+        Set<OperationGroup> groups = Collections.singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
+                new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
+        int weight = 20;
+        assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));
+    }
 }

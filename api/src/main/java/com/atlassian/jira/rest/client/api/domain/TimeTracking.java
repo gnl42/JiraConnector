@@ -26,68 +26,68 @@ import javax.annotation.Nullable;
  * @since com.atlassian.jira.rest.client.api 0.3, server 4.4
  */
 public class TimeTracking {
-	@Nullable
-	private final Integer originalEstimateMinutes;
+    @Nullable
+    private final Integer originalEstimateMinutes;
 
-	@Nullable
-	private final Integer remainingEstimateMinutes;
-	@Nullable
-	private final Integer timeSpentMinutes;
+    @Nullable
+    private final Integer remainingEstimateMinutes;
+    @Nullable
+    private final Integer timeSpentMinutes;
 
-	public TimeTracking(@Nullable Integer originalEstimateMinutes, @Nullable Integer remainingEstimateMinutes, @Nullable Integer timeSpentMinutes) {
-		this.originalEstimateMinutes = originalEstimateMinutes;
-		this.remainingEstimateMinutes = remainingEstimateMinutes;
-		this.timeSpentMinutes = timeSpentMinutes;
-	}
+    public TimeTracking(@Nullable Integer originalEstimateMinutes, @Nullable Integer remainingEstimateMinutes, @Nullable Integer timeSpentMinutes) {
+        this.originalEstimateMinutes = originalEstimateMinutes;
+        this.remainingEstimateMinutes = remainingEstimateMinutes;
+        this.timeSpentMinutes = timeSpentMinutes;
+    }
 
-	/**
-	 * @return original estimation [in minutes] for this issue or <code>null</code> when time spent information is not available
-	 */
-	@Nullable
-	public Integer getOriginalEstimateMinutes() {
-		return originalEstimateMinutes;
-	}
+    /**
+     * @return original estimation [in minutes] for this issue or <code>null</code> when time spent information is not available
+     */
+    @Nullable
+    public Integer getOriginalEstimateMinutes() {
+        return originalEstimateMinutes;
+    }
 
-	/**
-	 * @return original remaining estimated time [in minutes] for this issue or <code>null</code> when such estimation was not provided
-	 */
-	@Nullable
-	public Integer getRemainingEstimateMinutes() {
-		return remainingEstimateMinutes;
-	}
+    /**
+     * @return original remaining estimated time [in minutes] for this issue or <code>null</code> when such estimation was not provided
+     */
+    @Nullable
+    public Integer getRemainingEstimateMinutes() {
+        return remainingEstimateMinutes;
+    }
 
-	/**
-	 * @return time spent [in minutes] on this issue or <code>null</code> when time spent information is not available to the caller
-	 *         (in some strange circumstances)
-	 */
-	@Nullable
-	public Integer getTimeSpentMinutes() {
-		return timeSpentMinutes;
-	}
+    /**
+     * @return time spent [in minutes] on this issue or <code>null</code> when time spent information is not available to the caller
+     * (in some strange circumstances)
+     */
+    @Nullable
+    public Integer getTimeSpentMinutes() {
+        return timeSpentMinutes;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("originalEstimateMinutes", originalEstimateMinutes).
-				add("remainingEstimateMinutes", remainingEstimateMinutes).
-				add("timeSpentMinutes", timeSpentMinutes).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("originalEstimateMinutes", originalEstimateMinutes).
+                add("remainingEstimateMinutes", remainingEstimateMinutes).
+                add("timeSpentMinutes", timeSpentMinutes).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof TimeTracking) {
-			TimeTracking that = (TimeTracking) obj;
-			return Objects.equal(this.originalEstimateMinutes, that.originalEstimateMinutes)
-					&& Objects.equal(this.timeSpentMinutes, that.timeSpentMinutes)
-					&& Objects.equal(this.remainingEstimateMinutes, that.remainingEstimateMinutes);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TimeTracking) {
+            TimeTracking that = (TimeTracking) obj;
+            return Objects.equal(this.originalEstimateMinutes, that.originalEstimateMinutes)
+                    && Objects.equal(this.timeSpentMinutes, that.timeSpentMinutes)
+                    && Objects.equal(this.remainingEstimateMinutes, that.remainingEstimateMinutes);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(originalEstimateMinutes, remainingEstimateMinutes, timeSpentMinutes);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(originalEstimateMinutes, remainingEstimateMinutes, timeSpentMinutes);
+    }
 
 }

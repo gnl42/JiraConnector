@@ -16,30 +16,30 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
-import com.atlassian.jira.rest.client.test.matchers.JSONObjectMatcher;
 import com.atlassian.jira.rest.client.api.domain.Visibility;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
+import com.atlassian.jira.rest.client.test.matchers.JSONObjectMatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class VisibilityJsonGeneratorTest {
 
-	private final VisibilityJsonGenerator generator = new VisibilityJsonGenerator();
+    private final VisibilityJsonGenerator generator = new VisibilityJsonGenerator();
 
-	@Test
-	public void testGenerateWithGroupType() throws Exception {
-		final Visibility visibility = Visibility.group("jira-users");
-		Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
-				ResourceUtil.getJsonObjectFromResource("/json/visibility/group.json")
-		));
-	}
+    @Test
+    public void testGenerateWithGroupType() throws Exception {
+        final Visibility visibility = Visibility.group("jira-users");
+        Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
+                ResourceUtil.getJsonObjectFromResource("/json/visibility/group.json")
+        ));
+    }
 
-	@Test
-	public void testGenerateWithRoleType() throws Exception {
-		final Visibility visibility = Visibility.role("Developers");
-		Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
-				ResourceUtil.getJsonObjectFromResource("/json/visibility/role.json")
-		));
-	}
+    @Test
+    public void testGenerateWithRoleType() throws Exception {
+        final Visibility visibility = Visibility.role("Developers");
+        Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
+                ResourceUtil.getJsonObjectFromResource("/json/visibility/role.json")
+        ));
+    }
 
 }

@@ -26,83 +26,83 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class OperationsTest {
 
-	@Test
-	public void testGetLinkById() throws Exception {
-		Operations operations = new Operations(Collections.singleton(new OperationGroup(
-				null,
-				Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
-				EMPTY_GROUPS,
-				null,
-				null
-		)));
+    @Test
+    public void testGetLinkById() throws Exception {
+        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+                null,
+                Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
+                EMPTY_GROUPS,
+                null,
+                null
+        )));
 
-		Operation operation = operations.getOperationById("action_id_4");
+        Operation operation = operations.getOperationById("action_id_4");
 
-		assertThat(operation, allOf(
-						instanceOf(OperationLink.class),
-						hasProperty("id", is("action_id_4"))
-				)
-		);
-	}
+        assertThat(operation, allOf(
+                instanceOf(OperationLink.class),
+                hasProperty("id", is("action_id_4"))
+                )
+        );
+    }
 
-	@Test
-	public void testGetSelfGroupById() throws Exception {
-		Operations operations = new Operations(Collections.singleton(new OperationGroup(
-				"group_self",
-				EMPTY_LINKS,
-				EMPTY_GROUPS,
-				null,
-				null
-		)));
+    @Test
+    public void testGetSelfGroupById() throws Exception {
+        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+                "group_self",
+                EMPTY_LINKS,
+                EMPTY_GROUPS,
+                null,
+                null
+        )));
 
-		Operation operation = operations.getOperationById("group_self");
+        Operation operation = operations.getOperationById("group_self");
 
-		assertThat(operation, allOf(
-						instanceOf(OperationGroup.class),
-						hasProperty("id", is("group_self"))
-				)
-		);
-	}
+        assertThat(operation, allOf(
+                instanceOf(OperationGroup.class),
+                hasProperty("id", is("group_self"))
+                )
+        );
+    }
 
-	@Test
-	public void testGetGroupById() throws Exception {
-		Operations operations = new Operations(Collections.singleton(new OperationGroup(
-				null,
-				EMPTY_LINKS,
-				Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
-				null,
-				null
-		)));
+    @Test
+    public void testGetGroupById() throws Exception {
+        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+                null,
+                EMPTY_LINKS,
+                Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
+                null,
+                null
+        )));
 
-		Operation operation = operations.getOperationById("group_5");
+        Operation operation = operations.getOperationById("group_5");
 
-		assertThat(operation, allOf(
-						instanceOf(OperationGroup.class),
-						hasProperty("id", is("group_5"))
-				)
-		);
-	}
+        assertThat(operation, allOf(
+                instanceOf(OperationGroup.class),
+                hasProperty("id", is("group_5"))
+                )
+        );
+    }
 
-	@Test
-	public void testGetHeaderById() throws Exception {
-		Operations operations = new Operations(Collections.singleton(new OperationGroup(
-				null,
-				EMPTY_LINKS,
-				EMPTY_GROUPS,
-				new OperationHeader("header_6", "header_6", null, null),
-				null
-		)));
+    @Test
+    public void testGetHeaderById() throws Exception {
+        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+                null,
+                EMPTY_LINKS,
+                EMPTY_GROUPS,
+                new OperationHeader("header_6", "header_6", null, null),
+                null
+        )));
 
-		Operation operation = operations.getOperationById("header_6");
+        Operation operation = operations.getOperationById("header_6");
 
-		assertThat(operation, allOf(
-						instanceOf(OperationHeader.class),
-						hasProperty("id", is("header_6"))
-				)
-		);
-	}
+        assertThat(operation, allOf(
+                instanceOf(OperationHeader.class),
+                hasProperty("id", is("header_6"))
+                )
+        );
+    }
 }

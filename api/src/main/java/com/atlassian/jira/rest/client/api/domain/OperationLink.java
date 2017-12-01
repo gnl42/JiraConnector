@@ -27,94 +27,99 @@ import javax.annotation.Nullable;
  * @since 2.0
  */
 public class OperationLink implements Operation {
-	@Nullable private final String id;
-	@Nullable private final String styleClass;
-	private final String label;
-	@Nullable private final String title;
-	private final String href;
-	@Nullable private final Integer weight;
-	@Nullable private final String iconClass;
+    @Nullable
+    private final String id;
+    @Nullable
+    private final String styleClass;
+    private final String label;
+    @Nullable
+    private final String title;
+    private final String href;
+    @Nullable
+    private final Integer weight;
+    @Nullable
+    private final String iconClass;
 
-	public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title,
-			final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
-		this.id = id;
-		this.styleClass = styleClass;
-		this.iconClass = iconClass;
-		this.label = label;
-		this.title = title;
-		this.href = href;
-		this.weight = weight;
-	}
+    public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title,
+                         final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
+        this.id = id;
+        this.styleClass = styleClass;
+        this.iconClass = iconClass;
+        this.label = label;
+        this.title = title;
+        this.href = href;
+        this.weight = weight;
+    }
 
-	@Nullable
-	@Override
-	public String getId() {
-		return id;
-	}
+    @Nullable
+    @Override
+    public String getId() {
+        return id;
+    }
 
-	@Override
-	public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
-		return visitor.visit(this);
-	}
+    @Override
+    public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
 
-	@Nullable
-	public String getStyleClass() {
-		return styleClass;
-	}
+    @Nullable
+    public String getStyleClass() {
+        return styleClass;
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public String getLabel() {
+        return label;
+    }
 
-	@Nullable
-	public String getTitle() {
-		return title;
-	}
+    @Nullable
+    public String getTitle() {
+        return title;
+    }
 
-	public String getHref() {
-		return href;
-	}
+    public String getHref() {
+        return href;
+    }
 
-	@Nullable
-	public Integer getWeight() {
-		return weight;
-	}
+    @Nullable
+    public Integer getWeight() {
+        return weight;
+    }
 
-	@Nullable
-	public String getIconClass() {
-		return iconClass;
-	}
+    @Nullable
+    public String getIconClass() {
+        return iconClass;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof OperationLink) {
-			OperationLink that = (OperationLink) o;
-			return Objects.equal(id, that.id)
-					&& Objects.equal(styleClass, that.styleClass)
-					&& Objects.equal(label, that.label)
-					&& Objects.equal(title, that.title)
-					&& Objects.equal(href, that.href)
-					&& Objects.equal(weight, that.weight)
-					&& Objects.equal(iconClass, that.iconClass);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof OperationLink) {
+            OperationLink that = (OperationLink) o;
+            return Objects.equal(id, that.id)
+                    && Objects.equal(styleClass, that.styleClass)
+                    && Objects.equal(label, that.label)
+                    && Objects.equal(title, that.title)
+                    && Objects.equal(href, that.href)
+                    && Objects.equal(weight, that.weight)
+                    && Objects.equal(iconClass, that.iconClass);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, styleClass, label, title, href, weight, iconClass);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, styleClass, label, title, href, weight, iconClass);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("id", id)
-				.add("styleClass", styleClass)
-				.add("label", label)
-				.add("title", title)
-				.add("href", href)
-				.add("weight", weight)
-				.add("iconClass", iconClass)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("styleClass", styleClass)
+                .add("label", label)
+                .add("title", title)
+                .add("href", href)
+                .add("weight", weight)
+                .add("iconClass", iconClass)
+                .toString();
+    }
 }

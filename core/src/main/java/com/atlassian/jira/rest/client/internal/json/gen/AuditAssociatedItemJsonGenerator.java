@@ -5,7 +5,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
- *
  * @since v2.0
  */
 public class AuditAssociatedItemJsonGenerator implements JsonGenerator<AuditAssociatedItem> {

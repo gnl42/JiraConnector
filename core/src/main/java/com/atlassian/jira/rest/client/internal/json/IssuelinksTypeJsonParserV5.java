@@ -23,15 +23,15 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class IssuelinksTypeJsonParserV5 implements JsonObjectParser<IssuelinksType> {
-	@Override
-	public IssuelinksType parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String id = json.getString("id");
-		final String name = json.getString("name");
-		final String inward = json.getString("inward");
-		final String outward = json.getString("outward");
+    @Override
+    public IssuelinksType parse(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String id = json.getString("id");
+        final String name = json.getString("name");
+        final String inward = json.getString("inward");
+        final String outward = json.getString("outward");
 
-		return new IssuelinksType(selfUri, id, name, inward, outward);
-	}
+        return new IssuelinksType(selfUri, id, name, inward, outward);
+    }
 }
 

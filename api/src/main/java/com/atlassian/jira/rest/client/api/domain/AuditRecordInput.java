@@ -25,9 +25,9 @@ public class AuditRecordInput {
     private final Iterable<AuditChangedValue> changedValues;
 
     public AuditRecordInput(final String category, final String summary,
-                       @Nullable final AuditAssociatedItem objectItem,
-                       @Nullable final Iterable<AuditAssociatedItem> associatedItem,
-                       @Nullable final Iterable<AuditChangedValue> changedValues) {
+                            @Nullable final AuditAssociatedItem objectItem,
+                            @Nullable final Iterable<AuditAssociatedItem> associatedItem,
+                            @Nullable final Iterable<AuditChangedValue> changedValues) {
         this.summary = summary;
         this.category = category;
         this.objectItem = objectItem;

@@ -29,33 +29,33 @@ import java.util.Map;
  * @since v1.0
  */
 public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<ComplexIssueInputFieldValue> {
-	@Override
-	public JSONObject generate(ComplexIssueInputFieldValue bean) throws JSONException {
-		final JSONObject json = new JSONObject();
-		for (Map.Entry<String, Object> entry : bean.getValuesMap().entrySet()) {
-			json.put(entry.getKey(), generateFieldValueForJson(entry.getValue()));
-		}
-		return json;
-	}
+    @Override
+    public JSONObject generate(ComplexIssueInputFieldValue bean) throws JSONException {
+        final JSONObject json = new JSONObject();
+        for (Map.Entry<String, Object> entry : bean.getValuesMap().entrySet()) {
+            json.put(entry.getKey(), generateFieldValueForJson(entry.getValue()));
+        }
+        return json;
+    }
 
-	public Object generateFieldValueForJson(Object rawValue) throws JSONException {
-		if (rawValue == null) {
-			return JSONObject.NULL;
-		} else if (rawValue instanceof ComplexIssueInputFieldValue) {
-			return generate((ComplexIssueInputFieldValue) rawValue);
-		} else if (rawValue instanceof Iterable) {
-			// array with values
-			final JSONArray array = new JSONArray();
-			for (Object value : (Iterable) rawValue) {
-				array.put(generateFieldValueForJson(value));
-			}
-			return array;
-		} else if (rawValue instanceof CharSequence) {
-			return rawValue.toString();
-		} else if (rawValue instanceof Number) {
-			return rawValue;
-		} else {
-			throw new JSONException("Cannot generate value - unknown type for me: " + rawValue.getClass());
-		}
-	}
+    public Object generateFieldValueForJson(Object rawValue) throws JSONException {
+        if (rawValue == null) {
+            return JSONObject.NULL;
+        } else if (rawValue instanceof ComplexIssueInputFieldValue) {
+            return generate((ComplexIssueInputFieldValue) rawValue);
+        } else if (rawValue instanceof Iterable) {
+            // array with values
+            final JSONArray array = new JSONArray();
+            for (Object value : (Iterable) rawValue) {
+                array.put(generateFieldValueForJson(value));
+            }
+            return array;
+        } else if (rawValue instanceof CharSequence) {
+            return rawValue.toString();
+        } else if (rawValue instanceof Number) {
+            return rawValue;
+        } else {
+            throw new JSONException("Cannot generate value - unknown type for me: " + rawValue.getClass());
+        }
+    }
 }

@@ -29,67 +29,67 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicComponent implements AddressableEntity, NamedEntity {
-	@Nullable
-	private final Long id;
-	private final URI self;
-	private final String name;
-	@Nullable
-	private final String description;
+    @Nullable
+    private final Long id;
+    private final URI self;
+    private final String name;
+    @Nullable
+    private final String description;
 
-	public BasicComponent(URI self, @Nullable Long id, String name, @Nullable String description) {
-		this.self = self;
-		this.id = id;
-		this.name = name;
-		this.description = description;
-	}
+    public BasicComponent(URI self, @Nullable Long id, String name, @Nullable String description) {
+        this.self = self;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Nullable
-	public Long getId() {
-		return id;
-	}
+    @Nullable
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * @return optional description for this project (as defined by the project admin)
-	 */
-	@Nullable
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * @return optional description for this project (as defined by the project admin)
+     */
+    @Nullable
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("id", id).
-				add("self", self).
-				add("name", name).
-				add("description", description).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("id", id).
+                add("self", self).
+                add("name", name).
+                add("description", description).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof BasicComponent) {
-			BasicComponent that = (BasicComponent) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.description, that.description);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BasicComponent) {
+            BasicComponent that = (BasicComponent) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.name, that.name)
+                    && Objects.equal(this.description, that.description);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, name, description);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, name, description);
+    }
 
 }

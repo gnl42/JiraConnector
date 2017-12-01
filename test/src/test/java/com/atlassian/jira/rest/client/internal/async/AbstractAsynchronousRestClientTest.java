@@ -28,41 +28,41 @@ import java.util.Collection;
 
 public class AbstractAsynchronousRestClientTest {
 
-	private static final int BAD_REQUEST = 400;
+    private static final int BAD_REQUEST = 400;
 
-	@Test
-	public void testExtractErrors() throws JSONException {
-		final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
-		final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-		final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
-		Assert.assertThat(errorCollection.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("abcfsd"));
-	}
+    @Test
+    public void testExtractErrors() throws JSONException {
+        final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
+        final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
+        final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
+        Assert.assertThat(errorCollection.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("abcfsd"));
+    }
 
-	@Test
-	public void testExtractErrors2() throws JSONException {
-		final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
-		final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-		final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
-		Assert.assertThat(errorCollection.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b", "xxx"));
-	}
+    @Test
+    public void testExtractErrors2() throws JSONException {
+        final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
+        final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
+        final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
+        Assert.assertThat(errorCollection.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b", "xxx"));
+    }
 
-	@Test
-	public void testExtractErrors3() throws JSONException {
-		final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
-		final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-		final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
-		Assert.assertThat(errorCollection.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("aa", "bb"));
-	}
+    @Test
+    public void testExtractErrors3() throws JSONException {
+        final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
+        final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
+        final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
+        Assert.assertThat(errorCollection.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("aa", "bb"));
+    }
 
-	@Test
-	public void testExtractErrors4() throws JSONException {
-		final String str = ResourceUtil.getStringFromResource("/json/error/valid4.json");
-		final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-		final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
+    @Test
+    public void testExtractErrors4() throws JSONException {
+        final String str = ResourceUtil.getStringFromResource("/json/error/valid4.json");
+        final Collection<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
+        final ErrorCollection errorCollection = Iterators.getOnlyElement(errors.iterator());
 
-		Assert.assertThat(errorCollection.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b"));
-		Assert.assertEquals(errorCollection.getErrors().get("a"), "y");
-		Assert.assertEquals(errorCollection.getErrors().get("c"), "z");
-	}
+        Assert.assertThat(errorCollection.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b"));
+        Assert.assertEquals(errorCollection.getErrors().get("a"), "y");
+        Assert.assertEquals(errorCollection.getErrors().get("c"), "z");
+    }
 
 }

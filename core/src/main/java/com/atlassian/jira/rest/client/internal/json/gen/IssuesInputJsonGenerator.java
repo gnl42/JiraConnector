@@ -30,17 +30,17 @@ import java.util.List;
  */
 public class IssuesInputJsonGenerator implements JsonGenerator<Iterable<IssueInput>> {
 
-	private final IssueInputJsonGenerator issueInputJsonGenerator = new IssueInputJsonGenerator();
+    private final IssueInputJsonGenerator issueInputJsonGenerator = new IssueInputJsonGenerator();
 
-	@Override
-	public JSONObject generate(final Iterable<IssueInput> issues) throws JSONException {
-		final JSONObject issueUpdates = new JSONObject();
-		final List<JSONObject> obj = Lists.newArrayList();
+    @Override
+    public JSONObject generate(final Iterable<IssueInput> issues) throws JSONException {
+        final JSONObject issueUpdates = new JSONObject();
+        final List<JSONObject> obj = Lists.newArrayList();
 
-		for (final IssueInput issue : issues) {
-			obj.add(issueInputJsonGenerator.generate(issue));
-		}
-		issueUpdates.put("issueUpdates", obj);
-		return issueUpdates;
-	}
+        for (final IssueInput issue : issues) {
+            obj.add(issueInputJsonGenerator.generate(issue));
+        }
+        issueUpdates.put("issueUpdates", obj);
+        return issueUpdates;
+    }
 }

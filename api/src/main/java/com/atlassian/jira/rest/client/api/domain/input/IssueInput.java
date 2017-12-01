@@ -32,36 +32,36 @@ import java.util.Map;
  */
 public class IssueInput {
 
-	private final Map<String, FieldInput> fields;
-	private final List<PropertyInput> properties;
+    private final Map<String, FieldInput> fields;
+    private final List<PropertyInput> properties;
 
-	public static IssueInput createWithFields(FieldInput... fields) {
-		return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<PropertyInput>());
-	}
+    public static IssueInput createWithFields(FieldInput... fields) {
+        return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<PropertyInput>());
+    }
 
-	public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {
-		this.fields = fields;
-		this.properties = properties;
-	}
+    public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {
+        this.fields = fields;
+        this.properties = properties;
+    }
 
-	public Map<String, FieldInput> getFields() {
-		return fields;
-	}
+    public Map<String, FieldInput> getFields() {
+        return fields;
+    }
 
-	public List<PropertyInput> getProperties() {
-		return properties;
-	}
+    public List<PropertyInput> getProperties() {
+        return properties;
+    }
 
-	@SuppressWarnings("unused")
-	public FieldInput getField(String id) {
-		return fields.get(id);
-	}
+    @SuppressWarnings("unused")
+    public FieldInput getField(String id) {
+        return fields.get(id);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("fields", fields)
-				.add("properties", properties)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("fields", fields)
+                .add("properties", properties)
+                .toString();
+    }
 }

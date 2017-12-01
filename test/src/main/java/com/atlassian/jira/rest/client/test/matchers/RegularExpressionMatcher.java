@@ -22,27 +22,27 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 import java.util.regex.Pattern;
 
 public class RegularExpressionMatcher extends TypeSafeMatcher<String> {
-	private final Pattern pattern;
+    private final Pattern pattern;
 
-	public RegularExpressionMatcher(Pattern pattern) {
-		this.pattern = pattern;
-	}
+    public RegularExpressionMatcher(Pattern pattern) {
+        this.pattern = pattern;
+    }
 
-	public static RegularExpressionMatcher matchesRegexp(final Pattern pattern) {
-		return new RegularExpressionMatcher(pattern);
-	}
+    public static RegularExpressionMatcher matchesRegexp(final Pattern pattern) {
+        return new RegularExpressionMatcher(pattern);
+    }
 
-	public static RegularExpressionMatcher matchesRegexp(final String pattern) {
-		return new RegularExpressionMatcher(Pattern.compile(pattern));
-	}
+    public static RegularExpressionMatcher matchesRegexp(final String pattern) {
+        return new RegularExpressionMatcher(Pattern.compile(pattern));
+    }
 
-	@Override
-	public boolean matchesSafely(String given) {
-		return pattern.matcher(given).matches();
-	}
+    @Override
+    public boolean matchesSafely(String given) {
+        return pattern.matcher(given).matches();
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("string matching regular expression " + pattern);
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("string matching regular expression " + pattern);
+    }
 }

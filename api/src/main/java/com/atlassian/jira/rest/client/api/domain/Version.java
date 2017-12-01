@@ -30,88 +30,88 @@ import java.net.URI;
  * @since v0.1
  */
 public class Version implements AddressableEntity, NamedEntity {
-	private final URI self;
-	@Nullable
-	private final Long id;
-	private final String description;
-	private final String name;
-	private final boolean isArchived;
-	private final boolean isReleased;
-	@Nullable
-	private final DateTime releaseDate;
+    private final URI self;
+    @Nullable
+    private final Long id;
+    private final String description;
+    private final String name;
+    private final boolean isArchived;
+    private final boolean isReleased;
+    @Nullable
+    private final DateTime releaseDate;
 
-	public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable DateTime releaseDate) {
-		this.self = self;
-		this.id = id;
-		this.description = description;
-		this.name = name;
-		isArchived = archived;
-		isReleased = released;
-		this.releaseDate = releaseDate;
-	}
+    public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable DateTime releaseDate) {
+        this.self = self;
+        this.id = id;
+        this.description = description;
+        this.name = name;
+        isArchived = archived;
+        isReleased = released;
+        this.releaseDate = releaseDate;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	@Nullable
-	public Long getId() {
-		return id;
-	}
+    @Nullable
+    public Long getId() {
+        return id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean isArchived() {
-		return isArchived;
-	}
+    public boolean isArchived() {
+        return isArchived;
+    }
 
-	public boolean isReleased() {
-		return isReleased;
-	}
+    public boolean isReleased() {
+        return isReleased;
+    }
 
-	@Nullable
-	public DateTime getReleaseDate() {
-		return releaseDate;
-	}
+    @Nullable
+    public DateTime getReleaseDate() {
+        return releaseDate;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("id", id).
-				add("name", name).
-				add("description", description).
-				add("isArchived", isArchived).
-				add("isReleased", isReleased).
-				add("releaseDate", releaseDate).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("id", id).
+                add("name", name).
+                add("description", description).
+                add("isArchived", isArchived).
+                add("isReleased", isReleased).
+                add("releaseDate", releaseDate).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Version) {
-			Version that = (Version) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.isArchived, that.isArchived)
-					&& Objects.equal(this.isReleased, that.isReleased)
-					&& Objects.equal(this.releaseDate, that.releaseDate);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Version) {
+            Version that = (Version) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.name, that.name)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.isArchived, that.isArchived)
+                    && Objects.equal(this.isReleased, that.isReleased)
+                    && Objects.equal(this.releaseDate, that.releaseDate);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, id, name, description, isArchived, isReleased, releaseDate);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, id, name, description, isArchived, isReleased, releaseDate);
+    }
 
 }

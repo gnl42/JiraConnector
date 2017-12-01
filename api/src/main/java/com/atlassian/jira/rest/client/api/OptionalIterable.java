@@ -13,38 +13,38 @@ import java.util.Iterator;
  */
 public class OptionalIterable<T> implements Iterable<T> {
 
-	@SuppressWarnings("unchecked")
-	private static final OptionalIterable absentInstance = new OptionalIterable(null);
+    @SuppressWarnings("unchecked")
+    private static final OptionalIterable absentInstance = new OptionalIterable(null);
 
-	@Nullable
-	private final Iterable<T> iterable;
+    @Nullable
+    private final Iterable<T> iterable;
 
-	@SuppressWarnings("unchecked")
-	public static <T> OptionalIterable<T> absent() {
-		return absentInstance;
-	}
+    @SuppressWarnings("unchecked")
+    public static <T> OptionalIterable<T> absent() {
+        return absentInstance;
+    }
 
-	public OptionalIterable(@Nullable Iterable<T> iterable) {
-		this.iterable = iterable;
-	}
+    public OptionalIterable(@Nullable Iterable<T> iterable) {
+        this.iterable = iterable;
+    }
 
-	/**
-	 * @return iterator for original iterable if {@link OptionalIterable#isSupported} is true,
-	 *         or empty iterator in other case.
-	 */
-	@Override
-	public Iterator<T> iterator() {
-		return isSupported()
-				? iterable.iterator()
-				: Collections.<T>emptyList().iterator();
-	}
+    /**
+     * @return iterator for original iterable if {@link OptionalIterable#isSupported} is true,
+     * or empty iterator in other case.
+     */
+    @Override
+    public Iterator<T> iterator() {
+        return isSupported()
+                ? iterable.iterator()
+                : Collections.<T>emptyList().iterator();
+    }
 
-	/**
-	 * @return true if server supports this field
-	 */
-	public boolean isSupported() {
-		return iterable != null;
-	}
+    /**
+     * @return true if server supports this field
+     */
+    public boolean isSupported() {
+        return iterable != null;
+    }
 
     @Override
     public String toString() {

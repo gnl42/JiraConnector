@@ -1,7 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.OptionalIterable;
-
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -115,7 +114,7 @@ public class AuditRecord {
     public boolean equals(final Object o) {
         if (o instanceof AuditRecord) {
             final AuditRecord that = (AuditRecord) o;
-            return  Objects.equal(this.id, that.id)
+            return Objects.equal(this.id, that.id)
                     && Objects.equal(this.summary, that.summary)
                     && Objects.equal(this.remoteAddress, that.remoteAddress)
                     && Objects.equal(this.created, that.created)

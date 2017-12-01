@@ -32,132 +32,132 @@ import java.util.NoSuchElementException;
  */
 public class EntityHelper {
 
-	public static Function<IdentifiableEntity<String>, String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
-		@Override
-		public String apply(IdentifiableEntity<String> entity) {
-			return entity.getId();
-		}
-	};
+    public static Function<IdentifiableEntity<String>, String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
+        @Override
+        public String apply(IdentifiableEntity<String> entity) {
+            return entity.getId();
+        }
+    };
 
-	public static Function<NamedEntity, String> GET_ENTITY_NAME_FUNCTION = new Function<NamedEntity, String>() {
-		@Override
-		public String apply(NamedEntity entity) {
-			return entity.getName();
-		}
-	};
+    public static Function<NamedEntity, String> GET_ENTITY_NAME_FUNCTION = new Function<NamedEntity, String>() {
+        @Override
+        public String apply(NamedEntity entity) {
+            return entity.getName();
+        }
+    };
 
-	public static Iterable<String> toNamesList(Iterable<? extends NamedEntity> items) {
-		return Iterables.transform(items, GET_ENTITY_NAME_FUNCTION);
-	}
+    public static Iterable<String> toNamesList(Iterable<? extends NamedEntity> items) {
+        return Iterables.transform(items, GET_ENTITY_NAME_FUNCTION);
+    }
 
-	public static Iterable<String> toFileNamesList(Iterable<? extends Attachment> attachments) {
-		return Iterables.transform(attachments, new Function<Attachment, String>() {
-			@Override
-			public String apply(Attachment a) {
-				return a.getFilename();
-			}
-		});
-	}
+    public static Iterable<String> toFileNamesList(Iterable<? extends Attachment> attachments) {
+        return Iterables.transform(attachments, new Function<Attachment, String>() {
+            @Override
+            public String apply(Attachment a) {
+                return a.getFilename();
+            }
+        });
+    }
 
-	@SuppressWarnings("unused")
-	public static <T> Iterable<String> toStringIdList(Iterable<IdentifiableEntity<T>> items) {
-		return Iterables.transform(items, new Function<IdentifiableEntity<T>, String>() {
-			@Override
-			public String apply(IdentifiableEntity<T> from) {
-				return from.getId() == null ? null : from.getId().toString();
-			}
-		});
-	}
+    @SuppressWarnings("unused")
+    public static <T> Iterable<String> toStringIdList(Iterable<IdentifiableEntity<T>> items) {
+        return Iterables.transform(items, new Function<IdentifiableEntity<T>, String>() {
+            @Override
+            public String apply(IdentifiableEntity<T> from) {
+                return from.getId() == null ? null : from.getId().toString();
+            }
+        });
+    }
 
-	public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
-		try {
-			return Iterables.find(entities, HasNamePredicate.forName(name));
-		} catch (NoSuchElementException ex) {
-			throw new NoSuchElementException(String.format("Entity with name \"%s\" not found. Entities: %s", name, entities
-					.toString()));
-		}
-	}
+    public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
+        try {
+            return Iterables.find(entities, HasNamePredicate.forName(name));
+        } catch (NoSuchElementException ex) {
+            throw new NoSuchElementException(String.format("Entity with name \"%s\" not found. Entities: %s", name, entities
+                    .toString()));
+        }
+    }
 
-	@SuppressWarnings("unused")
-	public static <T extends IdentifiableEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
-		try {
-			return Iterables.find(entities, HasIdPredicate.forId(id));
-		} catch (NoSuchElementException ex) {
-			throw new NoSuchElementException(String.format("Entity with id \"%s\" not found. Entities: %s", id, entities
-					.toString()));
-		}
-	}
+    @SuppressWarnings("unused")
+    public static <T extends IdentifiableEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
+        try {
+            return Iterables.find(entities, HasIdPredicate.forId(id));
+        } catch (NoSuchElementException ex) {
+            throw new NoSuchElementException(String.format("Entity with id \"%s\" not found. Entities: %s", id, entities
+                    .toString()));
+        }
+    }
 
-	public static <T extends Attachment> T findAttachmentByFileName(Iterable<T> attachments, final String fileName) {
-		return Iterables.find(attachments, HasFileNamePredicate.forFileName(fileName));
-	}
+    public static <T extends Attachment> T findAttachmentByFileName(Iterable<T> attachments, final String fileName) {
+        return Iterables.find(attachments, HasFileNamePredicate.forFileName(fileName));
+    }
 
-	public static class HasFileNamePredicate<T extends Attachment> implements Predicate<T> {
+    public static class HasFileNamePredicate<T extends Attachment> implements Predicate<T> {
 
-		private final String fileName;
+        private final String fileName;
 
-		public static <K extends Attachment> HasFileNamePredicate<K> forFileName(String fileName) {
-			return new HasFileNamePredicate<K>(fileName);
-		}
+        public static <K extends Attachment> HasFileNamePredicate<K> forFileName(String fileName) {
+            return new HasFileNamePredicate<K>(fileName);
+        }
 
-		private HasFileNamePredicate(String fileName) {
-			this.fileName = fileName;
-		}
+        private HasFileNamePredicate(String fileName) {
+            this.fileName = fileName;
+        }
 
-		@Override
-		public boolean apply(T attachment) {
-			return fileName.equals(attachment.getFilename());
-		}
-	}
+        @Override
+        public boolean apply(T attachment) {
+            return fileName.equals(attachment.getFilename());
+        }
+    }
 
 
-	public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T> {
+    public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T> {
 
-		private final String name;
+        private final String name;
 
-		public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
-			return new HasNamePredicate<K>(name);
-		}
+        public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
+            return new HasNamePredicate<K>(name);
+        }
 
-		private HasNamePredicate(String name) {
-			this.name = name;
-		}
+        private HasNamePredicate(String name) {
+            this.name = name;
+        }
 
-		@Override
-		public boolean apply(T input) {
-			return name.equals(input.getName());
-		}
-	}
+        @Override
+        public boolean apply(T input) {
+            return name.equals(input.getName());
+        }
+    }
 
-	public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Predicate<T> {
+    public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Predicate<T> {
 
-		private final K id;
+        private final K id;
 
-		public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
-			return new HasIdPredicate<X, Y>(id);
-		}
+        public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
+            return new HasIdPredicate<X, Y>(id);
+        }
 
-		private HasIdPredicate(K id) {
-			this.id = id;
-		}
+        private HasIdPredicate(K id) {
+            this.id = id;
+        }
 
-		@Override
-		public boolean apply(T input) {
-			return id.equals(input.getId());
-		}
-	}
+        @Override
+        public boolean apply(T input) {
+            return id.equals(input.getId());
+        }
+    }
 
-	public static class AddressEndsWithPredicate implements Predicate<AddressableEntity> {
+    public static class AddressEndsWithPredicate implements Predicate<AddressableEntity> {
 
-		private final String stringEnding;
+        private final String stringEnding;
 
-		public AddressEndsWithPredicate(String stringEnding) {
-			this.stringEnding = stringEnding;
-		}
+        public AddressEndsWithPredicate(String stringEnding) {
+            this.stringEnding = stringEnding;
+        }
 
-		@Override
-		public boolean apply(final AddressableEntity input) {
-			return input.getSelf().getPath().endsWith(stringEnding);
-		}
-	}
+        @Override
+        public boolean apply(final AddressableEntity input) {
+            return input.getSelf().getPath().endsWith(stringEnding);
+        }
+    }
 }

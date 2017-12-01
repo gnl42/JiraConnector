@@ -25,13 +25,13 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Collection;
 
 public class VotesJsonParser implements JsonObjectParser<Votes> {
-	private final BasicVotesJsonParser basicVotesJsonParser = new BasicVotesJsonParser();
-	private final BasicUserJsonParser basicUserJsonParser = new BasicUserJsonParser();
+    private final BasicVotesJsonParser basicVotesJsonParser = new BasicVotesJsonParser();
+    private final BasicUserJsonParser basicUserJsonParser = new BasicUserJsonParser();
 
-	@Override
-	public Votes parse(JSONObject json) throws JSONException {
-		final BasicVotes basicVotes = basicVotesJsonParser.parse(json);
-		final Collection<BasicUser> users = JsonParseUtil.parseJsonArray(json.getJSONArray("voters"), basicUserJsonParser);
-		return new Votes(basicVotes.getSelf(), basicVotes.getVotes(), basicVotes.hasVoted(), users);
-	}
+    @Override
+    public Votes parse(JSONObject json) throws JSONException {
+        final BasicVotes basicVotes = basicVotesJsonParser.parse(json);
+        final Collection<BasicUser> users = JsonParseUtil.parseJsonArray(json.getJSONArray("voters"), basicUserJsonParser);
+        return new Votes(basicVotes.getSelf(), basicVotes.getVotes(), basicVotes.hasVoted(), users);
+    }
 }

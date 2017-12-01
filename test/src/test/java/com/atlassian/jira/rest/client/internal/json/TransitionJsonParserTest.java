@@ -21,17 +21,15 @@ import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class TransitionJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final TransitionJsonParser parser = new TransitionJsonParser();
+    @Test
+    public void testParse() throws Exception {
+        final TransitionJsonParser parser = new TransitionJsonParser();
 
-		final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
-		Assert.assertEquals(4, Iterables.size(transition.getFields()));
-		Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Iterables.getLast(transition
-				.getFields()));
-		Assert.assertEquals(5, transition.getId());
-	}
+        final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
+        Assert.assertEquals(4, Iterables.size(transition.getFields()));
+        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Iterables.getLast(transition
+                .getFields()));
+        Assert.assertEquals(5, transition.getId());
+    }
 }

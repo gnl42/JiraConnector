@@ -26,19 +26,19 @@ import javax.annotation.Nullable;
  * JRJC tries to hide this ugliness but at least requiring to specify project key separately
  */
 public class ComponentInputWithProjectKey extends ComponentInput {
-	private final String projectKey;
+    private final String projectKey;
 
-	public ComponentInputWithProjectKey(@Nullable String projectKey, String name, String description, String leadUsername, AssigneeType assigneeType) {
-		super(name, description, leadUsername, assigneeType);
-		this.projectKey = projectKey;
-	}
+    public ComponentInputWithProjectKey(@Nullable String projectKey, String name, String description, String leadUsername, AssigneeType assigneeType) {
+        super(name, description, leadUsername, assigneeType);
+        this.projectKey = projectKey;
+    }
 
-	public ComponentInputWithProjectKey(@Nullable String projectKey, ComponentInput componentInput) {
-		this(projectKey, componentInput.getName(), componentInput.getDescription(), componentInput.getLeadUsername(),
-				componentInput.getAssigneeType());
-	}
+    public ComponentInputWithProjectKey(@Nullable String projectKey, ComponentInput componentInput) {
+        this(projectKey, componentInput.getName(), componentInput.getDescription(), componentInput.getLeadUsername(),
+                componentInput.getAssigneeType());
+    }
 
-	public String getProjectKey() {
-		return projectKey;
-	}
+    public String getProjectKey() {
+        return projectKey;
+    }
 }

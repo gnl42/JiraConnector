@@ -29,97 +29,100 @@ import java.util.Collections;
  * @since 2.0
  */
 public class OperationGroup implements Operation {
-	@Nullable private final String id;
-	@Nullable private final OperationHeader header;
-	private final Iterable<OperationLink> links;
-	private final Iterable<OperationGroup> groups;
-	@Nullable private final Integer weight;
+    @Nullable
+    private final String id;
+    @Nullable
+    private final OperationHeader header;
+    private final Iterable<OperationLink> links;
+    private final Iterable<OperationGroup> groups;
+    @Nullable
+    private final Integer weight;
 
-	public OperationGroup(@Nullable final String id, final Iterable<OperationLink> links,
-			final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
-			@Nullable final Integer weight) {
-		this.id = id;
-		this.header = header;
-		this.links = links;
-		this.groups = groups;
-		this.weight = weight;
-	}
+    public OperationGroup(@Nullable final String id, final Iterable<OperationLink> links,
+                          final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
+                          @Nullable final Integer weight) {
+        this.id = id;
+        this.header = header;
+        this.links = links;
+        this.groups = groups;
+        this.weight = weight;
+    }
 
-	@Nullable
-	public String getId() {
-		return id;
-	}
+    @Nullable
+    public String getId() {
+        return id;
+    }
 
-	@Override
-	public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
-		final Optional<T> result = visitor.visit(this);
-		if (result.isPresent()) {
-			return result;
-		} else {
-			final Iterable<Operation> operations = Iterables.concat(
-					header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
-					links, groups);
-			return accept(operations, visitor);
-		}
-	}
+    @Override
+    public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
+        final Optional<T> result = visitor.visit(this);
+        if (result.isPresent()) {
+            return result;
+        } else {
+            final Iterable<Operation> operations = Iterables.concat(
+                    header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
+                    links, groups);
+            return accept(operations, visitor);
+        }
+    }
 
-	static <T> Optional<T> accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
-		for (Operation operation : operations) {
-			Optional<T> result = operation.accept(visitor);
-			if (result.isPresent()) {
-				return result;
-			}
-		}
-		return Optional.absent();
-	}
+    static <T> Optional<T> accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
+        for (Operation operation : operations) {
+            Optional<T> result = operation.accept(visitor);
+            if (result.isPresent()) {
+                return result;
+            }
+        }
+        return Optional.absent();
+    }
 
-	@Nullable
-	public OperationHeader getHeader() {
-		return header;
-	}
+    @Nullable
+    public OperationHeader getHeader() {
+        return header;
+    }
 
-	public Iterable<OperationLink> getLinks() {
-		return links;
-	}
+    public Iterable<OperationLink> getLinks() {
+        return links;
+    }
 
-	public Iterable<OperationGroup> getGroups() {
-		return groups;
-	}
+    public Iterable<OperationGroup> getGroups() {
+        return groups;
+    }
 
-	@Nullable
-	public Integer getWeight() {
-		return weight;
-	}
+    @Nullable
+    public Integer getWeight() {
+        return weight;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, header, links, groups, weight);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, header, links, groups, weight);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		final OperationGroup other = (OperationGroup) obj;
-		return Objects.equal(this.id, other.id)
-				&& Objects.equal(this.header, other.header)
-				&& Iterables.elementsEqual(this.links, other.links)
-				&& Iterables.elementsEqual(this.groups, other.groups)
-				&& Objects.equal(this.weight, other.weight);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final OperationGroup other = (OperationGroup) obj;
+        return Objects.equal(this.id, other.id)
+                && Objects.equal(this.header, other.header)
+                && Iterables.elementsEqual(this.links, other.links)
+                && Iterables.elementsEqual(this.groups, other.groups)
+                && Objects.equal(this.weight, other.weight);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("id", id)
-				.add("header", header)
-				.add("links", Iterables.toString(links))
-				.add("groups", Iterables.toString(groups))
-				.add("weight", weight)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("header", header)
+                .add("links", Iterables.toString(links))
+                .add("groups", Iterables.toString(groups))
+                .add("weight", weight)
+                .toString();
+    }
 }

@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONException;
@@ -29,37 +29,36 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class UserJsonParser implements JsonObjectParser<User> {
-	@Override
-	public User parse(JSONObject json) throws JSONException {
-		final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
-		final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
-		final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-		Map<String, URI> avatarUris = Maps.newHashMap();
-		if (avatarUrl != null) {
-			// JIRA prior 5.0
-			final URI avatarUri = JsonParseUtil.parseURI(avatarUrl);
-			avatarUris.put(User.S48_48, avatarUri);
-		} else {
-			// JIRA 5.0+
-			final JSONObject avatarUrlsJson = json.getJSONObject("avatarUrls");
-			@SuppressWarnings("unchecked")
-			final Iterator<String> iterator = avatarUrlsJson.keys();
-			while (iterator.hasNext()) {
-				final String key = iterator.next();
-				avatarUris.put(key, JsonParseUtil.parseURI(avatarUrlsJson.getString(key)));
-			}
-		}
-		// e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
-		final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
-		// optional because groups are not returned for issue->{reporter,assignee}
-		final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json
-				.optJSONObject("groups"), new JsonObjectParser<String>() {
-			@Override
-			public String parse(JSONObject json) throws JSONException {
-				return json.getString("name");
-			}
-		});
-		return new User(basicUser.getSelf(), basicUser.getName(), basicUser
-				.getDisplayName(), emailAddress, groups, avatarUris, timezone);
-	}
+    @Override
+    public User parse(JSONObject json) throws JSONException {
+        final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
+        final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
+        final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
+        Map<String, URI> avatarUris = Maps.newHashMap();
+        if (avatarUrl != null) {
+            // JIRA prior 5.0
+            final URI avatarUri = JsonParseUtil.parseURI(avatarUrl);
+            avatarUris.put(User.S48_48, avatarUri);
+        } else {
+            // JIRA 5.0+
+            final JSONObject avatarUrlsJson = json.getJSONObject("avatarUrls");
+            @SuppressWarnings("unchecked") final Iterator<String> iterator = avatarUrlsJson.keys();
+            while (iterator.hasNext()) {
+                final String key = iterator.next();
+                avatarUris.put(key, JsonParseUtil.parseURI(avatarUrlsJson.getString(key)));
+            }
+        }
+        // e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
+        final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
+        // optional because groups are not returned for issue->{reporter,assignee}
+        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json
+                .optJSONObject("groups"), new JsonObjectParser<String>() {
+            @Override
+            public String parse(JSONObject json) throws JSONException {
+                return json.getString("name");
+            }
+        });
+        return new User(basicUser.getSelf(), basicUser.getName(), basicUser
+                .getDisplayName(), emailAddress, groups, avatarUris, timezone);
+    }
 }

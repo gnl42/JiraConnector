@@ -28,57 +28,57 @@ import java.util.Collections;
  * @since v0.1
  */
 public class TransitionInput {
-	private final int id;
-	@Nullable
-	private final Comment comment;
+    private final int id;
+    @Nullable
+    private final Comment comment;
 
-	private final Collection<FieldInput> fields;
+    private final Collection<FieldInput> fields;
 
-	/**
-	 * @param id     id of the issue transition which should be performed
-	 * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
-	 */
-	public TransitionInput(int id, Collection<FieldInput> fields) {
-		this(id, fields, null);
-	}
+    /**
+     * @param id     id of the issue transition which should be performed
+     * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
+     */
+    public TransitionInput(int id, Collection<FieldInput> fields) {
+        this(id, fields, null);
+    }
 
 
-	/**
-	 * @param id      id of the issue transition which should be performed
-	 * @param fields  new values for the issue fields. Use empty collection if no fields are to be changed
-	 * @param comment optional comment
-	 */
-	public TransitionInput(int id, Collection<FieldInput> fields, @Nullable Comment comment) {
-		this.id = id;
-		this.comment = comment;
-		this.fields = fields;
-	}
+    /**
+     * @param id      id of the issue transition which should be performed
+     * @param fields  new values for the issue fields. Use empty collection if no fields are to be changed
+     * @param comment optional comment
+     */
+    public TransitionInput(int id, Collection<FieldInput> fields, @Nullable Comment comment) {
+        this.id = id;
+        this.comment = comment;
+        this.fields = fields;
+    }
 
-	/**
-	 * @param id      id of the issue transition which should be performed
-	 * @param comment optional comment
-	 */
-	public TransitionInput(int id, @Nullable Comment comment) {
-		this(id, Collections.<FieldInput>emptyList(), comment);
-	}
+    /**
+     * @param id      id of the issue transition which should be performed
+     * @param comment optional comment
+     */
+    public TransitionInput(int id, @Nullable Comment comment) {
+        this(id, Collections.<FieldInput>emptyList(), comment);
+    }
 
-	public TransitionInput(int id) {
-		this(id, Collections.<FieldInput>emptyList(), null);
-	}
+    public TransitionInput(int id) {
+        this(id, Collections.<FieldInput>emptyList(), null);
+    }
 
-	/**
-	 * @return id of the issue transition which should be performed
-	 */
-	public int getId() {
-		return id;
-	}
+    /**
+     * @return id of the issue transition which should be performed
+     */
+    public int getId() {
+        return id;
+    }
 
-	@Nullable
-	public Comment getComment() {
-		return comment;
-	}
+    @Nullable
+    public Comment getComment() {
+        return comment;
+    }
 
-	public Iterable<FieldInput> getFields() {
-		return fields;
-	}
+    public Iterable<FieldInput> getFields() {
+        return fields;
+    }
 }

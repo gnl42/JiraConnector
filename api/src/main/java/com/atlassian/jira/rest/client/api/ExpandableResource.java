@@ -22,5 +22,5 @@ package com.atlassian.jira.rest.client.api;
  * @since v0.1
  */
 public interface ExpandableResource {
-	Iterable<String> getExpandos();
+    Iterable<String> getExpandos();
 }

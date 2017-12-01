@@ -2,21 +2,20 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.atlassian.pom</groupId>
         <artifactId>public-pom</artifactId>
         <version>5.0.8</version>
     </parent>
+
     <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-parent</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <name>JIRA REST Java Client</name>
     <description>Java library which allows to easily talk to any JIRA 5.0+ instance.</description>
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://ecosystem.atlassian.net/browse/JRJC</url>
-    </issueManagement>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -24,18 +23,30 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-	<distributionManagement>
-		<site>
-			<id>atlassian-documentation</id>
-			<url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
-		</site>
-	</distributionManagement>
+
+    <modules>
+        <module>api</module>
+        <module>core</module>
+        <module>test</module>
+    </modules>
+
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
         <url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
         <tag>HEAD</tag>
     </scm>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://ecosystem.atlassian.net/browse/JRJC</url>
+    </issueManagement>
+    <distributionManagement>
+		<site>
+			<id>atlassian-documentation</id>
+			<url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+		</site>
+	</distributionManagement>
+
     <properties>
         <platform.version>3.1.7</platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,11 +61,7 @@
         <amps.version>6.3.7</amps.version>
         <testkit.version>7.1.9</testkit.version>
     </properties>
-    <modules>
-        <module>api</module>
-        <module>core</module>
-        <module>test</module>
-    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -136,6 +143,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <reporting>
         <plugins>
             <plugin>

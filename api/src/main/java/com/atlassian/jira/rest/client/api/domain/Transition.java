@@ -27,102 +27,102 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Transition implements NamedEntity {
-	private final String name;
-	private final int id;
-	private final Collection<Field> fields;
+    private final String name;
+    private final int id;
+    private final Collection<Field> fields;
 
-	public Transition(String name, int id, Collection<Field> fields) {
-		this.name = name;
-		this.id = id;
-		this.fields = fields;
-	}
+    public Transition(String name, int id, Collection<Field> fields) {
+        this.name = name;
+        this.id = id;
+        this.fields = fields;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Iterable<Field> getFields() {
-		return fields;
-	}
+    public Iterable<Field> getFields() {
+        return fields;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Transition) {
-			Transition that = (Transition) obj;
-			return Objects.equal(this.name, that.name)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.fields, that.fields);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Transition) {
+            Transition that = (Transition) obj;
+            return Objects.equal(this.name, that.name)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.fields, that.fields);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, name, fields);
-	}
-
-
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("id", id).
-				add("name", name).
-				add("fields", fields).
-				toString();
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, fields);
+    }
 
 
-	public static class Field {
-		private final String id;
-		private final boolean isRequired;
-		private final String type;
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("id", id).
+                add("name", name).
+                add("fields", fields).
+                toString();
+    }
 
-		public Field(String id, boolean isRequired, String type) {
-			this.id = id;
-			this.isRequired = isRequired;
-			this.type = type;
-		}
 
-		public String getId() {
-			return id;
-		}
+    public static class Field {
+        private final String id;
+        private final boolean isRequired;
+        private final String type;
 
-		public boolean isRequired() {
-			return isRequired;
-		}
+        public Field(String id, boolean isRequired, String type) {
+            this.id = id;
+            this.isRequired = isRequired;
+            this.type = type;
+        }
 
-		public String getType() {
-			return type;
-		}
+        public String getId() {
+            return id;
+        }
 
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(id, isRequired, type);
-		}
+        public boolean isRequired() {
+            return isRequired;
+        }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof Field) {
-				Field that = (Field) obj;
-				return Objects.equal(this.id, that.id)
-						&& Objects.equal(this.isRequired, that.isRequired)
-						&& Objects.equal(this.type, that.type);
-			}
-			return false;
-		}
+        public String getType() {
+            return type;
+        }
 
-		@Override
-		public String toString() {
-			return Objects.toStringHelper(this).
-					add("id", id).
-					add("isRequired", isRequired).
-					add("type", type).
-					toString();
-		}
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(id, isRequired, type);
+        }
 
-	}
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Field) {
+                Field that = (Field) obj;
+                return Objects.equal(this.id, that.id)
+                        && Objects.equal(this.isRequired, that.isRequired)
+                        && Objects.equal(this.type, that.type);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toStringHelper(this).
+                    add("id", id).
+                    add("isRequired", isRequired).
+                    add("type", type).
+                    toString();
+        }
+
+    }
 }

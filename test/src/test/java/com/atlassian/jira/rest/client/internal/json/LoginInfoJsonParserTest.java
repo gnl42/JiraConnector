@@ -22,28 +22,28 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LoginInfoJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final LoginInfoJsonParser parser = new LoginInfoJsonParser();
-		final LoginInfo loginInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/loginInfo/valid.json"));
-		Assert.assertEquals(new LoginInfo(5, 379, TestUtil.toDateTime("2010-09-13T17:19:20.752+0200"),
-				TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
-	}
+    @Test
+    public void testParse() throws Exception {
+        final LoginInfoJsonParser parser = new LoginInfoJsonParser();
+        final LoginInfo loginInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/loginInfo/valid.json"));
+        Assert.assertEquals(new LoginInfo(5, 379, TestUtil.toDateTime("2010-09-13T17:19:20.752+0200"),
+                TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
+    }
 
-	@Test
-	public void testParseNoFailedLoginBefore() throws Exception {
-		final LoginInfoJsonParser parser = new LoginInfoJsonParser();
-		final LoginInfo loginInfo = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/loginInfo/valid-no-login-failure.json"));
-		Assert.assertEquals(new LoginInfo(0, 379, null, TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
-	}
+    @Test
+    public void testParseNoFailedLoginBefore() throws Exception {
+        final LoginInfoJsonParser parser = new LoginInfoJsonParser();
+        final LoginInfo loginInfo = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/loginInfo/valid-no-login-failure.json"));
+        Assert.assertEquals(new LoginInfo(0, 379, null, TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
+    }
 
-	@Test
-	public void testParseNoLoginBefore() throws Exception {
-		final LoginInfoJsonParser parser = new LoginInfoJsonParser();
-		final LoginInfo loginInfo = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/loginInfo/valid-no-login-so-far.json"));
-		Assert.assertEquals(new LoginInfo(0, 1, null, null), loginInfo);
-	}
+    @Test
+    public void testParseNoLoginBefore() throws Exception {
+        final LoginInfoJsonParser parser = new LoginInfoJsonParser();
+        final LoginInfo loginInfo = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/loginInfo/valid-no-login-so-far.json"));
+        Assert.assertEquals(new LoginInfo(0, 1, null, null), loginInfo);
+    }
 
 }

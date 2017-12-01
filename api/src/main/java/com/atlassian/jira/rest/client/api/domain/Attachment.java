@@ -29,98 +29,98 @@ import java.net.URI;
  * @since v0.1
  */
 public class Attachment implements AddressableEntity {
-	private final URI self;
-	private final String filename;
-	private final BasicUser author;
-	private final DateTime creationDate;
-	private final int size;
-	private final String mimeType;
-	private final URI contentUri;
+    private final URI self;
+    private final String filename;
+    private final BasicUser author;
+    private final DateTime creationDate;
+    private final int size;
+    private final String mimeType;
+    private final URI contentUri;
 
-	@Nullable
-	private final URI thumbnailUri;
+    @Nullable
+    private final URI thumbnailUri;
 
-	public Attachment(URI self, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
-		this.self = self;
-		this.filename = filename;
-		this.author = author;
-		this.creationDate = creationDate;
-		this.size = size;
-		this.mimeType = mimeType;
-		this.contentUri = contentUri;
-		this.thumbnailUri = thumbnailUri;
-	}
+    public Attachment(URI self, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
+        this.self = self;
+        this.filename = filename;
+        this.author = author;
+        this.creationDate = creationDate;
+        this.size = size;
+        this.mimeType = mimeType;
+        this.contentUri = contentUri;
+        this.thumbnailUri = thumbnailUri;
+    }
 
-	public boolean hasThumbnail() {
-		return thumbnailUri != null;
-	}
+    public boolean hasThumbnail() {
+        return thumbnailUri != null;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public BasicUser getAuthor() {
-		return author;
-	}
+    public BasicUser getAuthor() {
+        return author;
+    }
 
-	public DateTime getCreationDate() {
-		return creationDate;
-	}
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public String getMimeType() {
-		return mimeType;
-	}
+    public String getMimeType() {
+        return mimeType;
+    }
 
-	public URI getContentUri() {
-		return contentUri;
-	}
+    public URI getContentUri() {
+        return contentUri;
+    }
 
-	@Nullable
-	public URI getThumbnailUri() {
-		return thumbnailUri;
-	}
+    @Nullable
+    public URI getThumbnailUri() {
+        return thumbnailUri;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("filename", filename).
-				add("author", author).
-				add("creationDate", creationDate).
-				add("size", size).
-				add("mimeType", mimeType).
-				add("contentUri", contentUri).
-				add("thumbnailUri", thumbnailUri).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("filename", filename).
+                add("author", author).
+                add("creationDate", creationDate).
+                add("size", size).
+                add("mimeType", mimeType).
+                add("contentUri", contentUri).
+                add("thumbnailUri", thumbnailUri).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Attachment) {
-			Attachment that = (Attachment) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.filename, that.filename)
-					&& Objects.equal(this.author, that.author)
-					&& this.creationDate.isEqual(that.creationDate)
-					&& Objects.equal(this.size, that.size)
-					&& Objects.equal(this.mimeType, that.mimeType)
-					&& Objects.equal(this.contentUri, that.contentUri)
-					&& Objects.equal(this.thumbnailUri, that.thumbnailUri);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Attachment) {
+            Attachment that = (Attachment) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.filename, that.filename)
+                    && Objects.equal(this.author, that.author)
+                    && this.creationDate.isEqual(that.creationDate)
+                    && Objects.equal(this.size, that.size)
+                    && Objects.equal(this.mimeType, that.mimeType)
+                    && Objects.equal(this.contentUri, that.contentUri)
+                    && Objects.equal(this.thumbnailUri, that.thumbnailUri);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
+    }
 }

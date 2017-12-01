@@ -20,53 +20,53 @@ import com.atlassian.jira.rest.client.api.domain.Version;
 import org.joda.time.DateTime;
 
 public class VersionInputBuilder {
-	private final String projectKey;
-	private String name;
-	private String description;
-	private DateTime releaseDate;
-	private boolean archived;
-	private boolean released;
+    private final String projectKey;
+    private String name;
+    private String description;
+    private DateTime releaseDate;
+    private boolean archived;
+    private boolean released;
 
-	public VersionInputBuilder(String projectKey) {
-		this.projectKey = projectKey;
-	}
+    public VersionInputBuilder(String projectKey) {
+        this.projectKey = projectKey;
+    }
 
-	public VersionInputBuilder(String projectKey, Version version) {
-		this(projectKey);
-		this.name = version.getName();
-		this.description = version.getDescription();
-		this.archived = version.isArchived();
-		this.released = version.isReleased();
-		this.releaseDate = version.getReleaseDate();
-	}
+    public VersionInputBuilder(String projectKey, Version version) {
+        this(projectKey);
+        this.name = version.getName();
+        this.description = version.getDescription();
+        this.archived = version.isArchived();
+        this.released = version.isReleased();
+        this.releaseDate = version.getReleaseDate();
+    }
 
 
-	public VersionInputBuilder setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public VersionInputBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public VersionInputBuilder setDescription(String description) {
-		this.description = description;
-		return this;
-	}
+    public VersionInputBuilder setDescription(String description) {
+        this.description = description;
+        return this;
+    }
 
-	public VersionInputBuilder setReleaseDate(DateTime releaseDate) {
-		this.releaseDate = releaseDate;
-		return this;
-	}
+    public VersionInputBuilder setReleaseDate(DateTime releaseDate) {
+        this.releaseDate = releaseDate;
+        return this;
+    }
 
-	public VersionInputBuilder setArchived(boolean archived) {
-		this.archived = archived;
-		return this;
-	}
+    public VersionInputBuilder setArchived(boolean archived) {
+        this.archived = archived;
+        return this;
+    }
 
-	public VersionInputBuilder setReleased(boolean released) {
-		this.released = released;
-		return this;
-	}
+    public VersionInputBuilder setReleased(boolean released) {
+        this.released = released;
+        return this;
+    }
 
-	public VersionInput build() {
-		return new VersionInput(projectKey, name, description, releaseDate, archived, released);
-	}
+    public VersionInput build() {
+        return new VersionInput(projectKey, name, description, releaseDate, archived, released);
+    }
 }

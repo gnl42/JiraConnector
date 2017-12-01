@@ -25,9 +25,9 @@ import java.net.URI;
  * @since v0.1
  */
 public interface AddressableEntity {
-	/**
-	 * @return URI to this resource or (usually) its complete version - when partial representation
-	 *         is embedded in other resources
-	 */
-	URI getSelf();
+    /**
+     * @return URI to this resource or (usually) its complete version - when partial representation
+     * is embedded in other resources
+     */
+    URI getSelf();
 }

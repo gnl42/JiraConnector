@@ -23,16 +23,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
-import static org.junit.Assert.assertEquals;
 
 public class IssueTypeJsonParserTest {
-	@Test
-	public void testParse() throws JSONException {
-		IssueTypeJsonParser parser = new IssueTypeJsonParser();
-		final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/complete.json"));
-		Assert.assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true,
-				"A problem which impairs or prevents the functions of the product.",
-				TestUtil.toUri("http://localhost:8090/jira/images/icons/bug.gif")), issueType);
-	}
+    @Test
+    public void testParse() throws JSONException {
+        IssueTypeJsonParser parser = new IssueTypeJsonParser();
+        final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/complete.json"));
+        Assert.assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true,
+                "A problem which impairs or prevents the functions of the product.",
+                TestUtil.toUri("http://localhost:8090/jira/images/icons/bug.gif")), issueType);
+    }
 
 }

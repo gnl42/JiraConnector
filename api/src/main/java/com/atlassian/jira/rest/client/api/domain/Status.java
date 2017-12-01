@@ -27,53 +27,53 @@ import java.net.URI;
  * @since v0.1
  */
 public class Status extends AddressableNamedEntity implements IdentifiableEntity<Long> {
-	private final Long id;
-	private final String description;
-	private final URI iconUrl;
+    private final Long id;
+    private final String description;
+    private final URI iconUrl;
 
-	public Status(URI self, final Long id, final String name, final String description, final URI iconUrl) {
-		super(self, name);
-		this.id = id;
-		this.description = description;
-		this.iconUrl = iconUrl;
-	}
+    public Status(URI self, final Long id, final String name, final String description, final URI iconUrl) {
+        super(self, name);
+        this.id = id;
+        this.description = description;
+        this.iconUrl = iconUrl;
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().
-				add("id", id).
-				add("description", description).
-				add("iconUrl", iconUrl).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().
+                add("id", id).
+                add("description", description).
+                add("iconUrl", iconUrl).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Status) {
-			Status that = (Status) obj;
-			return super.equals(obj)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.iconUrl, that.iconUrl);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Status) {
+            Status that = (Status) obj;
+            return super.equals(obj)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.iconUrl, that.iconUrl);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), id, description, iconUrl);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, description, iconUrl);
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public URI getIconUrl() {
-		return iconUrl;
-	}
+    public URI getIconUrl() {
+        return iconUrl;
+    }
 }

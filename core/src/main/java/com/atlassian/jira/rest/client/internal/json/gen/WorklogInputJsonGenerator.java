@@ -26,37 +26,37 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
 
-	private final JsonGenerator<Visibility> visibilityGenerator = new VisibilityJsonGenerator();
-	private final JsonGenerator<BasicUser> basicUserJsonGenerator = new BasicUserJsonGenerator();
-	private final DateTimeFormatter dateTimeFormatter;
+    private final JsonGenerator<Visibility> visibilityGenerator = new VisibilityJsonGenerator();
+    private final JsonGenerator<BasicUser> basicUserJsonGenerator = new BasicUserJsonGenerator();
+    private final DateTimeFormatter dateTimeFormatter;
 
-	public WorklogInputJsonGenerator() {
-		this(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
-	}
+    public WorklogInputJsonGenerator() {
+        this(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
+    }
 
-	public WorklogInputJsonGenerator(DateTimeFormatter dateTimeFormatter) {
-		this.dateTimeFormatter = dateTimeFormatter;
-	}
+    public WorklogInputJsonGenerator(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
+    }
 
-	@Override
-	public JSONObject generate(final WorklogInput worklogInput) throws JSONException {
-		final JSONObject res = new JSONObject()
-				.put("self", worklogInput.getSelf())
-				.put("comment", worklogInput.getComment())
-				.put("started", dateTimeFormatter.print(worklogInput.getStartDate()))
-				.put("timeSpent", worklogInput.getMinutesSpent() + "m");
+    @Override
+    public JSONObject generate(final WorklogInput worklogInput) throws JSONException {
+        final JSONObject res = new JSONObject()
+                .put("self", worklogInput.getSelf())
+                .put("comment", worklogInput.getComment())
+                .put("started", dateTimeFormatter.print(worklogInput.getStartDate()))
+                .put("timeSpent", worklogInput.getMinutesSpent() + "m");
 
-		putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);
-		putGeneratedIfNotNull("author", worklogInput.getAuthor(), res, basicUserJsonGenerator);
-		putGeneratedIfNotNull("updateAuthor", worklogInput.getUpdateAuthor(), res, basicUserJsonGenerator);
-		return res;
-	}
+        putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);
+        putGeneratedIfNotNull("author", worklogInput.getAuthor(), res, basicUserJsonGenerator);
+        putGeneratedIfNotNull("updateAuthor", worklogInput.getUpdateAuthor(), res, basicUserJsonGenerator);
+        return res;
+    }
 
-	private <K> JSONObject putGeneratedIfNotNull(final String key, final K value, final JSONObject dest, final JsonGenerator<K> generator)
-			throws JSONException {
-		if (value != null) {
-			dest.put(key, generator.generate(value));
-		}
-		return dest;
-	}
+    private <K> JSONObject putGeneratedIfNotNull(final String key, final K value, final JSONObject dest, final JsonGenerator<K> generator)
+            throws JSONException {
+        if (value != null) {
+            dest.put(key, generator.generate(value));
+        }
+        return dest;
+    }
 }

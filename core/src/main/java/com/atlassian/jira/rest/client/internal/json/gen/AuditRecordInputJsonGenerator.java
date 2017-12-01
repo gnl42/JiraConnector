@@ -29,7 +29,7 @@ public class AuditRecordInputJsonGenerator implements JsonGenerator<AuditRecordI
         final AuditChangedValueJsonGenerator generator = new AuditChangedValueJsonGenerator();
         final JSONArray array = new JSONArray();
         if (changedValues != null) {
-            for(AuditChangedValue value : changedValues) {
+            for (AuditChangedValue value : changedValues) {
                 array.put(generator.generate(value));
             }
         }
@@ -39,7 +39,7 @@ public class AuditRecordInputJsonGenerator implements JsonGenerator<AuditRecordI
     protected JSONArray generateAssociatedItems(@Nullable Iterable<AuditAssociatedItem> associatedItems) throws JSONException {
         final JSONArray array = new JSONArray();
         if (associatedItems != null) {
-            for(AuditAssociatedItem item : associatedItems) {
+            for (AuditAssociatedItem item : associatedItems) {
                 array.put(associatedItemJsonGenerator.generate(item));
             }
         }

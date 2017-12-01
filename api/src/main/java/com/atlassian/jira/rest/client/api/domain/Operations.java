@@ -27,50 +27,50 @@ import com.google.common.collect.Iterables;
  * @since 2.0
  */
 public class Operations {
-	private final Iterable<OperationGroup> linkGroups;
+    private final Iterable<OperationGroup> linkGroups;
 
-	public Operations(final Iterable<OperationGroup> linkGroups) {
-		this.linkGroups = linkGroups;
-	}
+    public Operations(final Iterable<OperationGroup> linkGroups) {
+        this.linkGroups = linkGroups;
+    }
 
-	public Iterable<OperationGroup> getLinkGroups() {
-		return linkGroups;
-	}
+    public Iterable<OperationGroup> getLinkGroups() {
+        return linkGroups;
+    }
 
-	public <T> Optional<T> accept(OperationVisitor<T> visitor) {
-		return OperationGroup.accept(getLinkGroups(), visitor);
-	}
+    public <T> Optional<T> accept(OperationVisitor<T> visitor) {
+        return OperationGroup.accept(getLinkGroups(), visitor);
+    }
 
-	public Operation getOperationById(final String operationId) {
-		return accept(new OperationVisitor<Operation>() {
-			@Override
-			public Optional<Operation> visit(Operation operation) {
-				return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>absent();
-			}
-		}).orNull();
-	}
+    public Operation getOperationById(final String operationId) {
+        return accept(new OperationVisitor<Operation>() {
+            @Override
+            public Optional<Operation> visit(Operation operation) {
+                return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>absent();
+            }
+        }).orNull();
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(linkGroups);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(linkGroups);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		final Operations other = (Operations) obj;
-		return Iterables.elementsEqual(this.linkGroups, other.linkGroups);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Operations other = (Operations) obj;
+        return Iterables.elementsEqual(this.linkGroups, other.linkGroups);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("linkGroups", linkGroups)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("linkGroups", linkGroups)
+                .toString();
+    }
 }

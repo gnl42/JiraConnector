@@ -27,19 +27,19 @@ import java.net.URI;
 
 public class WorklogJsonParser implements JsonObjectParser<Worklog> {
 
-	@Override
-	public Worklog parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
-		// it turns out that somehow it can be sometimes omitted in the resource representation - JRJC-49
-		final String comment = JsonParseUtil.getOptionalString(json, "comment");
-		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
-		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
-		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
-		final int minutesSpent = json.getInt("minutesSpent");
-		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
-		return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, visibility);
-	}
+    @Override
+    public Worklog parse(JSONObject json) throws JSONException {
+        final URI self = JsonParseUtil.getSelfUri(json);
+        final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
+        final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
+        final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
+        // it turns out that somehow it can be sometimes omitted in the resource representation - JRJC-49
+        final String comment = JsonParseUtil.getOptionalString(json, "comment");
+        final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
+        final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
+        final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
+        final int minutesSpent = json.getInt("minutesSpent");
+        final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
+        return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, visibility);
+    }
 }

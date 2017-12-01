@@ -31,67 +31,67 @@ import com.google.common.collect.Sets;
  * @since v1.0
  */
 public class GetCreateIssueMetadataOptionsBuilder {
-	private Iterable<String> expandos = Sets.newHashSet();
-	private Iterable<String> issueTypeNames;
-	private Iterable<Long> issueTypeIds;
-	private Iterable<String> projectKeys;
-	private Iterable<Long> projectIds;
+    private Iterable<String> expandos = Sets.newHashSet();
+    private Iterable<String> issueTypeNames;
+    private Iterable<Long> issueTypeIds;
+    private Iterable<String> projectKeys;
+    private Iterable<Long> projectIds;
 
-	public GetCreateIssueMetadataOptionsBuilder withExpandos(Iterable<String> expandos) {
-		this.expandos = expandos;
-		return this;
-	}
+    public GetCreateIssueMetadataOptionsBuilder withExpandos(Iterable<String> expandos) {
+        this.expandos = expandos;
+        return this;
+    }
 
-	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withExpandos(String... expandos) {
-		return withExpandos(ImmutableList.copyOf(expandos));
-	}
+    @SuppressWarnings("UnusedDeclaration")
+    public GetCreateIssueMetadataOptionsBuilder withExpandos(String... expandos) {
+        return withExpandos(ImmutableList.copyOf(expandos));
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withExpandedIssueTypesFields() {
-		return withExpandos(ImmutableList.of(GetCreateIssueMetadataOptions.EXPAND_PROJECTS_ISSUETYPES_FIELDS));
-	}
+    public GetCreateIssueMetadataOptionsBuilder withExpandedIssueTypesFields() {
+        return withExpandos(ImmutableList.of(GetCreateIssueMetadataOptions.EXPAND_PROJECTS_ISSUETYPES_FIELDS));
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(Iterable<String> issueTypeNames) {
-		this.issueTypeNames = issueTypeNames;
-		return this;
-	}
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(Iterable<String> issueTypeNames) {
+        this.issueTypeNames = issueTypeNames;
+        return this;
+    }
 
-	@SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("UnusedDeclaration")
 
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
-		return withIssueTypeNames(ImmutableList.copyOf(issueTypeNames));
-	}
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
+        return withIssueTypeNames(ImmutableList.copyOf(issueTypeNames));
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Iterable<Long> issueTypeIds) {
-		this.issueTypeIds = issueTypeIds;
-		return this;
-	}
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Iterable<Long> issueTypeIds) {
+        this.issueTypeIds = issueTypeIds;
+        return this;
+    }
 
-	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
-		return withIssueTypeIds(ImmutableList.copyOf(issueTypeIds));
-	}
+    @SuppressWarnings("UnusedDeclaration")
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
+        return withIssueTypeIds(ImmutableList.copyOf(issueTypeIds));
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withProjectKeys(Iterable<String> projectKeys) {
-		this.projectKeys = projectKeys;
-		return this;
-	}
+    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(Iterable<String> projectKeys) {
+        this.projectKeys = projectKeys;
+        return this;
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withProjectKeys(String... projectKeys) {
-		return withProjectKeys(ImmutableList.copyOf(projectKeys));
-	}
+    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(String... projectKeys) {
+        return withProjectKeys(ImmutableList.copyOf(projectKeys));
+    }
 
-	public GetCreateIssueMetadataOptionsBuilder withProjectIds(Iterable<Long> projectIds) {
-		this.projectIds = projectIds;
-		return this;
-	}
+    public GetCreateIssueMetadataOptionsBuilder withProjectIds(Iterable<Long> projectIds) {
+        this.projectIds = projectIds;
+        return this;
+    }
 
-	@SuppressWarnings("UnusedDeclaration")
-	public GetCreateIssueMetadataOptionsBuilder withProjectIds(Long... projectIds) {
-		return withProjectIds(ImmutableList.copyOf(projectIds));
-	}
+    @SuppressWarnings("UnusedDeclaration")
+    public GetCreateIssueMetadataOptionsBuilder withProjectIds(Long... projectIds) {
+        return withProjectIds(ImmutableList.copyOf(projectIds));
+    }
 
-	public GetCreateIssueMetadataOptions build() {
-		return new GetCreateIssueMetadataOptions(expandos, issueTypeNames, issueTypeIds, projectKeys, projectIds);
-	}
+    public GetCreateIssueMetadataOptions build() {
+        return new GetCreateIssueMetadataOptions(expandos, issueTypeNames, issueTypeIds, projectKeys, projectIds);
+    }
 }

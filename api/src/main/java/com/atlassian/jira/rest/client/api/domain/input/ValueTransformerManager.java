@@ -31,56 +31,55 @@ import java.util.List;
  * @since v1.0
  */
 public class ValueTransformerManager implements Function<Object, Object> {
-	public final List<ValueTransformer> valueTransformers = Lists.newArrayList();
+    public final List<ValueTransformer> valueTransformers = Lists.newArrayList();
 
-	public ValueTransformerManager() {
-	}
+    public ValueTransformerManager() {
+    }
 
-	/**
-	 * Registers new transformer at the end of list so it will be processed after existing transformers.
-	 *
-	 * @param transformer Transformer to register
-	 * @return this
-	 */
-	public ValueTransformerManager registerTransformer(final ValueTransformer transformer) {
-		valueTransformers.add(transformer);
-		return this;
-	}
+    /**
+     * Registers new transformer at the end of list so it will be processed after existing transformers.
+     *
+     * @param transformer Transformer to register
+     * @return this
+     */
+    public ValueTransformerManager registerTransformer(final ValueTransformer transformer) {
+        valueTransformers.add(transformer);
+        return this;
+    }
 
-	/**
-	 * Registers new transformer at the beginning of list so it will be processed before existing transformers.
-	 *
-	 * @param transformer Transformer to register
-	 * @return this
-	 */
-	@SuppressWarnings("unused")
-	public ValueTransformerManager registerTransformerAsFirst(final ValueTransformer transformer) {
-		valueTransformers.add(0, transformer);
-		return this;
-	}
+    /**
+     * Registers new transformer at the beginning of list so it will be processed before existing transformers.
+     *
+     * @param transformer Transformer to register
+     * @return this
+     */
+    @SuppressWarnings("unused")
+    public ValueTransformerManager registerTransformerAsFirst(final ValueTransformer transformer) {
+        valueTransformers.add(0, transformer);
+        return this;
+    }
 
-	/**
-	 * Use registered transformers to transform given value.
-	 *
-	 * @param rawInput Value to transform
-	 * @return transformed value
-	 * @throws CannotTransformValueException when any of available transformers was able to transform given value
-	 */
-	public Object apply(@Nullable Object rawInput) {
-		if (rawInput instanceof Iterable) {
-			@SuppressWarnings("unchecked")
-			final Iterable<Object> rawInputObjects = (Iterable<Object>) rawInput;
-			return ImmutableList.copyOf(Iterables.transform(rawInputObjects, this));
-		}
+    /**
+     * Use registered transformers to transform given value.
+     *
+     * @param rawInput Value to transform
+     * @return transformed value
+     * @throws CannotTransformValueException when any of available transformers was able to transform given value
+     */
+    public Object apply(@Nullable Object rawInput) {
+        if (rawInput instanceof Iterable) {
+            @SuppressWarnings("unchecked") final Iterable<Object> rawInputObjects = (Iterable<Object>) rawInput;
+            return ImmutableList.copyOf(Iterables.transform(rawInputObjects, this));
+        }
 
-		for (ValueTransformer valueTransformer : valueTransformers) {
-			final Object transformedValue = valueTransformer.apply(rawInput);
-			if (!ValueTransformer.CANNOT_HANDLE.equals(transformedValue)) {
-				return transformedValue;
-			}
-		}
+        for (ValueTransformer valueTransformer : valueTransformers) {
+            final Object transformedValue = valueTransformer.apply(rawInput);
+            if (!ValueTransformer.CANNOT_HANDLE.equals(transformedValue)) {
+                return transformedValue;
+            }
+        }
 
-		throw new CannotTransformValueException("Any of available transformers was able to transform given value. Value is: "
-				+ (rawInput == null ? "NULL" : rawInput.getClass().getName() + ": " + rawInput.toString()));
-	}
+        throw new CannotTransformValueException("Any of available transformers was able to transform given value. Value is: "
+                + (rawInput == null ? "NULL" : rawInput.getClass().getName() + ": " + rawInput.toString()));
+    }
 }

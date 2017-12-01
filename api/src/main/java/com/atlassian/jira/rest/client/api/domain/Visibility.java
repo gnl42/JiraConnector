@@ -24,53 +24,53 @@ import com.google.common.base.Objects;
  * @since v0.2
  */
 public class Visibility {
-	public enum Type {
-		ROLE, GROUP
-	}
+    public enum Type {
+        ROLE, GROUP
+    }
 
-	private final Type type;
-	private final String value;
+    private final Type type;
+    private final String value;
 
-	public Visibility(Type type, String value) {
-		this.type = type;
-		this.value = value;
-	}
+    public Visibility(Type type, String value) {
+        this.type = type;
+        this.value = value;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public static Visibility role(String value) {
-		return new Visibility(Type.ROLE, value);
-	}
+    public static Visibility role(String value) {
+        return new Visibility(Type.ROLE, value);
+    }
 
-	public static Visibility group(String group) {
-		return new Visibility(Type.GROUP, group);
-	}
+    public static Visibility group(String group) {
+        return new Visibility(Type.GROUP, group);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("type", type).
-				add("value", value).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("type", type).
+                add("value", value).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Visibility) {
-			Visibility that = (Visibility) obj;
-			return Objects.equal(this.type, that.type) && Objects.equal(this.value, that.value);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Visibility) {
+            Visibility that = (Visibility) obj;
+            return Objects.equal(this.type, that.type) && Objects.equal(this.value, that.value);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(type, value);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(type, value);
+    }
 }

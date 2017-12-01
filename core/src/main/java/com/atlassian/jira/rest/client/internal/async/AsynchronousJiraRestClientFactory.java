@@ -30,26 +30,26 @@ import java.net.URI;
  */
 public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
 
-	@Override
-	public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-		final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory()
-				.createClient(serverUri, authenticationHandler);
-		return new AsynchronousJiraRestClient(serverUri, httpClient);
-	}
+    @Override
+    public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory()
+                .createClient(serverUri, authenticationHandler);
+        return new AsynchronousJiraRestClient(serverUri, httpClient);
+    }
 
-	@Override
-	public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) {
-		return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
-	}
+    @Override
+    public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) {
+        return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
+    }
 
-	@Override
-	public JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-		return create(serverUri, authenticationHandler);
-	}
+    @Override
+    public JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+        return create(serverUri, authenticationHandler);
+    }
 
-	@Override
-	public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
-		final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
-		return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);
-	}
+    @Override
+    public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
+        final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
+        return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);
+    }
 }

@@ -17,52 +17,52 @@
 package com.atlassian.jira.rest.client.internal.json.gen;
 
 import com.atlassian.jira.rest.client.api.domain.Comment;
-import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.CommentJsonParser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
-	private final ServerInfo serverInfo;
+    private final ServerInfo serverInfo;
 
-	public CommentJsonGenerator(ServerInfo serverInfo) {
-		this.serverInfo = serverInfo;
-	}
+    public CommentJsonGenerator(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
 
-	@Override
-	public JSONObject generate(Comment comment) throws JSONException {
-		JSONObject res = new JSONObject();
-		if (comment.getBody() != null) {
-			res.put("body", comment.getBody());
-		}
+    @Override
+    public JSONObject generate(Comment comment) throws JSONException {
+        JSONObject res = new JSONObject();
+        if (comment.getBody() != null) {
+            res.put("body", comment.getBody());
+        }
 
-		final Visibility commentVisibility = comment.getVisibility();
-		if (commentVisibility != null) {
+        final Visibility commentVisibility = comment.getVisibility();
+        if (commentVisibility != null) {
 
-			final int buildNumber = serverInfo.getBuildNumber();
-			if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-				JSONObject visibilityJson = new JSONObject();
-				final String commentVisibilityType;
-				if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-					commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
-				} else {
-					commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE";
-				}
-				visibilityJson.put("type", commentVisibilityType);
-				visibilityJson.put("value", commentVisibility.getValue());
-				res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
-			} else {
-				if (commentVisibility.getType() == Visibility.Type.ROLE) {
-					res.put("role", commentVisibility.getValue());
-				} else {
-					res.put("group", commentVisibility.getValue());
-				}
-			}
-		}
+            final int buildNumber = serverInfo.getBuildNumber();
+            if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
+                JSONObject visibilityJson = new JSONObject();
+                final String commentVisibilityType;
+                if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+                    commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
+                } else {
+                    commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE";
+                }
+                visibilityJson.put("type", commentVisibilityType);
+                visibilityJson.put("value", commentVisibility.getValue());
+                res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
+            } else {
+                if (commentVisibility.getType() == Visibility.Type.ROLE) {
+                    res.put("role", commentVisibility.getValue());
+                } else {
+                    res.put("group", commentVisibility.getValue());
+                }
+            }
+        }
 
-		return res;
-	}
+        return res;
+    }
 }

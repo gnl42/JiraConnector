@@ -29,18 +29,18 @@ import java.net.URI;
  * @since v2.0
  */
 public interface ComponentRestClient {
-	/**
-	 * @param componentUri URI to selected component resource
-	 * @return complete information about selected component
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<Component> getComponent(URI componentUri);
+    /**
+     * @param componentUri URI to selected component resource
+     * @return complete information about selected component
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<Component> getComponent(URI componentUri);
 
-	Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
+    Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
 
-	Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
+    Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
 
-	Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri);
+    Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri);
 
-	Promise<Integer> getComponentRelatedIssuesCount(URI componentUri);
+    Promise<Integer> getComponentRelatedIssuesCount(URI componentUri);
 }

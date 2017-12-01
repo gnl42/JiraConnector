@@ -27,21 +27,21 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class FieldJsonParser implements JsonObjectParser<Field> {
 
-	private final FieldSchemaJsonParser schemaJsonParser = new FieldSchemaJsonParser();
+    private final FieldSchemaJsonParser schemaJsonParser = new FieldSchemaJsonParser();
 
-	@Override
-	public Field parse(final JSONObject jsonObject) throws JSONException {
-		final String id = jsonObject.getString("id");
-		final String name = jsonObject.getString("name");
-		final Boolean orderable = jsonObject.getBoolean("orderable");
-		final Boolean navigable = jsonObject.getBoolean("navigable");
-		final Boolean searchable = jsonObject.getBoolean("searchable");
-		final FieldType custom = jsonObject.getBoolean("custom") ? FieldType.CUSTOM : FieldType.JIRA;
-		final FieldSchema schema = jsonObject.has("schema") ? schemaJsonParser.parse(jsonObject.getJSONObject("schema")) : null;
-		return new Field(id, name, custom, orderable, navigable, searchable, schema);
-	}
+    @Override
+    public Field parse(final JSONObject jsonObject) throws JSONException {
+        final String id = jsonObject.getString("id");
+        final String name = jsonObject.getString("name");
+        final Boolean orderable = jsonObject.getBoolean("orderable");
+        final Boolean navigable = jsonObject.getBoolean("navigable");
+        final Boolean searchable = jsonObject.getBoolean("searchable");
+        final FieldType custom = jsonObject.getBoolean("custom") ? FieldType.CUSTOM : FieldType.JIRA;
+        final FieldSchema schema = jsonObject.has("schema") ? schemaJsonParser.parse(jsonObject.getJSONObject("schema")) : null;
+        return new Field(id, name, custom, orderable, navigable, searchable, schema);
+    }
 
-	public static JsonArrayParser<Iterable<Field>> createFieldsArrayParser() {
-		return GenericJsonArrayParser.create(new FieldJsonParser());
-	}
+    public static JsonArrayParser<Iterable<Field>> createFieldsArrayParser() {
+        return GenericJsonArrayParser.create(new FieldJsonParser());
+    }
 }

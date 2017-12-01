@@ -43,110 +43,109 @@ import java.util.Set;
  */
 public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, CimFieldInfo>> {
 
-	private final FieldSchemaJsonParser fieldSchemaJsonParser = new FieldSchemaJsonParser();
+    private final FieldSchemaJsonParser fieldSchemaJsonParser = new FieldSchemaJsonParser();
 
-	protected final Map<String, JsonObjectParser> registeredAllowedValueParsers = new HashMap<String, JsonObjectParser>() {{
-		put("project", new BasicProjectJsonParser());
-		put("version", new VersionJsonParser());
-		put("issuetype", new IssueTypeJsonParser());
-		put("priority", new BasicPriorityJsonParser());
-		put("customFieldOption", new CustomFieldOptionJsonParser());
-		put("component", new BasicComponentJsonParser());
-		put("resolution", new ResolutionJsonParser());
-		put("securitylevel", new SecurityLevelJsonParser());
-	}};
+    protected final Map<String, JsonObjectParser> registeredAllowedValueParsers = new HashMap<String, JsonObjectParser>() {{
+        put("project", new BasicProjectJsonParser());
+        put("version", new VersionJsonParser());
+        put("issuetype", new IssueTypeJsonParser());
+        put("priority", new BasicPriorityJsonParser());
+        put("customFieldOption", new CustomFieldOptionJsonParser());
+        put("component", new BasicComponentJsonParser());
+        put("resolution", new ResolutionJsonParser());
+        put("securitylevel", new SecurityLevelJsonParser());
+    }};
 
-	@Override
-	public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException {
-		final Map<String, CimFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
-		final Iterator keysIterator = json.keys();
-		while (keysIterator.hasNext()) {
-			final String id = (String) keysIterator.next();
-			res.put(id, parseIssueFieldInfo(json.getJSONObject(id), id));
-		}
-		return res;
-	}
+    @Override
+    public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException {
+        final Map<String, CimFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
+        final Iterator keysIterator = json.keys();
+        while (keysIterator.hasNext()) {
+            final String id = (String) keysIterator.next();
+            res.put(id, parseIssueFieldInfo(json.getJSONObject(id), id));
+        }
+        return res;
+    }
 
-	private CimFieldInfo parseIssueFieldInfo(JSONObject json, String id) throws JSONException {
-		final boolean required = json.getBoolean("required");
-		final String name = JsonParseUtil.getOptionalString(json, "name");
-		final FieldSchema schema = fieldSchemaJsonParser.parse(json.getJSONObject("schema"));
-		final Set<StandardOperation> operations = parseOperations(json.getJSONArray("operations"));
-		final Iterable<Object> allowedValues = parseAllowedValues(json.optJSONArray("allowedValues"), schema);
-		final URI autoCompleteUri = JsonParseUtil.parseOptionalURI(json, "autoCompleteUrl");
+    private CimFieldInfo parseIssueFieldInfo(JSONObject json, String id) throws JSONException {
+        final boolean required = json.getBoolean("required");
+        final String name = JsonParseUtil.getOptionalString(json, "name");
+        final FieldSchema schema = fieldSchemaJsonParser.parse(json.getJSONObject("schema"));
+        final Set<StandardOperation> operations = parseOperations(json.getJSONArray("operations"));
+        final Iterable<Object> allowedValues = parseAllowedValues(json.optJSONArray("allowedValues"), schema);
+        final URI autoCompleteUri = JsonParseUtil.parseOptionalURI(json, "autoCompleteUrl");
 
-		return new CimFieldInfo(id, required, name, schema, operations, allowedValues, autoCompleteUri);
-	}
+        return new CimFieldInfo(id, required, name, schema, operations, allowedValues, autoCompleteUri);
+    }
 
-	private Iterable<Object> parseAllowedValues(@Nullable JSONArray allowedValues, FieldSchema fieldSchema) throws JSONException {
-		if (allowedValues == null || allowedValues.equals(JSONObject.NULL)) {
-			return null;
-		}
+    private Iterable<Object> parseAllowedValues(@Nullable JSONArray allowedValues, FieldSchema fieldSchema) throws JSONException {
+        if (allowedValues == null || allowedValues.equals(JSONObject.NULL)) {
+            return null;
+        }
 
-		if (allowedValues.length() == 0) {
-			return Collections.emptyList();
-		}
+        if (allowedValues.length() == 0) {
+            return Collections.emptyList();
+        }
 
-		final JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
-		if (allowedValuesJsonParser != null) {
-			JSONArray valuesToParse;
-			// fixes for JRADEV-12999
-			final boolean isProjectCF = "project".equals(fieldSchema.getType())
-					&& "com.atlassian.jira.plugin.system.customfieldtypes:project".equals(fieldSchema.getCustom());
-			final boolean isVersionCF = "version".equals(fieldSchema.getType())
-					&& "com.atlassian.jira.plugin.system.customfieldtypes:version".equals(fieldSchema.getCustom());
-			final boolean isMultiVersionCF = "array".equals(fieldSchema.getType())
-					&& "version".equals(fieldSchema.getItems())
-					&& "com.atlassian.jira.plugin.system.customfieldtypes:multiversion".equals(fieldSchema.getCustom());
+        final JsonObjectParser<Object> allowedValuesJsonParser = getParserFor(fieldSchema);
+        if (allowedValuesJsonParser != null) {
+            JSONArray valuesToParse;
+            // fixes for JRADEV-12999
+            final boolean isProjectCF = "project".equals(fieldSchema.getType())
+                    && "com.atlassian.jira.plugin.system.customfieldtypes:project".equals(fieldSchema.getCustom());
+            final boolean isVersionCF = "version".equals(fieldSchema.getType())
+                    && "com.atlassian.jira.plugin.system.customfieldtypes:version".equals(fieldSchema.getCustom());
+            final boolean isMultiVersionCF = "array".equals(fieldSchema.getType())
+                    && "version".equals(fieldSchema.getItems())
+                    && "com.atlassian.jira.plugin.system.customfieldtypes:multiversion".equals(fieldSchema.getCustom());
 
-			if ((isProjectCF || isVersionCF || isMultiVersionCF) && allowedValues.get(0) instanceof JSONArray) {
-				valuesToParse = allowedValues.getJSONArray(0);
-			} else {
-				valuesToParse = allowedValues;
-			}
-			return GenericJsonArrayParser.create(allowedValuesJsonParser).parse(valuesToParse);
-		} else {
-			// fallback - just return collection of JSONObjects
-			final int itemsLength = allowedValues.length();
-			final List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
-			for (int i = 0; i < itemsLength; i++) {
-				res.add(allowedValues.get(i));
-			}
-			return res;
-		}
-	}
+            if ((isProjectCF || isVersionCF || isMultiVersionCF) && allowedValues.get(0) instanceof JSONArray) {
+                valuesToParse = allowedValues.getJSONArray(0);
+            } else {
+                valuesToParse = allowedValues;
+            }
+            return GenericJsonArrayParser.create(allowedValuesJsonParser).parse(valuesToParse);
+        } else {
+            // fallback - just return collection of JSONObjects
+            final int itemsLength = allowedValues.length();
+            final List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
+            for (int i = 0; i < itemsLength; i++) {
+                res.add(allowedValues.get(i));
+            }
+            return res;
+        }
+    }
 
-	private Set<StandardOperation> parseOperations(JSONArray operations) throws JSONException {
-		final int operationsCount = operations.length();
-		final Set<StandardOperation> res = Sets.newHashSetWithExpectedSize(operationsCount);
-		for (int i = 0; i < operationsCount; i++) {
-			String opName = operations.getString(i);
-			StandardOperation op = StandardOperation.valueOf(opName.toUpperCase());
-			res.add(op);
-		}
-		return res;
-	}
+    private Set<StandardOperation> parseOperations(JSONArray operations) throws JSONException {
+        final int operationsCount = operations.length();
+        final Set<StandardOperation> res = Sets.newHashSetWithExpectedSize(operationsCount);
+        for (int i = 0; i < operationsCount; i++) {
+            String opName = operations.getString(i);
+            StandardOperation op = StandardOperation.valueOf(opName.toUpperCase());
+            res.add(op);
+        }
+        return res;
+    }
 
-	@Nullable
-	private JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
-		final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
-				"com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
-				"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
-				"com.atlassian.jira.plugin.system.customfieldtypes:select",
-				"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect",
-				"com.atlassian.jira.plugin.system.customfieldtypes:multiselect"
-		);
-		String type = "array".equals(fieldSchema.getType()) ? fieldSchema.getItems() : fieldSchema.getType();
-		final String custom = fieldSchema.getCustom();
-		if (custom != null && customFieldsTypesWithFieldOption.contains(custom)) {
-			type = "customFieldOption";
-		}
-		@SuppressWarnings("unchecked")
-		final JsonObjectParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
-		if (jsonParser == null) {
-			return null;
-		} else {
-			return jsonParser;
-		}
-	}
+    @Nullable
+    private JsonObjectParser<Object> getParserFor(FieldSchema fieldSchema) throws JSONException {
+        final Set<String> customFieldsTypesWithFieldOption = ImmutableSet.of(
+                "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+                "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+                "com.atlassian.jira.plugin.system.customfieldtypes:select",
+                "com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect",
+                "com.atlassian.jira.plugin.system.customfieldtypes:multiselect"
+        );
+        String type = "array".equals(fieldSchema.getType()) ? fieldSchema.getItems() : fieldSchema.getType();
+        final String custom = fieldSchema.getCustom();
+        if (custom != null && customFieldsTypesWithFieldOption.contains(custom)) {
+            type = "customFieldOption";
+        }
+        @SuppressWarnings("unchecked") final JsonObjectParser<Object> jsonParser = registeredAllowedValueParsers.get(type);
+        if (jsonParser == null) {
+            return null;
+        } else {
+            return jsonParser;
+        }
+    }
 }

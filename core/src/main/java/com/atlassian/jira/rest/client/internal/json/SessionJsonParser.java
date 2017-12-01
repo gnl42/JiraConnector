@@ -24,13 +24,13 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class SessionJsonParser implements JsonObjectParser<Session> {
-	private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
+    private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
 
-	@Override
-	public Session parse(JSONObject json) throws JSONException {
-		final URI userUri = JsonParseUtil.getSelfUri(json);
-		final String username = json.getString("name");
-		final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
-		return new Session(userUri, username, loginInfo);
-	}
+    @Override
+    public Session parse(JSONObject json) throws JSONException {
+        final URI userUri = JsonParseUtil.getSelfUri(json);
+        final String username = json.getString("name");
+        final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
+        return new Session(userUri, username, loginInfo);
+    }
 }

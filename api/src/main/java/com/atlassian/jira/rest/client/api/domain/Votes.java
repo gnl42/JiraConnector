@@ -29,34 +29,34 @@ import static com.google.common.base.Objects.ToStringHelper;
  * @since v0.1
  */
 public class Votes extends BasicVotes {
-	private final Collection<BasicUser> users;
+    private final Collection<BasicUser> users;
 
-	public Votes(URI self, int votes, boolean hasVoted, Collection<BasicUser> users) {
-		super(self, votes, hasVoted);
-		this.users = users;
-	}
+    public Votes(URI self, int votes, boolean hasVoted, Collection<BasicUser> users) {
+        super(self, votes, hasVoted);
+        this.users = users;
+    }
 
-	public Iterable<BasicUser> getUsers() {
-		return users;
-	}
+    public Iterable<BasicUser> getUsers() {
+        return users;
+    }
 
-	@Override
-	protected ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().add("users", users);
-	}
+    @Override
+    protected ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().add("users", users);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Votes) {
-			final Votes that = (Votes) obj;
-			return super.equals(that) && Objects.equal(this.users, that.users);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Votes) {
+            final Votes that = (Votes) obj;
+            return super.equals(that) && Objects.equal(this.users, that.users);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), this.users);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), this.users);
+    }
 
 }

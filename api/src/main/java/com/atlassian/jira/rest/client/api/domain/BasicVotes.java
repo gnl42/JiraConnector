@@ -27,54 +27,54 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicVotes implements AddressableEntity {
-	private final URI self;
-	private final int votes;
-	private final boolean hasVoted;
+    private final URI self;
+    private final int votes;
+    private final boolean hasVoted;
 
-	public BasicVotes(URI self, int votes, boolean hasVoted) {
-		this.self = self;
-		this.votes = votes;
-		this.hasVoted = hasVoted;
-	}
+    public BasicVotes(URI self, int votes, boolean hasVoted) {
+        this.self = self;
+        this.votes = votes;
+        this.hasVoted = hasVoted;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public int getVotes() {
-		return votes;
-	}
+    public int getVotes() {
+        return votes;
+    }
 
-	public boolean hasVoted() {
-		return hasVoted;
-	}
+    public boolean hasVoted() {
+        return hasVoted;
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("votes", votes).
-				add("hasVoted", hasVoted);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("votes", votes).
+                add("hasVoted", hasVoted);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof BasicVotes) {
-			final BasicVotes that = (BasicVotes) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.votes, that.votes)
-					&& Objects.equal(this.hasVoted, that.hasVoted);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BasicVotes) {
+            final BasicVotes that = (BasicVotes) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.votes, that.votes)
+                    && Objects.equal(this.hasVoted, that.hasVoted);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, votes, hasVoted);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, votes, hasVoted);
+    }
 }

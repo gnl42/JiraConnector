@@ -19,14 +19,12 @@ package com.atlassian.jira.rest.client;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class TestUtilTest {
-	@Test
-	public void testGetLastPathSegment() {
-		Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost")));
-		Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080")));
-		Assert.assertEquals("abc", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080/abc")));
-		Assert.assertEquals("cde", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost/abc/cde?fds")));
-	}
+    @Test
+    public void testGetLastPathSegment() {
+        Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost")));
+        Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080")));
+        Assert.assertEquals("abc", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080/abc")));
+        Assert.assertEquals("cde", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost/abc/cde?fds")));
+    }
 }

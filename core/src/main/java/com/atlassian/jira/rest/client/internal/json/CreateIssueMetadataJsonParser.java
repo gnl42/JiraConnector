@@ -27,10 +27,10 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class CreateIssueMetadataJsonParser implements JsonObjectParser<Iterable<CimProject>> {
 
-	private final GenericJsonArrayParser<CimProject> projectsParser = new GenericJsonArrayParser<CimProject>(new CimProjectJsonParser());
+    private final GenericJsonArrayParser<CimProject> projectsParser = new GenericJsonArrayParser<CimProject>(new CimProjectJsonParser());
 
-	@Override
-	public Iterable<CimProject> parse(final JSONObject json) throws JSONException {
-		return projectsParser.parse(json.getJSONArray("projects"));
-	}
+    @Override
+    public Iterable<CimProject> parse(final JSONObject json) throws JSONException {
+        return projectsParser.parse(json.getJSONArray("projects"));
+    }
 }

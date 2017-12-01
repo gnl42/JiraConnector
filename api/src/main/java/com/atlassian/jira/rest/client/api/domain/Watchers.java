@@ -26,33 +26,33 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Watchers extends BasicWatchers {
-	private final Collection<BasicUser> users;
+    private final Collection<BasicUser> users;
 
-	public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
-		super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
-		this.users = users;
-	}
+    public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
+        super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
+        this.users = users;
+    }
 
-	public Iterable<BasicUser> getUsers() {
-		return users;
-	}
+    public Iterable<BasicUser> getUsers() {
+        return users;
+    }
 
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().add("watchers", users);
-	}
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().add("watchers", users);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), users);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), users);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Watchers) {
-			final Watchers that = (Watchers) obj;
-			return super.equals(that) && Objects.equal(this.users, that.users);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Watchers) {
+            final Watchers that = (Watchers) obj;
+            return super.equals(that) && Objects.equal(this.users, that.users);
+        }
+        return false;
+    }
 }

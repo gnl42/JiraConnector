@@ -20,31 +20,29 @@ import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class TimeTrackingJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
-		final TimeTracking timeTracking = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/timeTracking/valid.json")
-				.getJSONObject("value"));
-		Assert.assertEquals(new TimeTracking(1500, 70, 190), timeTracking);
-	}
+    @Test
+    public void testParse() throws Exception {
+        final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
+        final TimeTracking timeTracking = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/timeTracking/valid.json")
+                .getJSONObject("value"));
+        Assert.assertEquals(new TimeTracking(1500, 70, 190), timeTracking);
+    }
 
-	@Test
-	public void testParseNoEstimation() throws Exception {
-		final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
-		final TimeTracking timeTracking = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/timeTracking/valid-no-estimation.json").getJSONObject("value"));
-		Assert.assertEquals(new TimeTracking(null, 170, 9), timeTracking);
-	}
+    @Test
+    public void testParseNoEstimation() throws Exception {
+        final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
+        final TimeTracking timeTracking = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/timeTracking/valid-no-estimation.json").getJSONObject("value"));
+        Assert.assertEquals(new TimeTracking(null, 170, 9), timeTracking);
+    }
 
-	@Test
-	public void testParseJustLoggedTime() throws Exception {
-		final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
-		final TimeTracking timeTracking = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/timeTracking/valid-just-timespent.json").getJSONObject("value"));
-		Assert.assertEquals(new TimeTracking(null, null, 840), timeTracking);
-	}
+    @Test
+    public void testParseJustLoggedTime() throws Exception {
+        final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
+        final TimeTracking timeTracking = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/timeTracking/valid-just-timespent.json").getJSONObject("value"));
+        Assert.assertEquals(new TimeTracking(null, null, 840), timeTracking);
+    }
 
 }

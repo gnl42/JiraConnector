@@ -27,66 +27,66 @@ import java.io.IOException;
  * @since v0.1
  */
 public interface JiraRestClient extends Closeable {
-	/**
-	 * @return com.atlassian.jira.rest.client.api for performing operations on selected issue
-	 */
-	IssueRestClient getIssueClient();
+    /**
+     * @return com.atlassian.jira.rest.client.api for performing operations on selected issue
+     */
+    IssueRestClient getIssueClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling session information
-	 */
-	SessionRestClient getSessionClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling session information
+     */
+    SessionRestClient getSessionClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling full user information
-	 */
-	UserRestClient getUserClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling full user information
+     */
+    UserRestClient getUserClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling project metadata
-	 */
-	ProjectRestClient getProjectClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling project metadata
+     */
+    ProjectRestClient getProjectClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling components
-	 */
-	ComponentRestClient getComponentClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling components
+     */
+    ComponentRestClient getComponentClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
-	 * priorities)
-	 */
-	MetadataRestClient getMetadataClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
+     * priorities)
+     */
+    MetadataRestClient getMetadataClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling search (e.g. JQL)
-	 */
-	SearchRestClient getSearchClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling search (e.g. JQL)
+     */
+    SearchRestClient getSearchClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api handling project versions.
-	 */
-	VersionRestClient getVersionRestClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api handling project versions.
+     */
+    VersionRestClient getVersionRestClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api for project roles.
-	 */
-	ProjectRolesRestClient getProjectRolesRestClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api for project roles.
+     */
+    ProjectRolesRestClient getProjectRolesRestClient();
 
     /**
      * @return the com.atlassian.jira.rest.client.api for auditing records
      */
     AuditRestClient getAuditRestClient();
 
-	/**
-	 * @return the com.atlassian.jira.rest.client.api for my permissions.
-	 */
-	MyPermissionsRestClient getMyPermissionsRestClient();
+    /**
+     * @return the com.atlassian.jira.rest.client.api for my permissions.
+     */
+    MyPermissionsRestClient getMyPermissionsRestClient();
 
-	/**
-	 * Destroys this instance of JIRA Rest Client.
-	 *
-	 * @throws Exception
-	 */
-	void close() throws IOException;
+    /**
+     * Destroys this instance of JIRA Rest Client.
+     *
+     * @throws Exception
+     */
+    void close() throws IOException;
 }

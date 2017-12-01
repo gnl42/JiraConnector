@@ -23,5 +23,5 @@ package com.atlassian.jira.rest.client.api;
  */
 public interface NamedEntity {
 
-	String getName();
+    String getName();
 }

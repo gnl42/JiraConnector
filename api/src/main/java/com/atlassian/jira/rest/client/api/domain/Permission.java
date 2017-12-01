@@ -23,81 +23,81 @@ import com.google.common.base.Objects;
 import javax.annotation.Nullable;
 
 public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
-	private final Integer id;
-	private final String key;
-	private final String name;
-	@Nullable
-	private final String description;
-	private final boolean havePermission;
+    private final Integer id;
+    private final String key;
+    private final String name;
+    @Nullable
+    private final String description;
+    private final boolean havePermission;
 
-	public Permission(final int id, final String key, final String name, @Nullable final String description,
-			final boolean havePermission) {
-		this.id = id;
-		this.key = key;
-		this.name = name;
-		this.description = description;
-		this.havePermission = havePermission;
-	}
+    public Permission(final int id, final String key, final String name, @Nullable final String description,
+                      final boolean havePermission) {
+        this.id = id;
+        this.key = key;
+        this.name = name;
+        this.description = description;
+        this.havePermission = havePermission;
+    }
 
-	@Override
-	public Integer getId() {
-		return id;
-	}
+    @Override
+    public Integer getId() {
+        return id;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Nullable
-	public String getDescription() {
-		return description;
-	}
+    @Nullable
+    public String getDescription() {
+        return description;
+    }
 
-	public boolean havePermission() {
-		return havePermission;
-	}
+    public boolean havePermission() {
+        return havePermission;
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this)
-				.add("id", id)
-				.add("key", key)
-				.add("name", name)
-				.add("description", description)
-				.add("havePermission", havePermission);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("key", key)
+                .add("name", name)
+                .add("description", description)
+                .add("havePermission", havePermission);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Permission) {
-			Permission that = (Permission) o;
-			return id == that.id
-					&& Objects.equal(key, that.key)
-					&& Objects.equal(name, that.name)
-					&& Objects.equal(description, that.description)
-					&& havePermission == that.havePermission;
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Permission) {
+            Permission that = (Permission) o;
+            return id == that.id
+                    && Objects.equal(key, that.key)
+                    && Objects.equal(name, that.name)
+                    && Objects.equal(description, that.description)
+                    && havePermission == that.havePermission;
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, key, name, description, havePermission);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, key, name, description, havePermission);
+    }
 
-	public static final Function<Permission, String> TO_KEY = new Function<Permission, String>() {
-		@Override
-		public String apply(final Permission input) {
-			return input.getKey();
-		}
-	};
+    public static final Function<Permission, String> TO_KEY = new Function<Permission, String>() {
+        @Override
+        public String apply(final Permission input) {
+            return input.getKey();
+        }
+    };
 }

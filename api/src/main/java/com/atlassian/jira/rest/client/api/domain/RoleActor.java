@@ -28,94 +28,94 @@ import java.net.URI;
  */
 public class RoleActor implements NamedEntity {
 
-	/**
-	 * Type of a role actor which associates a project with some particular user.
-	 */
-	@SuppressWarnings("UnusedDeclaration")
-	private static final String TYPE_ATLASSIAN_USER_ROLE = "atlassian-user-role-actor";
+    /**
+     * Type of a role actor which associates a project with some particular user.
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    private static final String TYPE_ATLASSIAN_USER_ROLE = "atlassian-user-role-actor";
 
 
-	/**
-	 * Type of a role actor which associates a project with a group of users, for instance: administrators, developers.
-	 */
-	@SuppressWarnings("UnusedDeclaration")
-	private static final String TYPE_ATLASSIAN_GROUP_ROLE = "atlassian-group-role-actor";
+    /**
+     * Type of a role actor which associates a project with a group of users, for instance: administrators, developers.
+     */
+    @SuppressWarnings("UnusedDeclaration")
+    private static final String TYPE_ATLASSIAN_GROUP_ROLE = "atlassian-group-role-actor";
 
-	private final Long id;
-	private final String displayName;
-	private final String type;
-	private final String name;
-	private final URI avatarUrl;
+    private final Long id;
+    private final String displayName;
+    private final String type;
+    private final String name;
+    private final URI avatarUrl;
 
-	public RoleActor(Long id, String displayName, String type, String name, @Nullable URI avatarUrl) {
-		this.id = id;
-		this.displayName = displayName;
-		this.type = type;
-		this.name = name;
-		this.avatarUrl = avatarUrl;
-	}
+    public RoleActor(Long id, String displayName, String type, String name, @Nullable URI avatarUrl) {
+        this.id = id;
+        this.displayName = displayName;
+        this.type = type;
+        this.name = name;
+        this.avatarUrl = avatarUrl;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the viewable name of this role actor.
-	 */
-	public String getDisplayName() {
-		return displayName;
-	}
+    /**
+     * @return the viewable name of this role actor.
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	/**
-	 * @return string identifying the implementation type.
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @return string identifying the implementation type.
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @return an URI of the avatar of this role actor.
-	 */
-	public URI getAvatarUri() {
-		return avatarUrl;
-	}
+    /**
+     * @return an URI of the avatar of this role actor.
+     */
+    public URI getAvatarUri() {
+        return avatarUrl;
+    }
 
-	/**
-	 * @return the unique identifier for this role actor.
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the unique identifier for this role actor.
+     */
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof RoleActor) {
-			RoleActor that = (RoleActor) o;
-			return Objects.equal(this.getName(), that.getName())
-					&& Objects.equal(this.id, that.getId())
-					&& Objects.equal(this.getAvatarUri(), that.getAvatarUri())
-					&& Objects.equal(this.getType(), that.getType())
-					&& Objects.equal(this.getDisplayName(), that.getDisplayName());
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof RoleActor) {
+            RoleActor that = (RoleActor) o;
+            return Objects.equal(this.getName(), that.getName())
+                    && Objects.equal(this.id, that.getId())
+                    && Objects.equal(this.getAvatarUri(), that.getAvatarUri())
+                    && Objects.equal(this.getType(), that.getType())
+                    && Objects.equal(this.getDisplayName(), that.getDisplayName());
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), name, avatarUrl, type, displayName);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), name, avatarUrl, type, displayName);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this)
-				.add("displayName", displayName)
-				.add("type", type)
-				.add("name", name)
-				.add("avatarUrl", avatarUrl);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this)
+                .add("displayName", displayName)
+                .add("type", type)
+                .add("name", name)
+                .add("avatarUrl", avatarUrl);
+    }
 }

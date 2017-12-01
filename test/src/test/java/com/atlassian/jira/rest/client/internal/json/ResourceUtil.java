@@ -25,37 +25,37 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ResourceUtil {
-	public static JSONObject getJsonObjectFromResource(String resourcePath) {
-		final String s = getStringFromResource(resourcePath);
-		try {
-			return new JSONObject(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
+    public static JSONObject getJsonObjectFromResource(String resourcePath) {
+        final String s = getStringFromResource(resourcePath);
+        try {
+            return new JSONObject(s);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
 
-	public static JSONArray getJsonArrayFromResource(String resourcePath) {
-		final String s = getStringFromResource(resourcePath);
-		try {
-			return new JSONArray(s);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
+    public static JSONArray getJsonArrayFromResource(String resourcePath) {
+        final String s = getStringFromResource(resourcePath);
+        try {
+            return new JSONArray(s);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
 
-	public static String getStringFromResource(String resourcePath) {
-		final String s;
-		try {
-			final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath);
-			if (is == null) {
-				throw new IOException("Cannot open resource [" + resourcePath + "]");
-			}
-			s = IOUtils.toString(is, "UTF-8");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return s;
-	}
+    public static String getStringFromResource(String resourcePath) {
+        final String s;
+        try {
+            final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath);
+            if (is == null) {
+                throw new IOException("Cannot open resource [" + resourcePath + "]");
+            }
+            s = IOUtils.toString(is, "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return s;
+    }
 }

@@ -34,120 +34,119 @@ public class Project extends BasicProject implements ExpandableResource {
 
     @Nullable
     private final Iterable<String> expandos;
-	@Nullable
-	private final String description;
-	private final BasicUser lead;
-	@Nullable
-	private final URI uri;
-	private final Collection<Version> versions;
-	private final Collection<BasicComponent> components;
-	private final OptionalIterable<IssueType> issueTypes;
-	private final Collection<BasicProjectRole> projectRoles;
+    @Nullable
+    private final String description;
+    private final BasicUser lead;
+    @Nullable
+    private final URI uri;
+    private final Collection<Version> versions;
+    private final Collection<BasicComponent> components;
+    private final OptionalIterable<IssueType> issueTypes;
+    private final Collection<BasicProjectRole> projectRoles;
 
-	public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
-            Collection<Version> versions, Collection<BasicComponent> components,
-            OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
-		super(self, key, id, name);
+    public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
+                   Collection<Version> versions, Collection<BasicComponent> components,
+                   OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
+        super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;
-		this.lead = lead;
-		this.uri = uri;
-		this.versions = versions;
-		this.components = components;
-		this.issueTypes = issueTypes;
-		this.projectRoles = projectRoles;
-	}
+        this.lead = lead;
+        this.uri = uri;
+        this.versions = versions;
+        this.components = components;
+        this.issueTypes = issueTypes;
+        this.projectRoles = projectRoles;
+    }
 
-	/**
-	 * @return description provided for this project or null if there is no description specific for this project.
-	 */
-	@Nullable
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * @return description provided for this project or null if there is no description specific for this project.
+     */
+    @Nullable
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * @return the person who leads this project
-	 */
-	public BasicUser getLead() {
-		return lead;
-	}
+    /**
+     * @return the person who leads this project
+     */
+    public BasicUser getLead() {
+        return lead;
+    }
 
-	/**
-	 * @return user-defined URI to a web page for this project, or <code>null</code> if not defined.
-	 */
-	@Nullable
-	public URI getUri() {
-		return uri;
-	}
+    /**
+     * @return user-defined URI to a web page for this project, or <code>null</code> if not defined.
+     */
+    @Nullable
+    public URI getUri() {
+        return uri;
+    }
 
-	/**
-	 * @return versions defined for this project
-	 */
-	public Iterable<Version> getVersions() {
-		return versions;
-	}
+    /**
+     * @return versions defined for this project
+     */
+    public Iterable<Version> getVersions() {
+        return versions;
+    }
 
-	/**
-	 * @return components defined for this project
-	 */
-	public Iterable<BasicComponent> getComponents() {
-		return components;
-	}
+    /**
+     * @return components defined for this project
+     */
+    public Iterable<BasicComponent> getComponents() {
+        return components;
+    }
 
-	/**
-	 * Getter for issueTypes
-	 *
-	 * @return the issueTypes defined for this project
-	 */
-	public OptionalIterable<IssueType> getIssueTypes() {
-		return issueTypes;
-	}
+    /**
+     * Getter for issueTypes
+     *
+     * @return the issueTypes defined for this project
+     */
+    public OptionalIterable<IssueType> getIssueTypes() {
+        return issueTypes;
+    }
 
-	/**
-	 * @return basic definition of this project's roles.
-	 */
-	public Iterable<BasicProjectRole> getProjectRoles() {
-		return projectRoles;
-	}
+    /**
+     * @return basic definition of this project's roles.
+     */
+    public Iterable<BasicProjectRole> getProjectRoles() {
+        return projectRoles;
+    }
 
     @Override
-    public Iterable<String> getExpandos()
-    {
+    public Iterable<String> getExpandos() {
         return expandos;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().
-				add("description", description).
-				add("lead", lead).
-				add("uri", uri).
-				add("components", components).
-				add("issueTypes", issueTypes).
-				add("versions", versions);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().
+                add("description", description).
+                add("lead", lead).
+                add("uri", uri).
+                add("components", components).
+                add("issueTypes", issueTypes).
+                add("versions", versions);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Project) {
-			Project that = (Project) o;
-			return super.equals(that)
-					&& Objects.equal(this.lead, that.lead)
-					&& Objects.equal(this.uri, that.uri)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.components, that.components)
-					&& Objects.equal(this.issueTypes, that.issueTypes)
-					&& Objects.equal(this.versions, that.versions);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Project) {
+            Project that = (Project) o;
+            return super.equals(that)
+                    && Objects.equal(this.lead, that.lead)
+                    && Objects.equal(this.uri, that.uri)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.components, that.components)
+                    && Objects.equal(this.issueTypes, that.issueTypes)
+                    && Objects.equal(this.versions, that.versions);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, lead, uri);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), description, lead, uri);
+    }
 }

@@ -28,38 +28,38 @@ import java.util.Map;
  */
 public class ComplexIssueInputFieldValue {
 
-	private final Map<String, Object> valuesMap;
+    private final Map<String, Object> valuesMap;
 
-	public static ComplexIssueInputFieldValue with(String key, Object value) {
-		return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of(key, value));
-	}
+    public static ComplexIssueInputFieldValue with(String key, Object value) {
+        return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of(key, value));
+    }
 
-	public ComplexIssueInputFieldValue(Map<String, Object> valuesMap) {
-		this.valuesMap = valuesMap;
-	}
+    public ComplexIssueInputFieldValue(Map<String, Object> valuesMap) {
+        this.valuesMap = valuesMap;
+    }
 
-	public Map<String, Object> getValuesMap() {
-		return valuesMap;
-	}
+    public Map<String, Object> getValuesMap() {
+        return valuesMap;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("valuesMap", valuesMap)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("valuesMap", valuesMap)
+                .toString();
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(valuesMap);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(valuesMap);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ComplexIssueInputFieldValue) {
-			final ComplexIssueInputFieldValue other = (ComplexIssueInputFieldValue) obj;
-			return Objects.equal(this.valuesMap, other.valuesMap);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ComplexIssueInputFieldValue) {
+            final ComplexIssueInputFieldValue other = (ComplexIssueInputFieldValue) obj;
+            return Objects.equal(this.valuesMap, other.valuesMap);
+        }
+        return false;
+    }
 }

@@ -27,23 +27,23 @@ import java.net.URI;
  * @since v0.1
  */
 public interface UserRestClient {
-	/**
-	 * Retrieves detailed information about selected user.
-	 * Try to use {@link #getUser(URI)} instead as that method is more RESTful (well connected)
-	 *
-	 * @param username JIRA username/login
-	 * @return complete information about given user
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<User> getUser(String username);
+    /**
+     * Retrieves detailed information about selected user.
+     * Try to use {@link #getUser(URI)} instead as that method is more RESTful (well connected)
+     *
+     * @param username JIRA username/login
+     * @return complete information about given user
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<User> getUser(String username);
 
-	/**
-	 * Retrieves detailed information about selected user.
-	 * This method is preferred over {@link #getUser(String)} as com.atlassian.jira.rest.it's more RESTful (well connected)
-	 *
-	 * @param userUri URI of user resource
-	 * @return complete information about given user
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<User> getUser(URI userUri);
+    /**
+     * Retrieves detailed information about selected user.
+     * This method is preferred over {@link #getUser(String)} as com.atlassian.jira.rest.it's more RESTful (well connected)
+     *
+     * @param userUri URI of user resource
+     * @return complete information about given user
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<User> getUser(URI userUri);
 }

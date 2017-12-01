@@ -25,56 +25,56 @@ import com.google.common.base.Objects;
  * @since v0.1
  */
 public class IssueLinkType implements NamedEntity {
-	public enum Direction {
-		OUTBOUND,
-		INBOUND
-	}
+    public enum Direction {
+        OUTBOUND,
+        INBOUND
+    }
 
-	private final String name;
-	private final String description;
-	private final Direction direction;
+    private final String name;
+    private final String description;
+    private final Direction direction;
 
-	public IssueLinkType(String name, String description, Direction direction) {
-		this.name = name;
-		this.description = description;
-		this.direction = direction;
-	}
+    public IssueLinkType(String name, String description, Direction direction) {
+        this.name = name;
+        this.description = description;
+        this.direction = direction;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Direction getDirection() {
-		return direction;
-	}
+    public Direction getDirection() {
+        return direction;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("name", name).
-				add("description", description).
-				add("direction", direction).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("name", name).
+                add("description", description).
+                add("direction", direction).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof IssueLinkType) {
-			IssueLinkType that = (IssueLinkType) obj;
-			return Objects.equal(this.name, that.name)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.direction, that.direction);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IssueLinkType) {
+            IssueLinkType that = (IssueLinkType) obj;
+            return Objects.equal(this.name, that.name)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.direction, that.direction);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(name, description, direction);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, description, direction);
+    }
 
 }

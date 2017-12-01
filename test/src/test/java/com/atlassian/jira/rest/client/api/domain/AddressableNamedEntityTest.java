@@ -25,24 +25,24 @@ import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
 public class AddressableNamedEntityTest {
 
-	private static final AddressableNamedEntity P1 = new AddressableNamedEntity(toUri("http://localhost/1"), "a");
-	private static final AddressableNamedEntity P2 = new AddressableNamedEntity(toUri("http://localhost/1"), "a");
-	private static final AddressableNamedEntity P3 = new AddressableNamedEntity(toUri("http://localhost/1"), "b");
-	private static final AddressableNamedEntity P4 = new AddressableNamedEntity(toUri("http://localhost/2"), "a");
+    private static final AddressableNamedEntity P1 = new AddressableNamedEntity(toUri("http://localhost/1"), "a");
+    private static final AddressableNamedEntity P2 = new AddressableNamedEntity(toUri("http://localhost/1"), "a");
+    private static final AddressableNamedEntity P3 = new AddressableNamedEntity(toUri("http://localhost/1"), "b");
+    private static final AddressableNamedEntity P4 = new AddressableNamedEntity(toUri("http://localhost/2"), "a");
 
 
-	@Test
-	public void testEquals() {
-		TestUtil.assertEqualsSymmetrical(P1, P2);
-		Assert.assertEquals(P1, P1);
-		assertNotEquals(P1, null);
-		assertNotEquals(P1, P3);
-		assertNotEquals(P1, P4);
-	}
+    @Test
+    public void testEquals() {
+        TestUtil.assertEqualsSymmetrical(P1, P2);
+        Assert.assertEquals(P1, P1);
+        assertNotEquals(P1, null);
+        assertNotEquals(P1, P3);
+        assertNotEquals(P1, P4);
+    }
 
-	@Test
-	public void testHashCode() throws Exception {
-		Assert.assertEquals(P1.hashCode(), P2.hashCode());
-	}
+    @Test
+    public void testHashCode() throws Exception {
+        Assert.assertEquals(P1.hashCode(), P2.hashCode());
+    }
 
 }

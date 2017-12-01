@@ -29,12 +29,12 @@ import java.net.URI;
  */
 public class SecurityLevelJsonParser implements JsonObjectParser<SecurityLevel> {
 
-	@Override
-	public SecurityLevel parse(final JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final long id = json.getLong("id");
-		final String description = json.getString("description");
-		final String name = json.getString("name");
-		return new SecurityLevel(self, id, name, description);
-	}
+    @Override
+    public SecurityLevel parse(final JSONObject json) throws JSONException {
+        final URI self = JsonParseUtil.getSelfUri(json);
+        final long id = json.getLong("id");
+        final String description = json.getString("description");
+        final String name = json.getString("name");
+        return new SecurityLevel(self, id, name, description);
+    }
 }

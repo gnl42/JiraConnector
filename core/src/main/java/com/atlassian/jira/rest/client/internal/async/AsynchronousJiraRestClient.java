@@ -15,7 +15,18 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
-import com.atlassian.jira.rest.client.api.*;
+import com.atlassian.jira.rest.client.api.AuditRestClient;
+import com.atlassian.jira.rest.client.api.ComponentRestClient;
+import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.MetadataRestClient;
+import com.atlassian.jira.rest.client.api.MyPermissionsRestClient;
+import com.atlassian.jira.rest.client.api.ProjectRestClient;
+import com.atlassian.jira.rest.client.api.ProjectRolesRestClient;
+import com.atlassian.jira.rest.client.api.SearchRestClient;
+import com.atlassian.jira.rest.client.api.SessionRestClient;
+import com.atlassian.jira.rest.client.api.UserRestClient;
+import com.atlassian.jira.rest.client.api.VersionRestClient;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -28,85 +39,85 @@ import java.net.URI;
  */
 public class AsynchronousJiraRestClient implements JiraRestClient {
 
-	private final IssueRestClient issueRestClient;
-	private final SessionRestClient sessionRestClient;
-	private final UserRestClient userRestClient;
-	private final ProjectRestClient projectRestClient;
-	private final ComponentRestClient componentRestClient;
-	private final MetadataRestClient metadataRestClient;
-	private final SearchRestClient searchRestClient;
-	private final VersionRestClient versionRestClient;
-	private final ProjectRolesRestClient projectRolesRestClient;
-	private final MyPermissionsRestClient myPermissionsRestClient;
-	private final DisposableHttpClient httpClient;
+    private final IssueRestClient issueRestClient;
+    private final SessionRestClient sessionRestClient;
+    private final UserRestClient userRestClient;
+    private final ProjectRestClient projectRestClient;
+    private final ComponentRestClient componentRestClient;
+    private final MetadataRestClient metadataRestClient;
+    private final SearchRestClient searchRestClient;
+    private final VersionRestClient versionRestClient;
+    private final ProjectRolesRestClient projectRolesRestClient;
+    private final MyPermissionsRestClient myPermissionsRestClient;
+    private final DisposableHttpClient httpClient;
     private final AuditRestClient auditRestClient;
 
     public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
-		final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
+        final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
 
-		this.httpClient = httpClient;
-		metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
-		sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
-		issueRestClient = new AsynchronousIssueRestClient(baseUri, httpClient, sessionRestClient, metadataRestClient);
-		userRestClient = new AsynchronousUserRestClient(baseUri, httpClient);
-		projectRestClient = new AsynchronousProjectRestClient(baseUri, httpClient);
-		componentRestClient = new AsynchronousComponentRestClient(baseUri, httpClient);
-		searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
-		versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
-		projectRolesRestClient = new AsynchronousProjectRolesRestClient(serverUri, httpClient);
-		myPermissionsRestClient = new AsynchronousMyPermissionsRestClient(baseUri, httpClient);
+        this.httpClient = httpClient;
+        metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
+        sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
+        issueRestClient = new AsynchronousIssueRestClient(baseUri, httpClient, sessionRestClient, metadataRestClient);
+        userRestClient = new AsynchronousUserRestClient(baseUri, httpClient);
+        projectRestClient = new AsynchronousProjectRestClient(baseUri, httpClient);
+        componentRestClient = new AsynchronousComponentRestClient(baseUri, httpClient);
+        searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
+        versionRestClient = new AsynchronousVersionRestClient(baseUri, httpClient);
+        projectRolesRestClient = new AsynchronousProjectRolesRestClient(serverUri, httpClient);
+        myPermissionsRestClient = new AsynchronousMyPermissionsRestClient(baseUri, httpClient);
         auditRestClient = new AsynchronousAuditRestClient(httpClient, baseUri);
     }
 
-	@Override
-	public IssueRestClient getIssueClient() {
-		return issueRestClient;
-	}
+    @Override
+    public IssueRestClient getIssueClient() {
+        return issueRestClient;
+    }
 
-	@Override
-	public SessionRestClient getSessionClient() {
-		return sessionRestClient;
-	}
+    @Override
+    public SessionRestClient getSessionClient() {
+        return sessionRestClient;
+    }
 
-	@Override
-	public UserRestClient getUserClient() {
-		return userRestClient;
-	}
+    @Override
+    public UserRestClient getUserClient() {
+        return userRestClient;
+    }
 
-	@Override
-	public ProjectRestClient getProjectClient() {
-		return projectRestClient;
-	}
+    @Override
+    public ProjectRestClient getProjectClient() {
+        return projectRestClient;
+    }
 
-	@Override
-	public ComponentRestClient getComponentClient() {
-		return componentRestClient;
-	}
+    @Override
+    public ComponentRestClient getComponentClient() {
+        return componentRestClient;
+    }
 
-	@Override
-	public MetadataRestClient getMetadataClient() {
-		return metadataRestClient;
-	}
+    @Override
+    public MetadataRestClient getMetadataClient() {
+        return metadataRestClient;
+    }
 
-	@Override
-	public SearchRestClient getSearchClient() {
-		return searchRestClient;
-	}
+    @Override
+    public SearchRestClient getSearchClient() {
+        return searchRestClient;
+    }
 
-	@Override
-	public VersionRestClient getVersionRestClient() {
-		return versionRestClient;
-	}
+    @Override
+    public VersionRestClient getVersionRestClient() {
+        return versionRestClient;
+    }
 
-	@Override
-	public ProjectRolesRestClient getProjectRolesRestClient() {
-		return projectRolesRestClient;
-	}
+    @Override
+    public ProjectRolesRestClient getProjectRolesRestClient() {
+        return projectRolesRestClient;
+    }
 
-	@Override
-	public MyPermissionsRestClient getMyPermissionsRestClient() {
-		return myPermissionsRestClient;
-	}
+    @Override
+    public MyPermissionsRestClient getMyPermissionsRestClient() {
+        return myPermissionsRestClient;
+    }
 
     @Override
     public AuditRestClient getAuditRestClient() {
@@ -114,12 +125,12 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
     }
 
     @Override
-	public void close() throws IOException {
-		try {
-			httpClient.destroy();
-		} catch (Exception e) {
-			throw (e instanceof IOException) ? ((IOException) e) : new IOException(e);
-		}
-	}
+    public void close() throws IOException {
+        try {
+            httpClient.destroy();
+        } catch (Exception e) {
+            throw (e instanceof IOException) ? ((IOException) e) : new IOException(e);
+        }
+    }
 }
 

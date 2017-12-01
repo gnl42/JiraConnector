@@ -22,27 +22,27 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class VersionPositionInputGenerator implements JsonGenerator<VersionPosition> {
-	@Override
-	public JSONObject generate(VersionPosition versionPosition) throws JSONException {
-		final JSONObject res = new JSONObject();
-		final String posValue;
-		switch (versionPosition) {
-			case FIRST:
-				posValue = "First";
-				break;
-			case LAST:
-				posValue = "Last";
-				break;
-			case EARLIER:
-				posValue = "Earlier";
-				break;
-			case LATER:
-				posValue = "Later";
-				break;
-			default:
-				throw new RestClientException("Unsupported position [" + versionPosition + "]", null);
-		}
-		res.put("position", posValue);
-		return res;
-	}
+    @Override
+    public JSONObject generate(VersionPosition versionPosition) throws JSONException {
+        final JSONObject res = new JSONObject();
+        final String posValue;
+        switch (versionPosition) {
+            case FIRST:
+                posValue = "First";
+                break;
+            case LAST:
+                posValue = "Last";
+                break;
+            case EARLIER:
+                posValue = "Earlier";
+                break;
+            case LATER:
+                posValue = "Later";
+                break;
+            default:
+                throw new RestClientException("Unsupported position [" + versionPosition + "]", null);
+        }
+        res.put("position", posValue);
+        return res;
+    }
 }

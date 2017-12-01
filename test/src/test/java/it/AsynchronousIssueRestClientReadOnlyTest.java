@@ -83,305 +83,305 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("ConstantConditions") // To ignore "May produce NPE" warnings
 public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronousRestClientTest {
 
-	private static final String REMOVED_USER_NAME = "removed_user";
-	private static final String ISSUE_KEY_WITH_REMOVED_USER_DATA = "ANONEDIT-1";
+    private static final String REMOVED_USER_NAME = "removed_user";
+    private static final String ISSUE_KEY_WITH_REMOVED_USER_DATA = "ANONEDIT-1";
 
-	// no timezone here, as JIRA does not store timezone information in its dump file
-	private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
+    // no timezone here, as JIRA does not store timezone information in its dump file
+    private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
 
-	private static boolean alreadyRestored;
+    private static boolean alreadyRestored;
 
-	@Before
-	public void setup() {
-		if (!alreadyRestored) {
-			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_WITH_COMMENT_AND_WORKLOG_FROM_REMOVED_USER_FILE, administration);
-			alreadyRestored = true;
-		}
-	}
+    @Before
+    public void setup() {
+        if (!alreadyRestored) {
+            IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.JIRA_DUMP_WITH_COMMENT_AND_WORKLOG_FROM_REMOVED_USER_FILE, administration);
+            alreadyRestored = true;
+        }
+    }
 
-	@Test
-	public void testGetWatchers() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
-		assertEquals(1, watchers.getNumWatchers());
-		assertFalse(watchers.isWatching());
-		assertThat(watchers.getUsers(), containsInAnyOrder(USER1));
-	}
+    @Test
+    public void testGetWatchers() throws Exception {
+        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
+        assertEquals(1, watchers.getNumWatchers());
+        assertFalse(watchers.isWatching());
+        assertThat(watchers.getUsers(), containsInAnyOrder(USER1));
+    }
 
-	@Test
-	public void testGetWatcherForAnonymouslyAccessibleIssue() {
-		setAnonymousMode();
-		final Issue issue = client.getIssueClient().getIssue("ANNON-1").claim();
-		final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
-		assertEquals(1, watchers.getNumWatchers());
-		assertFalse(watchers.isWatching());
-		assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
-		// to save time
-		assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
-	}
+    @Test
+    public void testGetWatcherForAnonymouslyAccessibleIssue() {
+        setAnonymousMode();
+        final Issue issue = client.getIssueClient().getIssue("ANNON-1").claim();
+        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
+        assertEquals(1, watchers.getNumWatchers());
+        assertFalse(watchers.isWatching());
+        assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
+        // to save time
+        assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
+    }
 
-	@Test
-	public void testGetIssueWithAnonymouslyCreatedAttachment() {
-		setAnonymousMode();
-		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1").claim();
-		final Iterator<Attachment> attachmentIterator = issue.getAttachments().iterator();
-		assertTrue(attachmentIterator.hasNext());
-		assertNull(attachmentIterator.next().getAuthor());
-	}
+    @Test
+    public void testGetIssueWithAnonymouslyCreatedAttachment() {
+        setAnonymousMode();
+        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1").claim();
+        final Iterator<Attachment> attachmentIterator = issue.getAttachments().iterator();
+        assertTrue(attachmentIterator.hasNext());
+        assertNull(attachmentIterator.next().getAuthor());
+    }
 
-	@Test
-	public void testGetIssueWithAnonymouslyCreatedWorklogEntry() {
-		setAnonymousMode();
-		final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2").claim();
-		final Iterator<Worklog> worklogIterator = issue.getWorklogs().iterator();
-		assertTrue(worklogIterator.hasNext());
-		assertNull(worklogIterator.next().getAuthor());
-	}
+    @Test
+    public void testGetIssueWithAnonymouslyCreatedWorklogEntry() {
+        setAnonymousMode();
+        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2").claim();
+        final Iterator<Worklog> worklogIterator = issue.getWorklogs().iterator();
+        assertTrue(worklogIterator.hasNext());
+        assertNull(worklogIterator.next().getAuthor());
+    }
 
-	// URIs are broken in 5.0 - https://jdog.atlassian.com/browse/JRADEV-7691
-	private void assertEqualsNoUri(BasicUser expected, BasicUser actual) {
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getDisplayName(), actual.getDisplayName());
-	}
+    // URIs are broken in 5.0 - https://jdog.atlassian.com/browse/JRADEV-7691
+    private void assertEqualsNoUri(BasicUser expected, BasicUser actual) {
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getDisplayName(), actual.getDisplayName());
+    }
 
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testGetIssue() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		assertEquals("TST-1", issue.getKey());
-		assertEquals(Long.valueOf(10000), issue.getId());
-		assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
-		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
-		assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetIssue() throws Exception {
+        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        assertEquals("TST-1", issue.getKey());
+        assertEquals(Long.valueOf(10000), issue.getId());
+        assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
+        assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getReporter());
+        assertEqualsNoUri(IntegrationTestUtil.USER_ADMIN, issue.getAssignee());
 
-		assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
+        assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
 
-		assertEquals(3, size(issue.getComments()));
+        assertEquals(3, size(issue.getComments()));
 
         final String[] expandosForJira5 = {"renderedFields", "names", "schema", "transitions", "operations", "editmeta", "changelog"};
         final String[] expandosForJira6_4 = toArray(Lists.asList("versionedRepresentations", expandosForJira5), String.class);
 
         // here is anyOf matcher because "versionedRepresentations" was introduced in the middle of v6.4
-		assertThat(issue.getExpandos(), anyOf(containsInAnyOrder(expandosForJira5), containsInAnyOrder(expandosForJira6_4)));
-		assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
-		assertTrue(size(issue.getFields()) > 0);
+        assertThat(issue.getExpandos(), anyOf(containsInAnyOrder(expandosForJira5), containsInAnyOrder(expandosForJira6_4)));
+        assertEquals(new TimeTracking(null, 0, 190), issue.getTimeTracking());
+        assertTrue(size(issue.getFields()) > 0);
 
-		assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, size(issue.getAttachments()));
-		final Iterable<Attachment> items = issue.getAttachments();
-		assertNotNull(items);
-		Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
-				IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? UriBuilder.fromUri(jiraUri).path("/rest/api/2/").build()
-						: jiraRestRootUri, "/attachment/10040"),
-				"dla Paw\u0142a.txt", IntegrationTestUtil.USER_ADMIN, dateTime, 643, "text/plain",
-				IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
+        assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, size(issue.getAttachments()));
+        final Iterable<Attachment> items = issue.getAttachments();
+        assertNotNull(items);
+        Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
+                IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? UriBuilder.fromUri(jiraUri).path("/rest/api/2/").build()
+                        : jiraRestRootUri, "/attachment/10040"),
+                "dla Paw\u0142a.txt", IntegrationTestUtil.USER_ADMIN, dateTime, 643, "text/plain",
+                IntegrationTestUtil.concat(jiraUri, "/secure/attachment/10040/dla+Paw%C5%82a.txt"), null);
 
-		assertEquals(attachment1, items.iterator().next());
+        assertEquals(attachment1, items.iterator().next());
 
-		// test for changelog
-		assertNull(issue.getChangelog());
+        // test for changelog
+        assertNull(issue.getChangelog());
 
-		final Issue issueWithChangelogAndOperations = client.getIssueClient().getIssue("TST-2", EnumSet.of(CHANGELOG, OPERATIONS))
-				.claim();
-		final Iterable<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
-		if (isJira5xOrNewer()) {
-			assertNotNull(changelog);
-			final ChangelogGroup chg1 = Iterables.get(changelog, 18);
-			assertEquals("admin", chg1.getAuthor().getName());
-			assertEquals("Administrator", chg1.getAuthor().getDisplayName());
-			assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
+        final Issue issueWithChangelogAndOperations = client.getIssueClient().getIssue("TST-2", EnumSet.of(CHANGELOG, OPERATIONS))
+                .claim();
+        final Iterable<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
+        if (isJira5xOrNewer()) {
+            assertNotNull(changelog);
+            final ChangelogGroup chg1 = Iterables.get(changelog, 18);
+            assertEquals("admin", chg1.getAuthor().getName());
+            assertEquals("Administrator", chg1.getAuthor().getDisplayName());
+            assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
 
-			assertEquals(singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
-					.getItems());
+            assertEquals(singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
+                    .getItems());
 
-			final ChangelogGroup chg2 = Iterables.get(changelog, 20);
-			assertEquals("admin", chg2.getAuthor().getName());
-			assertEquals("Administrator", chg2.getAuthor().getDisplayName());
-			assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
+            final ChangelogGroup chg2 = Iterables.get(changelog, 20);
+            assertEquals("admin", chg2.getAuthor().getName());
+            assertEquals("Administrator", chg2.getAuthor().getDisplayName());
+            assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
-			// there is not guarantee for the order of the items
-			Matcher<Iterable<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(
-					new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
-					new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
-					new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
-					new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
-			);
-			assertThat(chg2.getItems(), historyItemsMatcher);
-		}
-		final Operations operations = issueWithChangelogAndOperations.getOperations();
-		if (isJira5xOrNewer()) {
-			assertThat(operations, notNullValue());
-			assertThat(operations.getOperationById("log-work"), allOf(
-							instanceOf(OperationLink.class),
-							hasProperty("id", is("log-work"))
-					)
-			);
-		}
-	}
+            // there is not guarantee for the order of the items
+            Matcher<Iterable<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(
+                    new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
+                    new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
+                    new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
+                    new ChangelogItem(FieldType.CUSTOM, "My Number Field New", null, null, null, "1.45")
+            );
+            assertThat(chg2.getItems(), historyItemsMatcher);
+        }
+        final Operations operations = issueWithChangelogAndOperations.getOperations();
+        if (isJira5xOrNewer()) {
+            assertThat(operations, notNullValue());
+            assertThat(operations.getOperationById("log-work"), allOf(
+                    instanceOf(OperationLink.class),
+                    hasProperty("id", is("log-work"))
+                    )
+            );
+        }
+    }
 
     @Test
-	public void testGetIssueWithNonTrivialComments() {
-		final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
-		final Iterable<Comment> comments = issue.getComments();
-		assertEquals(3, size(comments));
-		final Comment c1 = Iterables.get(comments, 0);
-		assertEquals(Visibility.role("Administrators"), c1.getVisibility());
+    public void testGetIssueWithNonTrivialComments() {
+        final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
+        final Iterable<Comment> comments = issue.getComments();
+        assertEquals(3, size(comments));
+        final Comment c1 = Iterables.get(comments, 0);
+        assertEquals(Visibility.role("Administrators"), c1.getVisibility());
 
-		final Comment c3 = Iterables.get(comments, 2);
-		assertEquals(Visibility.group("jira-users"), c3.getVisibility());
+        final Comment c3 = Iterables.get(comments, 2);
+        assertEquals(Visibility.group("jira-users"), c3.getVisibility());
 
-	}
+    }
 
-	@Test
-	public void testGetVoter() {
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
-		assertFalse(votes.hasVoted());
-		assertThat(votes.getUsers(), containsInAnyOrder(USER1));
-	}
+    @Test
+    public void testGetVoter() {
+        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+        assertFalse(votes.hasVoted());
+        assertThat(votes.getUsers(), containsInAnyOrder(USER1));
+    }
 
-	@Test
-	public void testGetVotersWithoutViewIssuePermission() {
-		final Issue issue = client.getIssueClient().getIssue("RST-1").claim();
-		setUser2();
-		final String optionalDot = isJira5xOrNewer() ? "." : "";
-		assertErrorCode(Response.Status.FORBIDDEN,
-				"You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
-			@Override
-			public void run() {
-				client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
-			}
-		});
-	}
+    @Test
+    public void testGetVotersWithoutViewIssuePermission() {
+        final Issue issue = client.getIssueClient().getIssue("RST-1").claim();
+        setUser2();
+        final String optionalDot = isJira5xOrNewer() ? "." : "";
+        assertErrorCode(Response.Status.FORBIDDEN,
+                "You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
+                    @Override
+                    public void run() {
+                        client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+                    }
+                });
+    }
 
-	@Test
-	public void testGetVotersWithoutViewVotersPermission() {
-		setUser2();
-		assertNumVotesAndNoVotersDetails("TST-1", 1);
-	}
+    @Test
+    public void testGetVotersWithoutViewVotersPermission() {
+        setUser2();
+        assertNumVotesAndNoVotersDetails("TST-1", 1);
+    }
 
-	@Test
-	public void testGetVotersAnonymously() {
-		setAnonymousMode();
-		assertNumVotesAndNoVotersDetails("ANNON-1", 0);
-	}
-
-
-	private void assertNumVotesAndNoVotersDetails(final String issueKey, final int numVotes) {
-		final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
-		assertEquals(numVotes, issue.getVotes().getVotes());
-		assertFalse(issue.getVotes().hasVoted());
-		final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
-		assertFalse(votes.hasVoted());
-		assertEquals(numVotes, votes.getVotes());
-		assertTrue(Iterables.isEmpty(votes.getUsers()));
-	}
+    @Test
+    public void testGetVotersAnonymously() {
+        setAnonymousMode();
+        assertNumVotesAndNoVotersDetails("ANNON-1", 0);
+    }
 
 
-	@Test
-	public void testGetTransitions() throws Exception {
-		final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-		final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
-		assertEquals(4, size(transitions));
-		assertTrue(Iterables
-				.contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
-						.<Transition.Field>emptyList())));
-	}
+    private void assertNumVotesAndNoVotersDetails(final String issueKey, final int numVotes) {
+        final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+        assertEquals(numVotes, issue.getVotes().getVotes());
+        assertFalse(issue.getVotes().hasVoted());
+        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+        assertFalse(votes.hasVoted());
+        assertEquals(numVotes, votes.getVotes());
+        assertTrue(Iterables.isEmpty(votes.getUsers()));
+    }
 
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testGetCreateIssueMetadata() throws URISyntaxException {
-		final Iterable<CimProject> metadataProjects = client
-				.getIssueClient()
-				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
-				.claim();
 
-		assertEquals(4, size(metadataProjects));
+    @Test
+    public void testGetTransitions() throws Exception {
+        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        assertEquals(4, size(transitions));
+        assertTrue(Iterables
+                .contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+                        .<Transition.Field>emptyList())));
+    }
 
-		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
-			@Override
-			public boolean apply(CimProject input) {
-				return "ANONEDIT".equals(input.getKey());
-			}
-		});
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    @Test
+    public void testGetCreateIssueMetadata() throws URISyntaxException {
+        final Iterable<CimProject> metadataProjects = client
+                .getIssueClient()
+                .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
+                .claim();
 
-		assertEquals(project.getName(), "Anonymous Editable Project");
+        assertEquals(4, size(metadataProjects));
 
-		for (CimIssueType issueType : project.getIssueTypes()) {
-			assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields()
-					.isEmpty());
-		}
-	}
+        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+            @Override
+            public boolean apply(CimProject input) {
+                return "ANONEDIT".equals(input.getKey());
+            }
+        });
 
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
-		final Iterable<CimProject> metadataProjects = client
-				.getIssueClient()
-				.getCreateIssueMetadata(null).claim();
+        assertEquals(project.getName(), "Anonymous Editable Project");
 
-		assertEquals(4, size(metadataProjects));
+        for (CimIssueType issueType : project.getIssueTypes()) {
+            assertFalse(String.format("Issue type ('%s') fields are not empty!", issueType.getName()), issueType.getFields()
+                    .isEmpty());
+        }
+    }
 
-		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
-			@Override
-			public boolean apply(CimProject input) {
-				return "ANONEDIT".equals(input.getKey());
-			}
-		});
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    @Test
+    public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
+        final Iterable<CimProject> metadataProjects = client
+                .getIssueClient()
+                .getCreateIssueMetadata(null).claim();
 
-		assertEquals(project.getName(), "Anonymous Editable Project");
-		assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
+        assertEquals(4, size(metadataProjects));
 
-		for (CimIssueType issueType : project.getIssueTypes()) {
-			assertTrue(issueType.getFields().isEmpty());
-		}
-	}
+        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+            @Override
+            public boolean apply(CimProject input) {
+                return "ANONEDIT".equals(input.getKey());
+            }
+        });
 
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	@Test
-	public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
-		final Iterable<CimProject> metadataProjects = client.getIssueClient()
-				.getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder()
-						.withProjectKeys("ANONEDIT", "TST")
-						.withExpandedIssueTypesFields()
-						.build())
-				.claim();
+        assertEquals(project.getName(), "Anonymous Editable Project");
+        assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
 
-		assertEquals(2, size(metadataProjects));
+        for (CimIssueType issueType : project.getIssueTypes()) {
+            assertTrue(issueType.getFields().isEmpty());
+        }
+    }
 
-		final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
-			@Override
-			public boolean apply(CimProject input) {
-				return "TST".equals(input.getKey());
-			}
-		});
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    @Test
+    public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
+        final Iterable<CimProject> metadataProjects = client.getIssueClient()
+                .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder()
+                        .withProjectKeys("ANONEDIT", "TST")
+                        .withExpandedIssueTypesFields()
+                        .build())
+                .claim();
 
-		assertEquals(project.getName(), "Test Project");
-		assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
+        assertEquals(2, size(metadataProjects));
 
-		for (CimIssueType issueType : project.getIssueTypes()) {
-			assertFalse(issueType.getFields().isEmpty());
-		}
-	}
+        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+            @Override
+            public boolean apply(CimProject input) {
+                return "TST".equals(input.getKey());
+            }
+        });
 
-	@Test
-	public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
-		final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
-		final Worklog worklog = issue.getWorklogs().iterator().next();
-		assertNotNull(worklog);
-		final BasicUser author = worklog.getAuthor();
-		assertNotNull(author);
-		assertThat(author.getName(), equalTo(REMOVED_USER_NAME));
-		assertTrue("expected incomplete self uri", author.isSelfUriIncomplete());
-	}
+        assertEquals(project.getName(), "Test Project");
+        assertThat(size(project.getIssueTypes()), greaterThanOrEqualTo(5));
 
-	@Test
-	public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
-		final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
-		final Comment comment = issue.getComments().iterator().next();
-		assertNotNull(comment);
-		final BasicUser author = comment.getAuthor();
-		assertNotNull(author);
-		assertEquals(getUserUri(REMOVED_USER_NAME), author.getSelf());
-	}
+        for (CimIssueType issueType : project.getIssueTypes()) {
+            assertFalse(issueType.getFields().isEmpty());
+        }
+    }
+
+    @Test
+    public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
+        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+        final Worklog worklog = issue.getWorklogs().iterator().next();
+        assertNotNull(worklog);
+        final BasicUser author = worklog.getAuthor();
+        assertNotNull(author);
+        assertThat(author.getName(), equalTo(REMOVED_USER_NAME));
+        assertTrue("expected incomplete self uri", author.isSelfUriIncomplete());
+    }
+
+    @Test
+    public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
+        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+        final Comment comment = issue.getComments().iterator().next();
+        assertNotNull(comment);
+        final BasicUser author = comment.getAuthor();
+        assertNotNull(author);
+        assertEquals(getUserUri(REMOVED_USER_NAME), author.getSelf());
+    }
 }

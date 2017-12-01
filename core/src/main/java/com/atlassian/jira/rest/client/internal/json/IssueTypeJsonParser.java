@@ -23,15 +23,15 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class IssueTypeJsonParser implements JsonObjectParser<IssueType> {
-	@Override
-	public IssueType parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final long id = json.getLong("id");
-		final String name = json.getString("name");
-		final boolean isSubtask = json.getBoolean("subtask");
-		final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
-		final URI iconUri = iconUrl == null ? null : JsonParseUtil.parseURI(iconUrl);
-		final String description = JsonParseUtil.getOptionalString(json, "description");
-		return new IssueType(selfUri, id, name, isSubtask, description, iconUri);
-	}
+    @Override
+    public IssueType parse(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final long id = json.getLong("id");
+        final String name = json.getString("name");
+        final boolean isSubtask = json.getBoolean("subtask");
+        final String iconUrl = JsonParseUtil.getOptionalString(json, "iconUrl");
+        final URI iconUri = iconUrl == null ? null : JsonParseUtil.parseURI(iconUrl);
+        final String description = JsonParseUtil.getOptionalString(json, "description");
+        return new IssueType(selfUri, id, name, isSubtask, description, iconUri);
+    }
 }

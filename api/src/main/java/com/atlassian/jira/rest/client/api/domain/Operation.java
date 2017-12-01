@@ -21,19 +21,20 @@ import com.google.common.base.Optional;
 import javax.annotation.Nullable;
 
 public interface Operation {
-	/**
-	 * @return Operation id. May be null.
-	 */
-	@Nullable String getId();
+    /**
+     * @return Operation id. May be null.
+     */
+    @Nullable
+    String getId();
 
-	/**
-	 * Traverse through operation elements to visit them. Traversal will stop on first non absent value
-	 * returned from the visitor.
-	 *
-	 * @param visitor Visitor to visit operation element
-	 * @param <T> Visiting result type
-	 * @return Value returned from the visitor.
-	 */
-	<T> Optional<T> accept(OperationVisitor<T> visitor);
+    /**
+     * Traverse through operation elements to visit them. Traversal will stop on first non absent value
+     * returned from the visitor.
+     *
+     * @param visitor Visitor to visit operation element
+     * @param <T>     Visiting result type
+     * @return Value returned from the visitor.
+     */
+    <T> Optional<T> accept(OperationVisitor<T> visitor);
 
 }

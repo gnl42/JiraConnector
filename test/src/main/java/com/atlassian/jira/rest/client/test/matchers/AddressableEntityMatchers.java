@@ -28,21 +28,21 @@ import java.util.Collection;
 
 public class AddressableEntityMatchers {
 
-	public static Matcher<? super AddressableEntity> withSelf(URI uri) {
-		return new FeatureMatcher<AddressableEntity, URI>(Matchers.is(uri), "entity with self that", "self") {
+    public static Matcher<? super AddressableEntity> withSelf(URI uri) {
+        return new FeatureMatcher<AddressableEntity, URI>(Matchers.is(uri), "entity with self that", "self") {
 
-			@Override
-			protected URI featureValueOf(AddressableEntity AddressableEntity) {
-				return AddressableEntity.getSelf();
-			}
-		};
-	}
+            @Override
+            protected URI featureValueOf(AddressableEntity AddressableEntity) {
+                return AddressableEntity.getSelf();
+            }
+        };
+    }
 
-	public static Matcher<Iterable<? extends AddressableEntity>> entitiesWithSelf(URI... uris) {
-		final Collection<Matcher<? super AddressableEntity>> matchers = Lists.newArrayListWithCapacity(uris.length);
-		for (URI uri : uris) {
-			matchers.add(withSelf(uri));
-		}
-		return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
-	}
+    public static Matcher<Iterable<? extends AddressableEntity>> entitiesWithSelf(URI... uris) {
+        final Collection<Matcher<? super AddressableEntity>> matchers = Lists.newArrayListWithCapacity(uris.length);
+        for (URI uri : uris) {
+            matchers.add(withSelf(uri));
+        }
+        return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
+    }
 }

@@ -26,51 +26,51 @@ import java.net.URI;
  * @since v0.1
  */
 public class IssueLink {
-	private final String targetIssueKey;
-	private final URI targetIssueUri;
-	private final IssueLinkType issueLinkType;
+    private final String targetIssueKey;
+    private final URI targetIssueUri;
+    private final IssueLinkType issueLinkType;
 
-	public IssueLink(String targetIssueKey, URI targetIssueUri, IssueLinkType issueLinkType) {
-		this.targetIssueKey = targetIssueKey;
-		this.targetIssueUri = targetIssueUri;
-		this.issueLinkType = issueLinkType;
-	}
+    public IssueLink(String targetIssueKey, URI targetIssueUri, IssueLinkType issueLinkType) {
+        this.targetIssueKey = targetIssueKey;
+        this.targetIssueUri = targetIssueUri;
+        this.issueLinkType = issueLinkType;
+    }
 
-	public String getTargetIssueKey() {
-		return targetIssueKey;
-	}
+    public String getTargetIssueKey() {
+        return targetIssueKey;
+    }
 
-	public URI getTargetIssueUri() {
-		return targetIssueUri;
-	}
+    public URI getTargetIssueUri() {
+        return targetIssueUri;
+    }
 
-	public IssueLinkType getIssueLinkType() {
-		return issueLinkType;
-	}
+    public IssueLinkType getIssueLinkType() {
+        return issueLinkType;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("targetIssueKey", targetIssueKey).
-				add("targetIssueUri", targetIssueUri).
-				add("issueLinkType", issueLinkType).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("targetIssueKey", targetIssueKey).
+                add("targetIssueUri", targetIssueUri).
+                add("issueLinkType", issueLinkType).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof IssueLink) {
-			IssueLink that = (IssueLink) obj;
-			return Objects.equal(this.targetIssueKey, that.targetIssueKey)
-					&& Objects.equal(this.targetIssueUri, that.targetIssueUri)
-					&& Objects.equal(this.issueLinkType, that.issueLinkType);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IssueLink) {
+            IssueLink that = (IssueLink) obj;
+            return Objects.equal(this.targetIssueKey, that.targetIssueKey)
+                    && Objects.equal(this.targetIssueUri, that.targetIssueUri)
+                    && Objects.equal(this.issueLinkType, that.issueLinkType);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(targetIssueKey, targetIssueUri, issueLinkType);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(targetIssueKey, targetIssueUri, issueLinkType);
+    }
 
 }

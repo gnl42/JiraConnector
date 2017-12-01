@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.atlassian.jira</groupId>
         <artifactId>jira-rest-java-client-parent</artifactId>
         <version>5.0.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
+
     <artifactId>jira-rest-java-client-test</artifactId>
+
     <name>JIRA REST Java Client - Tests</name>
     <description>Tests of JIRA REST Java Client.</description>
 
@@ -80,6 +83,90 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/xml</directory>
+            </testResource>
+        </testResources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.twdata.maven</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.0-beta-2-db2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jira-plugin</artifactId>
+                <version>${amps.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <productVersion>${jira.version}</productVersion>
+                    <productDataVersion>${jira.data.version}</productDataVersion>
+                    <jvmArgs>-Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>it/**</exclude>
+                        <exclude>it2/**</exclude>
+                    </excludes>
+                    <forkMode>once</forkMode>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <preparationGoals>clean test</preparationGoals>
+                    <releaseProfiles>releaseProfile</releaseProfiles>
+                    <!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <configuration>
+                    <properties>
+                        <property>
+                            <name>jira.version</name>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>com.atlassian.jira</groupId>
+                                    <artifactId>jira-core</artifactId>
+                                </dependency>
+                            </dependencies>
+                        </property>
+                    </properties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>jira-7</id>
@@ -259,7 +346,6 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>0.14.2</version>
-
                         <configuration>
                             <autoPull>always</autoPull>
                             <images>
@@ -312,86 +398,4 @@
             </properties>
         </profile>
     </profiles>
-    <build>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-            <testResource>
-                <directory>src/test/xml</directory>
-            </testResource>
-        </testResources>
-        <plugins>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
-                <version>${amps.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.data.version}</productDataVersion>
-                    <jvmArgs>-Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>it/**</exclude>
-                        <exclude>it2/**</exclude>
-                    </excludes>
-                    <forkMode>once</forkMode>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <preparationGoals>clean test</preparationGoals>
-                    <releaseProfiles>releaseProfile</releaseProfiles>
-                    <!--allowTimestampedSnapshots>true</allowTimestampedSnapshots-->
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>1.3.1</version>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>jira.version</name>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>com.atlassian.jira</groupId>
-                                    <artifactId>jira-core</artifactId>
-                                </dependency>
-                            </dependencies>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.twdata.maven</groupId>
-                    <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.0-beta-2-db2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

@@ -27,86 +27,86 @@ import javax.annotation.Nullable;
  */
 public class FieldSchema {
 
-	private final String type;
-	@Nullable
-	private final String items;
-	@Nullable
-	private final String system;
-	@Nullable
-	private final String custom;
-	@Nullable
-	private final Long customId;
+    private final String type;
+    @Nullable
+    private final String items;
+    @Nullable
+    private final String system;
+    @Nullable
+    private final String custom;
+    @Nullable
+    private final Long customId;
 
-	public FieldSchema(String type, String items, String system, String custom, Long customId) {
-		this.type = type;
-		this.items = items;
-		this.system = system;
-		this.custom = custom;
-		this.customId = customId;
-	}
+    public FieldSchema(String type, String items, String system, String custom, Long customId) {
+        this.type = type;
+        this.items = items;
+        this.system = system;
+        this.custom = custom;
+        this.customId = customId;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	@Nullable
-	public String getItems() {
-		return items;
-	}
+    @Nullable
+    public String getItems() {
+        return items;
+    }
 
-	@Nullable
-	public String getSystem() {
-		return system;
-	}
+    @Nullable
+    public String getSystem() {
+        return system;
+    }
 
-	@Nullable
-	public String getCustom() {
-		return custom;
-	}
+    @Nullable
+    public String getCustom() {
+        return custom;
+    }
 
-	@Nullable
-	public Long getCustomId() {
-		return customId;
-	}
+    @Nullable
+    public Long getCustomId() {
+        return customId;
+    }
 
-	public boolean isCustom() {
-		return custom != null;
-	}
+    public boolean isCustom() {
+        return custom != null;
+    }
 
-	/**
-	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
-	 *
-	 * @return ToStringHelper
-	 */
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this).
-				add("type", type).
-				add("items", items).
-				add("system", system).
-				add("custom", custom).
-				add("customId", customId);
-	}
+    /**
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     *
+     * @return ToStringHelper
+     */
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this).
+                add("type", type).
+                add("items", items).
+                add("system", system).
+                add("custom", custom).
+                add("customId", customId);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof FieldSchema) {
-			FieldSchema that = (FieldSchema) obj;
-			return Objects.equal(this.type, that.type)
-					&& Objects.equal(this.items, that.items)
-					&& Objects.equal(this.system, that.system)
-					&& Objects.equal(this.custom, that.custom)
-					&& Objects.equal(this.customId, that.customId);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof FieldSchema) {
+            FieldSchema that = (FieldSchema) obj;
+            return Objects.equal(this.type, that.type)
+                    && Objects.equal(this.items, that.items)
+                    && Objects.equal(this.system, that.system)
+                    && Objects.equal(this.custom, that.custom)
+                    && Objects.equal(this.customId, that.customId);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(type, items, system, custom, customId);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(type, items, system, custom, customId);
+    }
 }

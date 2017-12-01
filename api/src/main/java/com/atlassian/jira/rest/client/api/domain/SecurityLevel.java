@@ -28,44 +28,44 @@ import java.net.URI;
  */
 public class SecurityLevel extends AddressableNamedEntity implements IdentifiableEntity<Long> {
 
-	private final Long id;
-	private final String description;
+    private final Long id;
+    private final String description;
 
-	public SecurityLevel(final URI self, final Long id, final String name, final String description) {
-		super(self, name);
-		this.id = id;
-		this.description = description;
-	}
+    public SecurityLevel(final URI self, final Long id, final String name, final String description) {
+        super(self, name);
+        this.id = id;
+        this.description = description;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), id, description);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, description);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof SecurityLevel) {
-			final SecurityLevel that = (SecurityLevel) obj;
-			return super.equals(that)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.description, that.description);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SecurityLevel) {
+            final SecurityLevel that = (SecurityLevel) obj;
+            return super.equals(that)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.description, that.description);
+        }
+        return false;
+    }
 
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper()
-				.add("id", id)
-				.add("description", description);
-	}
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper()
+                .add("id", id)
+                .add("description", description);
+    }
 }

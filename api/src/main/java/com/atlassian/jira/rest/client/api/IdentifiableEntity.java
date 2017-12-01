@@ -23,6 +23,6 @@ package com.atlassian.jira.rest.client.api;
  */
 public interface IdentifiableEntity<T> {
 
-	T getId();
+    T getId();
 
 }

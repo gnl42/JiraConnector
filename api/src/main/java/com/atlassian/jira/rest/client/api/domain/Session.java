@@ -25,25 +25,25 @@ import java.net.URI;
  * @since v0.1
  */
 public class Session {
-	private final URI userUri;
-	private final String username;
-	private final LoginInfo loginInfo;
+    private final URI userUri;
+    private final String username;
+    private final LoginInfo loginInfo;
 
-	public Session(URI userUri, String username, LoginInfo loginInfo) {
-		this.userUri = userUri;
-		this.username = username;
-		this.loginInfo = loginInfo;
-	}
+    public Session(URI userUri, String username, LoginInfo loginInfo) {
+        this.userUri = userUri;
+        this.username = username;
+        this.loginInfo = loginInfo;
+    }
 
-	public URI getUserUri() {
-		return userUri;
-	}
+    public URI getUserUri() {
+        return userUri;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public LoginInfo getLoginInfo() {
-		return loginInfo;
-	}
+    public LoginInfo getLoginInfo() {
+        return loginInfo;
+    }
 }
