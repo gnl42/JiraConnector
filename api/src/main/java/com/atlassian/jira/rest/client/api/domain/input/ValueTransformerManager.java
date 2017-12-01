@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * This class allows to register {@link ValueTransformer} objects and then perform value transformation using
- * registered transformers by invoking {@link ValueTransformerManager#apply(Object)}.<br/>
+ * registered transformers by invoking {@link ValueTransformerManager#apply(Object)}.
  *
  * @since v1.0
  */

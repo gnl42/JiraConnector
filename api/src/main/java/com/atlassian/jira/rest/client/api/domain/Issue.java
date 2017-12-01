@@ -253,7 +253,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
     }
 
     /**
-     * @return <code>null</code when voting is disabled in JIRA
+     * @return <code>null</code> when voting is disabled in JIRA
      */
     @Nullable
     public BasicVotes getVotes() {

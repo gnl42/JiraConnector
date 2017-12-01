@@ -25,7 +25,8 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * Describes issue type with fields info map.<br/>
+ * Describes issue type with fields info map.
+ * <p>
  * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0

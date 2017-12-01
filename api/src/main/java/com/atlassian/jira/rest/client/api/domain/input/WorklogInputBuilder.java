@@ -29,7 +29,7 @@ import java.net.URI;
  * Especially useful are methods to set estimate adjustment options:
  * {@link WorklogInputBuilder#setAdjustEstimateAuto()}, {@link WorklogInputBuilder#setAdjustEstimateLeave()},
  * {@link WorklogInputBuilder#setAdjustEstimateManual(String)} and {@link WorklogInputBuilder#setAdjustEstimateNew(String)}.
- * <br/>
+ * <p>
  * If you want ot create new WorklogInput from existing Worklog entity then use
  * {@link WorklogInputBuilder#copyFromWorklog(com.atlassian.jira.rest.client.api.domain.Worklog)} method.
  */
@@ -74,9 +74,9 @@ public class WorklogInputBuilder {
     /**
      * Sets AdjustEstimate to NEW - sets estimate to specified value.
      *
-     * @param newEstimate new estimate value to set.<br/>
+     * @param newEstimate new estimate value to set.<br>
      *                    You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
-     *                    to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br/>
+     *                    to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br>
      *                    If you do not specify a time unit, minute will be assumed.
      * @return this worklog input builder object
      */
@@ -106,9 +106,9 @@ public class WorklogInputBuilder {
     /**
      * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
      *
-     * @param reduceEstimateBy the amount to reduce the remaining estimate by<br/>
+     * @param reduceEstimateBy the amount to reduce the remaining estimate by<br>
      *                         You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
-     *                         to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br/>
+     *                         to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br>
      *                         If you do not specify a time unit, minute will be assumed.
      * @return this worklog input builder object
      */
@@ -128,7 +128,8 @@ public class WorklogInputBuilder {
 
     /**
      * Sets AdjustEstimate to AUTO - will automatically adjust the value
-     * based on the minutes spend specified on the worklog input.<br/>
+     * based on the minutes spend specified on the worklog input.
+     * <p>
      * This is the default option.
      *
      * @return this worklog input builder object

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * Represent iterable which is optional (for example due to lack of field in old REST API version).<br/>
+ * Represent iterable which is optional (for example due to lack of field in old REST API version).
+ * <p>
  * This iterable is intended to be not null, so you can always get items by using iterator. If you need
  * to check if value was actually provided then use {@link OptionalIterable#isSupported}.
  *

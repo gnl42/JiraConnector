@@ -27,7 +27,8 @@ import java.net.URI;
 import java.util.Set;
 
 /**
- * Contains information about field in IssueType.<br/>
+ * Contains information about field in IssueType.
+ * <p>
  * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
@@ -99,8 +100,9 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
     }
 
     /**
-     * Returns URI to Auto Complete feature for this field. To make use of it append searched text to returned address.<br/>
-     * Example:<br/>
+     * Returns URI to Auto Complete feature for this field. To make use of it append searched text to returned address.
+     * <p>
+     * Example:<br>
      * {@code URI uriToGetResponseFrom = new URI(getAutoCompleteUri() + "typedLetters"); }
      *
      * @return URI to Auto Complete feature for this field

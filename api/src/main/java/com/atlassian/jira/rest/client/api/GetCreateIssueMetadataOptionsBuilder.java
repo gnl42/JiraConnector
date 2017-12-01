@@ -22,10 +22,11 @@ import com.google.common.collect.Sets;
 /**
  * Builder class for {@link GetCreateIssueMetadataOptions}. All fields are optional so set only those that
  * you need and use {@link GetCreateIssueMetadataOptionsBuilder#build()} method to build new
- * {@link GetCreateIssueMetadataOptions} class.<br/>
+ * {@link GetCreateIssueMetadataOptions} class.
+ * <p>
  * <strong>Please note</strong> that all setters for fields sets given value instead of adding it.it
- * to previously set. For example doing:<br/>
- * <code>new GetCreateIssueMetadataOptionsBuilder().withExpandos("ONE", "TWO").withExpandos("THREE").build()</code><br/>
+ * to previously set. For example doing:<br>
+ * <code>new GetCreateIssueMetadataOptionsBuilder().withExpandos("ONE", "TWO").withExpandos("THREE").build()</code><br>
  * will result in creating new GetCreateIssueMetadataOptions with only one field marked to be expanded - "THREE"
  *
  * @since v1.0

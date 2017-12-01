@@ -21,9 +21,10 @@ import com.google.common.base.Function;
 import javax.annotation.Nullable;
 
 /**
- * Implement this interface if you want to provide your own value transformer to ValueTransformerManager.<br/>
+ * Implement this interface if you want to provide your own value transformer to ValueTransformerManager.
+ * <p>
  * You should return {@link ValueTransformer#CANNOT_HANDLE} in {@link ValueTransformer#apply(Object)} when implemented
- * transformer cannot transform given value.<br/>
+ * transformer cannot transform given value.
  *
  * @since v1.0
  */

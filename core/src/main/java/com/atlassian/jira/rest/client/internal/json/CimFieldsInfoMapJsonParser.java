@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * JSON parser that produces Map of String => CimFieldInfo
+ * JSON parser that produces Map of String =&gt; CimFieldInfo
  *
  * @since v1.0
  */

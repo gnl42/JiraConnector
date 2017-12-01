@@ -27,12 +27,15 @@ import java.net.URI;
 /**
  * Represents worklog item in JIRA. Is used to create new worklog or update existing one.
  * Contains also estimate adjustment options which are used only to adjust change of remaining
- * estimate (adjustEstimate and adjustEstimateValue).<br/>
- * Possible values for adjustEstimate and adjustEstimateValue are:<br/>
- * <li>When adjustEstimate is set to {@link AdjustEstimate#AUTO} or {@link AdjustEstimate#LEAVE} adjustEstimateValue
+ * estimate (adjustEstimate and adjustEstimateValue).
+ * <p>
+ * Possible values for adjustEstimate and adjustEstimateValue are:
+ * <ul>
+ *   <li>When adjustEstimate is set to {@link AdjustEstimate#AUTO} or {@link AdjustEstimate#LEAVE} adjustEstimateValue
  * is not used</li>
- * <li>When adjustEstimate is set to {@link AdjustEstimate#NEW} then remaining estimate is set to adjustEstimateValue</li>
- * <li>When adjustEstimate is set to {@link AdjustEstimate#MANUAL} then remaining estimate is reduced by adjustEstimateValue</li>
+ *   <li>When adjustEstimate is set to {@link AdjustEstimate#NEW} then remaining estimate is set to adjustEstimateValue</li>
+ *   <li>When adjustEstimate is set to {@link AdjustEstimate#MANUAL} then remaining estimate is reduced by adjustEstimateValue</li>
+ * </ul>
  */
 public class WorklogInput {
     @Nullable

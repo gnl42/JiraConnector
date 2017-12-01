@@ -80,7 +80,7 @@ public interface IssueRestClient {
      * Creates new issues in batch.
      *
      * @param issues populated with data to create new issue
-     * @return BulkOperationResult<BasicIssues> with generated <code>issueKey</code> and errors for failed issues
+     * @return BulkOperationResult&lt;BasicIssues&gt; with generated <code>issueKey</code> and errors for failed issues
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
      * @since com.atlassian.jira.rest.client.api 2.0, server 6.0
      */

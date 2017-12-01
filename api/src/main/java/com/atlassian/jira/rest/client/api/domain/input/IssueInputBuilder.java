@@ -104,9 +104,8 @@ public class IssueInputBuilder {
     }
 
     /**
-     * Puts given FieldInput into fields collection. <strong><br/>
-     * <p/>
-     * <br/>
+     * Puts given FieldInput into fields collection.
+     * <p>
      * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
      *
      * @param fieldInput FieldInput to insert.
@@ -118,9 +117,8 @@ public class IssueInputBuilder {
     }
 
     /**
-     * Puts new {@link FieldInput} with given id and value into fields collection.<br/>
-     * <p/>
-     * <br/>
+     * Puts new {@link FieldInput} with given id and value into fields collection.
+     * <p>
      * <strong>Recommended</strong> way to set field value is to use {@link IssueInputBuilder#setFieldValue(String, Object)}.
      *
      * @param id    Field's id

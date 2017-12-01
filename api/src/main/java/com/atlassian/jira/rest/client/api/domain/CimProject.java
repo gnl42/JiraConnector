@@ -24,8 +24,9 @@ import java.net.URI;
 import java.util.Map;
 
 /**
- * Represents project allowed to choose to create new issue. Also contains issue types allowed for that project described by {@link CimIssueType} class.<br/>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions, ProgressMonitor)}
+ * Represents project allowed to choose to create new issue. Also contains issue types allowed for that project described by {@link CimIssueType} class.
+ * <p>
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
