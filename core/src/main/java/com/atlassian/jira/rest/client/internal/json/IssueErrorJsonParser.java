@@ -33,31 +33,31 @@ import java.util.Map;
  */
 public class IssueErrorJsonParser implements JsonObjectParser<BulkOperationErrorResult> {
 
-	@Override
-	public BulkOperationErrorResult parse(final JSONObject json) throws JSONException {
+    @Override
+    public BulkOperationErrorResult parse(final JSONObject json) throws JSONException {
 
-		final Integer status = json.getInt("status");
-		final Integer issueNumber = json.getInt("failedElementNumber");
+        final Integer status = json.getInt("status");
+        final Integer issueNumber = json.getInt("failedElementNumber");
 
-		final JSONObject elementErrors = json.optJSONObject("elementErrors");
-		final JSONObject jsonErrors = elementErrors.optJSONObject("errors");
-		final JSONArray jsonErrorMessages = elementErrors.optJSONArray("errorMessages");
+        final JSONObject elementErrors = json.optJSONObject("elementErrors");
+        final JSONObject jsonErrors = elementErrors.optJSONObject("errors");
+        final JSONArray jsonErrorMessages = elementErrors.optJSONArray("errorMessages");
 
-		final Collection<String> errorMessages;
-		if (jsonErrorMessages != null) {
-			errorMessages = JsonParseUtil.toStringCollection(jsonErrorMessages);
-		} else {
-			errorMessages = Collections.emptyList();
-		}
+        final Collection<String> errorMessages;
+        if (jsonErrorMessages != null) {
+            errorMessages = JsonParseUtil.toStringCollection(jsonErrorMessages);
+        } else {
+            errorMessages = Collections.emptyList();
+        }
 
-		final Map<String, String> errors;
-		if (jsonErrors != null) {
-			errors = JsonParseUtil.toStringMap(jsonErrors.names(), jsonErrors);
-		} else {
-			errors = Collections.emptyMap();
-		}
+        final Map<String, String> errors;
+        if (jsonErrors != null) {
+            errors = JsonParseUtil.toStringMap(jsonErrors.names(), jsonErrors);
+        } else {
+            errors = Collections.emptyMap();
+        }
 
-		return new BulkOperationErrorResult(new ErrorCollection(status, errorMessages, errors), issueNumber);
-	}
+        return new BulkOperationErrorResult(new ErrorCollection(status, errorMessages, errors), issueNumber);
+    }
 
 }

@@ -32,92 +32,92 @@ import java.util.Map;
  */
 public class ErrorCollection {
 
-	private final Integer status;
-	private final Collection<String> errorMessages;
-	private final Map<String, String> errors;
+    private final Integer status;
+    private final Collection<String> errorMessages;
+    private final Map<String, String> errors;
 
-	public ErrorCollection(@Nullable final Integer status, final Collection<String> errorMessages, final Map<String, String> errors) {
-		this.status = status;
-		this.errors = ImmutableMap.copyOf(errors);
-		this.errorMessages = ImmutableList.copyOf(errorMessages);
-	}
+    public ErrorCollection(@Nullable final Integer status, final Collection<String> errorMessages, final Map<String, String> errors) {
+        this.status = status;
+        this.errors = ImmutableMap.copyOf(errors);
+        this.errorMessages = ImmutableList.copyOf(errorMessages);
+    }
 
-	public ErrorCollection(final String errorMessage) {
-		this(null, ImmutableList.of(errorMessage), Collections.<String, String>emptyMap());
-	}
+    public ErrorCollection(final String errorMessage) {
+        this(null, ImmutableList.of(errorMessage), Collections.<String, String>emptyMap());
+    }
 
-	@SuppressWarnings("unused")
-	@Nullable
-	public Integer getStatus() {
-		return status;
-	}
+    @SuppressWarnings("unused")
+    @Nullable
+    public Integer getStatus() {
+        return status;
+    }
 
-	public Collection<String> getErrorMessages() {
-		return errorMessages;
-	}
+    public Collection<String> getErrorMessages() {
+        return errorMessages;
+    }
 
-	public Map<String, String> getErrors() {
-		return errors;
-	}
+    public Map<String, String> getErrors() {
+        return errors;
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("status", status)
-				.add("errors", errors)
-				.add("errorMessages", errorMessages)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("status", status)
+                .add("errors", errors)
+                .add("errorMessages", errorMessages)
+                .toString();
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj instanceof ErrorCollection) {
-			final ErrorCollection that = (ErrorCollection) obj;
-			return Objects.equal(this.status, that.status)
-					&& Objects.equal(this.errors, that.errors)
-					&& Objects.equal(this.errorMessages, that.errorMessages);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof ErrorCollection) {
+            final ErrorCollection that = (ErrorCollection) obj;
+            return Objects.equal(this.status, that.status)
+                    && Objects.equal(this.errors, that.errors)
+                    && Objects.equal(this.errorMessages, that.errorMessages);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(status, errors, errorMessages);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(status, errors, errorMessages);
+    }
 
-	public static class Builder {
+    public static class Builder {
 
-		private int status;
-		private final ImmutableMap.Builder<String, String> errors;
-		private final ImmutableList.Builder<String> errorMessages;
+        private int status;
+        private final ImmutableMap.Builder<String, String> errors;
+        private final ImmutableList.Builder<String> errorMessages;
 
-		public Builder() {
-			errors = ImmutableMap.builder();
-			errorMessages = ImmutableList.builder();
-		}
+        public Builder() {
+            errors = ImmutableMap.builder();
+            errorMessages = ImmutableList.builder();
+        }
 
-		public Builder status(final int status) {
-			this.status = status;
-			return this;
-		}
+        public Builder status(final int status) {
+            this.status = status;
+            return this;
+        }
 
-		public Builder error(final String key, final String message) {
-			errors.put(key, message);
-			return this;
+        public Builder error(final String key, final String message) {
+            errors.put(key, message);
+            return this;
 
-		}
+        }
 
-		public Builder errorMessage(final String message) {
-			errorMessages.add(message);
-			return this;
-		}
+        public Builder errorMessage(final String message) {
+            errorMessages.add(message);
+            return this;
+        }
 
-		public ErrorCollection build() {
-			return new ErrorCollection(status, errorMessages.build(), errors.build());
-		}
-	}
+        public ErrorCollection build() {
+            return new ErrorCollection(status, errorMessages.build(), errors.build());
+        }
+    }
 }

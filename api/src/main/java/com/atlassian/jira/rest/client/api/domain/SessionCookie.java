@@ -25,43 +25,43 @@ import com.google.common.base.Objects;
  * @since v0.1
  */
 public class SessionCookie implements NamedEntity {
-	private final String name;
-	private final String value;
+    private final String name;
+    private final String value;
 
-	public SessionCookie(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
+    public SessionCookie(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("name", name).
-				add("value", value).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(super.toString()).
+                add("name", name).
+                add("value", value).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof SessionCookie) {
-			SessionCookie that = (SessionCookie) obj;
-			return Objects.equal(this.name, that.name)
-					&& Objects.equal(this.value, that.value);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SessionCookie) {
+            SessionCookie that = (SessionCookie) obj;
+            return Objects.equal(this.name, that.name)
+                    && Objects.equal(this.value, that.value);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(name, value);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, value);
+    }
 
 }

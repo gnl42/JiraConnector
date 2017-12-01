@@ -26,43 +26,43 @@ import com.google.common.base.Objects;
  * @since v0.1
  */
 public class Authentication {
-	private final LoginInfo loginInfo;
-	private final SessionCookie sessionCookie;
+    private final LoginInfo loginInfo;
+    private final SessionCookie sessionCookie;
 
-	public Authentication(LoginInfo loginInfo, SessionCookie sessionCookie) {
-		this.loginInfo = loginInfo;
-		this.sessionCookie = sessionCookie;
-	}
+    public Authentication(LoginInfo loginInfo, SessionCookie sessionCookie) {
+        this.loginInfo = loginInfo;
+        this.sessionCookie = sessionCookie;
+    }
 
-	public LoginInfo getLoginInfo() {
-		return loginInfo;
-	}
+    public LoginInfo getLoginInfo() {
+        return loginInfo;
+    }
 
-	public SessionCookie getSession() {
-		return sessionCookie;
-	}
+    public SessionCookie getSession() {
+        return sessionCookie;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(super.toString()).
-				add("loginInfo", loginInfo).
-				add("sessionCookie", sessionCookie).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(super.toString()).
+                add("loginInfo", loginInfo).
+                add("sessionCookie", sessionCookie).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Authentication) {
-			Authentication that = (Authentication) obj;
-			return Objects.equal(this.loginInfo, that.loginInfo)
-					&& Objects.equal(this.sessionCookie, that.sessionCookie);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Authentication) {
+            Authentication that = (Authentication) obj;
+            return Objects.equal(this.loginInfo, that.loginInfo)
+                    && Objects.equal(this.sessionCookie, that.sessionCookie);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(loginInfo, sessionCookie);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(loginInfo, sessionCookie);
+    }
 
 }

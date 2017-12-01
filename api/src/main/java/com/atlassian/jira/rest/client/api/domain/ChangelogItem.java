@@ -26,80 +26,80 @@ import javax.annotation.Nullable;
  * @since 0.6
  */
 public class ChangelogItem {
-	private final FieldType fieldType;
-	private final String field;
-	private final String from;
-	private final String fromString;
-	private final String to;
-	private final String toString;
+    private final FieldType fieldType;
+    private final String field;
+    private final String from;
+    private final String fromString;
+    private final String to;
+    private final String toString;
 
-	public ChangelogItem(FieldType fieldType, String field, String from, String fromString, String to, String toString) {
-		this.fieldType = fieldType;
-		this.field = field;
-		this.from = from;
-		this.fromString = fromString;
-		this.to = to;
-		this.toString = toString;
-	}
+    public ChangelogItem(FieldType fieldType, String field, String from, String fromString, String to, String toString) {
+        this.fieldType = fieldType;
+        this.field = field;
+        this.from = from;
+        this.fromString = fromString;
+        this.to = to;
+        this.toString = toString;
+    }
 
-	public FieldType getFieldType() {
-		return fieldType;
-	}
+    public FieldType getFieldType() {
+        return fieldType;
+    }
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
-	@Nullable
-	public String getFrom() {
-		return from;
-	}
+    @Nullable
+    public String getFrom() {
+        return from;
+    }
 
-	@Nullable
-	public String getFromString() {
-		return fromString;
-	}
+    @Nullable
+    public String getFromString() {
+        return fromString;
+    }
 
-	@Nullable
-	public String getTo() {
-		return to;
-	}
+    @Nullable
+    public String getTo() {
+        return to;
+    }
 
-	@Nullable
-	public String getToString() {
-		return toString;
-	}
+    @Nullable
+    public String getToString() {
+        return toString;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ChangelogItem) {
-			ChangelogItem that = (ChangelogItem) obj;
-			return Objects.equal(this.fieldType, that.fieldType)
-					&& Objects.equal(this.field, that.field)
-					&& Objects.equal(this.from, that.from)
-					&& Objects.equal(this.fromString, that.fromString)
-					&& Objects.equal(this.to, that.to)
-					&& Objects.equal(this.toString, that.toString);
-		}
-		return false;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChangelogItem) {
+            ChangelogItem that = (ChangelogItem) obj;
+            return Objects.equal(this.fieldType, that.fieldType)
+                    && Objects.equal(this.field, that.field)
+                    && Objects.equal(this.from, that.from)
+                    && Objects.equal(this.fromString, that.fromString)
+                    && Objects.equal(this.to, that.to)
+                    && Objects.equal(this.toString, that.toString);
+        }
+        return false;
 
-	}
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(fieldType, field, from, fromString, to, toString);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(fieldType, field, from, fromString, to, toString);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("fieldType", fieldType).
-				add("field", field).
-				add("from", from).
-				add("fromString", fromString).
-				add("to", to).
-				add("toString", toString).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("fieldType", fieldType).
+                add("field", field).
+                add("from", from).
+                add("fromString", fromString).
+                add("to", to).
+                add("toString", toString).
+                toString();
+    }
 
 }

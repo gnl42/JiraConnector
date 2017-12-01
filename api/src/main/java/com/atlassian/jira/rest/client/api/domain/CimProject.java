@@ -31,46 +31,46 @@ import java.util.Map;
  */
 public class CimProject extends BasicProject {
 
-	private final Map<String, URI> avatarUris;
-	private final Iterable<CimIssueType> issueTypes;
+    private final Map<String, URI> avatarUris;
+    private final Iterable<CimIssueType> issueTypes;
 
-	public CimProject(URI self, String key, Long id, String name, Map<String, URI> avatarUris, Iterable<CimIssueType> issueTypes) {
-		super(self, key, id, name);
-		this.avatarUris = avatarUris;
-		this.issueTypes = issueTypes;
-	}
+    public CimProject(URI self, String key, Long id, String name, Map<String, URI> avatarUris, Iterable<CimIssueType> issueTypes) {
+        super(self, key, id, name);
+        this.avatarUris = avatarUris;
+        this.issueTypes = issueTypes;
+    }
 
-	public Iterable<CimIssueType> getIssueTypes() {
-		return issueTypes;
-	}
+    public Iterable<CimIssueType> getIssueTypes() {
+        return issueTypes;
+    }
 
-	public Map<String, URI> getAvatarUris() {
-		return avatarUris;
-	}
+    public Map<String, URI> getAvatarUris() {
+        return avatarUris;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().
-				add("issueTypes", issueTypes).
-				add("avatarUris", avatarUris);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().
+                add("issueTypes", issueTypes).
+                add("avatarUris", avatarUris);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), avatarUris, issueTypes);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), avatarUris, issueTypes);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CimProject) {
-			CimProject that = (CimProject) obj;
-			return super.equals(obj)
-					&& Objects.equal(this.avatarUris, that.avatarUris)
-					&& Objects.equal(this.issueTypes, that.issueTypes);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CimProject) {
+            CimProject that = (CimProject) obj;
+            return super.equals(obj)
+                    && Objects.equal(this.avatarUris, that.avatarUris)
+                    && Objects.equal(this.issueTypes, that.issueTypes);
+        }
+        return false;
+    }
 }

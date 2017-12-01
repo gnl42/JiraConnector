@@ -25,60 +25,61 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronousRestClientTest {
 
-	private static boolean alreadyRestored;
+    private static boolean alreadyRestored;
 
-	@Before
-	public void setup() {
-		if (!alreadyRestored) {
-			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
-			alreadyRestored = true;
-		}
-	}
+    @Before
+    public void setup() {
+        if (!alreadyRestored) {
+            IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+            alreadyRestored = true;
+        }
+    }
 
-	@Override
-	public void beforeMethod() {
-		super.beforeMethod();
+    @Override
+    public void beforeMethod() {
+        super.beforeMethod();
 
-		setUser1(); // set non-admin user
-	}
+        setUser1(); // set non-admin user
+    }
 
-	@Test
-	public void testHavePermission() throws Exception {
-		testWorkIssuePermission(MyPermissionsInput.withIssue("TST-1"), true);
-		testWorkIssuePermission(MyPermissionsInput.withIssue(10000), true); // TST-1
-		testWorkIssuePermission(MyPermissionsInput.withProject("TST"), true);
-		testWorkIssuePermission(MyPermissionsInput.withProject(10000), true); // TST
-		testWorkIssuePermission(MyPermissionsInput.withIssue("RST-1"), false);
-		testWorkIssuePermission(MyPermissionsInput.withIssue(10060), false); // RST-1
-		testWorkIssuePermission(MyPermissionsInput.withProject("RST"), false);
-		testWorkIssuePermission(MyPermissionsInput.withProject(10010), false); // RST
-		testWorkIssuePermission(MyPermissionsInput.withAny(), true); // any = permission from TST
-	}
+    @Test
+    public void testHavePermission() throws Exception {
+        testWorkIssuePermission(MyPermissionsInput.withIssue("TST-1"), true);
+        testWorkIssuePermission(MyPermissionsInput.withIssue(10000), true); // TST-1
+        testWorkIssuePermission(MyPermissionsInput.withProject("TST"), true);
+        testWorkIssuePermission(MyPermissionsInput.withProject(10000), true); // TST
+        testWorkIssuePermission(MyPermissionsInput.withIssue("RST-1"), false);
+        testWorkIssuePermission(MyPermissionsInput.withIssue(10060), false); // RST-1
+        testWorkIssuePermission(MyPermissionsInput.withProject("RST"), false);
+        testWorkIssuePermission(MyPermissionsInput.withProject(10010), false); // RST
+        testWorkIssuePermission(MyPermissionsInput.withAny(), true); // any = permission from TST
+    }
 
-	@Test
-	public void testNonExisting() throws Exception {
-		testError(MyPermissionsInput.withIssue("NONEXISTING-1"), 404);
-		testError(MyPermissionsInput.withProject("NONEXISTINGPROJECT"), 404);
-	}
+    @Test
+    public void testNonExisting() throws Exception {
+        testError(MyPermissionsInput.withIssue("NONEXISTING-1"), 404);
+        testError(MyPermissionsInput.withProject("NONEXISTINGPROJECT"), 404);
+    }
 
-	private void testWorkIssuePermission(MyPermissionsInput permissionsInput, boolean expectedPermission) {
-		// when
-		final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
+    private void testWorkIssuePermission(MyPermissionsInput permissionsInput, boolean expectedPermission) {
+        // when
+        final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
 
-		// then
-		assertThat("Context " + permissionsInput, permissions.havePermission(Permissions.WORK_ISSUE), is(expectedPermission));
-	}
+        // then
+        assertThat("Context " + permissionsInput, permissions.havePermission(Permissions.WORK_ISSUE), is(expectedPermission));
+    }
 
-	private void testError(MyPermissionsInput permissionsInput, int expectedStatus) {
-		try {
-			client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
-			fail("rest client should fail for input " + permissionsInput);
-		} catch (RestClientException e) {
-			assertThat("Context " + permissionsInput, e.getStatusCode(), is(Optional.of(expectedStatus)));
-		}
-	}
+    private void testError(MyPermissionsInput permissionsInput, int expectedStatus) {
+        try {
+            client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
+            fail("rest client should fail for input " + permissionsInput);
+        } catch (RestClientException e) {
+            assertThat("Context " + permissionsInput, e.getStatusCode(), is(Optional.of(expectedStatus)));
+        }
+    }
 }

@@ -24,54 +24,54 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 public class SearchResultMatchers {
-	public static Matcher<? super SearchResult> withStartIndex(final int startIndex) {
-		return new FeatureMatcher<SearchResult, Integer>(Matchers.is(startIndex),
-				"search result with start index that", "startIndex") {
+    public static Matcher<? super SearchResult> withStartIndex(final int startIndex) {
+        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(startIndex),
+                "search result with start index that", "startIndex") {
 
-			@Override
-			protected Integer featureValueOf(SearchResult searchResult) {
-				return searchResult.getStartIndex();
-			}
-		};
-	}
+            @Override
+            protected Integer featureValueOf(SearchResult searchResult) {
+                return searchResult.getStartIndex();
+            }
+        };
+    }
 
-	public static Matcher<? super SearchResult> withMaxResults(final int maxResults) {
-		return new FeatureMatcher<SearchResult, Integer>(Matchers.is(maxResults),
-				"search result with max results that", "maxResults") {
+    public static Matcher<? super SearchResult> withMaxResults(final int maxResults) {
+        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(maxResults),
+                "search result with max results that", "maxResults") {
 
-			@Override
-			protected Integer featureValueOf(SearchResult searchResult) {
-				return searchResult.getMaxResults();
-			}
-		};
-	}
+            @Override
+            protected Integer featureValueOf(SearchResult searchResult) {
+                return searchResult.getMaxResults();
+            }
+        };
+    }
 
-	public static Matcher<? super SearchResult> withTotal(final int total) {
-		return new FeatureMatcher<SearchResult, Integer>(Matchers.is(total),
-				"search result with total that", "total") {
+    public static Matcher<? super SearchResult> withTotal(final int total) {
+        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(total),
+                "search result with total that", "total") {
 
-			@Override
-			protected Integer featureValueOf(SearchResult searchResult) {
-				return searchResult.getTotal();
-			}
-		};
-	}
+            @Override
+            protected Integer featureValueOf(SearchResult searchResult) {
+                return searchResult.getTotal();
+            }
+        };
+    }
 
-	public static Matcher<? super SearchResult> withIssueCount(final int issueCount) {
-		return new FeatureMatcher<SearchResult, Integer>(Matchers.is(issueCount),
-				"search result with issue count that", "issue count") {
+    public static Matcher<? super SearchResult> withIssueCount(final int issueCount) {
+        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(issueCount),
+                "search result with issue count that", "issue count") {
 
-			@Override
-			protected Integer featureValueOf(SearchResult searchResult) {
-				final Iterable<Issue> issues = searchResult.getIssues();
-				return (issues == null) ? 0 : Iterables.size(issues);
-			}
-		};
-	}
+            @Override
+            protected Integer featureValueOf(SearchResult searchResult) {
+                final Iterable<Issue> issues = searchResult.getIssues();
+                return (issues == null) ? 0 : Iterables.size(issues);
+            }
+        };
+    }
 
-	public static Matcher<? super SearchResult> searchResultWithParamsAndIssueCount(final int startIndex, final int maxResults,
-			final int total, final int issueCount) {
-		return Matchers.allOf(withStartIndex(startIndex), withMaxResults(maxResults), withTotal(total),
-				withIssueCount(issueCount));
-	}
+    public static Matcher<? super SearchResult> searchResultWithParamsAndIssueCount(final int startIndex, final int maxResults,
+                                                                                    final int total, final int issueCount) {
+        return Matchers.allOf(withStartIndex(startIndex), withMaxResults(maxResults), withTotal(total),
+                withIssueCount(issueCount));
+    }
 }

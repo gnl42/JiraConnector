@@ -25,26 +25,26 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class IssueLinkJsonParserV5 implements JsonObjectParser<IssueLink> {
-	private final IssuelinksTypeJsonParserV5 issuelinksTypeJsonParserV5 = new IssuelinksTypeJsonParserV5();
+    private final IssuelinksTypeJsonParserV5 issuelinksTypeJsonParserV5 = new IssuelinksTypeJsonParserV5();
 
-	@Override
-	public IssueLink parse(JSONObject json) throws JSONException {
-		final IssuelinksType issuelinksType = issuelinksTypeJsonParserV5.parse(json.getJSONObject("type"));
-		final IssueLinkType.Direction direction;
-		final JSONObject link;
-		if (json.has("inwardIssue")) {
-			link = json.getJSONObject("inwardIssue");
-			direction = IssueLinkType.Direction.INBOUND;
-		} else {
-			link = json.getJSONObject("outwardIssue");
-			direction = IssueLinkType.Direction.OUTBOUND;
-		}
+    @Override
+    public IssueLink parse(JSONObject json) throws JSONException {
+        final IssuelinksType issuelinksType = issuelinksTypeJsonParserV5.parse(json.getJSONObject("type"));
+        final IssueLinkType.Direction direction;
+        final JSONObject link;
+        if (json.has("inwardIssue")) {
+            link = json.getJSONObject("inwardIssue");
+            direction = IssueLinkType.Direction.INBOUND;
+        } else {
+            link = json.getJSONObject("outwardIssue");
+            direction = IssueLinkType.Direction.OUTBOUND;
+        }
 
-		final String key = link.getString("key");
-		final URI targetIssueUri = JsonParseUtil.parseURI(link.getString("self"));
-		final IssueLinkType issueLinkType = new IssueLinkType(issuelinksType.getName(),
-				direction.equals(IssueLinkType.Direction.INBOUND) ? issuelinksType.getInward()
-						: issuelinksType.getOutward(), direction);
-		return new IssueLink(key, targetIssueUri, issueLinkType);
-	}
+        final String key = link.getString("key");
+        final URI targetIssueUri = JsonParseUtil.parseURI(link.getString("self"));
+        final IssueLinkType issueLinkType = new IssueLinkType(issuelinksType.getName(),
+                direction.equals(IssueLinkType.Direction.INBOUND) ? issuelinksType.getInward()
+                        : issuelinksType.getOutward(), direction);
+        return new IssueLink(key, targetIssueUri, issueLinkType);
+    }
 }

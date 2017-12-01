@@ -43,85 +43,85 @@ import static org.junit.Assert.assertThat;
 
 public class SearchResultJsonParserTest {
 
-	@Rule
-	public final ExpectedException exception = ExpectedException.none();
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
-	final SearchResultJsonParser parser = new SearchResultJsonParser();
+    final SearchResultJsonParser parser = new SearchResultJsonParser();
 
-	@Test
-	public void testParse() throws Exception {
-		final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/issues1.json"));
+    @Test
+    public void testParse() throws Exception {
+        final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/issues1.json"));
 
-		assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 50, 1, 1));
+        assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 50, 1, 1));
 
-		final Issue foundIssue = Iterables.getLast(searchResult.getIssues());
-		assertIssueIsTST7(foundIssue);
-	}
+        final Issue foundIssue = Iterables.getLast(searchResult.getIssues());
+        assertIssueIsTST7(foundIssue);
+    }
 
-	@Test
-	public void testParseMany() throws Exception {
-		final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/many-issues.json"));
+    @Test
+    public void testParseMany() throws Exception {
+        final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/many-issues.json"));
 
-		assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 8, 15, 8));
+        assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 8, 15, 8));
 
-		final Issue issue = findEntityById(searchResult.getIssues(), 10040L);
-		assertIssueIsTST7(issue);
+        final Issue issue = findEntityById(searchResult.getIssues(), 10040L);
+        assertIssueIsTST7(issue);
 
-		final String[] expectedIssuesKeys = {"TST-13", "TST-12", "TST-11", "TST-10", "TST-9", "TST-8", "TST-7", "TST-6"};
-		assertThat(searchResult.getIssues(), issuesWithKeys(expectedIssuesKeys));
-	}
+        final String[] expectedIssuesKeys = {"TST-13", "TST-12", "TST-11", "TST-10", "TST-9", "TST-8", "TST-7", "TST-6"};
+        assertThat(searchResult.getIssues(), issuesWithKeys(expectedIssuesKeys));
+    }
 
-	@Test
-	public void testParseInvalidTotal() throws Exception {
-		exception.expect(JSONException.class);
-		exception.expectMessage("JSONObject[\"total\"] is not a number.");
+    @Test
+    public void testParseInvalidTotal() throws Exception {
+        exception.expect(JSONException.class);
+        exception.expectMessage("JSONObject[\"total\"] is not a number.");
 
-		parser.parse(getJsonObjectFromResource("/json/search/issues-invalid-total.json"));
-	}
+        parser.parse(getJsonObjectFromResource("/json/search/issues-invalid-total.json"));
+    }
 
-	private void assertIssueIsTST7(Issue issue) {
-		assertEquals("TST-7", issue.getKey());
-		assertEquals(Long.valueOf(10040), issue.getId());
-		assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), issue.getSelf());
-		assertEquals("A task where someone will vote", issue.getSummary());
-		assertNull(issue.getDescription()); // by default search doesn't retrieve description
+    private void assertIssueIsTST7(Issue issue) {
+        assertEquals("TST-7", issue.getKey());
+        assertEquals(Long.valueOf(10040), issue.getId());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/issue/10040"), issue.getSelf());
+        assertEquals("A task where someone will vote", issue.getSummary());
+        assertNull(issue.getDescription()); // by default search doesn't retrieve description
 
-		final BasicPriority expectedPriority = new BasicPriority(toUri("http://localhost:8090/jira/rest/api/2/priority/3"), 3L, "Major");
-		assertEquals(expectedPriority, issue.getPriority());
+        final BasicPriority expectedPriority = new BasicPriority(toUri("http://localhost:8090/jira/rest/api/2/priority/3"), 3L, "Major");
+        assertEquals(expectedPriority, issue.getPriority());
 
-		final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"));
-		assertEquals(expectedStatus, issue.getStatus());
+        final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"));
+        assertEquals(expectedStatus, issue.getStatus());
 
-		assertEmptyIterable(issue.getComments());
-		assertEmptyIterable(issue.getComments());
-		assertEmptyIterable(issue.getComponents());
-		assertEmptyIterable(issue.getWorklogs());
-		assertEmptyIterable(issue.getSubtasks());
-		assertEmptyIterable(issue.getIssueLinks());
-		assertEmptyIterable(issue.getFixVersions());
-		assertEmptyIterable(issue.getAffectedVersions());
-		assertEmptyIterable(issue.getLabels());
-		assertNull(issue.getDueDate());
-		assertNull(issue.getTimeTracking());
-		assertNull(issue.getResolution());
-		assertNull(issue.getChangelog());
-		assertNull(issue.getAttachments());
-		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
-		assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
-		assertEquals(TestConstants.USER1, issue.getReporter());
-		assertEquals(TestConstants.USER_ADMIN, issue.getAssignee());
+        assertEmptyIterable(issue.getComments());
+        assertEmptyIterable(issue.getComments());
+        assertEmptyIterable(issue.getComponents());
+        assertEmptyIterable(issue.getWorklogs());
+        assertEmptyIterable(issue.getSubtasks());
+        assertEmptyIterable(issue.getIssueLinks());
+        assertEmptyIterable(issue.getFixVersions());
+        assertEmptyIterable(issue.getAffectedVersions());
+        assertEmptyIterable(issue.getLabels());
+        assertNull(issue.getDueDate());
+        assertNull(issue.getTimeTracking());
+        assertNull(issue.getResolution());
+        assertNull(issue.getChangelog());
+        assertNull(issue.getAttachments());
+        assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
+        assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
+        assertEquals(TestConstants.USER1, issue.getReporter());
+        assertEquals(TestConstants.USER_ADMIN, issue.getAssignee());
 
-		final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", 10000L, "Test Project");
-		assertEquals(expectedProject, issue.getProject());
+        final BasicProject expectedProject = new BasicProject(toUri("http://localhost:8090/jira/rest/api/2/project/TST"), "TST", 10000L, "Test Project");
+        assertEquals(expectedProject, issue.getProject());
 
-		final BasicVotes expectedVotes = new BasicVotes(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/votes"), 0, false);
-		assertEquals(expectedVotes, issue.getVotes());
+        final BasicVotes expectedVotes = new BasicVotes(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/votes"), 0, false);
+        assertEquals(expectedVotes, issue.getVotes());
 
-		final BasicWatchers expectedWatchers = new BasicWatchers(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/watchers"), false, 0);
-		assertEquals(expectedWatchers, issue.getWatchers());
+        final BasicWatchers expectedWatchers = new BasicWatchers(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-7/watchers"), false, 0);
+        assertEquals(expectedWatchers, issue.getWatchers());
 
-		final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", toUri("http://localhost:8090/jira/images/icons/task.gif"));
-		assertEquals(expectedIssueType, issue.getIssueType());
-	}
+        final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/3"), 3L, "Task", false, "A task that needs to be done.", toUri("http://localhost:8090/jira/images/icons/task.gif"));
+        assertEquals(expectedIssueType, issue.getIssueType());
+    }
 
 }

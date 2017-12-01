@@ -28,79 +28,79 @@ import java.net.URI;
  */
 public class CustomFieldOption {
 
-	private final URI self;
-	private final Long id;
-	private final String value;
-	private final Iterable<CustomFieldOption> children;
-	@Nullable
-	private final CustomFieldOption child;
+    private final URI self;
+    private final Long id;
+    private final String value;
+    private final Iterable<CustomFieldOption> children;
+    @Nullable
+    private final CustomFieldOption child;
 
-	public CustomFieldOption(Long id, URI self, String value, Iterable<CustomFieldOption> children, @Nullable CustomFieldOption child) {
-		this.value = value;
-		this.id = id;
-		this.self = self;
-		this.children = children;
-		this.child = child;
-	}
+    public CustomFieldOption(Long id, URI self, String value, Iterable<CustomFieldOption> children, @Nullable CustomFieldOption child) {
+        this.value = value;
+        this.id = id;
+        this.self = self;
+        this.children = children;
+        this.child = child;
+    }
 
-	public URI getSelf() {
-		return self;
-	}
+    public URI getSelf() {
+        return self;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public Iterable<CustomFieldOption> getChildren() {
-		return children;
-	}
+    public Iterable<CustomFieldOption> getChildren() {
+        return children;
+    }
 
-	@Nullable
-	public CustomFieldOption getChild() {
-		return child;
-	}
+    @Nullable
+    public CustomFieldOption getChild() {
+        return child;
+    }
 
-	/**
-	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
-	 *
-	 * @return ToStringHelper
-	 */
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this)
-				.add("self", self)
-				.add("id", id)
-				.add("value", value)
-				.add("children", children)
-				.add("child", child);
-	}
+    /**
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     *
+     * @return ToStringHelper
+     */
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this)
+                .add("self", self)
+                .add("id", id)
+                .add("value", value)
+                .add("children", children)
+                .add("child", child);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, id, value, children, child);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, id, value, children, child);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final CustomFieldOption other = (CustomFieldOption) obj;
-		return Objects.equal(this.self, other.self)
-				&& Objects.equal(this.id, other.id)
-				&& Objects.equal(this.value, other.value)
-				&& Objects.equal(this.children, other.children)
-				&& Objects.equal(this.child, other.child);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CustomFieldOption other = (CustomFieldOption) obj;
+        return Objects.equal(this.self, other.self)
+                && Objects.equal(this.id, other.id)
+                && Objects.equal(this.value, other.value)
+                && Objects.equal(this.children, other.children)
+                && Objects.equal(this.child, other.child);
+    }
 }

@@ -23,16 +23,16 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class OperationGroupJsonParser implements JsonObjectParser<OperationGroup> {
-	final private OperationLinkJsonParser linkJsonParser = new OperationLinkJsonParser();
-	final private OperationHeaderJsonParser headerJsonParser = new OperationHeaderJsonParser();
+    final private OperationLinkJsonParser linkJsonParser = new OperationLinkJsonParser();
+    final private OperationHeaderJsonParser headerJsonParser = new OperationHeaderJsonParser();
 
-	@Override
-	public OperationGroup parse(final JSONObject json) throws JSONException {
-		final String id = JsonParseUtil.getOptionalString(json, "id");
-		final Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
-		final Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);
-		final OperationHeader header = JsonParseUtil.parseOptionalJsonObject(json, "header", headerJsonParser);
-		final Integer weight = JsonParseUtil.parseOptionInteger(json, "weight");
-		return new OperationGroup(id, links, groups, header, weight);
-	}
+    @Override
+    public OperationGroup parse(final JSONObject json) throws JSONException {
+        final String id = JsonParseUtil.getOptionalString(json, "id");
+        final Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
+        final Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);
+        final OperationHeader header = JsonParseUtil.parseOptionalJsonObject(json, "header", headerJsonParser);
+        final Integer weight = JsonParseUtil.parseOptionInteger(json, "weight");
+        return new OperationGroup(id, links, groups, header, weight);
+    }
 }

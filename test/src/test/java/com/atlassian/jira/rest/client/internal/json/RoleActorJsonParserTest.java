@@ -29,38 +29,38 @@ import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonO
 
 public class RoleActorJsonParserTest {
 
-	private URI baseJiraURI = toUri("http://localhost:2990");
-	private final RoleActorJsonParser roleActorJsonParser = new RoleActorJsonParser(baseJiraURI);
+    private URI baseJiraURI = toUri("http://localhost:2990");
+    private final RoleActorJsonParser roleActorJsonParser = new RoleActorJsonParser(baseJiraURI);
 
-	@Rule
-	public final ExpectedException exception = ExpectedException.none();
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
-	@Test
-	public void testParseValidActorWithOptionalParam() throws Exception {
-		final RoleActor actor = roleActorJsonParser.parse(getJsonObjectFromResource("/json/actor/valid-actor.json"));
-		Assert.assertEquals(10020l, actor.getId().longValue());
-		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals("jira-users", actor.getDisplayName());
-		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
-		Assert.assertEquals(toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor
-				.getAvatarUri());
-	}
+    @Test
+    public void testParseValidActorWithOptionalParam() throws Exception {
+        final RoleActor actor = roleActorJsonParser.parse(getJsonObjectFromResource("/json/actor/valid-actor.json"));
+        Assert.assertEquals(10020l, actor.getId().longValue());
+        Assert.assertEquals("jira-users", actor.getName());
+        Assert.assertEquals("jira-users", actor.getDisplayName());
+        Assert.assertEquals("atlassian-group-role-actor", actor.getType());
+        Assert.assertEquals(toUri(baseJiraURI.toString() + "/jira/secure/useravatar?size=small&avatarId=10083"), actor
+                .getAvatarUri());
+    }
 
-	@Test
-	public void testParseValidActorWithoutOptionalParams() throws JSONException {
-		final RoleActor actor = roleActorJsonParser
-				.parse(getJsonObjectFromResource("/json/actor/valid-actor-without-avatar.json"));
-		Assert.assertEquals(10020l, actor.getId().longValue());
-		Assert.assertEquals("jira-users", actor.getName());
-		Assert.assertEquals("jira-users", actor.getDisplayName());
-		Assert.assertEquals("atlassian-group-role-actor", actor.getType());
-		Assert.assertNull(actor.getAvatarUri());
-	}
+    @Test
+    public void testParseValidActorWithoutOptionalParams() throws JSONException {
+        final RoleActor actor = roleActorJsonParser
+                .parse(getJsonObjectFromResource("/json/actor/valid-actor-without-avatar.json"));
+        Assert.assertEquals(10020l, actor.getId().longValue());
+        Assert.assertEquals("jira-users", actor.getName());
+        Assert.assertEquals("jira-users", actor.getDisplayName());
+        Assert.assertEquals("atlassian-group-role-actor", actor.getType());
+        Assert.assertNull(actor.getAvatarUri());
+    }
 
-	@Test
-	public void testParseInvalidActor() throws Exception {
-		exception.expect(JSONException.class);
-		exception.expectMessage("JSONObject[\"type\"] not found.");
-		roleActorJsonParser.parse(getJsonObjectFromResource("/json/actor/invalid-actor-without-required-fields.json"));
-	}
+    @Test
+    public void testParseInvalidActor() throws Exception {
+        exception.expect(JSONException.class);
+        exception.expectMessage("JSONObject[\"type\"] not found.");
+        roleActorJsonParser.parse(getJsonObjectFromResource("/json/actor/invalid-actor-without-required-fields.json"));
+    }
 }

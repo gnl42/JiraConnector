@@ -24,55 +24,55 @@ import javax.annotation.Nullable;
  * Input parameters used for issue link creation.
  */
 public class LinkIssuesInput {
-	private final String fromIssueKey;
-	private final String toIssueKey;
-	private final String linkType;
-	private final Comment comment;
+    private final String fromIssueKey;
+    private final String toIssueKey;
+    private final String linkType;
+    private final Comment comment;
 
-	/**
-	 * @param fromIssueKey source issue key
-	 * @param toIssueKey   destination issue key
-	 * @param linkType     name of the link type (e.g. "Duplicate")
-	 * @param comment      optional comment
-	 */
-	public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType, @Nullable Comment comment) {
-		this.fromIssueKey = fromIssueKey;
-		this.toIssueKey = toIssueKey;
-		this.comment = comment;
-		this.linkType = linkType;
-	}
+    /**
+     * @param fromIssueKey source issue key
+     * @param toIssueKey   destination issue key
+     * @param linkType     name of the link type (e.g. "Duplicate")
+     * @param comment      optional comment
+     */
+    public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType, @Nullable Comment comment) {
+        this.fromIssueKey = fromIssueKey;
+        this.toIssueKey = toIssueKey;
+        this.comment = comment;
+        this.linkType = linkType;
+    }
 
-	public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType) {
-		this(fromIssueKey, toIssueKey, linkType, null);
-	}
+    public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType) {
+        this(fromIssueKey, toIssueKey, linkType, null);
+    }
 
 
-	/**
-	 * @return source issue key
-	 */
-	public String getFromIssueKey() {
-		return fromIssueKey;
-	}
+    /**
+     * @return source issue key
+     */
+    public String getFromIssueKey() {
+        return fromIssueKey;
+    }
 
-	/**
-	 * @return destination issue key
-	 */
-	public String getToIssueKey() {
-		return toIssueKey;
-	}
+    /**
+     * @return destination issue key
+     */
+    public String getToIssueKey() {
+        return toIssueKey;
+    }
 
-	/**
-	 * @return optional comment or <code>null</code>
-	 */
-	@Nullable
-	public Comment getComment() {
-		return comment;
-	}
+    /**
+     * @return optional comment or <code>null</code>
+     */
+    @Nullable
+    public Comment getComment() {
+        return comment;
+    }
 
-	/**
-	 * @return name of the link type (e.g. "Duplicate")
-	 */
-	public String getLinkType() {
-		return linkType;
-	}
+    /**
+     * @return name of the link type (e.g. "Duplicate")
+     */
+    public String getLinkType() {
+        return linkType;
+    }
 }

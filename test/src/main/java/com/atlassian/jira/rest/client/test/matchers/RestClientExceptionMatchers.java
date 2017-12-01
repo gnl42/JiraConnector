@@ -15,33 +15,33 @@ import org.hamcrest.Matchers;
  */
 public class RestClientExceptionMatchers {
 
-	public static Matcher<RestClientException> rceWithSingleError(final Integer statusCode, final String expectedErrorMessage) {
-		return new BaseMatcher<RestClientException>() {
+    public static Matcher<RestClientException> rceWithSingleError(final Integer statusCode, final String expectedErrorMessage) {
+        return new BaseMatcher<RestClientException>() {
 
-			@Override
-			public boolean matches(final Object item) {
-				if (item instanceof RestClientException) {
-					final RestClientException ex = (RestClientException) item;
-					final Matcher<Iterable<? extends String>> errorMessageMatcher = Matchers
-							.contains(expectedErrorMessage);
-					return ex.getStatusCode().get().equals(statusCode)
-							&& ex.getErrorCollections().size() == 1
-							&& errorMessageMatcher.matches(ex.getErrorCollections().iterator().next().getErrorMessages());
+            @Override
+            public boolean matches(final Object item) {
+                if (item instanceof RestClientException) {
+                    final RestClientException ex = (RestClientException) item;
+                    final Matcher<Iterable<? extends String>> errorMessageMatcher = Matchers
+                            .contains(expectedErrorMessage);
+                    return ex.getStatusCode().get().equals(statusCode)
+                            && ex.getErrorCollections().size() == 1
+                            && errorMessageMatcher.matches(ex.getErrorCollections().iterator().next().getErrorMessages());
 
-				}
-				return false;
-			}
+                }
+                return false;
+            }
 
-			@Override
-			public void describeTo(final Description description) {
-				final ErrorCollection expectedErrorCollection = ErrorCollection.builder()
-						.errorMessage(expectedErrorMessage).status(statusCode) .build();
+            @Override
+            public void describeTo(final Description description) {
+                final ErrorCollection expectedErrorCollection = ErrorCollection.builder()
+                        .errorMessage(expectedErrorMessage).status(statusCode).build();
 
-				final RestClientException expectedException = new RestClientException(
-						ImmutableList.of(expectedErrorCollection), statusCode);
+                final RestClientException expectedException = new RestClientException(
+                        ImmutableList.of(expectedErrorCollection), statusCode);
 
-				description.appendText("<"+expectedException.toString()+">");
-			}
-		};
-	}
+                description.appendText("<" + expectedException.toString() + ">");
+            }
+        };
+    }
 }

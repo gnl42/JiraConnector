@@ -21,17 +21,17 @@ import com.google.common.base.Optional;
 /**
  * Interface visit operation elements
  *
- * @since 2.0
  * @see Operations#accept(OperationVisitor)
  * @see Operation#accept(OperationVisitor)
+ * @since 2.0
  */
 public interface OperationVisitor<T> {
-	/**
-	 * Visits operation element
-	 *
-	 * @param operation operation element to be visited
-	 * @return Present value means "I've found a value let's finish visiting".
-	 * 		If absent traversal through operation elements will be continued.
-	 */
-	Optional<T> visit(Operation operation);
+    /**
+     * Visits operation element
+     *
+     * @param operation operation element to be visited
+     * @return Present value means "I've found a value let's finish visiting".
+     * If absent traversal through operation elements will be continued.
+     */
+    Optional<T> visit(Operation operation);
 }

@@ -23,11 +23,11 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class VersionRelatedIssueCountJsonParser implements JsonObjectParser<VersionRelatedIssuesCount> {
-	@Override
-	public VersionRelatedIssuesCount parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final int issuesFixedCount = json.getInt("issuesFixedCount");
-		final int issuesAffectedCount = json.getInt("issuesAffectedCount");
-		return new VersionRelatedIssuesCount(selfUri, issuesFixedCount, issuesAffectedCount);
-	}
+    @Override
+    public VersionRelatedIssuesCount parse(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final int issuesFixedCount = json.getInt("issuesFixedCount");
+        final int issuesAffectedCount = json.getInt("issuesAffectedCount");
+        return new VersionRelatedIssuesCount(selfUri, issuesFixedCount, issuesAffectedCount);
+    }
 }

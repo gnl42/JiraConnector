@@ -21,11 +21,11 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class BasicUserJsonGenerator implements JsonGenerator<BasicUser> {
-	@Override
-	public JSONObject generate(BasicUser user) throws JSONException {
-		return new JSONObject()
-				.put("self", user.getSelf())
-				.put("name", user.getName())
-				.put("displayName", user.getDisplayName());
-	}
+    @Override
+    public JSONObject generate(BasicUser user) throws JSONException {
+        return new JSONObject()
+                .put("self", user.getSelf())
+                .put("name", user.getName())
+                .put("displayName", user.getDisplayName());
+    }
 }

@@ -28,82 +28,88 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
-* This class delegates all calls to given delegate Promise. Additionally it throws new RestClientException
+ * This class delegates all calls to given delegate Promise. Additionally it throws new RestClientException
  * with original RestClientException given as a cause, which gives a more useful stack trace.
-*/
+ */
 public class DelegatingPromise<T> implements Promise<T> {
 
-	private final Promise<T> delegate;
+    private final Promise<T> delegate;
 
-	public DelegatingPromise(Promise<T> delegate) {
-		this.delegate = delegate;
-	}
+    public DelegatingPromise(Promise<T> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public T claim() {
-		try {
-			return delegate.claim();
-		} catch (RestClientException e) {
-			throw new RestClientException(e);
-		}
-	}
+    @Override
+    public T claim() {
+        try {
+            return delegate.claim();
+        } catch (RestClientException e) {
+            throw new RestClientException(e);
+        }
+    }
 
-	public Promise<T> done(Effect<T> e) {
-		return delegate.done(e);
-	}
+    @Override
+    public Promise<T> done(Effect<? super T> e) {
+        return delegate.done(e);
+    }
 
-	@Override
-	public Promise<T> fail(Effect<Throwable> e) {
-		return delegate.fail(e);
-	}
+    @Override
+    public Promise<T> fail(Effect<Throwable> e) {
+        return delegate.fail(e);
+    }
 
-	public Promise<T> then(FutureCallback<T> callback) {
-		return delegate.then(callback);
-	}
+    @Override
+    public Promise<T> then(FutureCallback<? super T> callback) {
+        return delegate.then(callback);
+    }
 
-	public <B> Promise<B> map(Function<? super T, ? extends B> function) {
-		return delegate.map(function);
-	}
+    @Override
+    public <B> Promise<B> map(Function<? super T, ? extends B> function) {
+        return delegate.map(function);
+    }
 
-	public <B> Promise<B> flatMap(Function<? super T, Promise<B>> function) {
-		return delegate.flatMap(function);
-	}
+    @Override
+    public <B> Promise<B> flatMap(Function<? super T, ? extends Promise<? extends B>> function) {
+        return delegate.flatMap(function);
+    }
 
-	public Promise<T> recover(Function<Throwable, ? extends T> handleThrowable) {
-		return delegate.recover(handleThrowable);
-	}
+    @Override
+    public Promise<T> recover(Function<Throwable, ? extends T> handleThrowable) {
+        return delegate.recover(handleThrowable);
+    }
 
-	public <B> Promise<B> fold(Function<Throwable, ? extends B> handleThrowable, Function<? super T, ? extends B> function) {
-		return delegate.fold(handleThrowable, function);
-	}
+    @Override
+    public <B> Promise<B> fold(Function<Throwable, ? extends B> handleThrowable, Function<? super T, ? extends B> function) {
+        return delegate.fold(handleThrowable, function);
+    }
 
-	@Override
-	public void addListener(Runnable listener, Executor executor) {
-		delegate.addListener(listener, executor);
-	}
+    @Override
+    public void addListener(Runnable listener, Executor executor) {
+        delegate.addListener(listener, executor);
+    }
 
-	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return delegate.cancel(mayInterruptIfRunning);
-	}
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return delegate.cancel(mayInterruptIfRunning);
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return delegate.isCancelled();
-	}
+    @Override
+    public boolean isCancelled() {
+        return delegate.isCancelled();
+    }
 
-	@Override
-	public boolean isDone() {
-		return delegate.isDone();
-	}
+    @Override
+    public boolean isDone() {
+        return delegate.isDone();
+    }
 
-	@Override
-	public T get() throws InterruptedException, ExecutionException {
-		return delegate.get();
-	}
+    @Override
+    public T get() throws InterruptedException, ExecutionException {
+        return delegate.get();
+    }
 
-	@Override
-	public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		return delegate.get(timeout, unit);
-	}
+    @Override
+    public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return delegate.get(timeout, unit);
+    }
 }

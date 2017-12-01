@@ -22,11 +22,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BasicProjectJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		BasicProjectJsonParser parser = new BasicProjectJsonParser();
-		final BasicProject project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/basic.json"));
-		Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/RST"), project.getSelf());
-		Assert.assertEquals("RST", project.getKey());
-	}
+    @Test
+    public void testParse() throws Exception {
+        BasicProjectJsonParser parser = new BasicProjectJsonParser();
+        final BasicProject project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/basic.json"));
+        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/RST"), project.getSelf());
+        Assert.assertEquals("RST", project.getKey());
+    }
 }

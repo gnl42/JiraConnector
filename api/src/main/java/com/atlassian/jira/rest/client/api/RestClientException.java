@@ -31,64 +31,64 @@ import java.util.Collections;
  */
 public class RestClientException extends RuntimeException {
 
-	private final Optional<Integer> statusCode;
-	private final Collection<ErrorCollection> errorCollections;
+    private final Optional<Integer> statusCode;
+    private final Collection<ErrorCollection> errorCollections;
 
-	public RestClientException(final RestClientException exception) {
-		super(exception.getMessage(), exception);
-		this.statusCode = exception.getStatusCode();
-		this.errorCollections = exception.errorCollections;
-	}
+    public RestClientException(final RestClientException exception) {
+        super(exception.getMessage(), exception);
+        this.statusCode = exception.getStatusCode();
+        this.errorCollections = exception.errorCollections;
+    }
 
-	public RestClientException(final Throwable cause) {
-		super(cause);
-		this.errorCollections = Collections.emptyList();
-		this.statusCode = Optional.absent();
-	}
+    public RestClientException(final Throwable cause) {
+        super(cause);
+        this.errorCollections = Collections.emptyList();
+        this.statusCode = Optional.absent();
+    }
 
-	public RestClientException(final Throwable cause, final int statusCode) {
-		super(cause);
-		this.errorCollections = Collections.emptyList();
-		this.statusCode = Optional.of(statusCode);
-	}
+    public RestClientException(final Throwable cause, final int statusCode) {
+        super(cause);
+        this.errorCollections = Collections.emptyList();
+        this.statusCode = Optional.of(statusCode);
+    }
 
-	public RestClientException(final String errorMessage, final Throwable cause) {
-		super(errorMessage, cause);
-		this.errorCollections = ImmutableList.of(new ErrorCollection(errorMessage));
-		statusCode = Optional.absent();
-	}
+    public RestClientException(final String errorMessage, final Throwable cause) {
+        super(errorMessage, cause);
+        this.errorCollections = ImmutableList.of(new ErrorCollection(errorMessage));
+        statusCode = Optional.absent();
+    }
 
-	public RestClientException(final Collection<ErrorCollection> errorCollections, final int statusCode) {
-		super(errorCollections.toString());
-		this.errorCollections = ImmutableList.copyOf(errorCollections);
-		this.statusCode = Optional.of(statusCode);
-	}
+    public RestClientException(final Collection<ErrorCollection> errorCollections, final int statusCode) {
+        super(errorCollections.toString());
+        this.errorCollections = ImmutableList.copyOf(errorCollections);
+        this.statusCode = Optional.of(statusCode);
+    }
 
-	public RestClientException(final Collection<ErrorCollection> errorCollections, final Throwable cause, final int statusCode) {
-		super(errorCollections.toString(), cause);
-		this.errorCollections = ImmutableList.copyOf(errorCollections);
-		this.statusCode = Optional.of(statusCode);
-	}
+    public RestClientException(final Collection<ErrorCollection> errorCollections, final Throwable cause, final int statusCode) {
+        super(errorCollections.toString(), cause);
+        this.errorCollections = ImmutableList.copyOf(errorCollections);
+        this.statusCode = Optional.of(statusCode);
+    }
 
-	/**
-	 * @return error messages used while building this exception object
-	 */
-	public Collection<ErrorCollection> getErrorCollections() {
-		return errorCollections;
-	}
+    /**
+     * @return error messages used while building this exception object
+     */
+    public Collection<ErrorCollection> getErrorCollections() {
+        return errorCollections;
+    }
 
-	/**
-	 * @return optional error code of failed http request.
-	 */
-	public Optional<Integer> getStatusCode() {
-		return statusCode;
-	}
+    /**
+     * @return optional error code of failed http request.
+     */
+    public Optional<Integer> getStatusCode() {
+        return statusCode;
+    }
 
-	@Override
-	public String toString() {
-		return "RestClientException{" +
-				"statusCode=" + statusCode +
-				", errorCollections=" + errorCollections +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "RestClientException{" +
+                "statusCode=" + statusCode +
+                ", errorCollections=" + errorCollections +
+                '}';
+    }
 }

@@ -25,50 +25,50 @@ import org.joda.time.DateTime;
  * @since 0.6
  */
 public class ChangelogGroup {
-	private final BasicUser author;
-	private final DateTime created;
-	private final Iterable<ChangelogItem> items;
+    private final BasicUser author;
+    private final DateTime created;
+    private final Iterable<ChangelogItem> items;
 
-	public ChangelogGroup(BasicUser author, DateTime created, Iterable<ChangelogItem> items) {
-		this.author = author;
-		this.created = created;
-		this.items = items;
-	}
+    public ChangelogGroup(BasicUser author, DateTime created, Iterable<ChangelogItem> items) {
+        this.author = author;
+        this.created = created;
+        this.items = items;
+    }
 
-	public BasicUser getAuthor() {
-		return author;
-	}
+    public BasicUser getAuthor() {
+        return author;
+    }
 
-	public DateTime getCreated() {
-		return created;
-	}
+    public DateTime getCreated() {
+        return created;
+    }
 
-	public Iterable<ChangelogItem> getItems() {
-		return items;
-	}
+    public Iterable<ChangelogItem> getItems() {
+        return items;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ChangelogGroup) {
-			ChangelogGroup that = (ChangelogGroup) obj;
-			return Objects.equal(this.author, that.author)
-					&& Objects.equal(this.created, that.created)
-					&& Objects.equal(this.items, that.items);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChangelogGroup) {
+            ChangelogGroup that = (ChangelogGroup) obj;
+            return Objects.equal(this.author, that.author)
+                    && Objects.equal(this.created, that.created)
+                    && Objects.equal(this.items, that.items);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(author, created, items);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(author, created, items);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("author", author)
-				.add("created", created)
-				.add("items", items)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("author", author)
+                .add("created", created)
+                .add("items", items)
+                .toString();
+    }
 }

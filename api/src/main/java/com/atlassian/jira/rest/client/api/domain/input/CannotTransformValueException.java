@@ -23,21 +23,21 @@ package com.atlassian.jira.rest.client.api.domain.input;
  */
 public class CannotTransformValueException extends RuntimeException {
 
-	@SuppressWarnings("unused")
-	public CannotTransformValueException() {
-	}
+    @SuppressWarnings("unused")
+    public CannotTransformValueException() {
+    }
 
-	public CannotTransformValueException(String message) {
-		super(message);
-	}
+    public CannotTransformValueException(String message) {
+        super(message);
+    }
 
-	@SuppressWarnings("unused")
-	public CannotTransformValueException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    @SuppressWarnings("unused")
+    public CannotTransformValueException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	@SuppressWarnings("unused")
-	public CannotTransformValueException(Throwable cause) {
-		super(cause);
-	}
+    @SuppressWarnings("unused")
+    public CannotTransformValueException(Throwable cause) {
+        super(cause);
+    }
 }

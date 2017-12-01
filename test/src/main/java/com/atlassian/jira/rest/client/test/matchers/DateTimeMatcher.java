@@ -21,24 +21,24 @@ import org.joda.time.DateTime;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
 public class DateTimeMatcher extends TypeSafeMatcher<DateTime> {
-	private final DateTime expected;
+    private final DateTime expected;
 
-	public DateTimeMatcher(DateTime expected) {
-		this.expected = expected;
-	}
+    public DateTimeMatcher(DateTime expected) {
+        this.expected = expected;
+    }
 
 
-	public static DateTimeMatcher isEqual(DateTime dateTime) {
-		return new DateTimeMatcher(dateTime);
-	}
+    public static DateTimeMatcher isEqual(DateTime dateTime) {
+        return new DateTimeMatcher(dateTime);
+    }
 
-	@Override
-	public boolean matchesSafely(DateTime given) {
-		return expected == null ? given == null : expected.isEqual(given);
-	}
+    @Override
+    public boolean matchesSafely(DateTime given) {
+        return expected == null ? given == null : expected.isEqual(given);
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("datetime equal to " + expected);
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("datetime equal to " + expected);
+    }
 }

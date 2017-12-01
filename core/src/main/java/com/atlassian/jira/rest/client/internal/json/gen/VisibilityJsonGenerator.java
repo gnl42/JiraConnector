@@ -22,10 +22,10 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class VisibilityJsonGenerator implements JsonGenerator<Visibility> {
 
-	@Override
-	public JSONObject generate(Visibility visibility) throws JSONException {
-		return new JSONObject()
-				.put("type", visibility.getType().name().toLowerCase())
-				.put("value", visibility.getValue());
-	}
+    @Override
+    public JSONObject generate(Visibility visibility) throws JSONException {
+        return new JSONObject()
+                .put("type", visibility.getType().name().toLowerCase())
+                .put("value", visibility.getValue());
+    }
 }

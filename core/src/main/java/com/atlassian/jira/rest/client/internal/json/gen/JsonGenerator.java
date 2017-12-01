@@ -20,5 +20,5 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public interface JsonGenerator<T> {
-	public JSONObject generate(T bean) throws JSONException;
+    public JSONObject generate(T bean) throws JSONException;
 }

@@ -24,56 +24,56 @@ import org.junit.Test;
 import java.net.URI;
 
 public class ComponentJsonParserTest {
-	@Test
-	public void testParseBasicComponent() throws Exception {
-		BasicComponentJsonParser parser = new BasicComponentJsonParser();
-		final BasicComponent component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/basic-valid.json"));
-		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
-		Assert.assertEquals("Component A", component.getName());
-		Assert.assertEquals("this is some description of component A", component.getDescription());
-	}
+    @Test
+    public void testParseBasicComponent() throws Exception {
+        BasicComponentJsonParser parser = new BasicComponentJsonParser();
+        final BasicComponent component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/basic-valid.json"));
+        Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
+        Assert.assertEquals("Component A", component.getName());
+        Assert.assertEquals("this is some description of component A", component.getDescription());
+    }
 
-	@Test
-	public void testParseBasicComponentWithNoDescription() throws Exception {
-		BasicComponentJsonParser parser = new BasicComponentJsonParser();
-		final BasicComponent component = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/component/basic-no-description-valid.json"));
-		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
-		Assert.assertEquals("Component A", component.getName());
-		Assert.assertNull(component.getDescription());
-	}
+    @Test
+    public void testParseBasicComponentWithNoDescription() throws Exception {
+        BasicComponentJsonParser parser = new BasicComponentJsonParser();
+        final BasicComponent component = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/component/basic-no-description-valid.json"));
+        Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10000"), component.getSelf());
+        Assert.assertEquals("Component A", component.getName());
+        Assert.assertNull(component.getDescription());
+    }
 
-	@Test
-	public void testParseComponent() throws Exception {
-		ComponentJsonParser parser = new ComponentJsonParser();
-		final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
-		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
-		Assert.assertEquals("Component B", component.getName());
-		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
-		Assert.assertEquals("another description", component.getDescription());
-	}
+    @Test
+    public void testParseComponent() throws Exception {
+        ComponentJsonParser parser = new ComponentJsonParser();
+        final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
+        Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
+        Assert.assertEquals("Component B", component.getName());
+        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
+        Assert.assertEquals("another description", component.getDescription());
+    }
 
-	@Test
-	public void testParseComponenWithNoLead() throws Exception {
-		ComponentJsonParser parser = new ComponentJsonParser();
-		final Component component = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/component/complete-no-lead-valid.json"));
-		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
-		Assert.assertEquals("Component B", component.getName());
-		Assert.assertNull(component.getLead());
-		Assert.assertEquals("another description", component.getDescription());
-	}
+    @Test
+    public void testParseComponenWithNoLead() throws Exception {
+        ComponentJsonParser parser = new ComponentJsonParser();
+        final Component component = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/component/complete-no-lead-valid.json"));
+        Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
+        Assert.assertEquals("Component B", component.getName());
+        Assert.assertNull(component.getLead());
+        Assert.assertEquals("another description", component.getDescription());
+    }
 
-	@Test
-	public void testParseComponentWithId() throws Exception {
-		ComponentJsonParser parser = new ComponentJsonParser();
-		final Component component = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/component/complete-valid-with-id.json"));
-		Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
-		Assert.assertEquals("Component B", component.getName());
-		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
-		Assert.assertEquals("another description", component.getDescription());
-		Assert.assertEquals(Long.valueOf(10001), component.getId());
-	}
+    @Test
+    public void testParseComponentWithId() throws Exception {
+        ComponentJsonParser parser = new ComponentJsonParser();
+        final Component component = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/component/complete-valid-with-id.json"));
+        Assert.assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/component/10001"), component.getSelf());
+        Assert.assertEquals("Component B", component.getName());
+        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, component.getLead());
+        Assert.assertEquals("another description", component.getDescription());
+        Assert.assertEquals(Long.valueOf(10001), component.getId());
+    }
 
 }

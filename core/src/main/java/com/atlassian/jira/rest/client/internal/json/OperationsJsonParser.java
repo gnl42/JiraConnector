@@ -24,11 +24,11 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Collection;
 
 public class OperationsJsonParser implements JsonObjectParser<Operations> {
-	private final JsonObjectParser<OperationGroup> groupParser = new OperationGroupJsonParser();
+    private final JsonObjectParser<OperationGroup> groupParser = new OperationGroupJsonParser();
 
-	@Override
-	public Operations parse(final JSONObject json) throws JSONException {
-		final Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
-		return new Operations(linkGroups);
-	}
+    @Override
+    public Operations parse(final JSONObject json) throws JSONException {
+        final Collection<OperationGroup> linkGroups = JsonParseUtil.parseJsonArray(json.getJSONArray("linkGroups"), groupParser);
+        return new Operations(linkGroups);
+    }
 }

@@ -23,13 +23,13 @@ import org.junit.Test;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
 public class ResolutionJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final ResolutionJsonParser parser = new ResolutionJsonParser();
-		final Resolution basicresolution = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/resolution/valid.json"));
-		Assert.assertEquals(new Resolution(
-				toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), 4L, "Incomplete",
-				"The problem is not completely described."), basicresolution);
-	}
+    @Test
+    public void testParse() throws Exception {
+        final ResolutionJsonParser parser = new ResolutionJsonParser();
+        final Resolution basicresolution = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/resolution/valid.json"));
+        Assert.assertEquals(new Resolution(
+                toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), 4L, "Incomplete",
+                "The problem is not completely described."), basicresolution);
+    }
 }

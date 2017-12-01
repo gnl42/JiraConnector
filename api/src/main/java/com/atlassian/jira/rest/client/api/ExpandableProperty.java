@@ -28,56 +28,56 @@ import java.util.Collection;
  * @since v0.1
  */
 public class ExpandableProperty<T> {
-	private final int size;
+    private final int size;
 
-	public ExpandableProperty(int size) {
-		this.size = size;
-		items = null;
-	}
+    public ExpandableProperty(int size) {
+        this.size = size;
+        items = null;
+    }
 
-	public ExpandableProperty(int size, @Nullable Collection<T> items) {
-		this.size = size;
-		this.items = items;
-	}
+    public ExpandableProperty(int size, @Nullable Collection<T> items) {
+        this.size = size;
+        this.items = items;
+    }
 
-	public ExpandableProperty(Collection<T> items) {
-		this.size = items.size();
-		this.items = items;
-	}
+    public ExpandableProperty(Collection<T> items) {
+        this.size = items.size();
+        this.items = items;
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	@Nullable
-	final private Collection<T> items;
+    @Nullable
+    final private Collection<T> items;
 
-	@Nullable
-	public Iterable<T> getItems() {
-		return items;
-	}
+    @Nullable
+    public Iterable<T> getItems() {
+        return items;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("size", size).
-				add("items", items).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("size", size).
+                add("items", items).
+                toString();
+    }
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ExpandableProperty) {
-			ExpandableProperty that = (ExpandableProperty) obj;
-			return Objects.equal(this.size, that.size)
-					&& Objects.equal(this.items, that.items);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ExpandableProperty) {
+            ExpandableProperty that = (ExpandableProperty) obj;
+            return Objects.equal(this.size, that.size)
+                    && Objects.equal(this.items, that.items);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(size, items);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(size, items);
+    }
 }

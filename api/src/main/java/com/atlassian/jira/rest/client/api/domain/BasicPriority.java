@@ -28,26 +28,26 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicPriority extends AddressableNamedEntity implements IdentifiableEntity<Long> {
-	@Nullable
-	private final Long id;
+    @Nullable
+    private final Long id;
 
-	public BasicPriority(URI self, @Nullable Long id, String name) {
-		super(self, name);
-		this.id = id;
-	}
+    public BasicPriority(URI self, @Nullable Long id, String name) {
+        super(self, name);
+        this.id = id;
+    }
 
-	/**
-	 * Getter for id
-	 *
-	 * @return the id
-	 */
-	@Nullable
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Getter for id
+     *
+     * @return the id
+     */
+    @Nullable
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().add("id", id);
-	}
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().add("id", id);
+    }
 }

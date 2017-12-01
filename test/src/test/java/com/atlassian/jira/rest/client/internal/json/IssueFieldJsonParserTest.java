@@ -23,17 +23,17 @@ import org.junit.Test;
 
 public class IssueFieldJsonParserTest {
 
-	@Test
-	public void testParse() throws Exception {
-		final IssueFieldJsonParser parser = new IssueFieldJsonParser();
-		final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/cimField/valid-cim-fields.json");
-		final IssueField issueField = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
-		Assert.assertEquals(1.45, (Double) issueField.getValue(), 0.001);
+    @Test
+    public void testParse() throws Exception {
+        final IssueFieldJsonParser parser = new IssueFieldJsonParser();
+        final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/cimField/valid-cim-fields.json");
+        final IssueField issueField = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
+        Assert.assertEquals(1.45, (Double) issueField.getValue(), 0.001);
 
-		final IssueField userIssueField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
-		Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userIssueField.getValue());
+        final IssueField userIssueField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
+        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userIssueField.getValue());
 
-	}
+    }
 
 
 }

@@ -22,16 +22,16 @@ import com.atlassian.jira.rest.client.api.domain.Session;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SessionJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		SessionJsonParser parser = new SessionJsonParser();
-		final Session session = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/session/valid.json"));
-		Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED.getSelf(), session.getUserUri());
-		Assert.assertEquals("admin", session.getUsername());
-		assertEquals(new LoginInfo(12, 413, TestUtil.toDateTime("2010-09-14T16:15:47.554+0200"),
-				TestUtil.toDateTime("2010-09-14T16:48:33.002+0200")), session.getLoginInfo());
-	}
+    @Test
+    public void testParse() throws Exception {
+        SessionJsonParser parser = new SessionJsonParser();
+        final Session session = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/session/valid.json"));
+        Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED.getSelf(), session.getUserUri());
+        Assert.assertEquals("admin", session.getUsername());
+        assertEquals(new LoginInfo(12, 413, TestUtil.toDateTime("2010-09-14T16:15:47.554+0200"),
+                TestUtil.toDateTime("2010-09-14T16:48:33.002+0200")), session.getLoginInfo());
+    }
 }

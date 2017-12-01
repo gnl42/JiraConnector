@@ -23,13 +23,13 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class StatusJsonParser implements JsonObjectParser<Status> {
-	@Override
-	public Status parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
-		final String name = json.getString("name");
-		final String description = json.getString("description");
-		final URI iconUrl = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Status(self, id, name, description, iconUrl);
-	}
+    @Override
+    public Status parse(JSONObject json) throws JSONException {
+        final URI self = JsonParseUtil.getSelfUri(json);
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        final String name = json.getString("name");
+        final String description = json.getString("description");
+        final URI iconUrl = JsonParseUtil.parseURI(json.getString("iconUrl"));
+        return new Status(self, id, name, description, iconUrl);
+    }
 }

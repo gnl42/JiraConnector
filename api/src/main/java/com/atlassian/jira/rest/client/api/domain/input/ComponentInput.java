@@ -26,41 +26,41 @@ import javax.annotation.Nullable;
  * @since com.atlassian.jira.rest.client.api 0.3, server 4.4
  */
 public class ComponentInput {
-	@Nullable
-	private final String name;
-	@Nullable
-	private final String description;
-	@Nullable
-	private final String leadUsername;
-	@Nullable
-	private final AssigneeType assigneeType;
+    @Nullable
+    private final String name;
+    @Nullable
+    private final String description;
+    @Nullable
+    private final String leadUsername;
+    @Nullable
+    private final AssigneeType assigneeType;
 
-	public ComponentInput(@Nullable String name, @Nullable String description, @Nullable String leadUsername, @Nullable AssigneeType assigneeType) {
-		this.name = name;
-		this.description = description;
-		this.leadUsername = leadUsername;
-		this.assigneeType = assigneeType;
-	}
+    public ComponentInput(@Nullable String name, @Nullable String description, @Nullable String leadUsername, @Nullable AssigneeType assigneeType) {
+        this.name = name;
+        this.description = description;
+        this.leadUsername = leadUsername;
+        this.assigneeType = assigneeType;
+    }
 
-	@Nullable
-	public String getName() {
-		return name;
-	}
+    @Nullable
+    public String getName() {
+        return name;
+    }
 
-	@Nullable
-	public String getDescription() {
-		return description;
-	}
+    @Nullable
+    public String getDescription() {
+        return description;
+    }
 
-	@Nullable
-	public String getLeadUsername() {
-		return leadUsername;
-	}
+    @Nullable
+    public String getLeadUsername() {
+        return leadUsername;
+    }
 
-	@Nullable
-	public AssigneeType getAssigneeType() {
-		return assigneeType;
-	}
+    @Nullable
+    public AssigneeType getAssigneeType() {
+        return assigneeType;
+    }
 
-	//	private final String projectKey;
+    //	private final String projectKey;
 }

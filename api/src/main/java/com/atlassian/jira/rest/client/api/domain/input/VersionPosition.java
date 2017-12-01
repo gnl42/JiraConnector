@@ -22,5 +22,5 @@ package com.atlassian.jira.rest.client.api.domain.input;
  * @since 0.3 com.atlassian.jira.rest.client.api, 4.4 server
  */
 public enum VersionPosition {
-	FIRST, LAST, EARLIER, LATER
+    FIRST, LAST, EARLIER, LATER
 }

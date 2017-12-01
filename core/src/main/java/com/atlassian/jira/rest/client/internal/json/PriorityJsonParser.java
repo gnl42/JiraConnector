@@ -24,15 +24,15 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class PriorityJsonParser implements JsonObjectParser<Priority> {
-	private final BasicPriorityJsonParser basicPriorityJsonParser = new BasicPriorityJsonParser();
+    private final BasicPriorityJsonParser basicPriorityJsonParser = new BasicPriorityJsonParser();
 
-	@Override
-	public Priority parse(JSONObject json) throws JSONException {
-		final BasicPriority basicPriority = basicPriorityJsonParser.parse(json);
-		final String statusColor = json.getString("statusColor");
-		final String description = json.getString("description");
-		final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
-		return new Priority(basicPriority.getSelf(), basicPriority.getId(), basicPriority
-				.getName(), statusColor, description, iconUri);
-	}
+    @Override
+    public Priority parse(JSONObject json) throws JSONException {
+        final BasicPriority basicPriority = basicPriorityJsonParser.parse(json);
+        final String statusColor = json.getString("statusColor");
+        final String description = json.getString("description");
+        final URI iconUri = JsonParseUtil.parseURI(json.getString("iconUrl"));
+        return new Priority(basicPriority.getSelf(), basicPriority.getId(), basicPriority
+                .getName(), statusColor, description, iconUri);
+    }
 }

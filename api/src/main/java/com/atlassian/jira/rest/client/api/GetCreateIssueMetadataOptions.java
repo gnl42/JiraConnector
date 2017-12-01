@@ -26,33 +26,33 @@ import javax.annotation.Nullable;
  */
 public class GetCreateIssueMetadataOptions {
 
-	public static final String EXPAND_PROJECTS_ISSUETYPES_FIELDS = "projects.issuetypes.fields";
+    public static final String EXPAND_PROJECTS_ISSUETYPES_FIELDS = "projects.issuetypes.fields";
 
-	@Nullable
-	public final Iterable<Long> projectIds;
-	@Nullable
-	public final Iterable<String> projectKeys;
-	@Nullable
-	public final Iterable<Long> issueTypeIds;
-	@Nullable
-	public final Iterable<String> issueTypeNames;
-	@Nullable
-	public final Iterable<String> expandos;
+    @Nullable
+    public final Iterable<Long> projectIds;
+    @Nullable
+    public final Iterable<String> projectKeys;
+    @Nullable
+    public final Iterable<Long> issueTypeIds;
+    @Nullable
+    public final Iterable<String> issueTypeNames;
+    @Nullable
+    public final Iterable<String> expandos;
 
-	/**
-	 * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
-	 * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
-	 * @param issueTypeIds   List of issue types Ids to filter results. Pass <code>null</code> to ignore.
-	 * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to ignore.
-	 * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to ignore.
-	 */
-	public GetCreateIssueMetadataOptions(@Nullable Iterable<String> expandos, @Nullable Iterable<String> issueTypeNames,
-			@Nullable Iterable<Long> issueTypeIds, @Nullable Iterable<String> projectKeys,
-			@Nullable Iterable<Long> projectIds) {
-		this.expandos = expandos;
-		this.issueTypeNames = issueTypeNames;
-		this.issueTypeIds = issueTypeIds;
-		this.projectKeys = projectKeys;
-		this.projectIds = projectIds;
-	}
+    /**
+     * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
+     * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
+     * @param issueTypeIds   List of issue types Ids to filter results. Pass <code>null</code> to ignore.
+     * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to ignore.
+     * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to ignore.
+     */
+    public GetCreateIssueMetadataOptions(@Nullable Iterable<String> expandos, @Nullable Iterable<String> issueTypeNames,
+                                         @Nullable Iterable<Long> issueTypeIds, @Nullable Iterable<String> projectKeys,
+                                         @Nullable Iterable<Long> projectIds) {
+        this.expandos = expandos;
+        this.issueTypeNames = issueTypeNames;
+        this.issueTypeIds = issueTypeIds;
+        this.projectKeys = projectKeys;
+        this.projectIds = projectIds;
+    }
 }

@@ -27,27 +27,27 @@ import java.net.URI;
 
 public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 
-	private final URI issue;
+    private final URI issue;
 
-	public WorklogJsonParserV5(URI issue) {
-		this.issue = issue;
-	}
+    public WorklogJsonParserV5(URI issue) {
+        this.issue = issue;
+    }
 
 
-	@Override
-	public Worklog parse(JSONObject json) throws JSONException {
-		final URI self = JsonParseUtil.getSelfUri(json);
-		final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
-		final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
-		// comment is optional due to JRJC-49: JIRA can return worklog without comment
-		final String comment = json.optString("comment");
-		final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
-		final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
-		final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
-		// timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
-		final int secondsSpent = json.optInt("timeSpentSeconds", 0);
-		final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
-		return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate,
-				secondsSpent / 60, visibility);
-	}
+    @Override
+    public Worklog parse(JSONObject json) throws JSONException {
+        final URI self = JsonParseUtil.getSelfUri(json);
+        final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
+        final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
+        // comment is optional due to JRJC-49: JIRA can return worklog without comment
+        final String comment = json.optString("comment");
+        final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
+        final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
+        final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
+        // timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
+        final int secondsSpent = json.optInt("timeSpentSeconds", 0);
+        final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
+        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate,
+                secondsSpent / 60, visibility);
+    }
 }

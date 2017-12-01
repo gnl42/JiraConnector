@@ -22,19 +22,16 @@ import org.codehaus.jettison.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /**
  * @since v0.1
  */
 public class BasicVotesJsonParserTest {
-	@Test
-	public void testParse() throws JSONException {
-		final BasicVotesJsonParser parser = new BasicVotesJsonParser();
-		final BasicVotes basicVotes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/valid.json"));
-		Assert.assertEquals(1, basicVotes.getVotes());
-		Assert.assertTrue(basicVotes.hasVoted());
-		Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), basicVotes.getSelf());
-	}
+    @Test
+    public void testParse() throws JSONException {
+        final BasicVotesJsonParser parser = new BasicVotesJsonParser();
+        final BasicVotes basicVotes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/valid.json"));
+        Assert.assertEquals(1, basicVotes.getVotes());
+        Assert.assertTrue(basicVotes.hasVoted());
+        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), basicVotes.getSelf());
+    }
 }

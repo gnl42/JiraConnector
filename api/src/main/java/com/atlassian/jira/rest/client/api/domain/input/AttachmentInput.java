@@ -24,19 +24,19 @@ import java.io.InputStream;
  * @since v0.2
  */
 public class AttachmentInput {
-	private final InputStream in;
-	private final String filename;
+    private final InputStream in;
+    private final String filename;
 
-	public AttachmentInput(String filename, InputStream in) {
-		this.filename = filename;
-		this.in = in;
-	}
+    public AttachmentInput(String filename, InputStream in) {
+        this.filename = filename;
+        this.in = in;
+    }
 
-	public InputStream getInputStream() {
-		return in;
-	}
+    public InputStream getInputStream() {
+        return in;
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getFilename() {
+        return filename;
+    }
 }

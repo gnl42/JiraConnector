@@ -27,54 +27,54 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicWatchers implements AddressableEntity {
-	private final URI self;
-	private final boolean isWatching;
-	private final int numWatchers;
+    private final URI self;
+    private final boolean isWatching;
+    private final int numWatchers;
 
-	public BasicWatchers(URI self, boolean watching, int numWatchers) {
-		this.self = self;
-		isWatching = watching;
-		this.numWatchers = numWatchers;
-	}
+    public BasicWatchers(URI self, boolean watching, int numWatchers) {
+        this.self = self;
+        isWatching = watching;
+        this.numWatchers = numWatchers;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public boolean isWatching() {
-		return isWatching;
-	}
+    public boolean isWatching() {
+        return isWatching;
+    }
 
-	public int getNumWatchers() {
-		return numWatchers;
-	}
+    public int getNumWatchers() {
+        return numWatchers;
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("isWatching", isWatching).
-				add("numWatchers", numWatchers);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("isWatching", isWatching).
+                add("numWatchers", numWatchers);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof BasicWatchers) {
-			final BasicWatchers that = (BasicWatchers) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.isWatching, that.isWatching)
-					&& Objects.equal(this.numWatchers, that.numWatchers);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BasicWatchers) {
+            final BasicWatchers that = (BasicWatchers) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.isWatching, that.isWatching)
+                    && Objects.equal(this.numWatchers, that.numWatchers);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, isWatching, numWatchers);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, isWatching, numWatchers);
+    }
 }

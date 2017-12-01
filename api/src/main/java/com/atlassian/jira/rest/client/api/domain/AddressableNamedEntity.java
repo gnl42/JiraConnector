@@ -28,46 +28,46 @@ import java.net.URI;
  * @since v0.1
  */
 public class AddressableNamedEntity implements AddressableEntity, NamedEntity {
-	protected final URI self;
-	protected final String name;
+    protected final URI self;
+    protected final String name;
 
-	public AddressableNamedEntity(URI self, String name) {
-		this.name = name;
-		this.self = self;
-	}
+    public AddressableNamedEntity(URI self, String name) {
+        this.name = name;
+        this.self = self;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("name", name);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("name", name);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof AddressableNamedEntity) {
-			AddressableNamedEntity that = (AddressableNamedEntity) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.name, that.name);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AddressableNamedEntity) {
+            AddressableNamedEntity that = (AddressableNamedEntity) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.name, that.name);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, name);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, name);
+    }
 }

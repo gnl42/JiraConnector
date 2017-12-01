@@ -23,38 +23,38 @@ import java.net.URI;
 import java.util.regex.Pattern;
 
 public class UriRegularExpressionMatcher extends TypeSafeMatcher<URI> {
-	private final URI baseUri;
-	private final Pattern pattern;
+    private final URI baseUri;
+    private final Pattern pattern;
 
-	public UriRegularExpressionMatcher(final URI baseUri, final Pattern pattern) {
-		this.baseUri = baseUri;
-		this.pattern = pattern;
-	}
+    public UriRegularExpressionMatcher(final URI baseUri, final Pattern pattern) {
+        this.baseUri = baseUri;
+        this.pattern = pattern;
+    }
 
-	public static UriRegularExpressionMatcher uriMatchesRegexp(final URI baseUri, final Pattern pattern) {
-		return new UriRegularExpressionMatcher(baseUri, pattern);
-	}
+    public static UriRegularExpressionMatcher uriMatchesRegexp(final URI baseUri, final Pattern pattern) {
+        return new UriRegularExpressionMatcher(baseUri, pattern);
+    }
 
-	public static UriRegularExpressionMatcher uriMatchesRegexp(final URI baseUri, final String pattern) {
-		return new UriRegularExpressionMatcher(baseUri, Pattern.compile(pattern));
-	}
+    public static UriRegularExpressionMatcher uriMatchesRegexp(final URI baseUri, final String pattern) {
+        return new UriRegularExpressionMatcher(baseUri, Pattern.compile(pattern));
+    }
 
-	@Override
-	public boolean matchesSafely(URI given) {
-		return checkBaseUri(given) && checkPattern(given);
-	}
+    @Override
+    public boolean matchesSafely(URI given) {
+        return checkBaseUri(given) && checkPattern(given);
+    }
 
-	private boolean checkPattern(URI given) {
-		final URI relativeUrl = baseUri.relativize(given);
-		return pattern.matcher(relativeUrl.toString()).matches();
-	}
+    private boolean checkPattern(URI given) {
+        final URI relativeUrl = baseUri.relativize(given);
+        return pattern.matcher(relativeUrl.toString()).matches();
+    }
 
-	private boolean checkBaseUri(URI given) {
-		return given.toString().startsWith(baseUri.toString());
-	}
+    private boolean checkBaseUri(URI given) {
+        return given.toString().startsWith(baseUri.toString());
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText(String.format("url with base %s and matching regular expression %s", baseUri, pattern));
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText(String.format("url with base %s and matching regular expression %s", baseUri, pattern));
+    }
 }

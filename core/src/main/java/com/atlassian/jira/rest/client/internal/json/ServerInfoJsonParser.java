@@ -24,15 +24,15 @@ import org.joda.time.DateTime;
 import java.net.URI;
 
 public class ServerInfoJsonParser implements JsonObjectParser<ServerInfo> {
-	@Override
-	public ServerInfo parse(JSONObject json) throws JSONException {
-		final URI baseUri = JsonParseUtil.parseURI(json.getString("baseUrl"));
-		final String version = json.getString("version");
-		final int buildNumber = json.getInt("buildNumber");
-		final DateTime buildDate = JsonParseUtil.parseDateTime(json, "buildDate");
-		final DateTime serverTime = JsonParseUtil.parseOptionalDateTime(json, "serverTime");
-		final String scmInfo = json.getString("scmInfo");
-		final String serverTitle = json.getString("serverTitle");
-		return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
-	}
+    @Override
+    public ServerInfo parse(JSONObject json) throws JSONException {
+        final URI baseUri = JsonParseUtil.parseURI(json.getString("baseUrl"));
+        final String version = json.getString("version");
+        final int buildNumber = json.getInt("buildNumber");
+        final DateTime buildDate = JsonParseUtil.parseDateTime(json, "buildDate");
+        final DateTime serverTime = JsonParseUtil.parseOptionalDateTime(json, "serverTime");
+        final String scmInfo = json.getString("scmInfo");
+        final String serverTitle = json.getString("serverTitle");
+        return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
+    }
 }

@@ -26,21 +26,21 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import java.util.Collection;
 
 public class IssueMatchers {
-	public static Matcher<? super BasicIssue> withIssueKey(String issueKey) {
-		return new FeatureMatcher<BasicIssue, String>(Matchers.is(issueKey), "issue with key that", "key") {
+    public static Matcher<? super BasicIssue> withIssueKey(String issueKey) {
+        return new FeatureMatcher<BasicIssue, String>(Matchers.is(issueKey), "issue with key that", "key") {
 
-			@Override
-			protected String featureValueOf(BasicIssue basicIssue) {
-				return basicIssue.getKey();
-			}
-		};
-	}
+            @Override
+            protected String featureValueOf(BasicIssue basicIssue) {
+                return basicIssue.getKey();
+            }
+        };
+    }
 
-	public static Matcher<Iterable<? extends BasicIssue>> issuesWithKeys(String... keys) {
-		final Collection<Matcher<? super BasicIssue>> matchers = Lists.newArrayListWithCapacity(keys.length);
-		for (String key : keys) {
-			matchers.add(withIssueKey(key));
-		}
-		return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
-	}
+    public static Matcher<Iterable<? extends BasicIssue>> issuesWithKeys(String... keys) {
+        final Collection<Matcher<? super BasicIssue>> matchers = Lists.newArrayListWithCapacity(keys.length);
+        for (String key : keys) {
+            matchers.add(withIssueKey(key));
+        }
+        return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
+    }
 }

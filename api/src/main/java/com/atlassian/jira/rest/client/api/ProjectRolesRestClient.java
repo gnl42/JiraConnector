@@ -27,32 +27,32 @@ import java.net.URI;
  */
 public interface ProjectRolesRestClient {
 
-	/**
-	 * Retrieves a full information about the selected role.
-	 *
-	 * @param uri URI of the role to retrieve.
-	 * @return full information about selected role.
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<ProjectRole> getRole(URI uri);
+    /**
+     * Retrieves a full information about the selected role.
+     *
+     * @param uri URI of the role to retrieve.
+     * @return full information about selected role.
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<ProjectRole> getRole(URI uri);
 
-	/**
-	 * Retrieves a full information about the selected role.
-	 *
-	 * @param projectUri uri of the project of the role to retrieve.
-	 * @param roleId     unique role id.
-	 * @return full information about selected role.
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<ProjectRole> getRole(URI projectUri, Long roleId);
+    /**
+     * Retrieves a full information about the selected role.
+     *
+     * @param projectUri uri of the project of the role to retrieve.
+     * @param roleId     unique role id.
+     * @return full information about selected role.
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<ProjectRole> getRole(URI projectUri, Long roleId);
 
-	/**
-	 * Retrieves a collection of roles in the selected project.
-	 *
-	 * @param projectUri uri of the project of the roles to retrieve.
-	 * @return a collection of roles in the selected project.
-	 * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-	 */
-	Promise<Iterable<ProjectRole>> getRoles(URI projectUri);
+    /**
+     * Retrieves a collection of roles in the selected project.
+     *
+     * @param projectUri uri of the project of the roles to retrieve.
+     * @return a collection of roles in the selected project.
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
+    Promise<Iterable<ProjectRole>> getRoles(URI projectUri);
 
 }

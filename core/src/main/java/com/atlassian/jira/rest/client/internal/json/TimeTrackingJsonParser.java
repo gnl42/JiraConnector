@@ -21,12 +21,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class TimeTrackingJsonParser implements JsonObjectParser<TimeTracking> {
-	@Override
-	public TimeTracking parse(JSONObject json) throws JSONException {
-		final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "timeoriginalestimate");
-		final Integer timeRemainingMinutes = JsonParseUtil.parseOptionInteger(json, "timeestimate");
-		final Integer timeSpentMinutes = JsonParseUtil.parseOptionInteger(json, "timespent");
-		return new TimeTracking(originalEstimateMinutes, timeRemainingMinutes, timeSpentMinutes);
-	}
+    @Override
+    public TimeTracking parse(JSONObject json) throws JSONException {
+        final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "timeoriginalestimate");
+        final Integer timeRemainingMinutes = JsonParseUtil.parseOptionInteger(json, "timeestimate");
+        final Integer timeSpentMinutes = JsonParseUtil.parseOptionInteger(json, "timespent");
+        return new TimeTracking(originalEstimateMinutes, timeRemainingMinutes, timeSpentMinutes);
+    }
 
 }

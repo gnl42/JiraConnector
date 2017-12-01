@@ -25,44 +25,44 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class ComponentJsonParser implements JsonObjectParser<Component> {
-	@Override
-	public Component parse(JSONObject json) throws JSONException {
-		final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);
-		final JSONObject leadJson = json.optJSONObject("lead");
-		final BasicUser lead = leadJson != null ? JsonParseUtil.parseBasicUser(leadJson) : null;
-		final String assigneeTypeStr = JsonParseUtil.getOptionalString(json, "assigneeType");
-		final Component.AssigneeInfo assigneeInfo;
-		if (assigneeTypeStr != null) {
-			final AssigneeType assigneeType = parseAssigneeType(assigneeTypeStr);
-			final JSONObject assigneeJson = json.optJSONObject("assignee");
-			final BasicUser assignee = assigneeJson != null ? JsonParseUtil.parseBasicUser(assigneeJson) : null;
-			final AssigneeType realAssigneeType = parseAssigneeType(json.getString("realAssigneeType"));
-			final JSONObject realAssigneeJson = json.optJSONObject("realAssignee");
-			final BasicUser realAssignee = realAssigneeJson != null ? JsonParseUtil.parseBasicUser(realAssigneeJson) : null;
-			final boolean isAssigneeTypeValid = json.getBoolean("isAssigneeTypeValid");
-			assigneeInfo = new Component.AssigneeInfo(assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
-		} else {
-			assigneeInfo = null;
-		}
+    @Override
+    public Component parse(JSONObject json) throws JSONException {
+        final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);
+        final JSONObject leadJson = json.optJSONObject("lead");
+        final BasicUser lead = leadJson != null ? JsonParseUtil.parseBasicUser(leadJson) : null;
+        final String assigneeTypeStr = JsonParseUtil.getOptionalString(json, "assigneeType");
+        final Component.AssigneeInfo assigneeInfo;
+        if (assigneeTypeStr != null) {
+            final AssigneeType assigneeType = parseAssigneeType(assigneeTypeStr);
+            final JSONObject assigneeJson = json.optJSONObject("assignee");
+            final BasicUser assignee = assigneeJson != null ? JsonParseUtil.parseBasicUser(assigneeJson) : null;
+            final AssigneeType realAssigneeType = parseAssigneeType(json.getString("realAssigneeType"));
+            final JSONObject realAssigneeJson = json.optJSONObject("realAssignee");
+            final BasicUser realAssignee = realAssigneeJson != null ? JsonParseUtil.parseBasicUser(realAssigneeJson) : null;
+            final boolean isAssigneeTypeValid = json.getBoolean("isAssigneeTypeValid");
+            assigneeInfo = new Component.AssigneeInfo(assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
+        } else {
+            assigneeInfo = null;
+        }
 
-		return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent
-				.getDescription(), lead, assigneeInfo);
-	}
+        return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent
+                .getDescription(), lead, assigneeInfo);
+    }
 
-	AssigneeType parseAssigneeType(String str) throws JSONException {
-		// JIRA 4.4+ adds full assignee info to component resource
-		if (AssigneeTypeConstants.COMPONENT_LEAD.equals(str)) {
-			return AssigneeType.COMPONENT_LEAD;
-		}
-		if (AssigneeTypeConstants.PROJECT_DEFAULT.equals(str)) {
-			return AssigneeType.PROJECT_DEFAULT;
-		}
-		if (AssigneeTypeConstants.PROJECT_LEAD.equals(str)) {
-			return AssigneeType.PROJECT_LEAD;
-		}
-		if (AssigneeTypeConstants.UNASSIGNED.equals(str)) {
-			return AssigneeType.UNASSIGNED;
-		}
-		throw new JSONException("Unexpected value of assignee type [" + str + "]");
-	}
+    AssigneeType parseAssigneeType(String str) throws JSONException {
+        // JIRA 4.4+ adds full assignee info to component resource
+        if (AssigneeTypeConstants.COMPONENT_LEAD.equals(str)) {
+            return AssigneeType.COMPONENT_LEAD;
+        }
+        if (AssigneeTypeConstants.PROJECT_DEFAULT.equals(str)) {
+            return AssigneeType.PROJECT_DEFAULT;
+        }
+        if (AssigneeTypeConstants.PROJECT_LEAD.equals(str)) {
+            return AssigneeType.PROJECT_LEAD;
+        }
+        if (AssigneeTypeConstants.UNASSIGNED.equals(str)) {
+            return AssigneeType.UNASSIGNED;
+        }
+        throw new JSONException("Unexpected value of assignee type [" + str + "]");
+    }
 }

@@ -35,191 +35,191 @@ import java.net.URI;
  * <li>When adjustEstimate is set to {@link AdjustEstimate#MANUAL} then remaining estimate is reduced by adjustEstimateValue</li>
  */
 public class WorklogInput {
-	@Nullable
-	private final URI self;
-	private final URI issueUri;
-	@Nullable
-	private final BasicUser author;
-	@Nullable
-	private final BasicUser updateAuthor;
-	@Nullable
-	private final String comment;
-	private final DateTime startDate;
-	private final int minutesSpent;
-	@Nullable
-	private final Visibility visibility;
+    @Nullable
+    private final URI self;
+    private final URI issueUri;
+    @Nullable
+    private final BasicUser author;
+    @Nullable
+    private final BasicUser updateAuthor;
+    @Nullable
+    private final String comment;
+    private final DateTime startDate;
+    private final int minutesSpent;
+    @Nullable
+    private final Visibility visibility;
 
-	@Nullable
-	private final String adjustEstimateValue;
-	private final AdjustEstimate adjustEstimate;
+    @Nullable
+    private final String adjustEstimateValue;
+    private final AdjustEstimate adjustEstimate;
 
-	/**
-	 * Creates new WorklogInput with given values
-	 *
-	 * @param self                URI to this worklog, pass null if this is new worklog item.
-	 * @param issueUri            URI to destination issue
-	 * @param author              author of this worklog
-	 * @param updateAuthor        author of worklog actualization
-	 * @param comment             comment attached to worklog
-	 * @param startDate           date of work start
-	 * @param minutesSpent        time spend in minutes
-	 * @param visibility          visibility settings for this worklog
-	 * @param adjustEstimate      adjust estimate option
-	 * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set
-	 *                            to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
-	 */
-	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
-			AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
-		this.visibility = visibility;
-		this.minutesSpent = minutesSpent;
-		this.startDate = startDate;
-		this.comment = comment;
-		this.updateAuthor = updateAuthor;
-		this.author = author;
-		this.issueUri = issueUri;
-		this.self = self;
-		this.adjustEstimate = adjustEstimate;
-		this.adjustEstimateValue = adjustEstimateValue;
-	}
+    /**
+     * Creates new WorklogInput with given values
+     *
+     * @param self                URI to this worklog, pass null if this is new worklog item.
+     * @param issueUri            URI to destination issue
+     * @param author              author of this worklog
+     * @param updateAuthor        author of worklog actualization
+     * @param comment             comment attached to worklog
+     * @param startDate           date of work start
+     * @param minutesSpent        time spend in minutes
+     * @param visibility          visibility settings for this worklog
+     * @param adjustEstimate      adjust estimate option
+     * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set
+     *                            to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
+     */
+    public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
+                        @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
+                        AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
+        this.visibility = visibility;
+        this.minutesSpent = minutesSpent;
+        this.startDate = startDate;
+        this.comment = comment;
+        this.updateAuthor = updateAuthor;
+        this.author = author;
+        this.issueUri = issueUri;
+        this.self = self;
+        this.adjustEstimate = adjustEstimate;
+        this.adjustEstimateValue = adjustEstimateValue;
+    }
 
-	/**
-	 * Creates new WorklogInput with given values. Sets adjust estimate option to default value - {@link AdjustEstimate#AUTO}.
-	 *
-	 * @param self         URI to this worklog, pass null if this is new worklog item.
-	 * @param issueUri     URI to destination issue
-	 * @param author       author of this worklog
-	 * @param updateAuthor author of worklog actualization
-	 * @param comment      comment attached to worklog
-	 * @param startDate    date of work start
-	 * @param minutesSpent time spend in minutes
-	 * @param visibility   visibility settings for this worklog
-	 */
-	public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-			@Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-		this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, AdjustEstimate.AUTO, null);
-	}
+    /**
+     * Creates new WorklogInput with given values. Sets adjust estimate option to default value - {@link AdjustEstimate#AUTO}.
+     *
+     * @param self         URI to this worklog, pass null if this is new worklog item.
+     * @param issueUri     URI to destination issue
+     * @param author       author of this worklog
+     * @param updateAuthor author of worklog actualization
+     * @param comment      comment attached to worklog
+     * @param startDate    date of work start
+     * @param minutesSpent time spend in minutes
+     * @param visibility   visibility settings for this worklog
+     */
+    public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
+                        @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+        this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, AdjustEstimate.AUTO, null);
+    }
 
-	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
-		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
-				.build();
-	}
+    public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
+                .build();
+    }
 
-	public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-		return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
-				.setVisibility(visibility).build();
-	}
+    public static WorklogInput create(URI issueUri, @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
+                .setVisibility(visibility).build();
+    }
 
-	@Nullable
-	public URI getSelf() {
-		return self;
-	}
+    @Nullable
+    public URI getSelf() {
+        return self;
+    }
 
-	public URI getIssueUri() {
-		return issueUri;
-	}
+    public URI getIssueUri() {
+        return issueUri;
+    }
 
-	@Nullable
-	public BasicUser getAuthor() {
-		return author;
-	}
+    @Nullable
+    public BasicUser getAuthor() {
+        return author;
+    }
 
-	@Nullable
-	public BasicUser getUpdateAuthor() {
-		return updateAuthor;
-	}
+    @Nullable
+    public BasicUser getUpdateAuthor() {
+        return updateAuthor;
+    }
 
-	@Nullable
-	public String getComment() {
-		return comment;
-	}
+    @Nullable
+    public String getComment() {
+        return comment;
+    }
 
-	public DateTime getStartDate() {
-		return startDate;
-	}
+    public DateTime getStartDate() {
+        return startDate;
+    }
 
-	public int getMinutesSpent() {
-		return minutesSpent;
-	}
+    public int getMinutesSpent() {
+        return minutesSpent;
+    }
 
-	@Nullable
-	public Visibility getVisibility() {
-		return visibility;
-	}
+    @Nullable
+    public Visibility getVisibility() {
+        return visibility;
+    }
 
-	public AdjustEstimate getAdjustEstimate() {
-		return adjustEstimate;
-	}
+    public AdjustEstimate getAdjustEstimate() {
+        return adjustEstimate;
+    }
 
-	@Nullable
-	public String getAdjustEstimateValue() {
-		return adjustEstimateValue;
-	}
+    @Nullable
+    public String getAdjustEstimateValue() {
+        return adjustEstimateValue;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("self", self)
-				.add("issueUri", issueUri)
-				.add("author", author)
-				.add("updateAuthor", updateAuthor)
-				.add("comment", comment)
-				.add("startDate", startDate)
-				.add("minutesSpent", minutesSpent)
-				.add("visibility", visibility)
-				.add("adjustEstimate", adjustEstimate)
-				.add("adjustEstimateValue", adjustEstimateValue)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("self", self)
+                .add("issueUri", issueUri)
+                .add("author", author)
+                .add("updateAuthor", updateAuthor)
+                .add("comment", comment)
+                .add("startDate", startDate)
+                .add("minutesSpent", minutesSpent)
+                .add("visibility", visibility)
+                .add("adjustEstimate", adjustEstimate)
+                .add("adjustEstimateValue", adjustEstimateValue)
+                .toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof WorklogInput) {
-			final WorklogInput that = (WorklogInput) obj;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof WorklogInput) {
+            final WorklogInput that = (WorklogInput) obj;
 
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.issueUri, that.issueUri)
-					&& Objects.equal(this.author, that.author)
-					&& Objects.equal(this.updateAuthor, that.updateAuthor)
-					&& Objects.equal(this.comment, that.comment)
-					&& Objects.equal(this.startDate, that.startDate)
-					&& Objects.equal(this.minutesSpent, that.minutesSpent)
-					&& Objects.equal(this.visibility, that.visibility)
-					&& Objects.equal(this.adjustEstimate, that.adjustEstimate)
-					&& Objects.equal(this.adjustEstimateValue, that.adjustEstimateValue);
-		}
-		return false;
-	}
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.issueUri, that.issueUri)
+                    && Objects.equal(this.author, that.author)
+                    && Objects.equal(this.updateAuthor, that.updateAuthor)
+                    && Objects.equal(this.comment, that.comment)
+                    && Objects.equal(this.startDate, that.startDate)
+                    && Objects.equal(this.minutesSpent, that.minutesSpent)
+                    && Objects.equal(this.visibility, that.visibility)
+                    && Objects.equal(this.adjustEstimate, that.adjustEstimate)
+                    && Objects.equal(this.adjustEstimateValue, that.adjustEstimateValue);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
-				adjustEstimate, adjustEstimateValue);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
+                adjustEstimate, adjustEstimateValue);
+    }
 
-	public static enum AdjustEstimate {
-		/**
-		 * Set remaining estimate to given value.
-		 */
-		NEW,
-		/**
-		 * Leave estimate as is.
-		 */
-		LEAVE,
-		/**
-		 * Decrease estimate manually by given value.
-		 */
-		MANUAL,
-		/**
-		 * Automatically decrease estimate based on given time spent. This is the default value.
-		 */
-		AUTO;
+    public static enum AdjustEstimate {
+        /**
+         * Set remaining estimate to given value.
+         */
+        NEW,
+        /**
+         * Leave estimate as is.
+         */
+        LEAVE,
+        /**
+         * Decrease estimate manually by given value.
+         */
+        MANUAL,
+        /**
+         * Automatically decrease estimate based on given time spent. This is the default value.
+         */
+        AUTO;
 
-		public final String restValue;
+        public final String restValue;
 
-		private AdjustEstimate() {
-			restValue = this.name().toLowerCase();
-		}
-	}
+        private AdjustEstimate() {
+            restValue = this.name().toLowerCase();
+        }
+    }
 }
 

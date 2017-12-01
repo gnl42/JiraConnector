@@ -15,7 +15,6 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 /**
- *
  * @since v2.0
  */
 public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient implements AuditRestClient {
@@ -72,7 +71,7 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
 
         try {
             return uriBuilder.build();
-        } catch( RuntimeException x ) {
+        } catch (RuntimeException x) {
             throw x;
         }
     }

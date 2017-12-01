@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.test.matchers.DateTimeMatcher;
 import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.test.matchers.DateTimeMatcher;
 import org.codehaus.jettison.json.JSONException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -32,63 +32,63 @@ import static org.junit.Assert.assertNull;
 
 public class VersionJsonParserTest {
 
-	@Test
-	public void testParse() throws JSONException, URISyntaxException {
-		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid.json"));
+    @Test
+    public void testParse() throws JSONException, URISyntaxException {
+        VersionJsonParser parser = new VersionJsonParser();
+        final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid.json"));
 
-		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
-		assertEquals(Long.valueOf(10000), version.getId());
-		assertEquals("1.1", version.getName());
-		assertEquals("Some version", version.getDescription());
-		Assert.assertFalse(version.isReleased());
-		Assert.assertTrue(version.isArchived());
-		Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-				new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
-	}
+        assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+        assertEquals(Long.valueOf(10000), version.getId());
+        assertEquals("1.1", version.getName());
+        assertEquals("Some version", version.getDescription());
+        Assert.assertFalse(version.isReleased());
+        Assert.assertTrue(version.isArchived());
+        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+    }
 
-	@Test
-	public void testParseNoReleaseDate() throws JSONException, URISyntaxException {
-		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid2-no-releaseDate.json"));
+    @Test
+    public void testParseNoReleaseDate() throws JSONException, URISyntaxException {
+        VersionJsonParser parser = new VersionJsonParser();
+        final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid2-no-releaseDate.json"));
 
-		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
-		assertEquals(Long.valueOf(10000), version.getId());
-		assertEquals("1.1abc", version.getName());
-		assertNull(version.getDescription());
-		Assert.assertTrue(version.isReleased());
-		Assert.assertFalse(version.isArchived());
-		assertNull(version.getReleaseDate());
-	}
+        assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+        assertEquals(Long.valueOf(10000), version.getId());
+        assertEquals("1.1abc", version.getName());
+        assertNull(version.getDescription());
+        Assert.assertTrue(version.isReleased());
+        Assert.assertFalse(version.isArchived());
+        assertNull(version.getReleaseDate());
+    }
 
-	@Test
-	public void testParseNoId() throws JSONException, URISyntaxException {
-		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-id.json"));
+    @Test
+    public void testParseNoId() throws JSONException, URISyntaxException {
+        VersionJsonParser parser = new VersionJsonParser();
+        final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-id.json"));
 
-		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
-		assertNull(version.getId());
-		assertEquals("1.1", version.getName());
-		assertEquals("Some version", version.getDescription());
-		Assert.assertFalse(version.isReleased());
-		Assert.assertTrue(version.isArchived());
-		Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-				new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
-	}
+        assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+        assertNull(version.getId());
+        assertEquals("1.1", version.getName());
+        assertEquals("Some version", version.getDescription());
+        Assert.assertFalse(version.isReleased());
+        Assert.assertTrue(version.isArchived());
+        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+    }
 
-	@Test
-	public void testParseNoDescription() throws JSONException, URISyntaxException {
-		VersionJsonParser parser = new VersionJsonParser();
-		final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-description.json"));
+    @Test
+    public void testParseNoDescription() throws JSONException, URISyntaxException {
+        VersionJsonParser parser = new VersionJsonParser();
+        final Version version = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/version/valid-no-description.json"));
 
-		assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
-		assertEquals(Long.valueOf(10000), version.getId());
-		assertEquals("1.1", version.getName());
-		assertNull(version.getDescription());
-		Assert.assertFalse(version.isReleased());
-		Assert.assertTrue(version.isArchived());
-		Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-				new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
-	}
+        assertEquals(new URI("http://localhost:8090/jira/rest/api/latest/version/10000"), version.getSelf());
+        assertEquals(Long.valueOf(10000), version.getId());
+        assertEquals("1.1", version.getName());
+        assertNull(version.getDescription());
+        Assert.assertFalse(version.isReleased());
+        Assert.assertTrue(version.isArchived());
+        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+    }
 
 }

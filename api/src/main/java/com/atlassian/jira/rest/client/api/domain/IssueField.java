@@ -27,59 +27,59 @@ import com.google.common.base.Objects;
  */
 public class IssueField implements NamedEntity, IdentifiableEntity<String> {
 
-	private final String id;
-	private final String name;
-	private final String type;
-	private final Object value;
+    private final String id;
+    private final String name;
+    private final String type;
+    private final Object value;
 
-	public IssueField(String id, String name, String type, Object value) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.value = value;
-	}
+    public IssueField(String id, String name, String type, Object value) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Object getValue() {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("id", id).
-				add("name", name).
-				add("type", type).
-				add("value", getValue()).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("id", id).
+                add("name", name).
+                add("type", type).
+                add("value", getValue()).
+                toString();
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, name, type); // for the sake of performance we don't include "value" field here
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, type); // for the sake of performance we don't include "value" field here
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof IssueField) {
-			final IssueField that = (IssueField) obj;
-			return Objects.equal(this.id, that.id)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.type, that.type)
-					&& Objects.equal(this.value, that.value);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IssueField) {
+            final IssueField that = (IssueField) obj;
+            return Objects.equal(this.id, that.id)
+                    && Objects.equal(this.name, that.name)
+                    && Objects.equal(this.type, that.type)
+                    && Objects.equal(this.value, that.value);
+        }
+        return false;
+    }
 
 }

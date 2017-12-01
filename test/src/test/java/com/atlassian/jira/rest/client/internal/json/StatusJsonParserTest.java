@@ -24,12 +24,12 @@ import org.junit.Test;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
 public class StatusJsonParserTest {
-	@Test
-	public void testParse() throws JSONException {
-		final StatusJsonParser parser = new StatusJsonParser();
-		final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
-		Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
-				1L, "Open", "The issue is open and ready for the assignee to start work on it.",
-				toUri("http://localhost:8090/jira/images/icons/status_open.gif")), status);
-	}
+    @Test
+    public void testParse() throws JSONException {
+        final StatusJsonParser parser = new StatusJsonParser();
+        final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
+        Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
+                1L, "Open", "The issue is open and ready for the assignee to start work on it.",
+                toUri("http://localhost:8090/jira/images/icons/status_open.gif")), status);
+    }
 }

@@ -22,10 +22,10 @@ import org.junit.Test;
 
 
 public class SessionCookieJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final SessionCookieJsonParser parser = new SessionCookieJsonParser();
-		Assert.assertEquals(new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79"),
-				parser.parse(ResourceUtil.getJsonObjectFromResource("/json/sessionCookie/valid.json")));
-	}
+    @Test
+    public void testParse() throws Exception {
+        final SessionCookieJsonParser parser = new SessionCookieJsonParser();
+        Assert.assertEquals(new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79"),
+                parser.parse(ResourceUtil.getJsonObjectFromResource("/json/sessionCookie/valid.json")));
+    }
 }

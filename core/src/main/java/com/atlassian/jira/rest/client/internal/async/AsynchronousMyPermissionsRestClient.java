@@ -26,37 +26,37 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRestClient implements MyPermissionsRestClient {
-	private static final String URI_PREFIX = "mypermissions";
-	private final URI baseUri;
-	private final PermissionsJsonParser permissionsJsonParser = new PermissionsJsonParser();
+    private static final String URI_PREFIX = "mypermissions";
+    private final URI baseUri;
+    private final PermissionsJsonParser permissionsJsonParser = new PermissionsJsonParser();
 
-	protected AsynchronousMyPermissionsRestClient(final URI baseUri, final HttpClient client) {
-		super(client);
-		this.baseUri = baseUri;
-	}
+    protected AsynchronousMyPermissionsRestClient(final URI baseUri, final HttpClient client) {
+        super(client);
+        this.baseUri = baseUri;
+    }
 
-	@Override
-	public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) {
-		final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
-		addContextParams(uriBuilder, permissionInput);
-		return getAndParse(uriBuilder.build(), permissionsJsonParser);
-	}
+    @Override
+    public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
+        addContextParams(uriBuilder, permissionInput);
+        return getAndParse(uriBuilder.build(), permissionsJsonParser);
+    }
 
-	private UriBuilder addContextParams(UriBuilder uriBuilder, MyPermissionsInput permissionInput) {
-		if (permissionInput != null) {
-			if (permissionInput.getProjectKey() != null) {
-				uriBuilder.queryParam("projectKey", permissionInput.getProjectKey());
-			}
-			if (permissionInput.getProjectId() != null) {
-				uriBuilder.queryParam("projectId", permissionInput.getProjectId());
-			}
-			if (permissionInput.getIssueKey() != null) {
-				uriBuilder.queryParam("issueKey", permissionInput.getIssueKey());
-			}
-			if (permissionInput.getIssueId() != null) {
-				uriBuilder.queryParam("issueId", permissionInput.getIssueId());
-			}
-		}
-		return uriBuilder;
-	}
+    private UriBuilder addContextParams(UriBuilder uriBuilder, MyPermissionsInput permissionInput) {
+        if (permissionInput != null) {
+            if (permissionInput.getProjectKey() != null) {
+                uriBuilder.queryParam("projectKey", permissionInput.getProjectKey());
+            }
+            if (permissionInput.getProjectId() != null) {
+                uriBuilder.queryParam("projectId", permissionInput.getProjectId());
+            }
+            if (permissionInput.getIssueKey() != null) {
+                uriBuilder.queryParam("issueKey", permissionInput.getIssueKey());
+            }
+            if (permissionInput.getIssueId() != null) {
+                uriBuilder.queryParam("issueId", permissionInput.getIssueId());
+            }
+        }
+        return uriBuilder;
+    }
 }

@@ -26,12 +26,12 @@ import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
 
 
 public class AuthenticationJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final AuthenticationJsonParser parser = new AuthenticationJsonParser();
-		final Authentication authentication = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/authentication/valid.json"));
-		Assert.assertEquals(new Authentication(new LoginInfo(54, 23, toDateTime("2010-09-13T17:19:20.752+0300"),
-				toDateTime("2010-09-13T17:19:38.220+0900")), new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79")), authentication);
-	}
+    @Test
+    public void testParse() throws Exception {
+        final AuthenticationJsonParser parser = new AuthenticationJsonParser();
+        final Authentication authentication = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/authentication/valid.json"));
+        Assert.assertEquals(new Authentication(new LoginInfo(54, 23, toDateTime("2010-09-13T17:19:20.752+0300"),
+                toDateTime("2010-09-13T17:19:38.220+0900")), new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79")), authentication);
+    }
 }

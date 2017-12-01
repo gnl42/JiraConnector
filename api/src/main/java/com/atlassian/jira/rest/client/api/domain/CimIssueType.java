@@ -32,44 +32,44 @@ import java.util.Map;
  */
 public class CimIssueType extends IssueType {
 
-	private final Map<String, CimFieldInfo> fields;
+    private final Map<String, CimFieldInfo> fields;
 
-	public CimIssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri, Map<String, CimFieldInfo> fields) {
-		super(self, id, name, isSubtask, description, iconUri);
-		this.fields = fields;
-	}
+    public CimIssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri, Map<String, CimFieldInfo> fields) {
+        super(self, id, name, isSubtask, description, iconUri);
+        this.fields = fields;
+    }
 
-	public Map<String, CimFieldInfo> getFields() {
-		return fields;
-	}
+    public Map<String, CimFieldInfo> getFields() {
+        return fields;
+    }
 
-	@Nullable
-	public CimFieldInfo getField(IssueFieldId fieldId) {
-		return fields.get(fieldId.id);
-	}
+    @Nullable
+    public CimFieldInfo getField(IssueFieldId fieldId) {
+        return fields.get(fieldId.id);
+    }
 
-	/**
-	 * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
-	 *
-	 * @return ToStringHelper
-	 */
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper().add("fields", fields);
-	}
+    /**
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     *
+     * @return ToStringHelper
+     */
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper().add("fields", fields);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CimIssueType) {
-			CimIssueType that = (CimIssueType) obj;
-			return super.equals(obj)
-					&& Objects.equal(this.fields, that.fields);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CimIssueType) {
+            CimIssueType that = (CimIssueType) obj;
+            return super.equals(obj)
+                    && Objects.equal(this.fields, that.fields);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), fields);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), fields);
+    }
 }

@@ -30,110 +30,110 @@ import java.net.URI;
  */
 public class Worklog implements AddressableEntity {
 
-	private final URI self;
-	private final URI issueUri;
-	private final BasicUser author;
-	private final BasicUser updateAuthor;
-	private final String comment;
-	private final DateTime creationDate;
-	private final DateTime updateDate;
-	private final DateTime startDate;
-	private final int minutesSpent;
-	@Nullable
-	private final Visibility visibility;
+    private final URI self;
+    private final URI issueUri;
+    private final BasicUser author;
+    private final BasicUser updateAuthor;
+    private final String comment;
+    private final DateTime creationDate;
+    private final DateTime updateDate;
+    private final DateTime startDate;
+    private final int minutesSpent;
+    @Nullable
+    private final Visibility visibility;
 
-	public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-			DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-		this.self = self;
-		this.issueUri = issueUri;
-		this.author = author;
-		this.updateAuthor = updateAuthor;
-		this.comment = comment;
-		this.creationDate = creationDate;
-		this.updateDate = updateDate;
-		this.startDate = startDate;
-		this.minutesSpent = minutesSpent;
-		this.visibility = visibility;
-	}
+    public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
+                   DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+        this.self = self;
+        this.issueUri = issueUri;
+        this.author = author;
+        this.updateAuthor = updateAuthor;
+        this.comment = comment;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
+        this.startDate = startDate;
+        this.minutesSpent = minutesSpent;
+        this.visibility = visibility;
+    }
 
-	public URI getSelf() {
-		return self;
-	}
+    public URI getSelf() {
+        return self;
+    }
 
-	public URI getIssueUri() {
-		return issueUri;
-	}
+    public URI getIssueUri() {
+        return issueUri;
+    }
 
-	public BasicUser getAuthor() {
-		return author;
-	}
+    public BasicUser getAuthor() {
+        return author;
+    }
 
-	public BasicUser getUpdateAuthor() {
-		return updateAuthor;
-	}
+    public BasicUser getUpdateAuthor() {
+        return updateAuthor;
+    }
 
-	public String getComment() {
-		return comment;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public DateTime getCreationDate() {
-		return creationDate;
-	}
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
 
-	public DateTime getUpdateDate() {
-		return updateDate;
-	}
+    public DateTime getUpdateDate() {
+        return updateDate;
+    }
 
-	public DateTime getStartDate() {
-		return startDate;
-	}
+    public DateTime getStartDate() {
+        return startDate;
+    }
 
-	public int getMinutesSpent() {
-		return minutesSpent;
-	}
+    public int getMinutesSpent() {
+        return minutesSpent;
+    }
 
-	@Nullable
-	public Visibility getVisibility() {
-		return visibility;
-	}
+    @Nullable
+    public Visibility getVisibility() {
+        return visibility;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("issueUri", issueUri).
-				add("author", author).
-				add("updateAuthor", updateAuthor).
-				add("comment", comment).
-				add("creationDate", creationDate).
-				add("updateDate", updateDate).
-				add("startDate", startDate).
-				add("minutesSpent", minutesSpent).
-				add("visibility", visibility).
-				toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("issueUri", issueUri).
+                add("author", author).
+                add("updateAuthor", updateAuthor).
+                add("comment", comment).
+                add("creationDate", creationDate).
+                add("updateDate", updateDate).
+                add("startDate", startDate).
+                add("minutesSpent", minutesSpent).
+                add("visibility", visibility).
+                toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Worklog) {
-			Worklog that = (Worklog) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.issueUri, that.issueUri)
-					&& Objects.equal(this.author, that.author)
-					&& Objects.equal(this.updateAuthor, that.updateAuthor)
-					&& Objects.equal(this.comment, that.comment)
-					&& Objects.equal(this.visibility, that.visibility)
-					&& this.creationDate.isEqual(that.creationDate)
-					&& this.updateDate.isEqual(that.updateDate)
-					&& this.startDate.isEqual(that.startDate)
-					&& Objects.equal(this.minutesSpent, that.minutesSpent);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Worklog) {
+            Worklog that = (Worklog) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.issueUri, that.issueUri)
+                    && Objects.equal(this.author, that.author)
+                    && Objects.equal(this.updateAuthor, that.updateAuthor)
+                    && Objects.equal(this.comment, that.comment)
+                    && Objects.equal(this.visibility, that.visibility)
+                    && this.creationDate.isEqual(that.creationDate)
+                    && this.updateDate.isEqual(that.updateDate)
+                    && this.startDate.isEqual(that.startDate)
+                    && Objects.equal(this.minutesSpent, that.minutesSpent);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+    }
 
 }

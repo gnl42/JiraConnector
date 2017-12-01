@@ -32,59 +32,59 @@ import java.util.Collection;
 @SuppressWarnings("JavadocReference")
 public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<Long> {
 
-	private final String description;
-	private final Collection<RoleActor> actors;
-	private final long id;
+    private final String description;
+    private final Collection<RoleActor> actors;
+    private final long id;
 
-	public ProjectRole(long id, URI self, String name, String description, Collection<RoleActor> actors) {
-		super(self, name);
-		this.id = id;
-		this.description = description;
-		this.actors = actors;
-	}
+    public ProjectRole(long id, URI self, String name, String description, Collection<RoleActor> actors) {
+        super(self, name);
+        this.id = id;
+        this.description = description;
+        this.actors = actors;
+    }
 
-	/**
-	 * @return description of this project role.
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * @return description of this project role.
+     */
+    public String getDescription() {
+        return description;
+    }
 
-	/**
-	 * @return actors associated with this role.
-	 */
-	public Iterable<RoleActor> getActors() {
-		return actors;
-	}
+    /**
+     * @return actors associated with this role.
+     */
+    public Iterable<RoleActor> getActors() {
+        return actors;
+    }
 
-	/**
-	 * @return the unique id for this project role.
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the unique id for this project role.
+     */
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof ProjectRole) {
-			final ProjectRole that = (ProjectRole) o;
-			return super.equals(o)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.actors, that.actors)
-					&& Objects.equal(this.id, that.id);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ProjectRole) {
+            final ProjectRole that = (ProjectRole) o;
+            return super.equals(o)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.actors, that.actors)
+                    && Objects.equal(this.id, that.id);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), description, actors);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), description, actors);
+    }
 
-	@Override
-	protected Objects.ToStringHelper getToStringHelper() {
-		return super.getToStringHelper()
-				.add("description", description)
-				.add("actors", actors);
-	}
+    @Override
+    protected Objects.ToStringHelper getToStringHelper() {
+        return super.getToStringHelper()
+                .add("description", description)
+                .add("actors", actors);
+    }
 }

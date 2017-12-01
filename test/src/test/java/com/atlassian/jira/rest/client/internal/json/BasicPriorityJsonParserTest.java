@@ -22,20 +22,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class BasicPriorityJsonParserTest {
-	@Test
-	public void testParse() throws Exception {
-		final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
-		final BasicPriority basicPriority = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/priority/valid.json"));
-		Assert.assertEquals(new BasicPriority(TestUtil
-				.toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), 3L, "XMajor"), basicPriority);
-	}
+    @Test
+    public void testParse() throws Exception {
+        final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
+        final BasicPriority basicPriority = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/priority/valid.json"));
+        Assert.assertEquals(new BasicPriority(TestUtil
+                .toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), 3L, "XMajor"), basicPriority);
+    }
 
-	@Test
-	public void testParseWithoutId() throws Exception {
-		final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
-		final BasicPriority basicPriority = parser.parse(ResourceUtil
-				.getJsonObjectFromResource("/json/priority/valid-without-id.json"));
-		Assert.assertEquals(new BasicPriority(TestUtil
-				.toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), null, "XMajor"), basicPriority);
-	}
+    @Test
+    public void testParseWithoutId() throws Exception {
+        final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
+        final BasicPriority basicPriority = parser.parse(ResourceUtil
+                .getJsonObjectFromResource("/json/priority/valid-without-id.json"));
+        Assert.assertEquals(new BasicPriority(TestUtil
+                .toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), null, "XMajor"), basicPriority);
+    }
 }

@@ -22,12 +22,12 @@ import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
 
 public class LoginInfoJsonParser implements JsonObjectParser<LoginInfo> {
-	@Override
-	public LoginInfo parse(JSONObject json) throws JSONException {
-		final int failedLoginCount = json.optInt("failedLoginCount");
-		final int loginCount = json.getInt("loginCount");
-		final DateTime lastFailedLoginTime = JsonParseUtil.parseOptionalDateTime(json, "lastFailedLoginTime");
-		final DateTime previousLoginTime = JsonParseUtil.parseOptionalDateTime(json, "previousLoginTime");
-		return new LoginInfo(failedLoginCount, loginCount, lastFailedLoginTime, previousLoginTime);
-	}
+    @Override
+    public LoginInfo parse(JSONObject json) throws JSONException {
+        final int failedLoginCount = json.optInt("failedLoginCount");
+        final int loginCount = json.getInt("loginCount");
+        final DateTime lastFailedLoginTime = JsonParseUtil.parseOptionalDateTime(json, "lastFailedLoginTime");
+        final DateTime previousLoginTime = JsonParseUtil.parseOptionalDateTime(json, "previousLoginTime");
+        return new LoginInfo(failedLoginCount, loginCount, lastFailedLoginTime, previousLoginTime);
+    }
 }

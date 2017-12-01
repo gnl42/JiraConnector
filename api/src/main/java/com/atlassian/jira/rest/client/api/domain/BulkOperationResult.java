@@ -25,42 +25,42 @@ import com.google.common.base.Objects;
  */
 public class BulkOperationResult<T> {
 
-	private final Iterable<T> issues;
-	private final Iterable<BulkOperationErrorResult> errors;
+    private final Iterable<T> issues;
+    private final Iterable<BulkOperationErrorResult> errors;
 
-	public BulkOperationResult(final Iterable<T> issues, final Iterable<BulkOperationErrorResult> errors) {
-		this.issues = issues;
-		this.errors = errors;
-	}
+    public BulkOperationResult(final Iterable<T> issues, final Iterable<BulkOperationErrorResult> errors) {
+        this.issues = issues;
+        this.errors = errors;
+    }
 
-	public Iterable<T> getIssues() {
-		return issues;
-	}
+    public Iterable<T> getIssues() {
+        return issues;
+    }
 
-	public Iterable<BulkOperationErrorResult> getErrors() {
-		return errors;
-	}
+    public Iterable<BulkOperationErrorResult> getErrors() {
+        return errors;
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("issues", issues)
-				.add("errors", errors)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("issues", issues)
+                .add("errors", errors)
+                .toString();
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj instanceof BulkOperationResult) {
-			final BulkOperationResult that = (BulkOperationResult) obj;
-			return Objects.equal(this.issues, that.issues)
-					&& Objects.equal(this.errors, that.errors);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof BulkOperationResult) {
+            final BulkOperationResult that = (BulkOperationResult) obj;
+            return Objects.equal(this.issues, that.issues)
+                    && Objects.equal(this.errors, that.errors);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(issues, errors);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(issues, errors);
+    }
 }

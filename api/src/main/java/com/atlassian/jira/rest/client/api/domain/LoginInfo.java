@@ -27,65 +27,65 @@ import javax.annotation.Nullable;
  * @since v0.1
  */
 public class LoginInfo {
-	private final int failedLoginCount;
-	private final int loginCount;
-	@Nullable
-	private final DateTime lastFailedLoginDate;
-	@Nullable
-	private final DateTime previousLoginDate;
+    private final int failedLoginCount;
+    private final int loginCount;
+    @Nullable
+    private final DateTime lastFailedLoginDate;
+    @Nullable
+    private final DateTime previousLoginDate;
 
-	public LoginInfo(int failedLoginCount, int loginCount, @Nullable DateTime lastFailedLoginDate, @Nullable DateTime previousLoginDate) {
-		this.failedLoginCount = failedLoginCount;
-		this.loginCount = loginCount;
-		this.lastFailedLoginDate = lastFailedLoginDate;
-		this.previousLoginDate = previousLoginDate;
-	}
-
-
-	public int getFailedLoginCount() {
-		return failedLoginCount;
-	}
-
-	public int getLoginCount() {
-		return loginCount;
-	}
-
-	@Nullable
-	public DateTime getLastFailedLoginDate() {
-		return lastFailedLoginDate;
-	}
-
-	@Nullable
-	public DateTime getPreviousLoginDate() {
-		return previousLoginDate;
-	}
+    public LoginInfo(int failedLoginCount, int loginCount, @Nullable DateTime lastFailedLoginDate, @Nullable DateTime previousLoginDate) {
+        this.failedLoginCount = failedLoginCount;
+        this.loginCount = loginCount;
+        this.lastFailedLoginDate = lastFailedLoginDate;
+        this.previousLoginDate = previousLoginDate;
+    }
 
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).
-				add("failedLoginCount", failedLoginCount).
-				add("loginCount", loginCount).
-				add("lastFailedLoginDate", lastFailedLoginDate).
-				add("previousLoginDate", previousLoginDate).
-				toString();
-	}
+    public int getFailedLoginCount() {
+        return failedLoginCount;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof LoginInfo) {
-			LoginInfo that = (LoginInfo) obj;
-			return Objects.equal(this.failedLoginCount, that.failedLoginCount)
-					&& Objects.equal(this.loginCount, that.loginCount)
-					&& Objects.equal(this.lastFailedLoginDate, that.lastFailedLoginDate)
-					&& Objects.equal(this.previousLoginDate, that.previousLoginDate);
-		}
-		return false;
-	}
+    public int getLoginCount() {
+        return loginCount;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(failedLoginCount, loginCount, lastFailedLoginDate, previousLoginDate);
-	}
+    @Nullable
+    public DateTime getLastFailedLoginDate() {
+        return lastFailedLoginDate;
+    }
+
+    @Nullable
+    public DateTime getPreviousLoginDate() {
+        return previousLoginDate;
+    }
+
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).
+                add("failedLoginCount", failedLoginCount).
+                add("loginCount", loginCount).
+                add("lastFailedLoginDate", lastFailedLoginDate).
+                add("previousLoginDate", previousLoginDate).
+                toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LoginInfo) {
+            LoginInfo that = (LoginInfo) obj;
+            return Objects.equal(this.failedLoginCount, that.failedLoginCount)
+                    && Objects.equal(this.loginCount, that.loginCount)
+                    && Objects.equal(this.lastFailedLoginDate, that.lastFailedLoginDate)
+                    && Objects.equal(this.previousLoginDate, that.previousLoginDate);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(failedLoginCount, loginCount, lastFailedLoginDate, previousLoginDate);
+    }
 
 }

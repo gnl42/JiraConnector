@@ -22,8 +22,8 @@ package com.atlassian.jira.rest.client.api.domain;
  * @since com.atlassian.jira.rest.client.api 0.3, server 4.4
  */
 public enum AssigneeType {
-	PROJECT_DEFAULT,
-	COMPONENT_LEAD,
-	PROJECT_LEAD,
-	UNASSIGNED
+    PROJECT_DEFAULT,
+    COMPONENT_LEAD,
+    PROJECT_LEAD,
+    UNASSIGNED
 }

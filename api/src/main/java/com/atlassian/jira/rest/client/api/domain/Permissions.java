@@ -22,48 +22,48 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 public class Permissions {
-	/**
-	 * Permission key for ability to log work done against an issue. Only useful if Time Tracking is turned on.
-	 */
-	public static final String WORK_ISSUE = "WORK_ISSUE";
-	private final Map<String, Permission> permissionMap;
+    /**
+     * Permission key for ability to log work done against an issue. Only useful if Time Tracking is turned on.
+     */
+    public static final String WORK_ISSUE = "WORK_ISSUE";
+    private final Map<String, Permission> permissionMap;
 
-	public Permissions(final Iterable<Permission> permissions) {
-		this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
-	}
+    public Permissions(final Iterable<Permission> permissions) {
+        this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
+    }
 
-	public Map<String, Permission> getPermissionMap() {
-		return permissionMap;
-	}
+    public Map<String, Permission> getPermissionMap() {
+        return permissionMap;
+    }
 
-	public boolean havePermission(final String permissionKey) {
-		final Permission permission = getPermission(permissionKey);
-		return (permission != null && permission.havePermission());
-	}
+    public boolean havePermission(final String permissionKey) {
+        final Permission permission = getPermission(permissionKey);
+        return (permission != null && permission.havePermission());
+    }
 
-	@Nullable
-	public Permission getPermission(final String permissionKey) {
-		return permissionMap.get(permissionKey);
-	}
+    @Nullable
+    public Permission getPermission(final String permissionKey) {
+        return permissionMap.get(permissionKey);
+    }
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("permissionMap", permissionMap)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("permissionMap", permissionMap)
+                .toString();
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Permissions) {
-			Permissions that = (Permissions) o;
-			return Objects.equal(permissionMap, that.permissionMap);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Permissions) {
+            Permissions that = (Permissions) o;
+            return Objects.equal(permissionMap, that.permissionMap);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return permissionMap.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return permissionMap.hashCode();
+    }
 }

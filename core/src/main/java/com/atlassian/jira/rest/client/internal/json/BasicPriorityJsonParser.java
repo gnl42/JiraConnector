@@ -23,11 +23,11 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class BasicPriorityJsonParser implements JsonObjectParser<BasicPriority> {
-	@Override
-	public BasicPriority parse(JSONObject json) throws JSONException {
-		final String name = json.getString("name");
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		return new BasicPriority(selfUri, id, name);
-	}
+    @Override
+    public BasicPriority parse(JSONObject json) throws JSONException {
+        final String name = json.getString("name");
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        return new BasicPriority(selfUri, id, name);
+    }
 }

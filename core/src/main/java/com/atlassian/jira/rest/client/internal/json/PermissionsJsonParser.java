@@ -25,20 +25,20 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PermissionsJsonParser implements JsonObjectParser<Permissions> {
-	private final PermissionJsonParser permissionJsonParser = new PermissionJsonParser();
+    private final PermissionJsonParser permissionJsonParser = new PermissionJsonParser();
 
-	@Override
-	public Permissions parse(final JSONObject json) throws JSONException {
-		final JSONObject permissionsObject = json.getJSONObject("permissions");
+    @Override
+    public Permissions parse(final JSONObject json) throws JSONException {
+        final JSONObject permissionsObject = json.getJSONObject("permissions");
 
-		final List<Permission> permissions = Lists.newArrayList();
-		final Iterator it = permissionsObject.keys();
-		while (it.hasNext()) {
-			final String key = it.next().toString();
-			final JSONObject permissionObject = permissionsObject.getJSONObject(key);
-			final Permission permission = permissionJsonParser.parse(permissionObject);
-			permissions.add(permission);
-		}
-		return new Permissions(permissions);
-	}
+        final List<Permission> permissions = Lists.newArrayList();
+        final Iterator it = permissionsObject.keys();
+        while (it.hasNext()) {
+            final String key = it.next().toString();
+            final JSONObject permissionObject = permissionsObject.getJSONObject(key);
+            final Permission permission = permissionJsonParser.parse(permissionObject);
+            permissions.add(permission);
+        }
+        return new Permissions(permissions);
+    }
 }

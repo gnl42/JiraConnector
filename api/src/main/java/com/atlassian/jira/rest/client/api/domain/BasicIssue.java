@@ -28,66 +28,66 @@ import java.net.URI;
  * @since v0.2
  */
 public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
-	private final URI self;
+    private final URI self;
 
-	private final String key;
-	private final Long id;
+    private final String key;
+    private final Long id;
 
-	public BasicIssue(URI self, String key, Long id) {
-		this.self = self;
-		this.key = key;
-		this.id = id;
-	}
+    public BasicIssue(URI self, String key, Long id) {
+        this.self = self;
+        this.key = key;
+        this.id = id;
+    }
 
-	/**
-	 * @return URI of this issue
-	 */
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    /**
+     * @return URI of this issue
+     */
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	/**
-	 * @return issue key
-	 */
-	public String getKey() {
-		return key;
-	}
+    /**
+     * @return issue key
+     */
+    public String getKey() {
+        return key;
+    }
 
-	/**
-	 * @return issue id
-	 */
-	@Override
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return issue id
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this).
-				add("self", self).
-				add("key", key).
-				add("id", id);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this).
+                add("self", self).
+                add("key", key).
+                add("id", id);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof BasicIssue) {
-			BasicIssue that = (BasicIssue) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.key, that.key)
-					&& Objects.equal(this.id, that.id);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BasicIssue) {
+            BasicIssue that = (BasicIssue) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.key, that.key)
+                    && Objects.equal(this.id, that.id);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, key, id);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, key, id);
+    }
 
 }

@@ -23,12 +23,12 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class BasicProjectJsonParser implements JsonObjectParser<BasicProject> {
-	@Override
-	public BasicProject parse(JSONObject json) throws JSONException {
-		final URI selfUri = JsonParseUtil.getSelfUri(json);
-		final String key = json.getString("key");
-		final Long id = JsonParseUtil.getOptionalLong(json, "id");
-		final String name = JsonParseUtil.getOptionalString(json, "name");
-		return new BasicProject(selfUri, key, id, name);
-	}
+    @Override
+    public BasicProject parse(JSONObject json) throws JSONException {
+        final URI selfUri = JsonParseUtil.getSelfUri(json);
+        final String key = json.getString("key");
+        final Long id = JsonParseUtil.getOptionalLong(json, "id");
+        final String name = JsonParseUtil.getOptionalString(json, "name");
+        return new BasicProject(selfUri, key, id, name);
+    }
 }

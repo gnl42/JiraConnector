@@ -16,51 +16,51 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
+import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.AssigneeType;
 import com.atlassian.jira.rest.client.internal.domain.AssigneeTypeConstants;
-import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWithProjectKey> {
 
-	@Override
-	public JSONObject generate(ComponentInputWithProjectKey componentInput) throws JSONException {
-		JSONObject res = new JSONObject();
-		if (componentInput.getProjectKey() != null) {
-			res.put("project", componentInput.getProjectKey());
-		}
-		if (componentInput.getName() != null) {
-			res.put("name", componentInput.getName());
-		}
-		if (componentInput.getDescription() != null) {
-			res.put("description", componentInput.getDescription());
-		}
-		if (componentInput.getLeadUsername() != null) {
-			res.put("leadUserName", componentInput.getLeadUsername());
-		}
-		final AssigneeType assigneeType = componentInput.getAssigneeType();
-		if (assigneeType != null) {
-			final String assigneeTypeStr;
-			switch (assigneeType) {
-				case PROJECT_DEFAULT:
-					assigneeTypeStr = AssigneeTypeConstants.PROJECT_DEFAULT;
-					break;
-				case COMPONENT_LEAD:
-					assigneeTypeStr = AssigneeTypeConstants.COMPONENT_LEAD;
-					break;
-				case PROJECT_LEAD:
-					assigneeTypeStr = AssigneeTypeConstants.PROJECT_LEAD;
-					break;
-				case UNASSIGNED:
-					assigneeTypeStr = AssigneeTypeConstants.UNASSIGNED;
-					break;
-				default:
-					throw new RestClientException("Unexpected assignee type [" + assigneeType + "]", null);
-			}
-			res.put("assigneeType", assigneeTypeStr);
-		}
-		return res;
-	}
+    @Override
+    public JSONObject generate(ComponentInputWithProjectKey componentInput) throws JSONException {
+        JSONObject res = new JSONObject();
+        if (componentInput.getProjectKey() != null) {
+            res.put("project", componentInput.getProjectKey());
+        }
+        if (componentInput.getName() != null) {
+            res.put("name", componentInput.getName());
+        }
+        if (componentInput.getDescription() != null) {
+            res.put("description", componentInput.getDescription());
+        }
+        if (componentInput.getLeadUsername() != null) {
+            res.put("leadUserName", componentInput.getLeadUsername());
+        }
+        final AssigneeType assigneeType = componentInput.getAssigneeType();
+        if (assigneeType != null) {
+            final String assigneeTypeStr;
+            switch (assigneeType) {
+                case PROJECT_DEFAULT:
+                    assigneeTypeStr = AssigneeTypeConstants.PROJECT_DEFAULT;
+                    break;
+                case COMPONENT_LEAD:
+                    assigneeTypeStr = AssigneeTypeConstants.COMPONENT_LEAD;
+                    break;
+                case PROJECT_LEAD:
+                    assigneeTypeStr = AssigneeTypeConstants.PROJECT_LEAD;
+                    break;
+                case UNASSIGNED:
+                    assigneeTypeStr = AssigneeTypeConstants.UNASSIGNED;
+                    break;
+                default:
+                    throw new RestClientException("Unexpected assignee type [" + assigneeType + "]", null);
+            }
+            res.put("assigneeType", assigneeTypeStr);
+        }
+        return res;
+    }
 }

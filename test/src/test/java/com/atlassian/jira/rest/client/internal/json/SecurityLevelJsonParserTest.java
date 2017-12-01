@@ -24,18 +24,18 @@ import java.net.URI;
 
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class SecurityLevelJsonParserTest {
 
-	@Test
-	public void testParse() throws JSONException {
-		final SecurityLevelJsonParser parser = new SecurityLevelJsonParser();
-		final SecurityLevel securityLevel = parser.parse(getJsonObjectFromResource("/json/securitylevel/valid.json"));
+    @Test
+    public void testParse() throws JSONException {
+        final SecurityLevelJsonParser parser = new SecurityLevelJsonParser();
+        final SecurityLevel securityLevel = parser.parse(getJsonObjectFromResource("/json/securitylevel/valid.json"));
 
-		assertThat(securityLevel.getSelf(), equalTo(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10000")));
-		assertThat(securityLevel.getName(), equalTo("Name of security level"));
-		assertThat(securityLevel.getDescription(), equalTo("Description of this security level"));
-		assertThat(securityLevel.getId(), equalTo(10000L));
-	}
+        assertThat(securityLevel.getSelf(), equalTo(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10000")));
+        assertThat(securityLevel.getName(), equalTo("Name of security level"));
+        assertThat(securityLevel.getDescription(), equalTo("Description of this security level"));
+        assertThat(securityLevel.getId(), equalTo(10000L));
+    }
 }

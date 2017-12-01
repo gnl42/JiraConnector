@@ -27,14 +27,14 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class FieldSchemaJsonParser implements JsonObjectParser<FieldSchema> {
 
-	@Override
-	public FieldSchema parse(JSONObject json) throws JSONException {
-		final String type = JsonParseUtil.getOptionalString(json, "type");
-		final String items = JsonParseUtil.getOptionalString(json, "items");
-		final String system = JsonParseUtil.getOptionalString(json, "system");
-		final String custom = JsonParseUtil.getOptionalString(json, "custom");
-		final Long customId = JsonParseUtil.getOptionalLong(json, "customId");
+    @Override
+    public FieldSchema parse(JSONObject json) throws JSONException {
+        final String type = JsonParseUtil.getOptionalString(json, "type");
+        final String items = JsonParseUtil.getOptionalString(json, "items");
+        final String system = JsonParseUtil.getOptionalString(json, "system");
+        final String custom = JsonParseUtil.getOptionalString(json, "custom");
+        final Long customId = JsonParseUtil.getOptionalLong(json, "customId");
 
-		return new FieldSchema(type, items, system, custom, customId);
-	}
+        return new FieldSchema(type, items, system, custom, customId);
+    }
 }

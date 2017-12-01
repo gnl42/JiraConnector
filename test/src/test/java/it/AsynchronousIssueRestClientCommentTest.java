@@ -40,88 +40,88 @@ import static org.junit.Assert.assertFalse;
  */
 public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronousRestClientTest {
 
-	private static boolean alreadyRestored;
+    private static boolean alreadyRestored;
 
-	@Before
-	public void setup() {
-		if (!alreadyRestored) {
-			IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
-			alreadyRestored = true;
-		}
-	}
+    @Before
+    public void setup() {
+        if (!alreadyRestored) {
+            IntegrationTestUtil.restoreAppropriateJiraData(TestConstants.DEFAULT_JIRA_DUMP_FILE, administration);
+            alreadyRestored = true;
+        }
+    }
 
-	@Test
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	public void testAddCommentToIssue() {
-		testAddCommentToIssueImpl("TST-5", Comment.valueOf("Simple test comment."));
-	}
+    @Test
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    public void testAddCommentToIssue() {
+        testAddCommentToIssueImpl("TST-5", Comment.valueOf("Simple test comment."));
+    }
 
-	@Test
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	public void testAddCommentToIssueAsAnonymousUser() {
-		setAnonymousMode();
-		testAddCommentToIssueImpl("ANONEDIT-1", Comment.valueOf("Simple test comment."));
-	}
+    @Test
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    public void testAddCommentToIssueAsAnonymousUser() {
+        setAnonymousMode();
+        testAddCommentToIssueImpl("ANONEDIT-1", Comment.valueOf("Simple test comment."));
+    }
 
-	@Test
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	public void testAddCommentToIssueWithGroupLevelVisibility() {
-		final Comment comment = Comment.createWithGroupLevel("Simple test comment restricted for admins.",
-				IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS);
-		final String issueKey = "ANONEDIT-1";
-		final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
+    @Test
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    public void testAddCommentToIssueWithGroupLevelVisibility() {
+        final Comment comment = Comment.createWithGroupLevel("Simple test comment restricted for admins.",
+                IntegrationTestUtil.GROUP_JIRA_ADMINISTRATORS);
+        final String issueKey = "ANONEDIT-1";
+        final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
 
-		// try to get as anonymous user
-		setAnonymousMode();
+        // try to get as anonymous user
+        setAnonymousMode();
 
-		final IssueRestClient issueClient = client.getIssueClient();
-		final Issue issue = issueClient.getIssue(issueKey).claim();
+        final IssueRestClient issueClient = client.getIssueClient();
+        final Issue issue = issueClient.getIssue(issueKey).claim();
 
-		// test if we can see added comment
-		assertFalse(hasComment(issue.getComments(), addedComment.getId()));
-	}
+        // test if we can see added comment
+        assertFalse(hasComment(issue.getComments(), addedComment.getId()));
+    }
 
-	@Test
-	@JiraBuildNumberDependent(BN_JIRA_5)
-	public void testAddCommentToIssueWithRoleLevelVisibility() {
-		final Comment comment = Comment.createWithRoleLevel("Simple test comment restricted for role Administrators.",
-				IntegrationTestUtil.ROLE_ADMINISTRATORS);
-		final String issueKey = "ANONEDIT-1";
-		final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
+    @Test
+    @JiraBuildNumberDependent(BN_JIRA_5)
+    public void testAddCommentToIssueWithRoleLevelVisibility() {
+        final Comment comment = Comment.createWithRoleLevel("Simple test comment restricted for role Administrators.",
+                IntegrationTestUtil.ROLE_ADMINISTRATORS);
+        final String issueKey = "ANONEDIT-1";
+        final Comment addedComment = testAddCommentToIssueImpl(issueKey, comment);
 
-		// try to get as anonymous user
-		setAnonymousMode();
+        // try to get as anonymous user
+        setAnonymousMode();
 
-		final IssueRestClient issueClient = client.getIssueClient();
-		final Issue issue = issueClient.getIssue(issueKey).claim();
+        final IssueRestClient issueClient = client.getIssueClient();
+        final Issue issue = issueClient.getIssue(issueKey).claim();
 
-		// test if we can see added comment
-		assertFalse(hasComment(issue.getComments(), addedComment.getId()));
-	}
+        // test if we can see added comment
+        assertFalse(hasComment(issue.getComments(), addedComment.getId()));
+    }
 
-	private boolean hasComment(final Iterable<Comment> comments, final Long id) {
-		return Iterables.filter(comments, new Predicate<Comment>() {
-			@Override
-			public boolean apply(Comment input) {
-				return Objects.equal(input.getId(), id);
-			}
-		}).iterator().hasNext();
-	}
+    private boolean hasComment(final Iterable<Comment> comments, final Long id) {
+        return Iterables.filter(comments, new Predicate<Comment>() {
+            @Override
+            public boolean apply(Comment input) {
+                return Objects.equal(input.getId(), id);
+            }
+        }).iterator().hasNext();
+    }
 
-	private Comment testAddCommentToIssueImpl(final String issueKey, final Comment comment) {
-		final IssueRestClient issueClient = client.getIssueClient();
-		final Issue issue = issueClient.getIssue(issueKey).claim();
-		final List<Comment> initialComments = Lists.newArrayList(issue.getComments());
+    private Comment testAddCommentToIssueImpl(final String issueKey, final Comment comment) {
+        final IssueRestClient issueClient = client.getIssueClient();
+        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final List<Comment> initialComments = Lists.newArrayList(issue.getComments());
 
-		issueClient.addComment(issue.getCommentsUri(), comment).claim();
+        issueClient.addComment(issue.getCommentsUri(), comment).claim();
 
-		final Issue issueWithComments = issueClient.getIssue(issueKey).claim();
-		final List<Comment> newComments = Lists.newArrayList(issueWithComments.getComments());
-		newComments.removeAll(initialComments);
-		assertEquals(1, Iterables.size(newComments));
-		Comment addedComment = newComments.get(0);
-		assertEquals(comment.getBody(), addedComment.getBody());
-		assertEquals(comment.getVisibility(), addedComment.getVisibility());
-		return addedComment;
-	}
+        final Issue issueWithComments = issueClient.getIssue(issueKey).claim();
+        final List<Comment> newComments = Lists.newArrayList(issueWithComments.getComments());
+        newComments.removeAll(initialComments);
+        assertEquals(1, Iterables.size(newComments));
+        Comment addedComment = newComments.get(0);
+        assertEquals(comment.getBody(), addedComment.getBody());
+        assertEquals(comment.getVisibility(), addedComment.getVisibility());
+        return addedComment;
+    }
 }

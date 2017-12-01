@@ -23,28 +23,27 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class WatchersJsonParserTest {
-	@Test
-	public void testParseBasicWatchers() throws JSONException {
-		final JsonObjectParser<BasicWatchers> parser = WatchersJsonParserBuilder.createBasicWatchersParser();
-		final BasicWatchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/basic-valid.json"));
-		Assert.assertEquals(false, watcher.isWatching());
-		Assert.assertEquals(1, watcher.getNumWatchers());
+    @Test
+    public void testParseBasicWatchers() throws JSONException {
+        final JsonObjectParser<BasicWatchers> parser = WatchersJsonParserBuilder.createBasicWatchersParser();
+        final BasicWatchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/basic-valid.json"));
+        Assert.assertEquals(false, watcher.isWatching());
+        Assert.assertEquals(1, watcher.getNumWatchers());
 
-	}
+    }
 
-	@Test
-	public void testParseWatchers() throws JSONException {
-		final JsonObjectParser<Watchers> parser = WatchersJsonParserBuilder.createWatchersParser();
-		final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
-		assertEquals(false, watcher.isWatching());
-		assertEquals(1, watcher.getNumWatchers());
-		Assert.assertThat(watcher.getUsers(), IsIterableContainingInAnyOrder
-				.containsInAnyOrder(TestConstants.USER1_BASIC_DEPRECATED, TestConstants.USER_ADMIN_BASIC_DEPRECATED));
+    @Test
+    public void testParseWatchers() throws JSONException {
+        final JsonObjectParser<Watchers> parser = WatchersJsonParserBuilder.createWatchersParser();
+        final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
+        assertEquals(false, watcher.isWatching());
+        assertEquals(1, watcher.getNumWatchers());
+        Assert.assertThat(watcher.getUsers(), IsIterableContainingInAnyOrder
+                .containsInAnyOrder(TestConstants.USER1_BASIC_DEPRECATED, TestConstants.USER_ADMIN_BASIC_DEPRECATED));
 
-	}
+    }
 
 }

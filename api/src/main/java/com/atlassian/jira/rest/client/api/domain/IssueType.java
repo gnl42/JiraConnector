@@ -29,81 +29,81 @@ import java.net.URI;
  * @since v0.1
  */
 public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEntity<Long> {
-	private final URI self;
-	private final Long id;
-	private final String name;
-	private final boolean isSubtask;
-	private final String description;
-	private final URI iconUri;
+    private final URI self;
+    private final Long id;
+    private final String name;
+    private final boolean isSubtask;
+    private final String description;
+    private final URI iconUri;
 
-	public IssueType(URI self, Long id, String name, boolean isSubtask, String description, URI iconUri) {
-		this.self = self;
-		this.id = id;
-		this.name = name;
-		this.isSubtask = isSubtask;
-		this.description = description;
-		this.iconUri = iconUri;
-	}
+    public IssueType(URI self, Long id, String name, boolean isSubtask, String description, URI iconUri) {
+        this.self = self;
+        this.id = id;
+        this.name = name;
+        this.isSubtask = isSubtask;
+        this.description = description;
+        this.iconUri = iconUri;
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	public boolean isSubtask() {
-		return isSubtask;
-	}
+    public boolean isSubtask() {
+        return isSubtask;
+    }
 
-	@Override
-	public URI getSelf() {
-		return self;
-	}
+    @Override
+    public URI getSelf() {
+        return self;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public URI getIconUri() {
-		return iconUri;
-	}
+    public URI getIconUri() {
+        return iconUri;
+    }
 
-	protected Objects.ToStringHelper getToStringHelper() {
-		return Objects.toStringHelper(this)
-				.add("self", self)
-				.add("id", id)
-				.add("name", name)
-				.add("isSubtask", isSubtask)
-				.add("description", description)
-				.add("iconUri", iconUri);
-	}
+    protected Objects.ToStringHelper getToStringHelper() {
+        return Objects.toStringHelper(this)
+                .add("self", self)
+                .add("id", id)
+                .add("name", name)
+                .add("isSubtask", isSubtask)
+                .add("description", description)
+                .add("iconUri", iconUri);
+    }
 
-	@Override
-	public String toString() {
-		return getToStringHelper().toString();
-	}
+    @Override
+    public String toString() {
+        return getToStringHelper().toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof IssueType) {
-			IssueType that = (IssueType) obj;
-			return Objects.equal(this.self, that.self)
-					&& Objects.equal(this.id, that.id)
-					&& Objects.equal(this.name, that.name)
-					&& Objects.equal(this.isSubtask, that.isSubtask)
-					&& Objects.equal(this.description, that.description)
-					&& Objects.equal(this.iconUri, that.iconUri);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IssueType) {
+            IssueType that = (IssueType) obj;
+            return Objects.equal(this.self, that.self)
+                    && Objects.equal(this.id, that.id)
+                    && Objects.equal(this.name, that.name)
+                    && Objects.equal(this.isSubtask, that.isSubtask)
+                    && Objects.equal(this.description, that.description)
+                    && Objects.equal(this.iconUri, that.iconUri);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(self, id, name, isSubtask, description, iconUri);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(self, id, name, isSubtask, description, iconUri);
+    }
 
 }

@@ -28,10 +28,10 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
         return new AuditRecordsData(offset, limit, total, records);
     }
 
-    class SingleAuditRecordJsonParser implements  JsonObjectParser<AuditRecord> {
+    class SingleAuditRecordJsonParser implements JsonObjectParser<AuditRecord> {
         @Override
         public AuditRecord parse(final JSONObject json) throws JSONException {
-            final Long id =  json.getLong("id");
+            final Long id = json.getLong("id");
             final String summary = json.getString("summary");
 
             final String createdString = json.getString("created");

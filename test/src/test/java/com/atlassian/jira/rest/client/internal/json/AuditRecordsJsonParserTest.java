@@ -11,12 +11,12 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static org.hamcrest.CoreMatchers.*;
-
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
- *
  * @since v2.0
  */
 public class AuditRecordsJsonParserTest {
@@ -94,7 +94,7 @@ public class AuditRecordsJsonParserTest {
         final AuditAssociatedItem secondItem = secondRecord.getAssociatedItems().iterator().next();
         assertThat(secondItem.getName(), is("admin"));
         assertThat(secondItem.getTypeName(), is("USER"));
-        assertThat(secondItem.getId(),  nullValue());
+        assertThat(secondItem.getId(), nullValue());
         assertThat(secondItem.getParentId(), nullValue());
         assertThat(secondItem.getParentName(), nullValue());
 

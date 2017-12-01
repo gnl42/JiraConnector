@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimIssueType;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
-import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -32,18 +32,18 @@ import java.util.Map;
  */
 public class CimIssueTypeJsonParser implements JsonObjectParser<CimIssueType> {
 
-	final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
-	final CimFieldsInfoMapJsonParser fieldsParser = new CimFieldsInfoMapJsonParser();
+    final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
+    final CimFieldsInfoMapJsonParser fieldsParser = new CimFieldsInfoMapJsonParser();
 
-	@Override
-	public CimIssueType parse(final JSONObject json) throws JSONException {
-		final IssueType issueType = issueTypeJsonParser.parse(json);
-		final JSONObject jsonFieldsMap = json.optJSONObject("fields");
+    @Override
+    public CimIssueType parse(final JSONObject json) throws JSONException {
+        final IssueType issueType = issueTypeJsonParser.parse(json);
+        final JSONObject jsonFieldsMap = json.optJSONObject("fields");
 
-		final Map<String, CimFieldInfo> fields = (jsonFieldsMap == null) ?
-				Collections.<String, CimFieldInfo>emptyMap() : fieldsParser.parse(jsonFieldsMap);
+        final Map<String, CimFieldInfo> fields = (jsonFieldsMap == null) ?
+                Collections.<String, CimFieldInfo>emptyMap() : fieldsParser.parse(jsonFieldsMap);
 
-		return new CimIssueType(issueType.getSelf(), issueType.getId(), issueType.getName(),
-				issueType.isSubtask(), issueType.getDescription(), issueType.getIconUri(), fields);
-	}
+        return new CimIssueType(issueType.getSelf(), issueType.getId(), issueType.getName(),
+                issueType.isSubtask(), issueType.getDescription(), issueType.getIconUri(), fields);
+    }
 }

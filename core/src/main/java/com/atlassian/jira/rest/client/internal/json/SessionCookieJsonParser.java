@@ -21,9 +21,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class SessionCookieJsonParser implements JsonObjectParser<SessionCookie> {
-	@Override
-	public SessionCookie parse(JSONObject json) throws JSONException {
-		return new SessionCookie(json.getString("name"), json.getString("value"));
-	}
+    @Override
+    public SessionCookie parse(JSONObject json) throws JSONException {
+        return new SessionCookie(json.getString("name"), json.getString("value"));
+    }
 
 }

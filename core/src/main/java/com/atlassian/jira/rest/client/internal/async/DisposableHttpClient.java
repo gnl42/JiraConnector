@@ -7,6 +7,6 @@ import com.atlassian.httpclient.api.HttpClient;
  */
 public interface DisposableHttpClient extends HttpClient {
 
-	void destroy() throws Exception;
+    void destroy() throws Exception;
 
 }

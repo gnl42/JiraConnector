@@ -16,37 +16,37 @@
 
 package com.atlassian.jira.rest.client.internal.json.gen;
 
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
-import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> {
 
-	private final ServerInfo serverInfo;
+    private final ServerInfo serverInfo;
 
-	public LinkIssuesInputGenerator(ServerInfo serverInfo) {
-		this.serverInfo = serverInfo;
-	}
+    public LinkIssuesInputGenerator(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
 
-	@Override
-	public JSONObject generate(LinkIssuesInput linkIssuesInput) throws JSONException {
-		JSONObject res = new JSONObject();
+    @Override
+    public JSONObject generate(LinkIssuesInput linkIssuesInput) throws JSONException {
+        JSONObject res = new JSONObject();
 
-		final int buildNumber = serverInfo.getBuildNumber();
-		if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-			res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
-			res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
-			res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
-		} else {
-			res.put("linkType", linkIssuesInput.getLinkType());
-			res.put("fromIssueKey", linkIssuesInput.getFromIssueKey());
-			res.put("toIssueKey", linkIssuesInput.getToIssueKey());
-		}
-		if (linkIssuesInput.getComment() != null) {
-			res.put("comment", new CommentJsonGenerator(serverInfo).generate(linkIssuesInput.getComment()));
-		}
-		return res;
-	}
+        final int buildNumber = serverInfo.getBuildNumber();
+        if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
+            res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
+            res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
+            res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
+        } else {
+            res.put("linkType", linkIssuesInput.getLinkType());
+            res.put("fromIssueKey", linkIssuesInput.getFromIssueKey());
+            res.put("toIssueKey", linkIssuesInput.getToIssueKey());
+        }
+        if (linkIssuesInput.getComment() != null) {
+            res.put("comment", new CommentJsonGenerator(serverInfo).generate(linkIssuesInput.getComment()));
+        }
+        return res;
+    }
 }

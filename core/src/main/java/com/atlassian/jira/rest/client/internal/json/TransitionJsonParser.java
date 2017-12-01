@@ -23,23 +23,23 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.Collection;
 
 public class TransitionJsonParser {
-	private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
+    private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
-	public Transition parse(JSONObject json, int id) throws JSONException {
-		final String name = json.getString("name");
-		final Collection<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
-				transitionFieldJsonParser);
-		return new Transition(name, id, fields);
-	}
+    public Transition parse(JSONObject json, int id) throws JSONException {
+        final String name = json.getString("name");
+        final Collection<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
+                transitionFieldJsonParser);
+        return new Transition(name, id, fields);
+    }
 
-	public static class TransitionFieldJsonParser implements JsonObjectParser<Transition.Field> {
+    public static class TransitionFieldJsonParser implements JsonObjectParser<Transition.Field> {
 
-		@Override
-		public Transition.Field parse(JSONObject json) throws JSONException {
-			final String name = json.getString("id");
-			final boolean isRequired = json.getBoolean("required");
-			final String type = json.getString("type");
-			return new Transition.Field(name, isRequired, type);
-		}
-	}
+        @Override
+        public Transition.Field parse(JSONObject json) throws JSONException {
+            final String name = json.getString("id");
+            final boolean isRequired = json.getBoolean("required");
+            final String type = json.getString("type");
+            return new Transition.Field(name, isRequired, type);
+        }
+    }
 }

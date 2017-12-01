@@ -25,26 +25,26 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
-	private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
+    private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
-	public Transition parse(JSONObject json) throws JSONException {
-		final int id = json.getInt("id");
-		final String name = json.getString("name");
-		final JSONObject fieldsObj = json.getJSONObject("fields");
-		final Iterator keys = fieldsObj.keys();
-		final Collection<Transition.Field> fields = Lists.newArrayList();
-		while (keys.hasNext()) {
-			final String fieldId = keys.next().toString();
-			fields.add(transitionFieldJsonParser.parse(fieldsObj.getJSONObject(fieldId), fieldId));
-		}
-		return new Transition(name, id, fields);
-	}
+    public Transition parse(JSONObject json) throws JSONException {
+        final int id = json.getInt("id");
+        final String name = json.getString("name");
+        final JSONObject fieldsObj = json.getJSONObject("fields");
+        final Iterator keys = fieldsObj.keys();
+        final Collection<Transition.Field> fields = Lists.newArrayList();
+        while (keys.hasNext()) {
+            final String fieldId = keys.next().toString();
+            fields.add(transitionFieldJsonParser.parse(fieldsObj.getJSONObject(fieldId), fieldId));
+        }
+        return new Transition(name, id, fields);
+    }
 
-	public static class TransitionFieldJsonParser {
-		public Transition.Field parse(JSONObject json, final String id) throws JSONException {
-			final boolean isRequired = json.getBoolean("required");
-			final String type = json.getJSONObject("schema").getString("type");
-			return new Transition.Field(id, isRequired, type);
-		}
-	}
+    public static class TransitionFieldJsonParser {
+        public Transition.Field parse(JSONObject json, final String id) throws JSONException {
+            final boolean isRequired = json.getBoolean("required");
+            final String type = json.getJSONObject("schema").getString("type");
+            return new Transition.Field(id, isRequired, type);
+        }
+    }
 }
