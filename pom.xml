@@ -11,7 +11,7 @@
 
     <groupId>com.atlassian.jira</groupId>
     <artifactId>jira-rest-java-client-parent</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0</version>
     <packaging>pom</packaging>
 
     <name>JIRA REST Java Client</name>
@@ -34,7 +34,7 @@
         <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
         <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
         <url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
-        <tag>HEAD</tag>
+        <tag>jira-rest-java-client-parent-5.0.0</tag>
     </scm>
     <issueManagement>
         <system>JIRA</system>
