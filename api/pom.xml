@@ -35,4 +35,25 @@
             <artifactId>jsr305</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalDependencies>
+                        <additionalDependency>
+                            <groupId>com.atlassian.jira</groupId>
+                            <artifactId>jira-api</artifactId>
+                            <version>${jira.version}</version>
+                        </additionalDependency>
+                    </additionalDependencies>
+                    <links>
+                        <link>https://docs.atlassian.com/software/jira/docs/api/${jira.version}/</link>
+                    </links>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
