@@ -18,8 +18,10 @@ package com.atlassian.jira.rest.client.internal.async;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.UserRestClient;
 import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.api.domain.input.UserInput;
 import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
 import com.atlassian.jira.rest.client.internal.json.UsersJsonParser;
+import com.atlassian.jira.rest.client.internal.json.gen.UserInputJsonGenerator;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
@@ -62,6 +64,22 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     @Override
     public Promise<User> getUser(final URI userUri) {
         return getAndParse(userUri, userJsonParser);
+    }
+
+    @Override
+    public Promise<User> createUser(UserInput user) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX);
+        return postAndParse(uriBuilder.build(), user, new UserInputJsonGenerator(), userJsonParser);
+    }
+
+    @Override
+    public Promise<User> updateUser(URI userUri, UserInput user) {
+        return putAndParse(userUri, user, new UserInputJsonGenerator(), userJsonParser);
+    }
+
+    @Override
+    public Promise<Void> removeUser(URI userUri) {
+        return delete(userUri);
     }
 
     @Override

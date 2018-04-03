@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.jira.rest.client.api.domain.User;
+import com.atlassian.jira.rest.client.api.domain.input.UserInput;
 import com.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
@@ -28,6 +29,7 @@ import java.net.URI;
  * @since v0.1
  */
 public interface UserRestClient {
+
     /**
      * Retrieves detailed information about selected user.
      * Try to use {@link #getUser(URI)} instead as that method is more RESTful (well connected)
@@ -47,6 +49,42 @@ public interface UserRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<User> getUser(URI userUri);
+
+    /**
+     * Create user. By default created user will not be notified with email.
+     * If password field is not set then password will be randomly generated.
+     *
+     * @param userInput UserInput with data to update
+     * @return complete information about selected user
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     *
+     * @since v5.1.0
+     */
+    Promise<User> createUser(UserInput userInput);
+
+    /**
+     * Modify user. The "value" fields present will override the existing value.
+     * Fields skipped in request will not be changed.
+     *
+     * @param userUri   URI to selected user resource
+     * @param userInput UserInput with data to update
+     * @return complete information about selected user
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     *
+     * @since v5.1.0
+     */
+    Promise<User> updateUser(URI userUri, UserInput userInput);
+
+    /**
+     * Removes user.
+     *
+     * @param userUri URI to selected user resource
+     * @return Void
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     *
+     * @since v5.1.0
+     */
+    Promise<Void> removeUser(URI userUri);
 
     /**
      * Returns a list of users that match the search string.

@@ -67,7 +67,7 @@ public class User extends BasicUser {
     @Deprecated
     public User(URI self, String name, String displayName, String emailAddress, @Nullable ExpandableProperty<String> groups,
             Map<String, URI> avatarUris, @Nullable String timezone) {
-        this(self, name, displayName, emailAddress, false, groups, avatarUris, timezone);
+        this(self, name, displayName, emailAddress, true, groups, avatarUris, timezone);
     }
 
     public String getEmailAddress() {
