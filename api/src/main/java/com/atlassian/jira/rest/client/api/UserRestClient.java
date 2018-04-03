@@ -48,8 +48,34 @@ public interface UserRestClient {
      */
     Promise<User> getUser(URI userUri);
 
+    /**
+     * Returns a list of users that match the search string.
+     * This resource cannot be accessed anonymously.
+     *
+     * @param username A query string used to search username, name or e-mail address
+     * @return list of users that match the search string
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     *
+     * @since v5.1.0
+     */
     Promise<Iterable<User>> findUsers(String username);
 
-    Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive, @Nullable Boolean includeInactive);
+    /**
+     * Returns a list of users that match the search string.
+     * This resource cannot be accessed anonymously.
+     *
+     * @param username        A query string used to search username, name or e-mail address
+     * @param startAt         The index of the first user to return (0-based)
+     * @param maxResults      The maximum number of users to return (defaults to 50). The maximum allowed value is 1000.
+     *                        If you specify a value that is higher than this number, your search results will be truncated.
+     * @param includeActive   If true, then active users are included in the results (default true)
+     * @param includeInactive If true, then inactive users are included in the results (default false)
+     * @return list of users that match the search string
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     *
+     * @since v5.1.0
+     */
+    Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
+            @Nullable Boolean includeActive, @Nullable Boolean includeInactive);
 
 }

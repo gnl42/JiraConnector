@@ -59,6 +59,11 @@ public class User extends BasicUser {
         this.groups = groups;
     }
 
+    /**
+     * This constructor is used to create an active user per default.
+     *
+     * @deprecated since v5.1.0. Use {@link #User(URI,String,String,String,boolean,ExpandableProperty,Map,String)} instead.
+     */
     @Deprecated
     public User(URI self, String name, String displayName, String emailAddress, @Nullable ExpandableProperty<String> groups,
             Map<String, URI> avatarUris, @Nullable String timezone) {
