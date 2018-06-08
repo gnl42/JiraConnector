@@ -32,10 +32,11 @@ import java.util.Map;
  */
 public class User extends BasicUser {
 
-    public static String S16_16 = "16x16";
-    public static String S48_48 = "48x48";
+    public static final String S16_16 = "16x16";
+    public static final String S48_48 = "48x48";
 
     private final String emailAddress;
+    private final boolean active;
 
     private final ExpandableProperty<String> groups;
 
@@ -47,18 +48,34 @@ public class User extends BasicUser {
     @Nullable
     private String timezone;
 
-    public User(URI self, String name, String displayName, String emailAddress, @Nullable ExpandableProperty<String> groups,
-                Map<String, URI> avatarUris, @Nullable String timezone) {
+    public User(URI self, String name, String displayName, String emailAddress, boolean active,
+            @Nullable ExpandableProperty<String> groups, Map<String, URI> avatarUris, @Nullable String timezone) {
         super(self, name, displayName);
         Preconditions.checkNotNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
         this.timezone = timezone;
         this.emailAddress = emailAddress;
+        this.active = active;
         this.avatarUris = Maps.newHashMap(avatarUris);
         this.groups = groups;
     }
 
+    /**
+     * This constructor is used to create an active user per default.
+     *
+     * @deprecated since v5.1.0. Use {@link #User(URI,String,String,String,boolean,ExpandableProperty,Map,String)} instead.
+     */
+    @Deprecated
+    public User(URI self, String name, String displayName, String emailAddress, @Nullable ExpandableProperty<String> groups,
+            Map<String, URI> avatarUris, @Nullable String timezone) {
+        this(self, name, displayName, emailAddress, true, groups, avatarUris, timezone);
+    }
+
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public URI getAvatarUri() {
@@ -121,6 +138,7 @@ public class User extends BasicUser {
     @Override
     protected Objects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().add("emailAddress", emailAddress).
+                add("active", active).
                 add("avatarUris", avatarUris).
                 add("groups", groups).
                 add("timezone", timezone);

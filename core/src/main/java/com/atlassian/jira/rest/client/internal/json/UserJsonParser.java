@@ -50,6 +50,7 @@ public class UserJsonParser implements JsonObjectParser<User> {
         }
         // e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
         final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
+        final boolean active = Boolean.parseBoolean(JsonParseUtil.getOptionalString(json, "active"));
         // optional because groups are not returned for issue->{reporter,assignee}
         final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json
                 .optJSONObject("groups"), new JsonObjectParser<String>() {
@@ -59,6 +60,6 @@ public class UserJsonParser implements JsonObjectParser<User> {
             }
         });
         return new User(basicUser.getSelf(), basicUser.getName(), basicUser
-                .getDisplayName(), emailAddress, groups, avatarUris, timezone);
+                .getDisplayName(), emailAddress, active, groups, avatarUris, timezone);
     }
 }
