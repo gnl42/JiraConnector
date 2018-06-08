@@ -1,0 +1,4 @@
+{
+   "self":"http://localhost:2990/jira/rest/api/2/group/member?groupname=jira-users",
+   "name":"jira-users"
+}

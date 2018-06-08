@@ -43,6 +43,11 @@ public interface JiraRestClient extends Closeable {
     UserRestClient getUserClient();
 
     /**
+     * @return the com.atlassian.jira.rest.client.api handling group information
+     */
+    GroupRestClient getGroupClient();
+
+    /**
      * @return the com.atlassian.jira.rest.client.api handling project metadata
      */
     ProjectRestClient getProjectClient();
