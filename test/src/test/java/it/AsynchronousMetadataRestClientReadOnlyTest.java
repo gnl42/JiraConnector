@@ -47,6 +47,7 @@ import java.util.Map;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_3;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -77,7 +78,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
     @Test
     public void testGetServerInfo() throws Exception {
         final ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
-        assertEquals("Your Company JIRA", serverInfo.getServerTitle());
+        assertThat(serverInfo.getServerTitle(), equalToIgnoringCase("Your Company Jira"));
         assertTrue(serverInfo.getBuildDate().isBeforeNow());
         assertTrue(serverInfo.getServerTime().isAfter(new DateTime().minusMinutes(5)));
         assertTrue(serverInfo.getServerTime().isBefore(new DateTime().plusMinutes(5)));
