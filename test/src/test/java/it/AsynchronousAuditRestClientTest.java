@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -87,7 +88,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         assertThat(item2.getName(), is("admin"));
         assertThat(item2.getTypeName(), is("USER"));
         assertThat(item2.getParentId(), is("1"));
-        assertThat(item2.getParentName(), is("JIRA Internal Directory"));
+        assertThat(item2.getParentName(), equalToIgnoringCase("Jira Internal Directory"));
 
         final Iterator<AuditChangedValue> valuesIterator = record.getChangedValues().iterator();
         final AuditChangedValue value1 = valuesIterator.next();
