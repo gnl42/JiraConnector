@@ -56,10 +56,10 @@ import com.atlassian.jira.rest.client.internal.json.gen.IssueUpdateJsonGenerator
 import com.atlassian.jira.rest.client.internal.json.gen.IssuesInputJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
-import com.atlassian.util.concurrent.Promise;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import io.atlassian.util.concurrent.Promise;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;

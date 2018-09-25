@@ -17,15 +17,13 @@
 package com.atlassian.jira.rest.client.internal.async;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.util.concurrent.Effect;
-import com.atlassian.util.concurrent.Promise;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.FutureCallback;
+import io.atlassian.util.concurrent.Promise;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * This class delegates all calls to given delegate Promise. Additionally it throws new RestClientException
@@ -49,18 +47,18 @@ public class DelegatingPromise<T> implements Promise<T> {
     }
 
     @Override
-    public Promise<T> done(Effect<? super T> e) {
+    public Promise<T> done(Consumer<? super T> e) {
         return delegate.done(e);
     }
 
     @Override
-    public Promise<T> fail(Effect<Throwable> e) {
+    public Promise<T> fail(Consumer<Throwable> e) {
         return delegate.fail(e);
     }
 
     @Override
-    public Promise<T> then(FutureCallback<? super T> callback) {
-        return delegate.then(callback);
+    public Promise<T> then(TryConsumer<? super T> consumer) {
+        return delegate.then(consumer);
     }
 
     @Override
@@ -81,11 +79,6 @@ public class DelegatingPromise<T> implements Promise<T> {
     @Override
     public <B> Promise<B> fold(Function<Throwable, ? extends B> handleThrowable, Function<? super T, ? extends B> function) {
         return delegate.fold(handleThrowable, function);
-    }
-
-    @Override
-    public void addListener(Runnable listener, Executor executor) {
-        delegate.addListener(listener, executor);
     }
 
     @Override

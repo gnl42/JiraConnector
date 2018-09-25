@@ -33,7 +33,7 @@ import com.atlassian.jira.rest.client.internal.json.PriorityJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ResolutionJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ServerInfoJsonParser;
 import com.atlassian.jira.rest.client.internal.json.StatusJsonParser;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;

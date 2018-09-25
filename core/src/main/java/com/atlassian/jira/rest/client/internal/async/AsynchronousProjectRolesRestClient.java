@@ -21,10 +21,10 @@ import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.api.domain.ProjectRole;
 import com.atlassian.jira.rest.client.internal.json.BasicProjectRoleJsonParser;
 import com.atlassian.jira.rest.client.internal.json.ProjectRoleJsonParser;
-import com.atlassian.util.concurrent.Promise;
-import com.atlassian.util.concurrent.Promises;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import io.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promises;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;

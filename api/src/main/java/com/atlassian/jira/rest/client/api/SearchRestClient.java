@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.jira.rest.client.api.domain.Filter;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
 import java.net.URI;
