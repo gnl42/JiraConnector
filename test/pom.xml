@@ -23,6 +23,10 @@
             <artifactId>fugue</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.atlassian.fugue</groupId>
+            <artifactId>fugue</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-rest-java-client-api</artifactId>
             <version>${project.version}</version>
