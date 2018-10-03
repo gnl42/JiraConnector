@@ -3,7 +3,7 @@ package com.atlassian.jira.rest.client.api;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordInput;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
 import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nonnull;
 

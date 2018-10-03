@@ -22,7 +22,7 @@ import com.atlassian.jira.rest.client.api.domain.input.UserInput;
 import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
 import com.atlassian.jira.rest.client.internal.json.UsersJsonParser;
 import com.atlassian.jira.rest.client.internal.json.gen.UserInputJsonGenerator;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;

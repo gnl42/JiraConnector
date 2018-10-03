@@ -16,7 +16,7 @@
 package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.jira.rest.client.api.domain.ProjectRole;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import java.net.URI;
 

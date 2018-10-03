@@ -19,7 +19,7 @@ import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.api.GroupRestClient;
 import com.atlassian.jira.rest.client.api.domain.Group;
 import com.atlassian.jira.rest.client.internal.json.GroupsJsonParser;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;

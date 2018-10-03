@@ -27,7 +27,7 @@ import com.atlassian.jira.rest.client.internal.json.VersionRelatedIssueCountJson
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import com.atlassian.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
-import com.atlassian.util.concurrent.Promise;
+import io.atlassian.util.concurrent.Promise;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 

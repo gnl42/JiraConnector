@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.atlassian.util.concurrent</groupId>
+            <groupId>io.atlassian.util.concurrent</groupId>
             <artifactId>atlassian-util-concurrent</artifactId>
         </dependency>
         <dependency>
