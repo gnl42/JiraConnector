@@ -117,6 +117,7 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
                     <jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
+                    <enableFastdev>false</enableFastdev>
                 </configuration>
                 <executions>
                     <execution>
