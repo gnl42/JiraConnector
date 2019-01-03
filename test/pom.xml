@@ -279,6 +279,23 @@
             </dependencies>
         </profile>
         <profile>
+            <id>jira-7.13</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.13.0</jira.version>
+                <testkit.version>7.12.3</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>jira-master</id>
             <activation>
                 <property>
