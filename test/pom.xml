@@ -279,15 +279,81 @@
             </dependencies>
         </profile>
         <profile>
-            <id>jira-master</id>
+            <id>jira-7.11</id>
             <activation>
-                <property>
-                    <name>jira.version</name>
-                    <value>7.7.0-SNAPSHOT</value>
-                </property>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <testkit.version>7.6.1</testkit.version>
+                <jira.version>7.11.2</jira.version>
+                <testkit.version>7.7.5</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jira-7.12</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.12.3</jira.version>
+                <testkit.version>7.12.3</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jira-7.13</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>7.13.0</jira.version>
+                <testkit.version>7.12.3</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jira-8.0</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>8.0.0-QR-20181203122434</jira.version>
+                <testkit.version>8.0.2</testkit.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.atlassian.jira</groupId>
+                    <artifactId>jira-func-tests-legacy</artifactId>
+                    <version>${jira.test-lib.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jira-master</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <jira.version>8.1.0-QR-20181231074523</jira.version>
+                <testkit.version>8.0.4</testkit.version>
             </properties>
             <dependencies>
                 <dependency>
