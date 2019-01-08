@@ -20,6 +20,7 @@ import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -118,8 +119,8 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
      *
      * @return ToStringHelper
      */
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("id", id).
                 add("name", name).
                 add("required", required).

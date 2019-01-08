@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.AddressableEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -99,7 +100,7 @@ public class Worklog implements AddressableEntity {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("self", self).
                 add("issueUri", issueUri).
                 add("author", author).

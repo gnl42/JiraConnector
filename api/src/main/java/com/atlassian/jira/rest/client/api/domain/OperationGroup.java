@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -117,7 +118,7 @@ public class OperationGroup implements Operation {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("header", header)
                 .add("links", Iterables.toString(links))

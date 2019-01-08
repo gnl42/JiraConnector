@@ -19,6 +19,7 @@ package com.atlassian.jira.rest.client.api.domain;
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -72,8 +73,8 @@ public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEn
         return iconUri;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this)
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this)
                 .add("self", self)
                 .add("id", id)
                 .add("name", name)

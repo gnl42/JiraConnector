@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -59,7 +60,7 @@ public class ExpandableProperty<T> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("size", size).
                 add("items", items).
                 toString();

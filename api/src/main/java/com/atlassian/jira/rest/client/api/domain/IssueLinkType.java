@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -54,7 +55,7 @@ public class IssueLinkType implements NamedEntity {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("name", name).
                 add("description", description).
                 add("direction", direction).

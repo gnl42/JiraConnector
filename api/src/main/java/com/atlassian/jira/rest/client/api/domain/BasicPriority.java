@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public class BasicPriority extends AddressableNamedEntity implements Identifiabl
     }
 
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().add("id", id);
     }
 }

@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.ExpandableResource;
 import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -120,7 +121,7 @@ public class Project extends BasicProject implements ExpandableResource {
      * {@inheritDoc}
      */
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().
                 add("description", description).
                 add("lead", lead).

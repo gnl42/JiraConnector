@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -67,7 +68,7 @@ public class TimeTracking {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("originalEstimateMinutes", originalEstimateMinutes).
                 add("remainingEstimateMinutes", remainingEstimateMinutes).
                 add("timeSpentMinutes", timeSpentMinutes).

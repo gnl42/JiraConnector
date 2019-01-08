@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -53,7 +54,7 @@ public class CimProject extends BasicProject {
      * {@inheritDoc}
      */
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().
                 add("issueTypes", issueTypes).
                 add("avatarUris", avatarUris);

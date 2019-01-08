@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -43,7 +44,7 @@ public class BulkOperationResult<T> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("issues", issues)
                 .add("errors", errors)
                 .toString();

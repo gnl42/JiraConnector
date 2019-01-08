@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.ExpandableResource;
 import com.atlassian.jira.rest.client.api.domain.util.UriUtil;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -354,7 +355,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
     }
 
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().
                 add("project", project).
                 add("status", status).

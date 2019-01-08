@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -44,7 +45,7 @@ public class Authentication {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
+        return MoreObjects.toStringHelper(this).addValue(super.toString()).
                 add("loginInfo", loginInfo).
                 add("sessionCookie", sessionCookie).
                 toString();

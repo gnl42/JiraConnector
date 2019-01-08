@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -101,7 +102,7 @@ public class ServerInfo {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
+        return MoreObjects.toStringHelper(this).addValue(super.toString()).
                 add("baseUri", baseUri).
                 add("version", version).
                 add("buildNumber", buildNumber).

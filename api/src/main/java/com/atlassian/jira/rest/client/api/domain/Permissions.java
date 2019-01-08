@@ -15,6 +15,7 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 
@@ -48,7 +49,7 @@ public class Permissions {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("permissionMap", permissionMap)
                 .toString();
     }

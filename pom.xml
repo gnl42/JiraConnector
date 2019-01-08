@@ -62,6 +62,7 @@
         <amps.version>6.3.22-fc341f3d2</amps.version>
         <testkit.version>7.1.9</testkit.version>
         <atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
+        <guava.version>26.0-jre</guava.version>
     </properties>
 
     <dependencyManagement>

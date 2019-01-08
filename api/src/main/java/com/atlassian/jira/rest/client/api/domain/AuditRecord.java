@@ -1,6 +1,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -97,8 +98,8 @@ public class AuditRecord {
         return changedValues;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("id", id).
                 add("summary", summary).
                 add("remoteAddress", remoteAddress).

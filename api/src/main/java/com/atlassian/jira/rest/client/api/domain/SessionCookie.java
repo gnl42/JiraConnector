@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -43,7 +44,7 @@ public class SessionCookie implements NamedEntity {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
+        return MoreObjects.toStringHelper(this).addValue(super.toString()).
                 add("name", name).
                 add("value", value).
                 toString();

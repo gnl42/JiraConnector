@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -35,8 +36,8 @@ public class AuditRecordsData {
         return records;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("offset", offset).
                 add("limit", limit).
                 add("total", total).

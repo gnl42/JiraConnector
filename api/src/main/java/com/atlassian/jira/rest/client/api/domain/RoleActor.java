@@ -16,6 +16,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -111,8 +112,8 @@ public class RoleActor implements NamedEntity {
         return getToStringHelper().toString();
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this)
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this)
                 .add("displayName", displayName)
                 .add("type", type)
                 .add("name", name)

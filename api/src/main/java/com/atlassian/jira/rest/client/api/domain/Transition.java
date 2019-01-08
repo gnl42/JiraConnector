@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.util.Collection;
@@ -68,7 +69,7 @@ public class Transition implements NamedEntity {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("id", id).
                 add("name", name).
                 add("fields", fields).
@@ -117,7 +118,7 @@ public class Transition implements NamedEntity {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this).
+            return MoreObjects.toStringHelper(this).
                     add("id", id).
                     add("isRequired", isRequired).
                     add("type", type).

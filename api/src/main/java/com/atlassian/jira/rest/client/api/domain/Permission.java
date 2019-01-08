@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -62,8 +63,8 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
         return havePermission;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this)
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("key", key)
                 .add("name", name)

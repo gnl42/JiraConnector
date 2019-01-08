@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.ExpandableProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -136,7 +137,7 @@ public class User extends BasicUser {
     }
 
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper().add("emailAddress", emailAddress).
                 add("active", active).
                 add("avatarUris", avatarUris).
