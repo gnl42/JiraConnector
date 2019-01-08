@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -59,7 +60,7 @@ public class Component extends BasicComponent {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
+        return MoreObjects.toStringHelper(this).addValue(super.toString()).
                 add("lead", lead).
                 add("assigneeInfo", assigneeInfo).
                 toString();
@@ -122,7 +123,7 @@ public class Component extends BasicComponent {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this).
+            return MoreObjects.toStringHelper(this).
                     add("assignee", assignee).
                     add("assigneeType", assigneeType).
                     add("realAssignee", realAssignee).

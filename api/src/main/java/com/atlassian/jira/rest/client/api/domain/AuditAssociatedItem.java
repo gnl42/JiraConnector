@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nonnull;
@@ -59,8 +60,8 @@ public class AuditAssociatedItem {
         return parentName;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("id", id).
                 add("name", name).
                 add("typeName", typeName).

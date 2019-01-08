@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
@@ -44,7 +45,7 @@ public class ComplexIssueInputFieldValue {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("valuesMap", valuesMap)
                 .toString();
     }

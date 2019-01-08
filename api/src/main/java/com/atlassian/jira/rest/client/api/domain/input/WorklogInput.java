@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain.input;
 
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -161,7 +162,7 @@ public class WorklogInput {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("self", self)
                 .add("issueUri", issueUri)
                 .add("author", author)

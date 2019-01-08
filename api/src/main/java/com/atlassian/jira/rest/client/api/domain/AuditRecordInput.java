@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -55,8 +56,8 @@ public class AuditRecordInput {
         return changedValues;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("summary", summary).
                 add("category", category).
                 add("objectItem", objectItem).

@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain.input;
 
 import com.atlassian.jira.rest.client.api.MyPermissionsRestClient;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -72,7 +73,7 @@ public class MyPermissionsInput {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("projectKey", projectKey)
                 .add("projectId", projectId)
                 .add("issueKey", issueKey)

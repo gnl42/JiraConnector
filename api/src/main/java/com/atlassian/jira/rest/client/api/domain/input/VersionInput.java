@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -77,7 +78,7 @@ public class VersionInput {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", name)
                 .add("projectKey", projectKey)
                 .add("description", description)

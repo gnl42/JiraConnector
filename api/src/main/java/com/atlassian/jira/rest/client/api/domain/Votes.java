@@ -21,7 +21,7 @@ import com.google.common.base.Objects;
 import java.net.URI;
 import java.util.Collection;
 
-import static com.google.common.base.Objects.ToStringHelper;
+import static com.google.common.base.MoreObjects.ToStringHelper;
 
 /**
  * Complete information about the voters for given issue

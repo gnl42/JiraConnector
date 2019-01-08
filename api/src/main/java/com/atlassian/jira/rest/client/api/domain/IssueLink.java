@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -50,7 +51,7 @@ public class IssueLink {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("targetIssueKey", targetIssueKey).
                 add("targetIssueUri", targetIssueUri).
                 add("issueLinkType", issueLinkType).

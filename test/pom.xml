@@ -86,6 +86,11 @@
             <artifactId>jira-nimble-func-tests</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -335,7 +340,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <jira.version>8.0.0-QR-20181203122434</jira.version>
+                <jira.version>8.0.0-QR-20190108085138</jira.version>
                 <testkit.version>8.0.2</testkit.version>
             </properties>
             <dependencies>

@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -47,7 +48,7 @@ public class BulkOperationErrorResult {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("elementErrors", elementErrors)
                 .add("failedElementNumber", failedElementNumber)
                 .toString();

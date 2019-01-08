@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -69,8 +70,8 @@ public class CustomFieldOption {
      *
      * @return ToStringHelper
      */
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this)
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this)
                 .add("self", self)
                 .add("id", id)
                 .add("value", value)

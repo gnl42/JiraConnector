@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -46,7 +47,7 @@ public class BasicUser extends AddressableNamedEntity {
     }
 
     @Override
-    protected Objects.ToStringHelper getToStringHelper() {
+    protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper()
                 .add("displayName", displayName);
     }

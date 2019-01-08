@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -45,7 +46,7 @@ public class Subtask {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).addValue(super.toString()).
+        return MoreObjects.toStringHelper(this).addValue(super.toString()).
                 add("issueKey", issueKey).
                 add("issueUri", issueUri).
                 add("summary", summary).

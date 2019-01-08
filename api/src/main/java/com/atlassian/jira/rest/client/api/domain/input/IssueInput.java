@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain.input;
 
 import com.atlassian.jira.rest.client.api.domain.EntityHelper;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -59,7 +60,7 @@ public class IssueInput {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("fields", fields)
                 .add("properties", properties)
                 .toString();

@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.joda.time.DateTime;
 
@@ -63,7 +64,7 @@ public class LoginInfo {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("failedLoginCount", failedLoginCount).
                 add("loginCount", loginCount).
                 add("lastFailedLoginDate", lastFailedLoginDate).

@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -67,7 +68,7 @@ public class BasicComponent implements AddressableEntity, NamedEntity {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).
+        return MoreObjects.toStringHelper(this).
                 add("id", id).
                 add("self", self).
                 add("name", name).

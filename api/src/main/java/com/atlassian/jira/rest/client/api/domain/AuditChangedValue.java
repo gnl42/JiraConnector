@@ -1,5 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
@@ -39,8 +40,8 @@ public class AuditChangedValue {
         return changedFrom;
     }
 
-    protected Objects.ToStringHelper getToStringHelper() {
-        return Objects.toStringHelper(this).
+    protected MoreObjects.ToStringHelper getToStringHelper() {
+        return MoreObjects.toStringHelper(this).
                 add("fieldName", fieldName).
                 add("changedFrom", changedFrom).
                 add("changedTo", changedTo);
