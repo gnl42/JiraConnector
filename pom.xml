@@ -56,7 +56,7 @@
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
         <jersey.client.version>1.19</jersey.client.version>
         <joda.time.version>2.9.9</joda.time.version>
-        <atlassian.httpclient.version>2.0.0-m1</atlassian.httpclient.version>
+        <atlassian.httpclient.version>2.0.0</atlassian.httpclient.version>
         <httpclient.version>4.5.3</httpclient.version>
         <httpcore.version>4.4.8</httpcore.version>
         <amps.version>6.3.22-fc341f3d2</amps.version>
