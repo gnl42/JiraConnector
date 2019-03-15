@@ -60,6 +60,6 @@ public class UserJsonParser implements JsonObjectParser<User> {
             }
         });
         return new User(basicUser.getSelf(), basicUser.getName(), basicUser
-                .getDisplayName(), emailAddress, active, groups, avatarUris, timezone);
+                .getDisplayName(), basicUser.getAccountId(), emailAddress, active, groups, avatarUris, timezone);
     }
 }
