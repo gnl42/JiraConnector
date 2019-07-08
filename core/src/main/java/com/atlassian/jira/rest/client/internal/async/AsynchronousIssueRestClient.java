@@ -26,9 +26,13 @@ import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.SessionRestClient;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Page;
 import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.Votes;
@@ -42,6 +46,8 @@ import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.BasicIssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.BasicIssuesJsonParser;
+import com.atlassian.jira.rest.client.internal.json.CreateIssueMetaFieldsParser;
+import com.atlassian.jira.rest.client.internal.json.CreateIssueMetaProjectIssueTypesParser;
 import com.atlassian.jira.rest.client.internal.json.CreateIssueMetadataJsonParser;
 import com.atlassian.jira.rest.client.internal.json.IssueJsonParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
@@ -65,6 +71,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
@@ -170,6 +177,24 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         }
 
         return getAndParse(uriBuilder.build(), createIssueMetadataJsonParser);
+    }
+
+    @Override
+    public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull final String projectIdOrKey, @Nullable final Long startAt,
+                                                                        @Nullable final Integer maxResults) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta/" + projectIdOrKey + "/issuetypes");
+        addPagingParameters(uriBuilder, startAt, maxResults);
+
+        return getAndParse(uriBuilder.build(), new CreateIssueMetaProjectIssueTypesParser());
+    }
+
+    @Override
+    public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull final String projectIdOrKey, @Nonnull final String issueTypeId,
+                                                                @Nullable final Long startAt, @Nullable final Integer maxResults) {
+        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta/" + projectIdOrKey + "/issuetypes/" + issueTypeId);
+        addPagingParameters(uriBuilder, startAt, maxResults);
+
+        return getAndParse(uriBuilder.build(), new CreateIssueMetaFieldsParser());
     }
 
     @Override
@@ -393,6 +418,15 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         }
 
         return post(uriBuilder.build(), worklogInput, new WorklogInputJsonGenerator());
+    }
+
+    private void addPagingParameters(UriBuilder uriBuilder, @Nullable Long startAt, @Nullable Integer maxResults) {
+        if (startAt != null) {
+            uriBuilder.queryParam("startAt", startAt);
+        }
+        if (maxResults != null) {
+            uriBuilder.queryParam("maxResults", maxResults);
+        }
     }
 
     private Promise<Void> postAttachments(final URI attachmentsUri, final MultipartEntityBuilder multipartEntityBuilder) {
