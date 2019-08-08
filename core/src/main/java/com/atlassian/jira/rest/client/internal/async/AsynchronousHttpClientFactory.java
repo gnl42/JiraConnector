@@ -145,7 +145,7 @@ public class AsynchronousHttpClientFactory {
         @Nonnull
         @Override
         public String getVersion() {
-            return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-com.atlassian.jira.rest.client");
+            return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-client-core");
         }
 
         @Nonnull
