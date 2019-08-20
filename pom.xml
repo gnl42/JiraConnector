@@ -41,12 +41,6 @@
         <system>JIRA</system>
         <url>https://ecosystem.atlassian.net/browse/JRJC</url>
     </issueManagement>
-    <distributionManagement>
-		<site>
-			<id>atlassian-documentation</id>
-			<url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
-		</site>
-	</distributionManagement>
 
     <properties>
         <platform.version>3.1.7</platform.version>
