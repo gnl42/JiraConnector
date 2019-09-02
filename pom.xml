@@ -45,7 +45,7 @@
     <properties>
         <platform.version>3.1.7</platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>8.1.0</jira.version>
+        <jira.version>8.4.0-m0003</jira.version>
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
         <jersey.client.version>1.19</jersey.client.version>

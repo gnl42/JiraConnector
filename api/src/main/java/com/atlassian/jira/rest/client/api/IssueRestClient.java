@@ -18,9 +18,13 @@ package com.atlassian.jira.rest.client.api;
 
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Page;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.Votes;
 import com.atlassian.jira.rest.client.api.domain.Watchers;
@@ -32,6 +36,7 @@ import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
 import io.atlassian.util.concurrent.Promise;
 import com.google.common.annotations.Beta;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
@@ -86,6 +91,10 @@ public interface IssueRestClient {
      */
 
     Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues);
+
+    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults);
+
+    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull String projectIdOrKey, @Nonnull String issueTypeId, @Nullable Long startAt, @Nullable Integer maxResults);
 
     /**
      * Retrieves issue with selected issue key.

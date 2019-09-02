@@ -22,13 +22,16 @@ import com.atlassian.jira.rest.client.api.domain.Attachment;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.ChangelogGroup;
 import com.atlassian.jira.rest.client.api.domain.ChangelogItem;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimIssueType;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.api.domain.FieldType;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.OperationLink;
 import com.atlassian.jira.rest.client.api.domain.Operations;
+import com.atlassian.jira.rest.client.api.domain.Page;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
 import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.Visibility;
@@ -39,6 +42,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -51,6 +55,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.USER1;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.getUserUri;
@@ -63,8 +68,10 @@ import static com.google.common.collect.Iterables.toArray;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -362,6 +369,30 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         for (CimIssueType issueType : project.getIssueTypes()) {
             assertFalse(issueType.getFields().isEmpty());
         }
+    }
+
+    @Test
+    public void testGetCreateIssueMetaProjectIssueTypes() throws Exception {
+        final Page<IssueType> issueTypes = client.getIssueClient().getCreateIssueMetaProjectIssueTypes("ANONEDIT", null, null).claim();
+
+        assertEquals(5, size(issueTypes.getValues()));
+        assertEquals(0, issueTypes.getStartAt());
+        assertEquals(50, issueTypes.getMaxResults());
+        assertTrue(issueTypes.isLast());
+        assertThat(Streams.stream(issueTypes.getValues()).map(x -> x.getName()).collect(Collectors.toList()),
+                contains("Bug", "New Feature", "Task", "Improvement", "Sub-task"));
+    }
+
+    @Test
+    public void testGetCreateIssueMetaFields() throws Exception {
+        final Page<CimFieldInfo> fields = client.getIssueClient().getCreateIssueMetaFields("ANONEDIT", "1", null, null).claim();
+
+        assertEquals(19, size(fields.getValues()));
+        assertEquals(0, fields.getStartAt());
+        assertEquals(50, fields.getMaxResults());
+        assertTrue(fields.isLast());
+        assertThat(Streams.stream(fields.getValues()).map(x -> x.getName()).collect(Collectors.toList()),
+                allOf(hasItem("Summary")));
     }
 
     @Test
