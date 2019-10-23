@@ -17,6 +17,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
+import com.atlassian.jira.rest.client.api.StatusCategory;
 import com.google.common.base.Objects;
 
 import java.net.URI;
@@ -30,12 +31,14 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
     private final Long id;
     private final String description;
     private final URI iconUrl;
+    private final StatusCategory statusCategory;
 
-    public Status(URI self, final Long id, final String name, final String description, final URI iconUrl) {
+    public Status(URI self, final Long id, final String name, final String description, final URI iconUrl, final StatusCategory statusCategory) {
         super(self, name);
         this.id = id;
         this.description = description;
         this.iconUrl = iconUrl;
+        this.statusCategory = statusCategory;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
                 add("id", id).
                 add("description", description).
                 add("iconUrl", iconUrl).
+                add("statusCategory", statusCategory.toString()).
                 toString();
     }
 
@@ -75,5 +79,9 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
 
     public URI getIconUrl() {
         return iconUrl;
+    }
+
+    public StatusCategory getStatusCategory() {
+        return statusCategory;
     }
 }

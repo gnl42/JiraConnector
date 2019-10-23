@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.api.StatusCategory;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Assert;
@@ -24,12 +25,27 @@ import org.junit.Test;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 
 public class StatusJsonParserTest {
+
     @Test
-    public void testParse() throws JSONException {
+    public void testParseNoStatusCategory() throws JSONException {
         final StatusJsonParser parser = new StatusJsonParser();
         final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
         Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
                 1L, "Open", "The issue is open and ready for the assignee to start work on it.",
-                toUri("http://localhost:8090/jira/images/icons/status_open.gif")), status);
+                toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null), status);
+    }
+
+    @Test
+    public void testParseStatusCategory() throws JSONException {
+        final StatusJsonParser parser = new StatusJsonParser();
+        final StatusCategory statusCategory = new StatusCategory(
+                toUri("https://localhost:8080/rest/api/latest/statuscategory/2"),"New",2l,"new","blue-gray");
+
+        final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/validStatusCategory.json"));
+        Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
+                1L, "Open", "The issue is open and ready for the assignee to start work on it.",
+                toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null), status);
+
+        Assert.assertEquals(status.getStatusCategory(), statusCategory);
     }
 }
