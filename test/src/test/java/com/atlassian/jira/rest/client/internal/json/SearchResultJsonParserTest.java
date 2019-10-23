@@ -89,7 +89,7 @@ public class SearchResultJsonParserTest {
         final BasicPriority expectedPriority = new BasicPriority(toUri("http://localhost:8090/jira/rest/api/2/priority/3"), 3L, "Major");
         assertEquals(expectedPriority, issue.getPriority());
 
-        final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"));
+        final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null);
         assertEquals(expectedStatus, issue.getStatus());
 
         assertEmptyIterable(issue.getComments());

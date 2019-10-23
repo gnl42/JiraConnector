@@ -16,6 +16,7 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import com.atlassian.jira.rest.client.api.StatusCategory;
 import com.atlassian.jira.rest.client.api.domain.Status;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,6 +24,9 @@ import org.codehaus.jettison.json.JSONObject;
 import java.net.URI;
 
 public class StatusJsonParser implements JsonObjectParser<Status> {
+
+    private final StatusCategoryJsonParser statusCategoryJsonParser = new StatusCategoryJsonParser();
+
     @Override
     public Status parse(JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
@@ -30,6 +34,10 @@ public class StatusJsonParser implements JsonObjectParser<Status> {
         final String name = json.getString("name");
         final String description = json.getString("description");
         final URI iconUrl = JsonParseUtil.parseURI(json.getString("iconUrl"));
-        return new Status(self, id, name, description, iconUrl);
+        StatusCategory statusCategory = null;
+        if (json.has("statusCategory")) {
+            statusCategory = statusCategoryJsonParser.parse(json.getJSONObject("statusCategory"));
+        }
+        return new Status(self, id, name, description, iconUrl, statusCategory);
     }
 }
