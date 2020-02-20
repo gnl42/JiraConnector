@@ -63,6 +63,7 @@ import static com.atlassian.jira.rest.client.TestUtil.assertErrorCode;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGELOG;
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
+import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_8_4;
 import static com.google.common.collect.Iterables.size;
 import static com.google.common.collect.Iterables.toArray;
 import static java.util.Collections.singletonList;
@@ -371,6 +372,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         }
     }
 
+    @JiraBuildNumberDependent(BN_JIRA_8_4)
     @Test
     public void testGetCreateIssueMetaProjectIssueTypes() throws Exception {
         final Page<IssueType> issueTypes = client.getIssueClient().getCreateIssueMetaProjectIssueTypes("ANONEDIT", null, null).claim();
@@ -383,6 +385,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
                 contains("Bug", "New Feature", "Task", "Improvement", "Sub-task"));
     }
 
+    @JiraBuildNumberDependent(BN_JIRA_8_4)
     @Test
     public void testGetCreateIssueMetaFields() throws Exception {
         final Page<CimFieldInfo> fields = client.getIssueClient().getCreateIssueMetaFields("ANONEDIT", "1", null, null).claim();
