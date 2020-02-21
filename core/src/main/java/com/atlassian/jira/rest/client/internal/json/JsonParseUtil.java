@@ -189,14 +189,16 @@ public class JsonParseUtil {
         if (json == null) {
             return null;
         }
-        final String username = json.getString("name");
+        final String username = json.optString("name", null);
         if (!json.has(JsonParseUtil.SELF_ATTR) && "Anonymous".equals(username)) {
             return null; // insane representation for unassigned user - JRADEV-4262
         }
 
         // deleted user? BUG in REST API: JRA-30263
         final URI selfUri = optSelfUri(json, BasicUser.INCOMPLETE_URI);
-        return new BasicUser(selfUri, username, json.optString("displayName", null));
+        return new BasicUser(selfUri, username,
+                json.optString("displayName", null),
+                json.optString("accountId", null));
     }
 
     public static DateTime parseDateTime(final JSONObject jsonObject, final String attributeName) throws JSONException {

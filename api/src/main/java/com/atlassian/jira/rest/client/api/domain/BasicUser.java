@@ -36,34 +36,45 @@ public class BasicUser extends AddressableNamedEntity {
     public static URI INCOMPLETE_URI = URI.create("incomplete://user");
 
     private final String displayName;
+    private final String accountId;
 
-    public BasicUser(URI self, String name, String displayName) {
+    public BasicUser(URI self, String name, String displayName, String accountId) {
         super(self, name);
         this.displayName = displayName;
+        this.accountId = accountId;
+    }
+
+    public BasicUser(URI self, String name, String displayName) {
+        this(self, name, displayName, null);
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
+    public String getAccountId() {
+        return accountId;
+    }
+
     @Override
     protected MoreObjects.ToStringHelper getToStringHelper() {
         return super.getToStringHelper()
-                .add("displayName", displayName);
+                .add("displayName", displayName)
+                .add("accountId", accountId);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicUser) {
             BasicUser that = (BasicUser) obj;
-            return super.equals(that) && Objects.equal(this.displayName, that.displayName);
+            return super.equals(that) && Objects.equal(this.displayName, that.displayName) && Objects.equal(this.accountId, that.accountId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), displayName);
+        return Objects.hashCode(super.hashCode(), displayName, accountId);
     }
 
     /**
