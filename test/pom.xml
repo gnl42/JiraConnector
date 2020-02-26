@@ -15,6 +15,7 @@
 
     <properties>
         <plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
+        <jira.jvm.args>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</jira.jvm.args>
     </properties>
 
     <dependencies>
@@ -121,7 +122,7 @@
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
-                    <jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
+                    <jvmArgs>${jira.jvm.args}</jvmArgs>
                     <enableFastdev>false</enableFastdev>
                 </configuration>
                 <executions>
@@ -334,7 +335,7 @@
                         <groupId>com.atlassian.maven.plugins</groupId>
                         <artifactId>maven-jira-plugin</artifactId>
                         <configuration>
-                            <jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=512m ${jacoco.agent}</jvmArgs>
+                            <jvmArgs>${jira.jvm.args} ${jacoco.agent}</jvmArgs>
                         </configuration>
                     </plugin>
                 </plugins>
