@@ -15,6 +15,7 @@
 
     <properties>
         <plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
+        <jira.jvm.args>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</jira.jvm.args>
     </properties>
 
     <dependencies>
@@ -121,7 +122,7 @@
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.data.version}</productDataVersion>
-                    <jvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</jvmArgs>
+                    <jvmArgs>${jira.jvm.args}</jvmArgs>
                     <enableFastdev>false</enableFastdev>
                 </configuration>
                 <executions>
@@ -173,6 +174,11 @@
                         </property>
                     </properties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.4</version>
             </plugin>
         </plugins>
     </build>
@@ -295,6 +301,45 @@
             <properties>
                 <maven.test.skip>true</maven.test.skip>
             </properties>
+        </profile>
+        <profile>
+            <id>jacoco</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <propertyName>jacoco.agent</propertyName>
+                                    <includes>
+                                        <include>com/atlassian/**</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-jira-plugin</artifactId>
+                        <configuration>
+                            <jvmArgs>${jira.jvm.args} ${jacoco.agent}</jvmArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
