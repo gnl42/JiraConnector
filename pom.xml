@@ -57,6 +57,7 @@
         <testkit.version>8.1.5</testkit.version>
         <atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
         <guava.version>26.0-jre</guava.version>
+        <jackson.version>1.9.13-atlassian-4</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -117,6 +118,26 @@
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-json</artifactId>
                 <version>${jersey.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-jaxrs</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-xc</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.atlassian.httpclient</groupId>
