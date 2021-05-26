@@ -31,7 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -170,6 +173,24 @@ public class AsynchronousHttpClientFactory {
         @Override
         public String getPropertyValue(final String s) {
             throw new UnsupportedOperationException("Not implemented");
+        }
+
+        @Nonnull
+        @Override
+        public String getApplicationFileEncoding() {
+            return StandardCharsets.UTF_8.name();
+        }
+
+        @Nonnull
+        @Override
+        public Optional<Path> getLocalHomeDirectory() {
+            return Optional.of(getHomeDirectory().toPath());
+        }
+
+        @Nonnull
+        @Override
+        public Optional<Path> getSharedHomeDirectory() {
+            return getLocalHomeDirectory();
         }
     }
 
