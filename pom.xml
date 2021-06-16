@@ -55,8 +55,9 @@
         <amps.version>6.3.22-fc341f3d2</amps.version>
         <testkit.version>8.1.5</testkit.version>
         <atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
-        <guava.version>26.0-jre</guava.version>
+        <guava.version>30.1.1-jre</guava.version>
         <jackson.version>1.9.13-atlassian-4</jackson.version>
+        <commons.codec.version>1.15</commons.codec.version>
     </properties>
 
     <dependencyManagement>
@@ -159,6 +160,11 @@
                 <groupId>io.atlassian.util.concurrent</groupId>
                 <artifactId>atlassian-util-concurrent</artifactId>
                 <version>${atlassian.util.concurrent}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
