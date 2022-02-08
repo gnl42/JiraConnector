@@ -19,7 +19,7 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -48,7 +48,7 @@
         <jira.version>8.18.0-QR-20210527053111</jira.version>
         <jira.data.version>${jira.version}</jira.data.version>
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-        <jersey.client.version>1.19</jersey.client.version>
+        <jersey.client.version>2.35</jersey.client.version>
         <joda.time.version>2.9.9</joda.time.version>
         <atlassian.httpclient.version>2.1.5</atlassian.httpclient.version>
         <httpcore.version>4.4.8</httpcore.version>
@@ -107,13 +107,13 @@
                 <version>${joda.time.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.jersey</groupId>
+                <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
                 <version>${jersey.client.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-json</artifactId>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jettison</artifactId>
                 <version>${jersey.client.version}</version>
             </dependency>
             <dependency>

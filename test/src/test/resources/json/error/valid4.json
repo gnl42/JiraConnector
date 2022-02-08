@@ -2,7 +2,6 @@
 	"errorMessages":["a", "b"],
 	"errors":
 	{
-		"a":"x",
 		"a":"y",
 		"c":"z"
 	}
