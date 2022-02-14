@@ -42,6 +42,9 @@ import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
+import com.atlassian.jira.testkit.client.Backdoor;
+import com.atlassian.jira.testkit.client.model.FeatureFlag;
+import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -102,7 +105,7 @@ import static org.junit.Assert.fail;
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")
 public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestClientTest {
-
+    private final FeatureFlag LAZY_LOADING_ACTIVITY_TABS_FF = FeatureFlag.featureFlag("com.atlassian.jira.lazyload.activity.tabs");
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -920,16 +923,23 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     @Test
     public void testFetchingUnassignedIssue() {
-        administration.generalConfiguration().setAllowUnassignedIssues(true);
-        assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+        final Backdoor backdoor = new Backdoor(new TestKitLocalEnvironmentData());
+        try {
+            backdoor.darkFeatures().disableForSite(LAZY_LOADING_ACTIVITY_TABS_FF);
 
-        setUserLanguageToEnUk();
-        navigation.issue().unassignIssue("TST-5", "unassigning issue");
-        // this single line does instead of 2 above - func test suck with non-English locale
-        // but it does not work yet with JIRA 5.0-resthack...
-        //navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
+            administration.generalConfiguration().setAllowUnassignedIssues(true);
+            assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").claim().getAssignee());
 
-        assertNull(client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+            setUserLanguageToEnUk();
+            navigation.issue().unassignIssue("TST-5", "unassigning issue");
+            // this single line does instead of 2 above - func test suck with non-English locale
+            // but it does not work yet with JIRA 5.0-resthack...
+            //navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
+
+            assertNull(client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+        } finally {
+            backdoor.darkFeatures().enableForSite(LAZY_LOADING_ACTIVITY_TABS_FF);
+        }
     }
 
     @Test
