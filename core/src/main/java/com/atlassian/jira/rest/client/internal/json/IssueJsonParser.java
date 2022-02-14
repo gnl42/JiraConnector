@@ -54,6 +54,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -309,7 +310,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final Map<String, String> typesMap = parseSchema(schema);
 
         final JSONObject json = issueJson.getJSONObject(FIELDS);
-        final ArrayList<IssueField> res = new ArrayList<IssueField>(json.length());
+        final List<IssueField> fields = new ArrayList<>(json.length());
         @SuppressWarnings("unchecked") final Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             final String key = iterator.next();
@@ -321,7 +322,11 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 // we should use fieldParser here (some new version as the old one probably won't work)
                 // enable IssueJsonParserTest#testParseIssueWithUserPickerCustomFieldFilledOut after fixing this
                 final Object value = json.opt(key);
-                res.add(new IssueField(key, namesMap.get(key), typesMap.get("key"), value != JSONObject.NULL ? value : null));
+                fields.add(new IssueField(
+                        key,
+                        namesMap.get(key),
+                        typesMap.get("key"),
+                        value == JSONObject.NULL || value == JSONObject.EXPLICIT_NULL ? null : value));
             } catch (final Exception e) {
                 throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
                     @Override
@@ -331,7 +336,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 };
             }
         }
-        return res;
+        return fields;
     }
 
     private Map<String, String> parseSchema(final JSONObject json) throws JSONException {

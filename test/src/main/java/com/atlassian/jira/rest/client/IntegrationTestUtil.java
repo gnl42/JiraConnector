@@ -166,16 +166,23 @@ public class IntegrationTestUtil {
 
     public static URI getUserUri(String username) {
         try {
-            return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/" +
-                    URI_INTERFIX_FOR_USER + "/user").queryParam("username", username).build();
+            return new URI(
+                    String.format(
+                            "%s/rest/api/%s/user?username=%s",
+                            environmentData.getBaseUrl().toURI(),
+                            URI_INTERFIX_FOR_USER,
+                            username));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static URI getLatestUserUri(String username) throws URISyntaxException {
-        return UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).path("/rest/api/latest/user")
-                .queryParam("username", username).build();
+        return new URI(
+                String.format(
+                        "%s/rest/api/latest/user?username=%s",
+                        environmentData.getBaseUrl().toURI(),
+                        username));
     }
 
     public static URI concat(URI uri, String path) {
