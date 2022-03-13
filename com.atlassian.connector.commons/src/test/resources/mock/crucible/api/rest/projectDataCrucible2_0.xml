@@ -1,0 +1,16 @@
+<projectData expand="allowedReviewers">
+<id>1</id>
+<name>archive</name>
+<key>CR</key>
+<defaultRepositoryName>atlassian</defaultRepositoryName>
+<permissionSchemeId>4</permissionSchemeId>
+<allowReviewersToJoin>false</allowReviewersToJoin>
+<defaultReviewers/>
+<allowedReviewers size="5">
+<userName>bbaker</userName>
+<userName>fschmitz</userName>
+<userName>ekatz</userName>
+<userName>dyu</userName>
+<userName>ewong</userName>
+</allowedReviewers>
+</projectData>

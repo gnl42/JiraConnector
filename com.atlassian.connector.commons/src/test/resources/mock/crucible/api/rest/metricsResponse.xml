@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metrics>
+    <metricsData>
+        <configVersion>1</configVersion>
+        <defaultValue>
+            <name>Minor</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">0
+            </value>
+        </defaultValue>
+        <label>Ranking</label>
+        <name>rank</name>
+        <type>INTEGER</type>
+        <values>
+            <name>Major</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">1
+            </value>
+        </values>
+        <values>
+            <name>Minor</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">0
+            </value>
+        </values>
+    </metricsData>
+    <metricsData>
+        <configVersion>5</configVersion>
+        <defaultValue>
+            <name>Improvement desirable</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">5
+            </value>
+        </defaultValue>
+        <label>Classification</label>
+        <name>classification</name>
+        <type>INTEGER</type>
+        <values>
+            <name>Missing</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">1
+            </value>
+        </values>
+        <values>
+            <name>Extra (superfluous)</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">2
+            </value>
+        </values>
+        <values>
+            <name>Ambiguous</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">3
+            </value>
+        </values>
+        <values>
+            <name>Inconsistent</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">4
+            </value>
+        </values>
+        <values>
+            <name>Improvement desirable</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">5
+            </value>
+        </values>
+        <values>
+            <name>Not conforming to standards</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">6
+            </value>
+        </values>
+        <values>
+            <name>Risk-prone</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">7
+            </value>
+        </values>
+        <values>
+            <name>Factually incorrect</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">8
+            </value>
+        </values>
+        <values>
+            <name>Not implementable</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">9
+            </value>
+        </values>
+        <values>
+            <name>Editorial</name>
+            <value xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:type="xs:int">10
+            </value>
+        </values>
+    </metricsData>
+</metrics>

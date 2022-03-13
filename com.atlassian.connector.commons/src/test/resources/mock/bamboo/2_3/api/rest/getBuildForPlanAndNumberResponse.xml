@@ -1,0 +1,17 @@
+<build number="140" state="Successful" key="TP-DEF-140" expand="artifacts">
+<failedTestCount>4</failedTestCount>
+<successfulTestCount>186</successfulTestCount>
+<buildStartedTime>2008-07-10T08:53:36.110-0500</buildStartedTime>
+<buildCompletedTime>2008-07-10T08:54:11.556-0500</buildCompletedTime>
+<buildDurationInSeconds>35.0</buildDurationInSeconds>
+<buildDurationDescription>35 seconds</buildDurationDescription>
+<buildRelativeTime>11 months ago</buildRelativeTime>
+<buildTestSummary>4 out of 190 failed</buildTestSummary>
+<buildReason>
+    <a href="http://gdansk.bamboo2.atlassian.com/browse/TP-DEF-140/commit">Updated by Janusz Gorycki</a>
+</buildReason>
+<queueTimeInSeconds>0.0</queueTimeInSeconds>
+<vcsUpdateInSeconds>0.0</vcsUpdateInSeconds>
+<artifacts size="1" max-result="1" start-index="0"/>
+<link rel="self" href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/build/TP-DEF-140"/>
+</build>

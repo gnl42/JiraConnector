@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<detailedReviewData>
+	<allowReviewersToJoin>false</allowReviewersToJoin>
+	<author>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</author>
+	<createDate>2009-12-15T16:22:52.421+0100</createDate>
+	<creator>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</creator>
+	<description></description>
+	<metricsVersion>1</metricsVersion>
+	<moderator>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</moderator>
+	<name>testing PL-1875</name>
+	<permaId>
+		<id>CR-14</id>
+	</permaId>
+	<projectKey>CR</projectKey>
+	<state>Review</state>
+	<stats>
+		<comments>
+			<user>wseliga</user>
+			<published>3</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>3</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>0</read>
+		</comments>
+	</stats>
+	<actions>
+		<actionData>
+			<name>action:viewReview</name>
+		</actionData>
+		<actionData>
+			<name>action:createReview</name>
+		</actionData>
+	</actions>
+	<generalComments />
+	<reviewItems>
+		<reviewItem>
+			<permId>
+				<id>CFR-43</id>
+			</permId>
+			<repositoryName>TestSVN</repositoryName>
+			<fromPath>trunk/atlassian-ide-plugin.xml</fromPath>
+			<fromRevision>26</fromRevision>
+			<fromContentUrl>/cru/CR-14/rawcontent/424/trunk/atlassian-ide-plugin.xml
+			</fromContentUrl>
+			<toPath>trunk/atlassian-ide-plugin.xml</toPath>
+			<toRevision>57</toRevision>
+			<toContentUrl>/cru/CR-14/rawcontent/426/trunk/atlassian-ide-plugin.xml
+			</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2009-12-15T16:21:28.703+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem>
+		<reviewItem>
+			<permId>
+				<id>CFR-44</id>
+			</permId>
+			<repositoryName>TestSVN</repositoryName>
+			<fromPath>trunk/src/devoxx/demo/CountryDictionary.java</fromPath>
+			<fromRevision>54</fromRevision>
+			<fromContentUrl>/cru/CR-14/rawcontent/32/trunk/src/devoxx/demo/CountryDictionary.java
+			</fromContentUrl>
+			<toPath>trunk/src/devoxx/demo/CountryDictionary.java</toPath>
+			<toRevision>57</toRevision>
+			<toContentUrl>/cru/CR-14/rawcontent/425/trunk/src/devoxx/demo/CountryDictionary.java
+			</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2009-12-15T16:21:28.703+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem>
+		<reviewItem>
+			<permId>
+				<id>CFR-45</id>
+			</permId>
+			<repositoryName>TestSVN</repositoryName>
+			<fromPath>trunk/src/devoxx/demo/CountryDictionaryImpl.java</fromPath>
+			<fromRevision>52</fromRevision>
+			<fromContentUrl>/cru/CR-14/rawcontent/31/trunk/src/devoxx/demo/CountryDictionaryImpl.java
+			</fromContentUrl>
+			<toPath>trunk/src/devoxx/demo/CountryDictionaryImpl.java</toPath>
+			<toRevision>57</toRevision>
+			<toContentUrl>/cru/CR-14/rawcontent/427/trunk/src/devoxx/demo/CountryDictionaryImpl.java
+			</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2009-12-15T16:21:28.703+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem>
+	</reviewItems>
+	<reviewers />
+	<transitions />
+	<versionedComments>
+		<versionedLineCommentData>
+			<createDate>2009-12-15T16:23:05.553+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>fdsfda</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<displayName>Wojciech Seliga</displayName>
+				<userName>wseliga</userName>
+			</user>
+			<permaId>
+				<id>CMT:23</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-44</id>
+			</reviewItemId>
+			<toLineRange>7-7</toLineRange>
+			<lineRanges>
+				<lineRange range="7-7" revision="57" />
+			</lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2009-12-15T16:23:21.964+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>a constructor here</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies>
+				<generalCommentData>
+					<createDate>2009-12-15T16:23:59.210+0100</createDate>
+					<defectApproved>false</defectApproved>
+					<defectRaised>false</defectRaised>
+					<deleted>false</deleted>
+					<draft>false</draft>
+					<message>xx</message>
+					<metrics />
+					<parentCommentId>
+						<id>CMT:24</id>
+					</parentCommentId>
+					<readStatus>READ</readStatus>
+					<replies />
+					<user>
+						<displayName>Wojciech Seliga</displayName>
+						<userName>wseliga</userName>
+					</user>
+					<permId>
+						<id>CMT:25</id>
+					</permId>
+					<permaId>
+						<id>CMT:25</id>
+					</permaId>
+				</generalCommentData>
+			</replies>
+			<user>
+				<displayName>Wojciech Seliga</displayName>
+				<userName>wseliga</userName>
+			</user>
+			<permaId>
+				<id>CMT:24</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-45</id>
+			</reviewItemId>
+			<toLineRange>13-25</toLineRange>
+			<lineRanges>
+				<lineRange range="13-25" revision="57" />
+			</lineRanges>
+		</versionedLineCommentData>
+	</versionedComments>
+</detailedReviewData>

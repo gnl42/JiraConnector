@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plan enabled="false" name="Atlassian Eclipse Connector - Deploy Nightly Build" key="ECL-DPL" expand="actions">
+    <projectKey>ECL</projectKey>
+    <projectName>Atlassian Eclipse Connector</projectName>
+    <isFavourite>true</isFavourite>
+    <averageBuildTimeInSeconds>941.0</averageBuildTimeInSeconds>
+    <isInBuildQueue>false</isInBuildQueue>
+    <isBuilding>false</isBuilding>
+    <link rel="self" href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/plan/ECL-DPL"/>
+    <actions size="7" max-result="7" start-index="0"/>
+</plan>

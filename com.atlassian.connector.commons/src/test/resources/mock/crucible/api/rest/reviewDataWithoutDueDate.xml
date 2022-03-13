@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<reviewData>
+	<allowReviewersToJoin>true</allowReviewersToJoin>
+	<author>
+		<displayName>Sławomir Ginter</displayName>
+		<userName>sginter</userName>
+	</author>
+	<createDate>2010-02-05T16:27:11.569+0100</createDate>
+	<creator>
+		<displayName>Sławomir Ginter</displayName>
+		<userName>sginter</userName>
+	</creator>
+	<description></description>
+	<metricsVersion>1</metricsVersion>
+	<moderator>
+		<displayName>Sławomir Ginter</displayName>
+		<userName>sginter</userName>
+	</moderator>
+	<name>Slawek's review</name>
+	<permaId>
+		<id>CR-24</id>
+	</permaId>
+	<projectKey>CR</projectKey>
+	<state>Review</state>
+</reviewData>

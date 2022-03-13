@@ -1,0 +1,1842 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<build
+	expand="artifacts,comments,labels,jiraIssues,changes,testResults,metadata"
+	number="1764" state="Failed" key="ECL-TST-1764">
+	<link rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/build/ECL-TST-1764" />
+	<buildStartedTime>2010-05-20T06:12:50.120-05:00</buildStartedTime>
+	<buildCompletedTime>2010-05-20T06:25:38.289-05:00</buildCompletedTime>
+	<buildDurationInSeconds>768.0</buildDurationInSeconds>
+	<buildDurationDescription>12 minutes</buildDurationDescription>
+	<buildRelativeTime>1 hour ago</buildRelativeTime>
+	<queueStartedTime>2010-05-20T06:12:41.723-05:00</queueStartedTime>
+	<queueTimeInSeconds>0.0</queueTimeInSeconds>
+	<vcsUpdateStartedTime>2010-05-20T06:12:41.784-05:00
+	</vcsUpdateStartedTime>
+	<vcsUpdateInSeconds>8.0</vcsUpdateInSeconds>
+	<buildTestSummary>4 out of 211 failed</buildTestSummary>
+	<successfulTestCount>207</successfulTestCount>
+	<failedTestCount>4</failedTestCount>
+	<buildReason>Dependency build</buildReason>
+	<artifacts size="2" max-result="2" start-index="0" />
+	<comments size="0" max-result="0" start-index="0" />
+	<labels size="0" max-result="0" start-index="0" />
+	<jiraIssues size="0" max-result="0" start-index="0" />
+	<changes expand="change" size="4" max-result="4" start-index="0">
+		<change changesetId="60323" author="pniewiadomski" expand="files">
+			<comment>NONE: switching to e3.5</comment>
+			<date>2010-05-20T05:44:20.543-05:00</date>
+			<files size="4" max-result="4" start-index="0">
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/bamboo.properties
+					</name>
+					<revision>60323</revision>
+				</file>
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/custom.properties
+					</name>
+					<revision>60323</revision>
+				</file>
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/bamboo-weekly.properties
+					</name>
+					<revision>60323</revision>
+				</file>
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/bamboo-release.properties
+					</name>
+					<revision>60323</revision>
+				</file>
+			</files>
+		</change>
+		<change changesetId="60325" author="pniewiadomski" expand="files">
+			<comment>NONE: switching to e3.5</comment>
+			<date>2010-05-20T05:52:03.861-05:00</date>
+			<files size="1" max-result="1" start-index="0">
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/scripts/defaults-all.properties
+					</name>
+					<revision>60325</revision>
+				</file>
+			</files>
+		</change>
+		<change changesetId="60324" author="wseliga" expand="files">
+			<comment>NONE tiny fix</comment>
+			<date>2010-05-20T05:44:38.160-05:00</date>
+			<files size="1" max-result="1" start-index="0">
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.monitor.usage/src/com/atlassian/connector/eclipse/internal/monitor/usage/preferences/UsageDataPreferencePage.java
+					</name>
+					<revision>60324</revision>
+				</file>
+			</files>
+		</change>
+		<change changesetId="60326" author="pniewiadomski" expand="files">
+			<comment>NONE: switching to e3.5</comment>
+			<date>2010-05-20T06:08:26.969-05:00</date>
+			<files size="1" max-result="1" start-index="0">
+				<file>
+					<name>/PLE/trunk/com.atlassian.connector.eclipse.releng/maps/mylyn_e3.5.map
+					</name>
+					<revision>60326</revision>
+				</file>
+			</files>
+		</change>
+	</changes>
+	<testResults fixedTests="3" existingFailed="4" newFailed="0"
+		failed="4" successful="207" all="211"
+		expand="all,successful,failed,newFailed,existingFailed,fixed">
+		<all expand="testResult" size="211" max-result="211" start-index="0">
+			<testResult status="successful" methodName="testGetSubscribedBuildsTaskRepository"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testRepositoryRemoved"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManagerTest"
+				expand="errors">
+				<duration>132</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testMarkStaleNoTasks"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>21</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>538</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskDataSubTasks"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>2446</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAddWorkLog"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>380</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testCustomQueryWithoutRepositoryConfiguraton"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest"
+				expand="errors">
+				<duration>3268</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAttachContext"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>2260</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetPermIdFromTaskId"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCurrentUsernameRepository"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>13</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testBuildSubscriptionsChanged"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetRepositoryUrlFromTaskUrl"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>9</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testHttpsRedirect"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest"
+				expand="errors">
+				<duration>178</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataCreateTaskWithSecurityLevel"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>829</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetCrucibleTaskRepositoryFromString"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCrucibleFileDeepEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testRepositoryRemoved"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>13</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testFindHyperlinks"
+				className="com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiTest"
+				expand="errors">
+				<duration>20</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSecurityLevelNoLevelsDefined"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>994</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testDifferentReviewUpdatedWhileActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>5</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCompare"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparatorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetSynchronizationFilterTimeStampInTheFuture"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>9</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataStartProgressAddComment"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3267</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPerformQuerySpaces"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>412</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetWorkLogs"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>185</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testRepositoryRemoved"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleClientManagerUiTest"
+				expand="errors">
+				<duration>131</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUserLabelProvider"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserLabelProviderTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPerformQuery"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetSupportedTeamConnectors"
+				className="com.atlassian.connector.eclipse.team.ui.TeamUiUtilsTests"
+				expand="errors">
+				<duration>1021</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="done"
+				className="AllConnectorTests" expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testHasMarkup"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraRssHandlerTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetIdFromKey"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>191</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.DecoratedResourceTest"
+				expand="errors">
+				<duration>272</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetConnectorKind"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCompareViewerObjectObject"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.views.ReviewTreeComparatorTest"
+				expand="errors">
+				<duration>4</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testConversionWithFilterDefinitionConverter"
+				className="com.atlassian.connector.eclipse.jira.tests.core.FilterDefinitionConverterTest"
+				expand="errors">
+				<duration>16</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskHistoryUrl"
+				className="com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testChangeCredentials"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest"
+				expand="errors">
+				<duration>494</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPerformQueryTaskSearch"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>448</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testResolveCloseReopenIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>1168</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCustomQueryWrongDatePattern"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest"
+				expand="errors">
+				<duration>943</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataStartProgressAddCommentChangeDescription"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3634</duration>
+				<durationInSeconds>4</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCompareWithLineRanges"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparatorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testLocalTaskActivated"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>13</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>372</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskIdFromUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testMarkStaleRepositoryChanged"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>2118</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testParse"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTimeFormatTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsSorterPropertyObjectString"
+				className="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparatorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCachedUsersReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>67</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="repository: http://ecit.atlassian.com/jira-enterprise-snapshot [@4.2-SNAPSHOT/Enterprise]"
+				className="AllConnectorTests" expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateTaskFromTaskData"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnectorTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsValid"
+				className="com.atlassian.connector.eclipse.jira.tests.ui.WdhmUtilTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPostTaskDataStartProgress"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3322</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanCreateNewTask"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAddComment"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>276</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetWorklogs"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest"
+				expand="errors">
+				<duration>845</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReInitializeScheduler"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanAddCommentToReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGeneralCommentDeepEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testInitializeSubTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>986</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCustomQuery"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest"
+				expand="errors">
+				<duration>266</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testStackTraceInComment"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraStackTraceDuplicateDetectorTest"
+				expand="errors">
+				<duration>1050</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCompareViewerObjectObject"
+				className="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparatorTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateTaskData"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testInitializeTaskDataNoProject"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>11</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testRefreshProjectDetails"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraClientCacheTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCurrentCachedUserReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>80</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetLabel"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateHash"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>5</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetIssueLeadingSpaces"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>257</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReadOnly"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>4693</duration>
+				<durationInSeconds>5</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetRepositoryConfigurationCacheFile"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetUsernamesFromUsers"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskIdFromPermId"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReassign"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>1237</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testToString"
+				className="com.atlassian.connector.eclipse.jira.tests.model.JiraVersionTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSortAscendingCommentsByDate"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataStartProgressChangeDescription"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3353</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testMarkStaleClosedTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>1631</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testVersionedCommentsWithDifferentParentsDeepEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPerformQueryLimitNumberOfResults"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>798</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testDifferentReviewAddedWhileActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>4</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testJiraCustomQuery"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCopy"
+				className="com.atlassian.connector.eclipse.jira.tests.model.VersionFilterTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetSynchronizationFilterTimeStampInTheFutureWithTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateIssueMultipleLinesOfText"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>218</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskUrl"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testValidate"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryServerUnrelatedTest"
+				expand="errors">
+				<duration>656</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testNonNumbericVersion"
+				className="com.atlassian.connector.eclipse.jira.tests.model.JiraVersionTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testProjectSecurityLevelAccessible"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetServerInfo"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testHasTaskChanged"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnectorTest"
+				expand="errors">
+				<duration>11</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataStartProgressChangeAttributes"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3346</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataAssignWithoutEditPermission"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3282</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanCreateTaskFromKey"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsCurrentUserReviewer"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskIdFromTaskUrl"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCustomQueryRename"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>44</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCustomQueryWrongLocale"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest"
+				expand="errors">
+				<duration>2332</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testPostTaskDataCommentWithoutEditPermission"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>4975</duration>
+				<durationInSeconds>5</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReviewUpdatedWhileActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>12</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testFormat"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTimeFormatTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testNotFound"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPageTest"
+				expand="errors">
+				<duration>622</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateIssueWithLinkInDescription"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>233</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testVersionedCommentWithLineRangesDeepEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetRepositoryUrlFromUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testJiraTaskSave"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>21</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAttachFile"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskAttachmentHandlerTest"
+				expand="errors">
+				<duration>1579</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReviewAddedWhileNotActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPerformQueryDueDateFilter"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>1695</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetRepositoryUrlFromTaskUrl"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsUserReviewer"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetSubscribedBuilds"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanModifyComment"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAvailableGetSecurityLevels"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>149</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCurrentCachedUserRepository"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>72</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanQuery"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testMarkStaleOneTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>1032</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAttachFile"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>355</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPostTaskDataSubTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>1238</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCachedProjects"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>72</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetClient"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManagerTest"
+				expand="errors">
+				<duration>183</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testHasCurrentUserCompletedReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>5</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsReviewerComplete"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testHasTaskChanged"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetStatesFromString"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>17</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testAddTrailingSlash"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testVoteUnvoteIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>291</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testClosedIssueNotEditable"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>1847</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateCustomFilterFromQuery"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testJiraFilterHitSave"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>21</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testChangeTaskRepositorySettings"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>839</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraWebClientTest"
+				expand="errors">
+				<duration>113</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateSubTask"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>323</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testCachedOperationsAfterChangingState"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>1615</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReviewActivated"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>109</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsFilterDefinition"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetCrucibleTaskRepositoryFromReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsFilePartOfActiveReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskData"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>2121</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testJiraFilterRefresh"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraFilterTest"
+				expand="errors">
+				<duration>5646</duration>
+				<durationInSeconds>6</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskIdFromTaskUrl"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testBrowseIssueRedirect"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest"
+				expand="errors">
+				<duration>856</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetWorklogsUnsupportedVersion"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientOfflineTest"
+				expand="errors">
+				<duration>334</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetFilterDefinitionUnresolvedResolution"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testInitializeTaskDataWithProjectName"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskIdFromReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPostTaskDataChangeDescription"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3078</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testDoInSession"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraWebClientTest"
+				expand="errors">
+				<duration>291</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetPredefinedFilterWebUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetSynchronizationFilter"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>38</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testNamedFilterNotRenamed"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>42</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testFindIssues"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>2287</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateIssueNonAscii"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>224</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testFindResourceForPath"
+				className="com.atlassian.connector.eclipse.team.ui.TeamUiUtilsTests"
+				expand="errors">
+				<duration>1656</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetClientTaskRepository"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManagerTest"
+				expand="errors">
+				<duration>231</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetPredefinedFilter"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetStartLine"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparatorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testStartStopIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>562</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testGetTaskDataWhenProjectIsMissingDetails"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>2653</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCrucibleTaskFromId"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetReviewUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReviewUpdatedWhileNotActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="repository: http://ecit.atlassian.com/jira-enterprise-4.1 [@4.1.1/Enterprise]"
+				className="AllConnectorTests" expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testParseObject"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTimeFormatTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetEditableFields"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>167</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateTaskCustomFields"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>4539</duration>
+				<durationInSeconds>5</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCharacterEncoding"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest"
+				expand="errors">
+				<duration>554</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUnescape"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraRssHandlerTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testWatchUnwatchIssue"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>395</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="testJiraCustomQueryIncompleteDateFilter"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCustomQueryTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCachedUsersRepository"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>67</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="repository: http://ecit.atlassian.com/jira-enterprise-3.13.5 [@3.13.5/Enterprise]"
+				className="AllConnectorTests" expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateIssueHtmlTag"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>212</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCopy"
+				className="com.atlassian.connector.eclipse.jira.tests.model.ComponentFilterTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSorter"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserSorterTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSetSecurityLevelToNone"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>1649</duration>
+				<durationInSeconds>2</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCurrentUsernameReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>10</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetTaskData"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testStackTraceInDescription"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraStackTraceDuplicateDetectorTest"
+				expand="errors">
+				<duration>949</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSortDescendingCommentsByDate"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSortRandomCommentsByDate"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraCommentDateComparatorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testRepositoryRemoved"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManagerTest"
+				expand="errors">
+				<duration>135</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testValidate39"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraClientFactoryTest"
+				expand="errors">
+				<duration>504</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCrucibleTaskFromReview"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetCachedUser"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest"
+				expand="errors">
+				<duration>76</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testReviewAddedWhileActive"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest"
+				expand="errors">
+				<duration>5</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPostTaskDataAddComment"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3093</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetJunitModel"
+				className="com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsActionTest"
+				expand="errors">
+				<duration>38</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCanSynchronizeTask"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>0</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetQueryWizard"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.RepositoryConnectorUiTest"
+				expand="errors">
+				<duration>41</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testInvalidUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPageTest"
+				expand="errors">
+				<duration>670</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testBasicAuth"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>357</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testLogin"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>413</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testInitializeTaskDataWithProjectKey"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>7</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testVersionedCommentDeepEquals"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateFilterWebUrl"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCharacterEncoding"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetClientManager"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCompletionSave"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>24</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testUpdateSecurityLevel"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskDataHandlerTest"
+				expand="errors">
+				<duration>3250</duration>
+				<durationInSeconds>3</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testVersion"
+				className="com.atlassian.connector.eclipse.jira.tests.model.JiraVersionTest"
+				expand="errors">
+				<duration>3</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testSetTaskKey"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapperTest"
+				expand="errors">
+				<duration>6</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testIsReviewComplete"
+				className="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest"
+				expand="errors">
+				<duration>1</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testCreateTask"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>1346</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testPatternFindHyperlink"
+				className="com.atlassian.connector.eclipse.jira.tests.ui.JiraConnectorUiStandaloneTest"
+				expand="errors">
+				<duration>2</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="failed" methodName="testAttachFile"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>189</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>Please indicate the file you wish to upload
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient.handleErrorMessage(JiraWebClient.java:696)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient$5.run(JiraWebClient.java:338)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebSession.doInSession(JiraWebSession.java:124)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient.doInSession(JiraWebClient.java:821)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient.attachFile(JiraWebClient.java:294)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.web.JiraWebClient.attachFile(JiraWebClient.java:278)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient.addAttachment(JiraClient.java:163)
+							at
+							com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest.testAttachFile(JiraClientTest.java:291)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+
+</message>
+					</error>
+				</errors>
+			</testResult>
+			<testResult status="failed" methodName="testFindIssuesReauthenticate"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraRssClientTest"
+				expand="errors">
+				<duration>10</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>junit.framework.AssertionFailedError: This breaks on
+							bamboo!
+							at
+							com.atlassian.connector.eclipse.jira.tests.client.JiraRssClientTest.testFindIssuesReauthenticate(JiraRssClientTest.java:51)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+</message>
+					</error>
+				</errors>
+			</testResult>
+			<testResult status="failed" methodName="testAttachContext"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest"
+				expand="errors">
+				<duration>1087</duration>
+				<durationInSeconds>1</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>org.eclipse.core.runtime.CoreException:
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.JiraTaskAttachmentHandler.postContent(JiraTaskAttachmentHandler.java:109)
+							at
+							org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil.postContext(AttachmentUtil.java:83)
+							at
+							com.atlassian.connector.eclipse.jira.tests.core.JiraRepositoryConnectorTest.testAttachContext(JiraRepositoryConnectorTest.java:128)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+</message>
+					</error>
+				</errors>
+			</testResult>
+			<testResult status="failed" methodName="testAttachFile"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskAttachmentHandlerTest"
+				expand="errors">
+				<duration>947</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>org.eclipse.core.runtime.CoreException:
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.JiraTaskAttachmentHandler.postContent(JiraTaskAttachmentHandler.java:109)
+							at
+							com.atlassian.connector.eclipse.jira.tests.core.JiraTaskAttachmentHandlerTest.attachFile(JiraTaskAttachmentHandlerTest.java:82)
+							at
+							com.atlassian.connector.eclipse.jira.tests.core.JiraTaskAttachmentHandlerTest.testAttachFile(JiraTaskAttachmentHandlerTest.java:68)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+</message>
+					</error>
+				</errors>
+			</testResult>
+		</all>
+		<successful size="207" max-result="207" start-index="0" />
+		<failed size="4" max-result="4" start-index="0" />
+		<newFailed size="0" max-result="0" start-index="0" />
+		<existingFailed size="4" max-result="4" start-index="0" />
+		<fixed size="3" max-result="3" start-index="0" />
+	</testResults>
+	<metadata size="9" max-result="9" start-index="0" />
+</build>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result
+	expand="artifacts,comments,labels,jiraIssues,changes,testResults,metadata"
+	id="112558465" number="1" lifeCycleState="Finished" state="Successful"
+	key="J2">
+	<link rel="self"
+		href="https://jira.bamboo.atlassian.com/rest/api/latest/result/JIRA42-SELENIUMCI-SELENIUM09-101" />
+	<chain rel="self"
+		href="https://jira.bamboo.atlassian.com/rest/api/latest/result/JIRA42-SELENIUMCI-101" />
+	<stage>Selenium and Functional Test Batches</stage>
+	<buildStartedTime>2010-12-22T00:35:21.658-06:00</buildStartedTime>
+	<buildCompletedTime>2010-12-22T01:14:45.663-06:00</buildCompletedTime>
+	<buildDurationInSeconds>2364</buildDurationInSeconds>
+	<buildDuration>2364005</buildDuration>
+	<buildDurationDescription>39 minutes</buildDurationDescription>
+	<buildRelativeTime>4 hours ago</buildRelativeTime>
+	<queueStartedTime>2010-12-22T00:30:06.283-06:00</queueStartedTime>
+	<queueTimeInSeconds>3</queueTimeInSeconds>
+	<queueDuration>3932</queueDuration>
+	<prettyQueueDuration>3 secs</prettyQueueDuration>
+	<vcsUpdateStartedTime>2010-12-22T00:30:10.215-06:00
+	</vcsUpdateStartedTime>
+	<vcsUpdateInSeconds>311</vcsUpdateInSeconds>
+	<vcsUpdateDuration>311443</vcsUpdateDuration>
+	<prettyVcsUpdateDuration>5 mins</prettyVcsUpdateDuration>
+	<vcsRevisionKey>136950</vcsRevisionKey>
+	<buildTestSummary>41 passed</buildTestSummary>
+	<successfulTestCount>41</successfulTestCount>
+	<failedTestCount>0</failedTestCount>
+	<buildReason>Dependency build</buildReason>
+	<artifacts size="3" max-result="3" start-index="0" />
+	<comments size="0" max-result="0" start-index="0" />
+	<labels size="0" max-result="0" start-index="0" />
+	<jiraIssues size="0" max-result="0" start-index="0" />
+	<changes size="0" max-result="0" start-index="0" />
+	<testResults fixedTests="0" existingFailed="0" newFailed="0"
+		failed="0" successful="2" all="2"
+		expand="all,successful,failed,newFailed,existingFailed,fixed">
+		<all expand="testResult" size="2" max-result="2" start-index="0">
+			<testResult status="successful"
+				methodName="TestKeyboardUpCommandToViewIssue.testCreateSubTask"
+				className="com.atlassian.jira.webtest.selenium.harness.SeleniumTestHarness"
+				expand="errors">
+				<duration>20772</duration>
+				<durationInSeconds>21</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful"
+				methodName="TestAvailableActionsAndOperations.testAvailableIssuesAndOperations"
+				className="com.atlassian.jira.webtest.selenium.harness.SeleniumTestHarness"
+				expand="errors">
+				<duration>63665</duration>
+				<durationInSeconds>64</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+		</all>
+		<successful size="2" max-result="2" start-index="0" />
+		<failed size="0" max-result="0" start-index="0" />
+		<newFailed size="0" max-result="0" start-index="0" />
+		<existingFailed size="0" max-result="0" start-index="0" />
+		<fixed size="0" max-result="0" start-index="0" />
+	</testResults>
+	<metadata size="8" max-result="8" start-index="0" />
+</result>

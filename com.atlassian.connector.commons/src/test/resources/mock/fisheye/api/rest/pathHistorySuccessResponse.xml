@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fileRevisionList>
+    <fileRevision totalLines="565" fileRevisionState="CHANGED" rev="48533"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="11" linesAdded="11"
+                  date="2009-11-25T13:26:01.380-06:00" csid="48533"
+                  contentLink="/browse/~raw,r=48533/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="48527">
+        <comment>PL-1681 - iterative reviews: adding changeset to review
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="565" fileRevisionState="CHANGED" rev="48527"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="13"
+                  date="2009-11-25T06:25:37.718-06:00" csid="48527"
+                  contentLink="/browse/~raw,r=48527/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="47212">
+        <comment>PL-1681 - iterative reviews: adding changeset to review
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="47212"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2009-11-05T09:46:10.887-06:00" csid="47212"
+                  contentLink="/browse/~raw,r=47212/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="47014">
+        <comment>changed dependency to commons 3.2.0-SNAPSHOT</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="47014"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-11-03T07:14:30.455-06:00" csid="47014"
+                  contentLink="/browse/~raw,r=47014/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="47012">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="47012"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-11-03T07:14:25.593-06:00" csid="47012"
+                  contentLink="/browse/~raw,r=47012/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="47011">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.2.1</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="47011"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-11-03T07:02:58.942-06:00" csid="47011"
+                  contentLink="/browse/~raw,r=47011/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="47004">
+        <comment>preparation to 2.2.1 release</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="47004"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-11-03T05:47:52.770-06:00" csid="47004"
+                  contentLink="/browse/~raw,r=47004/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="46626">
+        <comment>Preparation to 2.2.1 relaease</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="46626"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-28T05:50:29.908-05:00" csid="46626"
+                  contentLink="/browse/~raw,r=46626/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45526">
+        <comment>PL-1744 integration with IDEA9 tasks mechanism</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="46525"
+                  path="branches/IDEA_9_2/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-27T09:54:50.552-05:00" csid="46525"
+                  contentLink="/browse/~raw,r=46525/connector-intellij/branches/IDEA_9_2/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="46089">
+        <comment>ready for tests on IDEa 7 and 8</comment>
+    </fileRevision>
+    <fileRevision totalLines="0" fileRevisionState="REMOVED" rev="46091"
+                  path="branches/idea_9_task_integration/atlassian-intellij-connector/pom.xml" linesRemoved="554"
+                  linesAdded="0" date="2009-10-20T09:41:27.001-05:00" csid="46091" contentLink="" author="pmaruszak"
+                  ancestor="46004">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="ADDED" rev="46089"
+                  path="branches/IDEA_9_2/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="554"
+                  date="2009-10-20T09:37:21.984-05:00" csid="46089"
+                  contentLink="/browse/~raw,r=46089/connector-intellij/branches/IDEA_9_2/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45526">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="ADDED" rev="46004"
+                  path="branches/idea_9_task_integration/atlassian-intellij-connector/pom.xml" linesRemoved="0"
+                  linesAdded="554" date="2009-10-19T06:56:38.670-05:00" csid="46004"
+                  contentLink="/browse/~raw,r=46004/connector-intellij/branches/idea_9_task_integration/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45526">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45526"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-12T09:14:16.942-05:00" csid="45526"
+                  contentLink="/browse/~raw,r=45526/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="45345">
+        <comment>ACC-50 bumping up PL dependency to the ACC from trunk</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45345"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-10-08T07:12:38.875-05:00" csid="45345"
+                  contentLink="/browse/~raw,r=45345/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45343">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45343"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-10-08T07:12:29.290-05:00" csid="45343"
+                  contentLink="/browse/~raw,r=45343/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45331">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.2.0</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45331"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-10-08T03:28:41.309-05:00" csid="45331"
+                  contentLink="/browse/~raw,r=45331/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45329">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45329"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-10-08T03:28:27.319-05:00" csid="45329"
+                  contentLink="/browse/~raw,r=45329/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45326">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.2.0-beta-1</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45326"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-08T03:19:48.327-05:00" csid="45326"
+                  contentLink="/browse/~raw,r=45326/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45256">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45256"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-07T09:10:39.856-05:00" csid="45256"
+                  contentLink="/browse/~raw,r=45256/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45255">
+        <comment>changing dependency to commons version 3.2.0-SNAPSHOT</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45255"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-10-07T09:07:36.780-05:00" csid="45255"
+                  contentLink="/browse/~raw,r=45255/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45253">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="554" fileRevisionState="CHANGED" rev="45253"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="5" linesAdded="4"
+                  date="2009-10-07T09:07:26.231-05:00" csid="45253"
+                  contentLink="/browse/~raw,r=45253/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="45249">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.2.0-beta-1</comment>
+    </fileRevision>
+    <fileRevision totalLines="555" fileRevisionState="CHANGED" rev="45249"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-10-07T08:49:17.570-05:00" csid="45249"
+                  contentLink="/browse/~raw,r=45249/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="43366">
+        <comment>preparation to 2.2.0-beta-1</comment>
+    </fileRevision>
+    <fileRevision totalLines="555" fileRevisionState="CHANGED" rev="43366"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="2"
+                  date="2009-09-07T05:49:11.082-05:00" csid="43366"
+                  contentLink="/browse/~raw,r=43366/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="42948">
+        <comment>adjust maven-eclipse-plugin version to work fine with current settings</comment>
+    </fileRevision>
+    <fileRevision totalLines="553" fileRevisionState="CHANGED" rev="42948"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="20"
+                  date="2009-08-31T05:00:22.385-05:00" csid="42948"
+                  contentLink="/browse/~raw,r=42948/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="42086">
+        <comment>PL-1740</comment>
+    </fileRevision>
+    <fileRevision totalLines="533" fileRevisionState="CHANGED" rev="42086"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-08-19T05:25:21.751-05:00" csid="42086"
+                  contentLink="/browse/~raw,r=42086/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="41272">
+        <comment>PL-1598 - Show JIRA issues in build
+
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="533" fileRevisionState="CHANGED" rev="41272"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-08-05T09:52:55.352-05:00" csid="41272"
+                  contentLink="/browse/~raw,r=41272/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="41268">
+        <comment>to build on bamboo2.gdansk
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="533" fileRevisionState="CHANGED" rev="41268"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="2"
+                  date="2009-08-05T08:53:54.731-05:00" csid="41268"
+                  contentLink="/browse/~raw,r=41268/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="39452">
+        <comment>ACC-46 big refactoring around facades and ServerData - under dev, but should compile and all tests
+            should pass
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="534" fileRevisionState="CHANGED" rev="39452"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="5" linesAdded="1"
+                  date="2009-07-07T07:24:16.824-05:00" csid="39452"
+                  contentLink="/browse/~raw,r=39452/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="39176">
+        <comment>PL-1577 - Package up connector commons as a utility library available for public use
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="39176"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="5"
+                  date="2009-07-01T00:45:13.665-05:00" csid="39176"
+                  contentLink="/browse/~raw,r=39176/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="39041">
+        <comment>PL-1627 - Replace all ServerCfg with ServerData in plugin
+            PL-1679 - NPE fix
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="ADDED" rev="39130"
+                  path="branches/pl-1678-test/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="536"
+                  date="2009-06-30T05:14:26.612-05:00" csid="39130"
+                  contentLink="/browse/~raw,r=39130/connector-intellij/branches/pl-1678-test/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="39041">
+        <comment>test PL-1678
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="CHANGED" rev="39041"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-06-29T06:33:23.860-05:00" csid="39041"
+                  contentLink="/browse/~raw,r=39041/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="39039">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="CHANGED" rev="39039"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="8" linesAdded="6"
+                  date="2009-06-29T06:33:06.693-05:00" csid="39039"
+                  contentLink="/browse/~raw,r=39039/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="39038">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="39038"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-06-29T06:25:56.977-05:00" csid="39038"
+                  contentLink="/browse/~raw,r=39038/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="39036">
+        <comment>
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="39036"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="5"
+                  date="2009-06-29T06:21:53.669-05:00" csid="39036"
+                  contentLink="/browse/~raw,r=39036/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="38062">
+        <comment>
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="CHANGED" rev="38062"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2009-06-15T06:26:50.633-05:00" csid="38062"
+                  contentLink="/browse/~raw,r=38062/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="38061">
+        <comment>pom.xml dependencies back to snapshot versions</comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="CHANGED" rev="38061"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-06-15T06:21:26.376-05:00" csid="38061"
+                  contentLink="/browse/~raw,r=38061/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="38059">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="536" fileRevisionState="CHANGED" rev="38059"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="7" linesAdded="5"
+                  date="2009-06-15T06:21:20.913-05:00" csid="38059"
+                  contentLink="/browse/~raw,r=38059/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="38058">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.1.0</comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="38058"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2009-06-15T06:15:07.310-05:00" csid="38058"
+                  contentLink="/browse/~raw,r=38058/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="37634">
+        <comment>perparation for 2.1 release, fixed stable versions of parent pom 2.1.4 and commont 2.5.0
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="37634"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-06-05T06:06:44.968-05:00" csid="37634"
+                  contentLink="/browse/~raw,r=37634/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="36979">
+        <comment>PL-1390 - Direct Click Through API: Open working copy file at line
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="36979"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="529" linesAdded="529"
+                  date="2009-05-27T06:49:11.091-05:00" csid="36979"
+                  contentLink="/browse/~raw,r=36979/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="34223">
+        <comment>PL-1485 - Opening project configuration should automatically select appropriate server
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="ADDED" rev="36085"
+                  path="branches/ACC-16/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="538"
+                  date="2009-05-18T05:49:40.498-05:00" csid="36085"
+                  contentLink="/browse/~raw,r=36085/connector-intellij/branches/ACC-16/atlassian-intellij-connector/pom.xml"
+                  author="pniewiadomski" ancestor="34223">
+        <comment>Branch for ACC-16</comment>
+    </fileRevision>
+    <fileRevision totalLines="538" fileRevisionState="CHANGED" rev="34223"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="2"
+                  date="2009-04-29T02:27:49.442-05:00" csid="34223"
+                  contentLink="/browse/~raw,r=34223/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="33764">
+        <comment>checkstyle</comment>
+    </fileRevision>
+    <fileRevision totalLines="0" fileRevisionState="REMOVED" rev="33784"
+                  path="branches/immutable_server_refactoring/atlassian-intellij-connector/pom.xml" linesRemoved="537"
+                  linesAdded="0" date="2009-04-23T09:00:03.079-05:00" csid="33784" contentLink="" author="pmaruszak"
+                  ancestor="33778">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="537" fileRevisionState="ADDED" rev="33778"
+                  path="branches/immutable_server_refactoring/atlassian-intellij-connector/pom.xml" linesRemoved="0"
+                  linesAdded="537" date="2009-04-23T08:18:11.948-05:00" csid="33778"
+                  contentLink="/browse/~raw,r=33778/connector-intellij/branches/immutable_server_refactoring/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="33764">
+        <comment>Facade and all objects instead of CFG use immutable server</comment>
+    </fileRevision>
+    <fileRevision totalLines="537" fileRevisionState="CHANGED" rev="33764"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="20"
+                  date="2009-04-23T04:16:40.590-05:00" csid="33764"
+                  contentLink="/browse/~raw,r=33764/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="31568">
+        <comment>PL-1354 - Test if the connector still works with latest JIRA 4.0 snapshots
+
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="517" fileRevisionState="CHANGED" rev="31568"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="3"
+                  date="2009-03-27T03:30:47.262-05:00" csid="31568"
+                  contentLink="/browse/~raw,r=31568/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="31381">
+        <comment>PL-1289 Sorry but IDEA seems not to properly handle local file changes</comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="31381"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-03-25T15:06:18.677-05:00" csid="31381"
+                  contentLink="/browse/~raw,r=31381/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jgorycki" ancestor="30665">
+        <comment>checkstyle</comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="30665"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="5"
+                  date="2009-03-17T09:06:13.809-05:00" csid="30665"
+                  contentLink="/browse/~raw,r=30665/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="30550">
+        <comment>PL-1269 - When a submission of a review comment fails, give a chance to retry or copy the comment
+            text
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="30550"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="3"
+                  date="2009-03-16T07:47:56.012-05:00" csid="30550"
+                  contentLink="/browse/~raw,r=30550/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30548">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="30548"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="3"
+                  date="2009-03-16T07:47:47.192-05:00" csid="30548"
+                  contentLink="/browse/~raw,r=30548/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30547">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.1.0-SNAPSHOT</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="30547"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-03-16T07:46:48.216-05:00" csid="30547"
+                  contentLink="/browse/~raw,r=30547/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30545">
+        <comment>parent pom</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="30545"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-03-16T07:34:38.237-05:00" csid="30545"
+                  contentLink="/browse/~raw,r=30545/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30543">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="30543"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="7" linesAdded="5"
+                  date="2009-03-16T07:34:34.273-05:00" csid="30543"
+                  contentLink="/browse/~raw,r=30543/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30542">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.1-M1</comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="30542"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-03-16T07:31:41.057-05:00" csid="30542"
+                  contentLink="/browse/~raw,r=30542/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30522">
+        <comment>commons dependency</comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="30522"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="0"
+                  date="2009-03-16T06:54:42.732-05:00" csid="30522"
+                  contentLink="/browse/~raw,r=30522/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30521">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="515" fileRevisionState="CHANGED" rev="30521"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="1"
+                  date="2009-03-16T06:54:25.827-05:00" csid="30521"
+                  contentLink="/browse/~raw,r=30521/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="30020">
+        <comment></comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="30020"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-03-10T07:51:06.025-05:00" csid="30020"
+                  contentLink="/browse/~raw,r=30020/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="29560">
+        <comment>NONE dependency on newer build-tools</comment>
+    </fileRevision>
+    <fileRevision totalLines="514" fileRevisionState="CHANGED" rev="29560"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="488" linesAdded="490"
+                  date="2009-03-04T04:43:55.197-06:00" csid="29560"
+                  contentLink="/browse/~raw,r=29560/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="29361">
+        <comment>PL-735 - Fully support working with pre-commit reviews
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="29361"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-03-02T07:41:40.663-06:00" csid="29361"
+                  contentLink="/browse/~raw,r=29361/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="29359">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="29359"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-03-02T07:41:30.676-06:00" csid="29359"
+                  contentLink="/browse/~raw,r=29359/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="29358">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.1</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="29358"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-03-02T07:40:14.228-06:00" csid="29358"
+                  contentLink="/browse/~raw,r=29358/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="28598">
+        <comment>releasing 2.0.1 bugfix version</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="28598"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-02-18T14:23:09.211-06:00" csid="28598"
+                  contentLink="/browse/~raw,r=28598/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="28322">
+        <comment>NONE again intellij depends on commons SNAPSHOT</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="28322"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-02-13T04:25:32.672-06:00" csid="28322"
+                  contentLink="/browse/~raw,r=28322/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="28320">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="28320"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-02-13T04:25:30.934-06:00" csid="28320"
+                  contentLink="/browse/~raw,r=28320/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="28219">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="28219"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-02-12T09:13:38.792-06:00" csid="28219"
+                  contentLink="/browse/~raw,r=28219/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="28215">
+        <comment>NONE dependency set to just release commons 2.1.0 (commons-2.0.0 were by mistake released in December
+            by pmaruszak)
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="28215"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-02-12T08:34:12.799-06:00" csid="28215"
+                  contentLink="/browse/~raw,r=28215/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="27930">
+        <comment>NONE dependency set to just release commons 2.0.0</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27930"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="12" linesAdded="12"
+                  date="2009-02-09T04:32:23.396-06:00" csid="27930"
+                  contentLink="/browse/~raw,r=27930/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="27310">
+        <comment>NONE exlicit use of maven clean plugin 2.2 as 2.3 seems to be broken</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27310"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-02-02T09:44:01.211-06:00" csid="27310"
+                  contentLink="/browse/~raw,r=27310/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="27309">
+        <comment>NONE bringing back dependency to commons 2.0.0-SNAPSHOT</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27309"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-02-02T09:36:44.861-06:00" csid="27309"
+                  contentLink="/browse/~raw,r=27309/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27307">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27307"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-02-02T09:36:29.678-06:00" csid="27307"
+                  contentLink="/browse/~raw,r=27307/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27306">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-12</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27306"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-02-02T09:34:14.486-06:00" csid="27306"
+                  contentLink="/browse/~raw,r=27306/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27179">
+        <comment>releasing beta012</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27179"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-01-30T10:25:41.068-06:00" csid="27179"
+                  contentLink="/browse/~raw,r=27179/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27170">
+        <comment>restored commons snapshot version</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27170"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-01-30T06:53:28.858-06:00" csid="27170"
+                  contentLink="/browse/~raw,r=27170/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27168">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27168"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-01-30T06:53:19.104-06:00" csid="27168"
+                  contentLink="/browse/~raw,r=27168/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="27167">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-12</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="27167"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-01-30T06:52:26.454-06:00" csid="27167"
+                  contentLink="/browse/~raw,r=27167/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="26218">
+        <comment>release prepare, beta-12</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="26218"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-01-16T03:49:35.678-06:00" csid="26218"
+                  contentLink="/browse/~raw,r=26218/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="26148">
+        <comment>restored commons 2.0.0-SNAPSHOT dependency</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="26148"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-01-15T09:38:14-06:00" csid="26148"
+                  contentLink="/browse/~raw,r=26148/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="26146">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="26146"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2009-01-15T09:38:02.266-06:00" csid="26146"
+                  contentLink="/browse/~raw,r=26146/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="26145">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-11</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="26145"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2009-01-15T09:36:41.416-06:00" csid="26145"
+                  contentLink="/browse/~raw,r=26145/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="25328">
+        <comment>beta-11 release</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="25328"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-29T04:10:24.466-06:00" csid="25328"
+                  contentLink="/browse/~raw,r=25328/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25271">
+        <comment>PL-938 build fix</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="25271"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-23T09:09:26.313-06:00" csid="25271"
+                  contentLink="/browse/~raw,r=25271/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25269">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="25269"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-23T09:09:15.928-06:00" csid="25269"
+                  contentLink="/browse/~raw,r=25269/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25268">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-10</comment>
+    </fileRevision>
+    <fileRevision totalLines="512" fileRevisionState="CHANGED" rev="25268"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="2"
+                  date="2008-12-23T09:07:56.017-06:00" csid="25268"
+                  contentLink="/browse/~raw,r=25268/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25266">
+        <comment>clover problems - skip
+
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="510" fileRevisionState="CHANGED" rev="25266"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-23T06:52:31.534-06:00" csid="25266"
+                  contentLink="/browse/~raw,r=25266/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25264">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="510" fileRevisionState="CHANGED" rev="25264"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-23T06:52:21.206-06:00" csid="25264"
+                  contentLink="/browse/~raw,r=25264/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25263">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-10</comment>
+    </fileRevision>
+    <fileRevision totalLines="510" fileRevisionState="CHANGED" rev="25263"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-23T06:51:26.751-06:00" csid="25263"
+                  contentLink="/browse/~raw,r=25263/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="25023">
+        <comment>release
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="510" fileRevisionState="CHANGED" rev="25023"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="8"
+                  date="2008-12-17T05:53:03.419-06:00" csid="25023"
+                  contentLink="/browse/~raw,r=25023/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="24835">
+        <comment>NONE Clover 2 used. automatic skipping of private parameterless constructors</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24835"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2008-12-15T11:31:41.993-06:00" csid="24835"
+                  contentLink="/browse/~raw,r=24835/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24834">
+        <comment>PL-941, NPE fix</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24834"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-15T11:13:36.887-06:00" csid="24834"
+                  contentLink="/browse/~raw,r=24834/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="24772">
+        <comment>PL-968: compilation error fix</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24772"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-12T11:03:44.249-06:00" csid="24772"
+                  contentLink="/browse/~raw,r=24772/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24770">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24770"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-12T11:03:33.327-06:00" csid="24770"
+                  contentLink="/browse/~raw,r=24770/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24769">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24769"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-12T11:01:40.559-06:00" csid="24769"
+                  contentLink="/browse/~raw,r=24769/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24755">
+        <comment>release beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24755"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-12T06:04:14.435-06:00" csid="24755"
+                  contentLink="/browse/~raw,r=24755/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="24752">
+        <comment>empty custom filter fix</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24752"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-12T04:53:56.236-06:00" csid="24752"
+                  contentLink="/browse/~raw,r=24752/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24750">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24750"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-12T04:53:46.416-06:00" csid="24750"
+                  contentLink="/browse/~raw,r=24750/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24749">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24749"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="3"
+                  date="2008-12-12T04:51:57.483-06:00" csid="24749"
+                  contentLink="/browse/~raw,r=24749/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24745">
+        <comment>beta-9 release</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24745"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-12T04:10:39.221-06:00" csid="24745"
+                  contentLink="/browse/~raw,r=24745/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24741">
+        <comment>before commons release</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24741"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="3"
+                  date="2008-12-12T04:00:00.132-06:00" csid="24741"
+                  contentLink="/browse/~raw,r=24741/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24737">
+        <comment>before release</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24737"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-12-12T03:04:48.023-06:00" csid="24737"
+                  contentLink="/browse/~raw,r=24737/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24736">
+        <comment>restored buildtools version and clover plugin is on</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24736"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-12T03:02:51.472-06:00" csid="24736"
+                  contentLink="/browse/~raw,r=24736/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24703">
+        <comment>restored parent pom, commons version</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24703"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T11:49:04.708-06:00" csid="24703"
+                  contentLink="/browse/~raw,r=24703/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24701">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24701"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T11:48:54.647-06:00" csid="24701"
+                  contentLink="/browse/~raw,r=24701/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24700">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24700"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2008-12-11T11:46:38.445-06:00" csid="24700"
+                  contentLink="/browse/~raw,r=24700/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24698">
+        <comment>disabled clover execution - temporary</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24698"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T11:29:26.511-06:00" csid="24698"
+                  contentLink="/browse/~raw,r=24698/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24696">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24696"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T11:29:13.945-06:00" csid="24696"
+                  contentLink="/browse/~raw,r=24696/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24693">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24693"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="2"
+                  date="2008-12-11T11:21:49.470-06:00" csid="24693"
+                  contentLink="/browse/~raw,r=24693/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24692">
+        <comment>[maven-release-plugin] rollback the release of atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="506" fileRevisionState="CHANGED" rev="24692"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2008-12-11T10:54:10.893-06:00" csid="24692"
+                  contentLink="/browse/~raw,r=24692/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24691">
+        <comment>clover:do not insturment test clases - temporary</comment>
+    </fileRevision>
+    <fileRevision totalLines="506" fileRevisionState="CHANGED" rev="24691"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="1"
+                  date="2008-12-11T10:37:01.608-06:00" csid="24691"
+                  contentLink="/browse/~raw,r=24691/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24690">
+        <comment>clover:do not insturment test clases</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24690"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T09:33:20.955-06:00" csid="24690"
+                  contentLink="/browse/~raw,r=24690/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24688">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24688"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-12-11T09:33:10.880-06:00" csid="24688"
+                  contentLink="/browse/~raw,r=24688/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24687">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24687"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="3" linesAdded="3"
+                  date="2008-12-11T09:31:28.305-06:00" csid="24687"
+                  contentLink="/browse/~raw,r=24687/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="pmaruszak" ancestor="24148">
+        <comment>releasing plugin version beta 9</comment>
+    </fileRevision>
+    <fileRevision totalLines="505" fileRevisionState="CHANGED" rev="24148"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="5"
+                  date="2008-12-02T08:34:13.907-06:00" csid="24148"
+                  contentLink="/browse/~raw,r=24148/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="mwent" ancestor="24012">
+        <comment>PL-927 - Error-Message in IntelliJ-IDEA-Plugin when try to &quot;Open file for Review&quot; -
+            multi-module project
+            dependency on commons-lang
+
+        </comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="24012"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-11-28T09:40:38.296-06:00" csid="24012"
+                  contentLink="/browse/~raw,r=24012/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="jjaroczynski" ancestor="24007">
+        <comment>PL-893: CheckNowButton radios state stored in configuration - UnitTests</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="24007"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-11-28T06:33:51.391-06:00" csid="24007"
+                  contentLink="/browse/~raw,r=24007/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="24003">
+        <comment>NONE after release - restoring dependency on SNAPSHOT commons</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="24003"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-28T05:38:43.885-06:00" csid="24003"
+                  contentLink="/browse/~raw,r=24003/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="24001">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="24001"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-28T05:38:31.149-06:00" csid="24001"
+                  contentLink="/browse/~raw,r=24001/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="24000">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-beta-8</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="24000"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-11-28T05:37:41.218-06:00" csid="24000"
+                  contentLink="/browse/~raw,r=24000/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23937">
+        <comment>NONE preparing beta-8 release</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="23937"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-11-27T03:57:42.147-06:00" csid="23937"
+                  contentLink="/browse/~raw,r=23937/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23862">
+        <comment>restoring dependency on SNAPSHOT commons</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="23862"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-26T10:57:29.922-06:00" csid="23862"
+                  contentLink="/browse/~raw,r=23862/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23860">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="23860"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-26T10:57:20.113-06:00" csid="23860"
+                  contentLink="/browse/~raw,r=23860/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23859">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-alpha-8</comment>
+    </fileRevision>
+    <fileRevision totalLines="500" fileRevisionState="CHANGED" rev="23859"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="9"
+                  date="2008-11-26T10:56:43.332-06:00" csid="23859"
+                  contentLink="/browse/~raw,r=23859/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23857">
+        <comment>NONE setting correct SCM and issue management for IntelliJ connector</comment>
+    </fileRevision>
+    <fileRevision totalLines="491" fileRevisionState="CHANGED" rev="23857"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="10" linesAdded="0"
+                  date="2008-11-26T10:46:50.912-06:00" csid="23857"
+                  contentLink="/browse/~raw,r=23857/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23856">
+        <comment>[maven-release-plugin] rollback the release of atlassian-idea-plugin-2.0.0-alpha-8</comment>
+    </fileRevision>
+    <fileRevision totalLines="501" fileRevisionState="CHANGED" rev="23856"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-26T10:41:18.191-06:00" csid="23856"
+                  contentLink="/browse/~raw,r=23856/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23854">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="501" fileRevisionState="CHANGED" rev="23854"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="4" linesAdded="4"
+                  date="2008-11-26T10:40:55.132-06:00" csid="23854"
+                  contentLink="/browse/~raw,r=23854/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23853">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-alpha-8</comment>
+    </fileRevision>
+    <fileRevision totalLines="501" fileRevisionState="CHANGED" rev="23853"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="10"
+                  date="2008-11-26T10:40:18.101-06:00" csid="23853"
+                  contentLink="/browse/~raw,r=23853/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23851">
+        <comment>NONE setting correct SCM and issue management for IntelliJ connector</comment>
+    </fileRevision>
+    <fileRevision totalLines="491" fileRevisionState="CHANGED" rev="23851"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="1"
+                  date="2008-11-26T10:26:51.921-06:00" csid="23851"
+                  contentLink="/browse/~raw,r=23851/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23850">
+        <comment>NONE preparing 2.0.0-beta-8 pre-release</comment>
+    </fileRevision>
+    <fileRevision totalLines="491" fileRevisionState="CHANGED" rev="23850"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="7" linesAdded="1"
+                  date="2008-11-26T09:58:18.347-06:00" csid="23850"
+                  contentLink="/browse/~raw,r=23850/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23848">
+        <comment>[maven-release-plugin] prepare for next development iteration</comment>
+    </fileRevision>
+    <fileRevision totalLines="497" fileRevisionState="CHANGED" rev="23848"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="7"
+                  date="2008-11-26T09:57:55.155-06:00" csid="23848"
+                  contentLink="/browse/~raw,r=23848/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23847">
+        <comment>[maven-release-plugin] prepare release atlassian-idea-plugin-2.0.0-alpha-8</comment>
+    </fileRevision>
+    <fileRevision totalLines="491" fileRevisionState="CHANGED" rev="23847"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="2" linesAdded="2"
+                  date="2008-11-26T09:49:09.407-06:00" csid="23847"
+                  contentLink="/browse/~raw,r=23847/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23510">
+        <comment>NONE preparing 2.0.0-beta-8 pre-release</comment>
+    </fileRevision>
+    <fileRevision totalLines="491" fileRevisionState="CHANGED" rev="23510"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="1" linesAdded="5"
+                  date="2008-11-18T08:19:30.775-06:00" csid="23510"
+                  contentLink="/browse/~raw,r=23510/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23445">
+        <comment>NONE making mvn deploy work again after SVN reorg</comment>
+    </fileRevision>
+    <fileRevision totalLines="487" fileRevisionState="CHANGED" rev="23445"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="5" linesAdded="17"
+                  date="2008-11-17T09:55:21.119-06:00" csid="23445"
+                  contentLink="/browse/~raw,r=23445/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23417">
+        <comment>NONE renamed maven modules to be more up-to-date with current project name</comment>
+    </fileRevision>
+    <fileRevision totalLines="475" fileRevisionState="ADDED" rev="23417"
+                  path="trunk/atlassian-intellij-connector/pom.xml" linesRemoved="0" linesAdded="475"
+                  date="2008-11-16T18:26:31.828-06:00" csid="23417"
+                  contentLink="/browse/~raw,r=23417/connector-intellij/trunk/atlassian-intellij-connector/pom.xml"
+                  author="wseliga" ancestor="23416">
+        <comment>NONE finishing reorganization. name changed from idea connector to intellij connector
+
+        </comment>
+    </fileRevision>
+</fileRevisionList>

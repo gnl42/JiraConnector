@@ -1,0 +1,8 @@
+<response>
+	<buildKey>${buildKey}</buildKey>
+	<buildState>Successful</buildState>
+	<buildNumber>${buildNumber}</buildNumber>
+	<failedTestCount>0</failedTestCount>
+	<successfulTestCount>30</successfulTestCount>
+	<buildTime>2008-01-29 14:49:36</buildTime>
+</response>

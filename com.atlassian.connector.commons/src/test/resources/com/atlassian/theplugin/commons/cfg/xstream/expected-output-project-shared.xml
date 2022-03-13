@@ -1,0 +1,18 @@
+<test>
+	<project-configuration id="1">
+		<servers id="2">
+			<fisheye id="3">
+				<server-id id="4">341d662c-e744-4690-a5f8-6e127c0bc84d</server-id>
+				<name>myfisheye1</name>
+				<url>https://lech.atlassian.pl/fisheye</url>
+				<shared>false</shared>
+			</fisheye>
+		</servers>
+		<default-crucible-server id="5">341d662c-e744-4690-a5f8-6e127c0bc84e</default-crucible-server>
+		<default-crucible-project>CRUC</default-crucible-project>
+		<default-crucible-repo>Repo1</default-crucible-repo>
+		<default-fisheye-server id="6">341d662c-e744-4690-a5f8-6e127c0bc84f</default-fisheye-server>
+		<default-fisheye-repo>FishRepo</default-fisheye-repo>
+		<fisheye-project-path>FishEye/Path/To</fisheye-project-path>
+	</project-configuration>
+</test>

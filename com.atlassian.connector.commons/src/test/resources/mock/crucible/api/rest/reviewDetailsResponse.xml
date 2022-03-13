@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<detailedReviewData>
+  <allowReviewersToJoin>false</allowReviewersToJoin>
+  <author>
+    <displayName>Wojciech Seliga</displayName>
+    <userName>wseliga</userName>
+  </author>
+  <createDate>2009-01-23T16:01:17.464+0100</createDate>
+  <creator>
+    <displayName>Wojciech Seliga</displayName>
+    <userName>wseliga</userName>
+  </creator>
+  <description>Some description here</description>
+  <metricsVersion>1</metricsVersion>
+  <moderator>
+    <displayName>Wojciech Seliga</displayName>
+    <userName>wseliga</userName>
+  </moderator>
+  <name>PL-1085 - just testing - please ignore</name>
+  <permaId>
+    <id>TST-9</id>
+  </permaId>
+  <projectKey>TST</projectKey>
+  <state>Draft</state>
+  <actions>
+    <actionData>
+      <name>action:abandonReview</name>
+    </actionData>
+    <actionData>
+      <name>action:submitReview</name>
+    </actionData>
+    <actionData>
+      <name>action:approveReview</name>
+    </actionData>
+    <actionData>
+      <name>action:rejectReview</name>
+    </actionData>
+    <actionData>
+      <name>action:deleteReview</name>
+    </actionData>
+    <actionData>
+      <name>action:reopenReview</name>
+    </actionData>
+    <actionData>
+      <name>action:viewReview</name>
+    </actionData>
+    <actionData>
+      <name>action:closeReview</name>
+    </actionData>
+    <actionData>
+      <name>action:modifyReviewFiles</name>
+    </actionData>
+    <actionData>
+      <name>action:createReview</name>
+    </actionData>
+    <actionData>
+      <name>action:recoverReview</name>
+    </actionData>
+    <actionData>
+      <name>action:commentOnReview</name>
+    </actionData>
+    <actionData>
+      <name>action:summarizeReview</name>
+    </actionData>
+  </actions>
+  <generalComments />
+  <reviewItems>
+    <reviewItem>
+      <permId>
+        <id>CFR-2898</id>
+      </permId>
+      <authorName>jgorycki</authorName>
+      <commitDate>2009-01-23T14:18:20.376+0100</commitDate>
+      <commitType>Modified</commitType>
+      <fileType>File</fileType>
+      <fromPath>trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/MultiTabToolWindow.java</fromPath>
+      <fromRevision>26480</fromRevision>
+      <repositoryName>studio</repositoryName>
+      <toPath>trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/MultiTabToolWindow.java</toPath>
+      <toRevision>26665</toRevision>
+    </reviewItem>
+  </reviewItems>
+  <reviewers>
+    <reviewer>
+      <displayName>Marek Went</displayName>
+      <userName>mwent</userName>
+      <completed>false</completed>
+    </reviewer>
+  </reviewers>
+  <transitions>
+    <transitionData>
+      <name>action:approveReview</name>
+    </transitionData>
+    <transitionData>
+      <name>action:abandonReview</name>
+    </transitionData>
+  </transitions>
+  <versionedComments>
+    <versionedLineCommentData>
+      <createDate>2009-02-11T12:34:55.170+0100</createDate>
+      <defectApproved>false</defectApproved>
+      <defectRaised>false</defectRaised>
+      <deleted>false</deleted>
+      <draft>false</draft>
+      <message>now more crazy. line 61, 65-66, 77, 79-82</message>
+      <metrics />
+      <permaIdAsString>CMT:908</permaIdAsString>
+      <replies />
+      <user>
+        <displayName>Wojciech Seliga</displayName>
+        <userName>wseliga</userName>
+      </user>
+      <permaId>
+        <id>CMT:908</id>
+      </permaId>
+      <reviewItemId>
+        <id>CFR-2898</id>
+      </reviewItemId>
+      <fromLineRange>61, 65-66, 77, 79-80</fromLineRange>
+      <toLineRange>61, 66-67, 78, 80-82</toLineRange>
+    </versionedLineCommentData>
+    <versionedLineCommentData>
+      <createDate>2009-02-11T12:11:51.844+0100</createDate>
+      <defectApproved>false</defectApproved>
+      <defectRaised>false</defectRaised>
+      <deleted>false</deleted>
+      <draft>false</draft>
+      <message>a comment in line 64 - 65, 78 and 80</message>
+      <metrics />
+      <permaIdAsString>CMT:907</permaIdAsString>
+      <replies />
+      <user>
+        <displayName>Wojciech Seliga</displayName>
+        <userName>wseliga</userName>
+      </user>
+      <permaId>
+        <id>CMT:907</id>
+      </permaId>
+      <reviewItemId>
+        <id>CFR-2898</id>
+      </reviewItemId>
+      <fromLineRange>64-65, 79-80</fromLineRange>
+      <toLineRange>65-66, 80, 82</toLineRange>
+    </versionedLineCommentData>
+  </versionedComments>
+</detailedReviewData>
+

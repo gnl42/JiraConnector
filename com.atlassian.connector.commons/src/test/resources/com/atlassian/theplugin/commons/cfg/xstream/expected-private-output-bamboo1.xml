@@ -1,0 +1,17 @@
+<single-server-private-cfg>
+	<private-bamboo-server-cfg id="1">
+		<server-id id="2">141d662c-e744-4690-a5f8-6e127c0bc84f</server-id>
+		<enabled>true</enabled>
+		<username>mytestuser</username>
+		<password>bXlwYXNzd29yZDE=</password>
+		<use-http-basic>false</use-http-basic>
+		<useSessionCookies>false</useSessionCookies>
+		<basic-username />
+		<basic-password />
+		<used-default-credentials>false</used-default-credentials>
+		<shared>false</shared>
+		<timezone-offset>0</timezone-offset>
+		<plans id="3" />
+		<useFavourites>false</useFavourites>
+	</private-bamboo-server-cfg>
+</single-server-private-cfg>

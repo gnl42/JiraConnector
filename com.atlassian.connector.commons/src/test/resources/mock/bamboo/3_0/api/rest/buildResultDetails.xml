@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result id="124191131" number="5" lifeCycleState="Finished" state="Failed" key="COMMON-BB-JOB1-5" expand="changes,testResults,metadata,artifacts,comments,labels,jiraIssues">
+  <link rel="self" href="http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/result/COMMON-BB-JOB1-5" />
+  <chain rel="self" href="http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/result/COMMON-BB-5" />
+  <stage>Default Stage</stage>
+  <buildStartedTime>2010-08-26T11:47:51.424+10:00</buildStartedTime>
+  <buildCompletedTime>2010-08-26T11:48:03.550+10:00</buildCompletedTime>
+  <buildDurationInSeconds>12</buildDurationInSeconds>
+  <buildDuration>12126</buildDuration>
+  <buildDurationDescription>12 seconds</buildDurationDescription>
+  <buildRelativeTime>3 months ago</buildRelativeTime>
+  <queueStartedTime>2010-08-26T11:33:27.370+10:00</queueStartedTime>
+  <queueTimeInSeconds>862</queueTimeInSeconds>
+  <queueDuration>862249</queueDuration>
+  <prettyQueueDuration>14 mins</prettyQueueDuration>
+  <vcsUpdateStartedTime>2010-08-26T11:47:49.619+10:00</vcsUpdateStartedTime>
+  <vcsUpdateInSeconds>1</vcsUpdateInSeconds>
+  <vcsUpdateDuration>1805</vcsUpdateDuration>
+  <prettyVcsUpdateDuration>1 sec</prettyVcsUpdateDuration>
+  <vcsRevisionKey>106977</vcsRevisionKey>
+  <buildTestSummary>2 of 2 failed</buildTestSummary>
+  <successfulTestCount>0</successfulTestCount>
+  <failedTestCount>2</failedTestCount>
+  <buildReason>Manual build</buildReason>
+  <artifacts size="1" max-result="1" start-index="0" />
+  <comments size="0" max-result="0" start-index="0" />
+  <labels size="0" max-result="0" start-index="0" />
+  <jiraIssues size="0" max-result="0" start-index="0" />
+  <changes size="0" max-result="0" start-index="0" />
+  <testResults fixed="0" existingFailed="0" newFailed="2" failed="2" successful="0" all="2" expand="allTests,successfulTests,failedTests,newFailedTests,existingFailedTests,fixedTests">
+    <allTests expand="testResult" size="2" max-result="2" start-index="0">
+      <testResult status="failed" methodName="testFindChangeSetsForRepository" className="com.atlassian.bitbucket.ChangeSetBuilderTest" expand="errors">
+        <duration>191</duration>
+        <durationInSeconds>0</durationInSeconds>
+        <errors size="1" max-result="1" start-index="0">
+          <error>
+            <message>junit.framework.AssertionFailedError
+	at junit.framework.Assert.fail(Assert.java:47)
+	at junit.framework.Assert.assertTrue(Assert.java:20)
+	at junit.framework.Assert.assertNotNull(Assert.java:217)
+	at junit.framework.Assert.assertNotNull(Assert.java:210)
+	at com.atlassian.bitbucket.ChangeSetBuilderTest.testFindChangeSetsForRepository(ChangeSetBuilderTest.java:16)</message>
+          </error>
+        </errors>
+      </testResult>
+      <testResult status="failed" methodName="testFindSpecificChangeSet" className="com.atlassian.bitbucket.ChangeSetBuilderTest" expand="errors">
+        <duration>17</duration>
+        <durationInSeconds>0</durationInSeconds>
+        <errors size="1" max-result="1" start-index="0">
+          <error>
+            <message>junit.framework.AssertionFailedError
+	at junit.framework.Assert.fail(Assert.java:47)
+	at junit.framework.Assert.assertTrue(Assert.java:20)
+	at junit.framework.Assert.assertNotNull(Assert.java:217)
+	at junit.framework.Assert.assertNotNull(Assert.java:210)
+	at com.atlassian.bitbucket.ChangeSetBuilderTest.testFindSpecificChangeSet(ChangeSetBuilderTest.java:40)</message>
+          </error>
+        </errors>
+      </testResult>
+    </allTests>
+    <successfulTests size="0" max-result="0" start-index="0" />
+    <failedTests size="2" max-result="2" start-index="0" />
+    <newFailedTests size="2" max-result="2" start-index="0" />
+    <existingFailedTests size="0" max-result="0" start-index="0" />
+    <fixedTests size="0" max-result="0" start-index="0" />
+  </testResults>
+  <metadata size="9" max-result="9" start-index="0" />
+</result>
+

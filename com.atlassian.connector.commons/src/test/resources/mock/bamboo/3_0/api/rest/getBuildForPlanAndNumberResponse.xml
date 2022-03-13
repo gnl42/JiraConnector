@@ -1,0 +1,20 @@
+<result id="18483818" number="140" lifeCycleState="Finished" state="Successful" key="TP-DEF-140" expand="changes,metadata,comments,labels,jiraIssues,stages">
+  <link rel="self" href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/result/TP-DEF-140" />
+  <buildStartedTime>2009-08-15T17:00:06.115-05:00</buildStartedTime>
+  <buildCompletedTime>2009-08-15T17:00:36.781-05:00</buildCompletedTime>
+  <buildDurationInSeconds>30</buildDurationInSeconds>
+  <buildDuration>30666</buildDuration>
+  <buildDurationDescription>30 seconds</buildDurationDescription>
+  <buildRelativeTime>1 year ago</buildRelativeTime>
+  <vcsRevisionKey>41929</vcsRevisionKey>
+  <buildTestSummary>247 passed</buildTestSummary>
+  <successfulTestCount>247</successfulTestCount>
+  <failedTestCount>0</failedTestCount>
+  <buildReason>Scheduled build</buildReason>
+  <comments size="0" max-result="0" start-index="0" />
+  <labels size="0" max-result="0" start-index="0" />
+  <jiraIssues size="0" max-result="0" start-index="0" />
+  <stages size="1" max-result="1" start-index="0" />
+  <changes size="0" max-result="0" start-index="0" />
+  <metadata size="5" max-result="5" start-index="0" />
+</result>

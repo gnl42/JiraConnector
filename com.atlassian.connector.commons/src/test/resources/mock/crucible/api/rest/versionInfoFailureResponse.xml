@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+	<title>500 Server Error - FishEye</title>
+	<link rel="SHORTCUT ICON" href="/foo/favicon.ico" />
+<link rel="stylesheet" href="/foo/static/k30spi/css/headerfooter.css" type="text/css" />
+<link rel="stylesheet" href="/foo/static/k30spi/main.css" type="text/css" />
+<link rel="stylesheet" href="/foo/static/k30spi/diff.css" type="text/css" />
+<link rel="stylesheet" href="/foo/uar/browser.css" type="text/css" />
+
+<link rel="stylesheet" href="/foo/static/k30spi/custom.css" type="text/css" />
+<link rel="stylesheet" href="/foo/static/k30spi/synhi.css" type="text/css" />
+
+<script src="/foo/static/k30spi/shared.js" type="text/javascript" language="Javascript1.2" charset="utf-8"></script>
+
+<script type="text/javascript" language="Javascript1.2">
+var fishEyePageContext = '/foo';
+var fishEyeSTATICDIR = 'static/k30spi';
+</script>
+</head>
+
+<body style="text-align:center">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="header">
+<h1>
+
+
+
+		<a href="/foo/">FishEye + Crucible</a>
+
+
+
+
+</h1>
+<ul>
+
+
+		<li><a href="/foo/">&nbsp;</a></li>
+
+
+
+
+
+<li id="headerUserDetails">
+
+
+		jg |
+		<a href="/foo/profile">Profile</a> |
+		<a href="/foo/logout">Logout</a> |
+
+	<a target="_help"
+   href="http://docs.atlassian.com/fisheye/docs-015/FishEye+Documentation+Home"
+   class="head_help"
+   title="">Help</a>
+
+</li>
+</ul>
+</div>
+
+
+<table id="secondHeader" cellspacing="0">
+<tr id="pjrow">
+
+	<td id="quickSearch">
+
+	</td>
+</tr>
+
+</table>
+
+
+
+
+<div class="layoutCentredPane">
+	<div class="box" style="text-align:left">
+		<h3>500 Server Error</h3>
+
+		<div class="welcomePane">
+			<p><strong>FishEye was unable to process your request.</strong></p>
+
+				java.lang.RuntimeException<br/>
+
+
+
+
+						<p><code>java.lang.RuntimeException: com.cenqua.crucible.model.PermaIdFormatException: versionInfo is an invalid Review PermaId</code></p>
+
+
+
+
+			<p>You are running release
+
+				CR1.5.4
+
+				FE1.5.4
+				(build-dev 2008-06-25),
+				please report your release number when reporting bugs.</p>
+
+
+
+
+					<p>Got a problem or a suggestion? Discuss it in the <a href="http://forums.atlassian.com/">online
+						forums</a>
+						see the <a href="http://support.atlassian.com">website</a> for
+						other support options.
+					</p>
+
+
+
+
+
+			<h4><a href="/foo/cru/">Crucible</a></h4>
+
+
+			<h4>FishEye Repositories</h4>
+
+
+
+
+<table class="adminTable" style="font-size:100%">
+
+
+
+
+
+		<tr>
+
+
+					<th>
+						<a href="/foo/browse/aa">aa:</a>
+					</th>
+
+					<td><a href="/foo/browse/aa">browse</a></td>
+					<td><a href="/foo/search/aa">search</a></td>
+					<td><a href="/foo/changelog/aa">changelog</a></td>
+					<td><a href="/foo/chart/aa">chart</a></td>
+
+
+
+		</tr>
+
+
+
+
+
+
+
+
+</table>
+
+			<p/>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="licensemessage">
+Development License registered to Cenqua. This license of FishEye is provided for FishEye development purposes only.
+
+</div>
+
+
+
+<div class="bottomshadow"> </div>
+
+<div id="poweredby" class="smalltext">
+<a class="smalltext" href="http://www.atlassian.com/software/crucible/">Atlassian Crucible</a>,
+<a class="smalltext" href="http://www.atlassian.com/software/crucible/">painless code review</a>.
+(Version:1.5.4
+Build:build-dev 2008-06-25
+) -
+<a class="smalltext" href="/foo/admin/">Administration</a>
+
+<!-- TODO add link to instance administrators when available
+- <a href="/administrators.action">Contact Administrators</a>
+-->
+
+- Page generated 2008-09-04 12:50 +0200
+
+</div>
+
+<!--
+page produced in 128 ms
+-->
+
+
+</body>
+</html>
+
+

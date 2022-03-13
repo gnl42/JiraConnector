@@ -1,0 +1,15 @@
+<response>
+<projectName>Atlassian Connector Commons</projectName>
+<buildName>Build Tools</buildName>
+<buildKey>ACC-BT</buildKey>
+<buildState>Successful</buildState>
+<buildNumber>6</buildNumber>
+<failedTestCount>0</failedTestCount>
+<successfulTestCount>0</successfulTestCount>
+<buildTime>2008-12-12 03:08:10</buildTime>
+<buildDurationInSeconds>5</buildDurationInSeconds>
+<buildDurationDescription>5 seconds</buildDurationDescription>
+<buildRelativeBuildDate>1 month ago</buildRelativeBuildDate>
+<buildTestSummary>No tests found!</buildTestSummary>
+<buildReason>Code has changed</buildReason>
+</response>

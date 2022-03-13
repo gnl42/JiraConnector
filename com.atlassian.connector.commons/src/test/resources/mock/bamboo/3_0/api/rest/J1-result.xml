@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result id="23101655" number="1" lifeCycleState="Finished"
+	state="Failed" key="J1"
+	expand="changes,testResults,metadata,artifacts,comments,labels,jiraIssues">
+	<link rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/result/ECL-TST-JOB1-2086" />
+	<chain rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/result/ECL-TST-2086" />
+	<stage>Default Stage</stage>
+	<buildStartedTime>2010-12-22T02:07:03.574-06:00</buildStartedTime>
+	<buildCompletedTime>2010-12-22T02:49:04.100-06:00</buildCompletedTime>
+	<buildDurationInSeconds>2520</buildDurationInSeconds>
+	<buildDuration>2520526</buildDuration>
+	<buildDurationDescription>42 minutes</buildDurationDescription>
+	<buildRelativeTime>3 hours ago</buildRelativeTime>
+	<queueStartedTime>2010-12-22T02:06:57.699-06:00</queueStartedTime>
+	<queueTimeInSeconds>0</queueTimeInSeconds>
+	<queueDuration>306</queueDuration>
+	<prettyQueueDuration>&lt; 1 sec</prettyQueueDuration>
+	<vcsUpdateStartedTime>2010-12-22T02:06:58.005-06:00
+	</vcsUpdateStartedTime>
+	<vcsUpdateInSeconds>5</vcsUpdateInSeconds>
+	<vcsUpdateDuration>5569</vcsUpdateDuration>
+	<prettyVcsUpdateDuration>5 secs</prettyVcsUpdateDuration>
+	<vcsRevisionKey>eb912aa05890e9f2a68e145ed1092c9881682365
+	</vcsRevisionKey>
+	<buildTestSummary>71 of 139 failed</buildTestSummary>
+	<successfulTestCount>68</successfulTestCount>
+	<failedTestCount>71</failedTestCount>
+	<buildReason>Manual build</buildReason>
+	<artifacts size="2" max-result="2" start-index="0" />
+	<comments size="0" max-result="0" start-index="0" />
+	<labels size="0" max-result="0" start-index="0" />
+	<jiraIssues size="0" max-result="0" start-index="0" />
+	<changes size="0" max-result="0" start-index="0" />
+	<testResults fixed="0" existingFailed="0" newFailed="2"
+		failed="2" successful="0" all="2"
+		expand="allTests,successfulTests,failedTests,newFailedTests,existingFailedTests,fixedTests">
+		<allTests expand="testResult" size="2" max-result="2"
+			start-index="0">
+			<testResult status="failed" methodName="testAddComment"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>30015</duration>
+				<durationInSeconds>30</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException:
+							Timeout waiting for connection
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.callOnce(JiraSoapClient.java:529)
+							at
+							org.eclipse.mylyn.internal.provisional.commons.soap.AbstractSoapClient.call(AbstractSoapClient.java:56)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.call(JiraSoapClient.java:498)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.getServerInfo(JiraSoapClient.java:203)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient.getServerInfo(JiraClient.java:420)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.refreshServerInfo(JiraClientCache.java:308)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.refreshDetails(JiraClientCache.java:275)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil.refreshDetails(JiraTestUtil.java:253)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraFixture.client(JiraFixture.java:91)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraFixture.client(JiraFixture.java:86)
+							at
+							com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest.setUp(JiraClientTest.java:66)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+
+</message>
+					</error>
+				</errors>
+			</testResult>
+			<testResult status="failed" methodName="testAddWorkLog"
+				className="com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest"
+				expand="errors">
+				<duration>30015</duration>
+				<durationInSeconds>30</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>com.atlassian.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException:
+							Timeout waiting for connection
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.callOnce(JiraSoapClient.java:529)
+							at
+							org.eclipse.mylyn.internal.provisional.commons.soap.AbstractSoapClient.call(AbstractSoapClient.java:56)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.call(JiraSoapClient.java:498)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.soap.JiraSoapClient.getServerInfo(JiraSoapClient.java:203)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClient.getServerInfo(JiraClient.java:420)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.refreshServerInfo(JiraClientCache.java:308)
+							at
+							com.atlassian.connector.eclipse.internal.jira.core.service.JiraClientCache.refreshDetails(JiraClientCache.java:275)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraTestUtil.refreshDetails(JiraTestUtil.java:253)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraFixture.client(JiraFixture.java:91)
+							at
+							com.atlassian.connector.eclipse.jira.tests.util.JiraFixture.client(JiraFixture.java:86)
+							at
+							com.atlassian.connector.eclipse.jira.tests.client.JiraClientTest.setUp(JiraClientTest.java:66)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:354)
+							at
+							org.eclipse.test.EclipseTestRunner.run(EclipseTestRunner.java:206)
+							at
+							org.eclipse.test.UITestApplication$3.run(UITestApplication.java:195)
+							at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+							at
+							org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+							at
+							org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3468)
+							at
+							org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3115)
+							at
+							org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+							at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+							at
+							org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+							at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+							at
+							org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+							at
+							org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+							at
+							org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+							at
+							org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+							at
+							org.eclipse.test.UITestApplication.runApplication(UITestApplication.java:138)
+							at
+							org.eclipse.test.UITestApplication.run(UITestApplication.java:60)
+							at
+							org.eclipse.test.UITestApplication.start(UITestApplication.java:210)
+							at
+							org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+							at
+							org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+							at
+							org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+							at
+							org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+							at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+							at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+							at org.eclipse.equinox.launcher.Main.main(Main.java:1287)
+							at org.eclipse.core.launcher.Main.main(Main.java:34)
+</message>
+					</error>
+				</errors>
+			</testResult>
+		</allTests>
+		<successfulTests size="0" max-result="0"
+			start-index="0" />
+		<failedTests size="2" max-result="2" start-index="0" />
+		<newFailedTests size="2" max-result="2" start-index="0" />
+		<existingFailedTests size="0" max-result="0"
+			start-index="0" />
+		<fixedTests size="0" max-result="0" start-index="0" />
+	</testResults>
+	<metadata size="10" max-result="10" start-index="0" />
+</result>

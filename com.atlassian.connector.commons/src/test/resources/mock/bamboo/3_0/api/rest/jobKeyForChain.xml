@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plan enabled="true" type="chain" name="Common - Atlassian Bitbucket" key="COMMON-BB" expand="actions,stages">
+  <projectKey>COMMON</projectKey>
+  <projectName>Common</projectName>
+  <link rel="self" href="http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/plan/COMMON-BB" />
+  <isFavourite>false</isFavourite>
+  <isActive>false</isActive>
+  <isBuilding>false</isBuilding>
+  <averageBuildTimeInSeconds>30.0</averageBuildTimeInSeconds>
+  <actions size="1" max-result="1" start-index="0" />
+  <stages expand="stage" size="1" max-result="1" start-index="0">
+    <stage expand="plans">
+      <name>Default Stage</name>
+      <description />
+      <plans expand="plan" size="1" max-result="1" start-index="0">
+        <plan enabled="true" type="job" name="Common - Atlassian Bitbucket - Default Job" key="COMMON-BB-JOB1">
+          <link rel="self" href="http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/plan/COMMON-BB-JOB1" />
+        </plan>
+      </plans>
+    </stage>
+  </stages>
+</plan>

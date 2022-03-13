@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result id="23101655" number="1" lifeCycleState="Finished"
+	state="Failed" key="J2"
+	expand="changes,testResults,metadata,artifacts,comments,labels,jiraIssues">
+	<link rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/result/ECL-TST-JOB1-2086" />
+	<chain rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/result/ECL-TST-2086" />
+	<stage>Default Stage</stage>
+	<buildStartedTime>2010-12-22T02:07:03.574-06:00</buildStartedTime>
+	<buildCompletedTime>2010-12-22T02:49:04.100-06:00</buildCompletedTime>
+	<buildDurationInSeconds>2520</buildDurationInSeconds>
+	<buildDuration>2520526</buildDuration>
+	<buildDurationDescription>42 minutes</buildDurationDescription>
+	<buildRelativeTime>3 hours ago</buildRelativeTime>
+	<queueStartedTime>2010-12-22T02:06:57.699-06:00</queueStartedTime>
+	<queueTimeInSeconds>0</queueTimeInSeconds>
+	<queueDuration>306</queueDuration>
+	<prettyQueueDuration>&lt; 1 sec</prettyQueueDuration>
+	<vcsUpdateStartedTime>2010-12-22T02:06:58.005-06:00
+	</vcsUpdateStartedTime>
+	<vcsUpdateInSeconds>5</vcsUpdateInSeconds>
+	<vcsUpdateDuration>5569</vcsUpdateDuration>
+	<prettyVcsUpdateDuration>5 secs</prettyVcsUpdateDuration>
+	<vcsRevisionKey>eb912aa05890e9f2a68e145ed1092c9881682365
+	</vcsRevisionKey>
+	<buildTestSummary>71 of 139 failed</buildTestSummary>
+	<successfulTestCount>68</successfulTestCount>
+	<failedTestCount>71</failedTestCount>
+	<buildReason>Manual build</buildReason>
+	<artifacts size="2" max-result="2" start-index="0" />
+	<comments size="0" max-result="0" start-index="0" />
+	<labels size="0" max-result="0" start-index="0" />
+	<jiraIssues size="0" max-result="0" start-index="0" />
+	<changes size="0" max-result="0" start-index="0" />
+	<testResults fixed="0" existingFailed="0" newFailed="0"
+		failed="0" successful="2" all="2"
+		expand="allTests,successfulTests,failedTests,newFailedTests,existingFailedTests,fixedTests">
+		<allTests expand="testResult" size="2" max-result="2"
+			start-index="0">
+			<testResult status="successful" methodName="testJiraTaskSave"
+				className="com.atlassian.connector.eclipse.jira.tests.core.JiraTaskExternalizationTest"
+				expand="errors">
+				<duration>24</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="successful" methodName="testGetSubscribedBuildsTaskRepository"
+				className="com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManagerTest"
+				expand="errors">
+				<duration>5</duration>
+				<durationInSeconds>0</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+		</allTests>
+		<successfulTests size="2" max-result="2"
+			start-index="0" />
+		<failedTests size="0" max-result="0" start-index="0" />
+		<newFailedTests size="0" max-result="0" start-index="0" />
+		<existingFailedTests size="0" max-result="0"
+			start-index="0" />
+		<fixedTests size="0" max-result="0" start-index="0" />
+	</testResults>
+	<metadata size="10" max-result="10" start-index="0" />
+</result>

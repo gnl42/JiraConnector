@@ -1,0 +1,10 @@
+<plan name="Plugin Default" key="TP-DEF" expand="actions">
+	<projectKey>TP</projectKey>
+	<projectName>The Plugin</projectName>
+	<isFavourite>true</isFavourite>
+	<averageBuildTimeInSeconds>509.0</averageBuildTimeInSeconds>
+	<isInBuildQueue>true</isInBuildQueue>
+	<isBuilding>false</isBuilding>
+	<link rel="self" href="http://localhost:8085/bamboo/rest/api/latest/plan/BAM-HEAD"/>
+	<actions size="7" max-result="7" start-index="0"/>
+</plan>

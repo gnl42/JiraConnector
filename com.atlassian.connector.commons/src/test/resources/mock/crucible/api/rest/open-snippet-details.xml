@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<detailedReviewData>
+	<allowReviewersToJoin>true</allowReviewersToJoin>
+	<author>
+		<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48
+		</avatarUrl>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</author>
+	<createDate>2010-04-28T14:41:58.167+0200</createDate>
+	<creator>
+		<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48
+		</avatarUrl>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</creator>
+	<description></description>
+	<metricsVersion>1</metricsVersion>
+	<name></name>
+	<permaId>
+		<id>CR-1</id>
+	</permaId>
+	<projectKey>CR</projectKey>
+	<state>OpenSnippet</state>
+	<type>SNIPPET</type>
+	<stats>
+		<comments>
+			<user>wseliga</user>
+			<published>2</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>0</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>2</read>
+		</comments>
+	</stats>
+	<actions>
+		<actionData>
+			<name>action:reopenSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:summarizeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:approveReview</name>
+		</actionData>
+		<actionData>
+			<name>action:reopenReview</name>
+		</actionData>
+		<actionData>
+			<name>action:modifyReviewFiles</name>
+		</actionData>
+		<actionData>
+			<name>action:abandonReview</name>
+		</actionData>
+		<actionData>
+			<name>action:deleteSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:viewReview</name>
+		</actionData>
+		<actionData>
+			<name>action:rejectReview</name>
+		</actionData>
+		<actionData>
+			<name>action:uncompleteReview</name>
+		</actionData>
+		<actionData>
+			<name>action:createSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:completeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:commentOnReview</name>
+		</actionData>
+		<actionData>
+			<name>action:deleteReview</name>
+		</actionData>
+		<actionData>
+			<name>action:submitReview</name>
+		</actionData>
+		<actionData>
+			<name>action:closeSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:recoverReview</name>
+		</actionData>
+		<actionData>
+			<name>action:closeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:createReview</name>
+		</actionData>
+	</actions>
+	<generalComments />
+	<reviewItems>
+		<reviewItem>
+			<participants>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48
+						</avatarUrl>
+						<displayName>Wojciech Seliga</displayName>
+						<userName>wseliga</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+			</participants>
+			<permId>
+				<id>CFR-4</id>
+			</permId>
+			<repositoryName>UPLOAD:3</repositoryName>
+			<fromPath></fromPath>
+			<fromRevision></fromRevision>
+			<toPath>CR-snippet-1272458518664.java</toPath>
+			<toRevision>6</toRevision>
+			<toContentUrl>foo/cru/CR-1/rawcontent/316/CR-snippet-1272458518664.java
+			</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Added</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>false</showAsDiff>
+			<commitDate>2010-04-28T14:41:58.729+0200</commitDate>
+			<revisions size="1" />
+		</reviewItem>
+	</reviewItems>
+	<reviewers />
+	<transitions>
+		<transitionData>
+			<name>action:closeSnippet</name>
+		</transitionData>
+	</transitions>
+	<versionedComments>
+		<versionedLineCommentData>
+			<createDate>2010-04-28T14:42:07.390+0200</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>nice</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48
+				</avatarUrl>
+				<displayName>Wojciech Seliga</displayName>
+				<userName>wseliga</userName>
+			</user>
+			<permaId>
+				<id>CMT:6</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-4</id>
+			</reviewItemId>
+			<toLineRange>4-5</toLineRange>
+			<lineRanges>
+				<lineRange range="4-5" revision="6" />
+			</lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-04-28T16:16:03.748+0200</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>my comment fdljslkfjd
+				*fdsfd*</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48
+				</avatarUrl>
+				<displayName>Wojciech Seliga</displayName>
+				<userName>wseliga</userName>
+			</user>
+			<permaId>
+				<id>CMT:8</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-4</id>
+			</reviewItemId>
+			<toLineRange>8</toLineRange>
+			<lineRanges>
+				<lineRange range="8" revision="6" />
+			</lineRanges>
+		</versionedLineCommentData>
+	</versionedComments>
+</detailedReviewData>

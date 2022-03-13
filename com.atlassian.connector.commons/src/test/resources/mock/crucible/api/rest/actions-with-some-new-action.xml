@@ -1,0 +1,30 @@
+<actions>
+	<actionData>
+		<displayName>Reject</displayName>
+		<name>action:rejectReview</name>
+	</actionData>
+	<actionData>
+		<displayName>Approve</displayName>
+		<name>action:approveReview</name>
+	</actionData>
+	<actionData>
+		<displayName>View</displayName>
+		<name>action:viewReview</name>
+	</actionData>
+	<actionData>
+		<displayName>Comment</displayName>
+		<name>action:commentOnReview</name>
+	</actionData>
+	<actionData>
+		<displayName>My strange action</displayName>
+		<name>action:myStrangeAction</name>
+	</actionData>
+	<actionData>
+		<displayName>Create</displayName>
+		<name>action:createReview</name>
+	</actionData>
+	<actionData>
+		<displayName>Re-Open</displayName>
+		<name>action:reopenReview</name>
+	</actionData>
+</actions>

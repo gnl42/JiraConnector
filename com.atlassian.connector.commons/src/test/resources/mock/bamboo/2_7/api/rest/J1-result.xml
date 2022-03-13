@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result
+	expand="artifacts,comments,labels,jiraIssues,changes,testResults,metadata"
+	id="112558460" number="1" lifeCycleState="Finished" state="Failed"
+	key="J1">
+	<link rel="self"
+		href="https://jira.bamboo.atlassian.com/rest/api/latest/result/JIRA42-SELENIUMCI-SELENIUM03-101" />
+	<chain rel="self"
+		href="https://jira.bamboo.atlassian.com/rest/api/latest/result/JIRA42-SELENIUMCI-101" />
+	<stage>Selenium and Functional Test Batches</stage>
+	<buildStartedTime>2010-12-22T00:35:09.245-06:00</buildStartedTime>
+	<buildCompletedTime>2010-12-22T01:06:12.666-06:00</buildCompletedTime>
+	<buildDurationInSeconds>1863</buildDurationInSeconds>
+	<buildDuration>1863421</buildDuration>
+	<buildDurationDescription>31 minutes</buildDurationDescription>
+	<buildRelativeTime>4 hours ago</buildRelativeTime>
+	<queueStartedTime>2010-12-22T00:30:09.151-06:00</queueStartedTime>
+	<queueTimeInSeconds>182</queueTimeInSeconds>
+	<queueDuration>182404</queueDuration>
+	<prettyQueueDuration>3 mins</prettyQueueDuration>
+	<vcsUpdateStartedTime>2010-12-22T00:33:11.555-06:00
+	</vcsUpdateStartedTime>
+	<vcsUpdateInSeconds>117</vcsUpdateInSeconds>
+	<vcsUpdateDuration>117690</vcsUpdateDuration>
+	<prettyVcsUpdateDuration>1 min</prettyVcsUpdateDuration>
+	<vcsRevisionKey>136950</vcsRevisionKey>
+	<buildTestSummary>2 of 49 failed</buildTestSummary>
+	<successfulTestCount>47</successfulTestCount>
+	<failedTestCount>2</failedTestCount>
+	<buildReason>Dependency build</buildReason>
+	<artifacts size="4" max-result="4" start-index="0" />
+	<comments size="0" max-result="0" start-index="0" />
+	<labels size="0" max-result="0" start-index="0" />
+	<jiraIssues size="0" max-result="0" start-index="0" />
+	<changes size="0" max-result="0" start-index="0" />
+	<testResults fixedTests="0" existingFailed="1" newFailed="0"
+		failed="1" successful="1" all="2"
+		expand="all,successful,failed,newFailed,existingFailed,fixed">
+		<all expand="testResult" size="2" max-result="2" start-index="0">
+			<testResult status="successful"
+				methodName="TestIssueNavigatorCaretAndFocus.testSubmittingJqlAlwaysFocusesJqlAndRestartsPager"
+				className="com.atlassian.jira.webtest.selenium.harness.SeleniumTestHarness"
+				expand="errors">
+				<duration>21619</duration>
+				<durationInSeconds>22</durationInSeconds>
+				<errors size="0" max-result="0" start-index="0" />
+			</testResult>
+			<testResult status="failed"
+				methodName="TestHideShowToggleOnViewIssueScreen.testHideShowToggle"
+				className="com.atlassian.jira.webtest.selenium.harness.SeleniumTestHarness"
+				expand="errors">
+				<duration>20703</duration>
+				<durationInSeconds>20</durationInSeconds>
+				<errors size="1" max-result="1" start-index="0">
+					<error>
+						<message>junit.framework.AssertionFailedError: Expected element
+							not visible in response: 'jquery=#comment-10000 .verbose'
+							at
+							com.atlassian.selenium.SeleniumAssertions.elementVisible(SeleniumAssertions.java:309)
+							at
+							com.atlassian.jira.webtest.selenium.issue.TestHideShowToggleOnViewIssueScreen.assertFieldShown(TestHideShowToggleOnViewIssueScreen.java:98)
+							at
+							com.atlassian.jira.webtest.selenium.issue.TestHideShowToggleOnViewIssueScreen.checkToggleForField(TestHideShowToggleOnViewIssueScreen.java:53)
+							at
+							com.atlassian.jira.webtest.selenium.issue.TestHideShowToggleOnViewIssueScreen.testHideShowToggle(TestHideShowToggleOnViewIssueScreen.java:24)
+							at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+							at
+							sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+							at
+							sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+							at
+							com.atlassian.jira.webtest.selenium.JiraSeleniumTest.runBareTestCase(JiraSeleniumTest.java:200)
+							at
+							com.atlassian.jira.webtest.selenium.JiraSeleniumTest.runBare(JiraSeleniumTest.java:169)
+							at
+							com.atlassian.cargotestrunner.SingleThreadedCargoWebTest.run(SingleThreadedCargoWebTest.java:59)
+							at
+							com.atlassian.jira.webtest.selenium.harness.SuiteListenerWrapper.run(SuiteListenerWrapper.java:34)
+							at
+							com.atlassian.jira.webtest.selenium.harness.SeleniumTestHarness$SeleniumWrapper.run(SeleniumTestHarness.java:71)
+
+						</message>
+					</error>
+				</errors>
+			</testResult>
+		</all>
+		<successful size="1" max-result="1" start-index="0" />
+		<failed size="1" max-result="1" start-index="0" />
+		<newFailed size="0" max-result="0" start-index="0" />
+		<existingFailed size="1" max-result="1" start-index="0" />
+		<fixed size="0" max-result="0" start-index="0" />
+	</testResults>
+	<metadata size="7" max-result="7" start-index="0" />
+</result>

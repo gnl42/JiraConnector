@@ -1,0 +1,38 @@
+<reviewItem>
+  <permId></permId>
+  <participants>
+    <participant>
+      <user>
+        <displayName>Piotr Maruszak</displayName>
+        <userName>pmaruszak</userName>
+      </user>
+      <completed>false</completed>
+    </participant>
+    <participant>
+      <user>
+        <displayName>Jacek Jaroczynski</displayName>
+        <userName>jjaroczynski</userName>
+      </user>
+      <completed>false</completed>
+    </participant>
+    <participant>
+      <user>
+        <displayName>Janusz Gorycki</displayName>
+        <userName>jgorycki</userName>
+      </user>
+      <completed>false</completed>
+    </participant>
+  </participants>
+  <repositoryName>PATCH:110</repositoryName>
+  <fromPath>src/main/java/com/atlassian/theplugin/crucible/model/CrucibleReviewListModelImpl.java</fromPath>
+  <fromRevision>0:F</fromRevision>
+  <toPath>src/main/java/com/atlassian/theplugin/crucible/model/CrucibleReviewListModelImpl.java</toPath>
+  <toRevision>0:T</toRevision>
+  <patchUrl>/cru/CR-PL-74/downloadpatch/110/pen_11.patch</patchUrl>
+  <fileType>File</fileType>
+  <commitType>Modified</commitType>
+  <authorName>jgorycki</authorName>
+  <showAsDiff>true</showAsDiff>
+  <commitDate>2009-06-25T05:51:00.153-0500</commitDate>
+  <revisions size="2" />
+</reviewItem>

@@ -1,0 +1,62 @@
+<!--
+
+    Copyright (C) 2008 Atlassian
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+       http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!--jgorycki: TODO: The fact that we need this file is generally stupid. We should be putting findBugs exclusions-->
+<!--as annotations in the source code. But these annotations are currently not documented sufficiently for me-->
+<!--to bother looking them up wherever they are described. Hopefully in the future we will deprecate this file-->
+
+<FindBugsFilter>
+
+
+	<!--stupid findBugs does not like multithreading apparently :)-->
+	<Match>
+		<Class name="com.atlassian.theplugin.commons.bamboo.StatusIconBambooListener"/>
+		<Bug pattern="IS2_INCONSISTENT_SYNC"/>
+	</Match>
+	<!--third party code-->
+	<!--TODO: we should probably narrow it down to specific bug codes, or some bugs may slip through-->
+	<!--when objects of these classes are called somewhere else-->
+	<Match>
+		<Or>
+			<Package name="com.atlassian.theplugin.commons.thirdparty.base64"/>
+			<Class   name="thirdparty.javaworld.ClasspathImageView"/>
+			<Class   name="thirdparty.javaworld.ClasspathHTMLEditorKit"/>
+		</Or>
+	</Match>
+
+	<Match>
+		<Or>
+			<Class name="com.atlassian.theplugin.commons.bamboo.CommitFileInfo" />
+		</Or>
+		<Bug pattern="NM_CONFUSING"/>
+	</Match>
+	<!--fields in these classes have getters and setters-->
+	<Match>
+		<Or>
+			<Class name="com.atlassian.theplugin.commons.bamboo.BambooBuildInfo"/>
+			<Class name="com.atlassian.theplugin.commons.bamboo.CommitInfo"/>
+		</Or>
+		<Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+	</Match>
+	<!-- findbug is too sensitive about the state of the Version object -->
+	<Match>
+		<Class name="com.atlassian.theplugin.commons.util.Version"/>
+		<Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+	</Match>
+
+</FindBugsFilter>

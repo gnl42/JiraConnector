@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<detailedReviewData>
+	<allowReviewersToJoin>true</allowReviewersToJoin>
+	<author>
+		<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</author>
+	<createDate>2010-01-12T13:04:18.065+0100</createDate>
+	<creator>
+		<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+		<displayName>Wojciech Seliga</displayName>
+		<userName>wseliga</userName>
+	</creator>
+	<description>abc</description>
+	<metricsVersion>1</metricsVersion>
+	<name></name>
+	<permaId>
+		<id>NOMOD-2</id>
+	</permaId>
+	<projectKey>NOMOD</projectKey>
+	<state>Draft</state>
+	<type>REVIEW</type>
+	<stats>
+		<comments>
+			<user>wseliga</user>
+			<published>2</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>0</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>2</read>
+		</comments>
+		<comments>
+			<user>sginter</user>
+			<published>2</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>0</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>2</read>
+		</comments>
+		<comments>
+			<user>mwent</user>
+			<published>1</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>0</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>1</read>
+		</comments>
+	</stats>
+	<actions>
+		<actionData>
+			<name>action:reopenSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:summarizeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:approveReview</name>
+		</actionData>
+		<actionData>
+			<name>action:reopenReview</name>
+		</actionData>
+		<actionData>
+			<name>action:modifyReviewFiles</name>
+		</actionData>
+		<actionData>
+			<name>action:abandonReview</name>
+		</actionData>
+		<actionData>
+			<name>action:deleteSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:viewReview</name>
+		</actionData>
+		<actionData>
+			<name>action:rejectReview</name>
+		</actionData>
+		<actionData>
+			<name>action:uncompleteReview</name>
+		</actionData>
+		<actionData>
+			<name>action:createSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:completeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:commentOnReview</name>
+		</actionData>
+		<actionData>
+			<name>action:deleteReview</name>
+		</actionData>
+		<actionData>
+			<name>action:submitReview</name>
+		</actionData>
+		<actionData>
+			<name>action:closeSnippet</name>
+		</actionData>
+		<actionData>
+			<name>action:recoverReview</name>
+		</actionData>
+		<actionData>
+			<name>action:closeReview</name>
+		</actionData>
+		<actionData>
+			<name>action:createReview</name>
+		</actionData>
+	</actions>
+	<generalComments />
+	<reviewItems>
+		<reviewItem>
+			<participants>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/07e768420f8f2d4e78b47c70f5fa3b4b?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Marek Went</displayName>
+						<userName>mwent</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/52c6ead65565b13f3408cc1ea465a13f?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Sławomir Ginter</displayName>
+						<userName>sginter</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Wojciech Seliga</displayName>
+						<userName>wseliga</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+			</participants>
+			<permId>
+				<id>CFR-2</id>
+			</permId>
+			<repositoryName>TestSVN</repositoryName>
+			<fromPath>commons/src/test/java/com/atlassian/theplugin/commons/cfg/ServerIdTest.java</fromPath>
+			<fromRevision>1</fromRevision>
+			<fromContentUrl>foo/cru/NOMOD-2/rawcontent/314/commons/src/test/java/com/atlassian/theplugin/commons/cfg/ServerIdTest.java</fromContentUrl>
+			<toPath>commons/src/test/java/com/atlassian/theplugin/commons/cfg/ServerIdTest.java</toPath>
+			<toRevision>18</toRevision>
+			<toContentUrl>foo/cru/NOMOD-2/rawcontent/1/commons/src/test/java/com/atlassian/theplugin/commons/cfg/ServerIdTest.java</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2008-11-26T11:20:35.177+0100</commitDate>
+			<revisions size="3" />
+		</reviewItem>
+		<reviewItem>
+			<participants>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/07e768420f8f2d4e78b47c70f5fa3b4b?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Marek Went</displayName>
+						<userName>mwent</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/52c6ead65565b13f3408cc1ea465a13f?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Sławomir Ginter</displayName>
+						<userName>sginter</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+				<participant>
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Wojciech Seliga</displayName>
+						<userName>wseliga</userName>
+					</user>
+					<completed>false</completed>
+				</participant>
+			</participants>
+			<permId>
+				<id>CFR-3</id>
+			</permId>
+			<repositoryName>TestSVN</repositoryName>
+			<fromPath>pom.xml</fromPath>
+			<fromRevision>14</fromRevision>
+			<fromContentUrl>foo/cru/NOMOD-2/rawcontent/315/pom.xml</fromContentUrl>
+			<toPath>pom.xml</toPath>
+			<toRevision>16</toRevision>
+			<toContentUrl>foo/cru/NOMOD-2/rawcontent/3/pom.xml</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>wseliga</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2008-11-25T00:12:45.256+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem>
+	</reviewItems>
+	<reviewers>
+		<reviewer>
+			<avatarUrl>http://www.gravatar.com/avatar/52c6ead65565b13f3408cc1ea465a13f?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+			<displayName>Sławomir Ginter</displayName>
+			<userName>sginter</userName>
+			<completed>false</completed>
+		</reviewer>
+		<reviewer>
+			<avatarUrl>http://www.gravatar.com/avatar/07e768420f8f2d4e78b47c70f5fa3b4b?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+			<displayName>Marek Went</displayName>
+			<userName>mwent</userName>
+			<completed>false</completed>
+		</reviewer>
+	</reviewers>
+	<transitions>
+		<transitionData>
+			<name>action:approveReview</name>
+		</transitionData>
+		<transitionData>
+			<name>action:abandonReview</name>
+		</transitionData>
+	</transitions>
+	<versionedComments>
+		<versionedLineCommentData>
+			<createDate>2010-01-12T13:07:54.896+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>fdsfdas</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/52c6ead65565b13f3408cc1ea465a13f?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+				<displayName>Sławomir Ginter</displayName>
+				<userName>sginter</userName>
+			</user>
+			<permaId>
+				<id>CMT:1</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-2</id>
+			</reviewItemId>
+			<toLineRange>36-37</toLineRange>
+			<lineRanges>
+				<lineRange range="36-37" revision="17" />
+			</lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-01-12T13:08:38.673+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>fdafds (rev 18)</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/52c6ead65565b13f3408cc1ea465a13f?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+				<displayName>Sławomir Ginter</displayName>
+				<userName>sginter</userName>
+			</user>
+			<permaId>
+				<id>CMT:2</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-2</id>
+			</reviewItemId>
+			<fromLineRange>32</fromLineRange>
+			<lineRanges>
+				<lineRange range="32" revision="1" />
+				<lineRange range="32" revision="18" />
+			</lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-04-20T15:37:52.247+0200</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>??</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies>
+				<generalCommentData>
+					<createDate>2010-04-20T17:23:45.168+0200</createDate>
+					<defectApproved>false</defectApproved>
+					<defectRaised>false</defectRaised>
+					<deleted>false</deleted>
+					<draft>false</draft>
+					<message>fsfdsfsd</message>
+					<metrics />
+					<parentCommentId>
+						<id>CMT:3</id>
+					</parentCommentId>
+					<readStatus>READ</readStatus>
+					<replies />
+					<user>
+						<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+						<displayName>Wojciech Seliga</displayName>
+						<userName>wseliga</userName>
+					</user>
+					<permId>
+						<id>CMT:5</id>
+					</permId>
+					<permaId>
+						<id>CMT:5</id>
+					</permaId>
+				</generalCommentData>
+			</replies>
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/a0f1ef87a86a80feadd451d2695ec0cc?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+				<displayName>Wojciech Seliga</displayName>
+				<userName>wseliga</userName>
+			</user>
+			<permaId>
+				<id>CMT:3</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-2</id>
+			</reviewItemId>
+			<toLineRange>26-26</toLineRange>
+			<lineRanges>
+				<lineRange range="26-26" revision="18" />
+			</lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-04-20T15:40:20.188+0200</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>what is this?</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user>
+				<avatarUrl>http://www.gravatar.com/avatar/07e768420f8f2d4e78b47c70f5fa3b4b?s=48&amp;d=http%3A//tyskie%3A6060/foo/avatar/j_doe%3Fs%3D48</avatarUrl>
+				<displayName>Marek Went</displayName>
+				<userName>mwent</userName>
+			</user>
+			<permaId>
+				<id>CMT:4</id>
+			</permaId>
+			<reviewItemId>
+				<id>CFR-3</id>
+			</reviewItemId>
+			<fromLineRange>236</fromLineRange>
+			<toLineRange>236</toLineRange>
+			<lineRanges>
+				<lineRange range="236" revision="14" />
+				<lineRange range="236" revision="16" />
+			</lineRanges>
+		</versionedLineCommentData>
+	</versionedComments>
+</detailedReviewData>

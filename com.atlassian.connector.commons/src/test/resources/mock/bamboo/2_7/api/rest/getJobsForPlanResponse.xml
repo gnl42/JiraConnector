@@ -1,0 +1,39 @@
+<plan enabled="true" type="chain"
+	name="Atlassian Eclipse Connector - Compile and Test" key="ECL-TST"
+	expand="actions,stages">
+	<projectKey>ECL</projectKey>
+	<projectName>Atlassian Eclipse Connector</projectName>
+	<link rel="self"
+		href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/plan/ECL-TST" />
+	<isFavourite>false</isFavourite>
+	<isActive>false</isActive>
+	<isBuilding>false</isBuilding>
+	<averageBuildTimeInSeconds>1417.0</averageBuildTimeInSeconds>
+	<actions size="5" max-result="5" start-index="0" />
+	<stages expand="stage" size="1" max-result="1" start-index="0">
+		<stage expand="plans">
+			<name>Default Stage</name>
+			<description />
+			<plans expand="plan" size="2" max-result="2" start-index="0">
+				<plan enabled="true" type="job"
+					name="job1"
+					key="J1">
+					<link rel="self"
+						href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/plan/ECL-TST-JOB1" />
+				</plan>
+				<plan enabled="true" type="job"
+					name="job2"
+					key="J2">
+					<link rel="self"
+						href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/plan/ECL-TST-E36" />
+				</plan>
+				<plan enabled="false" type="job"
+					name="job3"
+					key="J3">
+					<link rel="self"
+						href="https://gdansk.bamboo2.atlassian.com/rest/api/latest/plan/ECL-TST-E36" />
+				</plan>
+			</plans>
+		</stage>
+	</stages>
+</plan>

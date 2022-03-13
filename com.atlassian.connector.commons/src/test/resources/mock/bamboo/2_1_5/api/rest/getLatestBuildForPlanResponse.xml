@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <projectName>Atlassian Connector Commons</projectName>
+    <buildName>Commons - Tests</buildName>
+    <buildKey>ACC-TST</buildKey>
+    <buildState>Successful</buildState>
+    <buildNumber>193</buildNumber>
+    <failedTestCount>0</failedTestCount>
+    <successfulTestCount>267</successfulTestCount>
+    <buildTime>2009-02-09 07:38:08</buildTime>
+    <buildCompletedDate>2009-02-09T07:38:36-0600</buildCompletedDate>
+    <buildDurationInSeconds>28</buildDurationInSeconds>
+    <buildDurationDescription>28 seconds</buildDurationDescription>
+    <buildRelativeBuildDate>3 minutes ago</buildRelativeBuildDate>
+    <buildTestSummary>267 passed</buildTestSummary>
+    <buildReason>Code has changed</buildReason>
+
+    <commits>
+        <commit author="wseliga" />
+		<commit author="mwent" />
+    </commits>
+
+</response>

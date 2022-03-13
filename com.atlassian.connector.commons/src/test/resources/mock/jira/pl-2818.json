@@ -1,0 +1,190 @@
+[
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22222166",
+        "id": "22222166",
+        "name": "Moje do zaplanowania",
+        "description": "Zgłoszenia od klientów przypisane do BACKLOG lub bez wersji",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND Customer is not EMPTY AND resolution = Unresolved AND\r\n(fixVersion is null OR fixVersion=BACKLOG) AND assignee = currentUser()\r\nORDER BY priority DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22222166",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+Customer+is+not+EMPTY+AND+resolution+%3D+Unresolved+AND%0D%0A(fixVersion+is+null+OR+fixVersion%3DBACKLOG)+AND+assignee+%3D+currentUser()%0D%0AORDER+BY+priority+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22211617",
+        "id": "22211617",
+        "name": "Moje nierozwiązane PROJECTA",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND resolution = Unresolved AND assignee = currentUser() ORDER BY fixVersion ASC, priority DESC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22211617",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+ORDER+BY+fixVersion+ASC,+priority+DESC,+key+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22218564",
+        "id": "22218564",
+        "name": "Moje nierozwiązane PROJECTA 1.0.5.x",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND resolution = Unresolved AND assignee = currentUser() AND fixVersion in (22216141, 22217001) ORDER BY priority DESC, fixVersion ASC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22218564",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+AND+fixVersion+in+(22216141,+22217001)+ORDER+BY+priority+DESC,+fixVersion+ASC,+key+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22215767",
+        "id": "22215767",
+        "name": "Moje nierozwiązane PROJECTA 1.0.6",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND resolution = Unresolved AND assignee = currentUser() AND fixVersion = 22216342 ORDER BY priority DESC, fixVersion ASC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22215767",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+AND+fixVersion+%3D+22216342+ORDER+BY+priority+DESC,+fixVersion+ASC,+key+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22218565",
+        "id": "22218565",
+        "name": "Moje nierozwiązane PROJECTA 1.0.6 bez featurów",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND issuetype in (Bug, \"Test scenario\", Documentation, Requirement, \"CR Test\", \"Legacy Systems Use Cases\", \"Legacy systems changes and bugfixes\", Meeting, \"Action Point\", Deliverable, Epic, Story, \"Work package\", \"Use case\", \"Usuability iteration\", \"Technical note\", \"Component Dependency\", Task, Improvement, \"Change request\", \"Enhancement request\", Translation, Optimization, \"Technical task\", Sub-task) AND resolution = Unresolved AND assignee = currentUser() AND fixVersion = 22216342 ORDER BY priority DESC, fixVersion ASC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22218565",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+issuetype+in+(Bug,+%22Test+scenario%22,+Documentation,+Requirement,+%22CR+Test%22,+%22Legacy+Systems+Use+Cases%22,+%22Legacy+systems+changes+and+bugfixes%22,+Meeting,+%22Action+Point%22,+Deliverable,+Epic,+Story,+%22Work+package%22,+%22Use+case%22,+%22Usuability+iteration%22,+%22Technical+note%22,+%22Component+Dependency%22,+Task,+Improvement,+%22Change+request%22,+%22Enhancement+request%22,+Translation,+Optimization,+%22Technical+task%22,+Sub-task)+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+AND+fixVersion+%3D+22216342+ORDER+BY+priority+DESC,+fixVersion+ASC,+key+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22216063",
+        "id": "22216063",
+        "name": "Moje nierozwiązane PROJECTA styczeń 2012",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND resolution = Unresolved AND assignee = currentUser() AND fixVersion = 22214431 ORDER BY fixVersion DESC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22216063",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+AND+fixVersion+%3D+22214431+ORDER+BY+fixVersion+DESC,+key+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22211110",
+        "id": "22211110",
+        "name": "Moje nierozwiązane w PROJECTB",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22211110",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22210989",
+        "id": "22210989",
+        "name": "Moje nierozwiązane w PROJECTC",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22210989",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22211458",
+        "id": "22211458",
+        "name": "Moje ostatnio zmieniane",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project in (PROJECTA) AND updated >= -3d AND assignee = currentUser() ORDER BY updated DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22211458",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+in+(PROJECTA)+AND+updated+%3E%3D+-3d+AND+assignee+%3D+currentUser()+ORDER+BY+updated+DESC",
+        "favourite": true
+    },
+    {
+        "self": "http://my-jira-url/jira/rest/api/2/filter/22217498",
+        "id": "22217498",
+        "name": "Moje CUSTOMERA 1.0.4",
+        "description": "Moje nierozwiązane PROJECTA z labelką CUSTOMERA_104",
+        "owner": {
+            "self": "http://my-jira-url/jira/rest/api/2/user?username=myusername",
+            "name": "myusername",
+            "avatarUrls": {
+                "16x16": "http://my-jira-url/jira/secure/useravatar?size=small&ownerId=myusername&avatarId=11303",
+                "48x48": "http://my-jira-url/jira/secure/useravatar?ownerId=myusername&avatarId=11303"
+            },
+            "displayName": "Gołda Damian",
+            "active": true
+        },
+        "jql": "project = PROJECTA AND resolution = Unresolved AND assignee = currentUser() AND labels = CUSTOMERA_104 ORDER BY priority DESC, fixVersion ASC, key DESC",
+        "viewUrl": "http://my-jira-url/jira/secure/IssueNavigator.jspa?mode=hide&requestId=22217498",
+        "searchUrl": "http://my-jira-url/jira/rest/api/2/search?jql=project+%3D+PROJECTA+AND+resolution+%3D+Unresolved+AND+assignee+%3D+currentUser()+AND+labels+%3D+CUSTOMERA_104+ORDER+BY+priority+DESC,+fixVersion+ASC,+key+DESC",
+        "favourite": true
+    }
+]

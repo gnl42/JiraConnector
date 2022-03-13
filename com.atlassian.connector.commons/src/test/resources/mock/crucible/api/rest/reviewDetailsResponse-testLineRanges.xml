@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<detailedReviewData>
+	<allowReviewersToJoin>false</allowReviewersToJoin>
+	<author><displayName>pstefaniak</displayName><userName>pstefaniak</userName></author>
+	<createDate>2010-01-12T15:00:01.367+0100</createDate>
+	<creator><displayName>pstefaniak</displayName><userName>pstefaniak</userName></creator>
+	<description></description>
+	<metricsVersion>1</metricsVersion>
+	<moderator><displayName>pstefaniak</displayName><userName>pstefaniak</userName></moderator>
+	<name>PL-1987 Browse changes in Idea -> View in Fisheye causes Illegal....</name>
+	<permaId><id>CR-2</id></permaId>
+	<projectKey>CR</projectKey>
+	<state>Review</state>
+	<stats>
+		<comments>
+			<user>pstefaniak</user>
+			<published>5</published>
+			<drafts>0</drafts>
+			<defects>0</defects>
+			<unread>0</unread>
+			<leaveUnread>0</leaveUnread>
+			<read>5</read>
+		</comments>
+	</stats>
+	<actions>
+		<actionData><name>action:createReview</name></actionData>
+		<actionData><name>action:summarizeReview</name></actionData>
+		<actionData><name>action:abandonReview</name></actionData>
+		<actionData><name>action:recoverReview</name></actionData>
+		<actionData><name>action:viewReview</name></actionData>
+		<actionData><name>action:commentOnReview</name></actionData>
+		<actionData><name>action:closeReview</name></actionData>
+		<actionData><name>action:deleteReview</name></actionData>
+		<actionData><name>action:submitReview</name></actionData>
+		<actionData><name>action:rejectReview</name></actionData>
+		<actionData><name>action:modifyReviewFiles</name></actionData>
+		<actionData><name>action:approveReview</name></actionData>
+		<actionData><name>action:reopenReview</name></actionData>
+	</actions>
+	<generalComments />
+	<reviewItems>
+		<reviewItem>
+			<permId><id>CFR-3</id></permId>
+			<repositoryName>studio</repositoryName>
+			<fromPath>PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/action/fisheye/ViewFisheyeChangesetItemAction.java</fromPath>
+			<fromRevision>38347</fromRevision>
+			<fromContentUrl>/cru/CR-2/rawcontent/3/PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/action/fisheye/ViewFisheyeChangesetItemAction.java</fromContentUrl>
+			<toPath>PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/action/fisheye/ViewFisheyeChangesetItemAction.java</toPath>
+			<toRevision>51224</toRevision>
+			<toContentUrl>/cru/CR-2/rawcontent/2/PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/action/fisheye/ViewFisheyeChangesetItemAction.java</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>pmaruszak</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2010-01-11T18:47:42.604+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem>
+<!--		<reviewItem>
+			<permId><id>CFR-4</id></permId>
+			<repositoryName>studio</repositoryName>
+			<fromPath>PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/fisheye/FisheyeUrlHelper.java</fromPath>
+			<fromRevision>38549</fromRevision>
+			<fromContentUrl>/cru/CR-2/rawcontent/4/PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/fisheye/FisheyeUrlHelper.java</fromContentUrl>
+			<toPath>PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/fisheye/FisheyeUrlHelper.java</toPath>
+			<toRevision>51224</toRevision>
+			<toContentUrl>/cru/CR-2/rawcontent/1/PL/trunk/atlassian-intellij-connector/src/main/java/com/atlassian/theplugin/idea/fisheye/FisheyeUrlHelper.java</toContentUrl>
+			<fileType>File</fileType>
+			<commitType>Modified</commitType>
+			<authorName>pmaruszak</authorName>
+			<showAsDiff>true</showAsDiff>
+			<commitDate>2010-01-11T18:47:42.604+0100</commitDate>
+			<revisions size="2" />
+		</reviewItem> -->
+	</reviewItems>
+	<reviewers />
+	<transitions>
+		<transitionData><name>action:summarizeReview</name></transitionData>
+		<transitionData><name>action:abandonReview</name></transitionData>
+	</transitions>
+	<versionedComments>
+		<versionedLineCommentData>
+			<createDate>2010-01-12T15:00:31.705+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>this is yellow coment</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies>
+				<generalCommentData>
+					<createDate>2010-01-12T15:01:03.582+0100</createDate>
+					<defectApproved>false</defectApproved>
+					<defectRaised>false</defectRaised>
+					<deleted>false</deleted>
+					<draft>false</draft>
+					<message>reply reply reply</message>
+					<metrics />
+					<parentCommentId><id>CMT:5</id></parentCommentId>
+					<readStatus>READ</readStatus>
+					<replies />
+					<user><displayName>pstefaniak</displayName><userName>pstefaniak</userName></user>
+					<permId><id>CMT:6</id></permId>
+					<permaId><id>CMT:6</id></permaId>
+				</generalCommentData>
+			</replies>
+			<user><displayName>pstefaniak</displayName><userName>pstefaniak</userName></user>
+			<permaId><id>CMT:5</id></permaId>
+			<reviewItemId><id>CFR-3</id></reviewItemId>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-02-03T15:29:43.158+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>this is green comment</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user><displayName>pstefaniak</displayName><userName>pstefaniak</userName></user>
+			<permaId><id>CMT:7</id></permaId>
+			<reviewItemId><id>CFR-3</id></reviewItemId>
+			<toLineRange>52</toLineRange>
+			<lineRanges><lineRange range="52" revision="51224" /></lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-02-03T15:30:27.382+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>this is red coment</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user><displayName>pstefaniak</displayName><userName>pstefaniak</userName></user>
+			<permaId><id>CMT:8</id></permaId>
+			<reviewItemId><id>CFR-3</id></reviewItemId>
+			<toLineRange>51</toLineRange>
+			<lineRanges><lineRange range="51" revision="38347" /></lineRanges>
+		</versionedLineCommentData>
+		<versionedLineCommentData>
+			<createDate>2010-02-03T15:31:17.400+0100</createDate>
+			<defectApproved>false</defectApproved>
+			<defectRaised>false</defectRaised>
+			<deleted>false</deleted>
+			<draft>false</draft>
+			<message>this is blue comment (lines 49, 52, 53)</message>
+			<metrics />
+			<parentCommentId />
+			<readStatus>READ</readStatus>
+			<replies />
+			<user><displayName>pstefaniak</displayName><userName>pstefaniak</userName></user>
+			<permaId><id>CMT:9</id></permaId>
+			<reviewItemId><id>CFR-3</id></reviewItemId>
+			<fromLineRange>49,52-53</fromLineRange>
+			<toLineRange>49,53-54</toLineRange>
+			<lineRanges>
+				<lineRange range="49,52-53" revision="38347" />
+				<lineRange range="49,53-54" revision="51224" />
+			</lineRanges>
+		</versionedLineCommentData>
+	</versionedComments>
+</detailedReviewData>
