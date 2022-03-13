@@ -14,7 +14,7 @@ package com.atlassian.theplugin.commons.crucible.api.model;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.time.DateTime;
+import org.joda.time.DateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;

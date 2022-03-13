@@ -12,7 +12,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-import java.time.DateTime;
+import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

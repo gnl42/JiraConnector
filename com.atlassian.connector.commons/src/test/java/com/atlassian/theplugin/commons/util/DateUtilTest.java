@@ -17,7 +17,7 @@
 package com.atlassian.theplugin.commons.util;
 
 import junit.framework.TestCase;
-import java.time.*;
+import org.joda.time.*;
 
 /**
  * Created by IntelliJ IDEA.

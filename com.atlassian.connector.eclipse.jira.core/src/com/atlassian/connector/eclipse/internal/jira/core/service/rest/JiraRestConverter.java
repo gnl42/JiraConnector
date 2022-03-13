@@ -27,8 +27,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import java.time.DateTime;
-import java.time.format.DateTimeFormat;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraAttribute;
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;

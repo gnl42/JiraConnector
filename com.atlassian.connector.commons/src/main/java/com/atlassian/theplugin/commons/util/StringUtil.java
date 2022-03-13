@@ -17,7 +17,7 @@ package com.atlassian.theplugin.commons.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jetbrains.annotations.Nullable;
-import java.time.DateTimeConstants;
+import org.joda.time.DateTimeConstants;
 
 import java.io.IOException;
 import java.io.InputStream;
