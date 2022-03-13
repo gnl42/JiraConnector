@@ -14,10 +14,10 @@ package com.thoughtworks.xstream.converters.extended;
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.DateTime;
+import java.time.DateTimeZone;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ISODateTimeFormat;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

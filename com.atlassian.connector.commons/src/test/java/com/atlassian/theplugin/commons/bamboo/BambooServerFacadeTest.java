@@ -53,9 +53,9 @@ import com.spartez.util.junit3.TestUtil;
 import junit.framework.TestCase;
 import org.ddsteps.mock.httpserver.JettyMockServer;
 import org.easymock.EasyMock;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.DateTime;
+import java.time.format.DateTimeFormat;
+import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Collection;

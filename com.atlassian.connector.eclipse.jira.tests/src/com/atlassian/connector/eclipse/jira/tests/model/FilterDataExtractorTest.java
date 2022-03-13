@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.jira.tests.model;
 
 import junit.framework.TestCase;
 
-import org.joda.time.DateTime;
+import java.time.DateTime;
 
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
 import com.atlassian.connector.eclipse.internal.jira.core.model.IssueType;

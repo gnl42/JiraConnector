@@ -16,7 +16,7 @@
 
 package com.atlassian.theplugin.commons.util;
 
-import org.joda.time.Period;
+import java.time.Period;
 
 import java.util.Date;
 

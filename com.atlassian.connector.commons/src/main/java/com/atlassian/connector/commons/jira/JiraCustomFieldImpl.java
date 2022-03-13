@@ -24,8 +24,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jdom.Attribute;
 import org.jdom.Element;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
+import java.time.DateTime;
+import java.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;

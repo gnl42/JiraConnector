@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.net.AuthenticatedProxy;
 import org.eclipse.osgi.util.NLS;
-import org.joda.time.DateTime;
+import java.time.DateTime;
 
 import com.atlassian.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import com.atlassian.connector.eclipse.internal.jira.core.model.Component;
