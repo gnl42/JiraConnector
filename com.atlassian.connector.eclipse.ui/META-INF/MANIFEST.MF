@@ -28,10 +28,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
  com.atlassian.connector.eclipse.commons.ui,
- org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.atlassian.connector.eclipse.ui;x-friends:="com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.ui.actions,
  com.atlassian.connector.eclipse.ui.commons;x-friends:="com.atlassian.connector.eclipse.bamboo.ui",

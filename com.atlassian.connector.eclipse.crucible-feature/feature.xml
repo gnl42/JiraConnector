@@ -32,9 +32,6 @@
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.apache.commons.logging"/>
-      <import plugin="org.eclipse.mylyn.wikitext.core" version="1.2.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.wikitext.tasks.ui" version="1.2.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.wikitext.confluence.core" version="1.2.0" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
@@ -47,16 +44,17 @@
       <import plugin="org.apache.axis"/>
       <import plugin="javax.xml.rpc"/>
       <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
+      <import plugin="org.eclipse.mylyn.wikitext"/>
    </requires>
 
-	<plugin
+   <plugin
          id="com.atlassian.connector.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="com.atlassian.connector.eclipse.ui"
          download-size="0"
          install-size="0"
@@ -92,13 +90,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.joda.time"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.httpclient"
          download-size="0"
          install-size="0"
@@ -113,21 +104,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.thoughtworks.xstream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom_jaxen"
          download-size="0"
          install-size="0"
          version="0.0.0"

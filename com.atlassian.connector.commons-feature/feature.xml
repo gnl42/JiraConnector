@@ -27,22 +27,13 @@
       <import plugin="javax.xml.rpc"/>
       <import plugin="org.apache.commons.logging"/>
       <import plugin="org.apache.commons.io"/>
-      <import plugin="org.joda.time"/>
       <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.jdom_jaxen"/>
    </requires>
 
    <plugin
          id="com.atlassian.connector.commons"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.joda.time"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -56,21 +47,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.thoughtworks.xstream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom_jaxen"
          download-size="0"
          install-size="0"
          version="0.0.0"

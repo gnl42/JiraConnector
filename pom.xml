@@ -12,7 +12,7 @@
     <repositories>
         <repository>
             <id>eclipse-latest</id>
-            <url>http://download.eclipse.org/releases/latest</url>
+            <url>https://download.eclipse.org/releases/photon</url>
             <layout>p2</layout>
         </repository>
 
@@ -33,6 +33,11 @@
     <modules>
         <module>com.atlassian.connector.commons-feature</module>
         <module>com.atlassian.connector.commons.tests.dependencies</module>
+
+        <module>com.atlassian.connector.eclipse.test-feature</module>
+        <module>com.atlassian.connector.eclipse.tests</module>
+        <module>com.atlassian.connector.eclipse.ui</module>
+
         <module>com.atlassian.connector.eclipse.commons-feature</module>
         <module>com.atlassian.connector.eclipse.commons.core</module>
         <module>com.atlassian.connector.eclipse.commons.ui</module>
@@ -50,21 +55,27 @@
         <!-- <module>com.atlassian.connector.eclipse.monitor.server/src/main/webapp</module> -->
 
         <module>com.atlassian.connector.eclipse-feature</module>
+        
         <module>com.atlassian.connector.eclipse.bamboo-feature</module>
         <module>com.atlassian.connector.eclipse.bamboo.core</module>
         <module>com.atlassian.connector.eclipse.bamboo.tests</module>
         <module>com.atlassian.connector.eclipse.bamboo.testsUI</module>
         <module>com.atlassian.connector.eclipse.bamboo.ui</module>
+        
         <module>com.atlassian.connector.eclipse.branding.ui</module>
+        
         <module>com.atlassian.connector.eclipse.crucible-feature</module>
         <module>com.atlassian.connector.eclipse.crucible.core</module>
         <module>com.atlassian.connector.eclipse.crucible.ui</module>
+        
         <module>com.atlassian.connector.eclipse.cvs-feature</module>
         <module>com.atlassian.connector.eclipse.cvs.core</module>
         <module>com.atlassian.connector.eclipse.cvs.ui</module>
+        
         <module>com.atlassian.connector.eclipse.fisheye-feature</module>
         <module>com.atlassian.connector.eclipse.fisheye.core</module>
         <module>com.atlassian.connector.eclipse.fisheye.ui</module>
+        
         <module>com.atlassian.connector.eclipse.help</module>
 
         <!-- <module>com.atlassian.jira.rest.client</module> -->
@@ -73,20 +84,19 @@
         <module>com.atlassian.connector.eclipse.jira.core</module>
         <module>com.atlassian.connector.eclipse.jira.tests</module>
         <module>com.atlassian.connector.eclipse.jira.ui</module>
+        
         <module>com.atlassian.connector.eclipse.perforce-feature</module>
         <module>com.atlassian.connector.eclipse.perforce.core</module>
         <module>com.atlassian.connector.eclipse.perforce.ui</module>
-        <module>com.atlassian.connector.eclipse.releng/config</module>
-        <module>com.atlassian.connector.eclipse.releng/scripts/tools/org.eclipse.test.performance.ui</module>
+        
         <module>com.atlassian.connector.eclipse.subclipse-feature</module>
         <module>com.atlassian.connector.eclipse.subclipse.core</module>
         <module>com.atlassian.connector.eclipse.subclipse.ui</module>
+        
         <module>com.atlassian.connector.eclipse.subversive-feature</module>
         <module>com.atlassian.connector.eclipse.subversive.core</module>
         <module>com.atlassian.connector.eclipse.subversive.ui</module>
-        <module>com.atlassian.connector.eclipse.test-feature</module>
-        <module>com.atlassian.connector.eclipse.tests</module>
-        <module>com.atlassian.connector.eclipse.ui</module>
+        
     </modules>
     <build>
         <pluginManagement>
@@ -219,7 +229,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <optimize>true</optimize>
-                    <showWarnings>true</showWarnings>
+                    <showWarnings>false</showWarnings>
                 </configuration>
             </plugin>
             <plugin>

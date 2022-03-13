@@ -29,11 +29,10 @@ Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.jdt.core;resolution:=optional,
  org.eclipse.jdt.debug.ui;resolution:=optional,
  org.eclipse.jdt.ui;resolution:=optional,
- org.jetbrains.annotations;resolution:=optional,
  org.eclipse.ui.editors
 Bundle-Activator: com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.atlassian.connector.eclipse.bamboo.ui;x-internal:=true,
  com.atlassian.connector.eclipse.bamboo.ui.preferences;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui;x-internal:=true,

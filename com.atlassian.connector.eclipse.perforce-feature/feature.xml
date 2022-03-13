@@ -30,10 +30,6 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.team.svn"/>
-      <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.eclipse.team.svn.ui"/>
-      <import feature="org.eclipse.team.svn" version="0.7.8" match="compatible"/>
    </requires>
 
    <plugin
@@ -45,13 +41,6 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.perforce.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.perforce.p4java"
          download-size="0"
          install-size="0"
          version="0.0.0"

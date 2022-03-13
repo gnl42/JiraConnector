@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.bamboo"
       label="%featureName"
-      version="3.2.5.qualifier"
+      version="4.0.0.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.branding.ui">
 
@@ -87,21 +87,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.thoughtworks.xstream"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom_jaxen"
          download-size="0"
          install-size="0"
          version="0.0.0"

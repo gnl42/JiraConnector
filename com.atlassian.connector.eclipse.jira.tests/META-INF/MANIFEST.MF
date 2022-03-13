@@ -20,16 +20,14 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.tasks.search,
  org.eclipse.mylyn.tests.util,
  org.apache.axis;bundle-version="1.4.0",
- org.eclipse.mylyn.commons.tests,
- com.google.guava;bundle-version="13.0.0",
- org.joda.time;bundle-version="1.6.0"
+ com.google.guava;bundle-version="13.0.0"
 Export-Package: com.atlassian.connector.eclipse.jira.tests;x-friends:="com.atlassian.connector.eclipse.tests",
  com.atlassian.connector.eclipse.jira.tests.client;x-internal:=true,
  com.atlassian.connector.eclipse.jira.tests.core;x-internal:=true,
  com.atlassian.connector.eclipse.jira.tests.model;x-internal:=true,
  com.atlassian.connector.eclipse.jira.tests.ui;x-internal:=true,
  com.atlassian.connector.eclipse.jira.tests.util;x-internal:=true
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Mylyn
 Bundle-ClassPath: lib/hamcrest-all-1.3RC0.jar,.
 Import-Package: org.eclipse.mylyn.internal.tasks.ui.search

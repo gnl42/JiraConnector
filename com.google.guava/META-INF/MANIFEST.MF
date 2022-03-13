@@ -18,4 +18,4 @@ Export-Package: com.google.common.annotations,
  com.google.common.primitives,
  com.google.common.reflect,
  com.google.common.util.concurrent
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

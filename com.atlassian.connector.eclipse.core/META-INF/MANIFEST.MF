@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.core;singleton:=true
 Bundle-Version: 4.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Require-Bundle: 
@@ -12,8 +12,7 @@ Require-Bundle:
  org.eclipse.core.runtime,
  com.atlassian.connector.commons,
  com.atlassian.connector.eclipse.branding.ui,
- com.atlassian.connector.eclipse.commons.core,
- org.jetbrains.annotations;resolution:=optional
+ com.atlassian.connector.eclipse.commons.core
 Export-Package: com.atlassian.connector.eclipse.internal.core;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,

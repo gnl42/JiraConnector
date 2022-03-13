@@ -32,4 +32,4 @@ Export-Package: com.jcraft.jzlib,
  com.perforce.p4java.impl.mapbased.server,
  com.perforce.p4java.server,
  com.perforce.p4java.server.callback
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -52,9 +52,7 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.mylyn.tasks.core"/>
-      <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="javax.servlet.jsp"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -68,17 +66,8 @@
       <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.compare"/>
-      <import plugin="org.joda.time"/>
    </requires>
 
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.atlassian.connector.eclipse.branding.ui"
          download-size="0"
          install-size="0"

@@ -4,7 +4,7 @@ Bundle-Name: Atlassian Commons Tests Dependencies
 Bundle-SymbolicName: com.atlassian.connector.commons.tests.dependencies;singleton:=true
 Bundle-Version: 0.5.0.qualifier
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit
 Export-Package: com.gargoylesoftware.htmlunit,
  com.gargoylesoftware.htmlunit.html,

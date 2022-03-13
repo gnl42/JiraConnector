@@ -10,7 +10,7 @@ Export-Package: com.atlassian.connector.eclipse.internal.branding.ui;x-internal:
  com.atlassian.connector.eclipse.internal.branding.ui.preferences;x-internal:=true,
  com.atlassian.connector.eclipse.internal.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.ui.viewers;x-internal:=true
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core,

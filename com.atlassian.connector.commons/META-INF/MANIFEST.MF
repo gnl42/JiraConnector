@@ -48,8 +48,10 @@ Export-Package: com.atlassian.connector.cfg,
  com.atlassian.theplugin.crucible,
  com.atlassian.theplugin.crucible.api.rest,
  com.atlassian.theplugin.crucible.api.rest.cruciblemock,
+ com.thoughtworks.xstream,
  icons,
- icons.common
+ icons.common,
+ org.joda.time
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .,
  lib/jira-rest-java-client-1.1-ide-m09.jar,
@@ -66,5 +68,6 @@ Bundle-ClassPath: .,
  target/lib/joda-time.jar,
  target/lib/jersey-client.jar,
  lib/jersey-apache-client-1.5.jar,
- target/lib/javax.xml.rpc-api.jar
+ target/lib/javax.xml.rpc-api.jar,
+ lib/org.jdom_jaxen-1.0.0-SNAPSHOT.jar
 Bundle-Vendor: Atlassian
