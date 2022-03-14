@@ -26,7 +26,7 @@ Export-Package: com.atlassian.connector.eclipse.internal.jira.core;x-friends:="c
  com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans;x-friends:="com.atlassian.connector.eclipse.jira.ui,com.atlassian.connector.eclipse.jira.tests",
  com.atlassian.connector.eclipse.internal.jira.core.wsdl.soap;x-friends:="com.atlassian.connector.eclipse.jira.ui"
 Bundle-ClassPath: .,
- lib/jira-rest-java-client-1.1-ide-m09.jar
+ target/lib/jira-rest-java-client.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin
