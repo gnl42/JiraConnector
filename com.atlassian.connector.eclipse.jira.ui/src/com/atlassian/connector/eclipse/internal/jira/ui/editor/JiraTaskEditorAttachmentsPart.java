@@ -67,294 +67,297 @@ import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
  */
 public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
-	private static final String ID_POPUP_MENU = "org.eclipse.mylyn.tasks.ui.editor.menu.attachments"; //$NON-NLS-1$
+    private static final String ID_POPUP_MENU = "org.eclipse.mylyn.tasks.ui.editor.menu.attachments"; //$NON-NLS-1$
 
-	private final String[] attachmentsColumns = { Messages.TaskEditorAttachmentPart_Name,
-			Messages.TaskEditorAttachmentPart_Description, /*"Type", */Messages.TaskEditorAttachmentPart_Size,
-			Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
+    private final String[] attachmentsColumns = { Messages.TaskEditorAttachmentPart_Name,
+            Messages.TaskEditorAttachmentPart_Description, /*"Type", */Messages.TaskEditorAttachmentPart_Size,
+            Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
 
-	private final int[] attachmentsColumnWidths = { 130, 150, /*100,*/70, 100, 100 };
+    private final int[] attachmentsColumnWidths = { 130, 150, /*100,*/70, 100, 100 };
 
-	private final int[] attachmentsColumnWidthsNoDescription = { 150, 0, 100, 180, 100 };
+    private final int[] attachmentsColumnWidthsNoDescription = { 150, 0, 100, 180, 100 };
 
-	private List<TaskAttribute> attachments;
+    private List<TaskAttribute> attachments;
 
-	private boolean hasIncoming;
+    private boolean hasIncoming;
 
-	private MenuManager menuManager;
+    private MenuManager menuManager;
 
-	private Composite attachmentsComposite;
+    private Composite attachmentsComposite;
 
-	private boolean useDescriptionColumn;
+    private boolean useDescriptionColumn;
 
-	private Section section;
+    private Section section;
 
-	public JiraTaskEditorAttachmentsPart() {
-		setPartName(Messages.TaskEditorAttachmentPart_Attachments);
-	}
+    public JiraTaskEditorAttachmentsPart() {
+        setPartName(Messages.TaskEditorAttachmentPart_Attachments);
+    }
 
-	public void setUseDescriptionColumn(boolean useDescriptionColumn) {
-		this.useDescriptionColumn = useDescriptionColumn;
-	}
+    public void setUseDescriptionColumn(boolean useDescriptionColumn) {
+        this.useDescriptionColumn = useDescriptionColumn;
+    }
 
-	private void createAttachmentTable(FormToolkit toolkit, final Composite attachmentsComposite) {
-		Table attachmentsTable = toolkit.createTable(attachmentsComposite, SWT.MULTI | SWT.FULL_SELECTION);
-		attachmentsTable.setLinesVisible(true);
-		attachmentsTable.setHeaderVisible(true);
-		attachmentsTable.setLayout(new GridLayout());
-		GridDataFactory.fillDefaults()
-				.align(SWT.FILL, SWT.FILL)
-				.grab(true, false)
-				.hint(500, SWT.DEFAULT)
-				.applyTo(attachmentsTable);
-		attachmentsTable.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+    private void createAttachmentTable(FormToolkit toolkit, final Composite attachmentsComposite) {
+        Table attachmentsTable = toolkit.createTable(attachmentsComposite, SWT.MULTI | SWT.FULL_SELECTION);
+        attachmentsTable.setLinesVisible(true);
+        attachmentsTable.setHeaderVisible(true);
+        attachmentsTable.setLayout(new GridLayout());
+        GridDataFactory.fillDefaults()
+                .align(SWT.FILL, SWT.FILL)
+                .grab(true, false)
+                .hint(500, SWT.DEFAULT)
+                .applyTo(attachmentsTable);
+        attachmentsTable.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-		for (int i = 0, columnIndex = 0; i < attachmentsColumns.length; i++) {
-			if (!useDescriptionColumn && attachmentsColumns[i].equals(Messages.TaskEditorAttachmentPart_Description)) {
-				continue;
-			}
-			TableColumn column = new TableColumn(attachmentsTable, SWT.LEFT, columnIndex);
-			column.setText(attachmentsColumns[i]);
-			if (useDescriptionColumn) {
-				column.setWidth(attachmentsColumnWidths[i]);
-			} else {
-				column.setWidth(attachmentsColumnWidthsNoDescription[i]);
-			}
-			columnIndex++;
-		}
-		int sizeColumn = useDescriptionColumn ? 2 : 1;
-		attachmentsTable.getColumn(sizeColumn).setAlignment(SWT.RIGHT);
+        for (int i = 0, columnIndex = 0; i < attachmentsColumns.length; i++) {
+            if (!useDescriptionColumn && attachmentsColumns[i].equals(Messages.TaskEditorAttachmentPart_Description)) {
+                continue;
+            }
+            TableColumn column = new TableColumn(attachmentsTable, SWT.LEFT, columnIndex);
+            column.setText(attachmentsColumns[i]);
+            if (useDescriptionColumn) {
+                column.setWidth(attachmentsColumnWidths[i]);
+            } else {
+                column.setWidth(attachmentsColumnWidthsNoDescription[i]);
+            }
+            columnIndex++;
+        }
+        int sizeColumn = useDescriptionColumn ? 2 : 1;
+        attachmentsTable.getColumn(sizeColumn).setAlignment(SWT.RIGHT);
 
-		TableViewer attachmentsViewer = new TableViewer(attachmentsTable);
-		attachmentsViewer.setUseHashlookup(true);
-		attachmentsViewer.setColumnProperties(attachmentsColumns);
-		ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
+        TableViewer attachmentsViewer = new TableViewer(attachmentsTable);
+        attachmentsViewer.setUseHashlookup(true);
+        attachmentsViewer.setColumnProperties(attachmentsColumns);
+        ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
-		attachmentsViewer.setSorter(new ViewerSorter() {
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				ITaskAttachment attachment1 = (ITaskAttachment) e1;
-				ITaskAttachment attachment2 = (ITaskAttachment) e2;
-				Date created1 = attachment1.getCreationDate();
-				Date created2 = attachment2.getCreationDate();
-				if (created1 != null && created2 != null) {
-					return created1.compareTo(created2);
-				} else if (created1 == null && created2 != null) {
-					return -1;
-				} else if (created1 != null && created2 == null) {
-					return 1;
-				} else {
-					return 0;
-				}
-			}
-		});
+        attachmentsViewer.setSorter(new ViewerSorter() {
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+                ITaskAttachment attachment1 = (ITaskAttachment) e1;
+                ITaskAttachment attachment2 = (ITaskAttachment) e2;
+                Date created1 = attachment1.getCreationDate();
+                Date created2 = attachment2.getCreationDate();
+                if (created1 != null && created2 != null) {
+                    return created1.compareTo(created2);
+                } else if (created1 == null && created2 != null) {
+                    return -1;
+                } else if (created1 != null && created2 == null) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
 
-		List<ITaskAttachment> attachmentList = new ArrayList<ITaskAttachment>(attachments.size());
-		for (TaskAttribute attribute : attachments) {
-			TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
-					attribute);
-			getTaskData().getAttributeMapper().updateTaskAttachment(taskAttachment, attribute);
-			attachmentList.add(taskAttachment);
-		}
-		attachmentsViewer.setContentProvider(new ArrayContentProvider());
-		attachmentsViewer.setLabelProvider(new AttachmentTableLabelProvider(getModel(),
-				getTaskEditorPage().getAttributeEditorToolkit()) {
-			@Override
-			public String getColumnText(Object element, int columnIndex) {
-				if (!useDescriptionColumn && columnIndex >= 1) {
-					columnIndex++;
-				}
-				return super.getColumnText(element, columnIndex);
-			}
-		});
-		attachmentsViewer.addOpenListener(new IOpenListener() {
-			public void open(OpenEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					StructuredSelection selection = (StructuredSelection) event.getSelection();
-					ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
-					TasksUiUtil.openUrl(attachment.getUrl());
-				}
-			}
-		});
-		attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
-		attachmentsViewer.setInput(attachmentList.toArray());
+        List<ITaskAttachment> attachmentList = new ArrayList<ITaskAttachment>(attachments.size());
+        for (TaskAttribute attribute : attachments) {
+            TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
+                    attribute);
+            getTaskData().getAttributeMapper().updateTaskAttachment(taskAttachment, attribute);
+            attachmentList.add(taskAttachment);
+        }
+        attachmentsViewer.setContentProvider(new ArrayContentProvider());
+        // FIXME What replaced this piece of code
+        /*
+        attachmentsViewer.setLabelProvider(new AttachmentTableLabelProvider(getModel(),
+                getTaskEditorPage().getAttributeEditorToolkit()) {
+            @Override
+            public String getColumnText(Object element, int columnIndex) {
+                if (!useDescriptionColumn && columnIndex >= 1) {
+                    columnIndex++;
+                }
+                return super.getColumnText(element, columnIndex);
+            }
+        });
+        */
+        attachmentsViewer.addOpenListener(new IOpenListener() {
+            public void open(OpenEvent event) {
+                if (!event.getSelection().isEmpty()) {
+                    StructuredSelection selection = (StructuredSelection) event.getSelection();
+                    ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
+                    TasksUiUtil.openUrl(attachment.getUrl());
+                }
+            }
+        });
+        attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
+        attachmentsViewer.setInput(attachmentList.toArray());
 
-		menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(true);
-		menuManager.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				TasksUiMenus.fillTaskAttachmentMenu(manager);
-			}
-		});
-		getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
-		Menu menu = menuManager.createContextMenu(attachmentsTable);
-		attachmentsTable.setMenu(menu);
-	}
+        menuManager = new MenuManager();
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+                TasksUiMenus.fillTaskAttachmentMenu(manager);
+            }
+        });
+        getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
+        Menu menu = menuManager.createContextMenu(attachmentsTable);
+        attachmentsTable.setMenu(menu);
+    }
 
-	private void createButtons(Composite attachmentsComposite, FormToolkit toolkit) {
-		final Composite attachmentControlsComposite = toolkit.createComposite(attachmentsComposite);
-		attachmentControlsComposite.setLayout(new GridLayout(3, false));
-		attachmentControlsComposite.setLayoutData(new GridData(GridData.BEGINNING));
+    private void createButtons(Composite attachmentsComposite, FormToolkit toolkit) {
+        final Composite attachmentControlsComposite = toolkit.createComposite(attachmentsComposite);
+        attachmentControlsComposite.setLayout(new GridLayout(3, false));
+        attachmentControlsComposite.setLayoutData(new GridData(GridData.BEGINNING));
 
-		Button attachFileButton = toolkit.createButton(attachmentControlsComposite,
-				Messages.TaskEditorAttachmentPart_Attach_, SWT.PUSH);
-		attachFileButton.setImage(CommonImages.getImage(CommonImages.FILE_PLAIN));
-		attachFileButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
-			}
-		});
-		getTaskEditorPage().registerDefaultDropListener(attachFileButton);
+        Button attachFileButton = toolkit.createButton(attachmentControlsComposite,
+                Messages.TaskEditorAttachmentPart_Attach_, SWT.PUSH);
+        attachFileButton.setImage(CommonImages.getImage(CommonImages.FILE_PLAIN));
+        attachFileButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
+            }
+        });
+        getTaskEditorPage().registerDefaultDropListener(attachFileButton);
 
-		Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite,
-				Messages.TaskEditorAttachmentPart_Attach__Screenshot, SWT.PUSH);
-		attachScreenshotButton.setImage(CommonImages.getImage(CommonImages.IMAGE_CAPTURE));
-		attachScreenshotButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
-			}
-		});
-		getTaskEditorPage().registerDefaultDropListener(attachScreenshotButton);
+        Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite,
+                Messages.TaskEditorAttachmentPart_Attach__Screenshot, SWT.PUSH);
+        attachScreenshotButton.setImage(CommonImages.getImage(CommonImages.IMAGE_CAPTURE));
+        attachScreenshotButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
+            }
+        });
+        getTaskEditorPage().registerDefaultDropListener(attachScreenshotButton);
 
-		final CLabel dndHintLabel = new CLabel(attachmentControlsComposite, SWT.LEFT);
-		dndHintLabel.setImage(JiraImages.getImage(JiraImages.LIGHTBULB));
-		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(dndHintLabel);
-		dndHintLabel.setText(com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages.JiraTaskEditorSummaryPart_Attachements_Drag_and_Drop_Hint);
-		getTaskEditorPage().registerDefaultDropListener(dndHintLabel);
+        final CLabel dndHintLabel = new CLabel(attachmentControlsComposite, SWT.LEFT);
+        dndHintLabel.setImage(JiraImages.getImage(JiraImages.LIGHTBULB));
+        GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.CENTER).grab(true, false).applyTo(dndHintLabel);
+        dndHintLabel.setText(com.atlassian.connector.eclipse.internal.jira.ui.editor.Messages.JiraTaskEditorSummaryPart_Attachements_Drag_and_Drop_Hint);
+        getTaskEditorPage().registerDefaultDropListener(dndHintLabel);
 
-	}
+    }
 
-	@Override
-	public void createControl(Composite parent, final FormToolkit toolkit) {
-		initialize();
+    @Override
+    public void createControl(Composite parent, final FormToolkit toolkit) {
+        initialize();
 
-		section = createSection(parent, toolkit, hasIncoming);
-		section.setText(getPartName() + " (" + attachments.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (hasIncoming) {
-			expandSection(toolkit, section);
-		} else {
-			section.addExpansionListener(new ExpansionAdapter() {
-				@Override
-				public void expansionStateChanged(ExpansionEvent event) {
-					if (attachmentsComposite == null) {
-						expandSection(toolkit, section);
-						getTaskEditorPage().reflow();
-					}
-				}
-			});
-		}
-		setSection(toolkit, section);
-	}
+        section = createSection(parent, toolkit, hasIncoming);
+        section.setText(getPartName() + " (" + attachments.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (hasIncoming) {
+            expandSection(toolkit, section);
+        } else {
+            section.addExpansionListener(new ExpansionAdapter() {
+                @Override
+                public void expansionStateChanged(ExpansionEvent event) {
+                    if (attachmentsComposite == null) {
+                        expandSection(toolkit, section);
+                        getTaskEditorPage().reflow();
+                    }
+                }
+            });
+        }
+        setSection(toolkit, section);
+    }
 
-	private void expandSection(FormToolkit toolkit, Section section) {
-		attachmentsComposite = toolkit.createComposite(section);
-		attachmentsComposite.setLayout(EditorUtil.createSectionClientLayout());
-		attachmentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+    private void expandSection(FormToolkit toolkit, Section section) {
+        attachmentsComposite = toolkit.createComposite(section);
+        attachmentsComposite.setLayout(EditorUtil.createSectionClientLayout());
+        attachmentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		getTaskEditorPage().registerDefaultDropListener(section);
+        getTaskEditorPage().registerDefaultDropListener(section);
 
-		if (attachments.size() > 0) {
-			createAttachmentTable(toolkit, attachmentsComposite);
-		} else {
-			Label label = toolkit.createLabel(attachmentsComposite, Messages.TaskEditorAttachmentPart_No_attachments);
-			getTaskEditorPage().registerDefaultDropListener(label);
-		}
+        if (attachments.size() > 0) {
+            createAttachmentTable(toolkit, attachmentsComposite);
+        } else {
+            Label label = toolkit.createLabel(attachmentsComposite, Messages.TaskEditorAttachmentPart_No_attachments);
+            getTaskEditorPage().registerDefaultDropListener(label);
+        }
 
-		createButtons(attachmentsComposite, toolkit);
+        createButtons(attachmentsComposite, toolkit);
 
-		toolkit.paintBordersFor(attachmentsComposite);
-		section.setClient(attachmentsComposite);
-	}
+        toolkit.paintBordersFor(attachmentsComposite);
+        section.setClient(attachmentsComposite);
+    }
 
-	@Override
-	public void dispose() {
-		if (menuManager != null) {
-			menuManager.dispose();
-		}
-		super.dispose();
-	}
+    @Override
+    public void dispose() {
+        if (menuManager != null) {
+            menuManager.dispose();
+        }
+        super.dispose();
+    }
 
-	private void initialize() {
-		attachments = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
-				TaskAttribute.TYPE_ATTACHMENT);
-		for (TaskAttribute attachmentAttribute : attachments) {
-			if (getModel().hasIncomingChanges(attachmentAttribute)) {
-				hasIncoming = true;
-				break;
-			}
-		}
-	}
+    private void initialize() {
+        attachments = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
+                TaskAttribute.TYPE_ATTACHMENT);
+        for (TaskAttribute attachmentAttribute : attachments) {
+            if (getModel().hasIncomingChanges(attachmentAttribute)) {
+                hasIncoming = true;
+                break;
+            }
+        }
+    }
 
-	@Override
-	protected void fillToolBar(ToolBarManager toolBarManager) {
-		Action attachFileAction = new Action() {
-			@Override
-			public void run() {
-				EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
-			}
-		};
-		attachFileAction.setToolTipText(Messages.TaskEditorAttachmentPart_Attach_);
-		attachFileAction.setImageDescriptor(CommonImages.FILE_PLAIN_SMALL);
-		toolBarManager.add(attachFileAction);
+    @Override
+    protected void fillToolBar(ToolBarManager toolBarManager) {
+        Action attachFileAction = new Action() {
+            @Override
+            public void run() {
+                EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
+            }
+        };
+        attachFileAction.setToolTipText(Messages.TaskEditorAttachmentPart_Attach_);
+        attachFileAction.setImageDescriptor(CommonImages.FILE_PLAIN_SMALL);
+        toolBarManager.add(attachFileAction);
 
-		Action attachScreenshotAction = new Action() {
-			@Override
-			public void run() {
-				EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
-			}
-		};
+        Action attachScreenshotAction = new Action() {
+            @Override
+            public void run() {
+                EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
+            }
+        };
 
-		attachScreenshotAction.setImageDescriptor(CommonImages.IMAGE_CAPTURE);
-		attachScreenshotAction.setToolTipText(Messages.TaskEditorAttachmentPart_Attach__Screenshot);
-		toolBarManager.add(attachScreenshotAction);
-	}
+        attachScreenshotAction.setImageDescriptor(CommonImages.IMAGE_CAPTURE);
+        attachScreenshotAction.setToolTipText(Messages.TaskEditorAttachmentPart_Attach__Screenshot);
+        toolBarManager.add(attachScreenshotAction);
+    }
 
-	@Override
-	public boolean setFormInput(Object input) {
-		if (input instanceof String) {
-			String text = (String) input;
-			if (text.startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
-				if (attachments != null) {
-					for (TaskAttribute attachmentAttribute : attachments) {
-						if (text.equals(attachmentAttribute.getId())) {
-							selectReveal(attachmentAttribute);
-						}
-					}
-				}
-			}
-		}
-		return super.setFormInput(input);
-	}
+    @Override
+    public boolean setFormInput(Object input) {
+        if (input instanceof String) {
+            String text = (String) input;
+            if (text.startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
+                if (attachments != null) {
+                    for (TaskAttribute attachmentAttribute : attachments) {
+                        if (text.equals(attachmentAttribute.getId())) {
+                            selectReveal(attachmentAttribute);
+                        }
+                    }
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
 
-	public TaskAttribute selectReveal(TaskAttribute attachmentAttribute) {
-		if (attachmentAttribute == null) {
-			return null;
-		}
-		expand();
-		for (TaskAttribute attachment : attachments) {
-			if (attachment.equals(attachmentAttribute)) {
-				CommonFormUtil.ensureVisible(attachmentsComposite);
-				EditorUtil.focusOn(getTaskEditorPage().getManagedForm().getForm(), section);
+    public TaskAttribute selectReveal(TaskAttribute attachmentAttribute) {
+        if (attachmentAttribute == null) {
+            return null;
+        }
+        expand();
+        for (TaskAttribute attachment : attachments) {
+            if (attachment.equals(attachmentAttribute)) {
+                CommonFormUtil.ensureVisible(attachmentsComposite);
+                EditorUtil.focusOn(getTaskEditorPage().getManagedForm().getForm(), section);
 
-				return attachmentAttribute;
-			}
-		}
-		return null;
-	}
+                return attachmentAttribute;
+            }
+        }
+        return null;
+    }
 
-	private void expand() {
-		try {
-			getTaskEditorPage().setReflow(false);
+    private void expand() {
+        try {
+            getTaskEditorPage().setReflow(false);
 
-			if (section != null) {
-				CommonFormUtil.setExpanded(section, true);
-			}
-		} finally {
-			getTaskEditorPage().setReflow(true);
-		}
-		getTaskEditorPage().reflow();
-	}
+            if (section != null) {
+                CommonFormUtil.setExpanded(section, true);
+            }
+        } finally {
+            getTaskEditorPage().setReflow(true);
+        }
+        getTaskEditorPage().reflow();
+    }
 
 }

@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.ui;bundle-version="[3.0.0,4.0.0)",
- org.apache.commons.io
+ org.apache.commons.io,
+ com.atlassian.connector.commons;bundle-version="4.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: 

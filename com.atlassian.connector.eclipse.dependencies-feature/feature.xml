@@ -59,9 +59,7 @@
       <import plugin="org.eclipse.mylyn.tasks.bugs" version="3.3.0" match="compatible"/>
       <import feature="org.eclipse.mylyn.commons.notifications" version="1.18.0.v20191002-0659"/>
       <import feature="org.eclipse.mylyn.commons.repositories" version="1.18.0.v20191002-0659"/>
-      <import plugin="org.eclipse.mylyn.wikitext"/>
    </requires>
-
 
    <plugin
          id="org.eclipse.mylyn.commons.core"

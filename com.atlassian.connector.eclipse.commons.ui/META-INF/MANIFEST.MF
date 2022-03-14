@@ -24,5 +24,6 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench,
- com.atlassian.connector.eclipse.commons.core
+ com.atlassian.connector.eclipse.commons.core,
+ com.atlassian.connector.commons;bundle-version="4.0.0"
 Bundle-ClassPath: .

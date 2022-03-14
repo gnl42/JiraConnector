@@ -11,8 +11,12 @@
 
     <repositories>
         <repository>
-            <id>eclipse-latest</id>
-            <url>https://download.eclipse.org/releases/photon</url>
+            <id>mylyn</id>
+            <url>https://download.eclipse.org/mylyn/releases/3.19</url>
+        </repository>
+        <repository>
+            <id>eclipse</id>
+            <url>https://download.eclipse.org/releases/kepler</url>
             <layout>p2</layout>
         </repository>
 
@@ -25,17 +29,18 @@
             <name>atlassian 3rd party</name>
             <url>https://maven.atlassian.com/maven-3rdparty/</url>
         </repository>
+        <repository>
+            <id>atlassian again</id>
+            <url>https://packages.atlassian.com/mvn/maven-atlassian-external/com/atlassian/jira/jira-rest-java-client/</url>
+        </repository>
     </repositories>
 
     <properties>
         <tycho.version>2.7.0</tycho.version>
     </properties>
     <modules>
+        <module>com.atlassian.connector.commons</module>
         <module>com.atlassian.connector.commons-feature</module>
-        <module>com.atlassian.connector.commons.tests.dependencies</module>
-
-        <module>com.atlassian.connector.eclipse.test-feature</module>
-        <module>com.atlassian.connector.eclipse.tests</module>
         <module>com.atlassian.connector.eclipse.ui</module>
 
         <module>com.atlassian.connector.eclipse.commons-feature</module>
@@ -55,48 +60,59 @@
         <!-- <module>com.atlassian.connector.eclipse.monitor.server/src/main/webapp</module> -->
 
         <module>com.atlassian.connector.eclipse-feature</module>
-        
+
         <module>com.atlassian.connector.eclipse.bamboo-feature</module>
         <module>com.atlassian.connector.eclipse.bamboo.core</module>
-        <module>com.atlassian.connector.eclipse.bamboo.tests</module>
-        <module>com.atlassian.connector.eclipse.bamboo.testsUI</module>
         <module>com.atlassian.connector.eclipse.bamboo.ui</module>
-        
+
         <module>com.atlassian.connector.eclipse.branding.ui</module>
-        
-        <module>com.atlassian.connector.eclipse.crucible-feature</module>
-        <module>com.atlassian.connector.eclipse.crucible.core</module>
-        <module>com.atlassian.connector.eclipse.crucible.ui</module>
-        
-        <module>com.atlassian.connector.eclipse.cvs-feature</module>
-        <module>com.atlassian.connector.eclipse.cvs.core</module>
-        <module>com.atlassian.connector.eclipse.cvs.ui</module>
-        
-        <module>com.atlassian.connector.eclipse.fisheye-feature</module>
-        <module>com.atlassian.connector.eclipse.fisheye.core</module>
-        <module>com.atlassian.connector.eclipse.fisheye.ui</module>
-        
+
         <module>com.atlassian.connector.eclipse.help</module>
 
         <!-- <module>com.atlassian.jira.rest.client</module> -->
 
         <module>com.atlassian.connector.eclipse.jira-feature</module>
         <module>com.atlassian.connector.eclipse.jira.core</module>
-        <module>com.atlassian.connector.eclipse.jira.tests</module>
         <module>com.atlassian.connector.eclipse.jira.ui</module>
-        
+
+<!-- Will have to real life tests for now
+         <module>com.atlassian.connector.commons.tests.dependencies</module>
+
+        <module>com.atlassian.connector.eclipse.test-feature</module>
+        <module>com.atlassian.connector.eclipse.tests</module>
+         <module>com.atlassian.connector.eclipse.jira.tests</module>
+          -->
+         <!-- Unable to launch eclipse instance
+         <module>com.atlassian.connector.eclipse.bamboo.tests</module>
+          -->
+         <!--  Unable to resolve swtbot.eclipse.core
+        <module>com.atlassian.connector.eclipse.bamboo.testsUI</module>
+-->
+        <!-- Out of scope
+        <module>com.atlassian.connector.eclipse.crucible-feature</module>
+        <module>com.atlassian.connector.eclipse.crucible.core</module>
+        <module>com.atlassian.connector.eclipse.crucible.ui</module>
+
+         <module>com.atlassian.connector.eclipse.cvs-feature</module>
+        <module>com.atlassian.connector.eclipse.cvs.core</module>
+        <module>com.atlassian.connector.eclipse.cvs.ui</module>
+
+        <module>com.atlassian.connector.eclipse.fisheye-feature</module>
+        <module>com.atlassian.connector.eclipse.fisheye.core</module>
+        <module>com.atlassian.connector.eclipse.fisheye.ui</module>
+
         <module>com.atlassian.connector.eclipse.perforce-feature</module>
         <module>com.atlassian.connector.eclipse.perforce.core</module>
         <module>com.atlassian.connector.eclipse.perforce.ui</module>
-        
+
         <module>com.atlassian.connector.eclipse.subclipse-feature</module>
         <module>com.atlassian.connector.eclipse.subclipse.core</module>
         <module>com.atlassian.connector.eclipse.subclipse.ui</module>
-        
+
         <module>com.atlassian.connector.eclipse.subversive-feature</module>
         <module>com.atlassian.connector.eclipse.subversive.core</module>
         <module>com.atlassian.connector.eclipse.subversive.ui</module>
-        
+         -->
     </modules>
     <build>
         <pluginManagement>
