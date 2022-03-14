@@ -20,9 +20,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.core,
  com.atlassian.connector.eclipse.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.servlet,
- javax.servlet.http
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.directclickthrough.servlet;x-internal:=true,
  com.atlassian.connector.eclipse.internal.directclickthrough.ui;x-internal:=true,
- com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences;x-internal:=true
+ com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences;x-internal:=true,
+ javax.servlet,
+ javax.servlet.http
+Bundle-ClassPath: target/lib/javax.servlet-api.jar,
+ .

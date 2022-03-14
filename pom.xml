@@ -88,6 +88,16 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>3.0.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.3.2</version>
                 </plugin>
@@ -311,9 +321,6 @@
                     <!--<showEclipseLog>true</showEclipseLog> -->
                     <!--<testFailureIgnore>true</testFailureIgnore> -->
                     <argLine>${ui.test.vmargs}</argLine>
-                    <jvmArgs>
-                        <args>${ui.test.vmargs}</args>
-                    </jvmArgs>
                     <bundleStartLevel>
                         <bundle>
                             <id>org.eclipse.equinox.launcher</id>

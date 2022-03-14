@@ -21,15 +21,10 @@
 
     <properties>
         <version.jersey>1.1.0-ea</version.jersey>
-        <version.jetty>7.0.2.v20100331-</version.jetty>
+        <version.jetty>7.0.2.v20100331</version.jetty>
     </properties>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-compiler-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -41,7 +36,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,jersey-apache-client,guava,jetty-servlet,jetty-util,jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
+                            <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,jersey-apache-client,guava,jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -56,25 +51,36 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
         <!-- <dependency> <groupId>org.ddsteps</groupId> <artifactId>ddsteps-httpserver-mock</artifactId>
             <version>1.0-m1</version> <scope>test</scope> </dependency> <dependency>
             <groupId>com.atlassian.jira</groupId> <artifactId>jira-rest-java-client</artifactId>
             <version>1.1-ide-m09</version> </dependency> -->
 
-  <dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.4</version>
-</dependency>
         <dependency>
-  <groupId>javax.xml.rpc</groupId>
-  <artifactId>javax.xml.rpc-api</artifactId>
-  <version>1.1</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.rpc</groupId>
+            <artifactId>javax.xml.rpc-api</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -86,12 +92,16 @@
             <artifactId>axis</artifactId>
             <version>1.4</version>
         </dependency>
-<dependency>
-    <groupId>javax.ws.rs</groupId>
-    <artifactId>javax.ws.rs-api</artifactId>
-    <version>2.0-m13</version>
-</dependency>
-<!-- Thanks for using https://jar-download.com -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0-m13</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.5</version>
+        </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
@@ -112,22 +122,43 @@
             <artifactId>xstream</artifactId>
             <version>1.3</version>
         </dependency>
-<dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-servlet</artifactId>
-    <version>7.0.2.v20100331</version>
-</dependency>
-<dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-util</artifactId>
-    <version>7.0.2.v20100331</version>
-</dependency>
-<dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-server</artifactId>
-    <version>7.0.2.v20100331</version>
-</dependency>
-         <dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-continuation</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-security</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-io</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <!-- Thanks for using https://jar-download.com -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${version.jetty}</version>
+        </dependency>
+        <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.1.0-ea</version>

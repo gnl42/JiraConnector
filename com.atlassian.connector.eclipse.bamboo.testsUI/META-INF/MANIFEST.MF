@@ -16,4 +16,3 @@ Require-Bundle: org.eclipse.swt,
  com.atlassian.connector.eclipse.bamboo.core,
  org.eclipse.jface,
  org.junit.jupiter.engine
-Import-Package: org.eclipse.mylyn.tests.util
