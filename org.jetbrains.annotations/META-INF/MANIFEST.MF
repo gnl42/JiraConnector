@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: JetBrains Annotations
-Bundle-SymbolicName: org.jetbrains.annotations
-Bundle-Version: 7.0.2.v20081216-1400
-Export-Package: org.jetbrains.annotations;version="7.0.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Atlassian
