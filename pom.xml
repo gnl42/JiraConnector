@@ -100,18 +100,6 @@
         <module>com.atlassian.connector.eclipse.fisheye-feature</module>
         <module>com.atlassian.connector.eclipse.fisheye.core</module>
         <module>com.atlassian.connector.eclipse.fisheye.ui</module>
-
-        <module>com.atlassian.connector.eclipse.perforce-feature</module>
-        <module>com.atlassian.connector.eclipse.perforce.core</module>
-        <module>com.atlassian.connector.eclipse.perforce.ui</module>
-
-        <module>com.atlassian.connector.eclipse.subclipse-feature</module>
-        <module>com.atlassian.connector.eclipse.subclipse.core</module>
-        <module>com.atlassian.connector.eclipse.subclipse.ui</module>
-
-        <module>com.atlassian.connector.eclipse.subversive-feature</module>
-        <module>com.atlassian.connector.eclipse.subversive.core</module>
-        <module>com.atlassian.connector.eclipse.subversive.ui</module>
          -->
     </modules>
     <build>
