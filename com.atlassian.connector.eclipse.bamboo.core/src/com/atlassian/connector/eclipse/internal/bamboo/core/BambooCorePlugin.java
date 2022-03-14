@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import com.atlassian.connector.eclipse.core.monitoring.Monitoring;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -34,72 +33,71 @@ import java.io.File;
 
 /**
  * The activator class controls the plug-in life cycle.
- * 
+ *
  * @author Shawn Minto
  */
 public class BambooCorePlugin extends Plugin {
 
-	private static final String REPOSITORY_CONFIGURATIONS_FOLDER_PATH = "repositoryConfigurations";
+    private static final String REPOSITORY_CONFIGURATIONS_FOLDER_PATH = "repositoryConfigurations";
 
-	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.bamboo.core";
+    public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.bamboo.core";
 
-	public static final String CONNECTOR_KIND = "bamboo";
+    public static final String CONNECTOR_KIND = "bamboo";
 
-	private static BambooRepositoryConnector repositoryConnector;
+    private static BambooRepositoryConnector repositoryConnector;
 
-	private static BambooCorePlugin plugin;
+    private static BambooCorePlugin plugin;
 
-	private static BuildPlanManager buildPlanManager;
+    private static BuildPlanManager buildPlanManager;
 
-	private static Monitoring monitoring = null;
 
-	public BambooCorePlugin() {
-		// make sure that we have the logging going to the eclipse log
-		LoggerImpl.setInstance(new AtlassianLogger());
-	}
+    public BambooCorePlugin() {
+        // make sure that we have the logging going to the eclipse log
+        LoggerImpl.setInstance(new AtlassianLogger());
+    }
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
 
-		IEclipsePreferences preferences = new DefaultScope().getNode(BambooCorePlugin.PLUGIN_ID);
-		preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
-		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
+        IEclipsePreferences preferences = new DefaultScope().getNode(BambooCorePlugin.PLUGIN_ID);
+        preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
+        preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
 
-		buildPlanManager = new BuildPlanManager();
+        buildPlanManager = new BuildPlanManager();
 
-		preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
-		preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
-			public void preferenceChange(PreferenceChangeEvent event) {
-				if (event.getKey().equals(BambooConstants.PREFERENCE_AUTO_REFRESH) && BambooCorePlugin.isAutoRefresh()) {
-					buildPlanManager.refreshAllBuilds();
-				}
+        preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+        preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
+            public void preferenceChange(PreferenceChangeEvent event) {
+                if (event.getKey().equals(BambooConstants.PREFERENCE_AUTO_REFRESH) && BambooCorePlugin.isAutoRefresh()) {
+                    buildPlanManager.refreshAllBuilds();
+                }
 
-				buildPlanManager.reInitializeScheduler();
-			}
-		});
+                buildPlanManager.reInitializeScheduler();
+            }
+        });
 
-		buildPlanManager.addBuildsChangedListener(new BuildsChangedListener() {
+        buildPlanManager.addBuildsChangedListener(new BuildsChangedListener() {
 
-			public void buildsUpdated(BuildsChangedEvent event) {
+            public void buildsUpdated(BuildsChangedEvent event) {
 
-				BambooUtil.runActionForChangedBuild(event, new BuildChangeAction() {
+                BambooUtil.runActionForChangedBuild(event, new BuildChangeAction() {
 
-					public void run(BambooBuild build, TaskRepository repository) {
+                    public void run(BambooBuild build, TaskRepository repository) {
 
-						if (build.getStatus() == BuildStatus.FAILURE) {
+                        if (build.getStatus() == BuildStatus.FAILURE) {
 
-							IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
-							boolean isPlaySound = preferences.getBoolean(BambooConstants.PREFERENCE_PLAY_SOUND,
-									BambooConstants.DEFAULT_PLAY_SOUND);
+                            IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+                            boolean isPlaySound = preferences.getBoolean(BambooConstants.PREFERENCE_PLAY_SOUND,
+                                    BambooConstants.DEFAULT_PLAY_SOUND);
 
-							// @todo jjaroczynski - sound stuff should be in UI plugin, not in core!!!
-							if (isPlaySound) {
-								String sound = preferences.get(BambooConstants.PREFERENCE_BUILD_SOUND, "");
+                            // @todo jjaroczynski - sound stuff should be in UI plugin, not in core!!!
+                            if (isPlaySound) {
+                                String sound = preferences.get(BambooConstants.PREFERENCE_BUILD_SOUND, "");
 
-								if (sound != null && sound.length() > 0) {
-									// play sound
+                                if (sound != null && sound.length() > 0) {
+                                    // play sound
 //									InputStream in;
 //									try {
 //										in = new FileInputStream(sound);
@@ -112,92 +110,86 @@ public class BambooCorePlugin extends Plugin {
 //										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
 //												"Cannot play audio file", e));
 //									}
-								}
-							}
-						}
-					}
-				});
-			}
-		});
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
 
-		try {
-			preferences.flush();
-		} catch (BackingStoreException e) {
-			// TODO: decide if we want to swallow it here 
-		}
-	}
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            // TODO: decide if we want to swallow it here
+        }
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		if (repositoryConnector != null) {
-			repositoryConnector.flush();
-		}
-		plugin = null;
-		super.stop(context);
-	}
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        if (repositoryConnector != null) {
+            repositoryConnector.flush();
+        }
+        plugin = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static BambooCorePlugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static BambooCorePlugin getDefault() {
+        return plugin;
+    }
 
-	public static void setRepositoryConnector(BambooRepositoryConnector repositoryConnector) {
-		BambooCorePlugin.repositoryConnector = repositoryConnector;
-	}
+    public static void setRepositoryConnector(BambooRepositoryConnector repositoryConnector) {
+        BambooCorePlugin.repositoryConnector = repositoryConnector;
+    }
 
-	public static BambooRepositoryConnector getRepositoryConnector() {
-		return repositoryConnector;
-	}
+    public static BambooRepositoryConnector getRepositoryConnector() {
+        return repositoryConnector;
+    }
 
-	public File getRepositoryConfigurationCacheFile() {
-		IPath stateLocation = Platform.getStateLocation(getBundle());
-		IPath cacheFile = stateLocation.append(REPOSITORY_CONFIGURATIONS_FOLDER_PATH);
-		return cacheFile.toFile();
-	}
+    public File getRepositoryConfigurationCacheFile() {
+        IPath stateLocation = Platform.getStateLocation(getBundle());
+        IPath cacheFile = stateLocation.append(REPOSITORY_CONFIGURATIONS_FOLDER_PATH);
+        return cacheFile.toFile();
+    }
 
-	public static BuildPlanManager getBuildPlanManager() {
-		return buildPlanManager;
-	}
+    public static BuildPlanManager getBuildPlanManager() {
+        return buildPlanManager;
+    }
 
-	public static int getRefreshIntervalMinutes() {
-		int minutes = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID).getInt(
-				BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
-		return minutes;
-	}
+    public static int getRefreshIntervalMinutes() {
+        int minutes = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID).getInt(
+                BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
+        return minutes;
+    }
 
-	public static void setRefreshIntervalMinutes(int minutes) {
-		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
-		preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
-		try {
-			preferences.flush();
-		} catch (BackingStoreException e) {
-			// TODO: 
-		}
-	}
+    public static void setRefreshIntervalMinutes(int minutes) {
+        IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+        preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            // TODO:
+        }
+    }
 
-	public static void toggleAutoRefresh() {
-		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
-		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
-		try {
-			preferences.flush();
-		} catch (BackingStoreException e) {
-			// TODO: decide if we want to swallow it
-		}
-	}
+    public static void toggleAutoRefresh() {
+        IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+        preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            // TODO: decide if we want to swallow it
+        }
+    }
 
-	public static boolean isAutoRefresh() {
-		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
-		return preferences.getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
-	}
+    public static boolean isAutoRefresh() {
+        IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+        return preferences.getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
+    }
 
-	public static Monitoring getMonitoring() {
-		if (monitoring == null) {
-			monitoring = new Monitoring(PLUGIN_ID);
-		}
-		return monitoring;
-	}
 }

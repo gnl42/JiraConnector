@@ -56,12 +56,6 @@
         <module>com.atlassian.connector.eclipse.directclickthrough-feature</module>
         <module>com.atlassian.connector.eclipse.directclickthrough.ui</module>
 
-        <module>com.atlassian.connector.eclipse.monitor-feature</module>
-        <module>com.atlassian.connector.eclipse.monitor.core</module>
-        <module>com.atlassian.connector.eclipse.monitor.ui</module>
-
-        <!-- <module>com.atlassian.connector.eclipse.monitor.server/src/main/webapp</module> -->
-
         <module>com.atlassian.connector.eclipse-feature</module>
 
         <module>com.atlassian.connector.eclipse.bamboo-feature</module>
