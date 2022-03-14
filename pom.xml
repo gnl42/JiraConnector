@@ -94,11 +94,6 @@
             <module>com.atlassian.connector.eclipse.jira.tests</module> -->
         <!-- Unable to launch eclipse instance <module>com.atlassian.connector.eclipse.bamboo.tests</module> -->
         <!-- Unable to resolve swtbot.eclipse.core <module>com.atlassian.connector.eclipse.bamboo.testsUI</module> -->
-        <!-- Out of scope <module>com.atlassian.connector.eclipse.crucible-feature</module>
-            <module>com.atlassian.connector.eclipse.crucible.core</module> <module>com.atlassian.connector.eclipse.crucible.ui</module>
-            <module>com.atlassian.connector.eclipse.cvs-feature</module> <module>com.atlassian.connector.eclipse.cvs.core</module>
-            <module>com.atlassian.connector.eclipse.cvs.ui</module> <module>com.atlassian.connector.eclipse.fisheye-feature</module>
-            <module>com.atlassian.connector.eclipse.fisheye.core</module> <module>com.atlassian.connector.eclipse.fisheye.ui</module> -->
         <module>jiraConnector-release</module>
     </modules>
     <build>
