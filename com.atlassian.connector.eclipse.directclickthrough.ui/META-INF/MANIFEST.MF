@@ -26,5 +26,4 @@ Export-Package: com.atlassian.connector.eclipse.internal.directclickthrough.serv
  com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences;x-internal:=true,
  javax.servlet,
  javax.servlet.http
-Bundle-ClassPath: target/lib/javax.servlet-api.jar,
- .
+Bundle-ClassPath: .
