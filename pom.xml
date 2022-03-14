@@ -11,13 +11,14 @@
 
     <repositories>
         <repository>
-            <id>mylyn</id>
-            <url>https://download.eclipse.org/mylyn/releases/3.19</url>
-        </repository>
-        <repository>
             <id>eclipse</id>
             <url>https://download.eclipse.org/releases/kepler</url>
             <layout>p2</layout>
+        </repository>
+
+        <repository>
+            <id>atlassian again</id>
+            <url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
         </repository>
 
         <repository>
@@ -29,12 +30,14 @@
             <name>atlassian 3rd party</name>
             <url>https://maven.atlassian.com/maven-3rdparty/</url>
         </repository>
-        <repository>
-            <id>atlassian again</id>
-            <url>https://packages.atlassian.com/mvn/maven-atlassian-external/com/atlassian/jira/jira-rest-java-client/</url>
-        </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>release</id>
+            <url>https://repo.eclipse.org/content/groups/releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
     <properties>
         <tycho.version>2.7.0</tycho.version>
     </properties>
@@ -75,32 +78,16 @@
         <module>com.atlassian.connector.eclipse.jira.core</module>
         <module>com.atlassian.connector.eclipse.jira.ui</module>
 
-<!-- Will have to real life tests for now
-         <module>com.atlassian.connector.commons.tests.dependencies</module>
-
-        <module>com.atlassian.connector.eclipse.test-feature</module>
-        <module>com.atlassian.connector.eclipse.tests</module>
-         <module>com.atlassian.connector.eclipse.jira.tests</module>
-          -->
-         <!-- Unable to launch eclipse instance
-         <module>com.atlassian.connector.eclipse.bamboo.tests</module>
-          -->
-         <!--  Unable to resolve swtbot.eclipse.core
-        <module>com.atlassian.connector.eclipse.bamboo.testsUI</module>
--->
-        <!-- Out of scope
-        <module>com.atlassian.connector.eclipse.crucible-feature</module>
-        <module>com.atlassian.connector.eclipse.crucible.core</module>
-        <module>com.atlassian.connector.eclipse.crucible.ui</module>
-
-         <module>com.atlassian.connector.eclipse.cvs-feature</module>
-        <module>com.atlassian.connector.eclipse.cvs.core</module>
-        <module>com.atlassian.connector.eclipse.cvs.ui</module>
-
-        <module>com.atlassian.connector.eclipse.fisheye-feature</module>
-        <module>com.atlassian.connector.eclipse.fisheye.core</module>
-        <module>com.atlassian.connector.eclipse.fisheye.ui</module>
-         -->
+        <!-- Will have to real life tests for now <module>com.atlassian.connector.commons.tests.dependencies</module>
+            <module>com.atlassian.connector.eclipse.test-feature</module> <module>com.atlassian.connector.eclipse.tests</module>
+            <module>com.atlassian.connector.eclipse.jira.tests</module> -->
+        <!-- Unable to launch eclipse instance <module>com.atlassian.connector.eclipse.bamboo.tests</module> -->
+        <!-- Unable to resolve swtbot.eclipse.core <module>com.atlassian.connector.eclipse.bamboo.testsUI</module> -->
+        <!-- Out of scope <module>com.atlassian.connector.eclipse.crucible-feature</module>
+            <module>com.atlassian.connector.eclipse.crucible.core</module> <module>com.atlassian.connector.eclipse.crucible.ui</module>
+            <module>com.atlassian.connector.eclipse.cvs-feature</module> <module>com.atlassian.connector.eclipse.cvs.core</module>
+            <module>com.atlassian.connector.eclipse.cvs.ui</module> <module>com.atlassian.connector.eclipse.fisheye-feature</module>
+            <module>com.atlassian.connector.eclipse.fisheye.core</module> <module>com.atlassian.connector.eclipse.fisheye.ui</module> -->
     </modules>
     <build>
         <pluginManagement>
