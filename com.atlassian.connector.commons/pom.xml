@@ -20,7 +20,7 @@
     <description>Common classes used by various Atlassian IDE Connectors.</description>
 
     <properties>
-        <version.jersey>1.1.0-ea</version.jersey>
+        <version.jersey>1.8</version.jersey>
         <version.jetty>7.0.2.v20100331</version.jetty>
     </properties>
     <build>
@@ -36,7 +36,11 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,jersey-apache-client,guava,jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
+                            <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
+                            javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
+                            jersey-apache-client,jersey-core,
+                            jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
+                            jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -161,12 +165,17 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.1.0-ea</version>
+            <version>${version.jersey}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-apache-client</artifactId>
-            <version>1.5</version>
+            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
