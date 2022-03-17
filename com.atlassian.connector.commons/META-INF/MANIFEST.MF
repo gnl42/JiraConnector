@@ -98,5 +98,6 @@ Bundle-ClassPath: .,
  target/lib/jetty-io.jar,
  target/lib/jetty-security.jar,
  target/lib/jetty-continuation.jar,
- target/lib/jersey-core.jar
+ target/lib/jersey-core.jar,
+ target/lib/jersey-json.jar
 Bundle-Vendor: Atlassian

@@ -38,7 +38,7 @@
                         <configuration>
                             <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
                             javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
-                            jersey-apache-client,jersey-core,
+                            jersey-apache-client,jersey-core,jersey-json,
                             jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
                             jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
@@ -170,6 +170,11 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+         <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
             <version>${version.jersey}</version>
         </dependency>
         <dependency>
