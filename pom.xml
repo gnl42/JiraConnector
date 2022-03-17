@@ -9,23 +9,59 @@
     <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <distributionManagement>
-        <site>
-            <id>mojo.website</id>
-            <name>Mojo Website</name>
-            <url>file:///target/site2</url>
-        </site>
-        <repository>
-            <id>me</id>
-            <url>file:///target/p2</url>
-            <layout>default</layout>
-        </repository>
-        <snapshotRepository>
-            <id>me</id>
-            <url>file:///target/p2-snapshot</url>
-            <layout>default</layout>
-        </snapshotRepository>
-    </distributionManagement>
+    <developers>
+       <developer>
+            <name>Mik Kersten</name>
+            <organization>Tasktop Technologies</organization>
+        </developer>
+        <developer>
+            <name>Pawel Niewiadomski</name>
+        </developer>
+        <developer>
+            <name>Shawn Minto</name>
+            <organization>Tasktop Technologies</organization>
+        </developer>
+        <developer>
+            <name>Thomas Ehrnhoefer</name>
+        </developer>
+        <developer>
+            <name>Wojciech Seliga</name>
+        </developer>
+        <developer>
+            <name>Jacek Jaroczynski</name>
+        </developer>
+         <developer>
+            <name>Steffen Pingel</name>
+        </developer>
+         <developer>
+            <name>Eugene Kuleshov</name>
+        </developer>
+         <developer>
+            <name>Wesley Coelho</name>
+        </developer>
+         <developer>
+            <name>Rob Elves</name>
+        </developer>
+        <!-- Maven port and beyond -->
+         <developer>
+            <name>George Lindholm</name>
+        </developer>
+    </developers>
+
+<licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>https://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
+    <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
+    <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
+    <tag>v4.0</tag>
+  </scm>
+
     <repositories>
         <repository>
             <id>eclipse</id>
@@ -55,9 +91,11 @@
             <url>https://repo.eclipse.org/content/groups/releases/</url>
         </pluginRepository>
     </pluginRepositories>
+
     <properties>
         <tycho.version>2.7.0</tycho.version>
     </properties>
+
     <modules>
         <module>com.atlassian.connector.commons</module>
         <module>com.atlassian.connector.commons-feature</module>
@@ -94,7 +132,7 @@
             <module>com.atlassian.connector.eclipse.jira.tests</module> -->
         <!-- Unable to launch eclipse instance <module>com.atlassian.connector.eclipse.bamboo.tests</module> -->
         <!-- Unable to resolve swtbot.eclipse.core <module>com.atlassian.connector.eclipse.bamboo.testsUI</module> -->
-        <module>jiraConnector-release</module>
+        <module>com.atlassian.connector.eclipse.releng</module>
     </modules>
     <build>
         <pluginManagement>
