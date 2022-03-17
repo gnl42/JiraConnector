@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="com.atlassian.connector.eclipse.jira.feature_4.0.0.qualifier.jar" id="com.atlassian.connector.eclipse.jira" version="4.0.0.qualifier">
-      <category name="atlassian.category"/>
+   <feature url="com.atlassian.connector.eclipse_4.0.0.qualifier.jar" id="com.atlassian.connector.eclipse" version="4.0.0.qualifier">
+      <category name="Connector"/>
    </feature>
-   <feature url="com.atlassian.connector.eclipse.bamboo.feature_4.0.0.qualifier.jar" id="com.atlassian.connector.eclipse.bamboo" version="4.0.0.qualifier">
-      <category name="atlassian.category"/>
-   </feature>
-   <feature url="com.atlassian.connector.eclipse.directclickthrough.feature_4.0.0.qualifier.jar" id="com.atlassian.connector.eclipse.directclickthrough" version="4.0.0.qualifier">
-      <category name="atlassian.category"/>
-   </feature>
-   <feature url="com.atlassian.connector.eclipse.feature_4.0.0.qualifier.jar" id="com.atlassian.connector.eclipse" version="4.0.0.qualifier">
-      <category name="atlassian.category"/>
-   </feature>
-   <bundle id="com.atlassian.connector.eclipse.help"/>
-   <category-def name="atlassian.category" label="Atlassian">
+   <category-def name="Connector" label="Atlassian Connector">
       <description>
          Atlassian Connectors for Jira/Bamboo
       </description>
