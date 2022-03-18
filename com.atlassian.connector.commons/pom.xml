@@ -38,9 +38,9 @@
                         <configuration>
                             <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
                             javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
-                            jersey-apache-client,jersey-core,jersey-json,
+
                             jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
-                            jetty-server,xstream,velocity,cssparser,jdom,axis,javax.xml.rpc-api</includeArtifactIds>
+                            jetty-server,xstream,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -92,11 +92,6 @@
             <version>1.6</version>
         </dependency>
         <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0-m13</version>
@@ -105,11 +100,6 @@
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
@@ -161,26 +151,6 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <version>${version.jetty}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-apache-client</artifactId>
-            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
