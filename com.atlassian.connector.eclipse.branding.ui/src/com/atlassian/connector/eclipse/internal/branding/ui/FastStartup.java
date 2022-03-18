@@ -25,7 +25,7 @@ public class FastStartup implements IStartup {
     }
 
     private void setupJiraSystemProperty() {
-        final String[] keys = new String[] { ""bamboo." };
+        final String[] keys = new String[] { "bamboo." };
         boolean onlyJira = true;
         for (Map.Entry<String, String> entry : AtlassianBundlesInfo.getAllInstalledBundles().entrySet()) {
             for (String key : keys) {
@@ -40,5 +40,4 @@ public class FastStartup implements IStartup {
         }
         System.setProperty(IBrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY, Boolean.toString(onlyJira));
     }
-
 }
