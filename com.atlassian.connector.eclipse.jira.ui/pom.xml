@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.atlassian.connector.eclipse</groupId>
-    <artifactId>JiraConnector</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>com.atlassian.connector.eclipse.jira.ui</artifactId>
-  <packaging>eclipse-plugin</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atlassian.connector.eclipse</groupId>
+        <artifactId>JiraConnector</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>com.atlassian.connector.eclipse.jira.ui</artifactId>
+    <packaging>eclipse-plugin</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>byteunits</includeArtifactIds>
+                            <outputDirectory>target/lib</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.jakewharton.byteunits</groupId>
+            <artifactId>byteunits</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+    </dependencies>
 </project>

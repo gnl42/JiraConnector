@@ -23,18 +23,19 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.commons.workbench.forms.CommonFormUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskAttachment;
-import org.eclipse.mylyn.internal.tasks.ui.editors.AttachmentTableLabelProvider;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.Messages;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiMenus;
@@ -61,6 +62,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.atlassian.connector.eclipse.internal.jira.ui.JiraImages;
+import com.jakewharton.byteunits.DecimalByteUnit;
 
 /**
  * I hope to contribute it back one day to Mylyn framework
@@ -157,19 +159,34 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             attachmentList.add(taskAttachment);
         }
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
-        // FIXME What replaced this piece of code
-        /*
-        attachmentsViewer.setLabelProvider(new AttachmentTableLabelProvider(getModel(),
-                getTaskEditorPage().getAttributeEditorToolkit()) {
+
+        attachmentsViewer.setLabelProvider(new CellLabelProvider() {
             @Override
-            public String getColumnText(Object element, int columnIndex) {
-                if (!useDescriptionColumn && columnIndex >= 1) {
-                    columnIndex++;
+            public void update(ViewerCell cell) {
+                // TODO Auto-generated method stub
+                final TaskAttachment element = (TaskAttachment) cell.getElement();
+                final String text;
+                final int columnIndex = cell.getColumnIndex();
+                switch (columnIndex) {
+                case 0:
+                    text = element.getFileName();
+                    break;
+                case 1:
+                    text = DecimalByteUnit.format(element.getLength());
+                    break;
+                case 2:
+                    text = element.getAuthor().getPersonId();
+                    break;
+                case 3:
+                    text = element.getCreationDate().toLocaleString();
+                    break;
+                default:
+                    text = "Unexpected column: " + columnIndex;
                 }
-                return super.getColumnText(element, columnIndex);
+                cell.setText(text);
             }
         });
-        */
+
         attachmentsViewer.addOpenListener(new IOpenListener() {
             public void open(OpenEvent event) {
                 if (!event.getSelection().isEmpty()) {
