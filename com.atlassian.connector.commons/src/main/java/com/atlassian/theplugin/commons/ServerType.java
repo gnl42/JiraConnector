@@ -21,9 +21,7 @@ package com.atlassian.theplugin.commons;
  */
 public enum ServerType {
 	BAMBOO_SERVER("Bamboo Servers", "Bamboo", "http://www.atlassian.com/software/bamboo/"),
-	CRUCIBLE_SERVER("Crucible/FishEye Servers", "Crucible/FishEye", "http://www.atlassian.com/software/crucible/"),
 	JIRA_SERVER("JIRA Servers", "JIRA", "http://www.atlassian.com/software/jira/"),
-	FISHEYE_SERVER("FishEye Servers", "FishEye", "http://www.atlassian.com/software/fisheye/"),
     JIRA_STUDIO_SERVER("JIRA Studio Servers", "JIRA Studio", "http://www.atlassian.com/studio/", true);
 //    STASH_SERVER("Stash Servers", "STASH", "http://www.atlassian.com/software/stash/");
 //

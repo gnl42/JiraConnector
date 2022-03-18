@@ -11,41 +11,41 @@ import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClic
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.IDirectClickThroughPreferenceConstants;
 
 public class DirectClickThroughPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	private static final int PORT_RANGE_MAX = 0xFFFF-1;
-	private static final int PORT_RANGE_MIN = 1024;
+    private static final int PORT_RANGE_MAX = 0xFFFF-1;
+    private static final int PORT_RANGE_MIN = 1024;
 
-	public DirectClickThroughPreferencePage() {
-		super(GRID);
-		setTitle("Direct Click Through Preferences");
-		setDescription("Direct Click Through allows you to easily open selected items in your IDE. "
-				+ "You can browse your FishEye, Crucible, Bamboo or JIRA and navigate to your IDE "
-				+ "with one click and open selected item automatically. This feature opens a locally "
-				+ "available TCP/IP port, only localhost can access it. Direct Click Through works only "
-				+ "for the newest versions of Atlassian's products (some of them are still in beta).");
-	}
-	
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return DirectClickThroughUiPlugin.getDefault().getPreferenceStore();
-	}
-	
-	@Override
-	protected void createFieldEditors() {
-		addField(new BooleanFieldEditor(IDirectClickThroughPreferenceConstants.ENABLED, "Enabled Direct Click Through",
-				getFieldEditorParent()));
-		
-		final IntegerFieldEditor port = new IntegerFieldEditor(IDirectClickThroughPreferenceConstants.PORT_NUMBER,
-				"Let Eclipse listen on following TCP/IP port", getFieldEditorParent(), 5);
-		
-		port.setValidRange(PORT_RANGE_MIN, PORT_RANGE_MAX);
-		addField(port);
-	}
+    public DirectClickThroughPreferencePage() {
+        super(GRID);
+        setTitle("Direct Click Through Preferences");
+        setDescription("Direct Click Through allows you to easily open selected items in your IDE. "
+                + "You can browse your Bamboo or JIRA and navigate to your IDE "
+                + "with one click and open selected item automatically. This feature opens a locally "
+                + "available TCP/IP port, only localhost can access it. Direct Click Through works only "
+                + "for the newest versions of Atlassian's products (some of them are still in beta).");
+    }
 
-	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return DirectClickThroughUiPlugin.getDefault().getPreferenceStore();
+    }
+
+    @Override
+    protected void createFieldEditors() {
+        addField(new BooleanFieldEditor(IDirectClickThroughPreferenceConstants.ENABLED, "Enabled Direct Click Through",
+                getFieldEditorParent()));
+
+        final IntegerFieldEditor port = new IntegerFieldEditor(IDirectClickThroughPreferenceConstants.PORT_NUMBER,
+                "Let Eclipse listen on following TCP/IP port", getFieldEditorParent(), 5);
+
+        port.setValidRange(PORT_RANGE_MIN, PORT_RANGE_MAX);
+        addField(port);
+    }
+
+    public void init(IWorkbench workbench) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

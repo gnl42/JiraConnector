@@ -61,9 +61,4 @@ public abstract class ConfigurationListenerAdapter implements ConfigurationListe
 	public void bambooServersChanged(ProjectConfiguration newConfiguration) {
 	}
 
-	public void crucibleServersChanged(ProjectConfiguration newConfiguration) {
-	}
-
-	public void fisheyeServersChanged(ProjectConfiguration newConfiguration) {
-	}
 }

@@ -31,7 +31,7 @@ public abstract class ServerCfg implements Server {
 		this.url = url;
 	}
 
-	//    private boolean isShargetPassed;
+	// private boolean isShargetPassed;
 	private ServerIdImpl serverId;
 	private boolean isEnabled;
     private boolean deleted;
@@ -41,7 +41,7 @@ public abstract class ServerCfg implements Server {
 	private String password = "";
 	private boolean isPasswordStored;
 	private boolean useDefaultCredentials;
-    
+
     private boolean shared = false;
 
 
@@ -213,8 +213,8 @@ public abstract class ServerCfg implements Server {
 	}
 
 	/**
-	 * Returns real clone (deep copy of this object).
-	 * It intentionally does not use standard Java Cloneable as it sucks terriblyk
+	 * Returns real clone (deep copy of this object). It intentionally does not use standard Java Cloneable as it sucks
+	 * terriblyk
 	 *
 	 * @return deep copy
 	 */
@@ -260,15 +260,11 @@ public abstract class ServerCfg implements Server {
 		}
 	}
 
-	public FishEyeServer asFishEyeServer() {
-		return null;
-	}
-
     public boolean isShared() {
         return shared;
     }
 
     public void setShared(boolean shared) {
         this.shared = shared;
-    }   
+	}
 }

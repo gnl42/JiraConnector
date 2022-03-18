@@ -29,122 +29,62 @@ import java.util.Iterator;
  */
 public class ProjectConfigurationTest extends TestCase {
 
-	private static final BambooServerCfg BAMBOO_1 = new BambooServerCfg("mybamboo", new ServerIdImpl());
-	private static final CrucibleServerCfg CRUCIBLE_1 = new CrucibleServerCfg("mycrucible", new ServerIdImpl());
-	private static final FishEyeServerCfg FISHEYE_1 = new FishEyeServerCfg("myfisheye", new ServerIdImpl());
-	ProjectConfiguration projectCfg;
-	ProjectConfiguration anotherCfg;
+    private static final BambooServerCfg BAMBOO_1 = new BambooServerCfg("mybamboo", new ServerIdImpl());
+    ProjectConfiguration projectCfg;
+    ProjectConfiguration anotherCfg;
 
-	protected void setUp() throws Exception {
-		super.setUp();
+    protected void setUp() throws Exception {
+        super.setUp();
 
-		projectCfg = new ProjectConfiguration(MiscUtil.buildArrayList(BAMBOO_1, CRUCIBLE_1, FISHEYE_1));
-		anotherCfg = new ProjectConfiguration(projectCfg);
-	}
+        projectCfg = new ProjectConfiguration(MiscUtil.buildArrayList(BAMBOO_1));
+        anotherCfg = new ProjectConfiguration(projectCfg);
+    }
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	public void testCopyConstructor() {
-		assertEquals(projectCfg, anotherCfg);
-		projectCfg.setDefaultCrucibleRepo("repo");
-		projectCfg.setDefaultCrucibleServerId(CRUCIBLE_1.getServerId());
-		projectCfg.setDefaultCrucibleProject("crucproj");
-		projectCfg.setDefaultFishEyeServerId(CRUCIBLE_1.getServerId());
-		projectCfg.setFishEyeProjectPath("mypath");
-		projectCfg.setDefaultFishEyeRepo("fisheyerepo");
-		assertEquals(projectCfg, projectCfg.getClone());
-	}
+    public void testHashCode() {
+        assertEquals(projectCfg.hashCode(), anotherCfg.hashCode());
+    }
 
-	public void testHashCode() {
-		assertEquals(projectCfg.hashCode(), anotherCfg.hashCode());
-	}
+    public void testGetClone() {
+        final ProjectConfiguration clone = projectCfg.getClone();
+        assertNotSame(clone, projectCfg);
+        assertEquals(projectCfg, clone);
+        assertEquals(projectCfg.getServers(), clone.getServers());
 
-	public void testGetClone() {
-		final ProjectConfiguration clone = projectCfg.getClone();
-		assertNotSame(clone, projectCfg);
-		assertEquals(projectCfg, clone);
-		assertEquals(projectCfg.getServers(), clone.getServers());
+        final Iterator<ServerCfg> oIt = projectCfg.getServers().iterator();
+        final Iterator<ServerCfg> cIt = clone.getServers().iterator();
+        while (oIt.hasNext() && cIt.hasNext()) {
+            final ServerCfg oServer = oIt.next();
+            final ServerCfg cServer = cIt.next();
+            assertNotSame(oServer, cServer);
+            assertEquals(oServer, cServer);
+        }
+    }
 
-		final Iterator<ServerCfg> oIt = projectCfg.getServers().iterator();
-		final Iterator<ServerCfg> cIt = clone.getServers().iterator();
-		while (oIt.hasNext() && cIt.hasNext()) {
-			final ServerCfg oServer = oIt.next();
-			final ServerCfg cServer = cIt.next();
-			assertNotSame(oServer, cServer);
-			assertEquals(oServer, cServer);
-		}
-	}
+    public void testGetJiraServers() {
 
-	public void testEquals() {
-		assertEquals(projectCfg, anotherCfg);
-		anotherCfg.setDefaultCrucibleProject("CRUC");
-		TestUtil.assertNotEquals(projectCfg, anotherCfg);
-		projectCfg.setDefaultCrucibleProject(anotherCfg.getDefaultCrucibleProject());
-		assertEquals(projectCfg, anotherCfg);
+        Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
+        jiraServers.add(new JiraServerCfg("server1", new ServerIdImpl(), true));
+        jiraServers.add(new JiraServerCfg("server2", new ServerIdImpl(), true));
 
-		anotherCfg.setDefaultCrucibleServerId(CRUCIBLE_1.getServerId());
-		TestUtil.assertNotEquals(projectCfg, anotherCfg);
-		projectCfg.setDefaultCrucibleServerId(CRUCIBLE_1.getServerId());
-		assertEquals(projectCfg, anotherCfg);
+        projectCfg.getServers().addAll(jiraServers);
 
-		anotherCfg.setFishEyeProjectPath("path1");
-		TestUtil.assertNotEquals(projectCfg, anotherCfg);
-		projectCfg.setFishEyeProjectPath(anotherCfg.getFishEyeProjectPath());
-		assertEquals(projectCfg, anotherCfg);
+        assertEquals(jiraServers, projectCfg.getAllJIRAServers());
+    }
 
-		anotherCfg.setDefaultFishEyeRepo("repo1");
-		TestUtil.assertNotEquals(projectCfg, anotherCfg);
-		projectCfg.setDefaultFishEyeRepo(anotherCfg.getDefaultFishEyeRepo());
-		assertEquals(projectCfg, anotherCfg);
-	}
+    public void testGetBambooServers() {
 
-	public void testGetJiraServers() {
+        Collection<BambooServerCfg> bambooServers = MiscUtil.buildArrayList();
+        bambooServers.add(new BambooServerCfg("server1", new ServerIdImpl()));
+        bambooServers.add(new BambooServerCfg("server2", new ServerIdImpl()));
 
-		Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
-		jiraServers.add(new JiraServerCfg("server1", new ServerIdImpl(), true));
-		jiraServers.add(new JiraServerCfg("server2", new ServerIdImpl(), true));
+        projectCfg.getServers().remove(BAMBOO_1);
+        projectCfg.getServers().addAll(bambooServers);
 
-		projectCfg.getServers().addAll(jiraServers);
-
-		assertEquals(jiraServers, projectCfg.getAllJIRAServers());
-	}
-
-	public void testGetBambooServers() {
-
-		Collection<BambooServerCfg> bambooServers = MiscUtil.buildArrayList();
-		bambooServers.add(new BambooServerCfg("server1", new ServerIdImpl()));
-		bambooServers.add(new BambooServerCfg("server2", new ServerIdImpl()));
-
-		projectCfg.getServers().remove(BAMBOO_1);
-		projectCfg.getServers().addAll(bambooServers);
-
-		assertEquals(bambooServers, projectCfg.getAllBambooServers());
-	}
-
-	public void testGetCrucibleServers() {
-
-		Collection<CrucibleServerCfg> crucibleServers = MiscUtil.buildArrayList();
-		crucibleServers.add(new CrucibleServerCfg("server1", new ServerIdImpl()));
-		crucibleServers.add(new CrucibleServerCfg("server2", new ServerIdImpl()));
-
-		projectCfg.getServers().remove(CRUCIBLE_1);
-		projectCfg.getServers().addAll(crucibleServers);
-
-		assertEquals(crucibleServers, projectCfg.getAllCrucibleServers());
-	}
-
-	public void testGetFisheyeServers() {
-
-		Collection<FishEyeServerCfg> fisheyeServers = MiscUtil.buildArrayList();
-		fisheyeServers.add(new FishEyeServerCfg("server1", new ServerIdImpl()));
-		fisheyeServers.add(new FishEyeServerCfg("server2", new ServerIdImpl()));
-
-		projectCfg.getServers().remove(FISHEYE_1);
-		projectCfg.getServers().addAll(fisheyeServers);
-
-		assertEquals(fisheyeServers, projectCfg.getAllFisheyeServers());
-	}
+        assertEquals(bambooServers, projectCfg.getAllBambooServers());
+    }
 
 }

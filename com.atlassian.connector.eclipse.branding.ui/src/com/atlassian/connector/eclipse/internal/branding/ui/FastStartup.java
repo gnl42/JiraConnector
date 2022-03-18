@@ -20,25 +20,25 @@ import com.atlassian.connector.eclipse.internal.ui.IBrandingConstants;
 
 public class FastStartup implements IStartup {
 
-	public void earlyStartup() {
-		setupJiraSystemProperty();
-	}
+    public void earlyStartup() {
+        setupJiraSystemProperty();
+    }
 
-	private void setupJiraSystemProperty() {
-		final String[] keys = new String[] { "crucible.", "fisheye.", "bamboo." };
-		boolean onlyJira = true;
-		for (Map.Entry<String, String> entry : AtlassianBundlesInfo.getAllInstalledBundles().entrySet()) {
-			for (String key : keys) {
-				if (entry.getKey().startsWith(key)) {
-					onlyJira = false;
-					break;
-				}
-			}
-			if (!onlyJira) {
-				break;
-			}
-		}
-		System.setProperty(IBrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY, Boolean.toString(onlyJira));
-	}
+    private void setupJiraSystemProperty() {
+        final String[] keys = new String[] { ""bamboo." };
+        boolean onlyJira = true;
+        for (Map.Entry<String, String> entry : AtlassianBundlesInfo.getAllInstalledBundles().entrySet()) {
+            for (String key : keys) {
+                if (entry.getKey().startsWith(key)) {
+                    onlyJira = false;
+                    break;
+                }
+            }
+            if (!onlyJira) {
+                break;
+            }
+        }
+        System.setProperty(IBrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY, Boolean.toString(onlyJira));
+    }
 
 }

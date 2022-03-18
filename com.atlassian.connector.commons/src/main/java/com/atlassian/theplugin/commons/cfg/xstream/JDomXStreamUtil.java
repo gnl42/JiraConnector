@@ -16,8 +16,6 @@
 package com.atlassian.theplugin.commons.cfg.xstream;
 
 import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.FishEyeServerCfg;
 import com.atlassian.theplugin.commons.cfg.JiraServerCfg;
 import com.atlassian.theplugin.commons.cfg.PrivateBambooServerCfgInfo;
 import com.atlassian.theplugin.commons.cfg.PrivateProjectConfiguration;
@@ -35,7 +33,6 @@ import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.JDomDriver;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -57,9 +54,7 @@ public final class JDomXStreamUtil {
         XStream xStream = new XStream(new Sun14ReflectionProvider(), new JDomDriver());
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.alias("bamboo", BambooServerCfg.class);
-        xStream.alias("crucible", CrucibleServerCfg.class);
         xStream.alias("jira", JiraServerCfg.class);
-        xStream.alias("fisheye", FishEyeServerCfg.class);
 
         xStream.alias(PLAN, SubscribedPlan.class);
 
@@ -75,7 +70,6 @@ public final class JDomXStreamUtil {
             xStream.omitField(JiraServerCfg.class, "basicHttpUser");
 
             xStream.omitField(BambooServerCfg.class, "timezoneOffset");
-            xStream.omitField(CrucibleServerCfg.class, "fishEyeView");
         }
 
         xStream.aliasField("server-id", ServerCfg.class, "serverId");
@@ -89,12 +83,6 @@ public final class JDomXStreamUtil {
         xStream.aliasField("my-branches-only", ServerCfg.class, "myBranchesOnly");
 
         xStream.alias("project-configuration", ProjectConfiguration.class);
-        xStream.aliasField("default-crucible-server", ProjectConfiguration.class, "defaultCrucibleServerId");
-        xStream.aliasField("default-crucible-project", ProjectConfiguration.class, "defaultCrucibleProject");
-        xStream.aliasField("default-crucible-repo", ProjectConfiguration.class, "defaultCrucibleRepo");
-        xStream.aliasField("default-fisheye-server", ProjectConfiguration.class, "defaultFishEyeServerId");
-        xStream.aliasField("default-fisheye-repo", ProjectConfiguration.class, "defaultFishEyeRepo");
-        xStream.aliasField("fisheye-project-path", ProjectConfiguration.class, "fishEyeProjectPath");
         xStream.aliasField("default-jira-server", ProjectConfiguration.class, "defaultJiraServerId");
 
         xStream.alias("private-server-cfg", PrivateServerCfgInfo.class);

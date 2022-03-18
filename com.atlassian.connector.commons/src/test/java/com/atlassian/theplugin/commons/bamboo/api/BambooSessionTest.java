@@ -136,7 +136,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
     public void testGetPlanList() throws Exception {
         mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
-		mockServer.expect("/api/rest/getBambooBuildNumber.action", new BamboBuildNumberCalback());
+        mockServer.expect("/api/rest/getBambooBuildNumber.action", new BamboBuildNumberCalback());
         mockServer.expect("/api/rest/listBuildNames.action", new PlanListCallback());
         mockServer.expect("/api/rest/getLatestUserBuilds.action", new FavouritePlanListCallback());
         mockServer.expect("/api/rest/logout.action", new LogoutCallback());
@@ -150,22 +150,22 @@ public class BambooSessionTest extends AbstractSessionTest {
         mockServer.verify();
     }
 
-	public void testGetPlanList_40() throws Exception {
-		mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
-		mockServer.expect("/api/rest/getBambooBuildNumber.action", new BamboBuildNumberCalbackHttp500());
-		mockServer.expect("/rest/api/latest/info", new BamboBuildNumberCalback40());
-		mockServer.expect("/rest/api/latest/plan", new PlanListCallback40());
-		mockServer.expect("/rest/api/latest/plan/", new FavouritePlanListCallback40());
-		mockServer.expect("/api/rest/logout.action", new LogoutCallback());
+    public void testGetPlanList_40() throws Exception {
+        mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
+        mockServer.expect("/api/rest/getBambooBuildNumber.action", new BamboBuildNumberCalbackHttp500());
+        mockServer.expect("/rest/api/latest/info", new BamboBuildNumberCalback40());
+        mockServer.expect("/rest/api/latest/plan", new PlanListCallback40());
+        mockServer.expect("/rest/api/latest/plan/", new FavouritePlanListCallback40());
+        mockServer.expect("/api/rest/logout.action", new LogoutCallback());
 
-		BambooSession apiHandler = createBambooSession(mockBaseUrl);
-		apiHandler.login(USER_NAME, PASSWORD.toCharArray());
-		Collection<BambooPlan> plans = apiHandler.getPlanList();
-		apiHandler.logout();
+        BambooSession apiHandler = createBambooSession(mockBaseUrl);
+        apiHandler.login(USER_NAME, PASSWORD.toCharArray());
+        Collection<BambooPlan> plans = apiHandler.getPlanList();
+        apiHandler.logout();
 
-		Util.verifyPlanListResult(plans);
-		mockServer.verify();
-	}
+        Util.verifyPlanListResult(plans);
+        mockServer.verify();
+    }
 
     public void testFavouritePlanList() throws Exception {
         mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
@@ -181,52 +181,52 @@ public class BambooSessionTest extends AbstractSessionTest {
         mockServer.verify();
     }
 
-	public void testBuildDetailsFor1CommitSuccessTests() throws Exception {
-		mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
+    public void testBuildDetailsFor1CommitSuccessTests() throws Exception {
+        mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
 
-		mockServer.expect("/api/rest/getBambooBuildNumber.action",
-				new BamboBuildNumberCalback("/mock/bamboo/2_3/api/rest/bambooBuildNumberResponse.xml"));
-		mockServer.expect("/api/rest/getBuildResultsDetails.action",
-				new BuildDetailsResultCallback("buildResult-1Commit-SuccessfulTests.xml", "100"));
+        mockServer.expect("/api/rest/getBambooBuildNumber.action",
+                new BamboBuildNumberCalback("/mock/bamboo/2_3/api/rest/bambooBuildNumberResponse.xml"));
+        mockServer.expect("/api/rest/getBuildResultsDetails.action",
+                new BuildDetailsResultCallback("buildResult-1Commit-SuccessfulTests.xml", "100"));
 
-		mockServer.expect("/api/rest/logout.action", new LogoutCallback());
+        mockServer.expect("/api/rest/logout.action", new LogoutCallback());
 
-		BambooSession apiHandler = createBambooSession(mockBaseUrl);
-		apiHandler.login(USER_NAME, PASSWORD.toCharArray());
-		BuildDetails build = apiHandler.getBuildResultDetails("TP-DEF", 100);
-		apiHandler.logout();
+        BambooSession apiHandler = createBambooSession(mockBaseUrl);
+        apiHandler.login(USER_NAME, PASSWORD.toCharArray());
+        BuildDetails build = apiHandler.getBuildResultDetails("TP-DEF", 100);
+        apiHandler.logout();
 
-		mockServer.verify();
+        mockServer.verify();
 
-		assertNotNull(build);
-		assertEquals("13928", build.getVcsRevisionKey());
-		// commit
-		assertEquals(1, build.getCommitInfo().size());
-		assertEquals("author", build.getCommitInfo().iterator().next().getAuthor());
-		assertNotNull(build.getCommitInfo().iterator().next().getCommitDate());
-		assertEquals("commit comment", build.getCommitInfo().iterator().next().getComment());
-		assertEquals(3, build.getCommitInfo().iterator().next().getFiles().size());
-		assertEquals("13928",
-				build.getCommitInfo().iterator().next().getFiles().iterator().next().getFileDescriptor().getRevision());
-		assertEquals(
-				"/PL/trunk/ThePlugin/src/main/java/com/atlassian/theplugin/bamboo/HtmlBambooStatusListener.java",
-				build.getCommitInfo().iterator().next().getFiles().iterator().next().getFileDescriptor().getUrl());
+        assertNotNull(build);
+        assertEquals("13928", build.getVcsRevisionKey());
+        // commit
+        assertEquals(1, build.getCommitInfo().size());
+        assertEquals("author", build.getCommitInfo().iterator().next().getAuthor());
+        assertNotNull(build.getCommitInfo().iterator().next().getCommitDate());
+        assertEquals("commit comment", build.getCommitInfo().iterator().next().getComment());
+        assertEquals(3, build.getCommitInfo().iterator().next().getFiles().size());
+        assertEquals("13928",
+                build.getCommitInfo().iterator().next().getFiles().iterator().next().getFileDescriptor().getRevision());
+        assertEquals(
+                "/PL/trunk/ThePlugin/src/main/java/com/atlassian/theplugin/bamboo/HtmlBambooStatusListener.java",
+                build.getCommitInfo().iterator().next().getFiles().iterator().next().getFileDescriptor().getUrl());
 
         // failed tests
-		assertEquals(0, build.getFailedTestDetails().size());
+        assertEquals(0, build.getFailedTestDetails().size());
 
-		// successful tests
-		assertEquals(117, build.getSuccessfulTestDetails().size());
-		assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
-				build.getSuccessfulTestDetails().iterator().next().getTestClassName());
-		assertEquals("testProjectList",
-				build.getSuccessfulTestDetails().iterator().next().getTestMethodName());
-		assertEquals(0.046,
-				build.getSuccessfulTestDetails().iterator().next().getTestDuration());
-		assertNull(build.getSuccessfulTestDetails().iterator().next().getErrors());
-		assertEquals(TestResult.TEST_SUCCEED,
-				build.getSuccessfulTestDetails().iterator().next().getTestResult());
-	}
+        // successful tests
+        assertEquals(117, build.getSuccessfulTestDetails().size());
+        assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
+                build.getSuccessfulTestDetails().iterator().next().getTestClassName());
+        assertEquals("testProjectList",
+                build.getSuccessfulTestDetails().iterator().next().getTestMethodName());
+        assertEquals(0.046,
+                build.getSuccessfulTestDetails().iterator().next().getTestDuration());
+        assertNull(build.getSuccessfulTestDetails().iterator().next().getErrors());
+        assertEquals(TestResult.TEST_SUCCEED,
+                build.getSuccessfulTestDetails().iterator().next().getTestResult());
+    }
 
     public void testBuildForPlanSuccessNoTimezone() throws Exception {
         implTestBuildForPlanSuccess(0);
@@ -568,78 +568,78 @@ public class BambooSessionTest extends AbstractSessionTest {
         assertEquals(0, build.getSuccessfulTestDetails().size());
     }
 
-	public void testGetJobsForPlanBamboo27() throws Exception {
-		mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
-		// mockServer.expect("/api/rest/getBambooBuildNumber.action",
-		// new BamboBuildNumberCalback("/mock/bamboo/2_7/api/rest/bambooBuildNumberResponse.xml"));
-		mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
-				Util.RESOURCE_BASE_2_7));
-		mockServer.expect("/api/rest/logout.action", new LogoutCallback());
+    public void testGetJobsForPlanBamboo27() throws Exception {
+        mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
+        // mockServer.expect("/api/rest/getBambooBuildNumber.action",
+        // new BamboBuildNumberCalback("/mock/bamboo/2_7/api/rest/bambooBuildNumberResponse.xml"));
+        mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
+                Util.RESOURCE_BASE_2_7));
+        mockServer.expect("/api/rest/logout.action", new LogoutCallback());
 
-		BambooSession apiHandler = createBambooSession(mockBaseUrl);
-		apiHandler.login(USER_NAME, PASSWORD.toCharArray());
-		List<BambooJobImpl> jobs = apiHandler.getJobsForPlan("PLAN");
-		apiHandler.logout();
-		assertEquals(3, jobs.size());
-	}
+        BambooSession apiHandler = createBambooSession(mockBaseUrl);
+        apiHandler.login(USER_NAME, PASSWORD.toCharArray());
+        List<BambooJobImpl> jobs = apiHandler.getJobsForPlan("PLAN");
+        apiHandler.logout();
+        assertEquals(3, jobs.size());
+    }
 
-	public void testGetBuildDetailsBamboo27() throws Exception {
-		mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
-		mockServer.expect("/api/rest/getBambooBuildNumber.action",
-				new BamboBuildNumberCalback("/mock/bamboo/2_7/api/rest/bambooBuildNumberResponse.xml"));
-		mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
-				Util.RESOURCE_BASE_2_7));
-		// there are two jobs J1 and J2 returned by response for PLAN
-		mockServer.expect("/rest/api/latest/result/J1-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_2_7,
-				"J1-result.xml"));
-		mockServer.expect("/rest/api/latest/result/J2-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_2_7,
-				"J2-result.xml"));
-		mockServer.expect("/api/rest/logout.action", new LogoutCallback());
+    public void testGetBuildDetailsBamboo27() throws Exception {
+        mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
+        mockServer.expect("/api/rest/getBambooBuildNumber.action",
+                new BamboBuildNumberCalback("/mock/bamboo/2_7/api/rest/bambooBuildNumberResponse.xml"));
+        mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
+                Util.RESOURCE_BASE_2_7));
+        // there are two jobs J1 and J2 returned by response for PLAN
+        mockServer.expect("/rest/api/latest/result/J1-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_2_7,
+                "J1-result.xml"));
+        mockServer.expect("/rest/api/latest/result/J2-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_2_7,
+                "J2-result.xml"));
+        mockServer.expect("/api/rest/logout.action", new LogoutCallback());
 
-		BambooSession apiHandler = createBambooSession(mockBaseUrl);
-		apiHandler.login(USER_NAME, PASSWORD.toCharArray());
-		BuildDetails build = apiHandler.getBuildResultDetails("PLAN", 1);
-		apiHandler.logout();
+        BambooSession apiHandler = createBambooSession(mockBaseUrl);
+        apiHandler.login(USER_NAME, PASSWORD.toCharArray());
+        BuildDetails build = apiHandler.getBuildResultDetails("PLAN", 1);
+        apiHandler.logout();
 
-		assertEquals(3, build.getJobs().size());
-		assertEquals(2, build.getEnabledJobs().size());
+        assertEquals(3, build.getJobs().size());
+        assertEquals(2, build.getEnabledJobs().size());
 
-		assertEquals(1, build.getFailedTestDetails().size());
-		assertEquals(1, build.getJobs().get(0).getFailedTests().size());
+        assertEquals(1, build.getFailedTestDetails().size());
+        assertEquals(1, build.getJobs().get(0).getFailedTests().size());
 
-		assertEquals(3, build.getSuccessfulTestDetails().size());
-		assertEquals(1, build.getJobs().get(0).getSuccessfulTests().size());
-		assertEquals(2, build.getJobs().get(1).getSuccessfulTests().size());
-	}
+        assertEquals(3, build.getSuccessfulTestDetails().size());
+        assertEquals(1, build.getJobs().get(0).getSuccessfulTests().size());
+        assertEquals(2, build.getJobs().get(1).getSuccessfulTests().size());
+    }
 
-	public void testGetBuildDetailsBamboo30() throws Exception {
-		mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
-		mockServer.expect("/api/rest/getBambooBuildNumber.action",
-				new BamboBuildNumberCalback("/mock/bamboo/3_0/api/rest/bambooBuildNumberResponse.xml"));
-		mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
-				Util.RESOURCE_BASE_2_7));
-		// there are two jobs J1 and J2 returned by response for PLAN
-		mockServer.expect("/rest/api/latest/result/J1-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_3_0,
-				"J1-result.xml"));
-		mockServer.expect("/rest/api/latest/result/J2-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_3_0,
-				"J2-result.xml"));
-		mockServer.expect("/api/rest/logout.action", new LogoutCallback());
+    public void testGetBuildDetailsBamboo30() throws Exception {
+        mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
+        mockServer.expect("/api/rest/getBambooBuildNumber.action",
+                new BamboBuildNumberCalback("/mock/bamboo/3_0/api/rest/bambooBuildNumberResponse.xml"));
+        mockServer.expect("/rest/api/latest/plan/PLAN", new JobsForPlanCallback(
+                Util.RESOURCE_BASE_2_7));
+        // there are two jobs J1 and J2 returned by response for PLAN
+        mockServer.expect("/rest/api/latest/result/J1-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_3_0,
+                "J1-result.xml"));
+        mockServer.expect("/rest/api/latest/result/J2-1", new BuildDetailsResultCallback27(Util.RESOURCE_BASE_3_0,
+                "J2-result.xml"));
+        mockServer.expect("/api/rest/logout.action", new LogoutCallback());
 
-		BambooSession apiHandler = createBambooSession(mockBaseUrl);
-		apiHandler.login(USER_NAME, PASSWORD.toCharArray());
-		BuildDetails build = apiHandler.getBuildResultDetails("PLAN", 1);
-		apiHandler.logout();
+        BambooSession apiHandler = createBambooSession(mockBaseUrl);
+        apiHandler.login(USER_NAME, PASSWORD.toCharArray());
+        BuildDetails build = apiHandler.getBuildResultDetails("PLAN", 1);
+        apiHandler.logout();
 
-		assertEquals(3, build.getJobs().size());
-		assertEquals(2, build.getEnabledJobs().size());
+        assertEquals(3, build.getJobs().size());
+        assertEquals(2, build.getEnabledJobs().size());
 
-		assertEquals(2, build.getFailedTestDetails().size());
-		assertEquals(2, build.getJobs().get(0).getFailedTests().size());
+        assertEquals(2, build.getFailedTestDetails().size());
+        assertEquals(2, build.getJobs().get(0).getFailedTests().size());
 
-		assertEquals(2, build.getSuccessfulTestDetails().size());
-		assertEquals(0, build.getJobs().get(0).getSuccessfulTests().size());
-		assertEquals(2, build.getJobs().get(1).getSuccessfulTests().size());
-	}
+        assertEquals(2, build.getSuccessfulTestDetails().size());
+        assertEquals(0, build.getJobs().get(0).getSuccessfulTests().size());
+        assertEquals(2, build.getJobs().get(1).getSuccessfulTests().size());
+    }
 
     public void testBuildDetailsFor3CommitFailedSuccessTests() throws Exception {
         mockServer.expect("/api/rest/login.action", new LoginCallback(USER_NAME, PASSWORD));
@@ -698,8 +698,6 @@ public class BambooSessionTest extends AbstractSessionTest {
         assertEquals(TestResult.TEST_SUCCEED,
                 build.getSuccessfulTestDetails().iterator().next().getTestResult());
 
-        assertEquals("com.atlassian.theplugin.crucible.CrucibleServerFacadeConnectionTest",
-                build.getSuccessfulTestDetails().get(116).getTestClassName());
         assertEquals("testConnectionTestFailedNullPassword",
                 build.getSuccessfulTestDetails().get(116).getTestMethodName());
         assertEquals(0.001,

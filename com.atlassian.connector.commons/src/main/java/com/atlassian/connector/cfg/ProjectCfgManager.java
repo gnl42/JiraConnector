@@ -32,20 +32,6 @@ public interface ProjectCfgManager {
     @Nullable
     JiraServerData getDefaultJiraServer();
 
-	@Nullable
-	ServerData getDefaultCrucibleServer();
-
-	@Nullable
-	ServerData getDefaultFishEyeServer();
-
-	String getDefaultCrucibleRepo();
-
-	String getDefaultCrucibleProject();
-
-	String getDefaultFishEyeRepo();
-
-	String getFishEyeProjectPath();
-
     /**
      * Finds server with specified url in collection of servers (exact String match).
      * It tries to find enabled server. If not found then tries to find disabled server.
@@ -66,8 +52,6 @@ public interface ProjectCfgManager {
 
     boolean isDefaultJiraServerValid();
 
-    Collection<ServerData> getAllFishEyeServerss();
-
     Collection<ServerData> getAllEnabledServerss(final ServerType serverType);
 
     Collection<ServerData> getAllServerss(final ServerType serverType);
@@ -83,19 +67,11 @@ public interface ProjectCfgManager {
 
     JiraServerData getEnabledJiraServerr(ServerId serverId);
 
-	ServerData getCrucibleServerr(ServerId serverId);
-
-	ServerData getEnabledCrucibleServerr(ServerId serverId);
-
     Collection<ServerData> getAllServerss();
 
     Collection<ServerData> getAllJiraServerss();
 
-    Collection<ServerData> getAllCrucibleServerss();
-
     Collection<JiraServerData> getAllEnabledJiraServerss();
-
-    Collection<ServerData> getAllEnabledCrucibleServerss();
 
     Collection<ServerData> getAllEnabledServerss();
 
@@ -103,7 +79,5 @@ public interface ProjectCfgManager {
 
     @Deprecated
     Collection<ServerCfg> getAllEnabledServers(ServerType serverType);
-
-	Collection<ServerData> getAllEnabledCrucibleServersContainingFisheye();
 
 }

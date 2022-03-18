@@ -17,218 +17,98 @@ package com.atlassian.theplugin.commons.cfg;
 
 import com.atlassian.theplugin.commons.ServerType;
 import com.atlassian.theplugin.commons.util.MiscUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class ProjectConfiguration {
-	private Collection<ServerCfg> servers;
+    private final Collection<ServerCfg> servers;
 
-	private ServerIdImpl defaultCrucibleServerId;
-	private String defaultCrucibleProject;
-	private String defaultCrucibleRepo;
-	private ServerIdImpl defaultFishEyeServerId;
-	private String defaultFishEyeRepo;
-	private String fishEyeProjectPath;
-	private ServerIdImpl defaultJiraServerId;
+    private ServerIdImpl defaultJiraServerId;
 
-	private static final int HASHCODE_MAGIC = 31;
+    private static final int HASHCODE_MAGIC = 31;
 
 
-	public ProjectConfiguration(final ProjectConfiguration other) {
-		servers = cloneArrayList(other.getServers());
-		defaultCrucibleServerId = other.defaultCrucibleServerId;
-		defaultFishEyeServerId = other.defaultFishEyeServerId;
-		defaultCrucibleProject = other.defaultCrucibleProject;
-		defaultCrucibleRepo = other.defaultCrucibleRepo;
-		defaultFishEyeRepo = other.defaultFishEyeRepo;
-		fishEyeProjectPath = other.fishEyeProjectPath;
-		defaultJiraServerId = other.defaultJiraServerId;
-	}
+    public ProjectConfiguration(final ProjectConfiguration other) {
+        servers = cloneArrayList(other.getServers());
+        defaultJiraServerId = other.defaultJiraServerId;
+    }
 
-	public static Collection<ServerCfg> cloneArrayList(final Collection<ServerCfg> collection) {
-		final ArrayList<ServerCfg> res = new ArrayList<ServerCfg>(collection.size());
-		for (ServerCfg serverCfg : collection) {
-			res.add(serverCfg.getClone());
-		}
-		return res;
-	}
+    public static Collection<ServerCfg> cloneArrayList(final Collection<ServerCfg> collection) {
+        final ArrayList<ServerCfg> res = new ArrayList<ServerCfg>(collection.size());
+        for (ServerCfg serverCfg : collection) {
+            res.add(serverCfg.getClone());
+        }
+        return res;
+    }
 
 
-	public ProjectConfiguration(final Collection<ServerCfg> servers) {
-		if (servers == null) {
-			throw new NullPointerException("Servers cannot be null");
-		}
-		this.servers = servers;
-	}
+    public ProjectConfiguration(final Collection<ServerCfg> servers) {
+        if (servers == null) {
+            throw new NullPointerException("Servers cannot be null");
+        }
+        this.servers = servers;
+    }
 
-	public ProjectConfiguration() {
-		this.servers = MiscUtil.buildArrayList();
-	}
+    public ProjectConfiguration() {
+        this.servers = MiscUtil.buildArrayList();
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof ProjectConfiguration)) {
-			return false;
-		}
-
-		final ProjectConfiguration that = (ProjectConfiguration) o;
-
-		if (defaultCrucibleProject != null
-				? !defaultCrucibleProject.equals(that.defaultCrucibleProject)
-				: that.defaultCrucibleProject != null) {
-			return false;
-		}
-		if (defaultCrucibleServerId != null
-				? !defaultCrucibleServerId.equals(that.defaultCrucibleServerId)
-				: that.defaultCrucibleServerId != null) {
-			return false;
-		}
-		if (defaultCrucibleRepo != null
-				? !defaultCrucibleRepo.equals(that.defaultCrucibleRepo)
-				: that.defaultCrucibleRepo != null) {
-			return false;
-		}
-		if (defaultFishEyeServerId != null
-				? !defaultFishEyeServerId.equals(that.defaultFishEyeServerId)
-				: that.defaultFishEyeServerId != null) {
-			return false;
-		}
-		if (defaultFishEyeRepo != null
-				? !defaultFishEyeRepo.equals(that.defaultFishEyeRepo)
-				: that.defaultFishEyeRepo != null) {
-			return false;
-		}
-		if (fishEyeProjectPath != null
-				? !fishEyeProjectPath.equals(that.fishEyeProjectPath)
-				: that.fishEyeProjectPath != null) {
-			return false;
-		}
-		if (defaultJiraServerId != null
-				? !defaultJiraServerId.equals(that.defaultJiraServerId)
-				: that.defaultJiraServerId != null) {
-			return false;
-		}
-
-		//noinspection RedundantIfStatement
-		if (!servers.equals(that.servers)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		int result;
-		result = servers.hashCode();
-		result = HASHCODE_MAGIC * result + (defaultCrucibleServerId != null ? defaultCrucibleServerId.hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (defaultFishEyeServerId != null ? defaultFishEyeServerId.hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (defaultCrucibleProject != null ? defaultCrucibleProject.hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (defaultCrucibleRepo != null ? defaultCrucibleRepo.hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (fishEyeProjectPath != null ? fishEyeProjectPath.hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (defaultJiraServerId != null ? defaultJiraServerId.hashCode() : 0);
-		return result;
-	}
-
-	public Collection<ServerCfg> getServers() {
-		return servers;
-	}
-
-	public ServerCfg getServerCfg(ServerId serverId) {
-		for (ServerCfg serverCfg : servers) {
-			if (serverId.equals(serverCfg.getServerId())) {
-				return serverCfg;
-			}
-		}
-		return null;
-	}
-
-	public static ProjectConfiguration emptyConfiguration() {
-		return new ProjectConfiguration();
-	}
-
-	public ProjectConfiguration getClone() {
-		return new ProjectConfiguration(this);
-	}
-
-	public ServerIdImpl getDefaultCrucibleServerId() {
-		if (defaultCrucibleServerId == null && getAllCrucibleServers().size() == 1) {
-
-            final CrucibleServerCfg serverCfg = getAllCrucibleServers().iterator().next();
-            if (serverCfg.isEnabled()) {
-                defaultCrucibleServerId = serverCfg.getServerId();
-            }
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProjectConfiguration)) {
+            return false;
         }
 
-        return defaultCrucibleServerId;
-	}
+        final ProjectConfiguration that = (ProjectConfiguration) o;
 
-	public CrucibleServerCfg getDefaultCrucibleServer() {
-		if (getDefaultCrucibleServerId() == null) {
-			return null;
-		}
+        if (defaultJiraServerId != null
+                ? !defaultJiraServerId.equals(that.defaultJiraServerId)
+                : that.defaultJiraServerId != null) {
+            return false;
+        }
 
-		ServerCfg serverCfg = getServerCfg(getDefaultCrucibleServerId());
+        // noinspection RedundantIfStatement
+        if (!servers.equals(that.servers)) {
+            return false;
+        }
 
-		// no additional check - let IDE handle such error in a standard way (error dialog)
-		// in unlikely event of some fuck-up
-		final CrucibleServerCfg crucible = (CrucibleServerCfg) serverCfg;
-		if (crucible == null || !crucible.isEnabled()) {
-			return null;
-		}
-		return crucible;
-	}
+        return true;
+    }
 
-	public void setDefaultCrucibleServerId(final ServerIdImpl defaultCrucibleServerId) {
-		this.defaultCrucibleServerId = defaultCrucibleServerId;
-		if (defaultCrucibleServerId == null) {
-			setDefaultCrucibleProject(null);
-			setDefaultCrucibleRepo(null);
-		}
-	}
+    @Override
+    public int hashCode() {
+        int result;
+        result = servers.hashCode();
+        result = HASHCODE_MAGIC * result + (defaultJiraServerId != null ? defaultJiraServerId.hashCode() : 0);
+        return result;
+    }
 
-	public ServerIdImpl getDefaultFishEyeServerId() {
-        if (defaultFishEyeServerId == null && getAllFisheyeServers().size() == 1) {
-            final FishEyeServerCfg cfg = getAllFisheyeServers().iterator().next();
-            if (cfg.isEnabled()) {
-                defaultFishEyeServerId = cfg.getServerId();
+    public Collection<ServerCfg> getServers() {
+        return servers;
+    }
+
+    public ServerCfg getServerCfg(ServerId serverId) {
+        for (ServerCfg serverCfg : servers) {
+            if (serverId.equals(serverCfg.getServerId())) {
+                return serverCfg;
             }
         }
-		return defaultFishEyeServerId;
-	}
+        return null;
+    }
 
-	public FishEyeServer getDefaultFishEyeServer() {
-		if (getDefaultFishEyeServerId() == null) {
-			return null;
-		}
+    public static ProjectConfiguration emptyConfiguration() {
+        return new ProjectConfiguration();
+    }
 
-		final ServerCfg serverCfg = getServerCfg(getDefaultFishEyeServerId());
+    public ProjectConfiguration getClone() {
+        return new ProjectConfiguration(this);
+    }
 
-		// no additional check - let IDE handle such error in a standard way (error dialog)
-		// in unlikely event of some fuck-up
-		if (serverCfg == null || !serverCfg.isEnabled()) {
-			return null;
-		}
 
-		FishEyeServer res = serverCfg.asFishEyeServer();
-		if (res == null || !res.isEnabled()) {
-			return null;
-		}
-		return res;
-	}
-
-	public void setDefaultFishEyeServerId(final ServerIdImpl defaultFishEyeServerId) {
-		this.defaultFishEyeServerId = defaultFishEyeServerId;
-		if (defaultFishEyeServerId == null) {
-			defaultFishEyeRepo = null;
-		}
-	}
-
-	public ServerId getDefaultJiraServerId() {
+    public ServerId getDefaultJiraServerId() {
         if (defaultJiraServerId == null && getAllJIRAServers().size() == 1) {
             final JiraServerCfg jiraServerCfg = getAllJIRAServers().iterator().next();
             if (jiraServerCfg.isEnabled()) {
@@ -236,156 +116,74 @@ public class ProjectConfiguration {
             }
         }
 
-		return defaultJiraServerId;
-	}
+        return defaultJiraServerId;
+    }
 
-	public JiraServerCfg getDefaultJiraServer() {
-		if (getDefaultJiraServerId() == null) {
-			return null;
-		}
+    public JiraServerCfg getDefaultJiraServer() {
+        if (getDefaultJiraServerId() == null) {
+            return null;
+        }
 
-		ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
+        ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
 
-		// no additional check - let IDE handle such error in a standard way (error dialog)
-		// in unlikely event of some fuck-up
-		final JiraServerCfg jiraServerCfg = (JiraServerCfg) serverCfg;
-		if (jiraServerCfg == null || !jiraServerCfg.isEnabled()) {
-			return null;
-		}
-		return jiraServerCfg;
-	}
+        // no additional check - let IDE handle such error in a standard way (error dialog)
+        // in unlikely event of some fuck-up
+        final JiraServerCfg jiraServerCfg = (JiraServerCfg) serverCfg;
+        if (jiraServerCfg == null || !jiraServerCfg.isEnabled()) {
+            return null;
+        }
+        return jiraServerCfg;
+    }
 
-	public void setDefaultJiraServerId(final ServerIdImpl defaultJiraServerId) {
-		this.defaultJiraServerId = defaultJiraServerId;
-	}
+    public void setDefaultJiraServerId(final ServerIdImpl defaultJiraServerId) {
+        this.defaultJiraServerId = defaultJiraServerId;
+    }
 
-	public String getDefaultCrucibleProject() {
-		return defaultCrucibleProject;
-	}
+    public boolean isDefaultJiraServerValid() {
+        if (getDefaultJiraServerId() == null) {
+            return true;
+        }
 
-	public void setDefaultCrucibleProject(final String defaultCrucibleProject) {
-		this.defaultCrucibleProject = defaultCrucibleProject;
-	}
+        ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
 
-	public String getDefaultCrucibleRepo() {
-		return defaultCrucibleRepo;
-	}
+        // no additional check - let IDE handle such error in a standard way (error dialog)
+        // in unlikely event of some fuck-up
+        final JiraServerCfg jiraServerCfg = (JiraServerCfg) serverCfg;
+        return jiraServerCfg != null && jiraServerCfg.isEnabled();
+    }
 
-	public void setDefaultCrucibleRepo(final String defaultCrucibleRepo) {
-		this.defaultCrucibleRepo = defaultCrucibleRepo;
-	}
+    public Collection<JiraServerCfg> getAllJIRAServers() {
+        Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
 
-	public String getFishEyeProjectPath() {
-		return fishEyeProjectPath;
-	}
+        for (ServerCfg server : servers) {
+            if (server.getServerType() == ServerType.JIRA_SERVER && server instanceof JiraServerCfg) {
+                jiraServers.add((JiraServerCfg) server);
+            }
+        }
 
-	public void setFishEyeProjectPath(final String fishEyeProjectPath) {
-		this.fishEyeProjectPath = fishEyeProjectPath;
-	}
+        return jiraServers;
+    }
 
-	public String getDefaultFishEyeRepo() {
-		return defaultFishEyeRepo;
-	}
+    public Collection<BambooServerCfg> getAllBambooServers() {
+        Collection<BambooServerCfg> bambooServers = MiscUtil.buildArrayList();
 
-	public void setDefaultFishEyeRepo(final String defaultFishEyeRepo) {
-		this.defaultFishEyeRepo = defaultFishEyeRepo;
-	}
+        for (ServerCfg server : servers) {
+            if (server.getServerType() == ServerType.BAMBOO_SERVER && server instanceof BambooServerCfg) {
+                bambooServers.add((BambooServerCfg) server);
+            }
+        }
 
-	public boolean isDefaultFishEyeServerValid() {
-		if (getDefaultFishEyeServerId() == null) {
-			return true;
-		}
+        return bambooServers;
+    }
 
-		ServerCfg serverCfg = getServerCfg(getDefaultFishEyeServerId());
-		if (serverCfg == null) {
-			return false;
-		}
 
-		FishEyeServer fishEye = serverCfg.asFishEyeServer();
-		return fishEye != null && fishEye.isEnabled();
-	}
-
-	public boolean isDefaultCrucibleServerValid() {
-		if (getDefaultCrucibleServerId() == null) {
-			return true;
-		}
-
-		ServerCfg serverCfg = getServerCfg(getDefaultCrucibleServerId());
-
-		// no additional check - let IDE handle such error in a standard way (error dialog)
-		// in unlikely event of some fuck-up
-		final CrucibleServerCfg crucible = (CrucibleServerCfg) serverCfg;
-		return crucible != null && crucible.isEnabled();
-	}
-
-	public boolean isDefaultJiraServerValid() {
-		if (getDefaultJiraServerId() == null) {
-			return true;
-		}
-
-		ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
-
-		// no additional check - let IDE handle such error in a standard way (error dialog)
-		// in unlikely event of some fuck-up
-		final JiraServerCfg jiraServerCfg = (JiraServerCfg) serverCfg;
-		return jiraServerCfg != null && jiraServerCfg.isEnabled();
-	}
-
-	public Collection<JiraServerCfg> getAllJIRAServers() {
-		Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
-
-		for (ServerCfg server : servers) {
-			if (server.getServerType() == ServerType.JIRA_SERVER && server instanceof JiraServerCfg) {
-				jiraServers.add((JiraServerCfg) server);
-			}
-		}
-
-		return jiraServers;
-	}
-
-	public Collection<BambooServerCfg> getAllBambooServers() {
-		Collection<BambooServerCfg> bambooServers = MiscUtil.buildArrayList();
-
-		for (ServerCfg server : servers) {
-			if (server.getServerType() == ServerType.BAMBOO_SERVER && server instanceof BambooServerCfg) {
-				bambooServers.add((BambooServerCfg) server);
-			}
-		}
-
-		return bambooServers;
-	}
-
-	public Collection<CrucibleServerCfg> getAllCrucibleServers() {
-		Collection<CrucibleServerCfg> crucibleServers = MiscUtil.buildArrayList();
-
-		for (ServerCfg server : servers) {
-			if (server.getServerType() == ServerType.CRUCIBLE_SERVER && server instanceof CrucibleServerCfg) {
-				crucibleServers.add((CrucibleServerCfg) server);
-			}
-		}
-		return crucibleServers;
-
-	}
-
-	public Collection<FishEyeServerCfg> getAllFisheyeServers() {
-		Collection<FishEyeServerCfg> fisheyeServers = MiscUtil.buildArrayList();
-
-		for (ServerCfg server : servers) {
-			if (server.getServerType() == ServerType.FISHEYE_SERVER && server instanceof FishEyeServerCfg) {
-				fisheyeServers.add((FishEyeServerCfg) server);
-			}
-		}
-
-		return fisheyeServers;
-	}
-
-	public Collection<ServerCfg> getAllEnabledServersWithDefaultCredentials() {
-		Collection<ServerCfg> defServers = MiscUtil.buildArrayList();
-		for (ServerCfg server : servers) {
-			if (server.isUseDefaultCredentials() && server.isEnabled()) {
-				defServers.add(server);
-			}
-		}
-		return defServers;
-	}
+    public Collection<ServerCfg> getAllEnabledServersWithDefaultCredentials() {
+        Collection<ServerCfg> defServers = MiscUtil.buildArrayList();
+        for (ServerCfg server : servers) {
+            if (server.isUseDefaultCredentials() && server.isEnabled()) {
+                defServers.add(server);
+            }
+        }
+        return defServers;
+    }
 }
