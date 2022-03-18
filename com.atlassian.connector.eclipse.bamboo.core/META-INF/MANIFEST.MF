@@ -14,10 +14,14 @@ Require-Bundle: org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.core,
  com.atlassian.connector.eclipse.commons.core;visibility:=reexport
 Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui",
- com.atlassian.connector.eclipse.internal.bamboo.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui"
+ com.atlassian.connector.eclipse.internal.bamboo.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui",
+ com.atlassian.theplugin.commons.bamboo,
+ com.atlassian.theplugin.commons.bamboo.api
 Bundle-Vendor: Atlassian
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.core.data,
  org.eclipse.mylyn.tasks.core.sync
+Bundle-ClassPath: target/lib/jdom.jar,
+ .

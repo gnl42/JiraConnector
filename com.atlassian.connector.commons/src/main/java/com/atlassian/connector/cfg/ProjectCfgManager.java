@@ -24,14 +24,13 @@ import com.atlassian.theplugin.commons.cfg.ServerId;
 import com.atlassian.theplugin.commons.jira.JiraServerData;
 import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 
 public interface ProjectCfgManager {
 
 
-	@Nullable
-	JiraServerData getDefaultJiraServer();
+    @Nullable
+    JiraServerData getDefaultJiraServer();
 
 	@Nullable
 	ServerData getDefaultCrucibleServer();
@@ -47,64 +46,64 @@ public interface ProjectCfgManager {
 
 	String getFishEyeProjectPath();
 
-	/**
-	 * Finds server with specified url in collection of servers (exact String match).
-	 * It tries to find enabled server. If not found then tries to find disabled server.
-	 * If the above failed then it tries to compare host, port and path (skips protocol and query string)
-	 *
-	 * @param serverUrl url of server
-	 * @param servers   collection of servers
-	 * @return ServerData or null if not found
-	 */
-	ServerData findServer(final String serverUrl, final Collection<ServerData> servers);
+    /**
+     * Finds server with specified url in collection of servers (exact String match).
+     * It tries to find enabled server. If not found then tries to find disabled server.
+     * If the above failed then it tries to compare host, port and path (skips protocol and query string)
+     *
+     * @param serverUrl url of server
+     * @param servers   collection of servers
+     * @return ServerData or null if not found
+     */
+    ServerData findServer(final String serverUrl, final Collection<ServerData> servers);
 
-	@Deprecated
-	ServerCfg getServer(ServerId serverId);
+    @Deprecated
+    ServerCfg getServer(ServerId serverId);
 
-	void addProjectConfigurationListener(ConfigurationListener configurationListener);
+    void addProjectConfigurationListener(ConfigurationListener configurationListener);
 
-	boolean removeProjectConfigurationListener(ConfigurationListener configurationListener);
+    boolean removeProjectConfigurationListener(ConfigurationListener configurationListener);
 
-	boolean isDefaultJiraServerValid();
+    boolean isDefaultJiraServerValid();
 
-	Collection<ServerData> getAllFishEyeServerss();
+    Collection<ServerData> getAllFishEyeServerss();
 
-	Collection<ServerData> getAllEnabledServerss(final ServerType serverType);
+    Collection<ServerData> getAllEnabledServerss(final ServerType serverType);
 
-	Collection<ServerData> getAllServerss(final ServerType serverType);
+    Collection<ServerData> getAllServerss(final ServerType serverType);
 
-	JiraServerData getJiraServerr(ServerId serverId);
+    JiraServerData getJiraServerr(ServerId serverId);
 
-	Collection<BambooServerData> getAllEnabledBambooServerss();
+    Collection<BambooServerData> getAllEnabledBambooServerss();
 
-	ServerData getServerr(ServerId serverId);
+    ServerData getServerr(ServerId serverId);
 
-	@Nullable
-	ServerData getEnabledServerr(ServerId serverId);
+    @Nullable
+    ServerData getEnabledServerr(ServerId serverId);
 
-	JiraServerData getEnabledJiraServerr(ServerId serverId);
+    JiraServerData getEnabledJiraServerr(ServerId serverId);
 
 	ServerData getCrucibleServerr(ServerId serverId);
 
 	ServerData getEnabledCrucibleServerr(ServerId serverId);
 
-	Collection<ServerData> getAllServerss();
+    Collection<ServerData> getAllServerss();
 
-	Collection<ServerData> getAllJiraServerss();
+    Collection<ServerData> getAllJiraServerss();
 
-	Collection<ServerData> getAllCrucibleServerss();
+    Collection<ServerData> getAllCrucibleServerss();
 
-	Collection<JiraServerData> getAllEnabledJiraServerss();
+    Collection<JiraServerData> getAllEnabledJiraServerss();
 
-	Collection<ServerData> getAllEnabledCrucibleServerss();
+    Collection<ServerData> getAllEnabledCrucibleServerss();
 
-	Collection<ServerData> getAllEnabledServerss();
+    Collection<ServerData> getAllEnabledServerss();
 
-	Collection<BambooServerData> getAllBambooServerss();
+    Collection<BambooServerData> getAllBambooServerss();
 
-	@Deprecated
-	Collection<ServerCfg> getAllEnabledServers(ServerType serverType);
+    @Deprecated
+    Collection<ServerCfg> getAllEnabledServers(ServerType serverType);
 
-    Collection<ServerData> getAllEnabledCrucibleServersContainingFisheye();
+	Collection<ServerData> getAllEnabledCrucibleServersContainingFisheye();
 
 }
