@@ -55,16 +55,16 @@
  */
 
 
-package org.jdom.output;
+package org.jdom2.output;
 
 import java.util.*;
 
-import org.jdom.*;
-import org.jdom.adapters.*;
+import org.jdom2.*;
+import org.jdom2.adapters.*;
 
 
 /**
- * Outputs a JDOM {@link org.jdom.Document org.jdom.Document} as a DOM {@link
+ * Outputs a JDOM {@link org.jdom2.Document org.jdom2.Document} as a DOM {@link
  * org.w3c.dom.Document org.w3c.dom.Document}.
  *
  * @version $Revision: 1.41 $, $Date: 2004/09/03 06:03:42 $
@@ -82,7 +82,7 @@ public class DOMOutputter {
 
     /** Default adapter class */
     private static final String DEFAULT_ADAPTER_CLASS =
-        "org.jdom.adapters.XercesDOMAdapter";
+        "org.jdom2.adapters.XercesDOMAdapter";
 
     /** Adapter to use for interfacing with the DOM implementation */
     private String adapterClass;
@@ -203,7 +203,7 @@ public class DOMOutputter {
             try {
                 DOMAdapter adapter =
                     (DOMAdapter)Class.forName(
-                    "org.jdom.adapters.JAXPDOMAdapter").newInstance();
+                    "org.jdom2.adapters.JAXPDOMAdapter").newInstance();
                 // System.out.println("using JAXP");
                 return adapter.createDocument(dt);
             }

@@ -28,8 +28,8 @@ import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpMethod;
 import org.ddsteps.mock.httpserver.JettyMockServer;
-import org.jdom.Document;
-import org.jdom.JDOMException;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
 import org.mortbay.jetty.Server;
 
 import javax.servlet.http.HttpServletRequest;

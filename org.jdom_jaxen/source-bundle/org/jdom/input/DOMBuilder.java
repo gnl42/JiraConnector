@@ -54,15 +54,15 @@
 
  */
 
-package org.jdom.input;
+package org.jdom2.input;
 
-import org.jdom.*;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.*;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.w3c.dom.*;
 
 /**
- * Builds a JDOM {@link org.jdom.Document org.jdom.Document} from a pre-existing
+ * Builds a JDOM {@link org.jdom2.Document org.jdom2.Document} from a pre-existing
  * DOM {@link org.w3c.dom.Document org.w3c.dom.Document}. Also handy for testing
  * builds from files to sanity check {@link SAXBuilder}.
  *
@@ -117,7 +117,7 @@ public class DOMBuilder {
     }
 
     /**
-     * Returns the current {@link org.jdom.JDOMFactory} in use.
+     * Returns the current {@link org.jdom2.JDOMFactory} in use.
      * @return the factory in use
      */
     public JDOMFactory getFactory() {
@@ -142,7 +142,7 @@ public class DOMBuilder {
      * @param domElement <code> org.w3c.dom.Element</code> object
      * @return <code>Element</code> - JDOM Element object
      */
-    public org.jdom.Element build(org.w3c.dom.Element domElement) {
+    public org.jdom2.Element build(org.w3c.dom.Element domElement) {
         Document doc = factory.document(null);
         buildTree(domElement, doc, null, true);
         return doc.getRootElement();

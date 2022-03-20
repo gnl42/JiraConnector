@@ -28,10 +28,10 @@ import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.xpath.XPath;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -107,7 +107,7 @@ public class LoginBambooSession extends AbstractHttpSession implements ProductSe
 			}
 
 			@SuppressWarnings("unchecked")
-			final List<Element> elements = XPath.newInstance("/response/auth").selectNodes(doc);
+			final List<Element> elements = (List<Element>) XPath.newInstance("/response/auth").selectNodes(doc);
 			if (elements == null || elements.size() == 0) {
 				throw new RemoteApiLoginException("Server did not return any authentication token");
 			}
@@ -185,7 +185,7 @@ public class LoginBambooSession extends AbstractHttpSession implements ProductSe
     protected static String getExceptionMessages(Document doc) throws JDOMException {
 		XPath xpath = XPath.newInstance("/errors/error");
 		@SuppressWarnings("unchecked")
-		List<Element> elements = xpath.selectNodes(doc);
+		List<Element> elements = (List<Element>) xpath.selectNodes(doc);
 
 		if (elements != null && elements.size() > 0) {
 			StringBuffer exceptionMsg = new StringBuffer();

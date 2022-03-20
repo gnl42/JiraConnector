@@ -57,7 +57,7 @@
 package org.jdom;
 
 import java.util.*;
-import org.jdom.filter.*;
+import org.jdom2.filter.*;
 
 /**
  * An XML document. Methods allow access to the root element as well as the
@@ -606,7 +606,7 @@ public class Document implements Parent {
      * This returns a <code>String</code> representation of the
      * <code>Document</code>, suitable for debugging. If the XML
      * representation of the <code>Document</code> is desired,
-     * {@link org.jdom.output.XMLOutputter#outputString(Document)}
+     * {@link org.jdom2.output.XMLOutputter#outputString(Document)}
      * should be used.
      *
      * @return <code>String</code> - information about the
@@ -731,7 +731,7 @@ public class Document implements Parent {
 
 
     /**
-     * @see org.jdom.Parent#getDocument()
+     * @see org.jdom2.Parent#getDocument()
      */
     public Document getDocument() {
         return this;

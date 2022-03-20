@@ -48,7 +48,7 @@ import com.google.common.collect.Maps;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import java.text.DateFormat;
 import java.text.ParseException;

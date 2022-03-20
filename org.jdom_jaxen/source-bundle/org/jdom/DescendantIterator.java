@@ -57,9 +57,9 @@
 package org.jdom;
 
 import java.util.*;
-import org.jdom.Content;
-import org.jdom.Element;
-import org.jdom.Parent;
+import org.jdom2.Content;
+import org.jdom2.Element;
+import org.jdom2.Parent;
 
 /**
  * Traverse all a parent's descendants (all children at any level below
@@ -139,7 +139,7 @@ class DescendantIterator implements Iterator {
     }
 
     /**
-     * Detaches the last {@link org.jdom.Content} returned by the last call to
+     * Detaches the last {@link org.jdom2.Content} returned by the last call to
      * next from it's parent.  <b>Note</b>: this <b>does not</b> affect
      * iteration and all children, siblings, and any node following the
      * removed node (in document order) will be visited.

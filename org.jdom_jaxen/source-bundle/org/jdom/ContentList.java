@@ -58,7 +58,7 @@ package org.jdom;
 
 import java.util.*;
 
-import org.jdom.filter.*;
+import org.jdom2.filter.*;
 
 /**
  * A non-public list implementation holding only legal JDOM content, including
@@ -146,7 +146,7 @@ final class ContentList extends AbstractList implements java.io.Serializable {
     }
 
     /**
-     * @see org.jdom.ContentList#add(int, org.jdom.Content)
+     * @see org.jdom2.ContentList#add(int, org.jdom2.Content)
      */
     private void documentCanContain(int index, Content child) throws IllegalAddException {
         if (child instanceof Element) {

@@ -2,21 +2,26 @@ package com.atlassian.theplugin.commons.cfg.xstream;
 
 import com.atlassian.theplugin.commons.cfg.ServerCfgFactoryException;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.JDomReader;
-import com.thoughtworks.xstream.io.xml.JDomWriter;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import com.thoughtworks.xstream.io.xml.JDom2Reader;
+import com.thoughtworks.xstream.io.xml.JDom2Writer;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 public abstract class BasePrivateConfigurationDao<T> {
     private static final String ATLASSIAN_DIR_NAME = ".atlassian";
 	private static final String ATLASSIAN_IDE_CONNECTOR_DIR_NAME = "ide-connector";
-    
+
     public BasePrivateConfigurationDao() {
     }
 
@@ -40,7 +45,7 @@ public abstract class BasePrivateConfigurationDao<T> {
         if (object == null) {
             throw new NullPointerException("Serialized object cannot be null");
         }
-        final JDomWriter writer = new JDomWriter(rootElement);
+		final JDom2Writer writer = new JDom2Writer(rootElement);
         final XStream xStream = JDomXStreamUtil.getProjectJDomXStream(true);
         xStream.marshal(object, writer);
     }
@@ -82,7 +87,7 @@ public abstract class BasePrivateConfigurationDao<T> {
 			throw new ServerCfgFactoryException("Cannot travers JDom tree. Exactly one child node expected, but found ["
 					+ childCount + "]");
 		}
-		final JDomReader reader = new JDomReader((Element) rootElement.getChildren().get(0));
+		final JDom2Reader reader = new JDom2Reader((Element) rootElement.getChildren().get(0));
 		final XStream xStream = JDomXStreamUtil.getProjectJDomXStream(saveAll);
 		try {
 			return clazz.cast(xStream.unmarshal(reader));
@@ -96,9 +101,9 @@ public abstract class BasePrivateConfigurationDao<T> {
 	}
 
     public boolean isDirReady() throws ServerCfgFactoryException {
-        		final File atlassianDir = getPrivateCfgDirectorySavePath();
+		final File atlassianDir = getPrivateCfgDirectorySavePath();
 
 		return (atlassianDir.isDirectory() && atlassianDir.canRead());
     }
-  
+
 }

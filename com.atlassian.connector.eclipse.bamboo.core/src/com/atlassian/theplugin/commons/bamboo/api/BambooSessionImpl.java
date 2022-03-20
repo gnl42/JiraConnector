@@ -30,10 +30,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
@@ -217,7 +217,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(buildResultUrl);
             XPath xpath = XPath.newInstance("/response/project");
             @SuppressWarnings("unchecked")
-            List<Element> elements = xpath.selectNodes(doc);
+            List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     String name = element.getChild("name").getText();
@@ -243,7 +243,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(buildResultUrl);
             XPath xpath = XPath.newInstance("/response/build");
             @SuppressWarnings("unchecked")
-            List<Element> elements = xpath.selectNodes(doc);
+            List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     String enabledValue = element.getAttributeValue("enabled");
@@ -277,7 +277,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             // XPath xpath = XPath.newInstance("/response/build");
             XPath xpath = XPath.newInstance("/plans/plans/plan");
             @SuppressWarnings("unchecked")
-            List<Element> elements = xpath.selectNodes(doc);
+            List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     String enabledValue = element.getAttributeValue("enabled");
@@ -350,7 +350,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance("/response").selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance("/response").selectNodes(doc);
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
                 final Set<String> commiters = constructBuildCommiters(e);
@@ -390,7 +390,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             @SuppressWarnings("unchecked")
             // final List<Element> elements = XPath.newInstance("/response").selectNodes(doc);
-            List<Element> elements = XPath.newInstance("/results/results/result").selectNodes(doc);
+            List<Element> elements = (List<Element>) XPath.newInstance("/results/results/result").selectNodes(doc);
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
                 // final Set<String> commiters = constructBuildCommiters(e);
@@ -399,7 +399,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 return constructBuilderItem_40(e, new Date(), planKey, commiters, timezoneOffset);
             } else {
                 // plan may have no builds (never built)
-                elements = XPath.newInstance("/results/results").selectNodes(doc);
+                elements = (List<Element>) XPath.newInstance("/results/results").selectNodes(doc);
                 if (elements != null && !elements.isEmpty()) {
                     Element e = elements.iterator().next();
                     // final Set<String> commiters = constructBuildCommiters(e);
@@ -433,7 +433,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance("/result/changes/change").selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance("/result/changes/change").selectNodes(doc);
 
             if (!elements.isEmpty()) {
                 for (Element commiter : elements) {
@@ -455,7 +455,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         try {
             Document doc = retrieveGetResponse(planUrl);
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance("/plan").selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance("/plan").selectNodes(doc);
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
                 return constructPlanItem(e, Boolean.TRUE);
@@ -488,7 +488,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(planUrl);
 
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance("/plan").selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance("/plan").selectNodes(doc);
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
                 BambooPlan plan = constructPlanItem(e, isPlanEnabled);
@@ -566,7 +566,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance(nodePath).selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance(nodePath).selectNodes(doc);
             Element el = elements.get(0);
             return constructBuildItemFromNewApi(el, new Date(), planKey);
 
@@ -608,7 +608,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> elements = XPath.newInstance("/response/build").selectNodes(doc);
+            final List<Element> elements = (List<Element>) XPath.newInstance("/response/build").selectNodes(doc);
             if (elements == null || elements.isEmpty()) {
                 builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", new Date()).build());
             } else {
@@ -646,7 +646,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 return builds;
             }
 
-            List<Element> elements = XPath.newInstance("/results/results/result").selectNodes(doc);
+            List<Element> elements = (List<Element>) XPath.newInstance("/results/results/result").selectNodes(doc);
             if (elements == null || elements.isEmpty()) {
                 builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", new Date()).build());
             } else {
@@ -670,7 +670,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
         Set<String> commiters = new HashSet<String>();
         @SuppressWarnings("unchecked")
-        final List<Element> commitElements = XPath.newInstance("commits/commit").selectNodes(element);
+        final List<Element> commitElements = (List<Element>) XPath.newInstance("commits/commit").selectNodes(element);
         if (!commitElements.isEmpty()) {
             for (Element commiter : commitElements) {
                 commiters.add(commiter.getAttributeValue("author"));
@@ -693,7 +693,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             final XPath xpath = XPath.newInstance("/response/build");
             @SuppressWarnings("unchecked")
-            final List<Element> elements = xpath.selectNodes(doc);
+            final List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     builds.add(element.getChildText("key"));
@@ -723,7 +723,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             final XPath xpath = XPath.newInstance("/plans/plans/plan");
             @SuppressWarnings("unchecked")
-            final List<Element> elements = xpath.selectNodes(doc);
+            final List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     builds.add(element.getAttributeValue("key"));
@@ -753,7 +753,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> responseElements = XPath.newInstance("/response").selectNodes(doc);
+            final List<Element> responseElements = (List<Element>) XPath.newInstance("/response").selectNodes(doc);
             for (Element element : responseElements) {
                 String vcsRevisionKey = element.getAttributeValue("vcsRevisionKey");
                 if (vcsRevisionKey != null) {
@@ -762,7 +762,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> commitElements = XPath.newInstance("/response/commits/commit").selectNodes(doc);
+            final List<Element> commitElements = (List<Element>) XPath.newInstance("/response/commits/commit").selectNodes(doc);
             if (!commitElements.isEmpty()) {
                 int i = 1;
                 for (Element element : commitElements) {
@@ -774,7 +774,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     String path = "/response/commits/commit[" + i++ + "]/files/file";
                     XPath filesPath = XPath.newInstance(path);
                     @SuppressWarnings("unchecked")
-                    final List<Element> fileElements = filesPath.selectNodes(doc);
+                    final List<Element> fileElements = (List<Element>) filesPath.selectNodes(doc);
                     for (Element file : fileElements) {
                         BambooFileInfo fileInfo = new BambooFileInfo(file.getAttributeValue("name"),
                                 file.getAttributeValue("revision"));
@@ -785,7 +785,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> sucTestResElements = XPath.newInstance("/response/successfulTests/testResult")
+            final List<Element> sucTestResElements = (List<Element>) XPath.newInstance("/response/successfulTests/testResult")
                     .selectNodes(doc);
             for (Element element : sucTestResElements) {
                 TestDetailsInfo tInfo = new TestDetailsInfo();
@@ -804,7 +804,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> failedTestResElements = XPath.newInstance("/response/failedTests/testResult")
+            final List<Element> failedTestResElements = (List<Element>) XPath.newInstance("/response/failedTests/testResult")
                     .selectNodes(doc);
             if (!failedTestResElements.isEmpty()) {
                 int i = 1;
@@ -825,7 +825,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     String path = "/response/failedTests/testResult[" + i++ + "]/errors/error";
                     XPath errorPath = XPath.newInstance(path);
                     @SuppressWarnings("unchecked")
-                    final List<Element> errorElements = errorPath.selectNodes(doc);
+                    final List<Element> errorElements = (List<Element>) errorPath.selectNodes(doc);
                     for (Element error : errorElements) {
                         tInfo.setTestErrors(error.getText());
                     }
@@ -915,7 +915,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 }
 
                 @SuppressWarnings("unchecked")
-                final List<Element> testResElements = XPath.newInstance("/result/testResults/allTests/testResult")
+                final List<Element> testResElements = (List<Element>) XPath.newInstance("/result/testResults/allTests/testResult")
                         .selectNodes(doc);
                 for (Element element : testResElements) {
                     TestDetailsInfo tInfo = new TestDetailsInfo();
@@ -932,7 +932,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     StringBuilder errorBuilder = new StringBuilder();
                     XPath errorPath = XPath.newInstance("errors/error");
                     @SuppressWarnings("unchecked")
-                    final List<Element> errorElements = errorPath.selectNodes(element);
+                    final List<Element> errorElements = (List<Element>) errorPath.selectNodes(element);
                     for (Element errorElement : errorElements) {
                         final String errorEntry = errorElement.getChildText("message");
                         if (errorEntry != null) {
@@ -1004,7 +1004,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 }
 
                 @SuppressWarnings("unchecked")
-                final List<Element> testResElements = XPath.newInstance("/result/testResults/all/testResult")
+                final List<Element> testResElements = (List<Element>) XPath.newInstance("/result/testResults/all/testResult")
                         .selectNodes(doc);
                 for (Element element : testResElements) {
                     TestDetailsInfo tInfo = new TestDetailsInfo();
@@ -1021,7 +1021,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     StringBuilder errorBuilder = new StringBuilder();
                     XPath errorPath = XPath.newInstance("errors/error");
                     @SuppressWarnings("unchecked")
-                    final List<Element> errorElements = errorPath.selectNodes(element);
+                    final List<Element> errorElements = (List<Element>) errorPath.selectNodes(element);
                     for (Element errorElement : errorElements) {
                         final String errorEntry = errorElement.getChildText("message");
                         if (errorEntry != null) {
@@ -1076,7 +1076,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             @SuppressWarnings("unchecked")
-            final List<Element> testResElements = XPath.newInstance("/build/testResults/all/testResult")
+            final List<Element> testResElements = (List<Element>) XPath.newInstance("/build/testResults/all/testResult")
                     .selectNodes(doc);
             for (Element element : testResElements) {
                 TestDetailsInfo tInfo = new TestDetailsInfo();
@@ -1093,7 +1093,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 StringBuilder errorBuilder = new StringBuilder();
                 XPath errorPath = XPath.newInstance("errors/error");
                 @SuppressWarnings("unchecked")
-                final List<Element> errorElements = errorPath.selectNodes(element);
+                final List<Element> errorElements = (List<Element>) errorPath.selectNodes(element);
                 for (Element errorElement : errorElements) {
                     final String errorEntry = errorElement.getChildText("message");
                     if (errorEntry != null) {
@@ -1577,7 +1577,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
             final XPath xpath = XPath.newInstance("/plan/branches/branch");
             @SuppressWarnings("unchecked")
-            final List<Element> elements = xpath.selectNodes(doc);
+            final List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     if (useFavourites) {
@@ -1613,7 +1613,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             final XPath xpath = XPath.newInstance("/plan/stages/stage/plans/plan");
             @SuppressWarnings("unchecked")
-            final List<Element> elements = xpath.selectNodes(doc);
+            final List<Element> elements = (List<Element>) xpath.selectNodes(doc);
             if (elements != null) {
                 for (Element element : elements) {
                     String key = element.getAttributeValue("key");
@@ -1660,8 +1660,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             List<BuildIssue> issues = new ArrayList<BuildIssue>();
             @SuppressWarnings("unchecked")
             List<Element> jiraIssuesNode = bambooBuild <= BAMBOO_2_6_3_BUILD_NUMBER
-                    ? XPath.newInstance("build/jiraIssues").selectNodes(doc)
-                    : XPath.newInstance("result/jiraIssues").selectNodes(doc);
+                    ? (List<Element>) XPath.newInstance("build/jiraIssues").selectNodes(doc)
+                    : (List<Element>) XPath.newInstance("result/jiraIssues").selectNodes(doc);
 
             if (jiraIssuesNode == null) {
                 throw new RemoteApiException(INVALID_SERVER_RESPONSE);
@@ -1670,7 +1670,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 throw new RemoteApiException(INVALID_SERVER_RESPONSE);
             }
             @SuppressWarnings("unchecked")
-            List<Element> issuesNodes = XPath.newInstance("issue").selectNodes(jiraIssuesNode.get(0));
+            List<Element> issuesNodes = (List<Element>) XPath.newInstance("issue").selectNodes(jiraIssuesNode.get(0));
             if (issuesNodes == null) {
                 throw new RemoteApiException(INVALID_SERVER_RESPONSE);
             }

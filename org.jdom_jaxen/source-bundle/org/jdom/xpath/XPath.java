@@ -54,14 +54,14 @@
 
  */
 
-package org.jdom.xpath;
+package org.jdom2.xpath;
 
 
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-import org.jdom.*;
+import org.jdom2.*;
 
 
 /**
@@ -69,7 +69,7 @@ import org.jdom.*;
  * interface for obtaining a first XPath instance. Users operate against this
  * class while XPath vendors can plug-in implementations underneath.  Users
  * can choose an implementation using either {@link #setXPathClass} or
- * the system property "org.jdom.xpath.class".
+ * the system property "org.jdom2.xpath.class".
  *
  * @version $Revision: 1.15 $, $Date: 2004/02/06 09:28:32 $
  * @author  Laurent Bihanic
@@ -84,15 +84,15 @@ public abstract class XPath implements Serializable {
     * name of the implementation class to use.
     * <p>
     * The property name is:
-    * "<code>org.jdom.xpath.class</code>".</p>
+    * "<code>org.jdom2.xpath.class</code>".</p>
     */
-   private final static String  XPATH_CLASS_PROPERTY = "org.jdom.xpath.class";
+   private final static String  XPATH_CLASS_PROPERTY = "org.jdom2.xpath.class";
 
    /**
     * The default implementation class to use if none was configured.
     */
    private final static String  DEFAULT_XPATH_CLASS  =
-                                                "org.jdom.xpath.JaxenXPath";
+                                                "org.jdom2.xpath.JaxenXPath";
 
    /**
     * The constructor to instanciate a new XPath concrete

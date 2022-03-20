@@ -41,8 +41,6 @@ Export-Package: com.atlassian.connector.eclipse.bamboo.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui.model;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui.notifications;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui.operations;x-internal:=true,
- com.atlassian.connector.eclipse.internal.bamboo.ui.views;x-internal:=true,
- org.jdom
+ com.atlassian.connector.eclipse.internal.bamboo.ui.views;x-internal:=true
 Bundle-Vendor: Atlassian
-Bundle-ClassPath: target/lib/jdom.jar,
- .
+Bundle-ClassPath: .

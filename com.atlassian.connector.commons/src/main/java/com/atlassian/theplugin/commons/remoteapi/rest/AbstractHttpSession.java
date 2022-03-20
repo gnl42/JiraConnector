@@ -38,15 +38,14 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPath;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -440,7 +439,7 @@ public abstract class AbstractHttpSession {
                         return doc;
                     } else if (httpStatus == HttpStatus.SC_MOVED_PERMANENTLY
                             || httpStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
-                                                
+
                         Header newLocation = method.getResponseHeader("Location");
                         if (newLocation == null) {
                             throw new RemoteApiException(
@@ -482,7 +481,7 @@ public abstract class AbstractHttpSession {
                         }
                         document = builder.build(new ByteArrayInputStream(response.getBytes()));
                         throw buildExceptionText(method.getStatusCode(), document);
-                        
+
                     } else if (httpStatus == HttpStatus.SC_NOT_ACCEPTABLE) {
                         final String errorDescription = "HTTP " + httpStatus + " ("
                                 + "Authentication failed (probably invalid username or password)."
@@ -627,7 +626,7 @@ public abstract class AbstractHttpSession {
         {
             XPath xpath = XPath.newInstance("error/code");
             @SuppressWarnings("unchecked")
-            final List<Element> nodes = xpath.selectNodes(document);
+			final List<Element> nodes = (List<Element>) xpath.selectNodes(document);
             if (nodes != null && !nodes.isEmpty()) {
                 textBuilder.append(nodes.get(0).getValue()).append(" ");
             }
@@ -636,7 +635,7 @@ public abstract class AbstractHttpSession {
         {
             XPath xpath = XPath.newInstance("error/message");
             @SuppressWarnings("unchecked")
-            final List<Element> messages = xpath.selectNodes(document);
+			final List<Element> messages = (List<Element>) xpath.selectNodes(document);
             if (messages != null && !messages.isEmpty()) {
                 textBuilder.append("\nMessage: ").append(messages.get(0).getValue());
             }
@@ -645,7 +644,7 @@ public abstract class AbstractHttpSession {
         {
             XPath xpath = XPath.newInstance("status/message");
             @SuppressWarnings("unchecked")
-            final List<Element> messages = xpath.selectNodes(document);
+			final List<Element> messages = (List<Element>) xpath.selectNodes(document);
             if (messages != null && !messages.isEmpty()) {
                 textBuilder.append("\nMessage: ").append(messages.get(0).getValue());
             }
@@ -655,7 +654,7 @@ public abstract class AbstractHttpSession {
         {
             XPath xpath = XPath.newInstance("error/stacktrace");
             @SuppressWarnings("unchecked")
-            final List<Element> nodes = xpath.selectNodes(document);
+			final List<Element> nodes = (List<Element>) xpath.selectNodes(document);
             if (nodes != null && !nodes.isEmpty()) {
                 serverStackTrace = "\nStacktrace from the server:\n";
                 serverStackTrace += nodes.get(0).getValue();

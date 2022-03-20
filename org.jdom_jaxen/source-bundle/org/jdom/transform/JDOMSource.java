@@ -54,15 +54,15 @@
  
  */
 
-package org.jdom.transform;
+package org.jdom2.transform;
 
 import java.io.*;
 import java.util.*;
 
 import javax.xml.transform.sax.*;
 
-import org.jdom.*;
-import org.jdom.output.*;
+import org.jdom2.*;
+import org.jdom2.output.*;
 import org.xml.sax.*;
 
 /**
@@ -92,7 +92,7 @@ import org.xml.sax.*;
  *   }
  * </code></pre>
  *
- * @see org.jdom.transform.JDOMResult
+ * @see org.jdom2.transform.JDOMResult
  *
  * @version $Revision: 1.18 $, $Date: 2004/08/31 04:43:48 $
  * @author Laurent Bihanic
@@ -115,7 +115,7 @@ public class JDOMSource extends SAXSource {
    * </p>
    */
   public final static String JDOM_FEATURE =
-                      "http://org.jdom.transform.JDOMSource/feature";
+                      "http://org.jdom2.transform.JDOMSource/feature";
 
   /**
    * The XMLReader object associated to this source or
@@ -319,7 +319,7 @@ public class JDOMSource extends SAXSource {
    * be used independently of its friend: DocumentReader.
    * </p>
    *
-   * @see    org.jdom.Document
+   * @see    org.jdom2.Document
    */
   private static class JDOMInputSource extends InputSource {
     /**
@@ -419,8 +419,8 @@ public class JDOMSource extends SAXSource {
    * a SAX view of a JDOM Document.  The actual generation of the
    * SAX events is delegated to JDOM's SAXOutputter.
    *
-   * @see    org.jdom.Document
-   * @see    org.jdom.output.SAXOutputter
+   * @see    org.jdom2.Document
+   * @see    org.jdom2.output.SAXOutputter
    */
   private static class DocumentReader   extends    SAXOutputter
                                         implements XMLReader    {

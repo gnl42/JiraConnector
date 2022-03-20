@@ -54,14 +54,14 @@
  
  */
 
-package org.jdom.transform;
+package org.jdom2.transform;
 
 import java.util.*;
 
 import javax.xml.transform.sax.*;
 
-import org.jdom.*;
-import org.jdom.input.*;
+import org.jdom2.*;
+import org.jdom2.input.*;
 import org.xml.sax.*;
 import org.xml.sax.ext.*;
 import org.xml.sax.helpers.*;
@@ -94,7 +94,7 @@ import org.xml.sax.helpers.*;
  *   }
  * </code></pre>
  *
- * @see      org.jdom.transform.JDOMSource
+ * @see      org.jdom2.transform.JDOMSource
  *
  * @version $Revision: 1.23 $, $Date: 2004/08/31 06:10:38 $
  * @author  Laurent Bihanic
@@ -116,7 +116,7 @@ public class JDOMResult extends SAXResult {
    * not natively supporting JDOM.</p>
    */
   public final static String JDOM_FEATURE =
-                      "http://org.jdom.transform.JDOMResult/feature";
+                      "http://org.jdom2.transform.JDOMResult/feature";
 
   /**
    * The result of a transformation, as set by Transformer

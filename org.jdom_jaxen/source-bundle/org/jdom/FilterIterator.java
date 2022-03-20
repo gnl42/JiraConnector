@@ -57,7 +57,7 @@
 package org.jdom;
 
 import java.util.*;
-import org.jdom.filter.*;
+import org.jdom2.filter.*;
 
 /**
  * Traverse a parent's children that match the supplied filter.
