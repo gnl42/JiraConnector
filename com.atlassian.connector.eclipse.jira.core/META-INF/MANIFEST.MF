@@ -36,7 +36,8 @@ Export-Package: com.atlassian.connector.commons.jira.beans,
  com.sun.jersey.client.apache,
  com.sun.jersey.client.apache.config,
  com.sun.jersey.core.util,
- org.apache.axis
+ org.apache.axis,
+ org.codehaus.jettison.json
 Bundle-ClassPath: .,
  target/lib/jira-rest-java-client.jar,
  target/lib/jersey-apache-client.jar,
@@ -44,7 +45,8 @@ Bundle-ClassPath: .,
  target/lib/jersey-json.jar,
  target/lib/jdom.jar,
  target/lib/jersey-client.jar,
- target/lib/axis.jar
+ target/lib/axis.jar,
+ target/lib/jettison.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin

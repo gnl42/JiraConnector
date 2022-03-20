@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <developers>
-       <developer>
+        <developer>
             <name>Mik Kersten</name>
             <organization>Tasktop Technologies</organization>
         </developer>
@@ -30,37 +30,37 @@
         <developer>
             <name>Jacek Jaroczynski</name>
         </developer>
-         <developer>
+        <developer>
             <name>Steffen Pingel</name>
         </developer>
-         <developer>
+        <developer>
             <name>Eugene Kuleshov</name>
         </developer>
-         <developer>
+        <developer>
             <name>Wesley Coelho</name>
         </developer>
-         <developer>
+        <developer>
             <name>Rob Elves</name>
         </developer>
         <!-- Maven port and beyond -->
-         <developer>
+        <developer>
             <name>George Lindholm</name>
         </developer>
     </developers>
 
-<licenses>
-    <license>
-      <name>Eclipse Public License v1.0</name>
-      <url>https://www.eclipse.org/legal/epl-v10.html</url>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>Eclipse Public License v1.0</name>
+            <url>https://www.eclipse.org/legal/epl-v10.html</url>
+        </license>
+    </licenses>
 
-  <scm>
-    <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
-    <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
-    <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-    <tag>v4.0</tag>
-  </scm>
+    <scm>
+        <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
+        <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
+        <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
+        <tag>v4.0</tag>
+    </scm>
 
     <repositories>
         <repository>
@@ -411,4 +411,28 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>1.1.3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>maven-plugins</groupId>
+                        <artifactId>maven-cobertura-plugin</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>maven-plugins</groupId>
+                        <artifactId>maven-findbugs-plugin</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jdom</groupId>
+                <artifactId>jdom</artifactId>
+                <version>1.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

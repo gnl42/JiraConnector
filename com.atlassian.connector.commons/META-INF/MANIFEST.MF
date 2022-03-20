@@ -35,18 +35,18 @@ Export-Package: com.atlassian.connector.cfg,
  org.apache.commons.logging,
  org.apache.commons.logging.impl,
  org.codehaus.jettison.json,
- org.jaxen,
  org.jdom,
+ org.jdom.xpath,
  org.jetbrains.annotations,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .,
+ target/lib/jdom.jar,
  target/lib/annotations.jar,
  target/lib/cssparser.jar,
  target/lib/guava.jar,
- target/lib/jdom.jar,
  target/lib/jettison.jar,
  target/lib/velocity.jar,
  target/lib/xstream.jar,
@@ -56,5 +56,6 @@ Bundle-ClassPath: .,
  target/lib/commons-io.jar,
  target/lib/commons-discovery.jar,
  target/lib/commons-logging.jar,
- target/lib/javax.servlet-api.jar
+ target/lib/javax.servlet-api.jar,
+ target/lib/jaxen.jar
 Bundle-Vendor: Atlassian

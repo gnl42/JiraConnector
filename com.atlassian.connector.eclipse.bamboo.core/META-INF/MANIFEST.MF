@@ -16,7 +16,10 @@ Require-Bundle: org.eclipse.core.runtime,
 Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.internal.bamboo.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.theplugin.commons.bamboo,
- com.atlassian.theplugin.commons.bamboo.api
+ com.atlassian.theplugin.commons.bamboo.api,
+ org.jaxen,
+ org.jdom,
+ org.jdom.xpath
 Bundle-Vendor: Atlassian
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.commons.core,
