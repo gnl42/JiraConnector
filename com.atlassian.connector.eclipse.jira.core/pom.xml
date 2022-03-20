@@ -31,7 +31,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jersey-client,jersey-apache-client,jersey-core,jersey-json,jira-rest-java-client,jdom</includeArtifactIds>
+                            <includeArtifactIds>jersey-client,jersey-apache-client,jersey-core,jersey-json,jira-rest-java-client,jdom,axis</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -44,6 +44,11 @@
         </plugins>
     </build>
     <dependencies>
+<dependency>
+    <groupId>org.apache.axis</groupId>
+    <artifactId>axis</artifactId>
+    <version>1.4</version>
+</dependency>
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-rest-java-client</artifactId>

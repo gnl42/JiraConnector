@@ -12,8 +12,7 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
  com.atlassian.connector.eclipse.commons.core;visibility:=reexport,
  com.google.guava,
- com.atlassian.connector.commons;bundle-version="4.0.0",
- org.apache.axis;bundle-version="1.4.0"
+ com.atlassian.connector.commons;bundle-version="4.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.commons.jira.beans,
  com.atlassian.connector.commons.jira.cache,
@@ -43,7 +42,8 @@ Bundle-ClassPath: .,
  target/lib/jersey-core.jar,
  target/lib/jersey-json.jar,
  target/lib/jdom.jar,
- target/lib/jersey-client.jar
+ target/lib/jersey-client.jar,
+ target/lib/axis.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin
