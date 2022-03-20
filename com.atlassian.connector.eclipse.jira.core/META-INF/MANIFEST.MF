@@ -35,7 +35,8 @@ Export-Package: com.atlassian.connector.commons.jira.beans,
  com.sun.jersey.api.client.filter,
  com.sun.jersey.client.apache,
  com.sun.jersey.client.apache.config,
- com.sun.jersey.core.util
+ com.sun.jersey.core.util,
+ org.apache.axis
 Bundle-ClassPath: .,
  target/lib/jira-rest-java-client.jar,
  target/lib/jersey-apache-client.jar,
