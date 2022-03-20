@@ -37,10 +37,10 @@
                         </goals>
                         <configuration>
                             <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
-                            javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
-                            jdom,jaxen,
-                            jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
-                            jetty-server,xstream,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>
+                                javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
+                                jdom,jaxen,
+                                jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
+                                jetty-server,xstream,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -56,16 +56,26 @@
         </plugins>
     </build>
     <dependencies>
-<dependency>
-    <groupId>jaxen</groupId>
-    <artifactId>jaxen</artifactId>
-    <version>1.1.3</version>
-</dependency>
-<dependency>
-    <groupId>org.jdom</groupId>
-    <artifactId>jdom</artifactId>
-    <version>1.1</version>
-</dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.3</version>
+           <exclusions>
+                <exclusion>
+                    <groupId>maven-plugins</groupId>
+                    <artifactId>maven-cobertura-plugin</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>maven-plugins</groupId>
+                    <artifactId>maven-findbugs-plugin</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1.3</version>
+         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
