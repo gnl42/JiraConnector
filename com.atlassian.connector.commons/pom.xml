@@ -38,7 +38,7 @@
                         <configuration>
                             <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
                             javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
-
+                            jdom,jaxen,
                             jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
                             jetty-server,xstream,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
@@ -50,21 +50,26 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
     <dependencies>
+<dependency>
+    <groupId>jaxen</groupId>
+    <artifactId>jaxen</artifactId>
+    <version>1.1.3</version>
+</dependency>
+<dependency>
+    <groupId>org.jdom</groupId>
+    <artifactId>jdom</artifactId>
+    <version>1.1</version>
+</dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

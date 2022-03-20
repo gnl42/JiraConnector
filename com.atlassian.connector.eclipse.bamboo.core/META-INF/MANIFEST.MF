@@ -24,4 +24,5 @@ Import-Package: org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.tasks.core.data,
  org.eclipse.mylyn.tasks.core.sync
 Bundle-ClassPath: target/lib/jdom.jar,
- .
+ .,
+ target/lib/jaxen.jar
