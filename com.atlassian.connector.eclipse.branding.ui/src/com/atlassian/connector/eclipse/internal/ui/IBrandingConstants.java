@@ -13,10 +13,8 @@ package com.atlassian.connector.eclipse.internal.ui;
 
 public interface IBrandingConstants {
 
-	String INTEGRATIONS_GUIDE_URL = "http://www.atlassian.com/software/ideconnector/eclipse.jsp?src=jiraconnector";
-
 	String JIRA_INSTALLED_SYSTEM_PROPERTY = "com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled";
 
-	String PRODUCT_NAME = "Atlassian Connector for Eclipse";
+	String PRODUCT_NAME = "Mylyn Atlassian Jira/Bamboo Connector for Eclipse";
 
 }

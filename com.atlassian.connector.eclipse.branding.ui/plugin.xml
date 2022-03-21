@@ -8,8 +8,8 @@
       <startup
             class="com.atlassian.connector.eclipse.internal.branding.ui.FastStartup">
       </startup>
-   </extension>   
-   
+   </extension>
+
 	<!-- intro page -->
    <extension
          point="org.eclipse.ui.intro.configExtension">
@@ -22,7 +22,7 @@
             content="$nl$/intro/whatsnewExtensionContent.xml">
       </configExtension>
    </extension>
-    
+
    <extension point="org.eclipse.ui.preferencePages">
       <page
             class="com.atlassian.connector.eclipse.internal.branding.ui.preferences.AtlassianPreferencePage"
@@ -30,21 +30,5 @@
             name="Atlassian Connector">
       </page>
    </extension>
-   
-   <extension point="org.eclipse.ui.popupMenus">
-        <viewerContribution
-		    id="com.atlassian.connector.eclipse.branding.ui.contribution"
-            targetID="org.eclipse.mylyn.tasks.ui.views.repositories">
-      		<action
-		      	class="com.atlassian.connector.eclipse.internal.ui.viewers.InstallIntegrationsFromRepositoriesViewerAction"
-	        	id="com.atlassian.connector.eclipse.actions.installIntegrationsFromRepositoriesViewerAction"
-	        	label="%InstallIntegrationsFromRepositoriesViewerAction.label"
-	        	menubarPath="additions"/>
-	        <visibility>
-				<systemProperty name="com.atlassian.connector.eclipse.branding.ui.isOnlyJiraInstalled" value="true"/>
-	        </visibility>
-      </viewerContribution>
-   </extension>
-   
-   
+
 </plugin>

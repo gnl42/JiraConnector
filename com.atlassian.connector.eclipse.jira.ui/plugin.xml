@@ -5,19 +5,19 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
          Tasktop Technologies - initial API and implementation
  -->
 
-<plugin>  
+<plugin>
 
    <extension
          point="org.eclipse.mylyn.tasks.ui.editors">
       <pageFactory
             class="com.atlassian.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPageFactory"
             id="org.eclipse.mylyn.jira.ui.pageFactory">
-      </pageFactory>            
+      </pageFactory>
    </extension>
 
    <extension
@@ -29,7 +29,7 @@
             id="jira"
             class="com.atlassian.connector.eclipse.internal.jira.core.JiraRepositoryConnector"
             name="%JiraRepositoryConnector.name"/>
-		<connectorUi 
+		<connectorUi
 			brandingIcon="icons/eview16/jira-logo.gif"
 			class="com.atlassian.connector.eclipse.internal.jira.ui.JiraConnectorUi"
 			name="%JiraConnectorUi.name"
@@ -38,71 +38,9 @@
 			class="com.atlassian.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
 		</taskListMigrator>
 	   <repositoryMigrator class="com.atlassian.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
-            
+
    </extension>
 
-   <extension
-         point="org.eclipse.mylyn.tasks.core.templates">
-      <repository
-            addAutomatically="false"
-            anonymous="false"
-            repositoryKind="jira"
-            label="Codehaus"
-            urlRepository="http://jira.codehaus.org"/>
-      <repository
-            addAutomatically="false"
-            anonymous="false"
-            repositoryKind="jira"
-            label="Apache"
-            urlRepository="https://issues.apache.org/jira"/>
-      <repository addAutomatically="false"
-			label="Atlassian Integrations Support" 
-			repositoryKind="jira" 
-			urlRepository="https://studio.atlassian.com" />
-   </extension>
-
-   <extension
-         point="org.eclipse.mylyn.tasks.bugs.support">
-	    <category description="Community supported open source projects"
-			id="org.eclipse.mylyn.tasks.bugs.openSource" name="Open Source Community"
-			weight="900" />
-      <provider
-            categoryId="org.eclipse.mylyn.tasks.bugs.openSource"
-            description="Support for Atlassian Integrations"
-            icon="atlassian_icon-32.png"
-            id="com.atlassian.connector.eclipse.ui.atlassian"
-            name="Atlassian"
-            url="http://support.atlassian.com/">
-      </provider>
-      <product
-            featureId="com.atlassian.connector.eclipse"
-            id="com.atlassian.connector"
-            name="Atlassian Connector for Eclipse"
-            providerId="com.atlassian.connector.eclipse.ui.atlassian"
-            url="http://www.atlassian.com/software/ideconnector/eclipse.jsp">
-      </product>
-      <mapping
-            namespace="com.atlassian.connector"
-            productId="com.atlassian.connector">
-         <repository
-               kind="jira"
-               url="https://studio.atlassian.com/">
-         </repository>
-         <property
-               name="product"
-               value="PLE">
-         </property>         
-      </mapping>
-      <mapping
-            namespace="com.atlassian.connector.commons"
-            productId="com.atlassian.connector">
-         <property
-               name="product"
-               value="ACC">
-         </property>
-      </mapping>
-   </extension>
-   
    <extension
           point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
        <taskRepositoryPageContribution
@@ -111,7 +49,7 @@
              connectorKind="jira">
        </taskRepositoryPageContribution>
     </extension>
-   
+
    <extension
           point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
        <taskRepositoryPageContribution
@@ -121,30 +59,10 @@
        </taskRepositoryPageContribution>
     </extension>
 
-<!--
-   <extension point="org.eclipse.ui.popupMenus">
-   <objectContribution 
-   		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution" 
-   		objectClass="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask"
-   		adaptable="true">
-			<action
-		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.WatchAction"
-	        	id="com.atlassian.connector.eclipse.jira.ui.actions.WatchAction"
-	        	label="%Action.Watch.label"
-	        	menubarPath="additions"/>
-	        <action
-		      	class="com.atlassian.connector.eclipse.internal.jira.ui.actions.VoteAction"
-	        	id="com.atlassian.connector.eclipse.jira.ui.actions.VoteAction"
-	        	label="%Action.Vote.label"
-	        	menubarPath="additions"/>
-   </objectContribution>
-  </extension>
--->
-  
   <!-- TODO jj add icon and fix label -->
   <extension point="org.eclipse.ui.popupMenus">
-   <objectContribution 
-   		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution" 
+   <objectContribution
+   		id="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution"
    		objectClass="com.atlassian.connector.eclipse.internal.jira.ui.IJiraTask"
    		adaptable="true">
 	        <action
@@ -155,7 +73,7 @@
 	        	enablesFor="1"/>
    </objectContribution>
   </extension>
-  
+
   <extension
          point="org.eclipse.core.runtime.adapters">
       <factory

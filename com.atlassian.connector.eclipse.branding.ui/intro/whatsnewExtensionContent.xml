@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <introContent>
-	<extensionContent id="com.atlassian.connector.eclipse" name="Atlassian Connector for Eclipse"
+	<extensionContent id="com.atlassian.connector.eclipse" name="Mylyn Atlassian Jira/Bamboo Connector for Eclipse"
 		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
 		<group id="content-group" style-id="content-group">
-			<link label="Atlassian Connector for Eclipse"
-				url="http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse+-+v3.0.5+Release+Notes?eclipse-welcome"
+			<link label="Mylyn Atlassian Jira/Bamboo Connector for Eclipse"
 				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
 				<text>
-					Find out how the latest Atlassian Connector can streamline your development activities.
+					Add Jira/Bamboo to the Eclipse workflow
 				</text>
 			</link>
 		</group>
