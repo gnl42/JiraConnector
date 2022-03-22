@@ -19,8 +19,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.osgi.util.NLS;
 
-import me.glindholmjira.rest.client.domain.Field;
-import me.glindholmjira.rest.client.internal.json.JsonParseUtil;
+import com.atlassian.jira.rest.client.domain.Field;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 
 public class JiraRestCustomFieldsParser {
 	private JiraRestCustomFieldsParser() throws Exception {

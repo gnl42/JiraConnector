@@ -1,8 +1,8 @@
 package me.glindholm.theplugin.jira;
 
-import me.glindholmjira.rest.client.domain.FavouriteFilter;
-import me.glindholmjira.rest.client.internal.json.FavouriteFilterJsonParser;
-import me.glindholmjira.rest.client.internal.json.GenericJsonArrayParser;
+import com.atlassian.jira.rest.client.domain.FavouriteFilter;
+import com.atlassian.jira.rest.client.internal.json.FavouriteFilterJsonParser;
+import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;

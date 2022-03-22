@@ -10,9 +10,8 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.commons.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
- me.glindholm.connector.eclipse.commons.core;visibility:=reexport,
  com.google.guava,
- me.glindholm.connector.eclipse.commons.core;bundle-version="4.0.0"
+ me.glindholm.connector.eclipse.commons.core
 Bundle-ActivationPolicy: lazy
 Export-Package: me.glindholm.connector.commons.jira.beans,
  me.glindholm.connector.commons.jira.cache,

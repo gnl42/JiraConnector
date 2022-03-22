@@ -30,24 +30,24 @@ import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
-import me.glindholmjira.rest.client.IssueRestClient;
-import me.glindholmjira.rest.client.domain.BasicComponent;
-import me.glindholmjira.rest.client.domain.BasicIssue;
-import me.glindholmjira.rest.client.domain.BasicIssueType;
-import me.glindholmjira.rest.client.domain.BasicProject;
-import me.glindholmjira.rest.client.domain.BasicUser;
-import me.glindholmjira.rest.client.domain.FavouriteFilter;
-import me.glindholmjira.rest.client.domain.Field;
-import me.glindholmjira.rest.client.domain.Issue;
-import me.glindholmjira.rest.client.domain.Status;
-import me.glindholmjira.rest.client.domain.Transition;
-import me.glindholmjira.rest.client.domain.Visibility;
-import me.glindholmjira.rest.client.domain.Worklog;
-import me.glindholmjira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import me.glindholmjira.rest.client.domain.input.FieldInput;
-import me.glindholmjira.rest.client.domain.input.WorklogInput;
-import me.glindholmjira.rest.client.domain.input.WorklogInputBuilder;
-import me.glindholmjira.rest.client.internal.json.JsonParseUtil;
+import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.domain.BasicComponent;
+import com.atlassian.jira.rest.client.domain.BasicIssue;
+import com.atlassian.jira.rest.client.domain.BasicIssueType;
+import com.atlassian.jira.rest.client.domain.BasicProject;
+import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.FavouriteFilter;
+import com.atlassian.jira.rest.client.domain.Field;
+import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Status;
+import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.Visibility;
+import com.atlassian.jira.rest.client.domain.Worklog;
+import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.WorklogInput;
+import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -105,31 +105,31 @@ public class JiraRestConverter {
     }
 
     public static Resolution[] convertResolutions(
-            Iterable<me.glindholm.jira.rest.client.domain.Resolution> allResolutions) {
+            Iterable<com.atlassian.jira.rest.client.domain.Resolution> allResolutions) {
         List<Resolution> resolutions = new ArrayList<Resolution>();
 
-        for (me.glindholm.jira.rest.client.domain.Resolution resolution : allResolutions) {
+        for (com.atlassian.jira.rest.client.domain.Resolution resolution : allResolutions) {
             resolutions.add(convert(resolution));
         }
 
         return resolutions.toArray(new Resolution[resolutions.size()]);
     }
 
-    private static Resolution convert(me.glindholm.jira.rest.client.domain.Resolution resolution) {
+    private static Resolution convert(com.atlassian.jira.rest.client.domain.Resolution resolution) {
         return new Resolution(resolution.getId().toString(), resolution.getName(), resolution.getDescription(), null);
     }
 
-    public static Priority[] convertPriorities(Iterable<me.glindholm.jira.rest.client.domain.Priority> allPriorities) {
+    public static Priority[] convertPriorities(Iterable<com.atlassian.jira.rest.client.domain.Priority> allPriorities) {
         List<Priority> priorities = new ArrayList<Priority>();
 
-        for (me.glindholm.jira.rest.client.domain.Priority priority : allPriorities) {
+        for (com.atlassian.jira.rest.client.domain.Priority priority : allPriorities) {
             priorities.add(convert(priority));
         }
 
         return priorities.toArray(new Priority[priorities.size()]);
     }
 
-    private static Priority convert(me.glindholm.jira.rest.client.domain.Priority priority) {
+    private static Priority convert(com.atlassian.jira.rest.client.domain.Priority priority) {
         Priority outPriority = new Priority(priority.getId().toString());
 
         outPriority.setName(priority.getName());
@@ -318,12 +318,12 @@ public class JiraRestConverter {
 //	}
 
     private static boolean isVersionMissingInProjectCache(
-            Iterable<me.glindholm.jira.rest.client.domain.Version> affectedVersions,
-            Iterable<me.glindholm.jira.rest.client.domain.Version> fixVersions, Project project,
+            Iterable<com.atlassian.jira.rest.client.domain.Version> affectedVersions,
+            Iterable<com.atlassian.jira.rest.client.domain.Version> fixVersions, Project project,
             IProgressMonitor monitor) {
 
         if (affectedVersions != null) {
-            for (me.glindholm.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
+            for (com.atlassian.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
                 if (project.getVersion(affectedVersion.getName()) == null) {
                     return true;
                 }
@@ -331,7 +331,7 @@ public class JiraRestConverter {
         }
 
         if (fixVersions != null) {
-            for (me.glindholm.jira.rest.client.domain.Version fixVersion : fixVersions) {
+            for (com.atlassian.jira.rest.client.domain.Version fixVersion : fixVersions) {
                 if (project.getVersion(fixVersion.getName()) == null) {
                     return true;
                 }
@@ -655,18 +655,18 @@ public class JiraRestConverter {
     }
 
     private static Attachment[] convertAttachments(
-            Iterable<me.glindholm.jira.rest.client.domain.Attachment> attachments) {
+            Iterable<com.atlassian.jira.rest.client.domain.Attachment> attachments) {
 
         List<Attachment> outAttachments = new ArrayList<Attachment>();
 
-        for (me.glindholm.jira.rest.client.domain.Attachment attachment : attachments) {
+        for (com.atlassian.jira.rest.client.domain.Attachment attachment : attachments) {
             outAttachments.add(convert(attachment));
         }
 
         return outAttachments.toArray(new Attachment[outAttachments.size()]);
     }
 
-    private static Attachment convert(me.glindholm.jira.rest.client.domain.Attachment attachment) {
+    private static Attachment convert(com.atlassian.jira.rest.client.domain.Attachment attachment) {
         Attachment outAttachment = new Attachment();
 
         outAttachment.setId(attachment.getId().toString());
@@ -693,17 +693,17 @@ public class JiraRestConverter {
         return outAttachment;
     }
 
-    private static Comment[] convertComments(Iterable<me.glindholm.jira.rest.client.domain.Comment> comments) {
+    private static Comment[] convertComments(Iterable<com.atlassian.jira.rest.client.domain.Comment> comments) {
         List<Comment> outComments = new ArrayList<Comment>();
 
-        for (me.glindholm.jira.rest.client.domain.Comment comment : comments) {
+        for (com.atlassian.jira.rest.client.domain.Comment comment : comments) {
             outComments.add(convert(comment));
         }
 
         return outComments.toArray(new Comment[outComments.size()]);
     }
 
-    private static Comment convert(me.glindholm.jira.rest.client.domain.Comment comment) {
+    private static Comment convert(com.atlassian.jira.rest.client.domain.Comment comment) {
         Comment outComment = new Comment();
 
         BasicUser author = comment.getAuthor();
@@ -732,18 +732,18 @@ public class JiraRestConverter {
         return outComment;
     }
 
-    private static IssueLink[] convertIssueLinks(Iterable<me.glindholm.jira.rest.client.domain.IssueLink> issueLinks) {
+    private static IssueLink[] convertIssueLinks(Iterable<com.atlassian.jira.rest.client.domain.IssueLink> issueLinks) {
 
         List<IssueLink> outIssueLinks = new ArrayList<IssueLink>();
 
-        for (me.glindholm.jira.rest.client.domain.IssueLink issueLink : issueLinks) {
+        for (com.atlassian.jira.rest.client.domain.IssueLink issueLink : issueLinks) {
             outIssueLinks.add(convert(issueLink));
         }
 
         return outIssueLinks.toArray(new IssueLink[outIssueLinks.size()]);
     }
 
-    private static IssueLink convert(me.glindholm.jira.rest.client.domain.IssueLink issueLink) {
+    private static IssueLink convert(com.atlassian.jira.rest.client.domain.IssueLink issueLink) {
         IssueLink outIssueLink = new IssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
                 issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
                 issueLink.getIssueLinkType().getDescription(), ""); //$NON-NLS-1$
@@ -752,10 +752,10 @@ public class JiraRestConverter {
 
     }
 
-    static Version[] convertVersions(Iterable<me.glindholm.jira.rest.client.domain.Version> versions) {
+    static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
         List<Version> outVersions = new ArrayList<Version>();
 
-        for (me.glindholm.jira.rest.client.domain.Version version : versions) {
+        for (com.atlassian.jira.rest.client.domain.Version version : versions) {
 //			if (!version.isArchived()) {
             outVersions.add(convert(version));
 //			}
@@ -766,7 +766,7 @@ public class JiraRestConverter {
         return outVersions.toArray(new Version[outVersions.size()]);
     }
 
-    private static Version convert(me.glindholm.jira.rest.client.domain.Version version) {
+    private static Version convert(com.atlassian.jira.rest.client.domain.Version version) {
         Version outVersion = new Version(version.getId().toString(), version.getName());
 
         DateTime releaseDate = version.getReleaseDate();
@@ -805,17 +805,17 @@ public class JiraRestConverter {
         return outIssueType;
     }
 
-    private static Subtask[] convert(Iterable<me.glindholm.jira.rest.client.domain.Subtask> allSubtasks) {
+    private static Subtask[] convert(Iterable<com.atlassian.jira.rest.client.domain.Subtask> allSubtasks) {
         List<Subtask> subtasks = new ArrayList<Subtask>();
 
-        for (me.glindholm.jira.rest.client.domain.Subtask subtask : allSubtasks) {
+        for (com.atlassian.jira.rest.client.domain.Subtask subtask : allSubtasks) {
             subtasks.add(convert(subtask));
         }
 
         return subtasks.toArray(new Subtask[subtasks.size()]);
     }
 
-    private static Subtask convert(me.glindholm.jira.rest.client.domain.Subtask subtask) {
+    private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
         return new Subtask(subtask.getId().toString(), subtask.getIssueKey());
     }
 
@@ -823,17 +823,17 @@ public class JiraRestConverter {
 //		return uri + "_" + issueKey.replace('-', '*');
 //	}
 
-    public static IssueType[] convertIssueTypes(Iterable<me.glindholm.jira.rest.client.domain.IssueType> allIssueTypes) {
+    public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
         List<IssueType> issueTypes = new ArrayList<IssueType>();
 
-        for (me.glindholm.jira.rest.client.domain.IssueType issueType : allIssueTypes) {
+        for (com.atlassian.jira.rest.client.domain.IssueType issueType : allIssueTypes) {
             issueTypes.add(convert(issueType));
         }
 
         return issueTypes.toArray(new IssueType[issueTypes.size()]);
     }
 
-    private static IssueType convert(me.glindholm.jira.rest.client.domain.IssueType issueType) {
+    private static IssueType convert(com.atlassian.jira.rest.client.domain.IssueType issueType) {
         IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
 
         outIssueType.setDescription(issueType.getDescription());
@@ -889,7 +889,7 @@ public class JiraRestConverter {
         return worklogInputBuilder.build();
     }
 
-    public static ServerInfo convert(me.glindholm.jira.rest.client.domain.ServerInfo serverInfo) {
+    public static ServerInfo convert(com.atlassian.jira.rest.client.domain.ServerInfo serverInfo) {
         ServerInfo serverInfoOut = new ServerInfo();
 
         serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
@@ -914,7 +914,7 @@ public class JiraRestConverter {
     private static JiraAction convert(Transition transition) {
         JiraAction action = new JiraAction(Integer.toString(transition.getId()), transition.getName());
 
-        for (me.glindholm.jira.rest.client.domain.Transition.Field field : transition.getFields()) {
+        for (com.atlassian.jira.rest.client.domain.Transition.Field field : transition.getFields()) {
 
             // TODO rest set field name once available https://studio.atlassian.com/browse/JRJC-113
             IssueField outField = new IssueField(field.getId(), field.getId());
@@ -927,8 +927,8 @@ public class JiraRestConverter {
         return action;
     }
 
-    public static Iterable<me.glindholm.jira.rest.client.domain.Version> convert(Version[] reportedVersions) {
-        List<me.glindholm.jira.rest.client.domain.Version> outReportedVersions = new ArrayList<me.glindholm.jira.rest.client.domain.Version>();
+    public static Iterable<com.atlassian.jira.rest.client.domain.Version> convert(Version[] reportedVersions) {
+        List<com.atlassian.jira.rest.client.domain.Version> outReportedVersions = new ArrayList<com.atlassian.jira.rest.client.domain.Version>();
 
         if (reportedVersions != null) {
             for (Version version : reportedVersions) {
@@ -939,8 +939,8 @@ public class JiraRestConverter {
         return outReportedVersions;
     }
 
-    private static me.glindholm.jira.rest.client.domain.Version convert(Version version) {
-        me.glindholm.jira.rest.client.domain.Version outVersion = new me.glindholm.jira.rest.client.domain.Version(
+    private static com.atlassian.jira.rest.client.domain.Version convert(Version version) {
+        com.atlassian.jira.rest.client.domain.Version outVersion = new com.atlassian.jira.rest.client.domain.Version(
                 null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
         return outVersion;
     }

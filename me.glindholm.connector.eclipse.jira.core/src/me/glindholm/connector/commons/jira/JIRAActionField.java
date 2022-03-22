@@ -16,7 +16,7 @@
 
 package me.glindholm.connector.commons.jira;
 
-import me.glindholmjira.rest.client.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.domain.input.FieldInput;
 
 import me.glindholm.connector.commons.jira.beans.JIRAConstant;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
