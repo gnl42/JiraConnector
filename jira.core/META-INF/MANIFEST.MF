@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.core;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.0.0.Final
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,

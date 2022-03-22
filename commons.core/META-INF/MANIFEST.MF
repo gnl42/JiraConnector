@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Commons Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.core;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.0.0.Final
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true

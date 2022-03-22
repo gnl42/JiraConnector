@@ -2,7 +2,7 @@
 <feature
       id="me.glindholm.connector.eclipse.bamboo"
       label="%featureName"
-      version="4.0.0.qualifier"
+      version="4.0.0.Final"
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
