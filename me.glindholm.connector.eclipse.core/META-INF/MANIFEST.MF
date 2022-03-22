@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse Core
+Bundle-SymbolicName: me.glindholm.connector.eclipse.core;singleton:=true
+Bundle-Version: 4.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true
+Require-Bundle: 
+ org.eclipse.mylyn.commons.core,
+ org.eclipse.mylyn.commons.net,
+ org.eclipse.core.runtime,
+ me.glindholm.connector.eclipse.commons.core,
+ me.glindholm.connector.eclipse.branding.ui,
+ me.glindholm.connector.eclipse.commons.core
+Export-Package: me.glindholm.connector.eclipse.internal.core;
+  x-friends:="me.glindholm.connector.eclipse.bamboo.core,
+   me.glindholm.connector.eclipse.bamboo.ui,
+   me.glindholm.connector.eclipse.directclickthrough.ui,
+   me.glindholm.connector.eclipse.ui",
+ me.glindholm.connector.eclipse.internal.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.core,me.glindholm.connector.eclipse.bamboo.ui,me.glindholm.connector.eclipse.ui",
+ me.glindholm.connector.eclipse.internal.core.jobs;
+  x-friends:="me.glindholm.connector.eclipse.bamboo.core,
+   me.glindholm.connector.eclipse.bamboo.ui,
+   me.glindholm.connector.eclipse.directclickthrough.ui,
+   me.glindholm.connector.eclipse.ui"
+Bundle-Activator: me.glindholm.connector.eclipse.internal.core.AtlassianCorePlugin
+Bundle-ClassPath: .
+Bundle-Vendor: George Lindholm
+Import-Package: org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.tasks.core;bundle-version="[3.2.0,4.0.0)"
+Eclipse-BuddyPolicy: registered

@@ -1,0 +1,156 @@
+<plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="me.glindholm.connector.eclipse.internal.bamboo.core.BambooRepositoryConnector"
+            id="bamboo"
+            name="Bamboo">
+      </connectorCore>
+      <connectorUi
+            brandingIcon="icons/obj16/bamboo.png"
+            class="me.glindholm.connector.eclipse.internal.bamboo.ui.BambooRepositoryConnectorUi"
+            id="bamboo"
+            name="Bamboo"
+            overlayIcon="icons/obj16/bamboo-overlay.png">
+      </connectorUi>
+	   <repositoryMigrator class="me.glindholm.connector.eclipse.internal.bamboo.ui.BambooRepositoryMigrator"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="me.glindholm.connector.eclipse.ui.category"
+            class="me.glindholm.connector.eclipse.internal.bamboo.ui.BambooView"
+            icon="icons/obj16/bamboo.png"
+            id="me.glindholm.connector.eclipse.bamboo.ui.plans"
+            name="Bamboo">
+      </view>
+      <view id="me.glindholm.connector.eclipse.bamboo.ui.views.testResultView" 
+			name="Bamboo Test Results" 
+			class="me.glindholm.connector.eclipse.internal.bamboo.ui.views.TestResultsView" 
+			icon="icons/obj16/failedTests.png" 
+			category="me.glindholm.connector.eclipse.ui.category"/>
+      <category
+            id="me.glindholm.connector.eclipse.ui.category"
+            name="Atlassian">
+      </category>
+   </extension>
+      <extension point="org.eclipse.ui.viewActions"> 
+		<viewContribution 
+			id="me.glindholm.connector.eclipse.bamboo.ui.actions.view" 
+	   		targetID="me.glindholm.connector.eclipse.bamboo.ui.plans">
+         <action
+               class="me.glindholm.connector.eclipse.internal.bamboo.ui.actions.SetRefreshIntervalAction"
+               id="me.glindholm.connector.eclipse.bamboo.ui.action.refreshpref"
+               label="Change Refresh Interval..."
+               menubarPath="additions"
+               style="push"
+               tooltip="Change the interval between scheduled refreshes.">
+         </action>
+	    </viewContribution> 
+	</extension>
+	<!-- this stuff here will be used one day, when we support remote running of unit test on Bamboo -->
+	<!--
+      <extension
+            point="org.eclipse.debug.core.launchDelegates">
+         <launchDelegate
+               delegate="me.glindholm.connector.eclipse.bamboo.ui.BambooLaunchConfigurationDelegate"
+               id="me.glindholm.connector.eclipse.bamboo.core.bambooLaunchDelegate"
+               modes="run"
+               name="Remote Bamboo Launcher">
+         </launchDelegate>
+      </extension>
+      <extension
+            point="org.eclipse.debug.core.launchConfigurationTypes">
+         <launchConfigurationType
+               delegate="me.glindholm.connector.eclipse.bamboo.ui.BambooLaunchConfigurationDelegate"
+               delegateDescription="Remote Bamboo Launcher supports running your unit tests remotely on selected Atlassian Bamboo instance"
+               delegateName="Remote Bamboo Launcher"
+               id="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRun"
+               modes="run"
+               name="Bamboo Tests">
+         </launchConfigurationType>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+               configTypeID="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRun"
+               icon="icons/obj16/bamboo.png"
+               id="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRunImage">
+         </launchConfigurationTypeImage>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+         <launchConfigurationTabGroup
+               class="me.glindholm.connector.eclipse.bamboo.ui.BambooRemoteTestTabGroup"
+               id="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRunTabGroup"
+               type="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRun">
+         </launchConfigurationTabGroup>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchShortcuts">
+         <shortcut
+               class="me.glindholm.connector.eclipse.bamboo.ui.BambooRemoteTestLaunchShortcut"
+               icon="icons/obj16/bamboo.png"
+               id="me.glindholm.connector.eclipse.bamboo.ui.bambooRemoteTestShortcut"
+               label="JUnit Test on Bamboo"
+               modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+               	  <iterate>
+                     <adapt type="org.eclipse.jdt.core.IJavaElement">
+		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
+		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
+		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
+		             </adapt>
+		          </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <configurationType
+               id="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRun">
+         </configurationType>
+               
+         </shortcut>
+      </extension>
+      <extension point="org.eclipse.ui.popupMenus">
+	     <viewerContribution id="org.eclipse.mylyn.bugzilla.ui.contribution"
+              targetID="org.eclipse.jdt.junit.ResultView">
+	       <action class="me.glindholm.connector.eclipse.bamboo.ui.BambooRemoteTestFromJunitResultViewAction"
+	           icon="icons/obj16/bamboo.png"
+	           id="me.glindholm.connector.eclipse.bamboo.ui.actions.bambooRemoteTestFromJunitResultViewAction"
+	           label="Run on Bamboo"
+	           menubarPath="additions"/>
+	     </viewerContribution>
+      </extension>
+      -->
+      <!-- end of the stuff for remote runs on Bamboo  -->
+      
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               category="me.glindholm.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+               class="me.glindholm.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
+               id="me.glindholm.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
+               name="Bamboo">
+         </page>
+      </extension>
+      <extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="me.glindholm.connector.eclipse.bamboo.ui.preferences.PreferenceInitializer">
+         </initializer>
+      </extension>
+   <!--<extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="me.glindholm.connector.eclipse.internal.bamboo.ui.editor.BambooEditor"
+            contributorClass="me.glindholm.connector.eclipse.internal.bamboo.ui.editor.BambooEditorActionContribution"
+            icon="icons/obj16/bamboo.png"
+            id="me.glindholm.connector.eclipse.bamboo.ui.editors.build"
+            name="Bamboo Build Editor">
+      </editor>
+   </extension>-->
+
+</plugin>

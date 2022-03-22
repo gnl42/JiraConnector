@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse UI Commons
+Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.ui;singleton:=true
+Bundle-Version: 4.0.0.qualifier
+Bundle-Vendor: George Lindholm
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: me.glindholm.connector.eclipse.internal.commons.ui.dialogs;x-friends:="me.glindholm.connector.eclipse.bamboo.ui,
+ me.glindholm.connector.eclipse.jira.ui, me.glindholm.connector.eclipse.ui",
+ me.glindholm.connector.eclipse.internal.commons.ui;x-friends:="me.glindholm.connector.eclipse.bamboo.ui,
+ me.glindholm.connector.eclipse.jira.ui
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.core.runtime,
+ org.eclipse.jface,
+ org.eclipse.mylyn.commons.core,
+ org.eclipse.mylyn.commons.ui,
+ org.eclipse.mylyn.commons.workbench,
+ org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.ui.browser,
+ org.eclipse.ui.workbench,
+ me.glindholm.connector.eclipse.commons.core,
+ me.glindholm.connector.eclipse.commons.core;bundle-version="4.0.0"
+Bundle-ClassPath: .

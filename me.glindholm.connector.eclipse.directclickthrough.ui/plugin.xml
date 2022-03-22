@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferenceInitializer">
+         </initializer>
+    </extension>
+      
+	<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="me.glindholm.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+            class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
+            id="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
+            name="Direct Click Through">
+      </page>
+    </extension>
+    
+	<extension
+		name="Atlassian Connector For Eclipse Direct Click Through Support"
+       	point="org.eclipse.ui.startup">
+    	<startup
+        	class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"/>
+ 	</extension>
+ 	
+</plugin>

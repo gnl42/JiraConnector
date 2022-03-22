@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse Bamboo UI Tests
+Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.testsUI
+Bundle-Version: 0.0.0
+Bundle-Vendor: George Lindholm
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.swtbot.eclipse.core ,
+ org.eclipse.swtbot.eclipse.finder ,
+ org.eclipse.swtbot.eclipse.ui ,
+ org.eclipse.swtbot.junit4_x ,
+ org.eclipse.swtbot.swt.finder ,
+ org.eclipse.ui.workbench,
+ me.glindholm.connector.eclipse.bamboo.ui,
+ me.glindholm.connector.eclipse.bamboo.core,
+ org.eclipse.jface,
+ org.junit.jupiter.engine

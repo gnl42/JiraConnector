@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?><!--
+    Copyright (c) 2009 Tasktop Technologies and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+         Tasktop Technologies - initial API and implementation
+ -->
+
+<plugin>
+
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.editors">
+      <pageFactory
+            class="me.glindholm.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPageFactory"
+            id="org.eclipse.mylyn.jira.ui.pageFactory">
+      </pageFactory>
+   </extension>
+
+   <extension
+         id="org.eclipse.mylyn.jira.repository"
+         name="%repository.name"
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+
+      <connectorCore
+            id="jira"
+            class="me.glindholm.connector.eclipse.internal.jira.core.JiraRepositoryConnector"
+            name="%JiraRepositoryConnector.name"/>
+		<connectorUi
+			brandingIcon="icons/eview16/jira-logo.gif"
+			class="me.glindholm.connector.eclipse.internal.jira.ui.JiraConnectorUi"
+			name="%JiraConnectorUi.name"
+			overlayIcon="icons/eview16/overlay-jira.gif"/>
+		<taskListMigrator
+			class="me.glindholm.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
+		</taskListMigrator>
+	   <repositoryMigrator class="me.glindholm.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
+
+   </extension>
+
+   <extension
+          point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
+       <taskRepositoryPageContribution
+       		 id="me.glindholm.connector.eclipse.jira.ui.httpAuthExtensionSettings"
+             class="me.glindholm.connector.eclipse.internal.jira.ui.wizards.HttpAuthExtensionSettingsContribution"
+             connectorKind="jira">
+       </taskRepositoryPageContribution>
+    </extension>
+
+   <extension
+          point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
+       <taskRepositoryPageContribution
+       		 id="me.glindholm.connector.eclipse.jira.ui.googleAppsExtensionSettings"
+             class="me.glindholm.connector.eclipse.internal.jira.ui.wizards.GoogleAppsExtensionSettingsContribution"
+             connectorKind="jira">
+       </taskRepositoryPageContribution>
+    </extension>
+
+  <!-- TODO jj add icon and fix label -->
+  <extension point="org.eclipse.ui.popupMenus">
+   <objectContribution
+   		id="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution"
+   		objectClass="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTask"
+   		adaptable="true">
+	        <action
+		      	class="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+	        	id="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+	        	label="%Action.Start.Work.label"
+	        	menubarPath="additions"
+	        	enablesFor="1"/>
+   </objectContribution>
+  </extension>
+
+  <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.runtime.IAdaptable"
+            class="me.glindholm.connector.eclipse.internal.jira.ui.JiraTaskAdapterFactory">
+         <adapter
+               type="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTask">
+         </adapter>
+      </factory>
+   </extension>
+
+
+</plugin>

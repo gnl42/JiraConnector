@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse Bamboo Tests
+Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.tests;singleton:=true
+Bundle-Version: 0.0.0
+Bundle-Vendor: George Lindholm
+Require-Bundle: org.junit,
+ me.glindholm.connector.eclipse.bamboo.core,
+ me.glindholm.connector.eclipse.bamboo.ui,
+ me.glindholm.connector.eclipse.core,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.jdt.junit,
+ me.glindholm.connector.commons,
+ org.eclipse.core.runtime,
+ org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.jface,
+ me.glindholm.connector.eclipse.directclickthrough.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: me.glindholm.connector.eclipse.internal.bamboo.core;x-internal:=true,
+ me.glindholm.connector.eclipse.internal.bamboo.tests;x-internal:=true,
+ me.glindholm.connector.eclipse.internal.bamboo.tests.util;x-internal:=true,
+ me.glindholm.connector.eclipse.internal.bamboo.ui;x-internal:=true

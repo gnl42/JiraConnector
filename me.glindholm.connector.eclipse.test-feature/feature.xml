@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="me.glindholm.connector.eclipse.test"
+      label="%featureName"
+      version="0.0.0.qualifier"
+      provider-name="%providerName"
+      plugin="me.glindholm.connector.eclipse.branding.ui">
+
+   <description url="http://atlassian.com">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="license.html">
+      %license
+   </license>
+
+   <includes
+         id="me.glindholm.connector.eclipse.bamboo"
+         version="0.0.0"
+         name="Bamboo Integration"/>
+
+   <includes
+         id="me.glindholm.connector.eclipse.jira"
+         version="0.0.0"
+         name="Jira Integration"/>
+
+   <includes
+         id="me.glindholm.connector.commons"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.junit"/>
+      <import plugin="me.glindholm.connector.eclipse.core"/>
+      <import plugin="me.glindholm.connector.eclipse.ui"/>
+      <import plugin="me.glindholm.connector.eclipse.bamboo.core"/>
+      <import plugin="me.glindholm.connector.eclipse.bamboo.ui"/>
+      <import plugin="me.glindholm.connector.eclipse.fisheye.core"/>
+      <import plugin="me.glindholm.connector.eclipse.fisheye.ui"/>
+      <import plugin="me.glindholm.connector.eclipse.jira.core"/>
+      <import plugin="me.glindholm.connector.eclipse.jira.ui"/>
+      <import plugin="me.glindholm.connector.commons"/>
+      <import plugin="me.glindholm.connector.eclipse.directclickthrough.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.jdt.junit"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.net"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
+      <import feature="org.eclipse.mylyn.commons" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.resources.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.ide.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.search" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.java.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.pde.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.api.tools.ui"/>
+      <import plugin="org.eclipse.pde"/>
+      <import plugin="org.eclipse.pde.core"/>
+      <import plugin="org.eclipse.ui.navigator.resources"/>
+   </requires>
+
+   <plugin
+         id="me.glindholm.connector.eclipse.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="me.glindholm.connector.commons.tests.dependencies"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="me.glindholm.connector.eclipse.bamboo.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="me.glindholm.connector.eclipse.jira.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.java.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.resources.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.ide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.context.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.pde.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.team.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.commons.notifications.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
