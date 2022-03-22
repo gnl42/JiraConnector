@@ -19,7 +19,7 @@
    </license>
 
    <includes
-         id="com.atlassian.connector.commons"
+         id="com.atlassian.connector.commons.library"
          version="0.0.0"/>
 
    <includes
@@ -43,7 +43,7 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="com.atlassian.connector.commons.library"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.mylyn.tasks.ui"/>

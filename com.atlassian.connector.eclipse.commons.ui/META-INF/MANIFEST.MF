@@ -6,11 +6,10 @@ Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Atlassian
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: 
- com.atlassian.connector.eclipse.internal.commons.ui.dialogs;x-friends:="com.atlassian.connector.eclipse.bamboo.ui, 
+Export-Package: com.atlassian.connector.eclipse.internal.commons.ui.dialogs;x-friends:="com.atlassian.connector.eclipse.bamboo.ui,
  com.atlassian.connector.eclipse.jira.ui, com.atlassian.connector.eclipse.ui",
- com.atlassian.connector.eclipse.internal.commons.ui;x-friends:="com.atlassian.connector.eclipse.bamboo.ui, 
- com.atlassian.connector.eclipse.jira.ui"
+ com.atlassian.connector.eclipse.internal.commons.ui;x-friends:="com.atlassian.connector.eclipse.bamboo.ui,
+ com.atlassian.connector.eclipse.jira.ui
 Require-Bundle: org.eclipse.swt,
  org.eclipse.core.runtime,
  org.eclipse.jface,
@@ -23,5 +22,5 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench,
  com.atlassian.connector.eclipse.commons.core,
- com.atlassian.connector.commons;bundle-version="4.0.0"
+ com.atlassian.connector.commons.library;bundle-version="4.0.0"
 Bundle-ClassPath: .

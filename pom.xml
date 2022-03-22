@@ -1,454 +1,454 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.atlassian.connector.eclipse</groupId>
-	<artifactId>JiraConnector</artifactId>
-	<version>4.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.atlassian.connector.eclipse</groupId>
+  <artifactId>JiraConnector</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<developers>
-		<developer>
-			<name>Mik Kersten</name>
-			<organization>Tasktop Technologies</organization>
-		</developer>
-		<developer>
-			<name>Pawel Niewiadomski</name>
-		</developer>
-		<developer>
-			<name>Shawn Minto</name>
-			<organization>Tasktop Technologies</organization>
-		</developer>
-		<developer>
-			<name>Thomas Ehrnhoefer</name>
-		</developer>
-		<developer>
-			<name>Wojciech Seliga</name>
-		</developer>
-		<developer>
-			<name>Jacek Jaroczynski</name>
-		</developer>
-		<developer>
-			<name>Steffen Pingel</name>
-		</developer>
-		<developer>
-			<name>Eugene Kuleshov</name>
-		</developer>
-		<developer>
-			<name>Wesley Coelho</name>
-		</developer>
-		<developer>
-			<name>Rob Elves</name>
-		</developer>
-		<!-- Maven port and beyond -->
-		<developer>
-			<name>George Lindholm</name>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>Mik Kersten</name>
+      <organization>Tasktop Technologies</organization>
+    </developer>
+    <developer>
+      <name>Pawel Niewiadomski</name>
+    </developer>
+    <developer>
+      <name>Shawn Minto</name>
+      <organization>Tasktop Technologies</organization>
+    </developer>
+    <developer>
+      <name>Thomas Ehrnhoefer</name>
+    </developer>
+    <developer>
+      <name>Wojciech Seliga</name>
+    </developer>
+    <developer>
+      <name>Jacek Jaroczynski</name>
+    </developer>
+    <developer>
+      <name>Steffen Pingel</name>
+    </developer>
+    <developer>
+      <name>Eugene Kuleshov</name>
+    </developer>
+    <developer>
+      <name>Wesley Coelho</name>
+    </developer>
+    <developer>
+      <name>Rob Elves</name>
+    </developer>
+    <!-- Maven port and beyond -->
+    <developer>
+      <name>George Lindholm</name>
+    </developer>
+  </developers>
 
-	<licenses>
-		<license>
-			<name>Eclipse Public License v1.0</name>
-			<url>https://www.eclipse.org/legal/epl-v10.html</url>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>https://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
 
-	<scm>
-		<connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
-		<url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
-		<developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-		<tag>v4.0</tag>
-	</scm>
+  <scm>
+    <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
+    <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
+    <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
+    <tag>v4.0</tag>
+  </scm>
 
-	<repositories>
-		<repository>
-			<id>eclipse</id>
-			<url>https://download.eclipse.org/releases/kepler</url>
-			<layout>p2</layout>
-		</repository>
+  <repositories>
+    <repository>
+      <id>eclipse</id>
+      <url>https://download.eclipse.org/releases/kepler</url>
+      <layout>p2</layout>
+    </repository>
 
-		<repository>
-			<id>m2e-eclipse-extension</id>
-			<url>https://simulation.tudelft.nl/maven</url>
-		</repository>
+    <repository>
+      <id>m2e-eclipse-extension</id>
+      <url>https://simulation.tudelft.nl/maven</url>
+    </repository>
 
-		<repository>
-			<id>atlassian again</id>
-			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
-		</repository>
+    <repository>
+      <id>atlassian again</id>
+      <url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
+    </repository>
 
-		<repository>
-			<id>atlassian</id>
-			<url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
-		</repository>
-		<repository>
-			<id>atlassian-3rd-party</id>
-			<name>atlassian 3rd party</name>
-			<url>https://maven.atlassian.com/maven-3rdparty/</url>
-		</repository>
-	</repositories>
+    <repository>
+      <id>atlassian</id>
+      <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
+    </repository>
+    <repository>
+      <id>atlassian-3rd-party</id>
+      <name>atlassian 3rd party</name>
+      <url>https://maven.atlassian.com/maven-3rdparty/</url>
+    </repository>
+  </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>release</id>
-			<url>https://repo.eclipse.org/content/groups/releases/</url>
-		</pluginRepository>
-	</pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>release</id>
+      <url>https://repo.eclipse.org/content/groups/releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-	<properties>
-		<tycho.version>2.7.0</tycho.version>
-	</properties>
+  <properties>
+    <tycho.version>2.7.0</tycho.version>
+  </properties>
 
-	<modules>
-		<module>com.atlassian.connector.commons</module>
-		<module>com.atlassian.connector.commons-feature</module>
-		<module>com.atlassian.connector.eclipse.ui</module>
+  <modules>
+    <module>com.atlassian.connector.commons.library</module>
+    <module>com.atlassian.connector.commons.library-feature</module>
+    <module>com.atlassian.connector.eclipse.ui</module>
 
-		<module>com.atlassian.connector.eclipse.commons-feature</module>
-		<module>com.atlassian.connector.eclipse.commons.core</module>
-		<module>com.atlassian.connector.eclipse.commons.ui</module>
+    <module>com.atlassian.connector.eclipse.commons-feature</module>
+    <module>com.atlassian.connector.eclipse.commons.core</module>
+    <module>com.atlassian.connector.eclipse.commons.ui</module>
 
-		<module>com.atlassian.connector.eclipse.core</module>
+    <module>com.atlassian.connector.eclipse.core</module>
 
-		<module>com.atlassian.connector.eclipse.dependencies-feature</module>
-		<module>com.atlassian.connector.eclipse.directclickthrough-feature</module>
-		<module>com.atlassian.connector.eclipse.directclickthrough.ui</module>
+    <module>com.atlassian.connector.eclipse.dependencies-feature</module>
+    <module>com.atlassian.connector.eclipse.directclickthrough-feature</module>
+    <module>com.atlassian.connector.eclipse.directclickthrough.ui</module>
 
-		<module>com.atlassian.connector.eclipse-feature</module>
+    <module>com.atlassian.connector.eclipse-feature</module>
 
-		<module>com.atlassian.connector.eclipse.bamboo-feature</module>
-		<module>com.atlassian.connector.eclipse.bamboo.core</module>
-		<module>com.atlassian.connector.eclipse.bamboo.ui</module>
+    <module>com.atlassian.connector.eclipse.bamboo-feature</module>
+    <module>com.atlassian.connector.eclipse.bamboo.core</module>
+    <module>com.atlassian.connector.eclipse.bamboo.ui</module>
 
-		<module>com.atlassian.connector.eclipse.branding.ui</module>
+    <module>com.atlassian.connector.eclipse.branding.ui</module>
 
-		<module>com.atlassian.connector.eclipse.help</module>
+    <module>com.atlassian.connector.eclipse.help</module>
 
-		<!-- <module>com.atlassian.jira.rest.client</module> -->
+    <!-- <module>com.atlassian.jira.rest.client</module> -->
 
-		<module>com.atlassian.connector.eclipse.jira-feature</module>
-		<module>com.atlassian.connector.eclipse.jira.core</module>
-		<module>com.atlassian.connector.eclipse.jira.ui</module>
+    <module>com.atlassian.connector.eclipse.jira-feature</module>
+    <module>com.atlassian.connector.eclipse.jira.core</module>
+    <module>com.atlassian.connector.eclipse.jira.ui</module>
 
-		<!-- Will have to real life tests for now <module>com.atlassian.connector.commons.tests.dependencies</module>
-			<module>com.atlassian.connector.eclipse.test-feature</module> <module>com.atlassian.connector.eclipse.tests</module>
-			<module>com.atlassian.connector.eclipse.jira.tests</module> -->
-		<!-- Unable to launch eclipse instance <module>com.atlassian.connector.eclipse.bamboo.tests</module> -->
-		<!-- Unable to resolve swtbot.eclipse.core <module>com.atlassian.connector.eclipse.bamboo.testsUI</module> -->
-		<module>com.atlassian.connector.eclipse.releng</module>
-	</modules>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.eclipse.tycho</groupId>
-										<artifactId>tycho-compiler-plugin</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>validate-classpath</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
+    <!-- Will have to real life tests for now <module>com.atlassian.connector.commons.tests.dependencies</module>
+      <module>com.atlassian.connector.eclipse.test-feature</module> <module>com.atlassian.connector.eclipse.tests</module>
+      <module>com.atlassian.connector.eclipse.jira.tests</module> -->
+    <!-- Unable to launch eclipse instance <module>com.atlassian.connector.eclipse.bamboo.tests</module> -->
+    <!-- Unable to resolve swtbot.eclipse.core <module>com.atlassian.connector.eclipse.bamboo.testsUI</module> -->
+    <module>com.atlassian.connector.eclipse.releng</module>
+  </modules>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>validate-classpath</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.3.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>3.11.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.3.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-report-plugin</artifactId>
-					<version>2.22.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>3.0.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.2.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jxr-plugin</artifactId>
-					<version>3.1.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-compiler-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-maven-plugin</artifactId>
-					<version>${tycho.version}</version>
-					<extensions>true</extensions>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-repository-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-source-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-source-feature-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-versions-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-director-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-surefire-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>target-platform-configuration</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-pack200a-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-pack200b-plugin</artifactId>
-					<version>${tycho.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.cbi.maven.plugins</groupId>
-					<artifactId>eclipse-jarsigner-plugin</artifactId>
-					<version>1.1.7</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<optimize>true</optimize>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-repository-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>plugin-source</id>
-						<goals>
-							<goal>plugin-source</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>feature-source</id>
-						<phase>package</phase>
-						<goals>
-							<goal>feature-source</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<plugin id="com.google.guava" />
-								<plugin id="com.google.inject" />
-								<plugin id="org.apache.batik.pdf" />
-								<plugin id="org.apache.log4j" />
-								<plugin id="org.apache.batik.bridge" />
-								<plugin id="org.apache.batik.css" />
-								<plugin id="org.apache.batik.dom" />
-								<plugin id="org.apache.batik.dom.svg" />
-								<plugin id="org.apache.batik.ext.awt" />
-								<plugin id="org.apache.batik.parser" />
-								<plugin id="org.apache.batik.svggen" />
-								<plugin id="org.apache.batik.transcoder" />
-								<plugin id="org.apache.batik.util" />
-								<plugin id="org.apache.batik.util.gui" />
-								<plugin id="org.apache.batik.xml" />
-								<plugin id="org.apache.commons.lang" />
-								<plugin id="org.eclipse.m2m.qvt.oml.project" />
-								<plugin id="org.eclipse.m2m.qvt.oml.runtime" />
-								<plugin id="org.eclipse.xtend.shared.ui" />
-								<plugin id="org.eclipse.xwt.ui.workbench" />
-								<plugin id="org.eclipse.wst.common.project.facet.core" />
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-p2-metadata</id>
-						<phase>package</phase>
-						<goals>
-							<goal>p2-metadata</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-versions-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<configuration>
-					<failIfNoTests>false</failIfNoTests>
-					<useUIHarness>true</useUIHarness>
-					<useUIThread>true</useUIThread>
-					<!--<showEclipseLog>true</showEclipseLog> -->
-					<!--<testFailureIgnore>true</testFailureIgnore> -->
-					<argLine>${ui.test.vmargs}</argLine>
-					<bundleStartLevel>
-						<bundle>
-							<id>org.eclipse.equinox.launcher</id>
-							<level>4</level>
-							<autoStart>true</autoStart>
-						</bundle>
-					</bundleStartLevel>
-					<dependencies>
-						<dependency>
-							<type>p2-installable-unit</type>
-							<artifactId>org.eclipse.equinox.ds</artifactId>
-						</dependency>
-						<dependency>
-							<type>p2-installable-unit</type>
-							<artifactId>org.eclipse.equinox.event</artifactId>
-						</dependency>
-					</dependencies>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<configuration>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>jaxen</groupId>
-				<artifactId>jaxen</artifactId>
-				<version>1.1.3</version>
-				<exclusions>
-					<exclusion>
-						<groupId>maven-plugins</groupId>
-						<artifactId>maven-cobertura-plugin</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>maven-plugins</groupId>
-						<artifactId>maven-findbugs-plugin</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.jdom</groupId>
-				<artifactId>jdom</artifactId>
-				<version>2.0.2</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.11.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-compiler-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-maven-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-repository-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-source-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho.extras</groupId>
+          <artifactId>tycho-source-feature-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-director-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho.extras</groupId>
+          <artifactId>tycho-pack200a-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho.extras</groupId>
+          <artifactId>tycho-pack200b-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.cbi.maven.plugins</groupId>
+          <artifactId>eclipse-jarsigner-plugin</artifactId>
+          <version>1.1.7</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <optimize>true</optimize>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>feature-source</id>
+            <phase>package</phase>
+            <goals>
+              <goal>feature-source</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <plugin id="com.google.guava" />
+                <plugin id="com.google.inject" />
+                <plugin id="org.apache.batik.pdf" />
+                <plugin id="org.apache.log4j" />
+                <plugin id="org.apache.batik.bridge" />
+                <plugin id="org.apache.batik.css" />
+                <plugin id="org.apache.batik.dom" />
+                <plugin id="org.apache.batik.dom.svg" />
+                <plugin id="org.apache.batik.ext.awt" />
+                <plugin id="org.apache.batik.parser" />
+                <plugin id="org.apache.batik.svggen" />
+                <plugin id="org.apache.batik.transcoder" />
+                <plugin id="org.apache.batik.util" />
+                <plugin id="org.apache.batik.util.gui" />
+                <plugin id="org.apache.batik.xml" />
+                <plugin id="org.apache.commons.lang" />
+                <plugin id="org.eclipse.m2m.qvt.oml.project" />
+                <plugin id="org.eclipse.m2m.qvt.oml.runtime" />
+                <plugin id="org.eclipse.xtend.shared.ui" />
+                <plugin id="org.eclipse.xwt.ui.workbench" />
+                <plugin id="org.eclipse.wst.common.project.facet.core" />
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-p2-metadata</id>
+            <phase>package</phase>
+            <goals>
+              <goal>p2-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+          <useUIHarness>true</useUIHarness>
+          <useUIThread>true</useUIThread>
+          <!--<showEclipseLog>true</showEclipseLog> -->
+          <!--<testFailureIgnore>true</testFailureIgnore> -->
+          <argLine>${ui.test.vmargs}</argLine>
+          <bundleStartLevel>
+            <bundle>
+              <id>org.eclipse.equinox.launcher</id>
+              <level>4</level>
+              <autoStart>true</autoStart>
+            </bundle>
+          </bundleStartLevel>
+          <dependencies>
+            <dependency>
+              <type>p2-installable-unit</type>
+              <artifactId>org.eclipse.equinox.ds</artifactId>
+            </dependency>
+            <dependency>
+              <type>p2-installable-unit</type>
+              <artifactId>org.eclipse.equinox.event</artifactId>
+            </dependency>
+          </dependencies>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>1.1.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-cobertura-plugin</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-findbugs-plugin</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>2.0.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

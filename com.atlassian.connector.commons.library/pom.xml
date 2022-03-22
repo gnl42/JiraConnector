@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.atlassian.connector</groupId>
-    <artifactId>com.atlassian.connector.commons</artifactId>
+    <artifactId>com.atlassian.connector.commons.library</artifactId>
     <version>4.0.0-SNAPSHOT</version>
     <packaging>eclipse-plugin</packaging>
 
@@ -56,11 +56,11 @@
         </plugins>
     </build>
     <dependencies>
-		<dependency>
-		    <groupId>axis</groupId>
-		    <artifactId>axis</artifactId>
-		    <version>1.4</version>
-		</dependency>
+    <dependency>
+        <groupId>axis</groupId>
+        <artifactId>axis</artifactId>
+        <version>1.4</version>
+    </dependency>
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>

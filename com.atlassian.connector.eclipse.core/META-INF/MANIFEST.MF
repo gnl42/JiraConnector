@@ -10,7 +10,7 @@ Require-Bundle:
  org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.net,
  org.eclipse.core.runtime,
- com.atlassian.connector.commons,
+ com.atlassian.connector.commons.library,
  com.atlassian.connector.eclipse.branding.ui,
  com.atlassian.connector.eclipse.commons.core
 Export-Package: com.atlassian.connector.eclipse.internal.core;
