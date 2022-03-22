@@ -99,6 +99,7 @@
 
 	<properties>
 		<tycho.version>2.7.0</tycho.version>
+		<tycho.useJDK>BREE</tycho.useJDK>  <!-- force toolchain usage, here so it be be overriden on the run command -->
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -323,7 +324,7 @@
 					<target>${java.version}</target>
 					<optimize>true</optimize>
 					<showWarnings>false</showWarnings>
-					<useJDK>BREE</useJDK>         <!-- force toolchain usage -->
+					<useJDK>${tycho.useJDK}</useJDK>
 				</configuration>
 			</plugin>
 			<plugin>
