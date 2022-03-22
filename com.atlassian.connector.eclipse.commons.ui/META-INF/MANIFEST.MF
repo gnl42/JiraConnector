@@ -22,5 +22,5 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench,
  com.atlassian.connector.eclipse.commons.core,
- com.atlassian.connector.commons.library;bundle-version="4.0.0"
+ com.atlassian.connector.eclipse.commons.core;bundle-version="4.0.0"
 Bundle-ClassPath: .

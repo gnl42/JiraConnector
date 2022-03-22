@@ -102,21 +102,19 @@
   </properties>
 
   <modules>
-    <module>com.atlassian.connector.commons.library</module>
-    <module>com.atlassian.connector.commons.library-feature</module>
-    <module>com.atlassian.connector.eclipse.ui</module>
 
     <module>com.atlassian.connector.eclipse.commons-feature</module>
     <module>com.atlassian.connector.eclipse.commons.core</module>
     <module>com.atlassian.connector.eclipse.commons.ui</module>
 
+    <module>com.atlassian.connector.eclipse-feature</module>
     <module>com.atlassian.connector.eclipse.core</module>
+    <module>com.atlassian.connector.eclipse.ui</module>
 
     <module>com.atlassian.connector.eclipse.dependencies-feature</module>
     <module>com.atlassian.connector.eclipse.directclickthrough-feature</module>
     <module>com.atlassian.connector.eclipse.directclickthrough.ui</module>
 
-    <module>com.atlassian.connector.eclipse-feature</module>
 
     <module>com.atlassian.connector.eclipse.bamboo-feature</module>
     <module>com.atlassian.connector.eclipse.bamboo.core</module>
