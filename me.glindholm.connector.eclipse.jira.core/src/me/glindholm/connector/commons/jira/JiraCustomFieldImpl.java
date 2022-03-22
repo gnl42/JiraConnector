@@ -15,9 +15,9 @@
  */
 package me.glindholm.connector.commons.jira;
 
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholmjira.rest.client.domain.Field;
+import me.glindholmjira.rest.client.domain.input.FieldInput;
+import me.glindholmjira.rest.client.internal.json.JsonParseUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;

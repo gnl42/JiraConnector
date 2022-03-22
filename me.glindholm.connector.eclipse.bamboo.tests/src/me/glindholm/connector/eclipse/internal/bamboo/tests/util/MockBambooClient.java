@@ -13,8 +13,8 @@ package me.glindholm.connector.eclipse.internal.bamboo.tests.util;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BuildDetails;
+import me.glindholmtheplugin.commons.bamboo.BambooBuild;
+import me.glindholmtheplugin.commons.bamboo.BuildDetails;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

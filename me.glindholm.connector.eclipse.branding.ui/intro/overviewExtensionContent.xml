@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <introContent>
-	<extensionContent id="com.atlassian.connector.eclipse" name="Atlassian Connector for Eclipse"
+	<extensionContent id="me.glindholm.connector.eclipse" name="Mylyn Connector for Atlassians Jira/Bamboo"
 		style="css/overview.css" alt-style="css/whatsnew.properties" path="overview/@">
 		<group id="content-group" style-id="content-group">
 			<link label="Atlassian Connector for Eclipse"
-				url="http://www.atlassian.com/software/ideconnector/eclipse.jsp?eclipse-welcome"
 				id="atlassian-eclipse-connector-overview" style-id="content-link">
 				<text>
-					Visit Atlassian Connector for Eclipse homepage to learn more about it. 
+					Mylin Connector for Atlassian's Jira/Bamboo
 				</text>
 			</link>
 		</group>

@@ -1,4 +1,4 @@
-http\://beans.soap.rpc.jira.atlassian.com=com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans
-http\://exception.rpc.jira.atlassian.com=com.atlassian.connector.eclipse.internal.jira.core.wsdl.soap
-http\://jira.atlassian.com/rpc/soap/jirasoapservice-v2=com.atlassian.connector.eclipse.internal.jira.core.wsdl.soap
-http\://service.soap.rpc.jira.atlassian.com=com.atlassian.connector.eclipse.internal.jira.core.wsdl.beans
+http\://beans.soap.rpc.jira.atlassian.com=me.glindholm.connector.eclipse.internal.jira.core.wsdl.beans
+http\://exception.rpc.jira.atlassian.com=me.glindholm.connector.eclipse.internal.jira.core.wsdl.soap
+http\://jira.atlassian.com/rpc/soap/jirasoapservice-v2=me.glindholm.connector.eclipse.internal.jira.core.wsdl.soap
+http\://service.soap.rpc.jira.atlassian.com=me.glindholm.connector.eclipse.internal.jira.core.wsdl.beans

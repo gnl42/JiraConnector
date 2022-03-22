@@ -11,12 +11,12 @@
 
 package me.glindholm.connector.commons.crucible.api.model;
 
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
-import com.atlassian.theplugin.commons.crucible.api.model.PermId;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewTestUtil;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import me.glindholmtheplugin.commons.crucible.api.model.CrucibleFileInfo;
+import me.glindholmtheplugin.commons.crucible.api.model.GeneralComment;
+import me.glindholmtheplugin.commons.crucible.api.model.PermId;
+import me.glindholmtheplugin.commons.crucible.api.model.Review;
+import me.glindholmtheplugin.commons.crucible.api.model.ReviewTestUtil;
+import me.glindholmtheplugin.commons.crucible.api.model.VersionedComment;
 import junit.framework.TestCase;
 
 public class ReviewModelUtilTest extends TestCase {

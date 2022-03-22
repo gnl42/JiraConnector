@@ -17,14 +17,14 @@
 package me.glindholm.connector.commons.remoteapi;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
-import com.atlassian.theplugin.commons.ServerType;
-import com.atlassian.theplugin.commons.cfg.ServerIdImpl;
-import com.atlassian.theplugin.commons.cfg.UserCfg;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiMalformedUrlException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiSessionExpiredException;
-import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
+import me.glindholmtheplugin.commons.ServerType;
+import me.glindholmtheplugin.commons.cfg.ServerIdImpl;
+import me.glindholmtheplugin.commons.cfg.UserCfg;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiMalformedUrlException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiSessionExpiredException;
+import me.glindholmtheplugin.commons.remoteapi.rest.AbstractHttpSession;
+import me.glindholmtheplugin.commons.remoteapi.rest.HttpSessionCallback;
 import junit.framework.TestCase;
 import org.apache.commons.httpclient.HttpMethod;
 import org.ddsteps.mock.httpserver.JettyMockServer;
@@ -60,7 +60,7 @@ public class AbstractHttpSessionTest extends TestCase {
 		long t1;
 		final String mockBaseUrl = "http://localhost:" + httpServer.getConnectors()[0].getLocalPort() + SOME_URL;
 		mockServer.expect(SOME_URL, new TimeoutingOnDataTransferCallback());
-		TestHttpSession session = new TestHttpSession(new com.atlassian.theplugin.commons.cfg.Server() {
+		TestHttpSession session = new TestHttpSession(new me.glindholm.theplugin.commons.cfg.Server() {
 
 			private final ServerIdImpl serverId = new ServerIdImpl();
 
@@ -154,7 +154,7 @@ public class AbstractHttpSessionTest extends TestCase {
 		}
 
 
-		private TestHttpSession(final com.atlassian.theplugin.commons.cfg.Server server, final HttpSessionCallback callback)
+		private TestHttpSession(final me.glindholm.theplugin.commons.cfg.Server server, final HttpSessionCallback callback)
 				throws RemoteApiMalformedUrlException {
 			super(getServerData(server), callback);
 		}
@@ -175,7 +175,7 @@ public class AbstractHttpSessionTest extends TestCase {
 
     }
 
-	private ConnectionCfg getServerData(final com.atlassian.theplugin.commons.cfg.Server serverCfg) {
+	private ConnectionCfg getServerData(final me.glindholm.theplugin.commons.cfg.Server serverCfg) {
 		return new ConnectionCfg(serverCfg.getServerId().getId(), serverCfg.getUrl(), serverCfg.getUsername(), serverCfg
 				.getPassword());
 	}

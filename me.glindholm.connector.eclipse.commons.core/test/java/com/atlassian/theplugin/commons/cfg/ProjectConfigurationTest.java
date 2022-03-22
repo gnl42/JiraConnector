@@ -15,7 +15,7 @@
  */
 package me.glindholm.theplugin.commons.cfg;
 
-import com.atlassian.theplugin.commons.util.MiscUtil;
+import me.glindholmtheplugin.commons.util.MiscUtil;
 import com.spartez.util.junit3.TestUtil;
 import junit.framework.TestCase;
 

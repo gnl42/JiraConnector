@@ -15,7 +15,7 @@ import me.glindholm.connector.eclipse.internal.bamboo.tests.util.MockBambooBuild
 import me.glindholm.connector.eclipse.internal.bamboo.tests.util.MockBambooClient;
 import me.glindholm.connector.eclipse.internal.bamboo.tests.util.MockBambooClientManager;
 import me.glindholm.connector.eclipse.internal.bamboo.tests.util.MockBambooRepositoryConnector;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import me.glindholmtheplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

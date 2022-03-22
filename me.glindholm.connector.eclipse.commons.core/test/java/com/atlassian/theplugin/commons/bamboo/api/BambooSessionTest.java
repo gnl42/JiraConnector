@@ -18,14 +18,14 @@ package me.glindholm.theplugin.commons.bamboo.api;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.commons.remoteapi.TestHttpSessionCallbackImpl;
-import com.atlassian.theplugin.api.AbstractSessionTest;
-import com.atlassian.theplugin.bamboo.api.bamboomock.*;
-import com.atlassian.theplugin.commons.BambooFileInfo;
-import com.atlassian.theplugin.commons.bamboo.*;
-import com.atlassian.theplugin.commons.remoteapi.ProductSession;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiMalformedUrlException;
-import com.atlassian.theplugin.commons.util.LoggerImpl;
+import me.glindholmtheplugin.api.AbstractSessionTest;
+import me.glindholmtheplugin.bamboo.api.bamboomock.*;
+import me.glindholmtheplugin.commons.BambooFileInfo;
+import me.glindholmtheplugin.commons.bamboo.*;
+import me.glindholmtheplugin.commons.remoteapi.ProductSession;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiMalformedUrlException;
+import me.glindholmtheplugin.commons.util.LoggerImpl;
 import com.spartez.util.junit3.IAction;
 import com.spartez.util.junit3.TestUtil;
 import junit.framework.Assert;
@@ -217,7 +217,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // successful tests
         assertEquals(117, build.getSuccessfulTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.BambooServerFacadeTest",
                 build.getSuccessfulTestDetails().iterator().next().getTestClassName());
         assertEquals("testProjectList",
                 build.getSuccessfulTestDetails().iterator().next().getTestMethodName());
@@ -459,7 +459,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // failed tests
         assertEquals(2, build.getFailedTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
                 build.getFailedTestDetails().iterator().next().getTestClassName());
         assertEquals("testSingleSuccessResultForDisabledBuild",
                 build.getFailedTestDetails().iterator().next().getTestMethodName());
@@ -471,7 +471,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // successful tests
         assertEquals(117, build.getSuccessfulTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.BambooServerFacadeTest",
                 build.getSuccessfulTestDetails().iterator().next().getTestClassName());
         assertEquals("testProjectList",
                 build.getSuccessfulTestDetails().iterator().next().getTestMethodName());
@@ -509,7 +509,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // failed tests
         assertEquals(2, build.getFailedTestDetails().size());
-        assertEquals("com.atlassian.bitbucket.ChangeSetBuilderTest",
+        assertEquals("me.glindholm.bitbucket.ChangeSetBuilderTest",
                 build.getFailedTestDetails().iterator().next().getTestClassName());
         assertEquals("testFindChangeSetsForRepository",
                 build.getFailedTestDetails().iterator().next().getTestMethodName());
@@ -554,7 +554,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // failed tests
         assertEquals(2, build.getFailedTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
                 build.getFailedTestDetails().iterator().next().getTestClassName());
         assertEquals("testSingleSuccessResultForDisabledBuild",
                 build.getFailedTestDetails().iterator().next().getTestMethodName());
@@ -673,7 +673,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // failed tests
         assertEquals(2, build.getFailedTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
                 build.getFailedTestDetails().iterator().next().getTestClassName());
         assertEquals("testSingleSuccessResultForDisabledBuild",
                 build.getFailedTestDetails().iterator().next().getTestMethodName());
@@ -688,7 +688,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // successful tests
         assertEquals(117, build.getSuccessfulTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.BambooServerFacadeTest",
                 build.getSuccessfulTestDetails().iterator().next().getTestClassName());
         assertEquals("testProjectList",
                 build.getSuccessfulTestDetails().iterator().next().getTestMethodName());
@@ -729,7 +729,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // failed tests
         assertEquals(2, build.getFailedTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.HtmlBambooStatusListenerTest",
                 build.getFailedTestDetails().iterator().next().getTestClassName());
         assertEquals("testSingleSuccessResultForDisabledBuild",
                 build.getFailedTestDetails().iterator().next().getTestMethodName());
@@ -741,7 +741,7 @@ public class BambooSessionTest extends AbstractSessionTest {
 
         // successful tests
         assertEquals(117, build.getSuccessfulTestDetails().size());
-        assertEquals("com.atlassian.theplugin.commons.bamboo.BambooServerFacadeTest",
+        assertEquals("me.glindholm.theplugin.commons.bamboo.BambooServerFacadeTest",
                 build.getSuccessfulTestDetails().iterator().next().getTestClassName());
         assertEquals("testProjectList",
                 build.getSuccessfulTestDetails().iterator().next().getTestMethodName());

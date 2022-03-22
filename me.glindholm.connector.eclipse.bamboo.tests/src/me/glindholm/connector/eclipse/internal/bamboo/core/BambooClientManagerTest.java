@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.bamboo.core;
 import static me.glindholm.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
-import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import me.glindholmtheplugin.commons.exception.HttpProxySettingsException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;

@@ -16,12 +16,12 @@
 
 package me.glindholm.theplugin.commons.bamboo.api;
 
-import com.atlassian.theplugin.bamboo.api.bamboomock.LoginCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.LogoutCallback;
-import com.atlassian.theplugin.commons.configuration.ConfigurationFactory;
-import com.atlassian.theplugin.commons.configuration.PluginConfiguration;
-import com.atlassian.theplugin.commons.configuration.PluginConfigurationBean;
-import com.atlassian.theplugin.commons.thirdparty.apache.EasySSLProtocolSocketFactory;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LoginCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LogoutCallback;
+import me.glindholmtheplugin.commons.configuration.ConfigurationFactory;
+import me.glindholmtheplugin.commons.configuration.PluginConfiguration;
+import me.glindholmtheplugin.commons.configuration.PluginConfigurationBean;
+import me.glindholmtheplugin.commons.thirdparty.apache.EasySSLProtocolSocketFactory;
 import junit.framework.TestCase;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;

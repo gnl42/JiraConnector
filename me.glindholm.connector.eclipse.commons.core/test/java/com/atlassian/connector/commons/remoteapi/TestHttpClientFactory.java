@@ -1,6 +1,6 @@
 package me.glindholm.connector.commons.remoteapi;
 
-import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import me.glindholmtheplugin.commons.exception.HttpProxySettingsException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 

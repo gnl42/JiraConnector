@@ -1,9 +1,9 @@
 package me.glindholm.theplugin.jira;
 
-import com.atlassian.theplugin.commons.cfg.JiraServerCfg;
-import com.atlassian.theplugin.commons.cfg.ServerIdImpl;
-import com.atlassian.theplugin.commons.cfg.UserCfg;
-import com.atlassian.theplugin.commons.jira.JiraServerData;
+import me.glindholmtheplugin.commons.cfg.JiraServerCfg;
+import me.glindholmtheplugin.commons.cfg.ServerIdImpl;
+import me.glindholmtheplugin.commons.cfg.UserCfg;
+import me.glindholmtheplugin.commons.jira.JiraServerData;
 import junit.framework.TestCase;
 
 public class JiraServerDataTest extends TestCase {

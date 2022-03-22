@@ -15,8 +15,8 @@
  */
 package me.glindholm.theplugin.commons.cfg.xstream;
 
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
-import com.atlassian.theplugin.commons.util.StringUtil;
+import me.glindholmtheplugin.commons.cfg.BambooServerCfg;
+import me.glindholmtheplugin.commons.util.StringUtil;
 import com.thoughtworks.xstream.XStream;
 import junit.framework.TestCase;
 

@@ -17,11 +17,11 @@
 package me.glindholm.theplugin.bamboo.api.bamboomock;
 
 import static junit.framework.Assert.assertEquals;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BambooPlan;
-import com.atlassian.theplugin.commons.bamboo.BambooProject;
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.util.ResourceUtil;
+import me.glindholmtheplugin.commons.bamboo.BambooBuild;
+import me.glindholmtheplugin.commons.bamboo.BambooPlan;
+import me.glindholmtheplugin.commons.bamboo.BambooProject;
+import me.glindholmtheplugin.commons.bamboo.BuildStatus;
+import me.glindholmtheplugin.commons.util.ResourceUtil;
 import org.apache.commons.httpclient.HttpStatus;
 import java.io.OutputStream;
 import java.util.Collection;

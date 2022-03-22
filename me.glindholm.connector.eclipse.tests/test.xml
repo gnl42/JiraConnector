@@ -6,9 +6,9 @@
   <property name="eclipse-home" value="${basedir}/../.."/>
 
   <!-- sets the properties eclipse-home, and library-file -->
-  <property name="plugin-name" value="com.atlassian.connector.eclipse.tests"/>
+  <property name="plugin-name" value="me.glindholm.connector.eclipse.tests"/>
   <property name="library-file" value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
-	
+
   <!-- use ui-test or core-test -->
   <property name="test-target" value="ui-test"/>
 
@@ -26,14 +26,14 @@
   <target name="suite">
     <property name="workspace" value="${eclipse-home}/workspace"/>
     <delete dir="${workspace}" quiet="true"/>
-  	
+
     <ant target="${test-target}" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorTests"/>
+      <property name="classname" value="me.glindholm.connector.eclipse.AllConnectorTests"/>
     </ant>
   </target>
-  
+
   <!-- This target holds code to cleanup the testing environment after -->
   <!-- after all of the tests have been run. You can use this target to -->
   <!-- delete temporary files that have been created. -->
@@ -57,15 +57,15 @@
     <ant target="${test-target}" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorPerformanceTests"/>
+      <property name="classname" value="me.glindholm.connector.eclipse.AllConnectorPerformanceTests"/>
     </ant>
   </target>
-		
+
   <!-- This target runs the performance test suites. -->
   <target name="performance" depends="init,performance-suite,cleanup">
     <ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
       <property name="includes" value="org*.xml"/>
       <property name="output-file" value="${plugin-name}.xml"/>
     </ant>
-  </target>		
+  </target>
 </project>

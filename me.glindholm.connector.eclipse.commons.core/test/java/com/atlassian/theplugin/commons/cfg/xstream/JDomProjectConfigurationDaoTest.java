@@ -15,20 +15,20 @@
  */
 package me.glindholm.theplugin.commons.cfg.xstream;
 
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
-import com.atlassian.theplugin.commons.cfg.PrivateConfigurationDao;
-import com.atlassian.theplugin.commons.cfg.PrivateServerCfgInfo;
-import com.atlassian.theplugin.commons.cfg.ProjectConfiguration;
-import com.atlassian.theplugin.commons.cfg.ProjectConfigurationDao;
-import com.atlassian.theplugin.commons.cfg.ProjectConfigurationDaoTest;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
-import com.atlassian.theplugin.commons.cfg.ServerCfgFactoryException;
-import com.atlassian.theplugin.commons.cfg.ServerId;
-import com.atlassian.theplugin.commons.cfg.ServerIdImpl;
-import com.atlassian.theplugin.commons.cfg.SharedServerList;
-import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
-import com.atlassian.theplugin.commons.util.MiscUtil;
-import com.atlassian.theplugin.commons.util.StringUtil;
+import me.glindholmtheplugin.commons.cfg.BambooServerCfg;
+import me.glindholmtheplugin.commons.cfg.PrivateConfigurationDao;
+import me.glindholmtheplugin.commons.cfg.PrivateServerCfgInfo;
+import me.glindholmtheplugin.commons.cfg.ProjectConfiguration;
+import me.glindholmtheplugin.commons.cfg.ProjectConfigurationDao;
+import me.glindholmtheplugin.commons.cfg.ProjectConfigurationDaoTest;
+import me.glindholmtheplugin.commons.cfg.ServerCfg;
+import me.glindholmtheplugin.commons.cfg.ServerCfgFactoryException;
+import me.glindholmtheplugin.commons.cfg.ServerId;
+import me.glindholmtheplugin.commons.cfg.ServerIdImpl;
+import me.glindholmtheplugin.commons.cfg.SharedServerList;
+import me.glindholmtheplugin.commons.cfg.SubscribedPlan;
+import me.glindholmtheplugin.commons.util.MiscUtil;
+import me.glindholmtheplugin.commons.util.StringUtil;
 import com.spartez.util.junit3.IAction;
 import com.spartez.util.junit3.TestUtil;
 import org.jdom2.Document;
@@ -47,7 +47,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.atlassian.theplugin.commons.cfg.xstream.JDomProjectConfigurationDao.createPrivateProjectConfiguration;
+import static me.glindholm.theplugin.commons.cfg.xstream.JDomProjectConfigurationDao.createPrivateProjectConfiguration;
 
 /**
  * JDomProjectConfigurationFactory Tester.

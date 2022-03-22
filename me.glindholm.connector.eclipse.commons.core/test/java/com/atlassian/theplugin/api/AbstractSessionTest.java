@@ -1,12 +1,12 @@
 package me.glindholm.theplugin.api;
 
 import me.glindholm.connector.commons.misc.ErrorResponse;
-import com.atlassian.theplugin.commons.configuration.ConfigurationFactory;
-import com.atlassian.theplugin.commons.configuration.PluginConfigurationBean;
-import com.atlassian.theplugin.commons.remoteapi.ProductSession;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiMalformedUrlException;
+import me.glindholmtheplugin.commons.configuration.ConfigurationFactory;
+import me.glindholmtheplugin.commons.configuration.PluginConfigurationBean;
+import me.glindholmtheplugin.commons.remoteapi.ProductSession;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiLoginException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiMalformedUrlException;
 import org.ddsteps.mock.httpserver.JettyMockServer;
 import org.mortbay.jetty.Server;
 import java.net.MalformedURLException;

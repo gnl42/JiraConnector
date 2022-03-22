@@ -26,8 +26,8 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.SessionInfo;
+import me.glindholmjira.rest.client.RestClientException;
+import me.glindholmjira.rest.client.domain.SessionInfo;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.Attachment;

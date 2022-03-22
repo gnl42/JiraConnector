@@ -92,7 +92,7 @@ public class JiraConnectorUiTest extends TestCase {
 		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "456");
 		task.setTaskKey("ABC-123");
 		assertEquals(
-				"http://mylyn.eclipse.org/browse/ABC-123?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel",
+				"http://mylyn.eclipse.org/browse/ABC-123?page=me.glindholm.jira.plugin.system.issuetabpanels:changehistory-tabpanel",
 				connectorUi.getTaskHistoryUrl(repository, task));
 	}
 

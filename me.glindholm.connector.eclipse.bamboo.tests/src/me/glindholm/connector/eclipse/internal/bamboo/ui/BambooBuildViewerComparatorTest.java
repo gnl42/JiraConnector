@@ -13,9 +13,9 @@ package me.glindholm.connector.eclipse.internal.bamboo.ui;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BambooBuildInfo;
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
+import me.glindholmtheplugin.commons.bamboo.BambooBuild;
+import me.glindholmtheplugin.commons.bamboo.BambooBuildInfo;
+import me.glindholmtheplugin.commons.bamboo.BuildStatus;
 
 import java.util.Date;
 

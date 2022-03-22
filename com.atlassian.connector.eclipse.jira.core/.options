@@ -1,9 +1,0 @@
-
-# JiraRepositoryConnector
-com.atlassian.connector.eclipse.jira.core/debug/connector=false
-
-# JiraTaskDataHandler
-com.atlassian.connector.eclipse.jira.core/debug/dataHandler=false
-
-# JiraUtil
-com.atlassian.connector.eclipse.jira.core/debug/repository=false

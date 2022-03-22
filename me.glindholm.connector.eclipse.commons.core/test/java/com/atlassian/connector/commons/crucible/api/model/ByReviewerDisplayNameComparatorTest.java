@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.commons.crucible.api.model;
 
-import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import me.glindholmtheplugin.commons.crucible.api.model.Reviewer;
 import junit.framework.TestCase;
 
 public class ByReviewerDisplayNameComparatorTest extends TestCase {

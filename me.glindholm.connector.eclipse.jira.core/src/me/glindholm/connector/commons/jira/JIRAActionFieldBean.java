@@ -16,7 +16,7 @@
 
 package me.glindholm.connector.commons.jira;
 
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
+import me.glindholmjira.rest.client.domain.input.FieldInput;
 
 import me.glindholm.connector.commons.FieldValueGeneratorFactory;
 import me.glindholm.connector.commons.jira.beans.AbstractJIRAConstantBean;

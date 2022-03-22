@@ -19,35 +19,35 @@ package me.glindholm.theplugin.commons.bamboo;
 import me.glindholm.connector.commons.api.BambooServerFacade2;
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.commons.remoteapi.TestHttpSessionCallbackImpl;
-import com.atlassian.theplugin.bamboo.api.bamboomock.AddCommentToBuildCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.AddLabelToBuildCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.BamboBuildNumberCalback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.BuildDetailsResultCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.ExecuteBuildCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.FavouritePlanListCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.LatestBuildResultCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.LatestBuildResultCallbackNew;
-import com.atlassian.theplugin.bamboo.api.bamboomock.LoginCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.LogoutCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.PlanListCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.ProjectListCallback;
-import com.atlassian.theplugin.bamboo.api.bamboomock.Util;
-import com.atlassian.theplugin.commons.bamboo.api.BambooServerVersionNumberConstants;
-import com.atlassian.theplugin.commons.bamboo.api.BambooSession;
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
-import com.atlassian.theplugin.commons.cfg.Server;
-import com.atlassian.theplugin.commons.cfg.ServerIdImpl;
-import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
-import com.atlassian.theplugin.commons.configuration.ConfigurationFactory;
-import com.atlassian.theplugin.commons.configuration.PluginConfigurationBean;
-import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
-import com.atlassian.theplugin.commons.remoteapi.ProductSession;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiMalformedUrlException;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
-import com.atlassian.theplugin.commons.util.LoggerImpl;
-import com.atlassian.theplugin.commons.util.MiscUtil;
+import me.glindholmtheplugin.bamboo.api.bamboomock.AddCommentToBuildCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.AddLabelToBuildCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.BamboBuildNumberCalback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.BuildDetailsResultCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.ExecuteBuildCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.FavouritePlanListCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LatestBuildResultCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LatestBuildResultCallbackNew;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LoginCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.LogoutCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.PlanListCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.ProjectListCallback;
+import me.glindholmtheplugin.bamboo.api.bamboomock.Util;
+import me.glindholmtheplugin.commons.bamboo.api.BambooServerVersionNumberConstants;
+import me.glindholmtheplugin.commons.bamboo.api.BambooSession;
+import me.glindholmtheplugin.commons.cfg.BambooServerCfg;
+import me.glindholmtheplugin.commons.cfg.Server;
+import me.glindholmtheplugin.commons.cfg.ServerIdImpl;
+import me.glindholmtheplugin.commons.cfg.SubscribedPlan;
+import me.glindholmtheplugin.commons.configuration.ConfigurationFactory;
+import me.glindholmtheplugin.commons.configuration.PluginConfigurationBean;
+import me.glindholmtheplugin.commons.exception.ServerPasswordNotProvidedException;
+import me.glindholmtheplugin.commons.remoteapi.ProductSession;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiLoginException;
+import me.glindholmtheplugin.commons.remoteapi.RemoteApiMalformedUrlException;
+import me.glindholmtheplugin.commons.remoteapi.rest.HttpSessionCallback;
+import me.glindholmtheplugin.commons.util.LoggerImpl;
+import me.glindholmtheplugin.commons.util.MiscUtil;
 import com.spartez.util.junit3.IAction;
 import com.spartez.util.junit3.TestUtil;
 import junit.framework.TestCase;
@@ -63,7 +63,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 /**
- * {@link com.atlassian.theplugin.commons.bamboo.BambooServerFacadeImpl} test.
+ * {@link me.glindholm.theplugin.commons.bamboo.BambooServerFacadeImpl} test.
  */
 public class BambooServerFacadeTest extends TestCase {
 

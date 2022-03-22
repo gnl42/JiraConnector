@@ -12,9 +12,9 @@
 package me.glindholm.connector.eclipse.internal.bamboo.tests.util;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.bamboo.PlanState;
+import me.glindholmtheplugin.commons.bamboo.BambooBuild;
+import me.glindholmtheplugin.commons.bamboo.BuildStatus;
+import me.glindholmtheplugin.commons.bamboo.PlanState;
 
 import java.util.Date;
 import java.util.Set;

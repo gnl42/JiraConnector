@@ -38,26 +38,26 @@ import org.eclipse.mylyn.internal.commons.net.AuthenticatedProxy;
 import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
-import com.atlassian.jira.rest.client.GetCreateIssueMetadataOptionsBuilder;
-import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
-import com.atlassian.jira.rest.client.domain.BasicPriority;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.CimFieldInfo;
-import com.atlassian.jira.rest.client.domain.CimIssueType;
-import com.atlassian.jira.rest.client.domain.CimProject;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.SessionInfo;
-import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rest.client.domain.input.TransitionInput;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientBuilder;
+import me.glindholmjira.rest.client.GetCreateIssueMetadataOptionsBuilder;
+import me.glindholmjira.rest.client.IssueRestClient;
+import me.glindholmjira.rest.client.JiraRestClient;
+import me.glindholmjira.rest.client.NullProgressMonitor;
+import me.glindholmjira.rest.client.RestClientException;
+import me.glindholmjira.rest.client.auth.BasicHttpAuthenticationHandler;
+import me.glindholmjira.rest.client.domain.BasicPriority;
+import me.glindholmjira.rest.client.domain.BasicProject;
+import me.glindholmjira.rest.client.domain.BasicUser;
+import me.glindholmjira.rest.client.domain.CimFieldInfo;
+import me.glindholmjira.rest.client.domain.CimIssueType;
+import me.glindholmjira.rest.client.domain.CimProject;
+import me.glindholmjira.rest.client.domain.Comment;
+import me.glindholmjira.rest.client.domain.Issue;
+import me.glindholmjira.rest.client.domain.SessionInfo;
+import me.glindholmjira.rest.client.domain.input.ComplexIssueInputFieldValue;
+import me.glindholmjira.rest.client.domain.input.FieldInput;
+import me.glindholmjira.rest.client.domain.input.IssueInputBuilder;
+import me.glindholmjira.rest.client.domain.input.TransitionInput;
+import me.glindholmjira.rest.client.internal.jersey.JerseyJiraRestClientBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -347,7 +347,7 @@ public class JiraRestClientAdapter {
 
     public void getProjectDetails(Project project) {
 
-        com.atlassian.jira.rest.client.domain.Project projectWithDetails = restClient.getProjectClient().getProject(
+        me.glindholm.jira.rest.client.domain.Project projectWithDetails = restClient.getProjectClient().getProject(
                 project.getKey(), new NullProgressMonitor());
 
         project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
@@ -823,8 +823,8 @@ public class JiraRestClientAdapter {
                     List<SecurityLevel> securityLevels = new ArrayList<SecurityLevel>();
 
                     for (Object allowedValue : allowedValues) {
-                        if (allowedValue instanceof com.atlassian.jira.rest.client.domain.SecurityLevel) {
-                            com.atlassian.jira.rest.client.domain.SecurityLevel securityLevel = (com.atlassian.jira.rest.client.domain.SecurityLevel) allowedValue;
+                        if (allowedValue instanceof me.glindholm.jira.rest.client.domain.SecurityLevel) {
+                            me.glindholm.jira.rest.client.domain.SecurityLevel securityLevel = (me.glindholm.jira.rest.client.domain.SecurityLevel) allowedValue;
 
                             securityLevels.add(new SecurityLevel(securityLevel.getId().toString(),
                                     securityLevel.getName()));

@@ -1,8 +1,8 @@
 package me.glindholm.connector.commons.remoteapi;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
-import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallbackImpl;
+import me.glindholmtheplugin.commons.exception.HttpProxySettingsException;
+import me.glindholmtheplugin.commons.remoteapi.rest.HttpSessionCallbackImpl;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpMethodParams;
