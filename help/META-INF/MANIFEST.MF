@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Eclipse Connector Documentation
 Bundle-SymbolicName: me.glindholm.connector.eclipse.help;singleton:=true
-Bundle-Version: 4.0.0.Final
+Bundle-Version: 4.0.1.qualifier
 Bundle-Vendor: George Lindholm
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

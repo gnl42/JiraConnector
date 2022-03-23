@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Thomas Ehrnhoefers
- * 
+ *
  */
 public class BambooUtilTest extends TestCase {
 
@@ -40,7 +40,7 @@ public class BambooUtilTest extends TestCase {
 	 * .
 	 */
 	public void testSetAndGetSubcribedPlans() {
-		TaskRepository repo = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://bamboo.atlassian.com");
+		TaskRepository repo = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://bamboo.glindholm.me");
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>();
 		plans.add(new SubscribedPlan("id1"));
 		plans.add(new SubscribedPlan("id2"));
@@ -59,7 +59,7 @@ public class BambooUtilTest extends TestCase {
 	 * .
 	 */
 	public void testIsUseFavourites() {
-		TaskRepository repo = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://bamboo.atlassian.com");
+		TaskRepository repo = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://bamboo.glindholm.me");
 
 		assertFalse(BambooUtil.isUseFavourites(repo));
 

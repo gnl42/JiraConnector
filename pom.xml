@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.glindholm.connector.eclipse</groupId>
 	<artifactId>JiraConnector</artifactId>
-	<version>4.0.0.Final</version>
+	<version>4.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<developers>
@@ -65,7 +65,7 @@
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>https://download.eclipse.org/releases/kepler</url>
+			<url>https://download.eclipse.org/releases/photon</url>
 			<layout>p2</layout>
 		</repository>
 

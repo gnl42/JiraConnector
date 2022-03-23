@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 public class BambooClientManagerTest extends TestCase {
 
 	public void testRepositoryRemoved() throws HttpProxySettingsException {
-		TaskRepository repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.atlassian.com");
+		TaskRepository repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.glindholm.me");
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
@@ -52,7 +52,7 @@ public class BambooClientManagerTest extends TestCase {
 	}
 
 	public void testGetClient() {
-		TaskRepository repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.atlassian.com");
+		TaskRepository repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.glindholm.me");
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();

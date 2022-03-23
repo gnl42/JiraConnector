@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="me.glindholm.connector.eclipse_4.0.0.Final.jar" id="me.glindholm.connector.eclipse" version="4.0.0.Final">
+   <feature url="me.glindholm.connector.eclipse_4.0.1.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.0.1.qualifier">
       <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="Atlassian Connector">
