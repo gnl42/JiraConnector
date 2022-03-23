@@ -5,7 +5,7 @@ Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.ui;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Bundle-Vendor: George Lindholm
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: me.glindholm.connector.eclipse.internal.commons.ui.dialogs;x-friends:="me.glindholm.connector.eclipse.bamboo.ui,
  me.glindholm.connector.eclipse.jira.ui, me.glindholm.connector.eclipse.ui",
  me.glindholm.connector.eclipse.internal.commons.ui;x-friends:="me.glindholm.connector.eclipse.bamboo.ui,

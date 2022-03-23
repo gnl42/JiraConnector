@@ -28,7 +28,7 @@ Require-Bundle: org.eclipse.ui,
  me.glindholm.connector.eclipse.commons.ui,
  me.glindholm.connector.eclipse.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: me.glindholm.connector.eclipse.ui;x-friends:="me.glindholm.connector.eclipse.bamboo.ui",
  me.glindholm.connector.eclipse.ui.actions,
  me.glindholm.connector.eclipse.ui.commons;x-friends:="me.glindholm.connector.eclipse.bamboo.ui",

@@ -26,8 +26,8 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>javax.servlet-api,commons-logging,commons-discovery,
-                                javax.ws.rs-api,commons-io,jersey-client,joda-time,annotations,jettison,guava,
+                            <includeArtifactIds>javax.servlet-api,
+                                javax.ws.rs-api,jersey-client,joda-time,annotations,jettison,guava,
                                 jdom,jaxen,
                                 jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
                                 jetty-server,xstream,axis,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>

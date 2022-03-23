@@ -9,7 +9,7 @@ Bundle-Vendor: %Bundle-Vendor
 Export-Package: me.glindholm.connector.eclipse.internal.branding.ui;x-internal:=true,
  me.glindholm.connector.eclipse.internal.branding.ui.preferences;x-internal:=true,
  me.glindholm.connector.eclipse.internal.ui;x-internal:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.core,
