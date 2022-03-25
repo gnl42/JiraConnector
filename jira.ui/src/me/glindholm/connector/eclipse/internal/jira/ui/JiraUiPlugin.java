@@ -40,7 +40,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "me.glindholm.connector.eclipse.jira.ui"; //$NON-NLS-1$
 
-	public static final String PRODUCT_NAME = "Atlassian JIRA Connector"; //$NON-NLS-1$
+	public static final String PRODUCT_NAME = "JiraConnector JIRA Connector"; //$NON-NLS-1$
 
 	private static JiraUiPlugin instance;
 
@@ -50,7 +50,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in relative path.
-	 * 
+	 *
 	 * @param path
 	 *            the path
 	 * @return the image descriptor

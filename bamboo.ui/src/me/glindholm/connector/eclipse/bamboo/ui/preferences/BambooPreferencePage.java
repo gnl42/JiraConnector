@@ -28,7 +28,7 @@ public class BambooPreferencePage extends FieldEditorPreferencePage implements I
 
 	public BambooPreferencePage() {
 		super(GRID);
-		setDescription("Atlassian Bamboo Settings");
+		setDescription("JiraConnector Bamboo Settings");
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class BambooPreferencePage extends FieldEditorPreferencePage implements I
 		addField(new BooleanFieldEditor(BambooConstants.PREFERENCE_AUTO_REFRESH, "Refresh &Automatically",
 				getFieldEditorParent()));
 
-// temporarily commented out until Jacek is ready with this story		
+// temporarily commented out until Jacek is ready with this story
 //		final LocalBooleanFieldEditor playSoundCheckboxEditor = new LocalBooleanFieldEditor(
 //				BambooConstants.PREFERENCE_PLAY_SOUND, "Play sound when build failed", getFieldEditorParent());
 //		addField(playSoundCheckboxEditor);
