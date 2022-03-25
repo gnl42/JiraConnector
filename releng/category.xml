@@ -3,9 +3,9 @@
    <feature url="me.glindholm.connector.eclipse_4.0.1.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.0.1.qualifier">
       <category name="Connector"/>
    </feature>
-   <category-def name="Connector" label="Atlassian Connector">
+   <category-def name="Connector" label="JiraConnector">
       <description>
-         Atlassian Connectors for Jira/Bamboo
+         JiraConnector for Atlassian Jira/Bamboo
       </description>
    </category-def>
 </site>

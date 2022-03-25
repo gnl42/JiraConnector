@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui;
 
-import me.glindholm.connector.eclipse.ui.commons.AtlassianUiUtil;
+import me.glindholm.connector.eclipse.ui.commons.JiraConnectorUiUtil;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import me.glindholm.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
@@ -143,7 +143,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 					&& !RuntimeUtil.suppressConfigurationWizards()) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						AtlassianUiUtil.ensureViewIsVisible(BambooView.ID);
+						JiraConnectorUiUtil.ensureViewIsVisible(BambooView.ID);
 					}
 				});
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Bamboo UI
+Bundle-Name: JiraConnector for Eclipse Bamboo UI
 Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.ui;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Require-Bundle: me.glindholm.connector.eclipse.commons.core,

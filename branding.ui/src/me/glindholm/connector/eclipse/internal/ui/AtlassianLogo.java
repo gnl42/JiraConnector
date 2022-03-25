@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 
-import me.glindholm.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
+import me.glindholm.connector.eclipse.internal.branding.ui.JiraConnectorBrandingPlugin;
 
 /**
  * Common class for getting and creating images
@@ -29,7 +29,7 @@ public final class AtlassianLogo {
 
 	private static ImageRegistry imageRegistry;
 
-	private static final URL BASE_URL = AtlassianBrandingPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL BASE_URL = JiraConnectorBrandingPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
 

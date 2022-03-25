@@ -7,22 +7,22 @@
                class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferenceInitializer">
          </initializer>
     </extension>
-      
+
 	<extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="me.glindholm.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+            category="me.glindholm.connector.eclipse.ui.preferences.JiraConnectorPreferencePage"
             class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
             id="me.glindholm.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
             name="Direct Click Through">
       </page>
     </extension>
-    
+
 	<extension
-		name="Atlassian Connector For Eclipse Direct Click Through Support"
+		name="JiraConnector For Eclipse Direct Click Through Support"
        	point="org.eclipse.ui.startup">
     	<startup
         	class="me.glindholm.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"/>
  	</extension>
- 	
+
 </plugin>

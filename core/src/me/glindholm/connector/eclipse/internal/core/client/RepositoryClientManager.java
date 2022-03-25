@@ -18,7 +18,7 @@ import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
-import me.glindholm.connector.eclipse.internal.core.AtlassianCorePlugin;
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,7 +123,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 				}
 			}
 		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
+			StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID,
 					"The repository configuration cache could not be read", e));
 		} finally {
 			if (in != null) {
@@ -151,7 +151,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 				out.writeObject(getClientDataByUrl().get(url));
 			}
 		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
+			StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID,
 					"The repository configuration cache could not be written", e));
 		} finally {
 			if (out != null) {

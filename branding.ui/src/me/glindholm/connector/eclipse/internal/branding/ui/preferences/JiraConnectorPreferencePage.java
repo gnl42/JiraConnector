@@ -13,18 +13,18 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import me.glindholm.connector.eclipse.internal.branding.ui.AtlassianBrandingPlugin;
+import me.glindholm.connector.eclipse.internal.branding.ui.JiraConnectorBrandingPlugin;
 
-public class AtlassianPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class JiraConnectorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     @Override
     protected Control createContents(Composite parent) {
         final Composite composite = new Composite(parent, SWT.NULL);
         return composite;
     }
 
-    public AtlassianPreferencePage() {
+    public JiraConnectorPreferencePage() {
         noDefaultAndApplyButton();
-        setPreferenceStore(AtlassianBrandingPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(JiraConnectorBrandingPlugin.getDefault().getPreferenceStore());
     }
 
     /* (non-Javadoc)

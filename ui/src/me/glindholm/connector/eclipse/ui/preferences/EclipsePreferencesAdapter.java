@@ -13,7 +13,7 @@
  *******************************************************************************/
 package me.glindholm.connector.eclipse.ui.preferences;
 
-import me.glindholm.connector.eclipse.ui.AtlassianUiPlugin;
+import me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.ListenerList;
@@ -131,7 +131,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
 					runnable.run();
 				} else {
 					// Post runnable into UI thread
-					Shell shell = AtlassianUiPlugin.getActiveWorkbenchShell();
+					Shell shell = JiraConnectorUiPlugin.getActiveWorkbenchShell();
 					Display display;
 					if (shell != null) {
 						display = shell.getDisplay();

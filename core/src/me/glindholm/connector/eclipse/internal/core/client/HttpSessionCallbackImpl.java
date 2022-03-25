@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.core.client;
 import me.glindholm.connector.eclipse.internal.ui.IBrandingConstants;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
-import me.glindholm.connector.eclipse.internal.core.AtlassianCorePlugin;
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
 import me.glindholm.theplugin.commons.exception.HttpProxySettingsException;
 import me.glindholm.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import me.glindholm.theplugin.commons.remoteapi.rest.HttpSessionCallback;
@@ -55,7 +55,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
     private final Map<String, ConnectionCfg> locations = new HashMap<String, ConnectionCfg>();
 
     public HttpSessionCallbackImpl() {
-        userAgent = IBrandingConstants.PRODUCT_NAME + "/" + AtlassianCorePlugin.getDefault().getVersion();
+        userAgent = IBrandingConstants.PRODUCT_NAME + "/" + JiraConnectorCorePlugin.getDefault().getVersion();
     }
 
     public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {
@@ -109,7 +109,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
                 && proxyCredentials.getUserName().contains("\\")) {
             // NTLM proxy detected - disable preemptive auth (httpClient limitation - preemptive auth does not work with NTLM)
             httpClient.getParams().setAuthenticationPreemptive(false);
-            StatusHandler.log(new Status(IStatus.INFO, AtlassianCorePlugin.PLUGIN_ID,
+            StatusHandler.log(new Status(IStatus.INFO, JiraConnectorCorePlugin.PLUGIN_ID,
                     "NTLM proxy detected. Preemptive authentication disabled."));
         } else {
             httpClient.getParams().setAuthenticationPreemptive(true);

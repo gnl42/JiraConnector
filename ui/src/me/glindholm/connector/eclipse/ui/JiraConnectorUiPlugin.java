@@ -19,18 +19,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianUiPlugin extends AbstractUIPlugin {
+public class JiraConnectorUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.ui";
 
 	// The shared instance
-	private static AtlassianUiPlugin plugin;
+	private static JiraConnectorUiPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public AtlassianUiPlugin() {
+	public JiraConnectorUiPlugin() {
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static AtlassianUiPlugin getDefault() {
+	public static JiraConnectorUiPlugin getDefault() {
 		return plugin;
 	}
 

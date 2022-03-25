@@ -24,11 +24,11 @@ import java.net.URL;
  * 
  * @author sminto
  */
-public final class AtlassianImages {
+public final class JiraConnectorImages {
 
 	private static ImageRegistry imageRegistry;
 
-	private static final URL BASE_URL = AtlassianUiPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL BASE_URL = JiraConnectorUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
@@ -49,7 +49,7 @@ public final class AtlassianImages {
 	public static final ImageDescriptor IMG_ECLIPSE_INFO = AbstractUIPlugin.imageDescriptorFromPlugin(
 			"org.eclipse.ui.views.log", "$nl$/icons/obj16/info_st_obj.gif");
 
-	private AtlassianImages() {
+	private JiraConnectorImages() {
 	}
 
 	private static ImageDescriptor create(String prefix, String name) {

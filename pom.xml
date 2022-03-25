@@ -99,7 +99,7 @@
 
 	<properties>
 		<tycho.version>2.7.0</tycho.version>
-		<tycho.useJDK>BREE</tycho.useJDK>  <!-- force toolchain usage, here so it be be overriden on the run command -->
+		<tycho.useJDK>11</tycho.useJDK>  <!-- force toolchain usage, here so it be be overriden on the run command -->
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

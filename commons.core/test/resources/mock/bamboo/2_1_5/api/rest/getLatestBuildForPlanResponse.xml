@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
-    <projectName>Atlassian Connector Commons</projectName>
+    <projectName>JiraConnector Commons</projectName>
     <buildName>Commons - Tests</buildName>
     <buildKey>ACC-TST</buildKey>
     <buildState>Successful</buildState>

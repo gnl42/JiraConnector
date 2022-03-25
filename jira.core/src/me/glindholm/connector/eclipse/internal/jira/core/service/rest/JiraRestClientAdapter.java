@@ -157,7 +157,7 @@ public class JiraRestClientAdapter {
 //				}
 //			});
 
-            restClient = new JerseyJiraRestClientBuilder().header("User-Agent", "Atlassian Connector for Eclipse") //$NON-NLS-1$ //$NON-NLS-2$
+            restClient = new JerseyJiraRestClientBuilder().header("User-Agent", "JiraConnector for Eclipse") //$NON-NLS-1$ //$NON-NLS-2$
                     .queryParam("requestSource", "eclipse-ide-connector") //$NON-NLS-1$//$NON-NLS-2$
                     .create(new URI(url), new BasicHttpAuthenticationHandler(userName, password) {
                         @Override

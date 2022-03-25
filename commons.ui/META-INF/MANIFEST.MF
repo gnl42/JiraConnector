@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse UI Commons
+Bundle-Name: JiraConnector for Eclipse UI Commons
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.ui;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Bundle-Vendor: George Lindholm

@@ -32,7 +32,7 @@ import me.glindholm.theplugin.commons.remoteapi.ProductSession;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiLoginException;
 
-import static me.glindholm.connector.eclipse.internal.core.AtlassianCorePlugin.PLUGIN_ID;
+import static me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin.PLUGIN_ID;
 
 import java.io.IOException;
 

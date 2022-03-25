@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse
+Bundle-Name: JiraConnector for Eclipse
 Bundle-SymbolicName: me.glindholm.connector.eclipse.ui;singleton:=true
 Bundle-Version: 4.0.1.qualifier
-Bundle-Activator: me.glindholm.connector.eclipse.ui.AtlassianUiPlugin
+Bundle-Activator: me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin
 Bundle-Vendor: George Lindholm
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

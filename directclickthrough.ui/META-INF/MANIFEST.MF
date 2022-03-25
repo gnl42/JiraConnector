@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Direct Click Through UI
+Bundle-Name: JiraConnector for Eclipse Direct Click Through UI
 Bundle-SymbolicName: me.glindholm.connector.eclipse.directclickthrough.ui;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin

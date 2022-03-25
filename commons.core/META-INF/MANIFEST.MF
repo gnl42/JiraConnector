@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Commons Core
+Bundle-Name: JiraConnector for Eclipse Commons Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.core;singleton:=true
 Bundle-Version: 4.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11

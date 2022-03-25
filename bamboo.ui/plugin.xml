@@ -24,19 +24,19 @@
             id="me.glindholm.connector.eclipse.bamboo.ui.plans"
             name="Bamboo">
       </view>
-      <view id="me.glindholm.connector.eclipse.bamboo.ui.views.testResultView" 
-			name="Bamboo Test Results" 
-			class="me.glindholm.connector.eclipse.internal.bamboo.ui.views.TestResultsView" 
-			icon="icons/obj16/failedTests.png" 
+      <view id="me.glindholm.connector.eclipse.bamboo.ui.views.testResultView"
+			name="Bamboo Test Results"
+			class="me.glindholm.connector.eclipse.internal.bamboo.ui.views.TestResultsView"
+			icon="icons/obj16/failedTests.png"
 			category="me.glindholm.connector.eclipse.ui.category"/>
       <category
             id="me.glindholm.connector.eclipse.ui.category"
-            name="Atlassian">
+            name="JiraConnector">
       </category>
    </extension>
-      <extension point="org.eclipse.ui.viewActions"> 
-		<viewContribution 
-			id="me.glindholm.connector.eclipse.bamboo.ui.actions.view" 
+      <extension point="org.eclipse.ui.viewActions">
+		<viewContribution
+			id="me.glindholm.connector.eclipse.bamboo.ui.actions.view"
 	   		targetID="me.glindholm.connector.eclipse.bamboo.ui.plans">
          <action
                class="me.glindholm.connector.eclipse.internal.bamboo.ui.actions.SetRefreshIntervalAction"
@@ -46,7 +46,7 @@
                style="push"
                tooltip="Change the interval between scheduled refreshes.">
          </action>
-	    </viewContribution> 
+	    </viewContribution>
 	</extension>
 	<!-- this stuff here will be used one day, when we support remote running of unit test on Bamboo -->
 	<!--
@@ -111,7 +111,7 @@
          <configurationType
                id="me.glindholm.connector.eclipse.bamboo.core.bambooRemoteTestRun">
          </configurationType>
-               
+
          </shortcut>
       </extension>
       <extension point="org.eclipse.ui.popupMenus">
@@ -126,7 +126,7 @@
       </extension>
       -->
       <!-- end of the stuff for remote runs on Bamboo  -->
-      
+
       <extension
             point="org.eclipse.ui.preferencePages">
          <page

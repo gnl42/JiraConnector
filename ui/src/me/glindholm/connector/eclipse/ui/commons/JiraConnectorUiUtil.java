@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.ui.commons;
 
-import me.glindholm.connector.eclipse.ui.AtlassianUiPlugin;
+import me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,13 +29,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
- * Provides utility methods for the Atlassian Connector for Eclipse
+ * Provides utility methods for the JiraConnector for Eclipse
  * 
  * @author Thomas Ehrnhoefer
  */
-public final class AtlassianUiUtil {
+public final class JiraConnectorUiUtil {
 
-	private AtlassianUiUtil() {
+	private JiraConnectorUiUtil() {
 	}
 
 	/**
@@ -63,7 +63,7 @@ public final class AtlassianUiUtil {
 			activePage.showView(viewId, null, IWorkbenchPage.VIEW_ACTIVATE);
 			return true;
 		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
+			StatusHandler.log(new Status(IStatus.ERROR, JiraConnectorUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
 					+ " view."));
 			return false;
 		}
@@ -82,7 +82,7 @@ public final class AtlassianUiUtil {
 			activePage.showView(viewId);
 			return true;
 		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
+			StatusHandler.log(new Status(IStatus.ERROR, JiraConnectorUiPlugin.PLUGIN_ID, "Could not initialize " + viewId
 					+ " view."));
 			return false;
 		}

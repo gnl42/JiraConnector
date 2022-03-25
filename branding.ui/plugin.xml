@@ -25,9 +25,9 @@
 
    <extension point="org.eclipse.ui.preferencePages">
       <page
-            class="me.glindholm.connector.eclipse.internal.branding.ui.preferences.AtlassianPreferencePage"
+            class="me.glindholm.connector.eclipse.internal.branding.ui.preferences.JiraConnectorPreferencePage"
             id="me.glindholm.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-            name="Atlassian Connector">
+            name="JiraConnector">
       </page>
    </extension>
 
