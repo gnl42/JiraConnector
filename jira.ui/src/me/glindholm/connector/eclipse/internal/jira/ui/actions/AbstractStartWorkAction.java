@@ -30,109 +30,109 @@ import me.glindholm.connector.eclipse.internal.jira.ui.JiraImages;
  */
 public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 
-	public AbstractStartWorkAction() {
-		super("Start/Stop Work Action"); //$NON-NLS-1$
+    public AbstractStartWorkAction() {
+        super("Start/Stop Work Action"); //$NON-NLS-1$
 
-		setImageDescriptor(JiraImages.START_PROGRESS);
-	}
+        setImageDescriptor(JiraImages.START_PROGRESS);
+    }
 
-	@Override
-	protected void doAction(List<IJiraTask> tasks) {
-	}
+    @Override
+    protected void doAction(final List<IJiraTask> tasks) {
+    }
 
-	protected static boolean isAssignedToMe(TaskData taskData, ITask task) {
+    protected static boolean isAssignedToMe(final TaskData taskData, final ITask task) {
 
-		if (taskData == null || task == null) {
-			return false;
-		}
+        if (taskData == null || task == null) {
+            return false;
+        }
 
-		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
-				task.getRepositoryUrl());
+        final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+                task.getRepositoryUrl());
 
-		if (repository == null) {
-			return false;
-		}
+        if (repository == null) {
+            return false;
+        }
 
-		TaskAttribute rootAttribute = taskData.getRoot();
+        final TaskAttribute rootAttribute = taskData.getRoot();
 
-		if (rootAttribute == null) {
-			return false;
-		}
+        if (rootAttribute == null) {
+            return false;
+        }
 
-//		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
+        //		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
 
-		return repository.getUserName() != null && repository.getUserName().equals(task.getOwner());
-	}
+        return repository.getUserName() != null && repository.getUserName().equals(task.getOwner());
+    }
 
-	protected static boolean isTaskInProgress(TaskData taskData, ITask task) {
-		return isAssignedToMe(taskData, task) && isInProgressState(taskData);// && haveStopProgressOperation(taskData);
-	}
+    protected static boolean isTaskInProgress(final TaskData taskData, final ITask task) {
+        return isAssignedToMe(taskData, task) && isInProgressState(taskData);// && haveStopProgressOperation(taskData);
+    }
 
-	protected static boolean isTaskInStop(TaskData taskData, ITask task) {
-//		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
-//			return true;
-//		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
-//			return true;
-//		}
+    protected static boolean isTaskInStop(final TaskData taskData, final ITask task) {
+        //		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
+        //			return true;
+        //		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
+        //			return true;
+        //		}
 
-		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
-			return true;
+        if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
+            return true;
 
-		} else if (isInOpenState(taskData)) {
-			return true;
-		}
+        } else if (isInOpenState(taskData)) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	protected static boolean haveStopProgressOperation(TaskData taskData) {
-		return haveOperation(taskData, JiraTaskDataHandler.STOP_PROGRESS_OPERATION);
-	}
+    protected static boolean haveStopProgressOperation(final TaskData taskData) {
+        return haveOperation(taskData, JiraTaskDataHandler.STOP_PROGRESS_OPERATION);
+    }
 
-	protected static boolean haveStartProgressOperation(TaskData taskData) {
-		return haveOperation(taskData, JiraTaskDataHandler.START_PROGRESS_OPERATION);
-	}
+    protected static boolean haveStartProgressOperation(final TaskData taskData) {
+        return haveOperation(taskData, JiraTaskDataHandler.START_PROGRESS_OPERATION);
+    }
 
-	private static boolean haveOperation(TaskData taskData, String operationId) {
+    private static boolean haveOperation(final TaskData taskData, final String operationId) {
 
-		if (taskData == null) {
-			return false;
-		}
+        if (taskData == null) {
+            return false;
+        }
 
-		TaskAttribute selectedOperationAttribute = taskData.getRoot().getMappedAttribute(TaskAttribute.OPERATION);
+        final TaskAttribute selectedOperationAttribute = taskData.getRoot().getMappedAttribute(TaskAttribute.OPERATION);
 
-		List<TaskOperation> operations = taskData.getAttributeMapper().getTaskOperations(selectedOperationAttribute);
+        final List<TaskOperation> operations = taskData.getAttributeMapper().getTaskOperations(selectedOperationAttribute);
 
-		for (TaskOperation operation : operations) {
-			if (operationId.equals(operation.getOperationId())) {
-				return true;
-			}
-		}
+        for (final TaskOperation operation : operations) {
+            if (operationId.equals(operation.getOperationId())) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private static boolean isInOpenState(TaskData taskData) {
+    private static boolean isInOpenState(final TaskData taskData) {
 
-		if (taskData == null) {
-			return false;
-		}
+        if (taskData == null) {
+            return false;
+        }
 
-		String statusId = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
+        final String statusId = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
 
-		return statusId != null
-				&& (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
-	}
+        return statusId != null
+                && (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
+    }
 
-	private static boolean isInProgressState(TaskData taskData) {
+    private static boolean isInProgressState(final TaskData taskData) {
 
-		if (taskData == null) {
-			return false;
-		}
+        if (taskData == null) {
+            return false;
+        }
 
-		String statusId = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
+        final String statusId = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
 
-		return statusId != null && statusId.equals(JiraTaskDataHandler.IN_PROGRESS_STATUS);
-	}
+        return statusId != null && statusId.equals(JiraTaskDataHandler.IN_PROGRESS_STATUS);
+    }
 
 }

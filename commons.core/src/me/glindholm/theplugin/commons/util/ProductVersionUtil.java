@@ -87,6 +87,8 @@ public class ProductVersionUtil implements Serializable {
 		} catch (IllegalStateException ex) {
 			throw new IncorrectVersionException("Version (" + aVersion + ") does not match pattern (\"" + PATTERN
 					+ "\")", ex);
+		} finally {
+			s.close();
 		}
 	}
 

@@ -29,7 +29,7 @@ import java.util.Set;
  * COPY OF: org.eclipse.jface.internal.text.html.HTML2TextReader
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class HTML2TextReader extends SubstitutionTextReader {
+public class HTML2TextReader extends SubstitutionTextReader implements AutoCloseable {
 
 	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
 	/**
 	 * Transforms the HTML text from the reader to formatted text.
-	 * 
+	 *
 	 * @param reader
 	 *            the reader
 	 * @param presentation

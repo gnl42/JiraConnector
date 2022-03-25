@@ -25,7 +25,6 @@ import me.glindholm.theplugin.commons.util.StringUtil;
 
 public class EncodedStringConverter implements Converter {
 
-	@SuppressWarnings("unchecked")
 	public boolean canConvert(Class clazz) {
 		return clazz.equals(String.class);
 	}

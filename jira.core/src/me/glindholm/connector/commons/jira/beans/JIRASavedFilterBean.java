@@ -16,11 +16,12 @@
 
 package me.glindholm.connector.commons.jira.beans;
 
-import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.ImmutableList;
 
 public class JIRASavedFilterBean implements JIRASavedFilter {
 	private final String name;
@@ -31,11 +32,11 @@ public class JIRASavedFilterBean implements JIRASavedFilter {
     private URI searchUrl;
     private URI viewUrl;
 
-    public JIRASavedFilterBean(Map projMap) {
-        name = (String) projMap.get("name");
-        author = (String) projMap.get("author");
-        project = (String) projMap.get("project");
-        id = Long.valueOf((String) projMap.get("id"));
+    public JIRASavedFilterBean(Map<String, String> projMap) {
+        name = projMap.get("name");
+        author = projMap.get("author");
+        project = projMap.get("project");
+        id = Long.valueOf(projMap.get("id"));
     }
 
 	public JIRASavedFilterBean(String n, long id) {
@@ -61,11 +62,13 @@ public class JIRASavedFilterBean implements JIRASavedFilter {
         this.viewUrl = other.viewUrl;
     }
 
-	public String getName() {
+	@Override
+    public String getName() {
         return name;
     }
 
-	public HashMap<String, String> getMap() {
+	@Override
+    public HashMap<String, String> getMap() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("name", getName());
 		map.put("id", Long.toString(id));
@@ -75,43 +78,53 @@ public class JIRASavedFilterBean implements JIRASavedFilter {
 		return map;
 	}
 
-	public JIRASavedFilterBean getClone() {
+	@Override
+    public JIRASavedFilterBean getClone() {
 		return new JIRASavedFilterBean(this);
 	}
 
-	public long getId() {
+	@Override
+    public long getId() {
         return id;
     }
 
-	public String getAuthor() {
+	@Override
+    public String getAuthor() {
 		return author;
 	}
 
-	public String getProject() {
+	@Override
+    public String getProject() {
 		return project;
 	}
 
-	public String getQueryStringFragment() {
+	@Override
+    public String getQueryStringFragment() {
         return Long.toString(id);
     }
 
+    @Override
     public List<JIRAQueryFragment> getQueryFragments() {
         return ImmutableList.of((JIRAQueryFragment) this);
     }
 
+    @Override
     public String getOldStyleQueryString() {
         return getQueryStringFragment();
     }
 
 
+    @Override
     public String getJql() {
         return jql;
     }
 
+    @Override
     public URI getSearchUrl() {
         return searchUrl;
     }
 
+    @Override
     public URI getViewUrl() {
         return viewUrl;
     }

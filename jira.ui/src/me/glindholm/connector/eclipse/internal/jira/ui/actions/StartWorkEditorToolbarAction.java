@@ -22,40 +22,40 @@ import me.glindholm.connector.eclipse.internal.jira.ui.editor.JiraTaskEditorPage
  */
 public class StartWorkEditorToolbarAction extends StartWorkAction {
 
-	private static final String ID = "me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
+    private static final String ID = "me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"; //$NON-NLS-1$
 
-	private final JiraTaskEditorPage editorPage;
+    private final JiraTaskEditorPage editorPage;
 
-	public StartWorkEditorToolbarAction(final JiraTaskEditorPage editorPage) {
-		super();
-		this.editorPage = editorPage;
-		setImageDescriptor(JiraImages.START_PROGRESS);
-		setId(ID);
+    public StartWorkEditorToolbarAction(final JiraTaskEditorPage editorPage) {
+        super();
+        this.editorPage = editorPage;
+        setImageDescriptor(JiraImages.START_PROGRESS);
+        setId(ID);
 
-		update();
-	}
+        update();
+    }
 
-	@Override
-	public void run() {
-		update();
-		run(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
-	}
+    @Override
+    public void run() {
+        update();
+        run(editorPage, editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
+    }
 
-	private void update() {
-		update(editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
-	}
+    private void update() {
+        update(editorPage.getModel().getTaskData(), editorPage.getModel().getTask());
+    }
 
-	public void update(TaskData taskData, ITask task) {
-		if (isTaskInProgress(taskData, task)) {
-			setChecked(true);
-			setToolTipText(Messages.StartWorkAction_stop);
-		} else if (isTaskInStop(taskData, task)) {
-			setChecked(false);
-			setToolTipText(Messages.StartWorkAction_start);
-		} else {
-			setChecked(false);
-			setEnabled(false);
-			setToolTipText(Messages.StartWorkAction_start);
-		}
-	}
+    public void update(final TaskData taskData, final ITask task) {
+        if (isTaskInProgress(taskData, task)) {
+            setChecked(true);
+            setToolTipText(Messages.StartWorkAction_stop);
+        } else if (isTaskInStop(taskData, task)) {
+            setChecked(false);
+            setToolTipText(Messages.StartWorkAction_start);
+        } else {
+            setChecked(false);
+            setEnabled(false);
+            setToolTipText(Messages.StartWorkAction_start);
+        }
+    }
 }
