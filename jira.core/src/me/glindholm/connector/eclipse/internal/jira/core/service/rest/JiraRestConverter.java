@@ -532,6 +532,7 @@ public class JiraRestConverter {
             case TEXTAREA:
             case URL:
             case EPIC_LABEL:
+            case EPIC_LINK:
                 values = ImmutableList.of(field.getValue().toString());
                 break;
             case DATE:
