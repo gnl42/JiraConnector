@@ -63,15 +63,10 @@ public class MigrateToSecureStorageJob extends UIJob {
 		return Status.OK_STATUS;
 	}
 
-	@SuppressWarnings( { "deprecation", "restriction" })
 	public static boolean migrateToSecureStorage(TaskRepository repository) {
-		if (repository.getProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE) == null
-				&& !"local".equals(repository.getUrl())) { //$NON-NLS-1$
-			try {
+		if (!"local".equals(repository.getUrl())) { //$NON-NLS-1$
 				AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY), httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
 				boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY), httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP), proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
-
-				repository.setProperty(ITasksCoreConstants.PROPERTY_USE_SECURE_STORAGE, "true"); //$NON-NLS-1$
 
 				if (creds != null) {
 					repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);
@@ -85,16 +80,7 @@ public class MigrateToSecureStorageJob extends UIJob {
 					repository.setCredentials(AuthenticationType.PROXY, proxyCreds, proxySavePassword);
 				}
 
-				try {
-					Platform.flushAuthorizationInfo(new URL(repository.getUrl()), "", "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
-				} catch (MalformedURLException ex) {
-					Platform.flushAuthorizationInfo(new URL("http://eclipse.org/mylyn"), repository.getUrl(), "Basic"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
 				return true;
-			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, ITasksCoreConstants.ID_PLUGIN, NLS.bind(
-						"Could not migrate credentials to secure storage for {0}", repository.getUrl()), e));
-			}
 		}
 		return false;
 	}

@@ -22,24 +22,24 @@ import me.glindholm.theplugin.commons.util.LoggerImpl;
  * 
  * @author sminto
  */
-public class AtlassianLogger extends LoggerImpl {
+public class JiraConnectorLogger extends LoggerImpl {
 
 	private final String pluginId;
 
-	public AtlassianLogger() {
-		this.pluginId = AtlassianCorePlugin.PLUGIN_ID;
+	public JiraConnectorLogger() {
+		this.pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
 	}
 
-	public AtlassianLogger(String pluginId) {
+	public JiraConnectorLogger(String pluginId) {
 		if (pluginId == null) {
-			this.pluginId = AtlassianCorePlugin.PLUGIN_ID;
+			this.pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
 		} else {
 			this.pluginId = pluginId;
 		}
 	}
 
 	public void log(int level, String msg, Throwable t) {
-		if (AtlassianCorePlugin.TRACE_COMMONS) {
+		if (JiraConnectorCorePlugin.TRACE_COMMONS) {
 			int statusCode = IStatus.ERROR;
 			if (level == LOG_INFO) {
 				statusCode = IStatus.INFO;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.core;singleton:=true
-Bundle-Version: 4.0.0.Final
+Bundle-Version: 4.0.1
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,
@@ -13,29 +13,21 @@ Require-Bundle: org.apache.commons.io,
  com.google.guava,
  me.glindholm.connector.eclipse.commons.core
 Bundle-ActivationPolicy: lazy
-Export-Package: me.glindholm.connector.commons.jira.beans,
+Export-Package: com.sun.jersey.api.client,
+ com.sun.jersey.api.client.config,
+ com.sun.jersey.api.client.filter,
+ com.sun.jersey.client.apache,
+ com.sun.jersey.client.apache.config,
+ com.sun.jersey.core.util,
+ me.glindholm.connector.commons.jira.beans,
  me.glindholm.connector.commons.jira.cache,
- me.glindholm.connector.commons.jira.rss,
- me.glindholm.connector.commons.jira.soap,
- me.glindholm.connector.commons.jira.soap.axis,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.html;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.model.filter;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.service.web;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.service.web.rss;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- me.glindholm.connector.eclipse.internal.jira.core.wsdl.beans;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.wsdl.soap;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.api.client.filter,
- com.sun.jersey.client.apache,
- com.sun.jersey.client.apache.config,
- com.sun.jersey.core.util,
- org.apache.axis,
  org.codehaus.jettison.json
 Bundle-ClassPath: .,
  target/lib/jira-rest-java-client.jar,
@@ -43,8 +35,7 @@ Bundle-ClassPath: .,
  target/lib/jersey-core.jar,
  target/lib/jersey-json.jar,
  target/lib/jersey-client.jar,
- target/lib/axis.jar,
  target/lib/jettison.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin

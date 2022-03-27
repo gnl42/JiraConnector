@@ -1,22 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <toolchains>
 	<toolchain>
 		<type>jdk</type>
 		<provides>
-			<version>1.8</version>
-			<id>JavaSE-1.8</id>
-		</provides>
-		<configuration>
-			<jdkHome>c:/java8/</jdkHome>
-		</configuration>
-	</toolchain>
-	<toolchain>
-		<type>jdk</type>
-		<provides>
-			<version>11</version>
 			<id>JavaSE-11</id>
 		</provides>
 		<configuration>
-			<jdkHome>c:/jdk-11</jdkHome>
+			<jdkHome>c:\jdk-11</jdkHome>
 		</configuration>
 	</toolchain>
+
 </toolchains>

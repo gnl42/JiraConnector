@@ -96,7 +96,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
  * me.glindholm.jira.toolkit:supporttools me.glindholm.jira.toolkit:userproperty
  * me.glindholm.jira.toolkit:velocitymessage me.glindholm.jira.toolkit:velocityviewmessage
  * me.glindholm.jira.toolkit:viewmessage me.glindholm.jira.ext.charting:firstresponsedate
- * 
+ *
  * @see http://www.atlassian.com/software/jira/docs/latest/customfields/overview.html
  * @see http://confluence.atlassian.com/display/JIRAEXT/JIRA+Toolkit
  * @author Brock Janiczak
@@ -339,7 +339,7 @@ public class JiraRssHandler extends DefaultHandler {
 	/**
 	 * Creates a new RSS reader that will create issues from the RSS information by querying the local Jira Server for
 	 * any missing information. Issues will be published to <code>collector</code> as they are read from the stream.
-	 * 
+	 *
 	 * @param client
 	 *            Jira server we are listing the issues of. This can either be a locally cached jira server or a
 	 *            connection to a live instance.
@@ -917,8 +917,8 @@ public class JiraRssHandler extends DefaultHandler {
 			return ""; //$NON-NLS-1$
 		}
 		StringReader stringReader = new StringReader(text);
-		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader);
-		try {
+
+		try (HTML2TextReader html2TextReader = new HTML2TextReader(stringReader)) {
 			char[] chars = new char[text.length()];
 			int len = html2TextReader.read(chars, 0, text.length());
 			if (len == -1) {

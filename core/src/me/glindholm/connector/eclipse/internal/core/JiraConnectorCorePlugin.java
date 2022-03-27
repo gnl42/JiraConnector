@@ -23,7 +23,7 @@ import me.glindholm.theplugin.commons.util.LoggerImpl;
  * 
  * @author Shawn Minto
  */
-public class AtlassianCorePlugin extends Plugin {
+public class JiraConnectorCorePlugin extends Plugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.core";
 
@@ -32,14 +32,14 @@ public class AtlassianCorePlugin extends Plugin {
 	public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
 
 	// The shared instance
-	private static AtlassianCorePlugin plugin;
+	private static JiraConnectorCorePlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public AtlassianCorePlugin() {
+	public JiraConnectorCorePlugin() {
 		// make sure that we 
-		LoggerImpl.setInstance(new AtlassianLogger());
+		LoggerImpl.setInstance(new JiraConnectorLogger());
 	}
 
 	public String getVersion() {
@@ -73,7 +73,7 @@ public class AtlassianCorePlugin extends Plugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static AtlassianCorePlugin getDefault() {
+	public static JiraConnectorCorePlugin getDefault() {
 		return plugin;
 	}
 

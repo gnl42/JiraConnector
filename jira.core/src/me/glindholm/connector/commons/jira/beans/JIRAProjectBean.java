@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Atlassian
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,13 +30,13 @@ public class JIRAProjectBean implements JIRAProject {
 	public JIRAProjectBean() {
 	}
 
-	public JIRAProjectBean(Map projMap) {
-		name = (String) projMap.get("name");
-		key = (String) projMap.get("key");
-		description = (String) projMap.get("description");
-		url = (String) projMap.get("url");
-		lead = (String) projMap.get("lead");
-		id = Long.valueOf((String) projMap.get("id"));
+	public JIRAProjectBean(Map<String, String> projMap) {
+		name = projMap.get("name");
+		key = projMap.get("key");
+		description = projMap.get("description");
+		url = projMap.get("url");
+		lead = projMap.get("lead");
+		id = Long.valueOf(projMap.get("id"));
 	}
 
 	public JIRAProjectBean(long id, String name) {
@@ -53,11 +53,13 @@ public class JIRAProjectBean implements JIRAProject {
 		this(other.getMap());
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return name;
 	}
 
-	public HashMap<String, String> getMap() {
+	@Override
+    public HashMap<String, String> getMap() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("name", getName());
 		map.put("id", Long.toString(id));
@@ -69,32 +71,39 @@ public class JIRAProjectBean implements JIRAProject {
 		return map;
 	}
 
-	public JIRAProjectBean getClone() {
+	@Override
+    public JIRAProjectBean getClone() {
 		return new JIRAProjectBean(this);
 	}
 
-	public String getKey() {
+	@Override
+    public String getKey() {
 		return key;
 	}
 
-	public String getUrl() {
+	@Override
+    public String getUrl() {
 		return url;
 	}
 
-	public long getId() {
+	@Override
+    public long getId() {
 		return id;
 	}
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return description;
 	}
 
-	public String getLead() {
+	@Override
+    public String getLead() {
 		return lead;
 	}
 
 	//@Transient
-	public String getQueryStringFragment() {
+	@Override
+    public String getQueryStringFragment() {
 		return "pid=" + id;
 	}
 

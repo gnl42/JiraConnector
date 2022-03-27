@@ -25,7 +25,7 @@ Export-Package: me.glindholm.connector.eclipse.jira.tests;x-friends:="me.glindho
  me.glindholm.connector.eclipse.jira.tests.model;x-internal:=true,
  me.glindholm.connector.eclipse.jira.tests.ui;x-internal:=true,
  me.glindholm.connector.eclipse.jira.tests.util;x-internal:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Mylyn
 Bundle-ClassPath: lib/hamcrest-all-1.3RC0.jar,.
 Import-Package: org.eclipse.mylyn.internal.tasks.ui.search

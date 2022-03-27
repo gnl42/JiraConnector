@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="me.glindholm.connector.eclipse_4.0.0.Final.jar" id="me.glindholm.connector.eclipse" version="4.0.0.Final">
+   <feature url="me.glindholm.connector.eclipse_4.0.1.jar" id="me.glindholm.connector.eclipse" version="4.0.1">
       <category name="Connector"/>
    </feature>
-   <category-def name="Connector" label="Atlassian Connector">
+   <category-def name="Connector" label="JiraConnector">
       <description>
-         Atlassian Connectors for Jira/Bamboo
+         JiraConnector for Atlassian Jira/Bamboo
       </description>
    </category-def>
 </site>

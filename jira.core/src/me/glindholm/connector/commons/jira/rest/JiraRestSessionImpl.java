@@ -119,8 +119,8 @@ public class JiraRestSessionImpl implements JIRASessionPartOne, JIRASessionPartT
 
         if (((ServerData) server).isUseSessionCookies()) {
             restClient = new JerseyJiraRestClientBuilder()
-                .header("User-Agent", "Atlassian IntelliJ IDEA Connector")
-                .queryParam("requestSource", "intellij-ide-connector")
+                .header("User-Agent", "JiraConnector Eclipse IDEA Connector")
+                .queryParam("requestSource", "eclipse-ide-connector")
                 .create(new URI(server.getUrl()), new AnonymousAuthenticationHandler() {
                     @Override
                     public void configure(ApacheHttpClientConfig config) {
@@ -136,8 +136,8 @@ public class JiraRestSessionImpl implements JIRASessionPartOne, JIRASessionPartT
                 });
         } else {
             restClient = new JerseyJiraRestClientBuilder()
-                .header("User-Agent", "Atlassian IntelliJ IDEA Connector")
-                .queryParam("requestSource", "intellij-ide-connector")
+                .header("User-Agent", "JiraConnector Eclipse IDEA Connector")
+                .queryParam("requestSource", "eclipse-ide-connector")
                 .create(new URI(server.getUrl()), new BasicHttpAuthenticationHandler(server.getUsername(), server.getPassword()) {
                     @Override
                     public void configure(ApacheHttpClientConfig config) {

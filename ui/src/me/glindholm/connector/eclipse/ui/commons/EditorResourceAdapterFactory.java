@@ -79,7 +79,7 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 			//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
 			//						- textSelection.getStartLine());
 			// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-			final LineRange lineRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart,
+			final LineRange lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart,
 					editorInput);
 			return new BasicEditorResource(resource, lineRange);
 		}

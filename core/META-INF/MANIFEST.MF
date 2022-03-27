@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Core
+Bundle-Name: JiraConnector for Eclipse Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.core;singleton:=true
-Bundle-Version: 4.0.0.Final
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 4.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Require-Bundle: 
@@ -24,7 +24,7 @@ Export-Package: me.glindholm.connector.eclipse.internal.core;
    me.glindholm.connector.eclipse.bamboo.ui,
    me.glindholm.connector.eclipse.directclickthrough.ui,
    me.glindholm.connector.eclipse.ui"
-Bundle-Activator: me.glindholm.connector.eclipse.internal.core.AtlassianCorePlugin
+Bundle-Activator: me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin
 Bundle-ClassPath: .
 Bundle-Vendor: George Lindholm
 Import-Package: org.eclipse.mylyn.commons.net,

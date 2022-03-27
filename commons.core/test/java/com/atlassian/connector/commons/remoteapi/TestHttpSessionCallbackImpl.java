@@ -14,7 +14,7 @@ public class TestHttpSessionCallbackImpl extends HttpSessionCallbackImpl {
 
 	public HttpClient getHttpClient(final ConnectionCfg server) throws HttpProxySettingsException {
 		final HttpClient client = TestHttpClientFactory.getClient();
-		client.getParams().setParameter(HttpMethodParams.USER_AGENT, "Atlassian Connector Commons test agent");
+		client.getParams().setParameter(HttpMethodParams.USER_AGENT, "JiraConnector Commons test agent");
 		return client;
 	}
 

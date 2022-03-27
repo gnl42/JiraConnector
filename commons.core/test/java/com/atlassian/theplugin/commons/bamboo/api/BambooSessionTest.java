@@ -336,7 +336,7 @@ public class BambooSessionTest extends AbstractSessionTest {
         Assert.assertEquals(mockBaseUrl, build.getServerUrl());
         Assert.assertEquals(mockBaseUrl + "/browse/ACC-TST-193", build.getResultUrl());
         Assert.assertEquals(mockBaseUrl + "/browse/ACC-TST", build.getBuildUrl());
-        assertEquals("Atlassian Connector Commons", build.getProjectName());
+        assertEquals("JiraConnector Commons", build.getProjectName());
         assertEquals(267, build.getTestsPassed());
         assertEquals(0, build.getTestsFailed());
         assertEquals("Code has changed", build.getReason());

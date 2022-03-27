@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Bamboo UI
+Bundle-Name: JiraConnector for Eclipse Bamboo UI
 Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.ui;singleton:=true
-Bundle-Version: 4.0.0.Final
+Bundle-Version: 4.0.1
 Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions,
@@ -29,10 +29,11 @@ Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.jdt.core;resolution:=optional,
  org.eclipse.jdt.debug.ui;resolution:=optional,
  org.eclipse.jdt.ui;resolution:=optional,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.jdt.core.manipulation
 Bundle-Activator: me.glindholm.connector.eclipse.internal.bamboo.ui.BambooUiPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: me.glindholm.connector.eclipse.bamboo.ui;x-internal:=true,
  me.glindholm.connector.eclipse.bamboo.ui.preferences;x-internal:=true,
  me.glindholm.connector.eclipse.internal.bamboo.ui;x-internal:=true,

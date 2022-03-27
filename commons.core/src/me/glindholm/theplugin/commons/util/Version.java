@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Atlassian
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -88,6 +88,8 @@ public class Version implements Serializable {
 		} catch (IllegalStateException ex) {
 			throw new IncorrectVersionException("Version (" + aVersion + ") does not match pattern (\"" + PATTERN
 					+ "\")", ex);
+		} finally {
+			s.close();
 		}
 	}
 
@@ -148,7 +150,7 @@ public class Version implements Serializable {
 
 
 		public enum AlphaNum {
-			SNAPSHOT, ALPHA, BETA, NONE			
+			SNAPSHOT, ALPHA, BETA, NONE
 		}
 
 		public VersionNumber(int major, int minor, int micro, String alphaNum, String alphaNumValue, int buildNo)
@@ -163,7 +165,7 @@ public class Version implements Serializable {
 			} else {
 				try {
 					this.alphaNum = AlphaNum.valueOf(alphaNum);
-					
+
 					if (alphaNumValue != null) {
 						this.alphaNumValue = Integer.valueOf(alphaNumValue);
 					}
@@ -177,7 +179,7 @@ public class Version implements Serializable {
 			if (other == null) {
 				return false;
 			}
-			
+
 			if (major > other.major) {
 				return true;
 			} else {

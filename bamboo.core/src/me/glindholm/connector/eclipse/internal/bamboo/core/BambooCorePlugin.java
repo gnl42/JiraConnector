@@ -12,7 +12,7 @@
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
-import me.glindholm.connector.eclipse.internal.core.AtlassianLogger;
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorLogger;
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 import me.glindholm.theplugin.commons.bamboo.BuildStatus;
 import me.glindholm.theplugin.commons.util.LoggerImpl;
@@ -53,7 +53,7 @@ public class BambooCorePlugin extends Plugin {
 
     public BambooCorePlugin() {
         // make sure that we have the logging going to the eclipse log
-        LoggerImpl.setInstance(new AtlassianLogger());
+        LoggerImpl.setInstance(new JiraConnectorLogger());
     }
 
     @Override

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Tests
+Bundle-Name: JiraConnector for Eclipse Tests
 Bundle-SymbolicName: me.glindholm.connector.eclipse.tests;singleton:=true
 Bundle-Version: 0.0.0
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: 
  me.glindholm.connector.commons,
  me.glindholm.connector.eclipse.core,

@@ -50,7 +50,7 @@ public class BuildPlanManagerTest extends TestCase {
 			this.wasAutoRefresh = true;
 			toggleAutoRefresh();
 		}
-		repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.atlassian.com");
+		repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.glindholm.me");
 		TasksUi.getRepositoryManager().addRepository(repository);
 
 		File tmp = File.createTempFile("BambooTest", ".tmp");

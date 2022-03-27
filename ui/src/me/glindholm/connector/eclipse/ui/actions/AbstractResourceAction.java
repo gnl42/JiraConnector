@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.ui.actions;
 
-import me.glindholm.connector.eclipse.ui.commons.AtlassianUiUtil;
+import me.glindholm.connector.eclipse.ui.commons.JiraConnectorUiUtil;
 import me.glindholm.connector.eclipse.ui.commons.IEditorResource;
 import me.glindholm.connector.eclipse.ui.commons.ResourceEditorBean;
 
@@ -96,7 +96,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 					//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
 					//						- textSelection.getStartLine());
 					// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-					lineRange = AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor,
+					lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor,
 							activeEditor.getEditorInput());
 					ret.add(new ResourceEditorBean(resource, lineRange));
 				}
@@ -146,7 +146,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 		IEditorPart editorPart = getActiveEditor();
 		IEditorInput editorInput = getEditorInputFromSelection(selection);
 		if (editorInput != null && editorPart != null) {
-			return AtlassianUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
+			return JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
 		}
 		return null;
 	}

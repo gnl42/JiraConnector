@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Bamboo Core
+Bundle-Name: JiraConnector for Eclipse Bamboo Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.core;singleton:=true
-Bundle-Version: 4.0.0.Final
+Bundle-Version: 4.0.1
 Bundle-Activator: me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.mylyn.commons.core;bundle-version="[3.2.0,4.0.0)",

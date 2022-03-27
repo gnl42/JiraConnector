@@ -18,13 +18,13 @@ import org.osgi.framework.BundleContext;
  * @author Mik Kersten
  * @author Shawn Minto
  */
-public class AtlassianBrandingPlugin extends AbstractUIPlugin {
+public class JiraConnectorBrandingPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "me.glindholm.connector.eclipse.branding.ui"; //$NON-NLS-1$
 
-	private static AtlassianBrandingPlugin plugin;
+	private static JiraConnectorBrandingPlugin plugin;
 
-	public AtlassianBrandingPlugin() {
+	public JiraConnectorBrandingPlugin() {
 		plugin = this;
 	}
 
@@ -42,7 +42,7 @@ public class AtlassianBrandingPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static AtlassianBrandingPlugin getDefault() {
+	public static JiraConnectorBrandingPlugin getDefault() {
 		return plugin;
 	}
 
