@@ -31,7 +31,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jettison,jersey-client,jersey-apache-client,jersey-core,jersey-json,jira-rest-java-client,jdom,axis</includeArtifactIds>
+                            <includeArtifactIds>jettison,jersey-client,jersey-apache-client,jersey-core,jersey-json,jira-rest-java-client,jdom</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -48,11 +48,6 @@
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
             <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.jira</groupId>

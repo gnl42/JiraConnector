@@ -16,6 +16,21 @@
 
 package me.glindholm.connector.commons.jira;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.jdom2.Element;
+
 import com.atlassian.jira.rest.client.IssueRestClient;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
@@ -45,22 +60,6 @@ import me.glindholm.connector.commons.jira.beans.JIRAConstant;
 import me.glindholm.connector.commons.jira.beans.JIRAPriorityBean;
 import me.glindholm.connector.commons.jira.beans.JIRASecurityLevelBean;
 import me.glindholm.connector.commons.jira.beans.JIRAVersionBean;
-import me.glindholm.connector.commons.jira.soap.axis.RemoteIssue;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.jdom2.Element;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class JIRAIssueBean implements JIRAIssue {
 	private Long id;
@@ -159,7 +158,7 @@ public class JIRAIssueBean implements JIRAIssue {
         this.timeSpentInSeconds = issue.getTimeSpentInSeconds();
         this.securityLevel = issue.getSecurityLevel();
         this.environment = issue.getEnvironment();
-        this.basicCustomFields = issue.getCustomFields();                
+        this.basicCustomFields = issue.getCustomFields();
     }
 
 	public JIRAIssueBean(String serverUrl, Element e, Locale locale) {
@@ -184,7 +183,7 @@ public class JIRAIssueBean implements JIRAIssue {
 		}
 		this.description = getTextSafely(e, "description");
         this.environment = getTextSafely(e, "environment");
-        
+
 		this.type = getTextSafely(e, "type");
 		this.typeUrl = getAttributeSafely(e, "type", "iconUrl");
 		try {
@@ -279,48 +278,10 @@ public class JIRAIssueBean implements JIRAIssue {
         if (customfields != null && customfields.getChildren().size() > 0) {
               for (Object fieldElement : customfields.getChildren()) {
                   basicCustomFields.add(new JiraCustomFieldImpl.Builder((Element) fieldElement).build());
-              }            
+              }
         }
 	}
 
-    public JIRAIssueBean(String url, RemoteIssue remoteIssue) {
-        this.serverUrl = url;
-        id = Long.valueOf(remoteIssue.getId());
-		key = remoteIssue.getKey();
-		summary = remoteIssue.getSummary();
-		status = remoteIssue.getStatus();
-        environment = remoteIssue.getEnvironment();
-		//statusUrl
-		type = remoteIssue.getType();
-		//typeUrl = remoteIssue.getTypeIconUrl();
-		priority = remoteIssue.getPriority();
-		//priorityUrl = remoteIssue.getPriorityIconUrl();
-		wikiDescription = remoteIssue.getDescription();
-		projectKey = remoteIssue.getProject();
-		//statusConstant
-		//typeConstant
-		//priorityConstant = remoteIssue.getPriorityConstant();
-		assignee = remoteIssue.getAssignee();
-		//assigneeId = remoteIssue.getAssigneeId();
-		reporter = remoteIssue.getReporter();
-		//reporterId = issue.getReporterId();
-		resolution = remoteIssue.getResolution();
-		//created = remoteIssue.getCreated();
-		//updated = remoteIssue.getUpdated();
-		//statusId = remoteIssue.getStatusId();
-		//priorityId = issue.getPriorityId();
-		//typeId = issue.getTypeId();
-		//thisIsASubTask = remoteIssue.isSubTask();
-		//subTaskList = remoteIssue.getSubTaskKeys();
-		//parentIssueKey = remoteIssue.getParentIssueKey();
-		//originalEstimate = remoteIssue.getOriginalEstimate();
-		//originalEstimateInSeconds = remoteIssue.getOriginalEstimateInSeconds();
-		//remainingEstimate = remoteIssue.getRemainingEstimate();
-		//remainingEstimateInSeconds = remoteIssue.getRemainingEstimateInSeconds();
-		//timeSpent = remoteIssue.getTimeSpent();
-		//timeSpentInSeconds = issue.getTimeSpentInSeconds();
-
-    }
 
     public JIRAIssueBean(String url, Issue issue) {
         locale = Locale.US;
@@ -516,6 +477,7 @@ public class JIRAIssueBean implements JIRAIssue {
         return JsonParseUtil.getOptionalJsonObject(issue, IssueRestClient.Expandos.RENDERED_FIELDS.getFieldName());
     }
 
+    @Override
     public JIRAPriorityBean getPriorityConstant() {
 		return priorityConstant;
 	}
@@ -572,60 +534,74 @@ public class JIRAIssueBean implements JIRAIssue {
 		return child.getAttributeValue(attributeName);
 	}
 
-	public String getServerUrl() {
+	@Override
+    public String getServerUrl() {
 		return serverUrl;
 	}
 
-	public String getProjectUrl() {
+	@Override
+    public String getProjectUrl() {
 		return getServerUrl() + "/browse/" + getProjectKey();
 	}
 
-	public String getIssueUrl() {
+	@Override
+    public String getIssueUrl() {
 		return getServerUrl() + "/browse/" + getKey();
 	}
 
 
-	public Long getId() {
+	@Override
+    public Long getId() {
 		return id;
 	}
 
-	public boolean isSubTask() {
+	@Override
+    public boolean isSubTask() {
 		return thisIsASubTask;
 	}
 
+    @Override
     public Map<String, Map<String, List<String>>> getIssueLinks() {
         return issueLinks;
     }
 
-	public String getParentIssueKey() {
+	@Override
+    public String getParentIssueKey() {
 		return parentIssueKey;
 	}
 
-	public List<String> getSubTaskKeys() {
+	@Override
+    public List<String> getSubTaskKeys() {
 		return subTaskList;
 	}
 
-	public String getProjectKey() {
+	@Override
+    public String getProjectKey() {
 		return projectKey;
 	}
 
-	public String getStatus() {
+	@Override
+    public String getStatus() {
 		return status;
 	}
 
-	public String getStatusTypeUrl() {
+	@Override
+    public String getStatusTypeUrl() {
 		return statusUrl;
 	}
 
-	public String getPriority() {
+	@Override
+    public String getPriority() {
 		return priority;
 	}
 
-	public String getPriorityIconUrl() {
+	@Override
+    public String getPriorityIconUrl() {
 		return priorityUrl;
 	}
 
-	public String getKey() {
+	@Override
+    public String getKey() {
 		return key;
 	}
 
@@ -633,19 +609,23 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.key = key;
 	}
 
-	public String getSummary() {
+	@Override
+    public String getSummary() {
 		return summary;
 	}
 
+    @Override
     public String getEnvironment() {
         return environment;
     }
 
+    @Override
     public String getType() {
 		return type;
 	}
 
-	public String getTypeIconUrl() {
+	@Override
+    public String getTypeIconUrl() {
 		return typeUrl;
 	}
 
@@ -653,10 +633,12 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.typeUrl = newTypeUrl;
 	}
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return description;
 	}
 
+    @Override
     public String getWikiDescription() {
         return wikiDescription;
     }
@@ -673,7 +655,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.description = description;
 	}
 
-	public JIRAConstant getTypeConstant() {
+	@Override
+    public JIRAConstant getTypeConstant() {
 		return typeConstant;
 	}
 
@@ -682,7 +665,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.typeConstant = type;
 	}
 
-	public JIRAConstant getStatusConstant() {
+	@Override
+    public JIRAConstant getStatusConstant() {
 		return statusConstant;
 	}
 
@@ -691,27 +675,33 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.statusConstant = status;
 	}
 
-	public String getAssignee() {
+	@Override
+    public String getAssignee() {
 		return assignee;
 	}
 
-	public void setAssignee(String assignee) {
+	@Override
+    public void setAssignee(String assignee) {
 		this.assignee = assignee;
 	}
 
-	public long getPriorityId() {
+	@Override
+    public long getPriorityId() {
 		return priorityId;
 	}
 
-	public long getStatusId() {
+	@Override
+    public long getStatusId() {
 		return statusId;
 	}
 
-	public long getTypeId() {
+	@Override
+    public long getTypeId() {
 		return typeId;
 	}
 
-	public String getReporter() {
+	@Override
+    public String getReporter() {
 		return reporter;
 	}
 
@@ -719,7 +709,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.reporter = reporter;
 	}
 
-	public String getResolution() {
+	@Override
+    public String getResolution() {
 		return resolution;
 	}
 
@@ -727,7 +718,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.resolution = resolution;
 	}
 
-	public String getCreated() {
+	@Override
+    public String getCreated() {
 		return created;
 	}
 
@@ -735,7 +727,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.created = created;
 	}
 
-	public String getUpdated() {
+	@Override
+    public String getUpdated() {
 		return updated;
 	}
 
@@ -767,7 +760,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		return result;
 	}
 
-	public String getAssigneeId() {
+	@Override
+    public String getAssigneeId() {
 		return assigneeId;
 	}
 
@@ -775,7 +769,8 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.assigneeId = assigneeId;
 	}
 
-	public String getReporterId() {
+	@Override
+    public String getReporterId() {
 		return reporterId;
 	}
 
@@ -783,82 +778,102 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.reporterId = reporterId;
 	}
 
-	public List<JIRAConstant> getAffectsVersions() {
+	@Override
+    public List<JIRAConstant> getAffectsVersions() {
 		return affectsVersions;
 	}
 
-	public void setAffectsVersions(List<JIRAConstant> affectsVersions) {
+	@Override
+    public void setAffectsVersions(List<JIRAConstant> affectsVersions) {
 		this.affectsVersions = affectsVersions;
 	}
 
-	public List<JIRAConstant> getFixVersions() {
+	@Override
+    public List<JIRAConstant> getFixVersions() {
 		return fixVersions;
 	}
 
-	public void setFixVersions(List<JIRAConstant> fixVersions) {
+	@Override
+    public void setFixVersions(List<JIRAConstant> fixVersions) {
 		this.fixVersions = fixVersions;
 	}
 
-	public List<JIRAConstant> getComponents() {
+	@Override
+    public List<JIRAConstant> getComponents() {
 		return components;
 	}
 
-	public void setComponents(List<JIRAConstant> components) {
+	@Override
+    public void setComponents(List<JIRAConstant> components) {
 		this.components = components;
 	}
 
-	public String getOriginalEstimate() {
+	@Override
+    public String getOriginalEstimate() {
 		return originalEstimate;
 	}
 
-	public void setOriginalEstimate(String originalEstimate) {
+	@Override
+    public void setOriginalEstimate(String originalEstimate) {
 		this.originalEstimate = originalEstimate;
 	}
 
-	public String getOriginalEstimateInSeconds() {
+	@Override
+    public String getOriginalEstimateInSeconds() {
 		return originalEstimateInSeconds;
 	}
 
-	public String getRemainingEstimate() {
+	@Override
+    public String getRemainingEstimate() {
 		return remainingEstimate;
 	}
 
-	public String getRemainingEstimateInSeconds() {
+	@Override
+    public String getRemainingEstimateInSeconds() {
 		return remainingEstimateInSeconds;
 	}
 
-	public void setRemainingEstimate(String remainingEstimate) {
+	@Override
+    public void setRemainingEstimate(String remainingEstimate) {
 		this.remainingEstimate = remainingEstimate;
 	}
 
-	public String getTimeSpent() {
+	@Override
+    public String getTimeSpent() {
 		return timeSpent;
 	}
 
-	public String getTimeSpentInSeconds() {
+	@Override
+    public String getTimeSpentInSeconds() {
 		return timeSpentInSeconds;
 	}
 
-	public void setTimeSpent(String timeSpent) {
+	@Override
+    public void setTimeSpent(String timeSpent) {
 		this.timeSpent = timeSpent;
 	}
 
-	public List<JIRAComment> getComments() {
+	@Override
+    public List<JIRAComment> getComments() {
 		return commentsList;
 	}
 
+    @Override
     public Object getApiIssueObject() {
 		return apiIssueObject;
 	}
 
-	public void setApiIssueObject(Object o) {
+	@Override
+    public void setApiIssueObject(Object o) {
 		apiIssueObject = o;
 	}
 
-	public JIRASecurityLevelBean getSecurityLevel() {
+	@Override
+    public JIRASecurityLevelBean getSecurityLevel() {
 		return securityLevel;
 	}
 
+    @Override
     public List<JiraCustomField> getCustomFields() {
         return basicCustomFields;
     }
@@ -867,10 +882,12 @@ public class JIRAIssueBean implements JIRAIssue {
 		this.securityLevel = securityLevelBean;
 	}
 
+    @Override
     public Locale getLocale() {
         return locale;
     }
 
+    @Override
     public boolean usesRest() {
         return apiIssueObject instanceof Issue;
     }
