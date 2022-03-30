@@ -34,16 +34,16 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.html.HTML2TextReader;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Attachment;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Comment;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.CustomField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueLink;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAttachment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraCustomField;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueLink;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.SecurityLevel;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Subtask;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSecurityLevel;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSubtask;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
@@ -277,21 +277,21 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private Date commentDate;
 
-	private final ArrayList<Comment> currentComments = new ArrayList<Comment>();
+	private final ArrayList<JiraComment> currentComments = new ArrayList<JiraComment>();
 
-	private final ArrayList<Version> currentFixVersions = new ArrayList<Version>();
+	private final ArrayList<JiraVersion> currentFixVersions = new ArrayList<JiraVersion>();
 
-	private final ArrayList<Version> currentReportedVersions = new ArrayList<Version>();
+	private final ArrayList<JiraVersion> currentReportedVersions = new ArrayList<JiraVersion>();
 
-	private final ArrayList<Component> currentComponents = new ArrayList<Component>();
+	private final ArrayList<JiraComponent> currentComponents = new ArrayList<JiraComponent>();
 
-	private final ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
+	private final ArrayList<JiraAttachment> currentAttachments = new ArrayList<JiraAttachment>();
 
-	private final ArrayList<CustomField> currentCustomFields = new ArrayList<CustomField>();
+	private final ArrayList<JiraCustomField> currentCustomFields = new ArrayList<JiraCustomField>();
 
 	private String currentSubtaskId;
 
-	private final ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
+	private final ArrayList<JiraSubtask> currentSubtasks = new ArrayList<JiraSubtask>();
 
 	private String currentIssueLinkTypeId;
 
@@ -303,7 +303,7 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private String currentIssueLinkIssueId;
 
-	private final ArrayList<IssueLink> currentIssueLinks = new ArrayList<IssueLink>();
+	private final ArrayList<JiraIssueLink> currentIssueLinks = new ArrayList<JiraIssueLink>();
 
 	private String customFieldId;
 
@@ -428,7 +428,7 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (ACTUAL.equals(localName)) {
 				currentIssue.setActual(Long.parseLong(attributes.getValue(SECONDS_ATTR)));
 			} else if (SECURITY.equals(localName)) {
-				SecurityLevel securityLevel = new SecurityLevel();
+				JiraSecurityLevel securityLevel = new JiraSecurityLevel();
 				securityLevel.setId(attributes.getValue(ID_ATTR));
 				currentIssue.setSecurityLevel(securityLevel);
 			}
@@ -531,7 +531,7 @@ public class JiraRssHandler extends DefaultHandler {
 		switch (state) {
 		case IN_SUBTASKS:
 			if (SUBTASK.equals(localName)) {
-				currentSubtasks.add(new Subtask(currentSubtaskId, getCurrentElementText()));
+				currentSubtasks.add(new JiraSubtask(currentSubtaskId, getCurrentElementText()));
 				currentSubtaskId = null;
 			} else if (SUBTASKS.equals(localName)) {
 				state = IN_ITEM;
@@ -541,7 +541,7 @@ public class JiraRssHandler extends DefaultHandler {
 			if (ATTACHMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (ATTACHMENT.equals(localName)) {
-				Attachment attachment = new Attachment(attachmentId, attachmentName, attachmentSize, attachmentAuthor,
+				JiraAttachment attachment = new JiraAttachment(attachmentId, attachmentName, attachmentSize, attachmentAuthor,
 						attachmentCreated);
 				currentAttachments.add(attachment);
 			}
@@ -584,7 +584,7 @@ public class JiraRssHandler extends DefaultHandler {
 				}
 				markupDetected |= customFieldMarkupDetected;
 
-				CustomField customField = new CustomField(customFieldId, customFieldKey, customFieldName,
+				JiraCustomField customField = new JiraCustomField(customFieldId, customFieldKey, customFieldName,
 						customFieldValues);
 				customField.setMarkupDetected(customFieldMarkupDetected);
 				currentCustomFields.add(customField);
@@ -604,7 +604,7 @@ public class JiraRssHandler extends DefaultHandler {
 		case IN_XWARDS_ISSUE_LINK:
 			if (ISSUE_LINK.equals(localName)) {
 				String key = getCurrentElementText().trim();
-				IssueLink link = new IssueLink(currentIssueLinkIssueId, key, currentIssueLinkTypeId,
+				JiraIssueLink link = new JiraIssueLink(currentIssueLinkIssueId, key, currentIssueLinkTypeId,
 						currentIssueLinkTypeName, currentIssueLinkInwardDescription, currentIssueLinkOutwardDescription);
 				currentIssueLinks.add(link);
 				currentIssueLinkIssueId = null;
@@ -643,7 +643,7 @@ public class JiraRssHandler extends DefaultHandler {
 				if (hasMarkup(currentElementText.toString())) {
 					commentMarkupDetected = true;
 				}
-				Comment comment = new Comment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel,
+				JiraComment comment = new JiraComment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel,
 						commentDate);
 				comment.setMarkupDetected(commentMarkupDetected);
 				currentComments.add(comment);
@@ -654,19 +654,19 @@ public class JiraRssHandler extends DefaultHandler {
 				state = LOOKING_FOR_CHANNEL;
 			} else if (ITEM.equals(localName)) {
 				if (currentReportedVersions.size() > 0) {
-					currentIssue.setReportedVersions(currentReportedVersions.toArray(new Version[currentReportedVersions.size()]));
+					currentIssue.setReportedVersions(currentReportedVersions.toArray(new JiraVersion[currentReportedVersions.size()]));
 				}
 				if (currentFixVersions.size() > 0) {
-					currentIssue.setFixVersions(currentFixVersions.toArray(new Version[currentFixVersions.size()]));
+					currentIssue.setFixVersions(currentFixVersions.toArray(new JiraVersion[currentFixVersions.size()]));
 				}
 				if (currentComponents.size() > 0) {
-					currentIssue.setComponents(currentComponents.toArray(new Component[currentComponents.size()]));
+					currentIssue.setComponents(currentComponents.toArray(new JiraComponent[currentComponents.size()]));
 				}
-				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
-				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
-				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
-				currentIssue.setSubtasks(currentSubtasks.toArray(new Subtask[currentSubtasks.size()]));
-				currentIssue.setIssueLinks(currentIssueLinks.toArray(new IssueLink[currentIssueLinks.size()]));
+				currentIssue.setComments(currentComments.toArray(new JiraComment[currentComments.size()]));
+				currentIssue.setAttachments(currentAttachments.toArray(new JiraAttachment[currentAttachments.size()]));
+				currentIssue.setCustomFields(currentCustomFields.toArray(new JiraCustomField[currentCustomFields.size()]));
+				currentIssue.setSubtasks(currentSubtasks.toArray(new JiraSubtask[currentSubtasks.size()]));
+				currentIssue.setIssueLinks(currentIssueLinks.toArray(new JiraIssueLink[currentIssueLinks.size()]));
 				currentIssue.setMarkupDetected(markupDetected);
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
@@ -699,7 +699,7 @@ public class JiraRssHandler extends DefaultHandler {
 					break;
 				}
 				String projectKey = key.substring(0, i);
-				Project project = client.getCache().getProjectByKey(projectKey);
+				JiraProject project = client.getCache().getProjectByKey(projectKey);
 				if (project == null) {
 					//throw new SAXException("No project with key '" + projectKey + "' found");
 					break;
@@ -751,7 +751,7 @@ public class JiraRssHandler extends DefaultHandler {
 					}
 				}
 			} else if (SECURITY.equals(localName)) {
-				SecurityLevel securityLevel = currentIssue.getSecurityLevel();
+				JiraSecurityLevel securityLevel = currentIssue.getSecurityLevel();
 				if (securityLevel != null) {
 					securityLevel.setName(getCurrentElementText());
 				}
@@ -792,8 +792,8 @@ public class JiraRssHandler extends DefaultHandler {
 		}
 	}
 
-	private boolean addVersionTo(ArrayList<Version> versions, String currentElementText) {
-		Version version = currentIssue.getProject().getVersion(currentElementText);
+	private boolean addVersionTo(ArrayList<JiraVersion> versions, String currentElementText) {
+		JiraVersion version = currentIssue.getProject().getVersion(currentElementText);
 		if (version != null) {
 			versions.add(version);
 			return true;
@@ -813,8 +813,8 @@ public class JiraRssHandler extends DefaultHandler {
 		return false;
 	}
 
-	private boolean addComponentTo(ArrayList<Component> versions, String currentElementText) {
-		Component version = currentIssue.getProject().getComponent(currentElementText);
+	private boolean addComponentTo(ArrayList<JiraComponent> versions, String currentElementText) {
+		JiraComponent version = currentIssue.getProject().getComponent(currentElementText);
 		if (version != null) {
 			versions.add(version);
 			return true;

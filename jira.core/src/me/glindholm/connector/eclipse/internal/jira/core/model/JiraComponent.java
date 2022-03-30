@@ -17,30 +17,27 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-public class User implements Serializable {
+public class JiraComponent implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String id;
+
 	private String name;
 
-	private String email;
-
-	private String fullName;
-
-	public String getEmail() {
-		return this.email;
+	public JiraComponent(String id) {
+		this.id = id;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public JiraComponent() {
 	}
 
-	public String getFullName() {
-		return this.fullName;
+	public String getId() {
+		return this.id;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -53,6 +50,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.name + "(" + this.fullName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		return this.name;
 	}
+
 }

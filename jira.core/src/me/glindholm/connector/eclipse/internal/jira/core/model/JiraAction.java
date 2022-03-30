@@ -27,7 +27,7 @@ public class JiraAction implements Serializable {
 
 	private final String name;
 
-	private final List<IssueField> fields = new ArrayList<IssueField>();
+	private final List<JiraIssueField> fields = new ArrayList<JiraIssueField>();
 
 	public JiraAction(String id, String name) {
 		this.id = id;
@@ -42,7 +42,7 @@ public class JiraAction implements Serializable {
 		return name;
 	}
 
-	public List<IssueField> getFields() {
+	public List<JiraIssueField> getFields() {
 		return fields;
 	}
 

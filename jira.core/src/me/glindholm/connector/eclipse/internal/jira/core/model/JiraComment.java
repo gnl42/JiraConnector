@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * @author Brock Janiczak
  */
-public final class Comment implements Serializable {
+public final class JiraComment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,14 +34,14 @@ public final class Comment implements Serializable {
 
 	private String authorDisplayName;
 
-	public Comment(String comment, String author, String roleLvel, Date created) {
+	public JiraComment(String comment, String author, String roleLvel, Date created) {
 		this.comment = comment;
 		this.author = author;
 		this.roleLevel = roleLvel;
 		this.created = created;
 	}
 
-	public Comment() {
+	public JiraComment() {
 	}
 
 	public String getAuthor() {

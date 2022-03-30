@@ -23,7 +23,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
@@ -145,7 +145,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 		}
 	}
 
-	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
+	public JiraServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
 		return validateConnection(location, new JiraLocalConfiguration(), monitor);
 	}
 
@@ -162,9 +162,9 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
+	public JiraServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
-		ServerInfo info = clientManager.validateConnection(location, configuration, monitor);
+		JiraServerInfo info = clientManager.validateConnection(location, configuration, monitor);
 		JiraServerVersion serverVersion = new JiraServerVersion(info.getVersion());
 		if (JiraServerVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
 			throw new JiraException("JIRA connector requires server " + JiraServerVersion.MIN_VERSION + " or later"); //$NON-NLS-1$ //$NON-NLS-2$

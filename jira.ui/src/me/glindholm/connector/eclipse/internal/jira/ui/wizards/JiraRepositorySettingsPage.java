@@ -70,7 +70,7 @@ import me.glindholm.connector.eclipse.internal.commons.ui.MigrateToSecureStorage
 import me.glindholm.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
@@ -462,7 +462,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@Override
 	protected void applyValidatorResult(Validator validator) {
 		JiraValidator jiraValidator = (JiraValidator) validator;
-		ServerInfo serverInfo = jiraValidator.getServerInfo();
+		JiraServerInfo serverInfo = jiraValidator.getServerInfo();
 		if (serverInfo != null) {
 			String url = jiraValidator.getRepositoryUrl();
 			if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
@@ -508,13 +508,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 		final TaskRepository repository;
 
-		private ServerInfo serverInfo;
+		private JiraServerInfo serverInfo;
 
 		public JiraValidator(TaskRepository repository) {
 			this.repository = repository;
 		}
 
-		public ServerInfo getServerInfo() {
+		public JiraServerInfo getServerInfo() {
 			return serverInfo;
 		}
 

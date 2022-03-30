@@ -64,21 +64,21 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.CustomField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraCustomField;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueField;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
-import me.glindholm.connector.eclipse.internal.jira.core.model.NamedFilter;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.SecurityLevel;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraNamedFilter;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSecurityLevel;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
@@ -264,29 +264,29 @@ public class JiraRestClientAdapter {
         return restClient.getIssueClient().getAttachment(new NullProgressMonitor(), attachmentUri);
     }
 
-    public Project[] getProjects() {
+    public JiraProject[] getProjects() {
         Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects(new NullProgressMonitor());
 
         return JiraRestConverter.convertProjects(allProjects);
     }
 
-    public NamedFilter[] getFavouriteFilters() throws JiraException {
+    public JiraNamedFilter[] getFavouriteFilters() throws JiraException {
 
-        return call(new Callable<NamedFilter[]>() {
+        return call(new Callable<JiraNamedFilter[]>() {
 
-            public NamedFilter[] call() throws Exception {
+            public JiraNamedFilter[] call() throws Exception {
                 return JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters(
                         new NullProgressMonitor()));
             }
         });
     }
 
-    public Resolution[] getResolutions() {
+    public JiraResolution[] getResolutions() {
         return JiraRestConverter.convertResolutions(restClient.getMetadataClient().getResolutions(
                 new NullProgressMonitor()));
     }
 
-    public Priority[] getPriorities() {
+    public JiraPriority[] getPriorities() {
         return JiraRestConverter.convertPriorities(restClient.getMetadataClient().getPriorities(
                 new NullProgressMonitor()));
     }
@@ -299,12 +299,12 @@ public class JiraRestClientAdapter {
         return JiraRestConverter.convertStatuses(restClient.getMetadataClient().getStatuses(new NullProgressMonitor()));
     }
 
-    public IssueType[] getIssueTypes() {
+    public JiraIssueType[] getIssueTypes() {
         return JiraRestConverter.convertIssueTypes(restClient.getMetadataClient().getIssueTypes(
                 new NullProgressMonitor()));
     }
 
-    public IssueType[] getIssueTypes(String projectKey) {
+    public JiraIssueType[] getIssueTypes(String projectKey) {
         return JiraRestConverter.convertIssueTypes(restClient.getProjectClient()
                 .getProject(projectKey, new NullProgressMonitor())
                 .getIssueTypes());
@@ -345,7 +345,7 @@ public class JiraRestClientAdapter {
 //				.getVersions());
 //	}
 
-    public void getProjectDetails(Project project) {
+    public void getProjectDetails(JiraProject project) {
 
         com.atlassian.jira.rest.client.domain.Project projectWithDetails = restClient.getProjectClient().getProject(
                 project.getKey(), new NullProgressMonitor());
@@ -361,9 +361,9 @@ public class JiraRestClientAdapter {
                 JiraRestConverter.convert(jiraWorklog, issue.getSelf()), new NullProgressMonitor());
     }
 
-    public ServerInfo getServerInfo() throws JiraException {
-        return call(new Callable<ServerInfo>() {
-            public ServerInfo call() {
+    public JiraServerInfo getServerInfo() throws JiraException {
+        return call(new Callable<JiraServerInfo>() {
+            public JiraServerInfo call() {
                 return JiraRestConverter.convert(restClient.getMetadataClient()
                         .getServerInfo(new NullProgressMonitor()));
             }
@@ -393,12 +393,12 @@ public class JiraRestClientAdapter {
     }
 
     public void transitionIssue(JiraIssue issue, String transitionKey, String comment,
-            Iterable<IssueField> transitionFields) throws JiraException {
+            Iterable<JiraIssueField> transitionFields) throws JiraException {
 
         Comment outComment = (StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment));
 
         List<FieldInput> fields = new ArrayList<FieldInput>();
-        for (IssueField transitionField : transitionFields) {
+        for (JiraIssueField transitionField : transitionFields) {
 
             if (transitionField.isRequired()) {
 
@@ -443,7 +443,7 @@ public class JiraRestClientAdapter {
 
                     } else if (transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
 
-                        CustomField customField = issue.getCustomFieldById(transitionField.getId());
+                        JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
 
                         FieldInput field = JiraRestConverter.convert(customField);
                         if (field != null) {
@@ -458,7 +458,7 @@ public class JiraRestClientAdapter {
                     String message = "Field \"{0}\" is required for transition id \"{1}\""; //$NON-NLS-1$
 
                     if (name.startsWith("customfield_")) { //$NON-NLS-1$
-                        CustomField customField = issue.getCustomFieldById(transitionField.getId());
+                        JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
                         if (customField != null) {
                             name = customField.getName();
                         } else {
@@ -597,19 +597,19 @@ public class JiraRestClientAdapter {
 
         final Issue issue = fullIssue.getRawIssue();
 
-        Collection<IssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
+        Collection<JiraIssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
 
         final List<FieldInput> updateFields = new ArrayList<FieldInput>();
 
         updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID,
                 changedIssue.getType().getId())));
-        if (editableFields.contains(new IssueField(JiraRestFields.PRIORITY, null))
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.PRIORITY, null))
                 && changedIssue.getPriority() != null) {
             updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(
                     JiraRestFields.ID, changedIssue.getPriority().getId())));
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.DUEDATE, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
             String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
             if (changedIssue.getDue() == null) {
                 date = null;
@@ -665,25 +665,25 @@ public class JiraRestClientAdapter {
             }
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.VERSIONS, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
             List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<ComplexIssueInputFieldValue>();
-            for (Version version : changedIssue.getReportedVersions()) {
+            for (JiraVersion version : changedIssue.getReportedVersions()) {
                 reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.FIX_VERSIONS, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
             List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<ComplexIssueInputFieldValue>();
-            for (Version version : changedIssue.getFixVersions()) {
+            for (JiraVersion version : changedIssue.getFixVersions()) {
                 fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.COMPONENTS, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
             List<ComplexIssueInputFieldValue> components = new ArrayList<ComplexIssueInputFieldValue>();
-            for (Component component : changedIssue.getComponents()) {
+            for (JiraComponent component : changedIssue.getComponents()) {
                 components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
@@ -697,20 +697,20 @@ public class JiraRestClientAdapter {
             // do not clear security level as it might be not available on the screen
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.ENVIRONMENT, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.ENVIRONMENT, null))) {
             updateFields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.SUMMARY, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.SUMMARY, null))) {
             updateFields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.DESCRIPTION, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.DESCRIPTION, null))) {
             updateFields.add(new FieldInput(JiraRestFields.DESCRIPTION,
                     changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.ASSIGNEE, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
             String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee(); //$NON-NLS-1$//$NON-NLS-2$
             String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getName() : ""; //$NON-NLS-1$
 
@@ -720,11 +720,11 @@ public class JiraRestClientAdapter {
             }
         }
 
-        if (editableFields.contains(new IssueField(JiraRestFields.LABELS, null))) {
+        if (editableFields.contains(new JiraIssueField(JiraRestFields.LABELS, null))) {
             updateFields.add(new FieldInput(JiraRestFields.LABELS, Arrays.asList(changedIssue.getLabels())));
         }
 
-        for (CustomField customField : changedIssue.getCustomFields()) {
+        for (JiraCustomField customField : changedIssue.getCustomFields()) {
             FieldInput field = JiraRestConverter.convert(customField);
             if (field != null) {
                 updateFields.add(field);
@@ -801,7 +801,7 @@ public class JiraRestClientAdapter {
         return REST_DATE_FORMAT;
     }
 
-    public SecurityLevel[] getSecurityLevels(String projectKey) throws JiraException {
+    public JiraSecurityLevel[] getSecurityLevels(String projectKey) throws JiraException {
 
         GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
 
@@ -820,26 +820,26 @@ public class JiraRestClientAdapter {
                 if (cimFieldSecurity != null) {
                     Iterable<Object> allowedValues = cimFieldSecurity.getAllowedValues();
 
-                    List<SecurityLevel> securityLevels = new ArrayList<SecurityLevel>();
+                    List<JiraSecurityLevel> securityLevels = new ArrayList<JiraSecurityLevel>();
 
                     for (Object allowedValue : allowedValues) {
-                        if (allowedValue instanceof SecurityLevel) {
-                            SecurityLevel securityLevel = (SecurityLevel) allowedValue;
+                        if (allowedValue instanceof JiraSecurityLevel) {
+                            JiraSecurityLevel securityLevel = (JiraSecurityLevel) allowedValue;
 
-                            securityLevels.add(new SecurityLevel(securityLevel.getId().toString(),
+                            securityLevels.add(new JiraSecurityLevel(securityLevel.getId().toString(),
                                     securityLevel.getName()));
                         }
                     }
 
-                    return securityLevels.toArray(new SecurityLevel[securityLevels.size()]);
+                    return securityLevels.toArray(new JiraSecurityLevel[securityLevels.size()]);
                 } else {
                     // (security might not exist if not defined for project)
-                    return new SecurityLevel[0];
+                    return new JiraSecurityLevel[0];
                 }
             }
         }
 
-        return new SecurityLevel[0];
+        return new JiraSecurityLevel[0];
     }
 
     public void deleteIssue(final String key, IProgressMonitor monitor) throws JiraException {

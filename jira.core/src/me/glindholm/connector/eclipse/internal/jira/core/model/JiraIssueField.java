@@ -19,7 +19,7 @@ import java.util.List;
  * @author Steffen Pingel
  * @author Jacek Jaroczynski
  */
-public class IssueField implements Serializable {
+public class JiraIssueField implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,9 +31,9 @@ public class IssueField implements Serializable {
 
 	private boolean required;
 
-	private List<AllowedValue> allowedValues = Collections.emptyList();
+	private List<JiraAllowedValue> allowedValues = Collections.emptyList();
 
-	public IssueField(String id, String name) {
+	public JiraIssueField(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -67,11 +67,11 @@ public class IssueField implements Serializable {
 		return this.required;
 	}
 
-	public void setAllowedValues(List<AllowedValue> allowedValues) {
+	public void setAllowedValues(List<JiraAllowedValue> allowedValues) {
 		this.allowedValues = allowedValues;
 	}
 
-	public List<AllowedValue> getAlloweValues() {
+	public List<JiraAllowedValue> getAlloweValues() {
 		return allowedValues;
 	}
 
@@ -88,11 +88,11 @@ public class IssueField implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof IssueField)) {
+		if (!(obj instanceof JiraIssueField)) {
 			return false;
 		}
 
-		IssueField other = (IssueField) obj;
+		JiraIssueField other = (JiraIssueField) obj;
 
 		if (id == null) {
 			if (other.id != null) {

@@ -7,44 +7,68 @@
  *
  * Contributors:
  *     Brock Janiczak - initial API and implementation
- *     Tasktop Technologies - improvements
  *******************************************************************************/
 
 package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
-import java.util.Date;
+
+import org.eclipse.core.runtime.Assert;
 
 /**
  * @author Brock Janiczak
  */
-public class Version implements Serializable {
+public class JiraIssueType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String BUG_ID = "1"; //$NON-NLS-1$
+
+	public static final String NEW_FEATURE_ID = "2"; //$NON-NLS-1$
+
+	public static final String TASK_ID = "3"; //$NON-NLS-1$
+
+	public static final String IMPROVEMENT_ID = "4"; //$NON-NLS-1$
 
 	private String id;
 
 	private String name;
 
-	private boolean archived;
+	private String description;
 
-	private Date releaseDate;
+	private String icon;
 
-	private boolean released;
+	private boolean subTaskType;
 
-	private long sequence;
+	public JiraIssueType(String id, String name, String description, String icon) {
+		this(id, name, false);
+		this.name = name;
+		this.description = description;
+		this.icon = icon;
+	}
 
-	public Version(String id, String name) {
+	public JiraIssueType(String id, String name, boolean subTaskType) {
+		Assert.isNotNull(id);
+		Assert.isNotNull(name);
 		this.id = id;
 		this.name = name;
+		this.subTaskType = subTaskType;
 	}
 
-	public boolean isArchived() {
-		return this.archived;
+	public String getDescription() {
+		return this.description;
 	}
 
-	public void setArchived(boolean archived) {
-		this.archived = archived;
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getIcon() {
+		return this.icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public String getId() {
@@ -63,28 +87,12 @@ public class Version implements Serializable {
 		this.name = name;
 	}
 
-	public boolean isReleased() {
-		return this.released;
+	public boolean isSubTaskType() {
+		return subTaskType;
 	}
 
-	public void setReleased(boolean released) {
-		this.released = released;
-	}
-
-	public Date getReleaseDate() {
-		return this.releaseDate;
-	}
-
-	public void setReleaseDate(Date releaseDate) {
-		this.releaseDate = releaseDate;
-	}
-
-	public long getSequence() {
-		return this.sequence;
-	}
-
-	public void setSequence(long sequence) {
-		this.sequence = sequence;
+	public void setSubTaskType(boolean subTaskType) {
+		this.subTaskType = subTaskType;
 	}
 
 	@Override
@@ -93,11 +101,11 @@ public class Version implements Serializable {
 			return false;
 		}
 
-		if (!(obj instanceof Version)) {
+		if (!(obj instanceof JiraIssueType)) {
 			return false;
 		}
 
-		Version that = (Version) obj;
+		JiraIssueType that = (JiraIssueType) obj;
 
 		return this.id.equals(that.id);
 	}
@@ -109,7 +117,6 @@ public class Version implements Serializable {
 
 	@Override
 	public String toString() {
-		return name;
+		return this.name;
 	}
-
 }

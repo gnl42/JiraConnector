@@ -21,7 +21,7 @@ import java.util.List;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-public class CustomField extends IssueField {
+public class JiraCustomField extends JiraIssueField {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class CustomField extends IssueField {
 
 	private boolean markupDetected;
 
-	public CustomField(String id, String key, String name, List<String> values) {
+	public JiraCustomField(String id, String key, String name, List<String> values) {
 		super(id, name);
 		this.key = key;
 		this.values = new ArrayList<String>(values);

@@ -22,12 +22,12 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.web.rss.JiraRssHandler;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
@@ -115,20 +115,20 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 		if (client.getCache().hasDetails()) {
 			Map<String, String> options = new LinkedHashMap<String, String>();
 			if (JiraAttribute.PROJECT.id().equals(attribute.getId())) {
-				Project[] jiraProjects = client.getCache().getProjects();
-				for (Project jiraProject : jiraProjects) {
+				JiraProject[] jiraProjects = client.getCache().getProjects();
+				for (JiraProject jiraProject : jiraProjects) {
 					options.put(jiraProject.getId(), jiraProject.getName());
 				}
 				return options;
 			} else if (JiraAttribute.RESOLUTION.id().equals(attribute.getId())) {
-				Resolution[] jiraResolutions = client.getCache().getResolutions();
-				for (Resolution resolution : jiraResolutions) {
+				JiraResolution[] jiraResolutions = client.getCache().getResolutions();
+				for (JiraResolution resolution : jiraResolutions) {
 					options.put(resolution.getId(), resolution.getName());
 				}
 				return options;
 			} else if (JiraAttribute.PRIORITY.id().equals(attribute.getId())) {
-				Priority[] jiraPriorities = client.getCache().getPriorities();
-				for (Priority priority : jiraPriorities) {
+				JiraPriority[] jiraPriorities = client.getCache().getPriorities();
+				for (JiraPriority priority : jiraPriorities) {
 					options.put(priority.getId(), priority.getName());
 				}
 				return options;
@@ -137,22 +137,22 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 						.getRoot()
 						.getMappedAttribute(JiraAttribute.PROJECT.id());
 				if (projectAttribute != null) {
-					Project project = client.getCache().getProjectById(projectAttribute.getValue());
+					JiraProject project = client.getCache().getProjectById(projectAttribute.getValue());
 					if (project != null && project.hasDetails()) {
 						if (JiraAttribute.COMPONENTS.id().equals(attribute.getId())) {
-							for (Component component : project.getComponents()) {
+							for (JiraComponent component : project.getComponents()) {
 								options.put(component.getId(), component.getName());
 							}
 							return options;
 						} else if (JiraAttribute.AFFECTSVERSIONS.id().equals(attribute.getId())) {
-							for (Version version : project.getVersions()) {
+							for (JiraVersion version : project.getVersions()) {
 								if (!version.isArchived() || attribute.getValues().contains(version.getId())) {
 									options.put(version.getId(), version.getName());
 								}
 							}
 							return options;
 						} else if (JiraAttribute.FIXVERSIONS.id().equals(attribute.getId())) {
-							for (Version version : project.getVersions()) {
+							for (JiraVersion version : project.getVersions()) {
 								if (!version.isArchived() || attribute.getValues().contains(version.getId())) {
 									options.put(version.getId(), version.getName());
 								}
@@ -160,11 +160,11 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 							return options;
 						} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
 							boolean isSubTask = JiraTaskDataHandler.hasSubTaskType(attribute);
-							IssueType[] jiraIssueTypes = project.getIssueTypes();
+							JiraIssueType[] jiraIssueTypes = project.getIssueTypes();
 							if (jiraIssueTypes == null) {
 								jiraIssueTypes = client.getCache().getIssueTypes();
 							}
-							for (IssueType issueType : jiraIssueTypes) {
+							for (JiraIssueType issueType : jiraIssueTypes) {
 								if (!isSubTask || issueType.isSubTaskType()) {
 									options.put(issueType.getId(), issueType.getName());
 								}

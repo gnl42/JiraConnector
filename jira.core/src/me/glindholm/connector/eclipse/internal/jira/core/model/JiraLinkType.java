@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-public class LinkType implements Serializable {
+public class JiraLinkType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

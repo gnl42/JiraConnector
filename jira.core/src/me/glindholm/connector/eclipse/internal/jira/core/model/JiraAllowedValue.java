@@ -11,42 +11,23 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core.model;
 
-import java.io.Serializable;
+public class JiraAllowedValue {
 
-/**
- * @author Jacek Jaroczynski
- */
-public class ProjectRole implements Serializable {
+	private final String value;
 
-	private static final long serialVersionUID = 3175313417545219235L;
+	private final String id;
 
-	private String description;
-
-	private Long id;
-
-	private String name;
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public void setId(Long id) {
+	public JiraAllowedValue(String id, String value) {
 		this.id = id;
+		this.value = value;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getValue() {
+		return value;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public String getName() {
-		return name;
-	}
 }

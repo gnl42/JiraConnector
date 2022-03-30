@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @author Brock Janiczak
  * @author Eugene Kuleshov
  */
-public class IssueLink implements Serializable {
+public class JiraIssueLink implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String issueId;
@@ -33,7 +33,7 @@ public class IssueLink implements Serializable {
 
 	private final String outwardDescription;
 
-	public IssueLink(String issueId, String issueKey, String linkTypeId, //
+	public JiraIssueLink(String issueId, String issueKey, String linkTypeId, //
 			String linkName, String inwardDescription, String outwardDescription) {
 		this.issueId = issueId;
 		this.issueKey = issueKey;

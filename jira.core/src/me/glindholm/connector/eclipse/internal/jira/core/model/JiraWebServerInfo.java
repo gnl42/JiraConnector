@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 /**
  * @author Steffen Pingel
  */
-public class WebServerInfo {
+public class JiraWebServerInfo {
 
 	private String baseUrl;
 
@@ -22,14 +22,14 @@ public class WebServerInfo {
 
 	private boolean insecureRedirect;
 
-	private transient Statistics statistics;
+	private transient JiraStatistics statistics;
 
-	public WebServerInfo() {
+	public JiraWebServerInfo() {
 	}
 
-	public synchronized Statistics getStatistics() {
+	public synchronized JiraStatistics getStatistics() {
 		if (statistics == null) {
-			statistics = new Statistics();
+			statistics = new JiraStatistics();
 		}
 		return statistics;
 	}

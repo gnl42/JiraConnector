@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Assert;
 /**
  * @author Brock Janiczak
  */
-public class Priority implements Serializable {
+public class JiraPriority implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,12 +46,12 @@ public class Priority implements Serializable {
 
 	private URI self;
 
-	public Priority(String id) {
+	public JiraPriority(String id) {
 		Assert.isNotNull(id);
 		this.id = id;
 	}
 
-	public Priority(String id, String name, String description, String icon, String colour) {
+	public JiraPriority(String id, String name, String description, String icon, String colour) {
 		this(id);
 		this.name = name;
 		this.description = description;
@@ -109,11 +109,11 @@ public class Priority implements Serializable {
 			return false;
 		}
 
-		if (!(obj instanceof Priority)) {
+		if (!(obj instanceof JiraPriority)) {
 			return false;
 		}
 
-		Priority that = (Priority) obj;
+		JiraPriority that = (JiraPriority) obj;
 
 		return this.id.equals(that.id);
 	}

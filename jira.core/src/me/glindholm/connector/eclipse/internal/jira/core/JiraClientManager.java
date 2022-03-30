@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientData;
@@ -149,7 +149,7 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
+	public JiraServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
 		JiraClient client = createClient(location, configuration);
 

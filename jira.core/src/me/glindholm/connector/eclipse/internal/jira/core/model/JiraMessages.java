@@ -13,17 +13,17 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS {
+public class JiraMessages extends NLS {
 
 	private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.core.model.messages"; //$NON-NLS-1$
 	static {
 		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+		NLS.initializeMessages(BUNDLE_NAME, JiraMessages.class);
 	}
 
 	public static String SecurityLevel_None;
 
-	private Messages() {
+	private JiraMessages() {
 	}
 
 }

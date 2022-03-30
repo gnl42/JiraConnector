@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Brock Janiczak
  * @author Thomas Ehrnhoefer
  */
-public class Project implements Serializable {
+public class JiraProject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,23 +42,23 @@ public class Project implements Serializable {
 
 	private String url;
 
-	private Component[] components;
+	private JiraComponent[] components;
 
-	private Version[] versions;
+	private JiraVersion[] versions;
 
-	private IssueType[] issueTypes;
+	private JiraIssueType[] issueTypes;
 
-	private SecurityLevel[] securityLevels;
+	private JiraSecurityLevel[] securityLevels;
 
-	private Map<String, IssueType> issueTypesById;
+	private Map<String, JiraIssueType> issueTypesById;
 
 	private boolean details;
 
-	public Project(String id) {
+	public JiraProject(String id) {
 		this.id = id;
 	}
 
-	public Project() {
+	public JiraProject() {
 	}
 
 	public String getDescription() {
@@ -117,8 +117,8 @@ public class Project implements Serializable {
 		this.url = url;
 	}
 
-	public Component getComponent(String name) {
-		for (Component component : this.components) {
+	public JiraComponent getComponent(String name) {
+		for (JiraComponent component : this.components) {
 			if (component.getName().equals(name)) {
 				return component;
 			}
@@ -126,16 +126,16 @@ public class Project implements Serializable {
 		return null;
 	}
 
-	public Component[] getComponents() {
+	public JiraComponent[] getComponents() {
 		return this.components;
 	}
 
-	public void setComponents(Component[] components) {
+	public void setComponents(JiraComponent[] components) {
 		this.components = components;
 	}
 
-	public Version getVersion(String name) {
-		for (Version version : this.versions) {
+	public JiraVersion getVersion(String name) {
+		for (JiraVersion version : this.versions) {
 			if (version.getName().equals(name)) {
 				return version;
 			}
@@ -143,14 +143,14 @@ public class Project implements Serializable {
 		return null;
 	}
 
-	public void setVersions(Version[] versions) {
+	public void setVersions(JiraVersion[] versions) {
 		this.versions = versions;
 	}
 
-	public Version[] getReleasedVersions(boolean includeArchived) {
-		List<Version> releasedVersions = new ArrayList<Version>();
+	public JiraVersion[] getReleasedVersions(boolean includeArchived) {
+		List<JiraVersion> releasedVersions = new ArrayList<JiraVersion>();
 
-		for (Version version : this.versions) {
+		for (JiraVersion version : this.versions) {
 			if (version.isReleased()) {
 				if (!version.isArchived() || includeArchived) {
 					releasedVersions.add(version);
@@ -158,13 +158,13 @@ public class Project implements Serializable {
 			}
 		}
 
-		return releasedVersions.toArray(new Version[releasedVersions.size()]);
+		return releasedVersions.toArray(new JiraVersion[releasedVersions.size()]);
 	}
 
-	public Version[] getUnreleasedVersions(boolean includeArchived) {
-		List<Version> unreleasedVersions = new ArrayList<Version>();
+	public JiraVersion[] getUnreleasedVersions(boolean includeArchived) {
+		List<JiraVersion> unreleasedVersions = new ArrayList<JiraVersion>();
 
-		for (Version version : this.versions) {
+		for (JiraVersion version : this.versions) {
 			if (!version.isReleased()) {
 				if (!version.isArchived() || includeArchived) {
 					unreleasedVersions.add(version);
@@ -172,22 +172,22 @@ public class Project implements Serializable {
 			}
 		}
 
-		return unreleasedVersions.toArray(new Version[unreleasedVersions.size()]);
+		return unreleasedVersions.toArray(new JiraVersion[unreleasedVersions.size()]);
 	}
 
-	public Version[] getArchivedVersions() {
-		List<Version> archivedVersions = new ArrayList<Version>();
+	public JiraVersion[] getArchivedVersions() {
+		List<JiraVersion> archivedVersions = new ArrayList<JiraVersion>();
 
-		for (Version version : this.versions) {
+		for (JiraVersion version : this.versions) {
 			if (version.isArchived()) {
 				archivedVersions.add(version);
 			}
 		}
 
-		return archivedVersions.toArray(new Version[archivedVersions.size()]);
+		return archivedVersions.toArray(new JiraVersion[archivedVersions.size()]);
 	}
 
-	public Version[] getVersions() {
+	public JiraVersion[] getVersions() {
 		return this.versions;
 	}
 
@@ -197,11 +197,11 @@ public class Project implements Serializable {
 			return false;
 		}
 
-		if (!(obj instanceof Project)) {
+		if (!(obj instanceof JiraProject)) {
 			return false;
 		}
 
-		Project that = (Project) obj;
+		JiraProject that = (JiraProject) obj;
 
 		return this.name.equals(that.name);
 	}
@@ -216,25 +216,25 @@ public class Project implements Serializable {
 		return this.name;
 	}
 
-	public IssueType[] getIssueTypes() {
+	public JiraIssueType[] getIssueTypes() {
 		return issueTypes;
 	}
 
-	public void setIssueTypes(IssueType[] issueTypes) {
+	public void setIssueTypes(JiraIssueType[] issueTypes) {
 		this.issueTypes = issueTypes;
-		this.issueTypesById = new HashMap<String, IssueType>();
+		this.issueTypesById = new HashMap<String, JiraIssueType>();
 		if (issueTypes != null) {
-			for (IssueType type : issueTypes) {
+			for (JiraIssueType type : issueTypes) {
 				issueTypesById.put(type.getId(), type);
 			}
 		}
 	}
 
-	public SecurityLevel[] getSecurityLevels() {
+	public JiraSecurityLevel[] getSecurityLevels() {
 		return securityLevels;
 	}
 
-	public void setSecurityLevels(SecurityLevel[] securityLevels) {
+	public void setSecurityLevels(JiraSecurityLevel[] securityLevels) {
 		this.securityLevels = securityLevels;
 	}
 
@@ -246,7 +246,7 @@ public class Project implements Serializable {
 		return details;
 	}
 
-	public IssueType getIssueTypeById(String typeId) {
+	public JiraIssueType getIssueTypeById(String typeId) {
 		if (issueTypesById != null) {
 			return issueTypesById.get(typeId);
 		}

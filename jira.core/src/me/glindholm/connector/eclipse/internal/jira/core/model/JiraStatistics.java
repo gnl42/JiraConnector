@@ -21,13 +21,13 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 /**
  * @author Steffen Pingel
  */
-public class Statistics {
+public class JiraStatistics {
 
 	private long startTime;
 
 	private final MultiStatus status;
 
-	public Statistics() {
+	public JiraStatistics() {
 		status = new MultiStatus(JiraCorePlugin.ID_PLUGIN, 0, "", null); //$NON-NLS-1$
 	}
 

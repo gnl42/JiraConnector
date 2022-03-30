@@ -45,15 +45,15 @@ public class JiraIssue implements Serializable {
 
 	private String description;
 
-	private Project project;
+	private JiraProject project;
 
-	private IssueType type;
+	private JiraIssueType type;
 
-	private Priority priority;
+	private JiraPriority priority;
 
 	private JiraStatus status;
 
-	private Resolution resolution;
+	private JiraResolution resolution;
 
 	private String assignee;
 
@@ -67,11 +67,11 @@ public class JiraIssue implements Serializable {
 
 	private Date updated;
 
-	private Version[] reportedVersions = null;
+	private JiraVersion[] reportedVersions = null;
 
-	private Version[] fixVersions = null;
+	private JiraVersion[] fixVersions = null;
 
-	private Component[] components = null;
+	private JiraComponent[] components = null;
 
 	private Date due;
 
@@ -79,7 +79,7 @@ public class JiraIssue implements Serializable {
 
 	private int votes;
 
-	private Comment[] comments = new Comment[0];
+	private JiraComment[] comments = new JiraComment[0];
 
 	private Long initialEstimate;
 
@@ -93,19 +93,19 @@ public class JiraIssue implements Serializable {
 
 	private String url;
 
-	private Attachment[] attachments = new Attachment[0];
+	private JiraAttachment[] attachments = new JiraAttachment[0];
 
-	private CustomField[] customFields = new CustomField[0];
+	private JiraCustomField[] customFields = new JiraCustomField[0];
 
-	private IssueField[] editableFields = new IssueField[0];
+	private JiraIssueField[] editableFields = new JiraIssueField[0];
 
-	private Subtask[] subtasks = new Subtask[0];
+	private JiraSubtask[] subtasks = new JiraSubtask[0];
 
-	private IssueLink[] issueLinks = new IssueLink[0];
+	private JiraIssueLink[] issueLinks = new JiraIssueLink[0];
 
 	private JiraWorkLog[] worklogs = new JiraWorkLog[0];
 
-	private SecurityLevel securityLevel;
+	private JiraSecurityLevel securityLevel;
 
 	private boolean markupDetected;
 
@@ -161,11 +161,11 @@ public class JiraIssue implements Serializable {
 		this.assignee = asignee;
 	}
 
-	public Component[] getComponents() {
+	public JiraComponent[] getComponents() {
 		return this.components;
 	}
 
-	public void setComponents(Component[] components) {
+	public void setComponents(JiraComponent[] components) {
 		this.components = components;
 	}
 
@@ -198,19 +198,19 @@ public class JiraIssue implements Serializable {
 		return hasDueDate;
 	}
 
-	public Version[] getFixVersions() {
+	public JiraVersion[] getFixVersions() {
 		return this.fixVersions;
 	}
 
-	public void setFixVersions(Version[] fixVersions) {
+	public void setFixVersions(JiraVersion[] fixVersions) {
 		this.fixVersions = fixVersions;
 	}
 
-	public Priority getPriority() {
+	public JiraPriority getPriority() {
 		return this.priority;
 	}
 
-	public void setPriority(Priority priority) {
+	public void setPriority(JiraPriority priority) {
 		this.priority = priority;
 	}
 
@@ -222,11 +222,11 @@ public class JiraIssue implements Serializable {
 		this.reporter = reporter;
 	}
 
-	public Resolution getResolution() {
+	public JiraResolution getResolution() {
 		return this.resolution;
 	}
 
-	public void setResolution(Resolution resolution) {
+	public void setResolution(JiraResolution resolution) {
 		this.resolution = resolution;
 	}
 
@@ -246,11 +246,11 @@ public class JiraIssue implements Serializable {
 		this.summary = summary;
 	}
 
-	public IssueType getType() {
+	public JiraIssueType getType() {
 		return this.type;
 	}
 
-	public void setType(IssueType type) {
+	public void setType(JiraIssueType type) {
 		this.type = type;
 	}
 
@@ -262,11 +262,11 @@ public class JiraIssue implements Serializable {
 		this.updated = updated;
 	}
 
-	public Version[] getReportedVersions() {
+	public JiraVersion[] getReportedVersions() {
 		return this.reportedVersions;
 	}
 
-	public void setReportedVersions(Version[] reportedVersions) {
+	public void setReportedVersions(JiraVersion[] reportedVersions) {
 		this.reportedVersions = reportedVersions;
 	}
 
@@ -278,11 +278,11 @@ public class JiraIssue implements Serializable {
 		this.votes = votes;
 	}
 
-	public Comment[] getComments() {
+	public JiraComment[] getComments() {
 		return this.comments;
 	}
 
-	public void setComments(Comment[] comments) {
+	public void setComments(JiraComment[] comments) {
 		this.comments = comments;
 	}
 
@@ -294,11 +294,11 @@ public class JiraIssue implements Serializable {
 		this.environment = environment;
 	}
 
-	public Project getProject() {
+	public JiraProject getProject() {
 		return this.project;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(JiraProject project) {
 		this.project = project;
 	}
 
@@ -373,16 +373,16 @@ public class JiraIssue implements Serializable {
 		return this.key + " " + this.summary; //$NON-NLS-1$
 	}
 
-	public Attachment[] getAttachments() {
+	public JiraAttachment[] getAttachments() {
 		return attachments;
 	}
 
-	public void setAttachments(Attachment[] attachments) {
+	public void setAttachments(JiraAttachment[] attachments) {
 		this.attachments = attachments;
 	}
 
-	public Attachment getAttachmentById(String id) {
-		for (Attachment attachment : this.attachments) {
+	public JiraAttachment getAttachmentById(String id) {
+		for (JiraAttachment attachment : this.attachments) {
 			if (attachment.getId().equals(id)) {
 				return attachment;
 			}
@@ -390,16 +390,16 @@ public class JiraIssue implements Serializable {
 		return null;
 	}
 
-	public void setCustomFields(CustomField[] customFields) {
+	public void setCustomFields(JiraCustomField[] customFields) {
 		this.customFields = customFields;
 	}
 
-	public CustomField[] getCustomFields() {
+	public JiraCustomField[] getCustomFields() {
 		return customFields;
 	}
 
-	public CustomField getCustomFieldById(String fieldId) {
-		for (CustomField field : getCustomFields()) {
+	public JiraCustomField getCustomFieldById(String fieldId) {
+		for (JiraCustomField field : getCustomFields()) {
 			if (fieldId.equals(field.getId())) {
 				return field;
 			}
@@ -407,19 +407,19 @@ public class JiraIssue implements Serializable {
 		return null;
 	}
 
-	public Subtask[] getSubtasks() {
+	public JiraSubtask[] getSubtasks() {
 		return subtasks;
 	}
 
-	public void setSubtasks(Subtask[] subtasks) {
+	public void setSubtasks(JiraSubtask[] subtasks) {
 		this.subtasks = subtasks;
 	}
 
-	public IssueLink[] getIssueLinks() {
+	public JiraIssueLink[] getIssueLinks() {
 		return issueLinks;
 	}
 
-	public void setIssueLinks(IssueLink[] issueLinks) {
+	public void setIssueLinks(JiraIssueLink[] issueLinks) {
 		this.issueLinks = issueLinks;
 	}
 
@@ -491,10 +491,10 @@ public class JiraIssue implements Serializable {
 		// TODO add other fields
 
 		if (field.startsWith("customfield_")) { //$NON-NLS-1$
-			for (CustomField customField : customFields) {
+			for (JiraCustomField customField : customFields) {
 				if (customField.getId().equals(field)) {
 					List<String> values = customField.getValues();
-					values.remove(CustomField.NONE_ALLOWED_VALUE);
+					values.remove(JiraCustomField.NONE_ALLOWED_VALUE);
 					return values.toArray(new String[values.size()]);
 				}
 			}
@@ -535,11 +535,11 @@ public class JiraIssue implements Serializable {
 //		}
 //	}
 
-	public SecurityLevel getSecurityLevel() {
+	public JiraSecurityLevel getSecurityLevel() {
 		return securityLevel;
 	}
 
-	public void setSecurityLevel(SecurityLevel securityLevel) {
+	public void setSecurityLevel(JiraSecurityLevel securityLevel) {
 		this.securityLevel = securityLevel;
 	}
 
@@ -587,11 +587,11 @@ public class JiraIssue implements Serializable {
 		return this.rank;
 	}
 
-	public IssueField[] getEditableFields() {
+	public JiraIssueField[] getEditableFields() {
 		return editableFields;
 	}
 
-	public void setEditableFields(IssueField[] editableFields) {
+	public void setEditableFields(JiraIssueField[] editableFields) {
 		this.editableFields = editableFields;
 	}
 

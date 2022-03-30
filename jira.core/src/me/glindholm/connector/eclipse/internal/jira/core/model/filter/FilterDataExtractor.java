@@ -20,13 +20,13 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 
 /**
@@ -151,9 +151,9 @@ public abstract class FilterDataExtractor {
 	 * @param components
 	 * @return
 	 */
-	protected Collection<String> getComponentIds(Collection<Component> components) {
-		return Collections2.transform(components, new Function<Component, String>() {
-			public String apply(Component from) {
+	protected Collection<String> getComponentIds(Collection<JiraComponent> components) {
+		return Collections2.transform(components, new Function<JiraComponent, String>() {
+			public String apply(JiraComponent from) {
 				return from.getId();
 			}
 		});
@@ -165,9 +165,9 @@ public abstract class FilterDataExtractor {
 	 * @param issueTypes
 	 * @return
 	 */
-	protected Collection<String> getIssueTypeIds(Collection<IssueType> issueTypes) {
-		return Collections2.transform(issueTypes, new Function<IssueType, String>() {
-			public String apply(IssueType from) {
+	protected Collection<String> getIssueTypeIds(Collection<JiraIssueType> issueTypes) {
+		return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
+			public String apply(JiraIssueType from) {
 				return from.getId();
 			}
 		});
@@ -179,9 +179,9 @@ public abstract class FilterDataExtractor {
 	 * @param issueTypes
 	 * @return
 	 */
-	protected Collection<String> getIssueTypeNames(Collection<IssueType> issueTypes) {
-		return Collections2.transform(issueTypes, new Function<IssueType, String>() {
-			public String apply(IssueType from) {
+	protected Collection<String> getIssueTypeNames(Collection<JiraIssueType> issueTypes) {
+		return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
+			public String apply(JiraIssueType from) {
 				return putInDoubleQuotes(from.getName());
 			}
 		});
@@ -193,9 +193,9 @@ public abstract class FilterDataExtractor {
 	 * @param priorities
 	 * @return
 	 */
-	protected Collection<String> getPriorityIds(Collection<Priority> priorities) {
-		return Collections2.transform(priorities, new Function<Priority, String>() {
-			public String apply(Priority from) {
+	protected Collection<String> getPriorityIds(Collection<JiraPriority> priorities) {
+		return Collections2.transform(priorities, new Function<JiraPriority, String>() {
+			public String apply(JiraPriority from) {
 				return from.getId();
 			}
 		});
@@ -207,9 +207,9 @@ public abstract class FilterDataExtractor {
 	 * @param resolutions
 	 * @return
 	 */
-	protected Collection<String> getResolutionIds(Collection<Resolution> resolutions) {
-		return Collections2.transform(resolutions, new Function<Resolution, String>() {
-			public String apply(Resolution from) {
+	protected Collection<String> getResolutionIds(Collection<JiraResolution> resolutions) {
+		return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
+			public String apply(JiraResolution from) {
 				return from.getId();
 			}
 		});
@@ -221,9 +221,9 @@ public abstract class FilterDataExtractor {
 	 * @param resolutions
 	 * @return
 	 */
-	protected Collection<? extends String> getResolutionNames(List<Resolution> resolutions) {
-		return Collections2.transform(resolutions, new Function<Resolution, String>() {
-			public String apply(Resolution from) {
+	protected Collection<? extends String> getResolutionNames(List<JiraResolution> resolutions) {
+		return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
+			public String apply(JiraResolution from) {
 				return putInDoubleQuotes(from.getName());
 			}
 		});
@@ -249,9 +249,9 @@ public abstract class FilterDataExtractor {
 	 * @param projects
 	 * @return
 	 */
-	protected Collection<String> getProjectIds(List<Project> projects) {
-		return Collections2.transform(projects, new Function<Project, String>() {
-			public String apply(Project from) {
+	protected Collection<String> getProjectIds(List<JiraProject> projects) {
+		return Collections2.transform(projects, new Function<JiraProject, String>() {
+			public String apply(JiraProject from) {
 				return from.getId();
 			}
 		});
@@ -263,9 +263,9 @@ public abstract class FilterDataExtractor {
 	 * @param projects
 	 * @return
 	 */
-	protected Collection<String> getProjectKeys(Collection<Project> projects) {
-		return Collections2.transform(projects, new Function<Project, String>() {
-			public String apply(Project from) {
+	protected Collection<String> getProjectKeys(Collection<JiraProject> projects) {
+		return Collections2.transform(projects, new Function<JiraProject, String>() {
+			public String apply(JiraProject from) {
 				return from.getKey();
 			}
 		});
@@ -277,9 +277,9 @@ public abstract class FilterDataExtractor {
 	 * @param versions
 	 * @return list of version integer identifiers
 	 */
-	protected Collection<String> getVersionIds(Collection<Version> versions) {
-		return Collections2.transform(versions, new Function<Version, String>() {
-			public String apply(Version from) {
+	protected Collection<String> getVersionIds(Collection<JiraVersion> versions) {
+		return Collections2.transform(versions, new Function<JiraVersion, String>() {
+			public String apply(JiraVersion from) {
 				return from.getId();
 			}
 		});
@@ -291,9 +291,9 @@ public abstract class FilterDataExtractor {
 	 * @param versions
 	 * @return list of version names in double quotes
 	 */
-	protected Collection<String> getVersionNames(Collection<Version> versions) {
-		return Collections2.transform(versions, new Function<Version, String>() {
-			public String apply(Version from) {
+	protected Collection<String> getVersionNames(Collection<JiraVersion> versions) {
+		return Collections2.transform(versions, new Function<JiraVersion, String>() {
+			public String apply(JiraVersion from) {
 				return putInDoubleQuotes(from.getName());
 			}
 		});

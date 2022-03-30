@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 Brock Janiczak and others.
+ * Copyright (c) 2004, 2008 Eugene Kuleshov and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Brock Janiczak - initial API and implementation
+ *     Eugene Kuleshov - initial API and implementation
+ *     Tasktop Technologies - improvements
  *******************************************************************************/
 
 package me.glindholm.connector.eclipse.internal.jira.core.model;
@@ -14,28 +15,28 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author Brock Janiczak
+ * TODO merge with IssueLink?
+ * 
+ * @author Eugene Kuleshov
  */
-public class Group implements Serializable {
+public class JiraSubtask implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private final String issueId;
 
-	private User[] users;
+	private final String issueKey;
 
-	public String getName() {
-		return this.name;
+	public JiraSubtask(String issueId, String issueKey) {
+		this.issueId = issueId;
+		this.issueKey = issueKey;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getIssueId() {
+		return issueId;
 	}
 
-	public User[] getUsers() {
-		return this.users;
+	public String getIssueKey() {
+		return this.issueKey;
 	}
 
-	public void setUsers(User[] users) {
-		this.users = users;
-	}
 }

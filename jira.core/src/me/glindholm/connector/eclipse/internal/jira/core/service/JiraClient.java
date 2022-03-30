@@ -30,21 +30,21 @@ import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.SessionInfo;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Attachment;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAttachment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueField;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
-import me.glindholm.connector.eclipse.internal.jira.core.model.NamedFilter;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ProjectRole;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.SecurityLevel;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraNamedFilter;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProjectRole;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSecurityLevel;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import me.glindholm.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
@@ -198,7 +198,7 @@ public class JiraClient {
     public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
             throws JiraException {
         try {
-            Iterable<IssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
+            Iterable<JiraIssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
 
             getRestClient().transitionIssue(issue, actionKey, comment, fields);
 
@@ -291,7 +291,7 @@ public class JiraClient {
      */
     public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
         if (issue.getProject().getKey() == null) {
-            Project project = cache.getProjectById(issue.getProject().getId(), monitor);
+            JiraProject project = cache.getProjectById(issue.getProject().getId(), monitor);
             if (project != null) {
                 issue.getProject().setKey(project.getKey());
             }
@@ -381,7 +381,7 @@ public class JiraClient {
      *            Unique id for action to get fields for
      * @return array of field ids for given actionId
      */
-    public Iterable<IssueField> getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
+    public Iterable<JiraIssueField> getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
             throws JiraException {
         Iterable<JiraAction> actions = getAvailableActions(issueKey, monitor);
 
@@ -495,7 +495,7 @@ public class JiraClient {
         }
     }
 
-    public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
+    public JiraIssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getIssueTypes();
         } catch (RestClientException e) {
@@ -536,7 +536,7 @@ public class JiraClient {
      *
      * @return List of all filters taht are stored and executed on the server
      */
-    public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
+    public JiraNamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getFavouriteFilters();
         } catch (RestClientException e) {
@@ -546,7 +546,7 @@ public class JiraClient {
 //		return soapClient.getNamedFilters(monitor);
     }
 
-    public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
+    public JiraPriority[] getPriorities(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getPriorities();
         } catch (RestClientException e) {
@@ -556,7 +556,7 @@ public class JiraClient {
 //		return soapClient.getPriorities(monitor);
     }
 
-    public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
+    public JiraProject[] getProjects(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getProjects();
         } catch (RestClientException e) {
@@ -566,7 +566,7 @@ public class JiraClient {
 //		return soapClient.getProjects(monitor);
     }
 
-    public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
+    public JiraResolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getResolutions();
         } catch (RestClientException e) {
@@ -586,11 +586,11 @@ public class JiraClient {
         }
     }
 
-    public ServerInfo getServerInfo(final IProgressMonitor monitor) throws JiraException {
+    public JiraServerInfo getServerInfo(final IProgressMonitor monitor) throws JiraException {
         // get server information through SOAP
 //		ServerInfo serverInfo = soapClient.getServerInfo(monitor);
         try {
-            ServerInfo serverInfo = getRestClient().getServerInfo();
+            JiraServerInfo serverInfo = getRestClient().getServerInfo();
 
             // get character encoding through web
 //			WebServerInfo webServerInfo = webClient.getWebServerInfo(monitor);
@@ -626,7 +626,7 @@ public class JiraClient {
 //		return soapClient.getSubTaskIssueTypes(projectId, monitor);
 //	}
 
-    public void getProjectDetails(Project project) throws JiraException {
+    public void getProjectDetails(JiraProject project) throws JiraException {
         try {
             getRestClient().getProjectDetails(project);
         } catch (RestClientException e) {
@@ -690,7 +690,7 @@ public class JiraClient {
 //
 //	}
 
-    public InputStream getAttachment(JiraIssue jiraIssue, Attachment attachment, IProgressMonitor monitor)
+    public InputStream getAttachment(JiraIssue jiraIssue, JiraAttachment attachment, IProgressMonitor monitor)
             throws JiraException {
         try {
             return getRestClient().getAttachment(attachment.getContent());
@@ -714,8 +714,8 @@ public class JiraClient {
 
         if (query instanceof FilterDefinition) {
             findIssues((FilterDefinition) query, collector, monitor);
-        } else if (query instanceof NamedFilter) {
-            findIssues(((NamedFilter) query).getJql(), collector, monitor);
+        } else if (query instanceof JiraNamedFilter) {
+            findIssues(((JiraNamedFilter) query).getJql(), collector, monitor);
 //			executeNamedFilter((NamedFilter) query, collector, monitor);
         } else {
             throw new IllegalArgumentException("Unknown query type: " + query.getClass()); //$NON-NLS-1$
@@ -747,7 +747,7 @@ public class JiraClient {
 //		return soapClient.getWorkLogs(issueKey, monitor);
 //	}
 
-    public SecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
+    public JiraSecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
         return getRestClient().getSecurityLevels(projectKey);
 
 //		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
@@ -763,12 +763,12 @@ public class JiraClient {
 //		return soapClient.addWorkLog(issueKey, log, monitor);
     }
 
-    public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+    public JiraProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
 //		return soapClient.getProjectRoles(monitor);
 
         // not used
         // restClient.getProjectRolesRestClient().getRoles(projectUri, progressMonitor)
-        return new ProjectRole[0];
+        return new JiraProjectRole[0];
 
         // TODO rest https://studio.atlassian.com/browse/JRJC-108
     }

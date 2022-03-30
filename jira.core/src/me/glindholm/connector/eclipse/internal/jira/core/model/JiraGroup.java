@@ -7,7 +7,6 @@
  *
  * Contributors:
  *     Brock Janiczak - initial API and implementation
- *     Tasktop Technologies - improvements
  *******************************************************************************/
 
 package me.glindholm.connector.eclipse.internal.jira.core.model;
@@ -17,28 +16,12 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-public class Component implements Serializable {
-
+public class JiraGroup implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	private String id;
 
 	private String name;
 
-	public Component(String id) {
-		this.id = id;
-	}
-
-	public Component() {
-	}
-
-	public String getId() {
-		return this.id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
+	private JiraUser[] users;
 
 	public String getName() {
 		return this.name;
@@ -48,9 +31,11 @@ public class Component implements Serializable {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return this.name;
+	public JiraUser[] getUsers() {
+		return this.users;
 	}
 
+	public void setUsers(JiraUser[] users) {
+		this.users = users;
+	}
 }

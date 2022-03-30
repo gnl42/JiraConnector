@@ -20,7 +20,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 
 /**
  * Wizard for creating new JIRA tasks in a rich editor.
@@ -48,7 +48,7 @@ public class NewJiraTaskWizard extends NewTaskWizard implements INewWizard {
 
 	@Override
 	protected ITaskMapping getInitializationData() {
-		final Project project = projectPage.getSelectedProject();
+		final JiraProject project = projectPage.getSelectedProject();
 		return new TaskMapping() {
 			@Override
 			public String getProduct() {

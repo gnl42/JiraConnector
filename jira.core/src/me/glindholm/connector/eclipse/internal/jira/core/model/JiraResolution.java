@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Assert;
 /**
  * @author Brock Janiczak
  */
-public class Resolution implements Serializable {
+public class JiraResolution implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,14 +43,14 @@ public class Resolution implements Serializable {
 
 	private String icon;
 
-	public Resolution(String id, String name) {
+	public JiraResolution(String id, String name) {
 		Assert.isNotNull(id);
 		Assert.isNotNull(name);
 		this.id = id;
 		this.name = name;
 	}
 
-	public Resolution(String id, String name, String description, String icon) {
+	public JiraResolution(String id, String name, String description, String icon) {
 		this(id, name);
 		this.description = description;
 		this.icon = icon;
@@ -94,11 +94,11 @@ public class Resolution implements Serializable {
 			return false;
 		}
 
-		if (!(obj instanceof Resolution)) {
+		if (!(obj instanceof JiraResolution)) {
 			return false;
 		}
 
-		Resolution that = (Resolution) obj;
+		JiraResolution that = (JiraResolution) obj;
 
 		return this.id.equals(that.id);
 	}

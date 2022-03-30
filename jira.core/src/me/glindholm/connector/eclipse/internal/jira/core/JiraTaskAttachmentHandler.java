@@ -28,7 +28,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.UnsubmittedTaskAttachment;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Attachment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAttachment;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
@@ -56,7 +56,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
 			JiraIssue issue = client.getIssueByKey(task.getTaskKey(), monitor);
-			Attachment jiraAttachment = issue.getAttachmentById(attachmentId);
+			JiraAttachment jiraAttachment = issue.getAttachmentById(attachmentId);
 			if (jiraAttachment == null) {
 				throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Attachment with id \"" //$NON-NLS-1$
 						+ attachmentId + "\" for JIRA issue \"" + task.getTaskKey() + "\" not found")); //$NON-NLS-1$ //$NON-NLS-2$

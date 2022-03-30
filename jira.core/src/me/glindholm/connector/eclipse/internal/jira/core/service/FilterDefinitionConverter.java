@@ -40,13 +40,13 @@ import com.google.common.collect.Collections2;
 
 import me.glindholm.connector.eclipse.internal.jira.core.InvalidJiraQueryException;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ClassicFilterDataExtractor;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ComponentFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
@@ -160,9 +160,9 @@ public class FilterDefinitionConverter {
 
 		JiraFieldsNames jiraField = JiraFieldsNames.createClassic();
 		List<String> projectIds = getIds(params, jiraField.PROJECT());
-		List<Project> projects = new ArrayList<Project>();
+		List<JiraProject> projects = new ArrayList<JiraProject>();
 		for (String projectId : projectIds) {
-			Project project = client.getCache().getProjectById(projectId);
+			JiraProject project = client.getCache().getProjectById(projectId);
 			if (update && (project == null || !project.hasDetails())) {
 				project = client.getCache().refreshProjectDetails(projectId, monitor);
 			}
@@ -178,21 +178,21 @@ public class FilterDefinitionConverter {
 		}
 
 		if (projects.size() > 0) {
-			filter.setProjectFilter(new ProjectFilter(projects.toArray(new Project[projects.size()])));
+			filter.setProjectFilter(new ProjectFilter(projects.toArray(new JiraProject[projects.size()])));
 
 			List<String> componentIds = getIds(params, jiraField.COMPONENT());
-			Set<Component> components = new LinkedHashSet<Component>();
-			Set<Version> versions = new LinkedHashSet<Version>();
+			Set<JiraComponent> components = new LinkedHashSet<JiraComponent>();
+			Set<JiraVersion> versions = new LinkedHashSet<JiraVersion>();
 
 			boolean hasNoComponent = false;
 
-			for (Project project : projects) {
+			for (JiraProject project : projects) {
 				if (!project.hasDetails()) {
 					continue;
 				}
 				for (String componentId : componentIds) {
-					Component[] projectComponents = project.getComponents();
-					for (Component component : projectComponents) {
+					JiraComponent[] projectComponents = project.getComponents();
+					for (JiraComponent component : projectComponents) {
 						if (component.getId().equals(componentId)) {
 							components.add(component);
 						}
@@ -205,22 +205,22 @@ public class FilterDefinitionConverter {
 				versions.addAll(Arrays.asList(project.getVersions()));
 			}
 			if (!componentIds.isEmpty()) {
-				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()]),
+				filter.setComponentFilter(new ComponentFilter(components.toArray(new JiraComponent[components.size()]),
 						hasNoComponent));
 			}
 
-			Version[] projectVersions = versions.toArray(new Version[versions.size()]);
+			JiraVersion[] projectVersions = versions.toArray(new JiraVersion[versions.size()]);
 			filter.setFixForVersionFilter(createVersionFilter(getIds(params, jiraField.FIX_VERSION()), projectVersions));
 			filter.setReportedInVersionFilter(createVersionFilter(getIds(params, jiraField.AFFECTED_VERSION()),
 					projectVersions));
 		}
 
 		List<String> typeIds = getIds(params, JiraFields.ISSUE_TYPE.getClassic());
-		List<IssueType> issueTypes = new ArrayList<IssueType>();
+		List<JiraIssueType> issueTypes = new ArrayList<JiraIssueType>();
 		for (String typeId : typeIds) {
-			IssueType issueType = null;
+			JiraIssueType issueType = null;
 			if (projects.size() > 0) {
-				for (Project project : projects) {
+				for (JiraProject project : projects) {
 					issueType = project.getIssueTypeById(typeId);
 					if (issueType != null) {
 						break;
@@ -240,7 +240,7 @@ public class FilterDefinitionConverter {
 			}
 		}
 		if (!issueTypes.isEmpty()) {
-			filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes.toArray(new IssueType[issueTypes.size()])));
+			filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes.toArray(new JiraIssueType[issueTypes.size()])));
 		}
 
 		List<String> statusIds = getIds(params, JiraFields.STATUS.getClassic());
@@ -258,11 +258,11 @@ public class FilterDefinitionConverter {
 		}
 
 		List<String> resolutionIds = getIds(params, JiraFields.RESOLUTION.getClassic());
-		List<Resolution> resolutions = new ArrayList<Resolution>();
+		List<JiraResolution> resolutions = new ArrayList<JiraResolution>();
 		boolean unresolved = false;
 		for (String resolutionId : resolutionIds) {
 			if (!JiraFieldSpecialValue.UNRESOLVED.getClassic().equals(resolutionId)) {
-				Resolution resolution = client.getCache().getResolutionById(resolutionId);
+				JiraResolution resolution = client.getCache().getResolutionById(resolutionId);
 				if (resolution != null) {
 					resolutions.add(resolution);
 				} else if (validate) {
@@ -273,15 +273,15 @@ public class FilterDefinitionConverter {
 			}
 		}
 		if (!resolutionIds.isEmpty()) {
-			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new Resolution[resolutions.size()])));
+			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new JiraResolution[resolutions.size()])));
 		} else if (unresolved) {
-			filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
+			filter.setResolutionFilter(new ResolutionFilter(new JiraResolution[0]));
 		}
 
 		List<String> priorityIds = getIds(params, JiraFields.PRIORITY.getClassic());
-		List<Priority> priorities = new ArrayList<Priority>();
+		List<JiraPriority> priorities = new ArrayList<JiraPriority>();
 		for (String priorityId : priorityIds) {
-			Priority priority = client.getCache().getPriorityById(priorityId);
+			JiraPriority priority = client.getCache().getPriorityById(priorityId);
 			if (priority != null) {
 				priorities.add(priority);
 			} else if (validate) {
@@ -289,7 +289,7 @@ public class FilterDefinitionConverter {
 			}
 		}
 		if (!priorities.isEmpty()) {
-			filter.setPriorityFilter(new PriorityFilter(priorities.toArray(new Priority[priorities.size()])));
+			filter.setPriorityFilter(new PriorityFilter(priorities.toArray(new JiraPriority[priorities.size()])));
 		}
 
 		List<String> queries = getIds(params, QUERY_KEY);
@@ -482,7 +482,7 @@ public class FilterDefinitionConverter {
 		return whereClause + " " + orderByClause; //$NON-NLS-1$
 	}
 
-	private VersionFilter createVersionFilter(List<String> fixForIds, Version[] projectVersions) {
+	private VersionFilter createVersionFilter(List<String> fixForIds, JiraVersion[] projectVersions) {
 		if (fixForIds.isEmpty()) {
 			return null;
 		}
@@ -490,7 +490,7 @@ public class FilterDefinitionConverter {
 		boolean hasNoVersions = false;
 		boolean hasReleasedVersions = false;
 		boolean hasUnreleasedVersions = false;
-		List<Version> fixForversions = new ArrayList<Version>();
+		List<JiraVersion> fixForversions = new ArrayList<JiraVersion>();
 		for (String fixForId : fixForIds) {
 			if (fixForId.equals(JiraFieldSpecialValue.VERSION_NONE.getClassic())) {
 				hasNoVersions = true;
@@ -502,14 +502,14 @@ public class FilterDefinitionConverter {
 				hasUnreleasedVersions = true;
 			}
 
-			for (Version projectVersion : projectVersions) {
+			for (JiraVersion projectVersion : projectVersions) {
 				if (projectVersion.getId().equals(fixForId)) {
 					fixForversions.add(projectVersion);
 				}
 			}
 		}
 
-		return new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()]), hasNoVersions,
+		return new VersionFilter(fixForversions.toArray(new JiraVersion[fixForversions.size()]), hasNoVersions,
 				hasReleasedVersions, hasUnreleasedVersions);
 
 	}

@@ -17,35 +17,30 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-public class NamedFilter implements JiraFilter, Serializable {
-	private static final long serialVersionUID = 1L;
+public class JiraUser implements Serializable {
 
-	private String id;
+	private static final long serialVersionUID = 1L;
 
 	private String name;
 
-	private String description;
+	private String email;
 
-	private String author;
+	private String fullName;
 
-	private String jql;
-
-	private String viewUrl;
-
-	public String getDescription() {
-		return this.description;
+	public String getEmail() {
+		return this.email;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getId() {
-		return this.id;
+	public String getFullName() {
+		return this.fullName;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	public String getName() {
@@ -56,38 +51,8 @@ public class NamedFilter implements JiraFilter, Serializable {
 		this.name = name;
 	}
 
-	public String getAuthor() {
-		return this.author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return this.name;
+		return this.name + "(" + this.fullName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
-
-	public void setJql(String jql) {
-		this.jql = jql;
-	}
-
-	public String getJql() {
-		return jql;
-	}
-
-	public void setViewUrl(String url) {
-		this.viewUrl = url;
-	}
-
-	public String getViewUrl() {
-		return viewUrl;
-	}
-
 }

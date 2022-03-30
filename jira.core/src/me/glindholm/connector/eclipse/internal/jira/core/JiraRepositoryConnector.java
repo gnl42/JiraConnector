@@ -44,8 +44,8 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
@@ -355,12 +355,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Project[] projects = client.getCache().getProjects();
+		JiraProject[] projects = client.getCache().getProjects();
 		if (projects != null && projects.length > 0) {
 			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
 			StringBuilder sb = new StringBuilder("("); //$NON-NLS-1$
 			String sep = ""; //$NON-NLS-1$
-			for (Project project : projects) {
+			for (JiraProject project : projects) {
 				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)"); //$NON-NLS-1$ //$NON-NLS-2$
 				sep = "|"; //$NON-NLS-1$
 			}
@@ -402,15 +402,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	static PriorityLevel getPriorityLevel(String priorityId) {
-		if (Priority.BLOCKER_ID.equals(priorityId)) {
+		if (JiraPriority.BLOCKER_ID.equals(priorityId)) {
 			return PriorityLevel.P1;
-		} else if (Priority.CRITICAL_ID.equals(priorityId)) {
+		} else if (JiraPriority.CRITICAL_ID.equals(priorityId)) {
 			return PriorityLevel.P2;
-		} else if (Priority.MAJOR_ID.equals(priorityId)) {
+		} else if (JiraPriority.MAJOR_ID.equals(priorityId)) {
 			return PriorityLevel.P3;
-		} else if (Priority.MINOR_ID.equals(priorityId)) {
+		} else if (JiraPriority.MINOR_ID.equals(priorityId)) {
 			return PriorityLevel.P4;
-		} else if (Priority.TRIVIAL_ID.equals(priorityId)) {
+		} else if (JiraPriority.TRIVIAL_ID.equals(priorityId)) {
 			return PriorityLevel.P5;
 		}
 		return PriorityLevel.getDefault();

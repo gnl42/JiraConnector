@@ -69,7 +69,7 @@ import org.eclipse.ui.progress.UIJob;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ProjectFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
@@ -111,8 +111,8 @@ public class JiraProjectPage extends WizardPage {
 		PatternFilter patternFilter = new PatternFilter() { // matching on project keys
 			@Override
 			protected boolean isLeafMatch(Viewer viewer, Object element) {
-				if (element instanceof Project) {
-					Project project = (Project) element;
+				if (element instanceof JiraProject) {
+					JiraProject project = (JiraProject) element;
 					if (wordMatches(project.getKey())) {
 						return true;
 					}
@@ -132,8 +132,8 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof Project) {
-					Project project = (Project) element;
+				if (element instanceof JiraProject) {
+					JiraProject project = (JiraProject) element;
 					return project.getName() + "  (" + project.getKey() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				return ""; //$NON-NLS-1$
@@ -143,8 +143,8 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.setContentProvider(new ITreeContentProvider() {
 
 			public Object[] getChildren(Object parentElement) {
-				if (parentElement instanceof Project[]) {
-					return (Project[]) parentElement;
+				if (parentElement instanceof JiraProject[]) {
+					return (JiraProject[]) parentElement;
 				}
 				return null;
 			}
@@ -170,7 +170,7 @@ public class JiraProjectPage extends WizardPage {
 
 		updateProjectsFromRepository(false);
 
-		final Project[] projects = discoverProject();
+		final JiraProject[] projects = discoverProject();
 		if (projects != null && projects.length > 0) {
 			new UIJob("") { // waiting on delayed refresh of filtered tree //$NON-NLS-1$
 				@Override
@@ -216,8 +216,8 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.addFilter(new ViewerFilter() {
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				if (element instanceof Project) {
-					return (offlineButton != null && !offlineButton.getSelection()) || ((Project) element).hasDetails();
+				if (element instanceof JiraProject) {
+					return (offlineButton != null && !offlineButton.getSelection()) || ((JiraProject) element).hasDetails();
 				}
 				return false;
 			}
@@ -292,7 +292,7 @@ public class JiraProjectPage extends WizardPage {
 			}
 		}
 
-		Project[] projects = client.getCache().getProjects();
+		JiraProject[] projects = client.getCache().getProjects();
 		projectTree.getViewer().setInput(projects);
 		getWizard().getContainer().updateButtons();
 
@@ -303,25 +303,25 @@ public class JiraProjectPage extends WizardPage {
 		}
 	}
 
-	public Project getSelectedProject() {
+	public JiraProject getSelectedProject() {
 		IStructuredSelection selection = (IStructuredSelection) projectTree.getViewer().getSelection();
-		return (Project) selection.getFirstElement();
+		return (JiraProject) selection.getFirstElement();
 	}
 
-	private Project[] discoverProject() {
+	private JiraProject[] discoverProject() {
 		// TODO similarity with TasksUiUtil and Bugzilla implementation. consider adapting to TaskSelection or RepositoryTaskData
 		Object element = getSelectedElement();
 		if (element == null) {
-			return new Project[0];
+			return new JiraProject[0];
 		}
 		if (element instanceof ITask) {
 			ITask task = (ITask) element;
 			if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 				try {
 					TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
-					Project project = getProject(taskData);
+					JiraProject project = getProject(taskData);
 					if (project != null) {
-						return new Project[] { project };
+						return new JiraProject[] { project };
 					}
 				} catch (CoreException e) {
 					StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
@@ -342,7 +342,7 @@ public class JiraProjectPage extends WizardPage {
 				}
 			}
 		}
-		return new Project[0];
+		return new JiraProject[0];
 	}
 
 	private Object getSelectedElement() {
@@ -370,7 +370,7 @@ public class JiraProjectPage extends WizardPage {
 		return null;
 	}
 
-	private Project getProject(TaskData taskData) {
+	private JiraProject getProject(TaskData taskData) {
 		if (taskData != null) {
 			TaskAttribute attribute = taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
 			if (attribute != null) {

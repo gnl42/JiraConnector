@@ -31,16 +31,25 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import com.atlassian.jira.rest.client.IssueRestClient;
+import com.atlassian.jira.rest.client.domain.Attachment;
 import com.atlassian.jira.rest.client.domain.BasicComponent;
 import com.atlassian.jira.rest.client.domain.BasicIssue;
 import com.atlassian.jira.rest.client.domain.BasicIssueType;
 import com.atlassian.jira.rest.client.domain.BasicProject;
 import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.Comment;
 import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.IssueLink;
+import com.atlassian.jira.rest.client.domain.IssueType;
+import com.atlassian.jira.rest.client.domain.Priority;
+import com.atlassian.jira.rest.client.domain.Resolution;
+import com.atlassian.jira.rest.client.domain.ServerInfo;
 import com.atlassian.jira.rest.client.domain.Status;
+import com.atlassian.jira.rest.client.domain.Subtask;
 import com.atlassian.jira.rest.client.domain.Transition;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.atlassian.jira.rest.client.domain.Visibility;
 import com.atlassian.jira.rest.client.domain.Worklog;
 import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
@@ -54,26 +63,26 @@ import com.google.common.collect.ImmutableList;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraFieldType;
-import me.glindholm.connector.eclipse.internal.jira.core.model.AllowedValue;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Attachment;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Comment;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.CustomField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueField;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueLink;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAllowedValue;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAttachment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComment;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraCustomField;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueField;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueLink;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraNamedFilter;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSecurityLevel;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraSubtask;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
-import me.glindholm.connector.eclipse.internal.jira.core.model.NamedFilter;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.SecurityLevel;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Subtask;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 
@@ -86,16 +95,16 @@ public class JiraRestConverter {
         throw new Exception("Utility class"); //$NON-NLS-1$
     }
 
-    public static Project[] convertProjects(Iterable<BasicProject> allProjects) {
-        List<Project> projects = new ArrayList<Project>();
+    public static JiraProject[] convertProjects(Iterable<BasicProject> allProjects) {
+        List<JiraProject> projects = new ArrayList<>();
         for (BasicProject basicProject : allProjects) {
             projects.add(convert(basicProject));
         }
-        return projects.toArray(new Project[projects.size()]);
+        return projects.toArray(new JiraProject[projects.size()]);
     }
 
-    private static Project convert(BasicProject basicProject) {
-        Project project = new Project();
+    private static JiraProject convert(BasicProject basicProject) {
+        JiraProject project = new JiraProject();
 
         project.setName(basicProject.getName());
         project.setKey(basicProject.getKey());
@@ -104,33 +113,33 @@ public class JiraRestConverter {
         return project;
     }
 
-    public static Resolution[] convertResolutions(
-            Iterable<com.atlassian.jira.rest.client.domain.Resolution> allResolutions) {
-        List<Resolution> resolutions = new ArrayList<Resolution>();
+    public static JiraResolution[] convertResolutions(
+            Iterable<Resolution> allResolutions) {
+        List<JiraResolution> resolutions = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Resolution resolution : allResolutions) {
+        for (Resolution resolution : allResolutions) {
             resolutions.add(convert(resolution));
         }
 
-        return resolutions.toArray(new Resolution[resolutions.size()]);
+        return resolutions.toArray(new JiraResolution[resolutions.size()]);
     }
 
-    private static Resolution convert(com.atlassian.jira.rest.client.domain.Resolution resolution) {
-        return new Resolution(resolution.getId().toString(), resolution.getName(), resolution.getDescription(), null);
+    private static JiraResolution convert(Resolution resolution) {
+        return new JiraResolution(resolution.getId().toString(), resolution.getName(), resolution.getDescription(), null);
     }
 
-    public static Priority[] convertPriorities(Iterable<com.atlassian.jira.rest.client.domain.Priority> allPriorities) {
-        List<Priority> priorities = new ArrayList<Priority>();
+    public static JiraPriority[] convertPriorities(Iterable<Priority> allPriorities) {
+        List<JiraPriority> priorities = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Priority priority : allPriorities) {
+        for (Priority priority : allPriorities) {
             priorities.add(convert(priority));
         }
 
-        return priorities.toArray(new Priority[priorities.size()]);
+        return priorities.toArray(new JiraPriority[priorities.size()]);
     }
 
-    private static Priority convert(com.atlassian.jira.rest.client.domain.Priority priority) {
-        Priority outPriority = new Priority(priority.getId().toString());
+    private static JiraPriority convert(Priority priority) {
+        JiraPriority outPriority = new JiraPriority(priority.getId().toString());
 
         outPriority.setName(priority.getName());
         outPriority.setDescription(priority.getDescription());
@@ -150,9 +159,9 @@ public class JiraRestConverter {
         issue.setCustomFields(getCustomFieldsFromIssue(rawIssue));
         issue.setEditableFields(getEditableFieldsFromIssue(rawIssue));
 
-//		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
+        //		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
 
-        Project project = cache.getProjectByKey(rawIssue.getProject().getKey());
+        JiraProject project = cache.getProjectByKey(rawIssue.getProject().getKey());
         issue.setProject(project);
         if (project != null && !project.hasDetails()) {
             cache.refreshProjectDetails(project, monitor);
@@ -224,7 +233,7 @@ public class JiraRestConverter {
                 String id = json.getString(JiraRestFields.ID);
                 String name = json.getString(JiraRestFields.NAME);
 
-                SecurityLevel securityLevel = new SecurityLevel(id, name);
+                JiraSecurityLevel securityLevel = new JiraSecurityLevel(id, name);
 
                 issue.setSecurityLevel(securityLevel);
             } catch (JSONException e) {
@@ -304,26 +313,25 @@ public class JiraRestConverter {
         return issue;
     }
 
-//	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
-//		Map<String, IssueField> editableFieldsMap = new HashMap<String, IssueField>(editableFields.length + 1, 1);
-//
-//		// transform editable fields into HasMap
-//		for (IssueField editableField : editableFields) {
-//			editableFieldsMap.put(editableField.getId(), editableField);
-//		}
-//
-//		for (CustomField customField : customFields) {
-//			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
-//		}
-//	}
+    //	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
+    //		Map<String, IssueField> editableFieldsMap = new HashMap<String, IssueField>(editableFields.length + 1, 1);
+    //
+    //		// transform editable fields into HasMap
+    //		for (IssueField editableField : editableFields) {
+    //			editableFieldsMap.put(editableField.getId(), editableField);
+    //		}
+    //
+    //		for (CustomField customField : customFields) {
+    //			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
+    //		}
+    //	}
 
     private static boolean isVersionMissingInProjectCache(
-            Iterable<com.atlassian.jira.rest.client.domain.Version> affectedVersions,
-            Iterable<com.atlassian.jira.rest.client.domain.Version> fixVersions, Project project,
+            Iterable<Version> affectedVersions, Iterable<Version> fixVersions, JiraProject project,
             IProgressMonitor monitor) {
 
         if (affectedVersions != null) {
-            for (com.atlassian.jira.rest.client.domain.Version affectedVersion : affectedVersions) {
+            for (Version affectedVersion : affectedVersions) {
                 if (project.getVersion(affectedVersion.getName()) == null) {
                     return true;
                 }
@@ -331,7 +339,7 @@ public class JiraRestConverter {
         }
 
         if (fixVersions != null) {
-            for (com.atlassian.jira.rest.client.domain.Version fixVersion : fixVersions) {
+            for (Version fixVersion : fixVersions) {
                 if (project.getVersion(fixVersion.getName()) == null) {
                     return true;
                 }
@@ -342,7 +350,7 @@ public class JiraRestConverter {
 
     }
 
-    private static CustomField[] getCustomFieldsFromIssue(Issue issue) {
+    private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue) {
         JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
 
         if (editmeta != null) {
@@ -351,7 +359,7 @@ public class JiraRestConverter {
 
             if (fieldsFromEditMeta != null) {
 
-                List<CustomField> customFields = new ArrayList<CustomField>();
+                List<JiraCustomField> customFields = new ArrayList<>();
 
                 for (Field field : issue.getFields()) {
                     if (field.getId().startsWith("customfield") && field.getValue() != null) { //$NON-NLS-1$
@@ -368,7 +376,7 @@ public class JiraRestConverter {
                                     String longType = JsonParseUtil.getOptionalString(schema, "custom");
 
                                     if (longType != null) {
-                                        CustomField customField = generateCustomField(field, longType);
+                                        JiraCustomField customField = generateCustomField(field, longType);
                                         if (customField != null) {
                                             customFields.add(customField);
                                         }
@@ -396,14 +404,14 @@ public class JiraRestConverter {
                             }
                         } else {
                             // skip this (it is common to have not visible custom fields like GH Rank)
-//							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
-//									JiraCorePlugin.ID_PLUGIN, NLS.bind(
-//											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
+                            //							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+                            //									JiraCorePlugin.ID_PLUGIN, NLS.bind(
+                            //											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
                         }
                     }
                 }
 
-                return customFields.toArray(new CustomField[customFields.size()]);
+                return customFields.toArray(new JiraCustomField[customFields.size()]);
             } else {
                 StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
                         "Unable to retrieve fields' type information (edit meta). Skipping custom fields parsing.")); //$NON-NLS-1$
@@ -414,12 +422,12 @@ public class JiraRestConverter {
                     "Unable to retrieve fields' type information (edit meta). Skipping custom fields parsing.")); //$NON-NLS-1$
         }
 
-        return new CustomField[0];
+        return new JiraCustomField[0];
     }
 
-    private static IssueField[] getEditableFieldsFromIssue(Issue issue) {
+    private static JiraIssueField[] getEditableFieldsFromIssue(Issue issue) {
 
-        List<IssueField> editableFields = new ArrayList<IssueField>();
+        List<JiraIssueField> editableFields = new ArrayList<>();
 
         JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
 
@@ -436,12 +444,12 @@ public class JiraRestConverter {
                     while (keys.hasNext()) {
                         String key = (String) keys.next();
                         JSONObject jsonFieldFromEditMeta = fieldsFromEditMeta.getJSONObject(key);
-//
+                        //
                         if (jsonFieldFromEditMeta != null) {
                             boolean required = jsonFieldFromEditMeta.getBoolean("required");
                             String name = jsonFieldFromEditMeta.getString(JiraRestFields.NAME);
 
-                            IssueField editableField = new IssueField(key, name);
+                            JiraIssueField editableField = new JiraIssueField(key, name);
                             editableField.setRequired(required);
 
                             Optional<JSONArray> allowedValuesObject = JsonParseUtil.getOptionalArray(
@@ -449,7 +457,7 @@ public class JiraRestConverter {
 
                             if (allowedValuesObject != null
                                     && !Optional.<JSONArray> absent().equals(allowedValuesObject)) {
-                                List<AllowedValue> allowedValues = new ArrayList<AllowedValue>();
+                                List<JiraAllowedValue> allowedValues = new ArrayList<>();
 
                                 JSONArray alloweValuesArray = allowedValuesObject.get();
                                 for (int i = 0; i < alloweValuesArray.length(); ++i) {
@@ -457,7 +465,7 @@ public class JiraRestConverter {
                                     String optionalId = JsonParseUtil.getOptionalString(allowedValue, "id");
                                     String optionalValue = JsonParseUtil.getOptionalString(allowedValue, "value");
                                     if (optionalValue != null && optionalId != null) {
-                                        allowedValues.add(new AllowedValue(optionalId, optionalValue));
+                                        allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
 
                                     }
                                 }
@@ -511,13 +519,13 @@ public class JiraRestConverter {
         }
 
         if (editableFields.size() > 0) {
-            return editableFields.toArray(new IssueField[editableFields.size()]);
+            return editableFields.toArray(new JiraIssueField[editableFields.size()]);
         }
 
-        return new IssueField[0];
+        return new JiraIssueField[0];
     }
 
-    private static CustomField generateCustomField(Field field, String longType) {
+    private static JiraCustomField generateCustomField(Field field, String longType) {
 
         boolean readonly = false;
 
@@ -544,7 +552,7 @@ public class JiraRestConverter {
                 break;
             case MULTIUSERPICKER:
                 // no support for multi users on the Mylyn side
-//			values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
+                //			values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
                 values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
                 break;
             case USERPICKER:
@@ -575,7 +583,7 @@ public class JiraRestConverter {
 
             if (values != null && !values.isEmpty()) {
 
-                CustomField customField = new CustomField(field.getId(), longType, field.getName(), values);
+                JiraCustomField customField = new JiraCustomField(field.getId(), longType, field.getName(), values);
                 customField.setReadOnly(readonly);
 
                 return customField;
@@ -623,7 +631,7 @@ public class JiraRestConverter {
     }
 
     private static JiraWorkLog[] convertWorklogs(Iterable<Worklog> worklogs) {
-        List<JiraWorkLog> outWorkLogs = new ArrayList<JiraWorkLog>();
+        List<JiraWorkLog> outWorkLogs = new ArrayList<>();
 
         for (Worklog worklog : worklogs) {
             outWorkLogs.add(convert(worklog));
@@ -641,10 +649,10 @@ public class JiraRestConverter {
         }
         outWorklog.setComment(worklog.getComment());
         outWorklog.setCreated(worklog.getCreationDate().toDate());
-//		outWorklog.setGroupLevel(worklog.get)
-//		outWorklog.setId(worklog.get)
-//		outWorklog.setNewRemainingEstimate(worklog.get);
-//		outWorklog.setRoleLevelId(worklog.get);
+        //		outWorklog.setGroupLevel(worklog.get)
+        //		outWorklog.setId(worklog.get)
+        //		outWorklog.setNewRemainingEstimate(worklog.get);
+        //		outWorklog.setRoleLevelId(worklog.get);
         outWorklog.setStartDate(worklog.getStartDate().toDate());
         outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
         if (worklog.getUpdateAuthor() != null) {
@@ -655,20 +663,20 @@ public class JiraRestConverter {
         return outWorklog;
     }
 
-    private static Attachment[] convertAttachments(
-            Iterable<com.atlassian.jira.rest.client.domain.Attachment> attachments) {
+    private static JiraAttachment[] convertAttachments(
+            Iterable<Attachment> attachments) {
 
-        List<Attachment> outAttachments = new ArrayList<Attachment>();
+        List<JiraAttachment> outAttachments = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Attachment attachment : attachments) {
+        for (Attachment attachment : attachments) {
             outAttachments.add(convert(attachment));
         }
 
-        return outAttachments.toArray(new Attachment[outAttachments.size()]);
+        return outAttachments.toArray(new JiraAttachment[outAttachments.size()]);
     }
 
-    private static Attachment convert(com.atlassian.jira.rest.client.domain.Attachment attachment) {
-        Attachment outAttachment = new Attachment();
+    private static JiraAttachment convert(Attachment attachment) {
+        JiraAttachment outAttachment = new JiraAttachment();
 
         outAttachment.setId(attachment.getId().toString());
 
@@ -694,18 +702,18 @@ public class JiraRestConverter {
         return outAttachment;
     }
 
-    private static Comment[] convertComments(Iterable<com.atlassian.jira.rest.client.domain.Comment> comments) {
-        List<Comment> outComments = new ArrayList<Comment>();
+    private static JiraComment[] convertComments(Iterable<Comment> comments) {
+        List<JiraComment> outComments = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Comment comment : comments) {
+        for (Comment comment : comments) {
             outComments.add(convert(comment));
         }
 
-        return outComments.toArray(new Comment[outComments.size()]);
+        return outComments.toArray(new JiraComment[outComments.size()]);
     }
 
-    private static Comment convert(com.atlassian.jira.rest.client.domain.Comment comment) {
-        Comment outComment = new Comment();
+    private static JiraComment convert(Comment comment) {
+        JiraComment outComment = new JiraComment();
 
         BasicUser author = comment.getAuthor();
 
@@ -733,19 +741,19 @@ public class JiraRestConverter {
         return outComment;
     }
 
-    private static IssueLink[] convertIssueLinks(Iterable<com.atlassian.jira.rest.client.domain.IssueLink> issueLinks) {
+    private static JiraIssueLink[] convertIssueLinks(Iterable<IssueLink> issueLinks) {
 
-        List<IssueLink> outIssueLinks = new ArrayList<IssueLink>();
+        List<JiraIssueLink> outIssueLinks = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.IssueLink issueLink : issueLinks) {
+        for (IssueLink issueLink : issueLinks) {
             outIssueLinks.add(convert(issueLink));
         }
 
-        return outIssueLinks.toArray(new IssueLink[outIssueLinks.size()]);
+        return outIssueLinks.toArray(new JiraIssueLink[outIssueLinks.size()]);
     }
 
-    private static IssueLink convert(com.atlassian.jira.rest.client.domain.IssueLink issueLink) {
-        IssueLink outIssueLink = new IssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
+    private static JiraIssueLink convert(IssueLink issueLink) {
+        JiraIssueLink outIssueLink = new JiraIssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
                 issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
                 issueLink.getIssueLinkType().getDescription(), ""); //$NON-NLS-1$
 
@@ -753,22 +761,22 @@ public class JiraRestConverter {
 
     }
 
-    static Version[] convertVersions(Iterable<com.atlassian.jira.rest.client.domain.Version> versions) {
-        List<Version> outVersions = new ArrayList<Version>();
+    static JiraVersion[] convertVersions(Iterable<Version> versions) {
+        List<JiraVersion> outVersions = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Version version : versions) {
-//			if (!version.isArchived()) {
+        for (Version version : versions) {
+            //			if (!version.isArchived()) {
             outVersions.add(convert(version));
-//			}
+            //			}
         }
 
         Collections.reverse(outVersions);
 
-        return outVersions.toArray(new Version[outVersions.size()]);
+        return outVersions.toArray(new JiraVersion[outVersions.size()]);
     }
 
-    private static Version convert(com.atlassian.jira.rest.client.domain.Version version) {
-        Version outVersion = new Version(version.getId().toString(), version.getName());
+    private static JiraVersion convert(Version version) {
+        JiraVersion outVersion = new JiraVersion(version.getId().toString(), version.getName());
 
         DateTime releaseDate = version.getReleaseDate();
         if (releaseDate != null) {
@@ -781,61 +789,61 @@ public class JiraRestConverter {
         return outVersion;
     }
 
-    static Component[] convertComponents(Iterable<BasicComponent> components) {
+    static JiraComponent[] convertComponents(Iterable<BasicComponent> components) {
 
-        List<Component> outComponents = new ArrayList<Component>();
+        List<JiraComponent> outComponents = new ArrayList<>();
 
         for (BasicComponent component : components) {
             outComponents.add(convert(component));
         }
 
-        return outComponents.toArray(new Component[outComponents.size()]);
+        return outComponents.toArray(new JiraComponent[outComponents.size()]);
     }
 
-    private static Component convert(BasicComponent component) {
-        Component outComponent = new Component(component.getId().toString());
+    private static JiraComponent convert(BasicComponent component) {
+        JiraComponent outComponent = new JiraComponent(component.getId().toString());
 
         outComponent.setName(component.getName());
 
         return outComponent;
     }
 
-    private static IssueType convert(BasicIssueType issueType) {
-        IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
+    private static JiraIssueType convert(BasicIssueType issueType) {
+        JiraIssueType outIssueType = new JiraIssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
 
         return outIssueType;
     }
 
-    private static Subtask[] convert(Iterable<com.atlassian.jira.rest.client.domain.Subtask> allSubtasks) {
-        List<Subtask> subtasks = new ArrayList<Subtask>();
+    private static JiraSubtask[] convert(Iterable<Subtask> allSubtasks) {
+        List<JiraSubtask> subtasks = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.Subtask subtask : allSubtasks) {
+        for (Subtask subtask : allSubtasks) {
             subtasks.add(convert(subtask));
         }
 
-        return subtasks.toArray(new Subtask[subtasks.size()]);
+        return subtasks.toArray(new JiraSubtask[subtasks.size()]);
     }
 
-    private static Subtask convert(com.atlassian.jira.rest.client.domain.Subtask subtask) {
-        return new Subtask(subtask.getId().toString(), subtask.getIssueKey());
+    private static JiraSubtask convert(Subtask subtask) {
+        return new JiraSubtask(subtask.getId().toString(), subtask.getIssueKey());
     }
 
-//	private static String generateIssueId(String uri, String issueKey) {
-//		return uri + "_" + issueKey.replace('-', '*');
-//	}
+    //	private static String generateIssueId(String uri, String issueKey) {
+    //		return uri + "_" + issueKey.replace('-', '*');
+    //	}
 
-    public static IssueType[] convertIssueTypes(Iterable<com.atlassian.jira.rest.client.domain.IssueType> allIssueTypes) {
-        List<IssueType> issueTypes = new ArrayList<IssueType>();
+    public static JiraIssueType[] convertIssueTypes(Iterable<IssueType> allIssueTypes) {
+        List<JiraIssueType> issueTypes = new ArrayList<>();
 
-        for (com.atlassian.jira.rest.client.domain.IssueType issueType : allIssueTypes) {
+        for (IssueType issueType : allIssueTypes) {
             issueTypes.add(convert(issueType));
         }
 
-        return issueTypes.toArray(new IssueType[issueTypes.size()]);
+        return issueTypes.toArray(new JiraIssueType[issueTypes.size()]);
     }
 
-    private static IssueType convert(com.atlassian.jira.rest.client.domain.IssueType issueType) {
-        IssueType outIssueType = new IssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
+    private static JiraIssueType convert(IssueType issueType) {
+        JiraIssueType outIssueType = new JiraIssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
 
         outIssueType.setDescription(issueType.getDescription());
         outIssueType.setIcon(issueType.getIconUri().toString());
@@ -844,7 +852,7 @@ public class JiraRestConverter {
     }
 
     public static List<JiraIssue> convertIssues(Iterable<? extends BasicIssue> issues) {
-        List<JiraIssue> outIssues = new ArrayList<JiraIssue>();
+        List<JiraIssue> outIssues = new ArrayList<>();
 
         for (BasicIssue issue : issues) {
             outIssues.add(convert(issue));
@@ -874,24 +882,24 @@ public class JiraRestConverter {
             worklogInputBuilder.setAdjustEstimateLeave();
             break;
         case SET:
-            worklogInputBuilder.setAdjustEstimateNew((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
+            worklogInputBuilder.setAdjustEstimateNew(jiraWorklog.getNewRemainingEstimate() / 60 + "m"); //$NON-NLS-1$
             break;
         case REDUCE:
-            worklogInputBuilder.setAdjustEstimateManual((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
+            worklogInputBuilder.setAdjustEstimateManual(jiraWorklog.getNewRemainingEstimate() / 60 + "m"); //$NON-NLS-1$
             break;
         }
 
         worklogInputBuilder.setComment(jiraWorklog.getComment());
         worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
-//		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
+        //		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
         worklogInputBuilder.setTimeSpent(String.valueOf(jiraWorklog.getTimeSpent() / 60) + "m"); //$NON-NLS-1$
-//		worklogInputBuilder.setAuthor(new )
+        //		worklogInputBuilder.setAuthor(new )
 
         return worklogInputBuilder.build();
     }
 
-    public static ServerInfo convert(com.atlassian.jira.rest.client.domain.ServerInfo serverInfo) {
-        ServerInfo serverInfoOut = new ServerInfo();
+    public static JiraServerInfo convert(ServerInfo serverInfo) {
+        JiraServerInfo serverInfoOut = new JiraServerInfo();
 
         serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
         serverInfoOut.setWebBaseUrl(serverInfo.getBaseUri().toString());
@@ -903,7 +911,7 @@ public class JiraRestConverter {
     }
 
     public static Iterable<JiraAction> convertTransitions(Iterable<Transition> transitions) {
-        List<JiraAction> actions = new ArrayList<JiraAction>();
+        List<JiraAction> actions = new ArrayList<>();
 
         for (Transition transition : transitions) {
             actions.add(convert(transition));
@@ -915,10 +923,10 @@ public class JiraRestConverter {
     private static JiraAction convert(Transition transition) {
         JiraAction action = new JiraAction(Integer.toString(transition.getId()), transition.getName());
 
-        for (com.atlassian.jira.rest.client.domain.Transition.Field field : transition.getFields()) {
+        for (Transition.Field field : transition.getFields()) {
 
             // TODO rest set field name once available https://studio.atlassian.com/browse/JRJC-113
-            IssueField outField = new IssueField(field.getId(), field.getId());
+            JiraIssueField outField = new JiraIssueField(field.getId(), field.getId());
             outField.setType(field.getType());
             outField.setRequired(field.isRequired());
 
@@ -928,11 +936,11 @@ public class JiraRestConverter {
         return action;
     }
 
-    public static Iterable<com.atlassian.jira.rest.client.domain.Version> convert(Version[] reportedVersions) {
-        List<com.atlassian.jira.rest.client.domain.Version> outReportedVersions = new ArrayList<com.atlassian.jira.rest.client.domain.Version>();
+    public static Iterable<Version> convert(JiraVersion[] reportedVersions) {
+        List<Version> outReportedVersions = new ArrayList<>();
 
         if (reportedVersions != null) {
-            for (Version version : reportedVersions) {
+            for (JiraVersion version : reportedVersions) {
                 outReportedVersions.add(convert(version));
             }
         }
@@ -940,17 +948,17 @@ public class JiraRestConverter {
         return outReportedVersions;
     }
 
-    private static com.atlassian.jira.rest.client.domain.Version convert(Version version) {
-        com.atlassian.jira.rest.client.domain.Version outVersion = new com.atlassian.jira.rest.client.domain.Version(
+    private static Version convert(JiraVersion version) {
+        Version outVersion = new Version(
                 null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
         return outVersion;
     }
 
-    public static Iterable<BasicComponent> convert(Component[] components) {
-        List<BasicComponent> outComponents = new ArrayList<BasicComponent>();
+    public static Iterable<BasicComponent> convert(JiraComponent[] components) {
+        List<BasicComponent> outComponents = new ArrayList<>();
 
         if (components != null) {
-            for (Component component : components) {
+            for (JiraComponent component : components) {
                 outComponents.add(convert(component));
             }
         }
@@ -958,22 +966,22 @@ public class JiraRestConverter {
         return outComponents;
     }
 
-    private static BasicComponent convert(Component component) {
+    private static BasicComponent convert(JiraComponent component) {
         return new BasicComponent(null, Long.valueOf(component.getId()), component.getName(), null);
     }
 
-    public static NamedFilter[] convertNamedFilters(Iterable<FavouriteFilter> favouriteFilters) {
-        List<NamedFilter> outFilters = new ArrayList<NamedFilter>();
+    public static JiraNamedFilter[] convertNamedFilters(Iterable<FavouriteFilter> favouriteFilters) {
+        List<JiraNamedFilter> outFilters = new ArrayList<>();
 
         for (FavouriteFilter filter : favouriteFilters) {
             outFilters.add(convert(filter));
         }
 
-        return outFilters.toArray(new NamedFilter[outFilters.size()]);
+        return outFilters.toArray(new JiraNamedFilter[outFilters.size()]);
     }
 
-    private static NamedFilter convert(FavouriteFilter filter) {
-        NamedFilter outFilter = new NamedFilter();
+    private static JiraNamedFilter convert(FavouriteFilter filter) {
+        JiraNamedFilter outFilter = new JiraNamedFilter();
 
         outFilter.setId(filter.getId().toString());
         outFilter.setName(filter.getName());
@@ -984,7 +992,7 @@ public class JiraRestConverter {
     }
 
     public static JiraStatus[] convertStatuses(Iterable<Status> statuses) {
-        List<JiraStatus> outStatuses = new ArrayList<JiraStatus>();
+        List<JiraStatus> outStatuses = new ArrayList<>();
 
         for (Status status : statuses) {
             outStatuses.add(convert(status));
@@ -1003,7 +1011,7 @@ public class JiraRestConverter {
         return outStatus;
     }
 
-    public static FieldInput convert(CustomField customField) {
+    public static FieldInput convert(JiraCustomField customField) {
 
         JiraFieldType fieldType = JiraFieldType.fromKey(customField.getKey());
 
@@ -1019,7 +1027,7 @@ public class JiraRestConverter {
         case DATE:
 
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-                    && customField.getValues().get(0).length() > 0) {
+            && customField.getValues().get(0).length() > 0) {
                 String date = null;
 
                 try {
@@ -1034,7 +1042,7 @@ public class JiraRestConverter {
         case DATETIME:
 
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-                    && customField.getValues().get(0).length() > 0) {
+            && customField.getValues().get(0).length() > 0) {
                 String date = null;
 
                 try {
@@ -1054,7 +1062,7 @@ public class JiraRestConverter {
 
         case FLOATFIELD:
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-                    && customField.getValues().get(0).length() > 0) {
+            && customField.getValues().get(0).length() > 0) {
                 return new FieldInput(customField.getId(), Float.parseFloat(customField.getValues().get(0)));
             }
             break;
@@ -1062,7 +1070,7 @@ public class JiraRestConverter {
         case MULTIGROUPPICKER:
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
 
-                List<ComplexIssueInputFieldValue> fields = new ArrayList<ComplexIssueInputFieldValue>();
+                List<ComplexIssueInputFieldValue> fields = new ArrayList<>();
 
                 List<String> items = Arrays.asList(customField.getValues().get(0).split(",")); //$NON-NLS-1$
 
@@ -1084,7 +1092,7 @@ public class JiraRestConverter {
         case SELECT:
         case RADIOBUTTONS:
             if (customField.getValues().size() > 0) {
-                if (CustomField.NONE_ALLOWED_VALUE.equals(customField.getValues().get(0))) {
+                if (JiraCustomField.NONE_ALLOWED_VALUE.equals(customField.getValues().get(0))) {
                     return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with("id", "-1"));
                 }
                 String value = customField.getValues().get(0);
@@ -1094,14 +1102,14 @@ public class JiraRestConverter {
         case MULTISELECT:
         case MULTICHECKBOXES:
 
-//			if (customField.getValues().size() > 0) {
-            List<ComplexIssueInputFieldValue> values = new ArrayList<ComplexIssueInputFieldValue>();
+            //			if (customField.getValues().size() > 0) {
+            List<ComplexIssueInputFieldValue> values = new ArrayList<>();
             for (String value : customField.getValues()) {
                 values.add(ComplexIssueInputFieldValue.with("value", value)); //$NON-NLS-1$
             }
 
             return new FieldInput(customField.getId(), values);
-//			}
+            //			}
 
         case LABELSS:
             if (customField.getValues().size() > 0) {

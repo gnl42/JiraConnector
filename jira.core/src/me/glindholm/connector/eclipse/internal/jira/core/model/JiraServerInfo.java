@@ -20,7 +20,7 @@ import java.util.Date;
  * @author Brock Janiczak
  * @author Jacek Jaroczynski
  */
-public class ServerInfo implements Serializable {
+public class JiraServerInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,9 +40,9 @@ public class ServerInfo implements Serializable {
 
 	private transient boolean insecureRedirect;
 
-	private transient Statistics statistics;
+	private transient JiraStatistics statistics;
 
-	public ServerInfo() {
+	public JiraServerInfo() {
 	}
 
 	public String getBaseUrl() {
@@ -109,9 +109,9 @@ public class ServerInfo implements Serializable {
 		this.insecureRedirect = insecureRedirect;
 	}
 
-	public synchronized Statistics getStatistics() {
+	public synchronized JiraStatistics getStatistics() {
 		if (statistics == null) {
-			statistics = new Statistics();
+			statistics = new JiraStatistics();
 		}
 		return statistics;
 	}

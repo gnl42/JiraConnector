@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * @author Steffen Pingel
  */
-public class Attachment implements Serializable {
+public class JiraAttachment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,10 +36,10 @@ public class Attachment implements Serializable {
 
 	private String authorDisplayName;
 
-	public Attachment() {
+	public JiraAttachment() {
 	}
 
-	public Attachment(String id, String name, long size, String author, Date created) {
+	public JiraAttachment(String id, String name, long size, String author, Date created) {
 		this.id = id;
 		this.name = name;
 		this.size = size;

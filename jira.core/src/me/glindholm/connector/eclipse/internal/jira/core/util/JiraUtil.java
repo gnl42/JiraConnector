@@ -31,7 +31,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraFieldType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
-import me.glindholm.connector.eclipse.internal.jira.core.model.NamedFilter;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraNamedFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import me.glindholm.connector.eclipse.internal.jira.core.service.FilterDefinitionConverter;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
@@ -181,10 +181,10 @@ public class JiraUtil {
 		return value;
 	}
 
-	public static NamedFilter getNamedFilter(IRepositoryQuery query) {
+	public static JiraNamedFilter getNamedFilter(IRepositoryQuery query) {
 		String id = query.getAttribute(KEY_FILTER_ID);
 		if (id != null) {
-			NamedFilter namedFilter = new NamedFilter();
+			JiraNamedFilter namedFilter = new JiraNamedFilter();
 			namedFilter.setId(id);
 			namedFilter.setName(query.getAttribute(KEY_FILTER_NAME));
 			namedFilter.setJql(query.getAttribute(KEY_FILTER_JQL));
@@ -326,8 +326,8 @@ public class JiraUtil {
 	}
 
 	public static void setQuery(TaskRepository taskRepository, IRepositoryQuery query, JiraFilter filter) {
-		if (filter instanceof NamedFilter) {
-			final NamedFilter namedFilter = (NamedFilter) filter;
+		if (filter instanceof JiraNamedFilter) {
+			final JiraNamedFilter namedFilter = (JiraNamedFilter) filter;
 			query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
 			query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
 			query.setAttribute(KEY_FILTER_JQL, namedFilter.getJql());

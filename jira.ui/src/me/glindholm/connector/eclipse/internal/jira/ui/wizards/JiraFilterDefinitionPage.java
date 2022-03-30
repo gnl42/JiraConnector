@@ -76,13 +76,13 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ComponentFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.ContentFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.CurrentUserFilter;
@@ -140,7 +140,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			if (element instanceof Placeholder) {
 				return ((Placeholder) element).getText();
 			}
-			return ((Component) element).getName();
+			return ((JiraComponent) element).getName();
 		}
 
 		public boolean isLabelProperty(Object element, String property) {
@@ -192,7 +192,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			if (element instanceof Placeholder) {
 				return ((Placeholder) element).getText();
 			}
-			return ((Version) element).getName();
+			return ((JiraVersion) element).getName();
 		}
 
 		public boolean isLabelProperty(Object element, String property) {
@@ -208,7 +208,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL"; //$NON-NLS-1$
 
-	private static final Project[] NO_PROJECTS = new Project[0];
+	private static final JiraProject[] NO_PROJECTS = new JiraProject[0];
 
 	private static final int HEIGHT_HINT = 50;
 
@@ -369,24 +369,24 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		} else {
 			boolean selectionContainsAll = false;
 			boolean selectionContainsNone = false;
-			List<Project> selectedProjects = new ArrayList<Project>();
+			List<JiraProject> selectedProjects = new ArrayList<JiraProject>();
 			for (Iterator<?> i = projectSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ALL_PROJECTS.equals(selection)) {
 					selectionContainsAll = true;
 				} else if (NO_PROJECT.equals(selection)) {
 					selectionContainsNone = true;
-				} else if (selection instanceof Project) {
-					selectedProjects.add((Project) selection);
+				} else if (selection instanceof JiraProject) {
+					selectedProjects.add((JiraProject) selection);
 				}
 			}
 			if (selectionContainsAll) {
 				workingCopy.setProjectFilter(null);
 			} else if (selectedProjects.size() > 0) {
 				workingCopy.setProjectFilter(new ProjectFilter(
-						selectedProjects.toArray(new Project[selectedProjects.size()])));
+						selectedProjects.toArray(new JiraProject[selectedProjects.size()])));
 			} else if (selectionContainsNone) {
-				workingCopy.setProjectFilter(new ProjectFilter(new Project[0]));
+				workingCopy.setProjectFilter(new ProjectFilter(new JiraProject[0]));
 			} else {
 				workingCopy.setProjectFilter(null);
 			}
@@ -401,7 +401,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			boolean selectionContainsAll = false;
 			boolean selectionContainsNone = false;
 
-			List<Version> selectedVersions = new ArrayList<Version>();
+			List<JiraVersion> selectedVersions = new ArrayList<JiraVersion>();
 
 			for (Iterator<?> i = reportedInSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
@@ -413,8 +413,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					selectionContainsReleased = true;
 				} else if (UNRELEASED_VERSION.equals(selection)) {
 					selectionContainsUnreleased = true;
-				} else if (selection instanceof Version) {
-					selectedVersions.add((Version) selection);
+				} else if (selection instanceof JiraVersion) {
+					selectedVersions.add((JiraVersion) selection);
 				}
 			}
 
@@ -422,7 +422,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setReportedInVersionFilter(null);
 			} else {
 				workingCopy.setReportedInVersionFilter(new VersionFilter(
-						selectedVersions.toArray(new Version[selectedVersions.size()]), selectionContainsNone,
+						selectedVersions.toArray(new JiraVersion[selectedVersions.size()]), selectionContainsNone,
 						selectionContainsReleased, selectionContainsUnreleased));
 			}
 		}
@@ -436,7 +436,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			boolean selectionContainsAll = false;
 			boolean selectionContainsNone = false;
 
-			List<Version> selectedVersions = new ArrayList<Version>();
+			List<JiraVersion> selectedVersions = new ArrayList<JiraVersion>();
 
 			for (Iterator<?> i = fixForSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
@@ -448,8 +448,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					selectionContainsReleased = true;
 				} else if (UNRELEASED_VERSION.equals(selection)) {
 					selectionContainsUnreleased = true;
-				} else if (selection instanceof Version) {
-					selectedVersions.add((Version) selection);
+				} else if (selection instanceof JiraVersion) {
+					selectedVersions.add((JiraVersion) selection);
 				}
 			}
 
@@ -457,7 +457,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setFixForVersionFilter(null);
 			} else {
 				workingCopy.setFixForVersionFilter(new VersionFilter(
-						selectedVersions.toArray(new Version[selectedVersions.size()]), selectionContainsNone,
+						selectedVersions.toArray(new JiraVersion[selectedVersions.size()]), selectionContainsNone,
 						selectionContainsReleased, selectionContainsUnreleased));
 			}
 		}
@@ -469,7 +469,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			boolean selectionContainsAll = false;
 			boolean selectionContainsNone = false;
-			List<Component> selectedComponents = new ArrayList<Component>();
+			List<JiraComponent> selectedComponents = new ArrayList<JiraComponent>();
 
 			for (Iterator<?> i = componentsSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
@@ -477,8 +477,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					selectionContainsAll = true;
 				} else if (NO_COMPONENT.equals(selection)) {
 					selectionContainsNone = true;
-				} else if (selection instanceof Component) {
-					selectedComponents.add((Component) selection);
+				} else if (selection instanceof JiraComponent) {
+					selectedComponents.add((JiraComponent) selection);
 				}
 			}
 
@@ -486,7 +486,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setComponentFilter(null);
 			} else {
 				workingCopy.setComponentFilter(new ComponentFilter(
-						selectedComponents.toArray(new Component[selectedComponents.size()]), selectionContainsNone));
+						selectedComponents.toArray(new JiraComponent[selectedComponents.size()]), selectionContainsNone));
 			}
 		}
 
@@ -499,14 +499,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		} else {
 			boolean isAnyIssueTypeSelected = false;
 
-			List<IssueType> selectedIssueTypes = new ArrayList<IssueType>();
+			List<JiraIssueType> selectedIssueTypes = new ArrayList<JiraIssueType>();
 
 			for (Iterator<?> i = issueTypeSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_ISSUE_TYPE.equals(selection)) {
 					isAnyIssueTypeSelected = true;
-				} else if (selection instanceof IssueType) {
-					selectedIssueTypes.add((IssueType) selection);
+				} else if (selection instanceof JiraIssueType) {
+					selectedIssueTypes.add((JiraIssueType) selection);
 				}
 			}
 
@@ -514,7 +514,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setIssueTypeFilter(null);
 			} else {
 				workingCopy.setIssueTypeFilter(new IssueTypeFilter(
-						selectedIssueTypes.toArray(new IssueType[selectedIssueTypes.size()])));
+						selectedIssueTypes.toArray(new JiraIssueType[selectedIssueTypes.size()])));
 			}
 		}
 
@@ -587,14 +587,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		} else {
 			boolean isAnyResolutionSelected = false;
 
-			List<Resolution> selectedResolutions = new ArrayList<Resolution>();
+			List<JiraResolution> selectedResolutions = new ArrayList<JiraResolution>();
 
 			for (Iterator<?> i = resolutionSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_RESOLUTION.equals(selection)) {
 					isAnyResolutionSelected = true;
-				} else if (selection instanceof Resolution) {
-					selectedResolutions.add((Resolution) selection);
+				} else if (selection instanceof JiraResolution) {
+					selectedResolutions.add((JiraResolution) selection);
 				}
 			}
 
@@ -602,7 +602,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setResolutionFilter(null);
 			} else {
 				workingCopy.setResolutionFilter(new ResolutionFilter(
-						selectedResolutions.toArray(new Resolution[selectedResolutions.size()])));
+						selectedResolutions.toArray(new JiraResolution[selectedResolutions.size()])));
 			}
 		}
 
@@ -612,14 +612,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		} else {
 			boolean isAnyPrioritiesSelected = false;
 
-			List<Priority> selectedPriorities = new ArrayList<Priority>();
+			List<JiraPriority> selectedPriorities = new ArrayList<JiraPriority>();
 
 			for (Iterator<?> i = prioritySelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_PRIORITY.equals(selection)) {
 					isAnyPrioritiesSelected = true;
-				} else if (selection instanceof Priority) {
-					selectedPriorities.add((Priority) selection);
+				} else if (selection instanceof JiraPriority) {
+					selectedPriorities.add((JiraPriority) selection);
 				}
 			}
 
@@ -627,7 +627,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				workingCopy.setPriorityFilter(null);
 			} else {
 				workingCopy.setPriorityFilter(new PriorityFilter(
-						selectedPriorities.toArray(new Priority[selectedPriorities.size()])));
+						selectedPriorities.toArray(new JiraPriority[selectedPriorities.size()])));
 			}
 		}
 
@@ -665,14 +665,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				Project[] projects = (Project[]) newInput;
+				JiraProject[] projects = (JiraProject[]) newInput;
 				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_COMPONENT };
 				} else {
 					Set<Object> elements = new LinkedHashSet<Object>();
 					elements.add(ANY_COMPONENT);
 					elements.add(NO_COMPONENT);
-					for (Project project : projects) {
+					for (JiraProject project : projects) {
 						if (project != null && project.hasDetails()) {
 							elements.addAll(Arrays.asList(project.getComponents()));
 						}
@@ -1037,7 +1037,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 							return ((Placeholder) element).getText();
 						}
 
-						return ((Resolution) element).getName();
+						return ((JiraResolution) element).getName();
 					}
 
 				});
@@ -1068,7 +1068,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 							return ((Placeholder) element).getText();
 						}
 
-						return ((Priority) element).getName();
+						return ((JiraPriority) element).getName();
 					}
 
 				});
@@ -1316,8 +1316,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				final Project[] projects = (Project[]) newInput;
-				IssueType[] types = null;
+				final JiraProject[] projects = (JiraProject[]) newInput;
+				JiraIssueType[] types = null;
 
 				if (projects == null || projects.length == 0 || projects.length > 1) {
 					types = client.getCache().getIssueTypes();
@@ -1345,7 +1345,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					return ((Placeholder) element).getText();
 				}
 
-				return ((IssueType) element).getName();
+				return ((JiraIssueType) element).getName();
 			}
 
 		});
@@ -1392,7 +1392,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				Project[] projects = (Project[]) newInput;
+				JiraProject[] projects = (JiraProject[]) newInput;
 				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_FIX_VERSION };
 				} else {
@@ -1400,9 +1400,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					elements.add(ANY_FIX_VERSION);
 					elements.add(NO_FIX_VERSION);
 
-					Set<Version> releasedVersions = new LinkedHashSet<Version>();
-					Set<Version> unreleasedVersions = new LinkedHashSet<Version>();
-					for (Project project : projects) {
+					Set<JiraVersion> releasedVersions = new LinkedHashSet<JiraVersion>();
+					Set<JiraVersion> unreleasedVersions = new LinkedHashSet<JiraVersion>();
+					for (JiraProject project : projects) {
 						if (project != null && project.hasDetails()) {
 							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
 							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
@@ -1435,23 +1435,23 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				if (element instanceof Placeholder) {
 					return ((Placeholder) element).getText();
 				}
-				return ((Project) element).getName();
+				return ((JiraProject) element).getName();
 			}
 		});
 
 		project.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = ((IStructuredSelection) event.getSelection());
-				List<Project> selectedProjects = new ArrayList<Project>();
+				List<JiraProject> selectedProjects = new ArrayList<JiraProject>();
 				if (!selection.isEmpty()) {
 					for (Iterator<?> i = selection.iterator(); i.hasNext();) {
 						Object sel = i.next();
 						if (!(sel instanceof Placeholder)) {
-							selectedProjects.add((Project) sel);
+							selectedProjects.add((JiraProject) sel);
 						}
 					}
 				}
-				updateCurrentProjects(selectedProjects.toArray(new Project[selectedProjects.size()]));
+				updateCurrentProjects(selectedProjects.toArray(new JiraProject[selectedProjects.size()]));
 				// validatePage();
 			}
 		});
@@ -1475,7 +1475,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				Project[] projects = (Project[]) newInput;
+				JiraProject[] projects = (JiraProject[]) newInput;
 				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_REPORTED_VERSION };
 				} else {
@@ -1486,7 +1486,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					Set<Object> releasedVersions = new LinkedHashSet<Object>();
 					Set<Object> unreleasedVersions = new LinkedHashSet<Object>();
 
-					for (Project project : projects) {
+					for (JiraProject project : projects) {
 						if (project != null && project.hasDetails()) {
 							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
 							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
@@ -1784,7 +1784,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		if (workingCopy.getResolutionFilter() != null) {
-			Resolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
+			JiraResolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
 			if (resolutions.length == 0) {
 				resolution.setSelection(new StructuredSelection(UNRESOLVED), true);
 			} else {
@@ -1913,10 +1913,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private void updateAttributesFromRepository(final boolean force) {
 		if (!client.getCache().hasDetails() || force) {
-			Project[] projects = new Project[0];
+			JiraProject[] projects = new JiraProject[0];
 			IStructuredSelection selection = (IStructuredSelection) project.getSelection();
-			if (selection.getFirstElement() instanceof Project) {
-				projects = new Project[] { (Project) selection.getFirstElement() };
+			if (selection.getFirstElement() instanceof JiraProject) {
+				projects = new JiraProject[] { (JiraProject) selection.getFirstElement() };
 			}
 			internalUpdate(true, projects);
 		}
@@ -1924,7 +1924,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		initializeContentProviders();
 	}
 
-	private void internalUpdate(final boolean updateProjectList, final Project[] projects) {
+	private void internalUpdate(final boolean updateProjectList, final JiraProject[] projects) {
 		ICoreRunnable runnable = new ICoreRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				int size = projects.length;
@@ -1938,7 +1938,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					if (updateProjectList) {
 						client.getCache().refreshDetails(submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 					}
-					for (final Project project : projects) {
+					for (final JiraProject project : projects) {
 						client.getCache().refreshProjectDetails(project.getId(),
 								submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 					}
@@ -1965,18 +1965,18 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 	}
 
-	void updateCurrentProjects(final Project[] projects) {
-		List<Project> staleProjects = null;
-		for (final Project project : projects) {
+	void updateCurrentProjects(final JiraProject[] projects) {
+		List<JiraProject> staleProjects = null;
+		for (final JiraProject project : projects) {
 			if (!project.hasDetails()) {
 				if (staleProjects == null) {
-					staleProjects = new ArrayList<Project>();
+					staleProjects = new ArrayList<JiraProject>();
 				}
 				staleProjects.add(project);
 			}
 		}
 		if (staleProjects != null) {
-			internalUpdate(false, staleProjects.toArray(new Project[0]));
+			internalUpdate(false, staleProjects.toArray(new JiraProject[0]));
 		}
 
 		this.fixFor.setInput(projects);
@@ -2042,7 +2042,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_assigned_to_me);
 
 		// empty (but not null) resolution filter means UNRESOLVED 
-		workingCopy.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
+		workingCopy.setResolutionFilter(new ResolutionFilter(new JiraResolution[0]));
 
 		workingCopy.setAssignedToFilter(new CurrentUserFilter());
 

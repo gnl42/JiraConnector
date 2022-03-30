@@ -18,25 +18,25 @@ import org.eclipse.core.runtime.Assert;
 /**
  * @author Steffen Pingel
  */
-public class SecurityLevel implements Serializable {
+public class JiraSecurityLevel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final SecurityLevel NONE = new SecurityLevel("-1", Messages.SecurityLevel_None); //$NON-NLS-1$
+	public static final JiraSecurityLevel NONE = new JiraSecurityLevel("-1", JiraMessages.SecurityLevel_None); //$NON-NLS-1$
 
 	private String id;
 
 	private String name;
 
-	public SecurityLevel(String id) {
+	public JiraSecurityLevel(String id) {
 		Assert.isNotNull(id);
 		this.id = id;
 	}
 
-	public SecurityLevel() {
+	public JiraSecurityLevel() {
 	}
 
-	public SecurityLevel(String id, String name) {
+	public JiraSecurityLevel(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
