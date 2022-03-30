@@ -65,7 +65,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
 import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
@@ -129,13 +129,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String LEAVE_OPERATION = "leave"; //$NON-NLS-1$
 
-	private static final JiraVersion TASK_DATA_VERSION_1_0 = new JiraVersion("1.0"); //$NON-NLS-1$
+	private static final JiraServerVersion TASK_DATA_VERSION_1_0 = new JiraServerVersion("1.0"); //$NON-NLS-1$
 
-	private static final JiraVersion TASK_DATA_VERSION_2_0 = new JiraVersion("2.0"); //$NON-NLS-1$
+	private static final JiraServerVersion TASK_DATA_VERSION_2_0 = new JiraServerVersion("2.0"); //$NON-NLS-1$
 
-	private static final JiraVersion TASK_DATA_VERSION_2_2 = new JiraVersion("2.2"); //$NON-NLS-1$
+	private static final JiraServerVersion TASK_DATA_VERSION_2_2 = new JiraServerVersion("2.2"); //$NON-NLS-1$
 
-	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("3.0"); //$NON-NLS-1$
+	private static final JiraServerVersion TASK_DATA_VERSION_CURRENT = new JiraServerVersion("3.0"); //$NON-NLS-1$
 
 	private final IJiraClientFactory clientFactory;
 
@@ -1450,7 +1450,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public void migrateTaskData(TaskRepository taskRepository, TaskData taskData) {
 		String taskDataVersion = taskData.getVersion();
-		JiraVersion version = new JiraVersion(taskDataVersion != null ? taskDataVersion : "0.0"); //$NON-NLS-1$
+		JiraServerVersion version = new JiraServerVersion(taskDataVersion != null ? taskDataVersion : "0.0"); //$NON-NLS-1$
 		// 1.0: the value was stored in the attribute rather than the key
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_1_0)) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {

@@ -17,17 +17,17 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
  * @author Eugene Kuleshov
  * @author Thomas Ehrnhoefer
  */
-public class JiraVersion implements Comparable<JiraVersion> {
+public class JiraServerVersion implements Comparable<JiraServerVersion> {
 
-	public static final JiraVersion JIRA_3_13 = new JiraVersion("3.13"); //$NON-NLS-1$
+	public static final JiraServerVersion JIRA_3_13 = new JiraServerVersion("3.13"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_4_1 = new JiraVersion("4.1"); //$NON-NLS-1$
+	public static final JiraServerVersion JIRA_4_1 = new JiraServerVersion("4.1"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_4_2 = new JiraVersion("4.2"); //$NON-NLS-1$
+	public static final JiraServerVersion JIRA_4_2 = new JiraServerVersion("4.2"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_5_0 = new JiraVersion("5.0"); //$NON-NLS-1$
+	public static final JiraServerVersion JIRA_5_0 = new JiraServerVersion("5.0"); //$NON-NLS-1$
 
-	public final static JiraVersion MIN_VERSION = JIRA_5_0;
+	public final static JiraServerVersion MIN_VERSION = JIRA_5_0;
 
 	private final int major;
 
@@ -37,7 +37,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	private final String qualifier;
 
-	public JiraVersion(String version) {
+	public JiraServerVersion(String version) {
 		String[] segments = version == null ? new String[0] : version.split("\\."); //$NON-NLS-1$
 		major = segments.length > 0 ? parse(segments[0]) : 0;
 		minor = segments.length > 1 ? parse(segments[1]) : 0;
@@ -63,14 +63,14 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		return n == -1 ? "" : segment.substring(n + 1); //$NON-NLS-1$
 	}
 
-	public boolean isSmallerOrEquals(JiraVersion v) {
+	public boolean isSmallerOrEquals(JiraServerVersion v) {
 		return compareTo(v) <= 0;
 	}
 
 	/**
 	 * 3.6.5-#161 3.9-#233 3.10-DEV-190607-#251
 	 */
-	public int compareTo(JiraVersion v) {
+	public int compareTo(JiraServerVersion v) {
 		if (major < v.major) {
 			return -1;
 		} else if (major > v.major) {

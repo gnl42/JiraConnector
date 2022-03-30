@@ -22,7 +22,7 @@ import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
@@ -165,9 +165,9 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 	public ServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
 			IProgressMonitor monitor) throws JiraException {
 		ServerInfo info = clientManager.validateConnection(location, configuration, monitor);
-		JiraVersion serverVersion = new JiraVersion(info.getVersion());
-		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
-			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later"); //$NON-NLS-1$ //$NON-NLS-2$
+		JiraServerVersion serverVersion = new JiraServerVersion(info.getVersion());
+		if (JiraServerVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
+			throw new JiraException("JIRA connector requires server " + JiraServerVersion.MIN_VERSION + " or later"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return info;
 	}

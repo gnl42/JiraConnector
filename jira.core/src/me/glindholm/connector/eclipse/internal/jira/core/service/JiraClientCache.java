@@ -20,7 +20,7 @@ import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
 import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
 import me.glindholm.connector.eclipse.internal.jira.core.model.ProjectRole;
@@ -85,11 +85,11 @@ public class JiraClientCache {
 				NLS.bind(Messages.JiraClientCache_project_details_for, project.getKey()), 5);
 
 		synchronized (project) {
-			final JiraVersion version = new JiraVersion(data.serverInfo.getVersion());
+			final JiraServerVersion version = new JiraServerVersion(data.serverInfo.getVersion());
 
 			jiraClient.getProjectDetails(project);
 
-			if (version.compareTo(JiraVersion.JIRA_3_13) >= 0) {
+			if (version.compareTo(JiraServerVersion.JIRA_3_13) >= 0) {
 				try {
 					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(),
 							subMonitor.newChild(1));
