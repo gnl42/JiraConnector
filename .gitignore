@@ -1,4 +1,5 @@
 .classpath
 .project
 .settings/
+.tycho-consumer-pom.xml
 target/

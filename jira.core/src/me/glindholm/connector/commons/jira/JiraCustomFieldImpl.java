@@ -84,12 +84,12 @@ public class JiraCustomFieldImpl implements JiraCustomField {
     }
 
     public enum BasicKeyType {
-        NUMERIC("me.glindholm.jira.plugin.system.customfieldtypes:float"),
-        TEXT("me.glindholm.jira.plugin.system.customfieldtypes:textfield"),
-        TEXT_AREA("me.glindholm.jira.plugin.system.customfieldtypes:textarea"),
-        URL("me.glindholm.jira.plugin.system.customfieldtypes:url"),
-//        DATE_TIME("me.glindholm.jira.plugin.system.customfieldtypes:datetime"),
-        DATE_PICKER("me.glindholm.jira.plugin.system.customfieldtypes:datepicker"),
+        NUMERIC("com.atlassian.jira.plugin.system.customfieldtypes:float"),
+        TEXT("com.atlassian.jira.plugin.system.customfieldtypes:textfield"),
+        TEXT_AREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea"),
+        URL("com.atlassian.jira.plugin.system.customfieldtypes:url"),
+//        DATE_TIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime"),
+        DATE_PICKER("com.atlassian.jira.plugin.system.customfieldtypes:datepicker"),
         UNSUPPORTED("");
 
         private final String keyValue;

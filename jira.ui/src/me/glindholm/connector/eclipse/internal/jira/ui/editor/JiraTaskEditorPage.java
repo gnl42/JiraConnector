@@ -269,7 +269,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 				&& status.getCode() == RepositoryStatus.ERROR_IO
 				&& status.getMessage()
 						.contains(
-								"me.glindholm.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
+								"com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
 			handleSubmitErrorCopy(event.getJob());
 		} else {
 			super.handleTaskSubmitted(event);

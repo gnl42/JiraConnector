@@ -106,7 +106,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
  */
 public class JiraRssHandler extends DefaultHandler {
 
-	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "me.glindholm.jira.plugin.system.customfieldtypes:textarea"; //$NON-NLS-1$
+	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea"; //$NON-NLS-1$
 
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 

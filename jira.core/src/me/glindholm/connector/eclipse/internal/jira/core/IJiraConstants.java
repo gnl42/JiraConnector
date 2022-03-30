@@ -57,7 +57,7 @@ public class IJiraConstants {
 
 	public static final String META_SUB_TASK_TYPE = "isSubtaskType"; //$NON-NLS-1$
 
-	public static final String JIRA_TOOLKIT_PREFIX = "me.glindholm.jira.toolkit"; //$NON-NLS-1$
+	public static final String JIRA_TOOLKIT_PREFIX = "com.atlassian.jira.toolkit"; //$NON-NLS-1$
 
 	public static final String ATTRIBUTE_PROJECT_ROLES = "attribute.jira.project-roles"; //$NON-NLS-1$
 
