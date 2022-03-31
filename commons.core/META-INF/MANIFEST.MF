@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.httpclient,
  org.apache.commons.codec;bundle-version="[1.3.0,2.0.0)",
  org.apache.commons.lang,
- org.apache.commons.discovery,
  org.apache.commons.logging,
  org.apache.commons.io
 Export-Package: com.thoughtworks.xstream,
@@ -63,4 +62,5 @@ Bundle-ClassPath: .,
  target/lib/javax.xml.rpc-api.jar,
  target/lib/javax.servlet-api.jar,
  target/lib/jaxen.jar,
- target/lib/axis.jar
+ target/lib/axis.jar,
+ target/lib/commons-discovery.jar

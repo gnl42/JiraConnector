@@ -130,7 +130,7 @@
       <extension
             point="org.eclipse.ui.preferencePages">
          <page
-               category="me.glindholm.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+               category="me.glindholm.connector.eclipse.ui.preferences.JiraConnectorPreferencePage"
                class="me.glindholm.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
                id="me.glindholm.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
                name="Bamboo">
