@@ -9,12 +9,16 @@
 	<version>4.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<developers>
-		<developer>
-		      <id>gnl</id>
-			<name>George Lindholm</name>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>gnl</id>
+            <name>George Lindholm</name>
+            <organization>self</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
 	<!-- Developers of the original code -->
 	<contributors>
