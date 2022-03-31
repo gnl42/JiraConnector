@@ -11,42 +11,46 @@
 
 	<developers>
 		<developer>
-			<name>Mik Kersten</name>
-			<organization>Tasktop Technologies</organization>
-		</developer>
-		<developer>
-			<name>Pawel Niewiadomski</name>
-		</developer>
-		<developer>
-			<name>Shawn Minto</name>
-			<organization>Tasktop Technologies</organization>
-		</developer>
-		<developer>
-			<name>Thomas Ehrnhoefer</name>
-		</developer>
-		<developer>
-			<name>Wojciech Seliga</name>
-		</developer>
-		<developer>
-			<name>Jacek Jaroczynski</name>
-		</developer>
-		<developer>
-			<name>Steffen Pingel</name>
-		</developer>
-		<developer>
-			<name>Eugene Kuleshov</name>
-		</developer>
-		<developer>
-			<name>Wesley Coelho</name>
-		</developer>
-		<developer>
-			<name>Rob Elves</name>
-		</developer>
-		<!-- Maven port and beyond -->
-		<developer>
+		      <id>gnl</id>
 			<name>George Lindholm</name>
 		</developer>
 	</developers>
+
+	<!-- Developers of the original code -->
+	<contributors>
+		<contributor>
+			<name>Mik Kersten</name>
+			<organization>Tasktop Technologies</organization>
+		</contributor>
+		<contributor>
+			<name>Pawel Niewiadomski</name>
+		</contributor>
+		<contributor>
+			<name>Shawn Minto</name>
+			<organization>Tasktop Technologies</organization>
+		</contributor>
+		<contributor>
+			<name>Thomas Ehrnhoefer</name>
+		</contributor>
+		<contributor>
+			<name>Wojciech Seliga</name>
+		</contributor>
+		<contributor>
+			<name>Jacek Jaroczynski</name>
+		</contributor>
+		<contributor>
+			<name>Steffen Pingel</name>
+		</contributor>
+		<contributor>
+			<name>Eugene Kuleshov</name>
+		</contributor>
+		<contributor>
+			<name>Wesley Coelho</name>
+		</contributor>
+		<contributor>
+			<name>Rob Elves</name>
+		</contributor>
+	</contributors>
 
 	<licenses>
 		<license>
@@ -133,8 +137,7 @@
 		<module>jira.ui</module>
 
 		<!-- Will have to real life tests for now <module>me.glindholm.connector.commons.tests.dependencies</module>
-			<module>test-feature</module> <module>tests</module>
-			<module>jira.tests</module> -->
+			<module>test-feature</module> <module>tests</module> <module>jira.tests</module> -->
 		<!-- Unable to launch eclipse instance <module>bamboo.tests</module> -->
 		<!-- Unable to resolve swtbot.eclipse.core <module>bamboo.testsUI</module> -->
 		<module>releng</module>
@@ -304,7 +307,7 @@
 					<target>${java.version}</target>
 					<optimize>true</optimize>
 					<showWarnings>false</showWarnings>
-			<!-- 	<useJDK>${tycho.useJDK}</useJDK> -->
+					<!-- <useJDK>${tycho.useJDK}</useJDK> -->
 				</configuration>
 			</plugin>
 			<plugin>
