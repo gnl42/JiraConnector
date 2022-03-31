@@ -30,7 +30,7 @@
                                 javax.ws.rs-api,jersey-client,joda-time,annotations,jettison,guava,
                                 jdom,jaxen,
                                 jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
-                                jetty-server,xstream,axis,velocity,cssparser,javax.xml.rpc-api</includeArtifactIds>
+                                jetty-server,xstream,axis,velocity,cssparser,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -46,6 +46,11 @@
         </plugins>
     </build>
     <dependencies>
+<dependency>
+    <groupId>commons-discovery</groupId>
+    <artifactId>commons-discovery</artifactId>
+    <version>0.5</version>
+</dependency>
     <dependency>
         <groupId>axis</groupId>
         <artifactId>axis</artifactId>
