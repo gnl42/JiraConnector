@@ -35,7 +35,8 @@ Bundle-ClassPath: .,
  target/lib/jersey-core.jar,
  target/lib/jersey-json.jar,
  target/lib/jersey-client.jar,
- target/lib/jettison.jar
+ target/lib/jettison.jar,
+ target/lib/jdom.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin
