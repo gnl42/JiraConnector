@@ -20,10 +20,8 @@ import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.jdom2.Attribute;
-import org.jdom2.Element;
 
-import com.atlassian.jira.rest.client.domain.Field;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
 import com.google.common.collect.Lists;
 
 
@@ -121,7 +119,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
         private String name;
         private List<String> values = new ArrayList<>();
 
-        public Builder(JSONObject meta, Field field) throws JSONException {
+        public Builder(JSONObject meta, IssueField field) throws JSONException {
             JSONObject schema = meta.getJSONObject("schema");
             typeKey = BasicKeyType.getValueOf(schema.getString("custom"));
             name = meta.getString("name");
@@ -146,33 +144,33 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             }
         }
 
-        public Builder(Element e) {
-            if (e != null) {
-                Attribute keyAttribute = e.getAttribute("key");
-                if (keyAttribute != null && keyAttribute.getValue() != null) {
-                    typeKey = BasicKeyType.getValueOf(keyAttribute.getValue());
-                }
-                Attribute idAttribute = e.getAttribute("id");
-                if (idAttribute != null && idAttribute.getValue() != null) {
-                    id = idAttribute.getValue();
-                }
-                Element nameElement = e.getChild("customfieldname");
-                if (nameElement != null && nameElement.getText() != null) {
-                    name = nameElement.getText();
-                }
-
-                Element valuesElement = e.getChild("customfieldvalues");
-                if (valuesElement != null) {
-                    for (int i = 0; i < valuesElement.getChildren().size(); i++) {
-                        Element singleValueElement = valuesElement.getChildren().get(i);
-                        if (singleValueElement != null && singleValueElement.getValue() != null) {
-                            values.add(singleValueElement.getValue());
-                        }
-                    }
-                }
-            }
-
-        }
+        //        public Builder(Element e) {
+        //            if (e != null) {
+        //                Attribute keyAttribute = e.getAttribute("key");
+        //                if (keyAttribute != null && keyAttribute.getValue() != null) {
+        //                    typeKey = BasicKeyType.getValueOf(keyAttribute.getValue());
+        //                }
+        //                Attribute idAttribute = e.getAttribute("id");
+        //                if (idAttribute != null && idAttribute.getValue() != null) {
+        //                    id = idAttribute.getValue();
+        //                }
+        //                Element nameElement = e.getChild("customfieldname");
+        //                if (nameElement != null && nameElement.getText() != null) {
+        //                    name = nameElement.getText();
+        //                }
+        //
+        //                Element valuesElement = e.getChild("customfieldvalues");
+        //                if (valuesElement != null) {
+        //                    for (int i = 0; i < valuesElement.getChildren().size(); i++) {
+        //                        Element singleValueElement = valuesElement.getChildren().get(i);
+        //                        if (singleValueElement != null && singleValueElement.getValue() != null) {
+        //                            values.add(singleValueElement.getValue());
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //
+        //        }
 
         public JiraCustomField build() {
             switch (typeKey) {

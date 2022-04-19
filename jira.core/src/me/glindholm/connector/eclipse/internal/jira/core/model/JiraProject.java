@@ -18,238 +18,253 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
+
 /**
- * TODO need mapping statuses -> actions -> fields TODO need mapping statuses -> fields
- * 
+ * TODO need mapping statuses -> actions -> fields
+ *
+ * TODO need mapping statuses -> fields
+ *
  * @author Brock Janiczak
  * @author Thomas Ehrnhoefer
  */
 public class JiraProject implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String key;
+    private String key;
 
-	private String description;
+    private String description;
 
-	private String lead;
+    private String lead;
 
-	private String projectUrl;
+    private String projectUrl;
 
-	private String url;
+    private String url;
 
-	private JiraComponent[] components;
+    private JiraComponent[] components;
 
-	private JiraVersion[] versions;
+    private JiraVersion[] versions;
 
-	private JiraIssueType[] issueTypes;
+    private JiraIssueType[] issueTypes;
 
-	private JiraSecurityLevel[] securityLevels;
+    private JiraSecurityLevel[] securityLevels;
 
-	private Map<String, JiraIssueType> issueTypesById;
+    private Map<String, JiraIssueType> issueTypesById;
 
-	private boolean details;
+    private boolean details;
 
-	public JiraProject(String id) {
-		this.id = id;
-	}
+    private Map<Long, Map<String, CimFieldInfo>> fieldMetadata;
 
-	public JiraProject() {
-	}
+    public JiraProject(String id) {
+        this.id = id;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public JiraProject() {
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public String getKey() {
-		return this.key;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public String getKey() {
+        return this.key;
+    }
 
-	public String getLead() {
-		return this.lead;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public void setLead(String lead) {
-		this.lead = lead;
-	}
+    public String getLead() {
+        return this.lead;
+    }
 
-	public String getProjectUrl() {
-		return this.projectUrl;
-	}
+    public void setLead(String lead) {
+        this.lead = lead;
+    }
 
-	public void setProjectUrl(String projectUrl) {
-		this.projectUrl = projectUrl;
-	}
+    public String getProjectUrl() {
+        return this.projectUrl;
+    }
 
-	public String getUrl() {
-		return this.url;
-	}
+    public void setProjectUrl(String projectUrl) {
+        this.projectUrl = projectUrl;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public String getUrl() {
+        return this.url;
+    }
 
-	public JiraComponent getComponent(String name) {
-		for (JiraComponent component : this.components) {
-			if (component.getName().equals(name)) {
-				return component;
-			}
-		}
-		return null;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public JiraComponent[] getComponents() {
-		return this.components;
-	}
+    public JiraComponent getComponent(String name) {
+        for (JiraComponent component : this.components) {
+            if (component.getName().equals(name)) {
+                return component;
+            }
+        }
+        return null;
+    }
 
-	public void setComponents(JiraComponent[] components) {
-		this.components = components;
-	}
+    public JiraComponent[] getComponents() {
+        return this.components;
+    }
 
-	public JiraVersion getVersion(String name) {
-		for (JiraVersion version : this.versions) {
-			if (version.getName().equals(name)) {
-				return version;
-			}
-		}
-		return null;
-	}
+    public void setComponents(JiraComponent[] components) {
+        this.components = components;
+    }
 
-	public void setVersions(JiraVersion[] versions) {
-		this.versions = versions;
-	}
+    public JiraVersion getVersion(String name) {
+        for (JiraVersion version : this.versions) {
+            if (version.getName().equals(name)) {
+                return version;
+            }
+        }
+        return null;
+    }
 
-	public JiraVersion[] getReleasedVersions(boolean includeArchived) {
-		List<JiraVersion> releasedVersions = new ArrayList<JiraVersion>();
+    public void setVersions(JiraVersion[] versions) {
+        this.versions = versions;
+    }
 
-		for (JiraVersion version : this.versions) {
-			if (version.isReleased()) {
-				if (!version.isArchived() || includeArchived) {
-					releasedVersions.add(version);
-				}
-			}
-		}
+    public JiraVersion[] getReleasedVersions(boolean includeArchived) {
+        List<JiraVersion> releasedVersions = new ArrayList<>();
 
-		return releasedVersions.toArray(new JiraVersion[releasedVersions.size()]);
-	}
+        for (JiraVersion version : this.versions) {
+            if (version.isReleased()) {
+                if (!version.isArchived() || includeArchived) {
+                    releasedVersions.add(version);
+                }
+            }
+        }
 
-	public JiraVersion[] getUnreleasedVersions(boolean includeArchived) {
-		List<JiraVersion> unreleasedVersions = new ArrayList<JiraVersion>();
+        return releasedVersions.toArray(new JiraVersion[releasedVersions.size()]);
+    }
 
-		for (JiraVersion version : this.versions) {
-			if (!version.isReleased()) {
-				if (!version.isArchived() || includeArchived) {
-					unreleasedVersions.add(version);
-				}
-			}
-		}
+    public JiraVersion[] getUnreleasedVersions(boolean includeArchived) {
+        List<JiraVersion> unreleasedVersions = new ArrayList<>();
 
-		return unreleasedVersions.toArray(new JiraVersion[unreleasedVersions.size()]);
-	}
+        for (JiraVersion version : this.versions) {
+            if (!version.isReleased()) {
+                if (!version.isArchived() || includeArchived) {
+                    unreleasedVersions.add(version);
+                }
+            }
+        }
 
-	public JiraVersion[] getArchivedVersions() {
-		List<JiraVersion> archivedVersions = new ArrayList<JiraVersion>();
+        return unreleasedVersions.toArray(new JiraVersion[unreleasedVersions.size()]);
+    }
 
-		for (JiraVersion version : this.versions) {
-			if (version.isArchived()) {
-				archivedVersions.add(version);
-			}
-		}
+    public JiraVersion[] getArchivedVersions() {
+        List<JiraVersion> archivedVersions = new ArrayList<>();
 
-		return archivedVersions.toArray(new JiraVersion[archivedVersions.size()]);
-	}
+        for (JiraVersion version : this.versions) {
+            if (version.isArchived()) {
+                archivedVersions.add(version);
+            }
+        }
 
-	public JiraVersion[] getVersions() {
-		return this.versions;
-	}
+        return archivedVersions.toArray(new JiraVersion[archivedVersions.size()]);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    public JiraVersion[] getVersions() {
+        return this.versions;
+    }
 
-		if (!(obj instanceof JiraProject)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-		JiraProject that = (JiraProject) obj;
+        if (!(obj instanceof JiraProject)) {
+            return false;
+        }
 
-		return this.name.equals(that.name);
-	}
+        JiraProject that = (JiraProject) obj;
 
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
+        return this.name.equals(that.name);
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 
-	public JiraIssueType[] getIssueTypes() {
-		return issueTypes;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
-	public void setIssueTypes(JiraIssueType[] issueTypes) {
-		this.issueTypes = issueTypes;
-		this.issueTypesById = new HashMap<String, JiraIssueType>();
-		if (issueTypes != null) {
-			for (JiraIssueType type : issueTypes) {
-				issueTypesById.put(type.getId(), type);
-			}
-		}
-	}
+    public JiraIssueType[] getIssueTypes() {
+        return issueTypes;
+    }
 
-	public JiraSecurityLevel[] getSecurityLevels() {
-		return securityLevels;
-	}
+    public void setIssueTypes(JiraIssueType[] issueTypes) {
+        this.issueTypes = issueTypes;
+        this.issueTypesById = new HashMap<>();
+        if (issueTypes != null) {
+            for (JiraIssueType type : issueTypes) {
+                issueTypesById.put(type.getId(), type);
+            }
+        }
+    }
 
-	public void setSecurityLevels(JiraSecurityLevel[] securityLevels) {
-		this.securityLevels = securityLevels;
-	}
+    public Map<Long, Map<String, CimFieldInfo>> getfieldMetadata() {
+        return fieldMetadata;
+    }
 
-	public void setDetails(boolean details) {
-		this.details = details;
-	}
+    public void setfieldMetadata(Map<Long, Map<String, CimFieldInfo>> fieldMetadata) {
+        this.fieldMetadata = fieldMetadata;
+    }
 
-	public boolean hasDetails() {
-		return details;
-	}
+    public JiraSecurityLevel[] getSecurityLevels() {
+        return securityLevels;
+    }
 
-	public JiraIssueType getIssueTypeById(String typeId) {
-		if (issueTypesById != null) {
-			return issueTypesById.get(typeId);
-		}
-		return null;
-	}
+    public void setSecurityLevels(JiraSecurityLevel[] securityLevels) {
+        this.securityLevels = securityLevels;
+    }
+
+    public void setDetails(boolean details) {
+        this.details = details;
+    }
+
+    public boolean hasDetails() {
+        return details;
+    }
+
+    public JiraIssueType getIssueTypeById(String typeId) {
+        if (issueTypesById != null) {
+            return issueTypesById.get(typeId);
+        }
+        return null;
+    }
+
 }

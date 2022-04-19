@@ -11,7 +11,8 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
  com.google.guava,
- me.glindholm.connector.eclipse.commons.core
+ me.glindholm.connector.eclipse.commons.core,
+ jira-rest-java-client-osgi;bundle-version="5.2.4"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.jersey.api.client,
  com.sun.jersey.api.client.config,
@@ -26,16 +27,8 @@ Export-Package: com.sun.jersey.api.client,
  me.glindholm.connector.eclipse.internal.jira.core.model.filter;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- org.codehaus.jettison.json
-Bundle-ClassPath: .,
- target/lib/jira-rest-java-client.jar,
- target/lib/jersey-apache-client.jar,
- target/lib/jersey-core.jar,
- target/lib/jersey-json.jar,
- target/lib/jersey-client.jar,
- target/lib/jettison.jar,
- target/lib/jdom.jar
+ me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin

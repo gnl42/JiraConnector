@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.commons.workbench.forms.CommonFormUtil;
@@ -106,10 +106,10 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsTable.setHeaderVisible(true);
         attachmentsTable.setLayout(new GridLayout());
         GridDataFactory.fillDefaults()
-                .align(SWT.FILL, SWT.FILL)
-                .grab(true, false)
-                .hint(500, SWT.DEFAULT)
-                .applyTo(attachmentsTable);
+        .align(SWT.FILL, SWT.FILL)
+        .grab(true, false)
+        .hint(500, SWT.DEFAULT)
+        .applyTo(attachmentsTable);
         attachmentsTable.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
         for (int i = 0, columnIndex = 0; i < attachmentsColumns.length; i++) {
@@ -133,7 +133,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsViewer.setColumnProperties(attachmentsColumns);
         ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
-        attachmentsViewer.setSorter(new ViewerSorter() {
+        ViewerComparator attachmentSorter = new ViewerComparator() {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 ITaskAttachment attachment1 = (ITaskAttachment) e1;
@@ -150,9 +150,28 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     return 0;
                 }
             }
-        });
+        };
+        attachmentsViewer.setComparator(attachmentSorter);
+        //        attachmentsViewer.setSorter(new ViewerSorter() {
+        //            @Override
+        //            public int compare(Viewer viewer, Object e1, Object e2) {
+        //                ITaskAttachment attachment1 = (ITaskAttachment) e1;
+        //                ITaskAttachment attachment2 = (ITaskAttachment) e2;
+        //                Date created1 = attachment1.getCreationDate();
+        //                Date created2 = attachment2.getCreationDate();
+        //                if (created1 != null && created2 != null) {
+        //                    return created1.compareTo(created2);
+        //                } else if (created1 == null && created2 != null) {
+        //                    return -1;
+        //                } else if (created1 != null && created2 == null) {
+        //                    return 1;
+        //                } else {
+        //                    return 0;
+        //                }
+        //            }
+        //        });
 
-        List<ITaskAttachment> attachmentList = new ArrayList<ITaskAttachment>(attachments.size());
+        List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
         for (TaskAttribute attribute : attachments) {
             TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
                     attribute);
@@ -189,6 +208,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         });
 
         attachmentsViewer.addOpenListener(new IOpenListener() {
+            @Override
             public void open(OpenEvent event) {
                 if (!event.getSelection().isEmpty()) {
                     StructuredSelection selection = (StructuredSelection) event.getSelection();
@@ -203,6 +223,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
         menuManager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 TasksUiMenus.fillTaskAttachmentMenu(manager);
             }

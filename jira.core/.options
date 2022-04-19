@@ -1,0 +1,9 @@
+org.eclipse.mylyn.jira.core/debug/connector=true
+org.eclipse.mylyn.jira.core/debug/dataHandler=true
+org.eclipse.mylyn.jira.core/debug/repository=true
+me.glindholm.connector.eclipse.jira.core/debug/dataHandler=true
+me.glindholm.connector.eclipse.bamboo.core/trace/commons=false
+me.glindholm.connector.eclipse.jira.core/debug/repository=true
+me.glindholm.connector.eclipse.jira.core/debug/connector=true
+me.glindholm.connector.eclipse.jira.core/debug/repository=true
+me.glindholm.connector.eclipse.jira.core/debug/connector=true

@@ -15,12 +15,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,34 +29,32 @@ import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
-import com.atlassian.jira.rest.client.IssueRestClient;
-import com.atlassian.jira.rest.client.domain.Attachment;
-import com.atlassian.jira.rest.client.domain.BasicComponent;
-import com.atlassian.jira.rest.client.domain.BasicIssue;
-import com.atlassian.jira.rest.client.domain.BasicIssueType;
-import com.atlassian.jira.rest.client.domain.BasicProject;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.Comment;
-import com.atlassian.jira.rest.client.domain.FavouriteFilter;
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.IssueLink;
-import com.atlassian.jira.rest.client.domain.IssueType;
-import com.atlassian.jira.rest.client.domain.Priority;
-import com.atlassian.jira.rest.client.domain.Resolution;
-import com.atlassian.jira.rest.client.domain.ServerInfo;
-import com.atlassian.jira.rest.client.domain.Status;
-import com.atlassian.jira.rest.client.domain.Subtask;
-import com.atlassian.jira.rest.client.domain.Transition;
-import com.atlassian.jira.rest.client.domain.Version;
-import com.atlassian.jira.rest.client.domain.Visibility;
-import com.atlassian.jira.rest.client.domain.Worklog;
-import com.atlassian.jira.rest.client.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.domain.input.WorklogInput;
-import com.atlassian.jira.rest.client.domain.input.WorklogInputBuilder;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import com.google.common.base.Optional;
+import com.atlassian.jira.rest.client.api.domain.Attachment;
+import com.atlassian.jira.rest.client.api.domain.BasicComponent;
+import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.atlassian.jira.rest.client.api.domain.BasicProject;
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
+import com.atlassian.jira.rest.client.api.domain.Filter;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueField;
+import com.atlassian.jira.rest.client.api.domain.IssueLink;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
+import com.atlassian.jira.rest.client.api.domain.Priority;
+import com.atlassian.jira.rest.client.api.domain.Resolution;
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
+import com.atlassian.jira.rest.client.api.domain.Status;
+import com.atlassian.jira.rest.client.api.domain.Subtask;
+import com.atlassian.jira.rest.client.api.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.Version;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
+import com.atlassian.jira.rest.client.api.domain.Worklog;
+import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
+import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
+import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
+import com.atlassian.jira.rest.client.api.domain.input.WorklogInputBuilder;
 import com.google.common.collect.ImmutableList;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
@@ -113,8 +110,7 @@ public class JiraRestConverter {
         return project;
     }
 
-    public static JiraResolution[] convertResolutions(
-            Iterable<Resolution> allResolutions) {
+    public static JiraResolution[] convertResolutions(Iterable<Resolution> allResolutions) {
         List<JiraResolution> resolutions = new ArrayList<>();
 
         for (Resolution resolution : allResolutions) {
@@ -150,24 +146,24 @@ public class JiraRestConverter {
         return outPriority;
     }
 
-    public static JiraIssue convertIssue(Issue rawIssue, JiraClientCache cache, String url, IProgressMonitor monitor)
-            throws JiraException {
+    public static JiraIssue convertIssue(Issue rawIssue, JiraClientCache cache, String url, IProgressMonitor monitor) throws JiraException {
         JiraIssue issue = new JiraIssue();
 
         issue.setRawIssue(rawIssue);
+        Map<String, CimFieldInfo> meta = cache.getFieldMetadata(rawIssue.getProject().getId(), rawIssue.getIssueType().getId());
 
-        issue.setCustomFields(getCustomFieldsFromIssue(rawIssue));
-        issue.setEditableFields(getEditableFieldsFromIssue(rawIssue));
+        issue.setCustomFields(getCustomFieldsFromIssue(rawIssue, meta));
+        issue.setEditableFields(getEditableFieldsFromIssue(rawIssue, meta));
 
-        //		setAllowValuesForCustomFields(jiraIssue.getCustomFields(), jiraIssue.getEditableFields());
+        // setAllowValuesForCustomFields(jiraIssue.getCustomFields(),
+        // jiraIssue.getEditableFields());
 
         JiraProject project = cache.getProjectByKey(rawIssue.getProject().getKey());
         issue.setProject(project);
         if (project != null && !project.hasDetails()) {
             cache.refreshProjectDetails(project, monitor);
         } else if (project == null) {
-            throw new JiraException(NLS.bind(
-                    "Project with key {0} not found in local cache. Please refresh repository configuration.", //$NON-NLS-1$
+            throw new JiraException(NLS.bind("Project with key {0} not found in local cache. Please refresh repository configuration.", //$NON-NLS-1$
                     rawIssue.getProject().getKey()));
         }
 
@@ -178,11 +174,14 @@ public class JiraRestConverter {
         issue.setDescription(rawIssue.getDescription());
 
         if (rawIssue.getIssueType().isSubtask()) {
-            Object parent = rawIssue.getField(JiraRestFields.PARENT).getValue();
-            if (parent instanceof JSONObject) {
-                issue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.KEY));
-                issue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent, JiraRestFields.ID));
-            }
+            // TODO do we care?
+            // Object parent = rawIssue.getField(JiraRestFields.PARENT).getValue();
+            // if (parent instanceof JSONObject) {
+            // issue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent,
+            // JiraRestFields.KEY));
+            // issue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent,
+            // JiraRestFields.ID));
+            // }
 
         }
 
@@ -192,8 +191,8 @@ public class JiraRestConverter {
             issue.setPriority(cache.getPriorities()[0]);
         } else {
             issue.setPriority(null);
-            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, NLS.bind(
-                    "Found issue with empty priority: {0}", rawIssue.getKey())));
+            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                    NLS.bind("Found issue with empty priority: {0}", rawIssue.getKey())));
         }
 
         issue.setStatus(cache.getStatusById(rawIssue.getStatus().getId().toString()));
@@ -209,9 +208,7 @@ public class JiraRestConverter {
             issue.setReporterName(rawIssue.getReporter().getDisplayName());
         }
 
-        issue.setResolution(rawIssue.getResolution() == null ? null : cache.getResolutionById(rawIssue.getResolution()
-                .getId()
-                .toString()));
+        issue.setResolution(rawIssue.getResolution() == null ? null : cache.getResolutionById(rawIssue.getResolution().getId().toString()));
 
         if (rawIssue.getTimeTracking() != null) {
             if (rawIssue.getTimeTracking().getOriginalEstimateMinutes() != null) {
@@ -225,7 +222,8 @@ public class JiraRestConverter {
             }
         }
 
-        Field security = rawIssue.getField(JiraRestFields.SECURITY);
+        // TODO Find some way to check this
+        IssueField security = rawIssue.getField(JiraRestFields.SECURITY);
         if (security != null && security.getValue() != null && security.getValue() instanceof JSONObject) {
             JSONObject json = (JSONObject) security.getValue();
 
@@ -261,11 +259,12 @@ public class JiraRestConverter {
             issue.setComponents(convertComponents(rawIssue.getComponents()));
         }
 
-        Field env = rawIssue.getField(JiraRestFields.ENVIRONMENT);
+        IssueField env = rawIssue.getField(JiraRestFields.ENVIRONMENT);
         if (env != null && env.getValue() != null) {
             issue.setEnvironment(env.getValue().toString());
         } else {
-            // hack: empty value is necessary to display environment field in the issue editor
+            // hack: empty value is necessary to display environment field in the issue
+            // editor
             issue.setEnvironment(""); //$NON-NLS-1$
         }
 
@@ -276,8 +275,8 @@ public class JiraRestConverter {
             issue.setFixVersions(convertVersions(rawIssue.getFixVersions()));
         }
 
-        if (isVersionMissingInProjectCache(rawIssue.getAffectedVersions(), rawIssue.getFixVersions(),
-                cache.getProjectByKey(rawIssue.getProject().getKey()), monitor)) {
+        if (isVersionMissingInProjectCache(rawIssue.getAffectedVersions(), rawIssue.getFixVersions(), cache.getProjectByKey(rawIssue.getProject().getKey()),
+                monitor)) {
             cache.refreshProjectDetails(issue.getProject(), monitor);
         }
 
@@ -304,7 +303,7 @@ public class JiraRestConverter {
             issue.setWorklogs(convertWorklogs(rawIssue.getWorklogs()));
         }
 
-        issue.setRank(getRankFromIssue(rawIssue));
+        issue.setRank(getRankFromIssue(rawIssue, meta));
 
         if (rawIssue.getLabels() != null) {
             issue.setLabels(rawIssue.getLabels().toArray(new String[rawIssue.getLabels().size()]));
@@ -313,21 +312,22 @@ public class JiraRestConverter {
         return issue;
     }
 
-    //	private static void setAllowValuesForCustomFields(CustomField[] customFields, IssueField[] editableFields) {
-    //		Map<String, IssueField> editableFieldsMap = new HashMap<String, IssueField>(editableFields.length + 1, 1);
+    // private static void setAllowValuesForCustomFields(CustomField[] customFields,
+    // IssueField[] editableFields) {
+    // Map<String, IssueField> editableFieldsMap = new HashMap<String,
+    // IssueField>(editableFields.length + 1, 1);
     //
-    //		// transform editable fields into HasMap
-    //		for (IssueField editableField : editableFields) {
-    //			editableFieldsMap.put(editableField.getId(), editableField);
-    //		}
+    // // transform editable fields into HasMap
+    // for (IssueField editableField : editableFields) {
+    // editableFieldsMap.put(editableField.getId(), editableField);
+    // }
     //
-    //		for (CustomField customField : customFields) {
-    //			customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
-    //		}
-    //	}
+    // for (CustomField customField : customFields) {
+    // customField.setAllowedValues(editableFieldsMap.get(customField.getId()).getAlloweValues());
+    // }
+    // }
 
-    private static boolean isVersionMissingInProjectCache(
-            Iterable<Version> affectedVersions, Iterable<Version> fixVersions, JiraProject project,
+    private static boolean isVersionMissingInProjectCache(Iterable<Version> affectedVersions, Iterable<Version> fixVersions, JiraProject project,
             IProgressMonitor monitor) {
 
         if (affectedVersions != null) {
@@ -350,182 +350,98 @@ public class JiraRestConverter {
 
     }
 
-    private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue) {
-        JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
+    private static final List<String> internalNames = List.of("Development", "Rank", "Flagged"); // internal fields to the jira server
 
-        if (editmeta != null) {
+    private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
+        List<JiraCustomField> customFields = new ArrayList<>();
 
-            JSONObject fieldsFromEditMeta = JsonParseUtil.getOptionalJsonObject(editmeta, "fields");
-
-            if (fieldsFromEditMeta != null) {
-
-                List<JiraCustomField> customFields = new ArrayList<>();
-
-                for (Field field : issue.getFields()) {
-                    if (field.getId().startsWith("customfield") && field.getValue() != null) { //$NON-NLS-1$
-
-                        JSONObject jsonFieldFromEditMeta = JsonParseUtil.getOptionalJsonObject(fieldsFromEditMeta,
-                                field.getId());
-
-                        if (jsonFieldFromEditMeta != null) {
-                            try {
-                                JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
-
-                                if (schema != null) {
-
-                                    String longType = JsonParseUtil.getOptionalString(schema, "custom");
-
-                                    if (longType != null) {
-                                        JiraCustomField customField = generateCustomField(field, longType);
-                                        if (customField != null) {
-                                            customFields.add(customField);
-                                        }
-                                    } else {
-                                        StatusHandler.log(new org.eclipse.core.runtime.Status(
-                                                IStatus.WARNING,
-                                                JiraCorePlugin.ID_PLUGIN,
-                                                NLS.bind(
-                                                        "Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
-                                    }
-                                } else {
-                                    StatusHandler.log(new org.eclipse.core.runtime.Status(
-                                            IStatus.WARNING,
-                                            JiraCorePlugin.ID_PLUGIN,
-                                            NLS.bind(
-                                                    "Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
-                                }
-
-                            } catch (JSONException e) {
-                                StatusHandler.log(new org.eclipse.core.runtime.Status(
-                                        IStatus.WARNING,
-                                        JiraCorePlugin.ID_PLUGIN,
-                                        NLS.bind(
-                                                "Unable to parse type information (edit meta) for field [{0}].", field.getId()))); //$NON-NLS-1$
-                            }
-                        } else {
-                            // skip this (it is common to have not visible custom fields like GH Rank)
-                            //							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
-                            //									JiraCorePlugin.ID_PLUGIN, NLS.bind(
-                            //											"Type information (edit meta) for field [{0}] not found.", field.getId()))); //$NON-NLS-1$
+        for (IssueField field : issue.getFields()) {
+            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
+                CimFieldInfo cim = metaData.get(field.getId());
+                if (cim != null) {
+                    String longType = cim.getSchema().getCustom();
+                    if (longType != null) {
+                        JiraCustomField customField = generateCustomField(field, longType);
+                        if (customField != null) {
+                            customFields.add(customField);
                         }
-                    }
-                }
-
-                return customFields.toArray(new JiraCustomField[customFields.size()]);
-            } else {
-                StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                        "Unable to retrieve fields' type information (edit meta). Skipping custom fields parsing.")); //$NON-NLS-1$
-            }
-
-        } else {
-            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                    "Unable to retrieve fields' type information (edit meta). Skipping custom fields parsing.")); //$NON-NLS-1$
-        }
-
-        return new JiraCustomField[0];
-    }
-
-    private static JiraIssueField[] getEditableFieldsFromIssue(Issue issue) {
-
-        List<JiraIssueField> editableFields = new ArrayList<>();
-
-        JSONObject editmeta = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(), "editmeta");
-
-        if (editmeta != null) {
-
-            try {
-                JSONObject fieldsFromEditMeta = JsonParseUtil.getNestedObject(editmeta, "fields");
-
-                if (fieldsFromEditMeta != null) {
-
-                    @SuppressWarnings("rawtypes")
-                    Iterator keys = fieldsFromEditMeta.keys();
-
-                    while (keys.hasNext()) {
-                        String key = (String) keys.next();
-                        JSONObject jsonFieldFromEditMeta = fieldsFromEditMeta.getJSONObject(key);
-                        //
-                        if (jsonFieldFromEditMeta != null) {
-                            boolean required = jsonFieldFromEditMeta.getBoolean("required");
-                            String name = jsonFieldFromEditMeta.getString(JiraRestFields.NAME);
-
-                            JiraIssueField editableField = new JiraIssueField(key, name);
-                            editableField.setRequired(required);
-
-                            Optional<JSONArray> allowedValuesObject = JsonParseUtil.getOptionalArray(
-                                    jsonFieldFromEditMeta, "allowedValues"); //$NON-NLS-1$
-
-                            if (allowedValuesObject != null
-                                    && !Optional.<JSONArray> absent().equals(allowedValuesObject)) {
-                                List<JiraAllowedValue> allowedValues = new ArrayList<>();
-
-                                JSONArray alloweValuesArray = allowedValuesObject.get();
-                                for (int i = 0; i < alloweValuesArray.length(); ++i) {
-                                    JSONObject allowedValue = alloweValuesArray.getJSONObject(i);
-                                    String optionalId = JsonParseUtil.getOptionalString(allowedValue, "id");
-                                    String optionalValue = JsonParseUtil.getOptionalString(allowedValue, "value");
-                                    if (optionalValue != null && optionalId != null) {
-                                        allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
-
-                                    }
-                                }
-
-                                editableField.setAllowedValues(allowedValues);
-                            }
-
-                            JSONObject schema = (JSONObject) jsonFieldFromEditMeta.get("schema");
-
-                            if (schema != null) {
-
-                                String longTypeCustom = JsonParseUtil.getOptionalString(schema, "custom");
-                                String longTypeSystem = JsonParseUtil.getOptionalString(schema, "system");
-
-                                if (longTypeCustom != null) {
-                                    editableField.setType(longTypeCustom);
-                                } else if (longTypeSystem != null) {
-                                    editableField.setType(longTypeSystem);
-                                }
-                            }
-                            editableFields.add(editableField);
-
-                        } else {
-                            StatusHandler.log(new org.eclipse.core.runtime.Status(
-                                    IStatus.WARNING,
-                                    JiraCorePlugin.ID_PLUGIN,
-                                    NLS.bind(
-                                            "Unable to retrieve field' type information (edit meta) for [{0}]. Skipping this one.", key))); //$NON-NLS-1$
-                        }
+                    } else {
+                        StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                                NLS.bind("Unable to parse type information (edit meta) for field [{0}:{1}:{2}].", //$NON-NLS-1$
+                                        new Object[] { field.getId(), field.getName(), longType })));
                     }
                 } else {
-                    StatusHandler.log(new org.eclipse.core.runtime.Status(
-                            IStatus.WARNING,
-                            JiraCorePlugin.ID_PLUGIN,
-                            NLS.bind(
-                                    "Unable to retrieve 'fields' information (edit meta) for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
+                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                            NLS.bind("Unable to find meta information for field [{0}:{1}].", field.getId(), field.getName()))); //$NON-NLS-1$
                 }
-            } catch (JSONException e) {
-                StatusHandler.log(new org.eclipse.core.runtime.Status(
-                        IStatus.WARNING,
-                        JiraCorePlugin.ID_PLUGIN,
-                        NLS.bind(
-                                "Unable to parse type information (edit meta) for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
+                //
+                // } catch (JSONException e) {
+                // StatusHandler.log(new org.eclipse.core.runtime.Status(
+                // IStatus.WARNING,
+                // JiraCorePlugin.ID_PLUGIN,
+                // NLS.bind(
+                // "Unable to parse type information (edit meta) for field [{0}].",
+                // field.getId()))); //$NON-NLS-1$
+                // }
+                // } else {
+                // // skip this (it is common to have not visible custom fields like GH Rank)
+                // // StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+                // // JiraCorePlugin.ID_PLUGIN, NLS.bind(
+                // // "Type information (edit meta) for field [{0}] not found.",
+                // field.getId()))); //$NON-NLS-1$
+                // }
+                // }
             }
-        } else {
-            StatusHandler.log(new org.eclipse.core.runtime.Status(
-                    IStatus.WARNING,
-                    JiraCorePlugin.ID_PLUGIN,
-                    NLS.bind(
-                            "Unable to retrieve 'editmeta' information for issue [{0}]. Skipping editable fields parsing.", issue.getKey()))); //$NON-NLS-1$
         }
-
-        if (editableFields.size() > 0) {
-            return editableFields.toArray(new JiraIssueField[editableFields.size()]);
-        }
-
-        return new JiraIssueField[0];
+        return customFields.toArray(new JiraCustomField[0]);
     }
 
-    private static JiraCustomField generateCustomField(Field field, String longType) {
+    private static JiraIssueField[] getEditableFieldsFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
+
+        List<JiraIssueField> editableFields = new ArrayList<>();
+        for (IssueField field : issue.getFields()) {
+            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
+                CimFieldInfo cim = metaData.get(field.getId());
+                if (cim != null) {
+                    boolean required = cim.isRequired();
+                    String name = field.getName();
+                    JiraIssueField editableField = new JiraIssueField(field.getId(), name);
+                    editableField.setRequired(required);
+                    if (cim.getAllowedValues() != null) {
+                        List<JiraAllowedValue> allowedValues = new ArrayList<>();
+                        for (Object allowedValue : cim.getAllowedValues()) {
+                            CustomFieldOption value = (CustomFieldOption) allowedValue;
+                            String optionalId = value.getId() + "";
+                            String optionalValue = value.getValue();
+                            if (optionalValue != null && optionalId != null) {
+                                allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
+                            }
+                        }
+                        editableField.setAllowedValues(allowedValues);
+                    }
+
+                    String longTypeCustom = cim.getSchema().getCustom();
+                    String longTypeSystem = cim.getSchema().getSystem();
+
+                    if (longTypeCustom != null) {
+                        editableField.setType(longTypeCustom);
+                    } else if (longTypeSystem != null) {
+                        editableField.setType(longTypeSystem);
+                    }
+                    editableFields.add(editableField);
+                } else {
+                    final String name = field.getName();
+                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                            NLS.bind("Unable to find metadata information  for field [{0}:{1}].", field.getId(), name))); //$NON-NLS-1$
+                }
+            }
+
+        }
+
+        return editableFields.toArray(new JiraIssueField[0]);
+    }
+
+    private static JiraCustomField generateCustomField(IssueField field, String longType) {
 
         boolean readonly = false;
 
@@ -552,7 +468,7 @@ public class JiraRestConverter {
                 break;
             case MULTIUSERPICKER:
                 // no support for multi users on the Mylyn side
-                //			values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
+                // values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
                 values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
                 break;
             case USERPICKER:
@@ -574,10 +490,12 @@ public class JiraRestConverter {
                 values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
                 break;
             case MULTIGROUPPICKER:
-                values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field),
-                        ", ")); //$NON-NLS-1$
+                values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field), ", ")); //$NON-NLS-1$
                 break;
             default:
+                StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                        NLS.bind("Unable extract value for field [{0}:{1}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
+
                 // not supported custom field
             }
 
@@ -589,44 +507,66 @@ public class JiraRestConverter {
                 return customField;
             }
         } catch (JSONException e) {
-            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                    e.getMessage()));
+            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
         }
 
         return null;
     }
 
-    private static Long getRankFromIssue(Issue issue) {
-        JSONObject schemaFields = JsonParseUtil.getOptionalJsonObject(issue.getRawObject(),
-                IssueRestClient.Expandos.SCHEMA.getFieldName());
-
-        if (schemaFields != null) {
-
-            for (Field field : issue.getFields()) {
-                if (field.getId().startsWith("customfield") && field.getValue() != null) { //$NON-NLS-1$
-
-                    JSONObject jsonFieldFromSchema = JsonParseUtil.getOptionalJsonObject(schemaFields, field.getId());
-
-                    if (jsonFieldFromSchema != null) {
-                        String longType = JsonParseUtil.getOptionalString(jsonFieldFromSchema, "custom"); //$NON-NLS-1$
-
-                        if (JiraAttribute.RANK.getType().getKey().equals(longType)) {
-                            try {
-                                return Long.valueOf(field.getValue().toString());
-                            } catch (NumberFormatException e) {
-                                StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
-                                        JiraCorePlugin.ID_PLUGIN, NLS.bind(
-                                                "Unable to parse Rank value [{0}].", field.getValue().toString()))); //$NON-NLS-1$
-                            }
+    private static Long getRankFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
+        for (IssueField field : issue.getFields()) {
+            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
+                CimFieldInfo cim = metaData.get(field.getId());
+                if (cim != null) {
+                    if (JiraAttribute.RANK.getType().getKey().equals(cim.getSchema().getCustom())) {
+                        try {
+                            return Long.valueOf(field.getValue().toString());
+                        } catch (NumberFormatException e) {
+                            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                                    NLS.bind("Unable to parse Rank value [{0}].", field.getValue().toString()))); //$NON-NLS-1$
                         }
+
                     }
                 }
             }
-        } else {
-            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                    "Unable to retrieve fields' type information (schema). Skipping searching for Rank.")); //$NON-NLS-1$
         }
-
+        // JSONObject schemaFields =
+        // JsonParseUtil.getOptionalJsonObject(issue.getRawObject(),
+        // IssueRestClient.Expandos.SCHEMA.getFieldName());
+        //
+        // if (schemaFields != null) {
+        //
+        // for (IssueField field : issue.getFields()) {
+        // if (field.getId().startsWith("customfield") && field.getValue() != null) {
+        // //$NON-NLS-1$
+        //
+        // JSONObject jsonFieldFromSchema =
+        // JsonParseUtil.getOptionalJsonObject(schemaFields, field.getId());
+        //
+        // if (jsonFieldFromSchema != null) {
+        // String longType = JsonParseUtil.getOptionalString(jsonFieldFromSchema,
+        // "custom"); //$NON-NLS-1$
+        //
+        // if (JiraAttribute.RANK.getType().getKey().equals(longType)) {
+        // try {
+        // return Long.valueOf(field.getValue().toString());
+        // } catch (NumberFormatException e) {
+        // StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+        // JiraCorePlugin.ID_PLUGIN, NLS.bind(
+        // "Unable to parse Rank value [{0}].", field.getValue().toString())));
+        // //$NON-NLS-1$
+        // }
+        // }
+        // }
+        // }
+        // }
+        // } else {
+        // StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+        // JiraCorePlugin.ID_PLUGIN,
+        // "Unable to retrieve fields' type information (schema). Skipping searching for
+        // Rank.")); //$NON-NLS-1$
+        // }
+        //
         return null;
     }
 
@@ -649,10 +589,10 @@ public class JiraRestConverter {
         }
         outWorklog.setComment(worklog.getComment());
         outWorklog.setCreated(worklog.getCreationDate().toDate());
-        //		outWorklog.setGroupLevel(worklog.get)
-        //		outWorklog.setId(worklog.get)
-        //		outWorklog.setNewRemainingEstimate(worklog.get);
-        //		outWorklog.setRoleLevelId(worklog.get);
+        // outWorklog.setGroupLevel(worklog.get)
+        // outWorklog.setId(worklog.get)
+        // outWorklog.setNewRemainingEstimate(worklog.get);
+        // outWorklog.setRoleLevelId(worklog.get);
         outWorklog.setStartDate(worklog.getStartDate().toDate());
         outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
         if (worklog.getUpdateAuthor() != null) {
@@ -663,8 +603,7 @@ public class JiraRestConverter {
         return outWorklog;
     }
 
-    private static JiraAttachment[] convertAttachments(
-            Iterable<Attachment> attachments) {
+    private static JiraAttachment[] convertAttachments(Iterable<Attachment> attachments) {
 
         List<JiraAttachment> outAttachments = new ArrayList<>();
 
@@ -678,7 +617,7 @@ public class JiraRestConverter {
     private static JiraAttachment convert(Attachment attachment) {
         JiraAttachment outAttachment = new JiraAttachment();
 
-        outAttachment.setId(attachment.getId().toString());
+        outAttachment.setId(attachment.getSelf().toString()); // FIXME which field??? attachment.getId().toString())
 
         BasicUser author = attachment.getAuthor();
 
@@ -753,8 +692,8 @@ public class JiraRestConverter {
     }
 
     private static JiraIssueLink convert(IssueLink issueLink) {
-        JiraIssueLink outIssueLink = new JiraIssueLink(issueLink.getTargetIssueId().toString(), issueLink.getTargetIssueKey(),
-                issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
+        JiraIssueLink outIssueLink = new JiraIssueLink(issueLink.getTargetIssueKey(), // FIXME issueLink.getTargetIssueId().toString(),
+                issueLink.getTargetIssueKey(), issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
                 issueLink.getIssueLinkType().getDescription(), ""); //$NON-NLS-1$
 
         return outIssueLink;
@@ -765,9 +704,9 @@ public class JiraRestConverter {
         List<JiraVersion> outVersions = new ArrayList<>();
 
         for (Version version : versions) {
-            //			if (!version.isArchived()) {
+            // if (!version.isArchived()) {
             outVersions.add(convert(version));
-            //			}
+            // }
         }
 
         Collections.reverse(outVersions);
@@ -808,12 +747,6 @@ public class JiraRestConverter {
         return outComponent;
     }
 
-    private static JiraIssueType convert(BasicIssueType issueType) {
-        JiraIssueType outIssueType = new JiraIssueType(issueType.getId().toString(), issueType.getName(), issueType.isSubtask());
-
-        return outIssueType;
-    }
-
     private static JiraSubtask[] convert(Iterable<Subtask> allSubtasks) {
         List<JiraSubtask> subtasks = new ArrayList<>();
 
@@ -825,12 +758,12 @@ public class JiraRestConverter {
     }
 
     private static JiraSubtask convert(Subtask subtask) {
-        return new JiraSubtask(subtask.getId().toString(), subtask.getIssueKey());
+        return new JiraSubtask(subtask.getIssueKey() /* //FIXME subtask.getId().toString() */, subtask.getIssueKey());
     }
 
-    //	private static String generateIssueId(String uri, String issueKey) {
-    //		return uri + "_" + issueKey.replace('-', '*');
-    //	}
+    // private static String generateIssueId(String uri, String issueKey) {
+    // return uri + "_" + issueKey.replace('-', '*');
+    // }
 
     public static JiraIssueType[] convertIssueTypes(Iterable<IssueType> allIssueTypes) {
         List<JiraIssueType> issueTypes = new ArrayList<>();
@@ -891,9 +824,10 @@ public class JiraRestConverter {
 
         worklogInputBuilder.setComment(jiraWorklog.getComment());
         worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
-        //		worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() / 60).intValue());
-        worklogInputBuilder.setTimeSpent(String.valueOf(jiraWorklog.getTimeSpent() / 60) + "m"); //$NON-NLS-1$
-        //		worklogInputBuilder.setAuthor(new )
+        // worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() /
+        // 60).intValue());
+        worklogInputBuilder.setMinutesSpent((int) (jiraWorklog.getTimeSpent() / 60)); // $NON-NLS-1$
+        // worklogInputBuilder.setAuthor(new )
 
         return worklogInputBuilder.build();
     }
@@ -904,7 +838,7 @@ public class JiraRestConverter {
         serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
         serverInfoOut.setWebBaseUrl(serverInfo.getBaseUri().toString());
         serverInfoOut.setBuildDate(serverInfo.getBuildDate().toDate());
-        serverInfoOut.setBuildNumber(Integer.valueOf(serverInfo.getBuildNumber()).toString());
+        serverInfoOut.setBuildNumber(Integer.toString(serverInfo.getBuildNumber()));
         serverInfoOut.setVersion(serverInfo.getVersion());
 
         return serverInfoOut;
@@ -925,7 +859,8 @@ public class JiraRestConverter {
 
         for (Transition.Field field : transition.getFields()) {
 
-            // TODO rest set field name once available https://studio.atlassian.com/browse/JRJC-113
+            // TODO rest set field name once available
+            // https://studio.atlassian.com/browse/JRJC-113
             JiraIssueField outField = new JiraIssueField(field.getId(), field.getId());
             outField.setType(field.getType());
             outField.setRequired(field.isRequired());
@@ -949,8 +884,7 @@ public class JiraRestConverter {
     }
 
     private static Version convert(JiraVersion version) {
-        Version outVersion = new Version(
-                null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
+        Version outVersion = new Version(null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
         return outVersion;
     }
 
@@ -970,17 +904,17 @@ public class JiraRestConverter {
         return new BasicComponent(null, Long.valueOf(component.getId()), component.getName(), null);
     }
 
-    public static JiraNamedFilter[] convertNamedFilters(Iterable<FavouriteFilter> favouriteFilters) {
+    public static JiraNamedFilter[] convertNamedFilters(Iterable<Filter> favouriteFilters) {
         List<JiraNamedFilter> outFilters = new ArrayList<>();
 
-        for (FavouriteFilter filter : favouriteFilters) {
+        for (Filter filter : favouriteFilters) {
             outFilters.add(convert(filter));
         }
 
         return outFilters.toArray(new JiraNamedFilter[outFilters.size()]);
     }
 
-    private static JiraNamedFilter convert(FavouriteFilter filter) {
+    private static JiraNamedFilter convert(Filter filter) {
         JiraNamedFilter outFilter = new JiraNamedFilter();
 
         outFilter.setId(filter.getId().toString());
@@ -1026,8 +960,7 @@ public class JiraRestConverter {
             break;
         case DATE:
 
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-            && customField.getValues().get(0).length() > 0) {
+            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
                 String date = null;
 
                 try {
@@ -1041,8 +974,7 @@ public class JiraRestConverter {
             break;
         case DATETIME:
 
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-            && customField.getValues().get(0).length() > 0) {
+            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
                 String date = null;
 
                 try {
@@ -1050,9 +982,7 @@ public class JiraRestConverter {
                 } catch (IllegalArgumentException e) {
 
                     date = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
-                            .withLocale(Locale.ENGLISH)
-                            .parseDateTime(customField.getValues().get(0))
-                            .toString(JiraRestFields.DATE_TIME_FORMAT);
+                            .withLocale(Locale.ENGLISH).parseDateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_TIME_FORMAT);
                 }
 
                 return new FieldInput(customField.getId(), date);
@@ -1061,8 +991,7 @@ public class JiraRestConverter {
             break;
 
         case FLOATFIELD:
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null
-            && customField.getValues().get(0).length() > 0) {
+            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
                 return new FieldInput(customField.getId(), Float.parseFloat(customField.getValues().get(0)));
             }
             break;
@@ -1085,8 +1014,7 @@ public class JiraRestConverter {
         case USERPICKER:
         case GROUPPICKER:
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
-                return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME,
-                        customField.getValues().get(0)));
+                return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME, customField.getValues().get(0)));
             }
             break;
         case SELECT:
@@ -1102,14 +1030,14 @@ public class JiraRestConverter {
         case MULTISELECT:
         case MULTICHECKBOXES:
 
-            //			if (customField.getValues().size() > 0) {
+            // if (customField.getValues().size() > 0) {
             List<ComplexIssueInputFieldValue> values = new ArrayList<>();
             for (String value : customField.getValues()) {
                 values.add(ComplexIssueInputFieldValue.with("value", value)); //$NON-NLS-1$
             }
 
             return new FieldInput(customField.getId(), values);
-            //			}
+            // }
 
         case LABELSS:
             if (customField.getValues().size() > 0) {

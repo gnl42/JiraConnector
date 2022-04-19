@@ -17,7 +17,12 @@ Export-Package: me.glindholm.connector.eclipse.internal.bamboo.core;x-friends:="
  me.glindholm.connector.eclipse.internal.bamboo.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.tests,me.glindholm.connector.eclipse.bamboo.ui",
  me.glindholm.theplugin.commons.bamboo,
  me.glindholm.theplugin.commons.bamboo.api,
- org.jaxen
+ org.codehaus.jettison,
+ org.codehaus.jettison.json,
+ org.codehaus.jettison.util,
+ org.jaxen,
+ org.joda.time,
+ org.joda.time.format
 Bundle-Vendor: George Lindholm
 Eclipse-RegisterBuddy: me.glindholm.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.commons.core,
@@ -25,4 +30,6 @@ Import-Package: org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.tasks.core.data,
  org.eclipse.mylyn.tasks.core.sync
 Bundle-ClassPath: .,
- target/lib/jaxen.jar
+ target/lib/jaxen.jar,
+ target/lib/joda-time.jar,
+ target/lib/jettison.jar
