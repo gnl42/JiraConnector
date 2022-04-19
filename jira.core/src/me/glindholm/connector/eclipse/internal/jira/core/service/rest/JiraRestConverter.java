@@ -34,6 +34,7 @@ import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.BasicWatchers;
 import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.Comment;
 import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
@@ -308,6 +309,11 @@ public class JiraRestConverter {
         if (rawIssue.getLabels() != null) {
             issue.setLabels(rawIssue.getLabels().toArray(new String[rawIssue.getLabels().size()]));
         }
+
+        issue.setVotes(rawIssue.getVotes().getVotes());
+
+        BasicWatchers watchers = rawIssue.getWatchers();
+        issue.setWatched(watchers.isWatching());
 
         return issue;
     }
