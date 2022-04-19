@@ -16,16 +16,18 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import javax.annotation.Nullable;
-import java.net.URI;
-import java.util.Set;
 
 /**
  * Contains information about field in IssueType.
@@ -34,7 +36,8 @@ import java.util.Set;
  *
  * @since v1.0
  */
-public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
+public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String>, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String id;
     private final boolean required;
@@ -49,7 +52,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
 
 
     public CimFieldInfo(String id, boolean required, @Nullable String name, FieldSchema schema,
-                        Set<StandardOperation> operations, @Nullable Iterable<Object> allowedValues, @Nullable URI autoCompleteUri) {
+            Set<StandardOperation> operations, @Nullable Iterable<Object> allowedValues, @Nullable URI autoCompleteUri) {
         this.id = id;
         this.required = required;
         this.name = name;
@@ -59,6 +62,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
         this.autoCompleteUri = autoCompleteUri;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -67,6 +71,7 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String> {
         return required;
     }
 
+    @Override
     @Nullable
     public String getName() {
         return name;
