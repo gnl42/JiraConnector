@@ -76,9 +76,9 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             Messages.TaskEditorAttachmentPart_Description, /*"Type", */Messages.TaskEditorAttachmentPart_Size,
             Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
 
-    private final int[] attachmentsColumnWidths = { 130, 150, /*100,*/70, 100, 100 };
+    private final int[] attachmentsColumnWidths = { 130, 150, /* 100, */70, 100, 250 }; // Not used
 
-    private final int[] attachmentsColumnWidthsNoDescription = { 150, 0, 100, 180, 100 };
+    private final int[] attachmentsColumnWidthsNoDescription = { 270, 0, 100, 180, 250 };
 
     private List<TaskAttribute> attachments;
 
@@ -152,24 +152,6 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             }
         };
         attachmentsViewer.setComparator(attachmentSorter);
-        //        attachmentsViewer.setSorter(new ViewerSorter() {
-        //            @Override
-        //            public int compare(Viewer viewer, Object e1, Object e2) {
-        //                ITaskAttachment attachment1 = (ITaskAttachment) e1;
-        //                ITaskAttachment attachment2 = (ITaskAttachment) e2;
-        //                Date created1 = attachment1.getCreationDate();
-        //                Date created2 = attachment2.getCreationDate();
-        //                if (created1 != null && created2 != null) {
-        //                    return created1.compareTo(created2);
-        //                } else if (created1 == null && created2 != null) {
-        //                    return -1;
-        //                } else if (created1 != null && created2 == null) {
-        //                    return 1;
-        //                } else {
-        //                    return 0;
-        //                }
-        //            }
-        //        });
 
         List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
         for (TaskAttribute attribute : attachments) {
@@ -183,7 +165,6 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsViewer.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(ViewerCell cell) {
-                // TODO Auto-generated method stub
                 final TaskAttachment element = (TaskAttachment) cell.getElement();
                 final String text;
                 final int columnIndex = cell.getColumnIndex();
