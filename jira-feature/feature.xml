@@ -87,13 +87,8 @@
          version="0.0.0"
          unpack="false"/>
 
-         id="org.apache.commons.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-         id="com.google.guava"
+   <plugin
+         id="jira-rest-java-client-osgi"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

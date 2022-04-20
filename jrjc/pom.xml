@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.atlassian.jira</groupId>
 	<artifactId>jira-rest-java-client-osgi</artifactId>
-	<version>5.2.4.proxy</version>
+	<version>5.2.5</version>
 	<packaging>eclipse-plugin</packaging>
 	<description>jira-rest-java-client packaged as a OSGI bundle</description>
 	<build>

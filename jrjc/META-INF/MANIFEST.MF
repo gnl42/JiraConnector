@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: jrjc
 Bundle-Name: Atlassian Jira Rest Java Client
 Bundle-SymbolicName: jira-rest-java-client-osgi
-Bundle-Version: 5.2.4.proxy
+Bundle-Version: 5.2.5
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Atlassian
 Export-Package: com.atlassian.httpclient.api.factory;uses:="new com.atlassian.httpclient.api.factory,com.atlassian.sal.api.executor,com.atlassian.httpclient.api",

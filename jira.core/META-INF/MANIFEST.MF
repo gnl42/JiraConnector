@@ -12,15 +12,9 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
  com.google.guava,
  me.glindholm.connector.eclipse.commons.core,
- jira-rest-java-client-osgi;bundle-version="5.2.4"
+ jira-rest-java-client-osgi;bundle-version="5.2.5"
 Bundle-ActivationPolicy: lazy
-Export-Package: com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.api.client.filter,
- com.sun.jersey.client.apache,
- com.sun.jersey.client.apache.config,
- com.sun.jersey.core.util,
- me.glindholm.connector.commons.jira.cache,
+Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.html;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
