@@ -23,14 +23,14 @@
 	<repositories>
 		<repository>
 			<id>atlassian</id>
-			<url>https://packages.atlassian.com/mvn/maven-external/</url>
+			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</repository>
 	</repositories>
 
 	<pluginRepositories>
 		<pluginRepository>
 			<id>release</id>
-			<url>https://packages.atlassian.com/mvn/maven-external/</url>
+			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
