@@ -1,4 +1,5 @@
 {
+    "id": 10002,
     "issueKey":"TST-2",
     "issue":"http://localhost:8090/jira/rest/api/latest/issue/TST-2",
     "type":{

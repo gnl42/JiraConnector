@@ -36,10 +36,10 @@
 
 
 	<modules>
-		<module>api</module>
-		<module>app</module>
-		<module>core</module>
-		<module>test</module>
+		<module>jrjc-api</module>
+		<module>jrjc-app</module>
+		<module>jrjc-core</module>
+		<module>jrjc-test</module>
 	</modules>
 
 	<scm>
