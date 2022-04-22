@@ -50,6 +50,7 @@ import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimIssueType;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
+import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Project;
 import com.atlassian.jira.rest.client.api.domain.Session;
@@ -318,6 +319,15 @@ public class JiraRestClientAdapter {
     public JiraPriority[] getPriorities() throws JiraException {
         try {
             return JiraRestConverter.convertPriorities(restClient.getMetadataClient().getPriorities().get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new JiraException(e);
+        }
+    }
+
+    public Iterable<Field> getMetadata() throws JiraException {
+        try {
+            Iterable<Field> metadata = restClient.getMetadataClient().getFields().get();
+            return metadata;
         } catch (InterruptedException | ExecutionException e) {
             throw new JiraException(e);
         }

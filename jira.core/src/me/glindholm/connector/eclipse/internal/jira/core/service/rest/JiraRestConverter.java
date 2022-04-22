@@ -151,10 +151,8 @@ public class JiraRestConverter {
         JiraIssue issue = new JiraIssue();
 
         issue.setRawIssue(rawIssue);
-        Map<String, CimFieldInfo> meta = cache.getFieldMetadata(rawIssue.getProject().getId(), rawIssue.getIssueType().getId());
-
-        issue.setCustomFields(getCustomFieldsFromIssue(rawIssue, meta));
-        issue.setEditableFields(getEditableFieldsFromIssue(rawIssue, meta));
+        issue.setCustomFields(getCustomFieldsFromIssue(rawIssue, cache));
+        issue.setEditableFields(getEditableFieldsFromIssue(rawIssue, cache));
 
         // setAllowValuesForCustomFields(jiraIssue.getCustomFields(),
         // jiraIssue.getEditableFields());
@@ -304,7 +302,7 @@ public class JiraRestConverter {
             issue.setWorklogs(convertWorklogs(rawIssue.getWorklogs()));
         }
 
-        issue.setRank(getRankFromIssue(rawIssue, meta));
+        issue.setRank(getRankFromIssue(rawIssue, cache));
 
         if (rawIssue.getLabels() != null) {
             issue.setLabels(rawIssue.getLabels().toArray(new String[rawIssue.getLabels().size()]));
@@ -358,27 +356,29 @@ public class JiraRestConverter {
 
     private static final List<String> internalNames = List.of("Development", "Rank", "Flagged"); // internal fields to the jira server
 
-    private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
+    private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue, JiraClientCache cache) throws JiraException {
         List<JiraCustomField> customFields = new ArrayList<>();
+        Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
 
-        for (IssueField field : issue.getFields()) {
-            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
-                CimFieldInfo cim = metaData.get(field.getId());
+        for (IssueField issueField : issue.getFields()) {
+
+            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null) { //$NON-NLS-1$
+                CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
                 if (cim != null) {
                     String longType = cim.getSchema().getCustom();
                     if (longType != null) {
-                        JiraCustomField customField = generateCustomField(field, longType);
+                        JiraCustomField customField = generateCustomField(issueField, longType);
                         if (customField != null) {
                             customFields.add(customField);
                         }
                     } else {
                         StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
                                 NLS.bind("Unable to parse type information (edit meta) for field [{0}:{1}:{2}].", //$NON-NLS-1$
-                                        new Object[] { field.getId(), field.getName(), longType })));
+                                        new Object[] { issueField.getId(), issueField.getName(), longType })));
                     }
                 } else {
-                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                            NLS.bind("Unable to find meta information for field [{0}:{1}].", field.getId(), field.getName()))); //$NON-NLS-1$
+                    //                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
+                    //                            NLS.bind("Unable to find meta information for field [{0}:{1}].", issueField.getId(), issueField.getName()))); //$NON-NLS-1$
                 }
                 //
                 // } catch (JSONException e) {
@@ -402,16 +402,18 @@ public class JiraRestConverter {
         return customFields.toArray(new JiraCustomField[0]);
     }
 
-    private static JiraIssueField[] getEditableFieldsFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
+    private static JiraIssueField[] getEditableFieldsFromIssue(Issue issue, JiraClientCache cache) throws JiraException {
 
         List<JiraIssueField> editableFields = new ArrayList<>();
-        for (IssueField field : issue.getFields()) {
-            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
-                CimFieldInfo cim = metaData.get(field.getId());
+        Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
+
+        for (IssueField issueField : issue.getFields()) {
+            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null && !internalNames.contains(issueField.getName())) { //$NON-NLS-1$
+                CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
                 if (cim != null) {
                     boolean required = cim.isRequired();
-                    String name = field.getName();
-                    JiraIssueField editableField = new JiraIssueField(field.getId(), name);
+                    String name = issueField.getName();
+                    JiraIssueField editableField = new JiraIssueField(issueField.getId(), name);
                     editableField.setRequired(required);
                     if (cim.getAllowedValues() != null) {
                         List<JiraAllowedValue> allowedValues = new ArrayList<>();
@@ -436,9 +438,9 @@ public class JiraRestConverter {
                     }
                     editableFields.add(editableField);
                 } else {
-                    final String name = field.getName();
-                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                            NLS.bind("Unable to find metadata information  for field [{0}:{1}].", field.getId(), name))); //$NON-NLS-1$
+                    //                    final String name = issueField.getName();
+                    //                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                    //                            NLS.bind("Unable to find metadata information  for field [{0}:{1}].", issueField.getId(), name))); //$NON-NLS-1$
                 }
             }
 
@@ -519,17 +521,18 @@ public class JiraRestConverter {
         return null;
     }
 
-    private static Long getRankFromIssue(Issue issue, Map<String, CimFieldInfo> metaData) {
-        for (IssueField field : issue.getFields()) {
-            if (field.getId().startsWith("customfield") && field.getValue() != null && !internalNames.contains(field.getName())) { //$NON-NLS-1$
-                CimFieldInfo cim = metaData.get(field.getId());
+    private static Long getRankFromIssue(Issue issue, JiraClientCache cache) throws JiraException {
+        Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
+        for (IssueField issueField : issue.getFields()) {
+            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null && !internalNames.contains(issueField.getName())) { //$NON-NLS-1$
+                CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
                 if (cim != null) {
                     if (JiraAttribute.RANK.getType().getKey().equals(cim.getSchema().getCustom())) {
                         try {
-                            return Long.valueOf(field.getValue().toString());
+                            return Long.valueOf(issueField.getValue().toString());
                         } catch (NumberFormatException e) {
                             StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                                    NLS.bind("Unable to parse Rank value [{0}].", field.getValue().toString()))); //$NON-NLS-1$
+                                    NLS.bind("Unable to parse Rank value [{0}].", issueField.getValue().toString()))); //$NON-NLS-1$
                         }
 
                     }

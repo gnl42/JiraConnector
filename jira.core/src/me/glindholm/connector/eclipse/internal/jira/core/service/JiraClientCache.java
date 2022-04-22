@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
+import com.atlassian.jira.rest.client.api.domain.Field;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
@@ -141,10 +142,11 @@ public class JiraClientCache {
     public Map<String, CimFieldInfo> getFieldMetadata(Long projectId, Long issueType) throws JiraException {
         final JiraProject project = getProjectById(projectId + "", new NullProgressMonitor());
         final Map<Long, Map<String, CimFieldInfo>> fieldMetadata = project.getfieldMetadata();
-        if (fieldMetadata == null) {
-            throw new JiraException("Unable to find metadatat for project: " + projectId);
-        }
         return fieldMetadata.get(issueType);
+    }
+
+    public Field getMetadata(String fieldId) {
+        return data.metadata.get(fieldId);
     }
 
     private void initializePriorities(JiraClientData data, IProgressMonitor monitor) throws JiraException {
@@ -163,6 +165,18 @@ public class JiraClientCache {
 
     public JiraPriority[] getPriorities() {
         return data.priorities;
+    }
+
+    private void initializeMetadata(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+        SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
+
+        Iterable<Field> metadata = jiraClient.getMetadata(submonitor);
+        Map<String, Field> fieldMetadata = new HashMap<>();
+        for (Field field : metadata) {
+            fieldMetadata.put(field.getId(), field);
+        }
+
+        data.metadata = fieldMetadata;
     }
 
     private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
@@ -307,6 +321,7 @@ public class JiraClientCache {
         initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
         initializeProjectRoles(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
         initializeProjects(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+        // initializeMetadata(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
         //		initializeConfiguration(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 
         newData.lastUpdate = System.currentTimeMillis();

@@ -27,6 +27,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 
 import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Session;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -527,6 +528,22 @@ public class JiraClient {
 
     public AbstractWebLocation getLocation() {
         return location;
+    }
+
+    /**
+     * Return field metadata
+     *
+     * @param monitor
+     * @return
+     * @throws JiraException
+     */
+    public Iterable<Field> getMetadata(IProgressMonitor monitor) throws JiraException {
+        try {
+            return getRestClient().getMetadata();
+        } catch (RestClientException e) {
+            throw new JiraException(e);
+        }
+
     }
 
     /**
