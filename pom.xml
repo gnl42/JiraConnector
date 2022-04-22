@@ -3,22 +3,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.atlassian.jira</groupId>
-    <artifactId>jira-rest-java-client-parent</artifactId>
-    <version>5.2.5-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<artifactId>jira-rest-java-client-parent</artifactId>
+	<version>5.2.5-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-    <name>JIRA REST Java Client</name>
-    <description>Java library which allows to easily talk to any JIRA 7.0+ instance.</description>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<name>JIRA REST Java Client</name>
+	<description>Java library which allows to easily talk to any JIRA 7.0+ instance.</description>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<repositories>
 		<repository>
@@ -35,41 +35,41 @@
 	</pluginRepositories>
 
 
-    <modules>
-        <module>api</module>
-        <module>app</module>
-        <module>core</module>
-        <module>test</module>
-    </modules>
+	<modules>
+		<module>api</module>
+		<module>app</module>
+		<module>core</module>
+		<module>test</module>
+	</modules>
 
-    <scm>
-        <connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
-        <url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
-        <tag>HEAD</tag>
-    </scm>
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://ecosystem.atlassian.net/browse/JRJC</url>
-    </issueManagement>
+	<scm>
+		<connection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</connection>
+		<developerConnection>scm:git:ssh://git@bitbucket.org/atlassian/jira-rest-java-client.git</developerConnection>
+		<url>https://bitbucket.org/atlassian/jira-rest-java-client/</url>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://ecosystem.atlassian.net/browse/JRJC</url>
+	</issueManagement>
 
-    <properties>
-        <platform.version>5.2.1</platform.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jira.version>8.18.0-QR-20210527053111</jira.version>
-        <jira.data.version>${jira.version}</jira.data.version>
-        <jira.test-lib.version>${jira.version}</jira.test-lib.version>
-        <jersey.client.version>2.35</jersey.client.version>
-        <atlassian.httpclient.version>2.1.5</atlassian.httpclient.version>
-        <joda.time.version>2.9.9</joda.time.version>
+	<properties>
+		<platform.version>5.2.1</platform.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jira.version>8.18.0-QR-20210527053111</jira.version>
+		<jira.data.version>${jira.version}</jira.data.version>
+		<jira.test-lib.version>${jira.version}</jira.test-lib.version>
+		<jersey.client.version>2.35</jersey.client.version>
+		<atlassian.httpclient.version>2.1.5</atlassian.httpclient.version>
+		<joda.time.version>2.9.9</joda.time.version>
 		<httpcore.version>4.4.15</httpcore.version>
-        <amps.version>6.3.22-fc341f3d2</amps.version>
-        <testkit.version>8.1.5</testkit.version>
-        <atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
-        <guava.version>30.1.1-jre</guava.version>
-        <jackson.version>1.9.13-atlassian-4</jackson.version>
-        <commons.codec.version>1.15</commons.codec.version>
-    </properties>
+		<amps.version>6.3.22-fc341f3d2</amps.version>
+		<testkit.version>8.1.5</testkit.version>
+		<atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
+		<guava.version>30.1.1-jre</guava.version>
+		<jackson.version>1.9.13-atlassian-4</jackson.version>
+		<commons.codec.version>1.15</commons.codec.version>
+	</properties>
 
 	<build>
 		<pluginManagement>
@@ -99,7 +99,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.3.2</version>
+					<version>3.4.0</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -107,8 +107,8 @@
 								<goal>jar</goal>
 							</goals>
 							<configuration>
-							 <failOnError>false</failOnError>
-							 <quiet>true</quiet>
+								<failOnError>false</failOnError>
+								<quiet>true</quiet>
 							</configuration>
 						</execution>
 					</executions>
@@ -117,8 +117,8 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-    <dependencyManagement>
-        <dependencies>
+	<dependencyManagement>
+		<dependencies>
 			<!-- <dependency> <groupId>com.atlassian.platform</groupId> <artifactId>platform</artifactId>
 				<version>${platform.version}</version> <type>pom</type> <scope>import</scope>
 				</dependency> <dependency> <groupId>com.atlassian.platform</groupId> <artifactId>third-party</artifactId>
@@ -161,7 +161,7 @@
 				<artifactId>spring-beans</artifactId>
 				<version>5.3.6</version>
 			</dependency>
-            <dependency>
+			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-core</artifactId>
 				<version>1.3</version>
@@ -170,183 +170,185 @@
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-library</artifactId>
 				<version>1.3</version>
-            </dependency>
-            <dependency>
+			</dependency>
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.13.2</version>
-            </dependency>
+			</dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>${httpcore.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore-nio</artifactId>
-                <version>${httpcore.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>${httpcore.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore-nio</artifactId>
+				<version>${httpcore.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient-cache</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient-cache</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpmime</artifactId>
+			</dependency>
 
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda.time.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jettison</artifactId>
-                <version>${jersey.client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-jaxrs</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-xc</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-api</artifactId>
-                <version>${atlassian.httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.httpclient</groupId>
-                <artifactId>atlassian-httpclient-library</artifactId>
-                <version>${atlassian.httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.8.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.5</version>
-            </dependency>
-            <dependency>
-                <groupId>io.atlassian.util.concurrent</groupId>
-                <artifactId>atlassian-util-concurrent</artifactId>
-                <version>${atlassian.util.concurrent}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons.codec.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda.time.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${jersey.client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jettison</artifactId>
+				<version>${jersey.client.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-core-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-jaxrs</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-xc</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.atlassian.httpclient</groupId>
+				<artifactId>atlassian-httpclient-api</artifactId>
+				<version>${atlassian.httpclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.atlassian.httpclient</groupId>
+				<artifactId>atlassian-httpclient-library</artifactId>
+				<version>${atlassian.httpclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.5</version>
+			</dependency>
+			<dependency>
+				<groupId>io.atlassian.util.concurrent</groupId>
+				<artifactId>atlassian-util-concurrent</artifactId>
+				<version>${atlassian.util.concurrent}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons.codec.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>com.atlassian.jira.rest.client.internal*</excludePackageNames>
-                    <links>
-                        <link>https://docs.atlassian.com/software/jira/docs/api/${jira.version}/</link>
-                    </links>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <id>non-aggregate</id>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                    </reportSet>
-                    <reportSet>
-                        <id>aggregate</id>
-                        <inherited>false</inherited>
-                        <reports>
-                            <report>aggregate</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <!-- TODO BUILDENG-14322 remove this jxr version, once the override in public-pom is gone -->
-                <version>2.5</version>
-                <reportSets>
-                    <reportSet>
-                        <id>non-aggregate</id>
-                        <reports>
-                            <report>jxr</report>
-                        </reports>
-                    </reportSet>
-                    <reportSet>
-                        <id>aggregate</id>
-                        <inherited>false</inherited>
-                        <reports>
-                            <report>aggregate</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <!-- TODO BUILDENG-14322 remove whole maven-project-info-reports-plugin definition from here, once the versions are fixed in the base-pom -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
-            </plugin>
-        </plugins>
-    </reporting>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>com.atlassian.jira.rest.client.internal*</excludePackageNames>
+					<links>
+						<link>https://docs.atlassian.com/software/jira/docs/api/${jira.version}/</link>
+					</links>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<id>non-aggregate</id>
+						<reports>
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<id>aggregate</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<!-- TODO BUILDENG-14322 remove this jxr version, once the override in
+					public-pom is gone -->
+				<version>2.5</version>
+				<reportSets>
+					<reportSet>
+						<id>non-aggregate</id>
+						<reports>
+							<report>jxr</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<id>aggregate</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<!-- TODO BUILDENG-14322 remove whole maven-project-info-reports-plugin
+				definition from here, once the versions are fixed in the base-pom -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-        <profile>
-            <id>skipSitePlugin</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                            <skipDeploy>true</skipDeploy>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+		<profile>
+			<id>skipSitePlugin</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-site-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+							<skipDeploy>true</skipDeploy>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
